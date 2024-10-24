@@ -6,7 +6,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID
+  description: Sample ID - A number ranging from 0 - 99 based on client ID; used to
+    pull a small sample of data related to a subset of clients over time
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -14,11 +15,12 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: First Seen Date
+  description: First Seen Date - The date this client was first seen
 - name: days_since_first_seen
   type: INTEGER
   mode: NULLABLE
-  description: Days Since First Seen
+  description: Days Since First Seen - The number of days since the client was first
+    seen
 - name: days_since_active
   type: INTEGER
   mode: NULLABLE
@@ -26,7 +28,8 @@ fields:
 - name: first_reported_country
   type: STRING
   mode: NULLABLE
-  description: First Reported Country
+  description: First Reported Country - The country this client ID was first reported
+    from
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -34,34 +37,39 @@ fields:
   - name: source
     type: STRING
     mode: NULLABLE
-    description: null
+    description: Attribution Source
   - name: medium
     type: STRING
     mode: NULLABLE
-    description: null
+    description: Attribution Medium
   - name: campaign
     type: STRING
     mode: NULLABLE
-    description: null
+    description: Attribution Campaign
   - name: content
     type: STRING
     mode: NULLABLE
-    description: null
+    description: Attribution Content
   - name: experiment
     type: STRING
     mode: NULLABLE
+    description: Attribution Experiment
   - name: variation
     type: STRING
     mode: NULLABLE
+    description: Attribution Variation
   - name: dltoken
     type: STRING
     mode: NULLABLE
+    description: Attribution Download Token
   - name: dlsource
     type: STRING
     mode: NULLABLE
+    description: Attribution Download Source
   - name: ua
     type: STRING
     mode: NULLABLE
+    description: Attribution UA
   description: Attribution
 - name: active
   type: INTEGER
@@ -70,11 +78,13 @@ fields:
 - name: ad_clicks
   type: INTEGER
   mode: NULLABLE
-  description: Ad Clicks
+  description: Ad Clicks - The number of ad clicks from this client on the submission
+    date
 - name: total_historic_ad_clicks
   type: INTEGER
   mode: NULLABLE
-  description: Total Historic Ad Clicks
+  description: Total Historic Ad Clicks - The number of ad clicks from this client
+    on or before the submission date
 - name: days_seen_bytes
   type: BYTES
   mode: NULLABLE
@@ -82,12 +92,15 @@ fields:
 - name: pattern
   type: INTEGER
   mode: NULLABLE
+  description: Pattern
 - name: death_time
   type: INTEGER
   mode: NULLABLE
+  description: Death Time
 - name: max_days
   type: INTEGER
   mode: NULLABLE
+  description: Max Days
 - name: markov_states
   type: RECORD
   mode: NULLABLE
@@ -95,3 +108,5 @@ fields:
   - name: desktop_states_v1
     type: STRING
     mode: NULLABLE
+    description: Desktop States V1
+  description: Markov States

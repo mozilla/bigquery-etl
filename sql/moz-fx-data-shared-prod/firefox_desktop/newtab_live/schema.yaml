@@ -2,33 +2,43 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Submission Timestamp
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
+  description: Normalized Country Code, Examples - US, AR, BR, etc.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: Normalized Channel, Examples - release, nightly, aurora, esr, beta
 - name: document_id
   type: STRING
   mode: NULLABLE
+  description: Document ID
 - name: pocket_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Pocket Enabled
 - name: pocket_sponsored_stories_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Pocket Sponsored Stories Enabled
 - name: newtab_locale
   type: STRING
   mode: NULLABLE
+  description: Newtab Locale
 - name: app_build
   type: STRING
   mode: NULLABLE
+  description: App Build
 - name: app_display_version
   type: STRING
   mode: NULLABLE
+  description: App Display Version
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: Client ID
 - name: events
   type: RECORD
   mode: REPEATED
@@ -36,6 +46,7 @@ fields:
   - name: category
     type: STRING
     mode: NULLABLE
+    description: Event Category
   - name: extra
     type: RECORD
     mode: REPEATED
@@ -43,12 +54,18 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
+      description: Key
     - name: value
       type: STRING
       mode: NULLABLE
+      description: Value
+    description: Extras
   - name: name
     type: STRING
     mode: NULLABLE
+    description: Event Name
   - name: timestamp
     type: INTEGER
     mode: NULLABLE
+    description: Event Timestamp
+  description: Events

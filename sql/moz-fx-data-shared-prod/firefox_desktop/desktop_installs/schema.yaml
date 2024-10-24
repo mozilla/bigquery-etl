@@ -31,11 +31,11 @@ fields:
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: ISP Name
+  description: ISP Name - The internet service provider name
 - name: isp_organization
   type: STRING
   mode: NULLABLE
-  description: ISP Organization
+  description: ISP Organization - The internet service provider organization
 - name: ping_version
   type: STRING
   mode: NULLABLE
@@ -123,7 +123,8 @@ fields:
 - name: manual_download
   type: BOOLEAN
   mode: NULLABLE
-  description: null
+  description: True if the user clicked through the error message to the manual full
+    installer download page
 - name: silent
   type: BOOLEAN
   mode: NULLABLE
@@ -165,15 +166,15 @@ fields:
 - name: install_attempts
   type: INTEGER
   mode: NULLABLE
-  description: null
+  description: Install Attempts - The count of install attempts
 - name: installs
   type: INTEGER
   mode: NULLABLE
-  description: Successful Installs
+  description: Successful Installs - The count of successful installs
 - name: unsuccessful_installs
   type: INTEGER
   mode: NULLABLE
-  description: Unsuccessful Installs
+  description: Unsuccessful Installs - The count of unsuccessful installs
 - name: attribution_dltoken_date
   type: DATE
   mode: NULLABLE

@@ -1102,7 +1102,7 @@ workflows:
             - deploy-changes-to-stage
       - validate-backfills:
           requires:
-            - deploy-changes-to-stage
+            - generate-sql
       - validate-dags:
           requires:
             - generate-dags

@@ -208,7 +208,7 @@ topic_selection_data AS (
   GROUP BY
     client_id
 ),
-joinedo AS (
+joined AS (
   SELECT
     visits_data.client_id,
     visits_data.submission_date,
@@ -343,4 +343,4 @@ SELECT
   ) + weather_widget_clicks + weather_widget_change_display_to_detailed + weather_widget_change_display_to_simple + topsite_tile_dismissals + organic_pocket_dismissals + sponsored_pocket_dismissals + topic_selection_dismissals AS non_search_engagement_count,
   topsite_tile_dismissals + organic_pocket_dismissals + sponsored_pocket_dismissals + topic_selection_dismissals AS newtab_dismissal_count
 FROM
-  joinedo
+  joined

@@ -3,7 +3,7 @@ fields:
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: Sample ID
+- description: Sample ID - A number ranging from 0 - 99 based on client ID; used to pull a small sample of data related to a subset of clients over time
   mode: NULLABLE
   name: sample_id
   type: INT64
@@ -11,11 +11,11 @@ fields:
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: First Seen Date
+- description: First Seen Date - The date this client was first seen
   mode: NULLABLE
   name: first_seen_date
   type: DATE
-- description: Days Since First Seen
+- description: Days Since First Seen - The number of days since the client was first seen
   mode: NULLABLE
   name: days_since_first_seen
   type: INT64
@@ -23,7 +23,7 @@ fields:
   mode: NULLABLE
   name: days_since_active
   type: INT64
-- description: First Reported Country
+- description: First Reported Country - The country this client ID was first reported from
   mode: NULLABLE
   name: first_reported_country
   type: STRING
@@ -72,11 +72,11 @@ fields:
   mode: NULLABLE
   name: active
   type: INT64
-- description: Ad Clicks
+- description: Ad Clicks - The number of ad clicks from this client on the submission date
   mode: NULLABLE
   name: ad_clicks
   type: INT64
-- description: Total Historic Ad Clicks
+- description: Total Historic Ad Clicks - The number of ad clicks from this client on or before the submission date
   mode: NULLABLE
   name: total_historic_ad_clicks
   type: INT64

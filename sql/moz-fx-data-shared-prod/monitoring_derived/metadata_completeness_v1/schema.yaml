@@ -16,13 +16,13 @@ fields:
   type: STRING
   description: Table Name
 - mode: NULLABLE
+  name: table_type
+  type: STRING
+  description: Table Type
+- mode: NULLABLE
   name: object_description
   type: STRING
   description: Object Description
-- mode: NULLABLE
-  name: nbr_columns
-  type: INTEGER
-  description: Number of Columns
 - mode: NULLABLE
   name: nbr_columns
   type: INTEGER

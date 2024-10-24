@@ -1881,7 +1881,7 @@ bqetl_monitoring_weekly:
   default_args:
     owner: kwindau@mozilla.com
     email: ["kwindau@mozilla.com"]
-    start_date: "2024-10-30"
+    start_date: "2024-10-25"
     retries: 2
     retry_delay: 30m
   tags:

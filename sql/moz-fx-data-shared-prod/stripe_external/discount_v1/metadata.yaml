@@ -1,0 +1,28 @@
+friendly_name: Production Stripe discounts
+description: |-
+  Mirror of production Stripe `discount` table from Fivetran.
+owners:
+- srose@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: null
+  depends_on_fivetran:
+  - task_id: fivetran_stripe
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:stripe/viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:platform-infra/internal
+references:
+  query.sql:
+  - moz-fx-data-bq-fivetran.stripe.discount

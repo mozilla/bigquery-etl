@@ -150,6 +150,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    stripe_external__nonprod_discount__v1 = bigquery_etl_query(
+        task_id="stripe_external__nonprod_discount__v1",
+        destination_table="nonprod_discount_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     stripe_external__nonprod_invoice__v1 = bigquery_etl_query(
         task_id="stripe_external__nonprod_invoice__v1",
         destination_table="nonprod_invoice_v1",
@@ -165,6 +177,18 @@ with DAG(
     stripe_external__nonprod_invoice_discount__v1 = bigquery_etl_query(
         task_id="stripe_external__nonprod_invoice_discount__v1",
         destination_table="nonprod_invoice_discount_v1",
+        dataset_id="stripe_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    stripe_external__nonprod_invoice_discount__v2 = bigquery_etl_query(
+        task_id="stripe_external__nonprod_invoice_discount__v2",
+        destination_table="nonprod_invoice_discount_v2",
         dataset_id="stripe_external",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
@@ -285,7 +309,7 @@ with DAG(
     cjms_bigquery__subscriptions__v1.set_upstream(stripe_external__nonprod_invoice__v1)
 
     cjms_bigquery__subscriptions__v1.set_upstream(
-        stripe_external__nonprod_invoice_discount__v1
+        stripe_external__nonprod_invoice_discount__v2
     )
 
     cjms_bigquery__subscriptions__v1.set_upstream(
@@ -306,12 +330,28 @@ with DAG(
         fivetran_stripe_nonprod_sync_start
     )
 
+    stripe_external__nonprod_discount__v1.set_upstream(
+        fivetran_stripe_nonprod_sync_start
+    )
+
     stripe_external__nonprod_invoice__v1.set_upstream(
         fivetran_stripe_nonprod_sync_start
     )
 
     stripe_external__nonprod_invoice_discount__v1.set_upstream(
         fivetran_stripe_nonprod_sync_start
+    )
+
+    stripe_external__nonprod_invoice_discount__v2.set_upstream(
+        stripe_external__nonprod_discount__v1
+    )
+
+    stripe_external__nonprod_invoice_discount__v2.set_upstream(
+        stripe_external__nonprod_invoice__v1
+    )
+
+    stripe_external__nonprod_invoice_discount__v2.set_upstream(
+        stripe_external__nonprod_invoice_discount__v1
     )
 
     stripe_external__nonprod_plan__v1.set_upstream(fivetran_stripe_nonprod_sync_start)
@@ -359,7 +399,7 @@ with DAG(
     )
 
     subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
-        stripe_external__nonprod_invoice_discount__v1
+        stripe_external__nonprod_invoice_discount__v2
     )
 
     subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(

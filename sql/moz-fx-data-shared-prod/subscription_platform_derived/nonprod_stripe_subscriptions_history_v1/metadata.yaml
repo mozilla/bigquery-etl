@@ -21,7 +21,7 @@ references:
   - moz-fx-data-shared-prod.stripe_external.nonprod_charge_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_coupon_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_customer_v1
-  - moz-fx-data-shared-prod.stripe_external.nonprod_invoice_discount_v1
+  - moz-fx-data-shared-prod.stripe_external.nonprod_invoice_discount_v2
   - moz-fx-data-shared-prod.stripe_external.nonprod_invoice_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_plan_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_product_v1

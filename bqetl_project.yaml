@@ -12,8 +12,6 @@ default:
   user_facing_project: mozdata
   backfill_project: moz-fx-data-backfill
   additional_projects: # additional valid projects managed outside of bigquery-etl
-  - moz-fx-data-pioneer-nonprod
-  - moz-fx-data-pioneer-prod
   - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
@@ -258,9 +256,7 @@ view:
 
 schema:
   mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas
-  skip_prefixes:
-  - pioneer
-  - rally
+  skip_prefixes: []
 
 docs:
   docs_dir: docs

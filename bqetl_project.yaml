@@ -253,14 +253,16 @@ view:
     - sql/glam-fenix-dev/glam_etl/**/view.sql
     # tests
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
-    # see comment in query file
-    - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
 
 schema:
   mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas
   skip_prefixes:
   - pioneer
   - rally
+  deploy:
+    skip:
+    # see comment in query file
+    - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
 
 docs:
   docs_dir: docs

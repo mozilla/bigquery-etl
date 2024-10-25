@@ -2215,6 +2215,8 @@ def deploy(
         future_to_query = {
             executor.submit(_deploy, query_file): query_file
             for query_file in query_files
+            if str(query_file)
+            not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
         }
         for future in futures.as_completed(future_to_query):
             query_file = future_to_query[future]

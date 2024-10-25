@@ -47,7 +47,8 @@ SELECT
       metrics.boolean.os_environment_is_admin_without_uac,
       metrics.boolean.contentblocking_cryptomining_blocking_enabled,
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
-      metrics.boolean.policies_is_enterprise
+      metrics.boolean.policies_is_enterprise,
+      metrics.boolean.dom_parentprocess_private_window_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -139,7 +140,13 @@ SELECT
       metrics.counter.printing_dialog_via_preview_cancelled_tm,
       metrics.counter.printing_preview_cancelled_tm,
       metrics.counter.printing_preview_opened_tm,
-      metrics.counter.printing_silent_print
+      metrics.counter.printing_silent_print,
+      metrics.counter.dom_contentprocess_build_id_mismatch,
+      metrics.counter.dom_contentprocess_build_id_mismatch_false_positive,
+      metrics.counter.dom_contentprocess_os_priority_change_considered,
+      metrics.counter.dom_contentprocess_os_priority_lowered,
+      metrics.counter.dom_contentprocess_os_priority_raised,
+      metrics.counter.mathml_doc_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -328,7 +335,8 @@ SELECT
       metrics.labeled_counter.security_client_auth_cert_usage,
       metrics.labeled_counter.printing_error,
       metrics.labeled_counter.printing_settings_changed,
-      metrics.labeled_counter.printing_target_type
+      metrics.labeled_counter.printing_target_type,
+      metrics.labeled_counter.dom_parentprocess_process_launch_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -756,7 +764,8 @@ SELECT
       metrics.boolean.os_environment_is_admin_without_uac,
       metrics.boolean.contentblocking_cryptomining_blocking_enabled,
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
-      metrics.boolean.policies_is_enterprise
+      metrics.boolean.policies_is_enterprise,
+      metrics.boolean.dom_parentprocess_private_window_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -848,7 +857,13 @@ SELECT
       metrics.counter.printing_dialog_via_preview_cancelled_tm,
       metrics.counter.printing_preview_cancelled_tm,
       metrics.counter.printing_preview_opened_tm,
-      metrics.counter.printing_silent_print
+      metrics.counter.printing_silent_print,
+      metrics.counter.dom_contentprocess_build_id_mismatch,
+      metrics.counter.dom_contentprocess_build_id_mismatch_false_positive,
+      metrics.counter.dom_contentprocess_os_priority_change_considered,
+      metrics.counter.dom_contentprocess_os_priority_lowered,
+      metrics.counter.dom_contentprocess_os_priority_raised,
+      metrics.counter.mathml_doc_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1037,7 +1052,8 @@ SELECT
       metrics.labeled_counter.security_client_auth_cert_usage,
       metrics.labeled_counter.printing_error,
       metrics.labeled_counter.printing_settings_changed,
-      metrics.labeled_counter.printing_target_type
+      metrics.labeled_counter.printing_target_type,
+      metrics.labeled_counter.dom_parentprocess_process_launch_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1465,7 +1481,8 @@ SELECT
       metrics.boolean.os_environment_is_admin_without_uac,
       metrics.boolean.contentblocking_cryptomining_blocking_enabled,
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
-      metrics.boolean.policies_is_enterprise
+      metrics.boolean.policies_is_enterprise,
+      metrics.boolean.dom_parentprocess_private_window_used
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -1557,7 +1574,13 @@ SELECT
       metrics.counter.printing_dialog_via_preview_cancelled_tm,
       metrics.counter.printing_preview_cancelled_tm,
       metrics.counter.printing_preview_opened_tm,
-      metrics.counter.printing_silent_print
+      metrics.counter.printing_silent_print,
+      metrics.counter.dom_contentprocess_build_id_mismatch,
+      metrics.counter.dom_contentprocess_build_id_mismatch_false_positive,
+      metrics.counter.dom_contentprocess_os_priority_change_considered,
+      metrics.counter.dom_contentprocess_os_priority_lowered,
+      metrics.counter.dom_contentprocess_os_priority_raised,
+      metrics.counter.mathml_doc_count
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1746,7 +1769,8 @@ SELECT
       metrics.labeled_counter.security_client_auth_cert_usage,
       metrics.labeled_counter.printing_error,
       metrics.labeled_counter.printing_settings_changed,
-      metrics.labeled_counter.printing_target_type
+      metrics.labeled_counter.printing_target_type,
+      metrics.labeled_counter.dom_parentprocess_process_launch_errors
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

@@ -810,6 +810,13 @@ fields:
         scalar policies.is_enterprise.
 
         '
+    - name: dom_parentprocess_private_window_used
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether a private browsing window has been used in the session.
+        This metric was generated to correspond to the Legacy Telemetry scalar dom.parentprocess.private_window_used.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1848,6 +1855,55 @@ fields:
         invoke ExtensionAPI.tabs.saveAsPDF, for example, or when the print.always_print_silent
         pref is set. This metric was generated to correspond to the Legacy Telemetry
         scalar printing.silent_print.
+
+        '
+    - name: dom_contentprocess_build_id_mismatch
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times the about:restartrequired page appeared due
+        to a buildID mismatch between the parent and the content processes. This metric
+        was generated to correspond to the Legacy Telemetry scalar dom.contentprocess.buildID_mismatch.
+
+        '
+    - name: dom_contentprocess_build_id_mismatch_false_positive
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times a process crashed early but we could verify
+        it was not because of buildID mismatch between the parent and the content
+        processes. This metric was generated to correspond to the Legacy Telemetry
+        scalar dom.contentprocess.buildID_mismatch_false_positive.
+
+        '
+    - name: dom_contentprocess_os_priority_change_considered
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we''ve had the opportunity to change content
+        process priority due to a tab switch or a tab being opened. This metric was
+        generated to correspond to the Legacy Telemetry scalar dom.contentprocess.os_priority_change_considered.
+
+        '
+    - name: dom_contentprocess_os_priority_lowered
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times a content process has had its OS priority
+        lowered due to only containing background tabs without audible media playing.
+        This metric was generated to correspond to the Legacy Telemetry scalar dom.contentprocess.os_priority_lowered.
+
+        '
+    - name: dom_contentprocess_os_priority_raised
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times a content process has had its OS priority
+        raised due to containing at least one foregrounded tab, or a tab with audible
+        media has started playing in it. This metric was generated to correspond to
+        the Legacy Telemetry scalar dom.contentprocess.os_priority_raised.
+
+        '
+    - name: mathml_doc_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of documents that contained enabled MathML elements.
+        This metric was generated to correspond to the Legacy Telemetry scalar mathml.doc_count.
 
         '
   - name: custom_distribution
@@ -6315,6 +6371,21 @@ fields:
         but we can''t know for sure since third party drivers could also be print
         to file drivers that we don''t otherwise catch in the other counts. This metric
         was generated to correspond to the Legacy Telemetry scalar printing.target_type.
+
+        '
+    - name: dom_parentprocess_process_launch_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Collect precise set of error code and calling site upon process
+        creation failure path. This metric was generated to correspond to the Legacy
+        Telemetry scalar dom.parentprocess.process_launch_errors.
 
         '
   - name: quantity

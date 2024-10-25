@@ -300,6 +300,9 @@ fields:
     - name: policies_is_enterprise
       type: BOOLEAN
       mode: NULLABLE
+    - name: dom_parentprocess_private_window_used
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -572,6 +575,24 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: printing_silent_print
+      type: INTEGER
+      mode: NULLABLE
+    - name: dom_contentprocess_build_id_mismatch
+      type: INTEGER
+      mode: NULLABLE
+    - name: dom_contentprocess_build_id_mismatch_false_positive
+      type: INTEGER
+      mode: NULLABLE
+    - name: dom_contentprocess_os_priority_change_considered
+      type: INTEGER
+      mode: NULLABLE
+    - name: dom_contentprocess_os_priority_lowered
+      type: INTEGER
+      mode: NULLABLE
+    - name: dom_contentprocess_os_priority_raised
+      type: INTEGER
+      mode: NULLABLE
+    - name: mathml_doc_count
       type: INTEGER
       mode: NULLABLE
   - name: datetime
@@ -2339,6 +2360,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: printing_target_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: dom_parentprocess_process_launch_errors
       type: RECORD
       mode: REPEATED
       fields:

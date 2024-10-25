@@ -191,7 +191,7 @@ subscriptions_history_latest_discounts AS (
   FROM
     subscriptions_history
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v1 AS subscription_discounts
+    `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v2 AS subscription_discounts
     ON subscriptions_history.subscription_id = subscription_discounts.subscription_id
     AND subscriptions_history._fivetran_start >= subscription_discounts.start
   JOIN

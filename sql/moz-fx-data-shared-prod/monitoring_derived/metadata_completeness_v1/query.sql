@@ -15,7 +15,8 @@ WITH all_mozdata_and_shared_prod_objects AS (
     table_type
   FROM
     `mozdata.region-US.INFORMATION_SCHEMA.TABLES`
-  WHERE lower(table_schema) <> 'looker_tmp'
+  WHERE
+    LOWER(table_schema) <> 'looker_tmp'
 ),
 --get the object descriptions if there are any
 mozdata_and_shared_prod_object_descriptions AS (

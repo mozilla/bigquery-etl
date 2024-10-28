@@ -651,8 +651,8 @@ jobs:
                   - staged-generated-sql
             - *copy_debug_sql
             - store_artifacts:
-              path: /tmp/workspace/staged-generated-sql/sql
-              destination: /
+                path: /tmp/workspace/staged-generated-sql/sql
+                destination: /
       - unless:
           condition: *validate-sql-or-routines
           steps:

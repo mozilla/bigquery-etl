@@ -21,7 +21,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..config import ConfigLoader
-from ..dryrun import DryRun, get_id_token, get_credentials
+from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue

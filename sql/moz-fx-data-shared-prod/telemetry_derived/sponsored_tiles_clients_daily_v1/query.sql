@@ -154,6 +154,20 @@ ios_data AS (
     1,
     2
 ),
+overactive_android_clients AS (
+  -- Find client_ids with over 150 000 pings in a day,
+  -- which could cause errors in the next step due to aggregation overflows.
+  SELECT
+    client_info.client_id AS client_id
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_unnested`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_id
+  HAVING
+    COUNT(*) > 150000
+),
 --- ANDROID SPONSORED TILES
 android_events AS (
   SELECT
@@ -175,8 +189,12 @@ android_events AS (
     ) AS sponsored_tiles_disable_count
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested` events
+  LEFT JOIN
+    overactive_android_clients
+    ON overactive_android_clients.client_id = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND overactive_android_clients.client_id IS NULL
   GROUP BY
     1,
     2
@@ -297,8 +315,12 @@ fenix_experiments_info AS (
     ) AS experiments
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested`
+  LEFT JOIN
+    overactive_android_clients
+    ON overactive_android_clients.client_id = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND overactive_android_clients.client_id IS NULL
   GROUP BY
     client_info.client_id
 )

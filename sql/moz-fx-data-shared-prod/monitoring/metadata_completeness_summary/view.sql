@@ -40,7 +40,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.metadata_completeness_v1`
 WHERE
-  submission_date >= '2024-10-27'
+  submission_date >= '2024-10-27' --first date we started recording this data
 GROUP BY
   submission_date,
   table_catalog,

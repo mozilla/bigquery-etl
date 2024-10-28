@@ -2,6 +2,8 @@
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `moz-fx-data-shared-prod.telemetry_derived.experiment_events_live_v1`
+  PARTITION BY
+    DATE(partition_date)
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -41,6 +43,7 @@ IF
       )
   )
   SELECT
+    TIMESTAMP_TRUNC(`timestamp`, DAY) AS partition_date,
     DATE(`timestamp`) AS submission_date,
     `type`,
     experiment,
@@ -71,6 +74,7 @@ IF
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
     timestamp > TIMESTAMP('2023-10-10')
   GROUP BY
+    partition_date,
     submission_date,
     `type`,
     experiment,

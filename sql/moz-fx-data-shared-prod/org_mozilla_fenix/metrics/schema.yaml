@@ -4725,6 +4725,21 @@ fields:
         Telemetry scalar dom.parentprocess.process_launch_errors.
 
         '
+    - name: browser_ui_interaction_keyboard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records a count of interactions with keyboard shortcuts. See https://firefox-source-
+        docs.mozilla.org/browser/BrowserUsageTelemetry.html This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.ui.interaction.keyboard.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

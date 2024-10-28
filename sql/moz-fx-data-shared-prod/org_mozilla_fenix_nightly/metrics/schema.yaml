@@ -2278,7 +2278,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -4722,6 +4723,21 @@ fields:
       description: 'Collect precise set of error code and calling site upon process
         creation failure path. This metric was generated to correspond to the Legacy
         Telemetry scalar dom.parentprocess.process_launch_errors.
+
+        '
+    - name: browser_ui_interaction_keyboard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records a count of interactions with keyboard shortcuts. See https://firefox-source-
+        docs.mozilla.org/browser/BrowserUsageTelemetry.html This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.ui.interaction.keyboard.
 
         '
   - name: string

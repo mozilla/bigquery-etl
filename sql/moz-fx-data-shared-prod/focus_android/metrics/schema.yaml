@@ -2379,6 +2379,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: browser_ui_interaction_keyboard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

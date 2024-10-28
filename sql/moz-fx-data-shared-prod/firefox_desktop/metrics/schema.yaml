@@ -1475,6 +1475,22 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar mathml.doc_count.
 
         '
+    - name: browser_ui_interaction_all_tabs_panel_dragstart_tab_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records a count of how many times a drag event started for a tab
+        within the All Tabs panel. This metric was generated to correspond to the
+        Legacy Telemetry scalar browser.ui.interaction.all_tabs_panel_dragstart_tab_event_count.
+
+        '
+    - name: browser_ui_interaction_textrecognition_error
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Recorded when text recognition in images fails for some unknown
+        reason. This metric was generated to correspond to the Legacy Telemetry scalar
+        browser.ui.interaction.textrecognition_error.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -5512,6 +5528,51 @@ fields:
         If instead search mode was entered by typing a restrict symbol the key will
         be suffixed with "symbol" (e.g. typing "%" will generate "tabs_symbol"). This
         metric was generated to correspond to the Legacy Telemetry scalar urlbar.searchmode.typed.
+
+        '
+    - name: browser_ui_customized_widgets
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records when widgets are added, removed or moved in the UI. See
+        https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.customized_widgets.
+
+        '
+    - name: browser_ui_interaction_all_tabs_panel_entrypoint
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records a count of how many times the All Tabs Panel was opened,
+        keyed on a string describing the entrypoint. This metric was generated to
+        correspond to the Legacy Telemetry scalar browser.ui.interaction.all_tabs_panel_entrypoint.
+
+        '
+    - name: browser_ui_interaction_keyboard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records a count of interactions with keyboard shortcuts. See https://firefox-source-
+        docs.mozilla.org/browser/BrowserUsageTelemetry.html This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.ui.interaction.keyboard.
 
         '
   - name: memory_distribution
@@ -14206,6 +14267,31 @@ fields:
         generated to correspond to the Legacy Telemetry scalar startup.profile_count.
 
         '
+    - name: security_global_privacy_control_enabled
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Measures user retention of the Global Privacy Control. 0 = never
+        enabled, 1 = enabled, 2 = disabled (but was enabled) This metric was generated
+        to correspond to the Legacy Telemetry scalar security.global_privacy_control_enabled.
+
+        '
+    - name: security_https_only_mode_enabled
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Measures user retention of the HTTPS-Only Mode. 0 = never enabled,
+        1 = enabled, 2 = disabled (but was enabled) This metric was generated to correspond
+        to the Legacy Telemetry scalar security.https_only_mode_enabled.
+
+        '
+    - name: security_https_only_mode_enabled_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Measures user retention of the HTTPS-Only Mode in Private Browsing.
+        0 = https-only never enabled in PBM, 1 = https-only enabled in PBM, 2 = https-only
+        disabled in PBM (but was enabled) This metric was generated to correspond
+        to the Legacy Telemetry scalar security.https_only_mode_enabled_pbm.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -14453,6 +14539,20 @@ fields:
         non-IME users even though this is recoded when first compositionstart event
         because dead key is also implemented by IME on Linux. This metric was generated
         to correspond to the Legacy Telemetry scalar widget.ime_name_on_linux.
+
+        '
+    - name: browser_ui_mirror_for_toolbar_widgets
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'The widgets in the toolbars. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.toolbar_widgets.
 
         '
   - name: uuid

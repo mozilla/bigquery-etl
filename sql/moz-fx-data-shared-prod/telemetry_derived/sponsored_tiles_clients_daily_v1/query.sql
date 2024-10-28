@@ -155,7 +155,7 @@ ios_data AS (
     2
 ),
 overactive_android_clients AS (
-  -- Find client_ids with over 3 000 000 pings in a day,
+  -- Find client_ids with over 3 000 000 events in a day,
   -- which could cause errors in the next step due to aggregation overflows.
   SELECT
     client_info.client_id AS client_id

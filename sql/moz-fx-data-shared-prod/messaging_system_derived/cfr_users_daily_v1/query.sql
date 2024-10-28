@@ -16,7 +16,7 @@ WITH windowed AS (
   FROM
     `moz-fx-data-shared-prod.messaging_system.cfr`
   WHERE
-    -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULLfsdfsdfdsfcvs
+    -- Reprocess all dates by running this query with --parameter=submission_date:DATE:NULL
     (@submission_date IS NULL OR @submission_date = DATE(submission_timestamp))
   WINDOW
     w1 AS (

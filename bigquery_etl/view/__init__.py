@@ -292,7 +292,7 @@ class View:
             return self.view_identifier.replace(self.project, target_project, 1)
         return self.view_identifier
 
-    def has_changes(self, target_project=None):
+    def has_changes(self, target_project=None, credentials=None):
         """Determine whether there are any changes that would be published."""
         if any(str(self.path).endswith(p) for p in self.skip_publish()):
             return False
@@ -303,7 +303,10 @@ class View:
             # view would be skipped because --target-project is set
             return False
 
-        client = bigquery.Client()
+        if credentials:
+            client = bigquery.Client(credentials=credentials)
+        else:
+            client = bigquery.Client()
         target_view_id = self.target_view_identifier(target_project)
         try:
             table = client.get_table(target_view_id)

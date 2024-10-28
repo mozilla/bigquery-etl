@@ -2,6 +2,7 @@
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS {{ dataset }}_derived.{{ destination_table }}
+  PARTITION BY DATE(partition_date)
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
@@ -102,6 +103,7 @@ IF
   )
   {% endif %}
   SELECT
+    TIMESTAMP_TRUNC(`timestamp`, DAY) AS partition_date,
     DATE(`timestamp`) AS submission_date,
     `type`,
     experiment,
@@ -132,6 +134,7 @@ IF
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
     timestamp > TIMESTAMP('{{ start_date }}')
   GROUP BY
+    partition_date,
     submission_date,
     `type`,
     experiment,

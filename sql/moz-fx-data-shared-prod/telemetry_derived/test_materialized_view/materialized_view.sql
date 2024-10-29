@@ -1,6 +1,6 @@
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.mozillavpn_derived.event_monitoring_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.telemetry_derived.test_materialized_view`
   PARTITION BY
     DATE(submission_date)
   CLUSTER BY

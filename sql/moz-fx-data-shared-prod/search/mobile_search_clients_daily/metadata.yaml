@@ -1,8 +1,8 @@
----
-friendly_name: Mobile Search Clients Daily
+friendly_name: Mobile Search Clients Daily Historical
 description: |
-  A daily aggregate of baseline and metrics pings that have
-  searches from each (client_id, engine, source) combination,
-  partitioned by day.
+  Previously the metrics were pulled from metrics ping, but now we are in the process of switching the query to pull from baseline ping.
+  The cut-off date will be 2024.08.01 i.e. all the data on and before 2024.07.31 pulls from metrics, and after 2024.07.31 pulls from baseline.
+  This table contains the historical data."
 owners:
   - akommasani@mozilla.com
+  - mbowerman@mozilla.com

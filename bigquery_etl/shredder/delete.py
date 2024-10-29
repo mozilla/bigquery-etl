@@ -557,7 +557,8 @@ def delete_from_table(
     for partition in list_partitions(
         client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit
     ):
-        if use_sampling and partition.id is not None:
+        # no sampling for __NULL__ partition
+        if use_sampling and not partition.is_special:
             kwargs["sampling_parallelism"] = sampling_parallelism
             delete_func: Callable = delete_from_partition_with_sampling
         else:
@@ -566,6 +567,7 @@ def delete_from_table(
                     "Cannot use sampling on full table deletion, "
                     f"{target.dataset_id}.{target.table_id} is too small to use sampling"
                 )
+            kwargs.pop("sampling_parallelism", None)
             delete_func = delete_from_partition
 
         yield Task(

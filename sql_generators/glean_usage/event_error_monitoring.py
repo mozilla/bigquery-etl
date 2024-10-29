@@ -45,15 +45,12 @@ class EventErrorMonitoring(GleanTable):
             and s.bq_table == "events_v1"
         ]
 
-        default_events_table = ConfigLoader.get(
+        default_event_table = ConfigLoader.get(
             "generate",
             "glean_usage",
             "events_monitoring",
             "default_event_table",
             fallback="events_v1",
-        )
-        events_table_overwrites = ConfigLoader.get(
-            "generate", "glean_usage", "events_monitoring", "event_table", fallback={}
         )
 
         # Skip any not-allowed app.
@@ -61,15 +58,21 @@ class EventErrorMonitoring(GleanTable):
             "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
 
-        apps = [app for app in apps if app[0]["app_name"] not in skip_apps]
+        apps = [
+            app
+            for app in apps
+            if app[0]["app_name"] not in skip_apps
+            # errors are from metrics in glean-core/js; nothing to monitor for server apps
+            and "glean-server" not in app[0]["dependencies"]
+            and "glean-server-metrics-compat" not in app[0]["dependencies"]
+        ]
 
         render_kwargs = dict(
             project_id=project_id,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}",
             apps=apps,
             prod_datasets=prod_datasets_with_event,
-            default_events_table=default_events_table,
-            events_table_overwrites=events_table_overwrites,
+            default_events_table=default_event_table,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

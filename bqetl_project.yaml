@@ -31,6 +31,7 @@ dry_run:
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_completeness_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
@@ -258,6 +259,10 @@ schema:
   skip_prefixes:
   - pioneer
   - rally
+  deploy:
+    skip:
+    # see comment in query file
+    - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
 
 docs:
   docs_dir: docs
@@ -298,8 +303,6 @@ generate:
     - org_mozilla_ios_tiktok_reporter
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
-    - relay_backend  # see https://mozilla-hub.atlassian.net/browse/DENG-3720
-    - monitor_backend  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1905444
     events_stream:
       skip_apps:
       - bergamot

@@ -82,7 +82,7 @@ fields:
     type: STRING
     mode: NULLABLE
   - name: value
-    type: RECORD
+    type: STRING
     mode: NULLABLE
 - name: total_uri_count
   type: INTEGER

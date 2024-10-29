@@ -61,7 +61,6 @@ class Schema:
     def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
         try:
-            print(kwargs["use_cloud_function"])
             if (
                 "use_cloud_function" not in kwargs
                 or kwargs["use_cloud_function"] is False

@@ -187,6 +187,13 @@ jobs:
                 command: |
                   mkdir -p /tmp/debug_artifacts
                   cp -r sql /tmp/debug_artifacts/sql
+
+                  shopt -s globstar
+                  for file in /tmp/debug_artifacts/sql/**/query.py; do
+                    if [ ! -s "$file" ]; then
+                      echo "# empty file; line inserted by CI" >> "$file"
+                    fi
+                  done
                 when: on_fail
             - &copy_debug_tests
               run:
@@ -500,6 +507,8 @@ jobs:
             - run:
                 name: Generate SQL content
                 command: |
+                  cp -a sql/. /tmp/workspace/generated-sql/sql
+                  exit 0
                   # Get commit on main from which this branch diverged
                   MAIN_MERGE_BASE=$(git merge-base main HEAD || true)
                   echo "merge base with main: $MAIN_MERGE_BASE"
@@ -621,6 +630,7 @@ jobs:
             - run:
                 name: Deploy changes to stage
                 command: |
+                  exit 1
                   if [ "<< pipeline.parameters.skip-stage-deploys >>" = "false" ]; then
                     PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
                     echo $PATHS

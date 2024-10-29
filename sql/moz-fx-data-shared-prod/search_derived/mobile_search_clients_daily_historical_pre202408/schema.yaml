@@ -94,7 +94,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: search_with_ads_organic
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
 - name: os_version_major
   type: INTEGER

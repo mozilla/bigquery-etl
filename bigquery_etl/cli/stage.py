@@ -106,8 +106,15 @@ def deploy(
         # copy SQL to a temporary directory
         tmp_dir = Path(tempfile.mkdtemp())
         tmp_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(sql_dir, tmp_dir, dirs_exist_ok=True)
-        sql_dir = tmp_dir / Path(sql_dir).name
+        new_sql_dir = tmp_dir / Path(sql_dir).name
+        shutil.copytree(sql_dir, new_sql_dir, dirs_exist_ok=True)
+
+        # rename paths to tmp_dir
+        paths = [
+            path.replace(sql_dir, f"{new_sql_dir}/", 1) for path in paths
+        ]
+
+        sql_dir = new_sql_dir
 
     artifact_files = set()
 

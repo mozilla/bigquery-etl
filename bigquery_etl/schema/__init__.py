@@ -64,7 +64,7 @@ class Schema:
             print(kwargs["use_cloud_function"])
             if (
                 "use_cloud_function" not in kwargs
-                or kwargs["use_cloud_function"] == False
+                or kwargs["use_cloud_function"] is False
             ):
                 if "credentials" in kwargs:
                     client = bigquery.Client(credentials=kwargs["credentials"])
@@ -95,9 +95,12 @@ class Schema:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})
 
-    def deploy(self, destination_table: str) -> bigquery.Table:
+    def deploy(self, destination_table: str, credentials: None) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
-        client = bigquery.Client()
+        if credentials:
+            client = bigquery.Client(credentials=credentials)
+        else:
+            client = bigquery.Client()
         tmp_schema_file = NamedTemporaryFile()
         self.to_json_file(Path(tmp_schema_file.name))
         bigquery_schema = client.schema_from_json(tmp_schema_file.name)

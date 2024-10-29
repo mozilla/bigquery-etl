@@ -148,7 +148,7 @@ def _extract_table_references(without_views, path):
 
 
 def _get_references(
-    paths: Tuple[str, ...], without_views: bool = False
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 8
 ) -> Iterator[Tuple[Path, List[str]]]:
     file_paths = {
         path
@@ -162,7 +162,7 @@ def _get_references(
     }
     fail = False
 
-    with Pool(8) as pool:
+    with Pool(parallelism) as pool:
         try:
             result = pool.map(
                 partial(_extract_table_references, without_views), file_paths
@@ -177,10 +177,10 @@ def _get_references(
 
 
 def get_dependency_graph(
-    paths: Tuple[str, ...], without_views: bool = False
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 8
 ) -> Dict[str, List[str]]:
     """Return the query dependency graph."""
-    refs = _get_references(paths, without_views=without_views)
+    refs = _get_references(paths, without_views=without_views, parallelism=parallelism)
     dependency_graph = {}
 
     for ref in refs:

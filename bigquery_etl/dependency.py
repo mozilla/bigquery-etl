@@ -2,8 +2,10 @@
 
 import re
 import sys
+from functools import partial
 from glob import glob
 from itertools import groupby
+from multiprocessing.pool import Pool
 from pathlib import Path
 from subprocess import CalledProcessError
 from typing import Dict, Iterator, List, Tuple
@@ -130,6 +132,21 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
             yield ".".join(parts)
 
 
+def _extract_table_references(without_views, path):
+    try:
+        if without_views:
+            return path, list(extract_table_references_without_views(path))
+        else:
+            sql = render(path.name, template_folder=path.parent)
+            return path, extract_table_references(sql)
+    except CalledProcessError as e:
+        raise click.ClickException(f"failed to import jnius: {e}")
+    except ImportError as e:
+        raise click.ClickException(*e.args)
+    except ValueError as e:
+        raise ValueError(f"Failed to parse {path}: {e}", file=sys.stderr)
+
+
 def _get_references(
     paths: Tuple[str, ...], without_views: bool = False
 ) -> Iterator[Tuple[Path, List[str]]]:
@@ -144,20 +161,17 @@ def _get_references(
         if not path.name.endswith(".template.sql")  # skip templates
     }
     fail = False
-    for path in sorted(file_paths):
+
+    with Pool(8) as pool:
         try:
-            if without_views:
-                yield path, list(extract_table_references_without_views(path))
-            else:
-                sql = render(path.name, template_folder=path.parent)
-                yield path, extract_table_references(sql)
-        except CalledProcessError as e:
-            raise click.ClickException(f"failed to import jnius: {e}")
-        except ImportError as e:
-            raise click.ClickException(*e.args)
+            result = pool.map(
+                partial(_extract_table_references, without_views), file_paths
+            )
+            return result
         except ValueError as e:
             fail = True
-            print(f"Failed to parse {path}: {e}", file=sys.stderr)
+            print(f"Failed to parse file: {e}", file=sys.stderr)
+
     if fail:
         raise click.ClickException("Some paths could not be analyzed")
 

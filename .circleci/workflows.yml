@@ -507,6 +507,7 @@ jobs:
             - run:
                 name: Generate SQL content
                 command: |
+                  mkdir -p /tmp/workspace/generated-sql
                   cp -a sql/. /tmp/workspace/generated-sql/sql
                   exit 0
                   # Get commit on main from which this branch diverged

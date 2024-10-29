@@ -60,23 +60,37 @@ class Schema:
     @classmethod
     def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
-        query = f"SELECT * FROM `{project}.{dataset}.{table}`"
-
-        if partitioned_by:
-            query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
-
         try:
-            return cls(
-                dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"),
-                    query,
-                    project=project,
-                    dataset=dataset,
-                    table=table,
-                    *args,
-                    **kwargs,
-                ).get_schema()
-            )
+            print(kwargs["use_cloud_function"])
+            if (
+                "use_cloud_function" not in kwargs
+                or kwargs["use_cloud_function"] == False
+            ):
+                if "credentials" in kwargs:
+                    client = bigquery.Client(credentials=kwargs["credentials"])
+                else:
+                    client = bigquery.Client()
+
+                table = client.get_table(f"{project}.{dataset}.{table}")
+                return cls({"fields": [field.to_api_repr() for field in table.schema]})
+            else:
+                query = f"SELECT * FROM `{project}.{dataset}.{table}`"
+
+                if partitioned_by:
+                    query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
+
+                return cls(
+                    dryrun.DryRun(
+                        os.path.join(project, dataset, table, "query.sql"),
+                        query,
+                        project=project,
+                        dataset=dataset,
+                        table=table,
+                        *args,
+                        **kwargs,
+                    ).get_schema()
+                )
+
         except Exception as e:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})

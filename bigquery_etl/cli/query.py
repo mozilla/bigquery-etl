@@ -2093,8 +2093,6 @@ def _update_query_schema(
         id_token=id_token,
     )
 
-    changed = True
-
     if existing_schema_path.is_file():
         existing_schema = Schema.from_schema_file(existing_schema_path)
         old_schema = copy.deepcopy(existing_schema)

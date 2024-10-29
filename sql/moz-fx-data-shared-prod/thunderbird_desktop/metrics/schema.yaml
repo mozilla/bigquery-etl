@@ -2568,6 +2568,31 @@ fields:
       description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000) sent.
 
         '
+    - name: mail_compact_bytes_recovered
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of bytes recovered by compaction.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -5255,6 +5280,20 @@ fields:
       description: 'Records a count of interactions with keyboard shortcuts. See https://firefox-source-
         docs.mozilla.org/browser/BrowserUsageTelemetry.html This metric was generated
         to correspond to the Legacy Telemetry scalar browser.ui.interaction.keyboard.
+
+        '
+    - name: mail_compact_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of folder compactions that happen and how they
+        ended.
 
         '
   - name: labeled_string
@@ -13683,6 +13722,49 @@ fields:
         geckoview metric of the same name).
 
         '
+    - name: mail_compact_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts how long each folder compaction takes.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -14100,6 +14182,57 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Time for a successful DoH request, from AsyncOpen to ReturnData
+
+        '
+    - name: netwerk_http3_time_to_reuse_idle_connection
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time to reuse an idle connection in HTTP3 (ms); keyed by the
+        transaction reusing an idle connection has succeeded or failed
 
         '
   - name: labeled_custom_distribution

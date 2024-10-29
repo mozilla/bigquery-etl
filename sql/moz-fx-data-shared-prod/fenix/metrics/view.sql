@@ -922,7 +922,8 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection,
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
-      metrics.labeled_timing_distribution.networking_trr_fetch_duration
+      metrics.labeled_timing_distribution.networking_trr_fetch_duration,
+      metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
@@ -1862,7 +1863,8 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection,
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
-      metrics.labeled_timing_distribution.networking_trr_fetch_duration
+      metrics.labeled_timing_distribution.networking_trr_fetch_duration,
+      metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
@@ -2820,7 +2822,8 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection,
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
-      metrics.labeled_timing_distribution.networking_trr_fetch_duration
+      metrics.labeled_timing_distribution.networking_trr_fetch_duration,
+      metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
@@ -3787,7 +3790,8 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection,
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
-      metrics.labeled_timing_distribution.networking_trr_fetch_duration
+      metrics.labeled_timing_distribution.networking_trr_fetch_duration,
+      metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
@@ -4736,7 +4740,8 @@ SELECT
       metrics.labeled_timing_distribution.network_http3_tls_handshake,
       metrics.labeled_timing_distribution.network_sup_http3_tcp_connection,
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
-      metrics.labeled_timing_distribution.networking_trr_fetch_duration
+      metrics.labeled_timing_distribution.networking_trr_fetch_duration,
+      metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio

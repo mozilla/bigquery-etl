@@ -21,7 +21,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..config import ConfigLoader
-from ..dryrun import DryRun, get_id_token
+from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
@@ -200,6 +200,7 @@ def publish(
         logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
+    credentials = get_credentials()
 
     views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     if respect_dryrun_skip:
@@ -208,7 +209,7 @@ def publish(
         for view in views:
             view.labels["managed"] = ""
     if not force:
-        has_changes = partial(_view_has_changes, target_project)
+        has_changes = partial(_view_has_changes, target_project, credentials)
 
         # only views with changes
         with Pool(parallelism) as p:
@@ -225,7 +226,7 @@ def publish(
 
     view_id_order = TopologicalSorter(view_id_graph).static_order()
 
-    client = bigquery.Client()
+    client = bigquery.Client(credentials=credentials)
 
     result = []
     for view_id in view_id_order:
@@ -242,8 +243,8 @@ def publish(
     click.echo("All have been published.")
 
 
-def _view_has_changes(target_project, view):
-    return view.has_changes(target_project)
+def _view_has_changes(target_project, credentials, view):
+    return view.has_changes(target_project, credentials)
 
 
 def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized):

@@ -9,8 +9,8 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: source
-  type: INTEGER
-  mode: STRING
+  type: STRING
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

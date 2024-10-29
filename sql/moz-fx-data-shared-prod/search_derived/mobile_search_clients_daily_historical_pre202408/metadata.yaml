@@ -1,16 +1,13 @@
 ---
-friendly_name: Mobile Search Clients Daily
-description: |
-  Daily mobile clients sending pings that have searches,aggregated across unique sets of dimensions and partitioned by day.
+friendly_name: Mobile Search Clients Daily Historical
+description: |-
+  Previously the metrics were pulled from metrics ping but now we are in the
+  process of switching the query to pull from baseline ping.
+
+  The cut off date will be 2024.08.01 i.e. all the data on and before 2024.07.31
+  pulls from metrics and after 2024.07.31 pulls from baseline.
+
+  This table contains the historical data.
 owners:
-  - akomar@mozilla.com
-  - cmorales@mozilla.com
-labels:
-  schedule: daily
-scheduling:
-  dag_name: bqetl_mobile_search
-bigquery:
-  time_partitioning:
-    type: day
-    field: submission_date
-    require_partition_filter: true
+- akommasani@mozilla.com
+- mbowerman@mozilla.com

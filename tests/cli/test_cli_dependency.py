@@ -22,7 +22,7 @@ class TestDependency:
             with open("foo.sql", "w") as f:
                 f.write("SELECT 1 FROM test")
 
-            result = runner.invoke(dependency_show, ["foo.sql"])
+            result = runner.invoke(dependency_show, ["foo.sql", "--parallelism=1"])
             assert "foo.sql: test\n" == result.output
             assert result.exit_code == 0
 
@@ -32,6 +32,6 @@ class TestDependency:
             with open("test/bar.sql", "w") as f:
                 f.write("SELECT 1 FROM test_bar")
 
-            result = runner.invoke(dependency_show, ["test"])
+            result = runner.invoke(dependency_show, ["test", "--parallelism=1"])
             assert "test/bar.sql: test_bar\ntest/foo.sql: test_foo\n" == result.output
             assert result.exit_code == 0

@@ -60,30 +60,46 @@ class Schema:
     @classmethod
     def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
-        query = f"SELECT * FROM `{project}.{dataset}.{table}`"
-
-        if partitioned_by:
-            query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
-
         try:
-            return cls(
-                dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"),
-                    query,
-                    project=project,
-                    dataset=dataset,
-                    table=table,
-                    *args,
-                    **kwargs,
-                ).get_schema()
-            )
+            if (
+                "use_cloud_function" not in kwargs
+                or kwargs["use_cloud_function"] is False
+            ):
+                if "credentials" in kwargs:
+                    client = bigquery.Client(credentials=kwargs["credentials"])
+                else:
+                    client = bigquery.Client()
+
+                table = client.get_table(f"{project}.{dataset}.{table}")
+                return cls({"fields": [field.to_api_repr() for field in table.schema]})
+            else:
+                query = f"SELECT * FROM `{project}.{dataset}.{table}`"
+
+                if partitioned_by:
+                    query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
+
+                return cls(
+                    dryrun.DryRun(
+                        os.path.join(project, dataset, table, "query.sql"),
+                        query,
+                        project=project,
+                        dataset=dataset,
+                        table=table,
+                        *args,
+                        **kwargs,
+                    ).get_schema()
+                )
+
         except Exception as e:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})
 
-    def deploy(self, destination_table: str) -> bigquery.Table:
+    def deploy(self, destination_table: str, credentials: None) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
-        client = bigquery.Client()
+        if credentials:
+            client = bigquery.Client(credentials=credentials)
+        else:
+            client = bigquery.Client()
         tmp_schema_file = NamedTemporaryFile()
         self.to_json_file(Path(tmp_schema_file.name))
         bigquery_schema = client.schema_from_json(tmp_schema_file.name)

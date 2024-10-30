@@ -2,8 +2,10 @@
 
 import re
 import sys
+from functools import partial
 from glob import glob
 from itertools import groupby
+from multiprocessing.pool import Pool
 from pathlib import Path
 from subprocess import CalledProcessError
 from typing import Dict, Iterator, List, Tuple
@@ -130,9 +132,24 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
             yield ".".join(parts)
 
 
+def _extract_table_references(without_views, path):
+    try:
+        if without_views:
+            return path, list(extract_table_references_without_views(path))
+        else:
+            sql = render(path.name, template_folder=path.parent)
+            return path, extract_table_references(sql)
+    except CalledProcessError as e:
+        raise click.ClickException(f"failed to import jnius: {e}")
+    except ImportError as e:
+        raise click.ClickException(*e.args)
+    except ValueError as e:
+        raise ValueError(f"Failed to parse {path}: {e}", file=sys.stderr)
+
+
 def _get_references(
-    paths: Tuple[str, ...], without_views: bool = False
-) -> Iterator[Tuple[Path, List[str]]]:
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 8
+) -> List[Tuple[Path, List[str]]]:
     file_paths = {
         path
         for parent in map(Path, paths or ["sql"])
@@ -144,29 +161,37 @@ def _get_references(
         if not path.name.endswith(".template.sql")  # skip templates
     }
     fail = False
-    for path in sorted(file_paths):
+
+    if parallelism <= 1:
         try:
-            if without_views:
-                yield path, list(extract_table_references_without_views(path))
-            else:
-                sql = render(path.name, template_folder=path.parent)
-                yield path, extract_table_references(sql)
-        except CalledProcessError as e:
-            raise click.ClickException(f"failed to import jnius: {e}")
-        except ImportError as e:
-            raise click.ClickException(*e.args)
+            return [
+                _extract_table_references(without_views, file_path)
+                for file_path in sorted(file_paths)
+            ]
         except ValueError as e:
             fail = True
-            print(f"Failed to parse {path}: {e}", file=sys.stderr)
+            print(f"Failed to parse file: {e}", file=sys.stderr)
+    else:
+        with Pool(parallelism) as pool:
+            try:
+                result = pool.map(
+                    partial(_extract_table_references, without_views), file_paths
+                )
+                return result
+            except ValueError as e:
+                fail = True
+                print(f"Failed to parse file: {e}", file=sys.stderr)
+
     if fail:
         raise click.ClickException("Some paths could not be analyzed")
+    return []
 
 
 def get_dependency_graph(
-    paths: Tuple[str, ...], without_views: bool = False
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 8
 ) -> Dict[str, List[str]]:
     """Return the query dependency graph."""
-    refs = _get_references(paths, without_views=without_views)
+    refs = _get_references(paths, without_views=without_views, parallelism=parallelism)
     dependency_graph = {}
 
     for ref in refs:
@@ -198,9 +223,16 @@ def dependency():
     is_flag=True,
     help="recursively resolve view references to underlying tables",
 )
-def show(paths: Tuple[str, ...], without_views: bool):
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
+def show(paths: Tuple[str, ...], without_views: bool, parallelism: int):
     """Show table references in sql files."""
-    for path, table_references in _get_references(paths, without_views):
+    for path, table_references in _get_references(paths, without_views, parallelism):
         if table_references:
             for table in table_references:
                 print(f"{path}: {table}")
@@ -223,9 +255,18 @@ def show(paths: Tuple[str, ...], without_views: bool):
     is_flag=True,
     help="Skip files with existing references rather than failing",
 )
-def record(paths: Tuple[str, ...], skip_existing):
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
+def record(paths: Tuple[str, ...], skip_existing, parallelism):
     """Record table references in metadata."""
-    for parent, group in groupby(_get_references(paths), lambda e: e[0].parent):
+    for parent, group in groupby(
+        _get_references(paths, parallelism=parallelism), lambda e: e[0].parent
+    ):
         references = {
             path.name: table_references
             for path, table_references in group

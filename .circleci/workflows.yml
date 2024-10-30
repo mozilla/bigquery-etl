@@ -187,6 +187,14 @@ jobs:
                 command: |
                   mkdir -p /tmp/debug_artifacts
                   cp -r sql /tmp/debug_artifacts/sql
+
+                  # add line to empty query.py so they get stored
+                  shopt -s globstar
+                  for file in /tmp/debug_artifacts/sql/**/query.py; do
+                    if [ ! -s "$file" ]; then
+                      echo "# empty file; line inserted by CI" >> "$file"
+                    fi
+                  done
                 when: on_fail
             - &copy_debug_tests
               run:
@@ -500,14 +508,24 @@ jobs:
             - run:
                 name: Generate SQL content
                 command: |
+                  # Get commit on main from which this branch diverged
+                  MAIN_MERGE_BASE=$(git merge-base main HEAD || true)
+                  echo "merge base with main: $MAIN_MERGE_BASE"
+
                   # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
                   git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
                   cd ~/remote-generated-sql
 
-                  # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
-                  export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
-                  LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
-                  echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+                  # check if main merge base has been pushed to generated-sql yet, otherwise use latest
+                  if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
+                    echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
+                    git checkout tags/c-${MAIN_MERGE_BASE:0:9}
+                  else
+                    # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
+                    export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
+                    LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+                    echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+                  fi
 
                   # Get the state in which main was in when the generated-sql branch was created and pushed
                   cd ~
@@ -516,6 +534,11 @@ jobs:
                   export LATEST_COMMIT_ON_MAIN=`git rev-parse --short HEAD`
                   git checkout $LATEST_TAG_GENERATED_SQL
                   echo "Latest commit on main: $LATEST_COMMIT_ON_MAIN"
+
+                  if [[ -n $MAIN_MERGE_BASE ]]; then
+                    echo "Checking out $MAIN_MERGE_BASE for diff"
+                    git checkout $MAIN_MERGE_BASE
+                  fi
 
                   cd ~/project
                   export GENERATED_SQL_CHANGED=false
@@ -889,18 +912,34 @@ jobs:
                 command: |
                   export PATH="venv/bin:$PATH"
 
+                  # Get parent commit on main from which this branch diverged
+                  MAIN_MERGE_BASE=$(git merge-base HEAD $CIRCLE_BRANCH || true)
+                  echo "merge base with main: $MAIN_MERGE_BASE"
+
                   # Check if the generated-sql branch can simply be re-used and SQL generation can be skipped.
                   # There is a delay between pushing changes to main and pushing a new generated-sql branch,
                   # so we need to account for possible changes that happen during this time
                   git clone -b generated-sql git@github.com:mozilla/bigquery-etl ~/remote-generated-sql
                   cd ~/remote-generated-sql
 
-                  # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
-                  export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
-                  LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+                  # check if main merge base has been pushed to generated-sql yet, otherwise use latest
+                  if [[ -n $MAIN_MERGE_BASE ]] && git show-ref --tags c-${MAIN_MERGE_BASE:0:9} --quiet; then
+                    echo "Tag c-${MAIN_MERGE_BASE:0:9} exists in generated sql"
+                    git checkout tags/c-${MAIN_MERGE_BASE:0:9}
+                  else
+                    # Commits on generated-sql are tagged with the sha1 hash of the commit on main that triggered the SQL generation
+                    export LATEST_TAG_GENERATED_SQL=`git describe --tags --abbrev=0`
+                    LATEST_TAG_GENERATED_SQL=${LATEST_TAG_GENERATED_SQL/c-/""}
+                    echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
+                  fi
 
                   cd ~/project
                   export GENERATED_SQL_CHANGED=false
+
+                  if [[ -n $MAIN_MERGE_BASE ]]; then
+                    echo "Checking out $MAIN_MERGE_BASE for diff"
+                    git checkout $MAIN_MERGE_BASE
+                  fi
 
                   # Manually trigger SQL generation via a pipeline parameter
                   if [ "<< pipeline.parameters.trigger-sql-generation >>" = "true" ]; then

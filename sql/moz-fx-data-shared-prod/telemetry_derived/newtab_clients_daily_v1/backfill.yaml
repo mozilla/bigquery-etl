@@ -4,7 +4,7 @@
   reason: Fill in fields counting default UI visits for New Tab KPI calc.
   watchers:
     - mbowerman@mozilla.com
-  status: Initiate
+  status: Complete
 
 2024-04-22:
   start_date: 2022-11-01

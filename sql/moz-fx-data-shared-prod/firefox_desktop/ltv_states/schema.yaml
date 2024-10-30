@@ -1,0 +1,107 @@
+fields:
+- description: Unique ID for the client installation.
+  mode: NULLABLE
+  name: client_id
+  type: STRING
+- description: Sample ID - A number ranging from 0 - 99 based on client ID; used to pull a small sample of data related to a subset of clients over time
+  mode: NULLABLE
+  name: sample_id
+  type: INT64
+- description: Submission Date
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
+- description: First Seen Date - The date this client was first seen
+  mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+- description: Days Since First Seen - The number of days since the client was first seen
+  mode: NULLABLE
+  name: days_since_first_seen
+  type: INT64
+- description: Days Since Active
+  mode: NULLABLE
+  name: days_since_active
+  type: INT64
+- description: First Reported Country - The country this client ID was first reported from
+  mode: NULLABLE
+  name: first_reported_country
+  type: STRING
+- description: Attribution
+  mode: NULLABLE
+  name: attribution
+  type: RECORD
+  fields:
+  - mode: NULLABLE
+    name: source
+    type: STRING
+    description: Attribution Source
+  - mode: NULLABLE
+    name: medium
+    type: STRING
+    description: Attribution Medium
+  - mode: NULLABLE
+    name: campaign
+    type: STRING
+    description: Attribution Campaign
+  - mode: NULLABLE
+    name: content
+    type: STRING
+    description: Attribution Content
+  - mode: NULLABLE
+    name: experiment
+    type: STRING
+    description: Attribution Experiment
+  - mode: NULLABLE
+    name: variation
+    type: STRING
+    description: Attribution Variation
+  - mode: NULLABLE
+    name: dltoken
+    type: STRING
+    description: Attribution Download Token
+  - name: dlsource
+    type: STRING
+    mode: NULLABLE
+    description: Attribution Download Source
+  - name: ua
+    type: STRING
+    mode: NULLABLE
+    description: Attribution UA
+- description: Active
+  mode: NULLABLE
+  name: active
+  type: INT64
+- description: Ad Clicks - The number of ad clicks from this client on the submission date
+  mode: NULLABLE
+  name: ad_clicks
+  type: INT64
+- description: Total Historic Ad Clicks - The number of ad clicks from this client on or before the submission date
+  mode: NULLABLE
+  name: total_historic_ad_clicks
+  type: INT64
+- description: Days Seen Bytes
+  mode: NULLABLE
+  name: days_seen_bytes
+  type: BYTES
+- description: Pattern
+  mode: NULLABLE
+  name: pattern
+  type: INTEGER
+- description: Death Time
+  mode: NULLABLE
+  name: death_time
+  type: INTEGER
+- description: Max Days
+  mode: NULLABLE
+  name: max_days
+  type: INTEGER
+- description: Markov States
+  mode: NULLABLE
+  name: markov_states
+  type: RECORD
+  fields:
+  - description: Desktop States V1
+    mode: NULLABLE
+    name: desktop_states_v1
+    type: STRING

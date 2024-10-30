@@ -110,9 +110,7 @@ def deploy(
         shutil.copytree(sql_dir, new_sql_dir, dirs_exist_ok=True)
 
         # rename paths to tmp_dir
-        paths = [
-            path.replace(sql_dir, f"{new_sql_dir}/", 1) for path in paths
-        ]
+        paths = [path.replace(sql_dir, f"{new_sql_dir}/", 1) for path in paths]
 
         sql_dir = new_sql_dir
 
@@ -299,7 +297,7 @@ def _view_dependencies(artifact_files, sql_dir):
                 file_path = Path(view.path).parent.parent.parent / dataset / name
 
                 file_exists_for_dependency = False
-                for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT]:
+                for file in [VIEW_FILE, QUERY_FILE, QUERY_SCRIPT, MATERIALIZED_VIEW]:
                     if (file_path / file).is_file():
                         if (file_path / file) not in artifact_files:
                             view_dependency_files.append(file_path / file)

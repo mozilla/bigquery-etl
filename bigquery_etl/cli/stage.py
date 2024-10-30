@@ -312,6 +312,7 @@ def _view_dependencies(artifact_files, sql_dir):
                             table=name,
                             id_token=id_token,
                             partitioned_by=partitioned_by,
+                            use_cloud_function=True,
                         )
                         schema.to_yaml_file(path / SCHEMA_FILE)
 

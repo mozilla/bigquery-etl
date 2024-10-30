@@ -201,7 +201,7 @@ glean_flattened_searches AS (
       WHEN search.search_type = 'ad-click' OR search.search_type = 'search-with-ads'
         -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
         -- otherwise key is engine
-        THEN `moz-fx-data-shared-prod`.udf.normalize_search_engine(REGEXP_REPLACE((SPLIT(search.key, '.')[SAFE_OFFSET(0)]), '^provider-', ''))
+        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
       ELSE NULL
     END AS engine,
 

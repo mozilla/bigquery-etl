@@ -34,3 +34,6 @@ workgroup_access:
 references:
   checks.sql:
   - ..
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.waitlists_v1
+  - moz-fx-data-shared-prod.braze_external.changed_waitlists_sync_v1

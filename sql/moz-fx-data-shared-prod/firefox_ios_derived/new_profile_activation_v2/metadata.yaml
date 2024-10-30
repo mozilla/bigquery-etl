@@ -31,3 +31,7 @@ workgroup_access:
 references:
   checks.sql:
   - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_v2
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1

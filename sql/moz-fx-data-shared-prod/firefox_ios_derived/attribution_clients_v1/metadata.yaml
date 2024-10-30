@@ -28,6 +28,10 @@ workgroup_access:
 references:
   checks.sql:
   - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_first_seen
+  - moz-fx-data-shared-prod.firefox_ios.first_session
+  - moz-fx-data-shared-prod.firefox_ios.metrics
 monitoring:
   enabled: true
   collection: Browser Metrics (non-KPI)

@@ -642,7 +642,8 @@ SELECT
       metrics.timing_distribution.network_sub_open_to_first_received,
       metrics.timing_distribution.network_sub_open_to_first_sent,
       metrics.timing_distribution.network_sub_tcp_connection,
-      metrics.timing_distribution.network_sub_tls_handshake
+      metrics.timing_distribution.network_sub_tls_handshake,
+      metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1361,7 +1362,8 @@ SELECT
       metrics.timing_distribution.network_sub_open_to_first_received,
       metrics.timing_distribution.network_sub_open_to_first_sent,
       metrics.timing_distribution.network_sub_tcp_connection,
-      metrics.timing_distribution.network_sub_tls_handshake
+      metrics.timing_distribution.network_sub_tls_handshake,
+      metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -2080,7 +2082,8 @@ SELECT
       metrics.timing_distribution.network_sub_open_to_first_received,
       metrics.timing_distribution.network_sub_open_to_first_sent,
       metrics.timing_distribution.network_sub_tcp_connection,
-      metrics.timing_distribution.network_sub_tls_handshake
+      metrics.timing_distribution.network_sub_tls_handshake,
+      metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

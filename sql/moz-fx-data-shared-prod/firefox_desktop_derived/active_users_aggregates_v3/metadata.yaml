@@ -50,5 +50,3 @@ references:
   - ..
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
   - moz-fx-data-shared-prod.telemetry_live.main_v5
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry.desktop_active_users

@@ -43,5 +43,3 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  query.sql:
-  - moz-fx-data-shared-prod.braze_external.changed_users_v1

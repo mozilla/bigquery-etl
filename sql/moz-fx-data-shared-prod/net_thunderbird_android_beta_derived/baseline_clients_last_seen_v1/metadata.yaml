@@ -40,6 +40,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  query.sql:
-  - net_thunderbird_android_beta_derived.baseline_clients_daily_v1
-  - net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_daily_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_last_seen_v1

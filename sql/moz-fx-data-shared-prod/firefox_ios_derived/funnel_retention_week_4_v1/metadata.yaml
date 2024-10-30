@@ -27,5 +27,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  query.sql:
-  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
+  checks.sql:
+  - ..
+  - ..funnel_retention_clients_week_4_v1

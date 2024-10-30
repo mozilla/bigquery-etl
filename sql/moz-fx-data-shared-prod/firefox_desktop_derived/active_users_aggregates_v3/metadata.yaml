@@ -46,5 +46,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry.desktop_active_users
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen
+  - moz-fx-data-shared-prod.telemetry_live.main_v5

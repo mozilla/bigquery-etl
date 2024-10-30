@@ -387,9 +387,9 @@ def _list_managed_views(client, dataset, pattern, skip_authorized):
         table_catalog || "." || table_schema || "." || table_name AS table_id,
         CONTAINS_SUBSTR(option_value, 'STRUCT("authorized", "")') AS is_authorized
       FROM
-        `{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
+        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
       INNER JOIN
-        `{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
       USING
         (table_catalog,
          table_schema,

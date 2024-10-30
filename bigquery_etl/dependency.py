@@ -177,6 +177,8 @@ def _get_references(
                 result = pool.map(
                     partial(_extract_table_references, without_views), file_paths
                 )
+                # sort by path for itertools.groupby
+                result.sort(key=lambda ref: ref[0])
                 return result
             except ValueError as e:
                 fail = True

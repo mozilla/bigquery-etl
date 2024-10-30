@@ -358,16 +358,19 @@ def clean(
                 )
             )
         ]
+
     with ThreadPool(parallelism) as p:
         managed_view_ids = {
-            sql_table_id(view)
+            view
             for views in p.starmap(
                 client_q.with_client,
-                ((_list_managed_views, dataset, name) for dataset in datasets),
+                (
+                    (_list_managed_views, dataset, name, skip_authorized)
+                    for dataset in datasets
+                ),
                 chunksize=1,
             )
             for view in views
-            if not skip_authorized or "authorized" not in view.labels
         }
 
         remove_view_ids = sorted(managed_view_ids - expected_view_ids)
@@ -378,13 +381,32 @@ def clean(
         )
 
 
-def _list_managed_views(client, dataset, pattern):
+def _list_managed_views(client, dataset, pattern, skip_authorized):
+    query = f"""
+      SELECT
+        table_catalog || "." || table_schema || "." || table_name AS table_id,
+        CONTAINS_SUBSTR(option_value, 'STRUCT("authorized", "")') AS is_authorized
+      FROM
+        `{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
+      INNER JOIN
+        `{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+      USING
+        (table_catalog,
+         table_schema,
+         table_name)
+      WHERE
+        option_name = "labels"
+      AND CONTAINS_SUBSTR(option_value, 'STRUCT("managed", "")')
+    """
+
+    # running a query against information schema instead of using the API to list tables is much faster
+    job = client.query(query)
+    result = list(job.result())
     return [
-        table
-        for table in client.list_tables(dataset)
-        if table.table_type == "VIEW"
-        and "managed" in table.labels
-        and (pattern is None or fnmatchcase(sql_table_id(table), f"*{pattern}"))
+        row.table_id
+        for row in result
+        if (pattern is None or fnmatchcase(sql_table_id(row.table_id), f"*{pattern}"))
+        and (not skip_authorized or not row.is_authorized)
     ]
 
 

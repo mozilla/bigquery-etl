@@ -34,6 +34,3 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  query.sql:
-  - moz-fx-data-shared-prod.braze_derived.newsletters_v1
-  - moz-fx-data-shared-prod.braze_external.changed_newsletters_sync_v1

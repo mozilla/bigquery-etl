@@ -29,8 +29,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  checks.sql:
-  - ..
   query.sql:
   - moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen
   - moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_v2

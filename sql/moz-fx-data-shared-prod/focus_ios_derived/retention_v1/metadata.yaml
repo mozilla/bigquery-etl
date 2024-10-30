@@ -39,8 +39,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  checks.sql:
-  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.focus_ios.retention_clients
 monitoring:
   enabled: true
   collection: Browser Metrics (non-KPI)

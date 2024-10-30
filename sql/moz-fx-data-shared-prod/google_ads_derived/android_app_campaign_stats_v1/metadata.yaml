@@ -22,5 +22,10 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  checks.sql:
-  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.firefox_android_clients
+  - moz-fx-data-shared-prod.fenix.funnel_retention_week_4
+  - moz-fx-data-shared-prod.google_ads_derived.ad_groups_v1
+  - moz-fx-data-shared-prod.google_ads_derived.campaigns_v2
+  - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
+  - moz-fx-data-shared-prod.ltv.fenix_client_ltv

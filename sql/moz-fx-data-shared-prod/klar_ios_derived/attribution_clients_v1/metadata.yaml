@@ -26,8 +26,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  query.sql:
-  - moz-fx-data-shared-prod.klar_ios.baseline_clients_first_seen
+  checks.sql:
+  - ..
 monitoring:
   enabled: true
   collection: Browser Metrics (non-KPI)

@@ -30,8 +30,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  checks.sql:
-  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.klar_android.engagement_clients
 monitoring:
   enabled: true
   collection: Browser Metrics (non-KPI)

@@ -29,3 +29,5 @@ FROM
   windowed
 WHERE
   non_ssl_loads + ssl_loads > 5000
+
+-- todo remove

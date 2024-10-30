@@ -39,6 +39,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
+  checks.sql:
+  - ..
   query.sql:
   - moz-fx-data-shared-prod.fenix.retention_clients
 monitoring:

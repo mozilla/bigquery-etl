@@ -358,6 +358,7 @@ def clean(
                 )
             )
         ]
+
     with ThreadPool(parallelism) as p:
         managed_view_ids = {
             sql_table_id(view)
@@ -379,12 +380,29 @@ def clean(
 
 
 def _list_managed_views(client, dataset, pattern):
+    query = f"""
+      SELECT
+        table_catalog || "." || table_schema || "." || table_name AS table_id
+      FROM
+        `{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
+      INNER JOIN
+        `{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+      USING
+        (table_catalog,
+         table_schema,
+         table_name)
+      WHERE
+        option_name = "labels"
+      AND CONTAINS_SUBSTR(option_value, 'STRUCT("managed", "")')
+    """
+
+    # running a query against information schema instead of using the API to list tables is much faster
+    job = client.query(query)
+    result = list(job.result())
     return [
-        table
-        for table in client.list_tables(dataset)
-        if table.table_type == "VIEW"
-        and "managed" in table.labels
-        and (pattern is None or fnmatchcase(sql_table_id(table), f"*{pattern}"))
+        row.table_id
+        for row in result
+        if pattern is None or fnmatchcase(sql_table_id(row.table_id), f"*{pattern}")
     ]
 
 

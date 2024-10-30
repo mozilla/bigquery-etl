@@ -89,5 +89,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:internet-outages/external
 references:
-  checks.sql:
-  - ..
+  query.sql:
+  - C
+  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.telemetry.health
+  - moz-fx-data-shared-prod.telemetry_stable.main_v5

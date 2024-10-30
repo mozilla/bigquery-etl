@@ -224,9 +224,9 @@ baseline_org_mozilla_ios_firefox AS (
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.search_counts AS search_count,
-    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    extract_ios_provider(metrics.labeled_counter.browser_search_ad_clicks) AS search_ad_clicks,
     metrics.labeled_counter.search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider(metrics.labeled_counter.browser_search_with_ads) AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -254,9 +254,9 @@ baseline_org_mozilla_ios_firefoxbeta AS (
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.search_counts AS search_count,
-    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    extract_ios_provider(metrics.labeled_counter.browser_search_ad_clicks) AS search_ad_clicks,
     metrics.labeled_counter.search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider(metrics.labeled_counter.browser_search_with_ads) AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -284,9 +284,9 @@ baseline_org_mozilla_ios_fennec AS (
     CAST(NULL AS STRING) AS default_search_engine_submission_url,
     sample_id,
     metrics.labeled_counter.search_counts AS search_count,
-    metrics.labeled_counter.browser_search_ad_clicks AS search_ad_clicks,
+    extract_ios_provider(metrics.labeled_counter.browser_search_ad_clicks) AS search_ad_clicks,
     metrics.labeled_counter.search_in_content AS search_in_content,
-    metrics.labeled_counter.browser_search_with_ads AS search_with_ads,
+    extract_ios_provider(metrics.labeled_counter.browser_search_with_ads) AS search_with_ads,
     client_info.first_run_date,
     ping_info.end_time,
     ping_info.experiments,
@@ -611,9 +611,7 @@ glean_flattened_searches AS (
         OR search.search_type = 'search-with-ads'
         -- ad-click key format is engine.in-content.type.code for builds starting 2021-03-16
         -- otherwise key is engine
-        THEN `moz-fx-data-shared-prod`.udf.normalize_search_engine(
-            REGEXP_REPLACE((SPLIT(search.key, '.')[SAFE_OFFSET(0)]), '^provider-', '')
-          )
+        THEN SPLIT(search.key, '.')[SAFE_OFFSET(0)]
       ELSE NULL
     END AS engine,
     CASE

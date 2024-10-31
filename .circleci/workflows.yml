@@ -187,14 +187,6 @@ jobs:
                 command: |
                   mkdir -p /tmp/debug_artifacts
                   cp -r sql /tmp/debug_artifacts/sql
-
-                  # add line to empty query.py so they get stored
-                  shopt -s globstar
-                  for file in /tmp/debug_artifacts/sql/**/query.py; do
-                    if [ ! -s "$file" ]; then
-                      echo "# empty file; line inserted by CI" >> "$file"
-                    fi
-                  done
                 when: on_fail
             - &copy_debug_tests
               run:
@@ -205,6 +197,7 @@ jobs:
                 when: on_fail
             - &store_debug_artifacts
               store_artifacts:
+                # Note that empty files are not stored by CircleCI
                 path: /tmp/debug_artifacts
                 destination: /
       - unless:

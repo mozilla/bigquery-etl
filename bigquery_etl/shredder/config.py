@@ -176,6 +176,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
     ): DESKTOP_SRC,
+    client_id_target(
+        table="search_derived.mobile_search_clients_daily_v2"
+    ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"

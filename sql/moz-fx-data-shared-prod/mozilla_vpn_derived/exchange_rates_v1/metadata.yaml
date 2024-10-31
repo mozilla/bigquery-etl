@@ -52,6 +52,23 @@ scheduling:
   - HUF
   - PLN
   - RON
+  - AUD
+  - BDT
+  - IDR
+  - INR
+  - KES
+  - KRW
+  - MAD
+  - MXN
+  - NGN
+  - NOK
+  - SAR
+  - THB
+  - TRY
+  - TWD
+  - UAH
+  - VND
+  - ZAR
 bigquery:
   time_partitioning:
     type: day

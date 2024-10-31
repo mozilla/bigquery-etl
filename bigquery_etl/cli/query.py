@@ -1782,9 +1782,7 @@ def update(
         if str(query_file)
         not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
     ]
-    dependency_graph = get_dependency_graph(
-        [sql_dir], without_views=True, parallelism=parallelism
-    )
+    dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     manager = multiprocessing.Manager()
     tmp_tables = manager.dict({})
 
@@ -1886,7 +1884,7 @@ def _update_query_schema_with_downstream(
                 # create temporary table with updated schema
                 if identifier not in tmp_tables:
                     schema = Schema.from_schema_file(query_file.parent / SCHEMA_FILE)
-                    schema.deploy(tmp_identifier, credentials)
+                    schema.deploy(tmp_identifier)
                     tmp_tables[identifier] = tmp_identifier
 
                 # get downstream dependencies that will be updated in the next iteration
@@ -1968,7 +1966,7 @@ def _update_query_schema(
                         f"{parent_project}.{tmp_dataset}.{parent_table}_"
                         + random_str(12)
                     )
-                    parent_schema.deploy(tmp_parent_identifier, credentials=credentials)
+                    parent_schema.deploy(tmp_parent_identifier)
                     tmp_tables[parent_identifier] = tmp_parent_identifier
 
                 if existing_schema_path.is_file():
@@ -1982,7 +1980,7 @@ def _update_query_schema(
                 tmp_identifier = (
                     f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                 )
-                existing_schema.deploy(tmp_identifier, credentials=credentials)
+                existing_schema.deploy(tmp_identifier)
                 tmp_tables[f"{project_name}.{dataset_name}.{table_name}"] = (
                     tmp_identifier
                 )

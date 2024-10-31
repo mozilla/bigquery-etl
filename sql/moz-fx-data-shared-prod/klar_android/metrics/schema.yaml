@@ -4643,6 +4643,22 @@ fields:
         generated to correspond to the Legacy Telemetry scalar startup.profile_count.
 
         '
+    - name: networking_loading_certs_task
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The time in milliseconds to load any external certificates. This
+        occurs off of the main-thread, but can block main-thread operations. This
+        metric was generated to correspond to the Legacy Telemetry scalar networking.loading_certs_task.
+
+        '
+    - name: networking_nss_initialization
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The time in milliseconds to initialize the NSS component in the
+        parent process. This metric was generated to correspond to the Legacy Telemetry
+        scalar networking.nss_initialization.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -14543,6 +14559,46 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'HTTP3: ECN CE to ECT0 ratio (multiply by 10000).
+
+        '
+    - name: quotamanager_initialize_repository_number_of_iterations
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'This metric logs the count of directory entries iterated within
+        the QuotaManager::InitializeRepository function for each repository type.
+        Each instance of this metric is labeled with one of three repository types:
+        "persistent", "temporary" or "default" (there''s also "private" repository
+        but that should never be iterated by the function). The main purpose is to
+        track and analyze iteration counts during the initialization process of each
+        repository type, helping to identify performance trends or potential inefficiencies
+        across these repositories. This can provide insight into the impacts of specific
+        code changes, including potential optimizations or regressions.
 
         '
 - name: normalized_app_name

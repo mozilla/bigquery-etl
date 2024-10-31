@@ -413,7 +413,9 @@ SELECT
       metrics.quantity.pwmgr_potentially_breached_passwords,
       metrics.quantity.contentblocking_category,
       metrics.quantity.policies_count,
-      metrics.quantity.startup_profile_count
+      metrics.quantity.startup_profile_count,
+      metrics.quantity.networking_loading_certs_task,
+      metrics.quantity.networking_nss_initialization
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -706,7 +708,8 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
-      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
+      metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations
     ) AS `labeled_custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
@@ -1133,7 +1136,9 @@ SELECT
       metrics.quantity.pwmgr_potentially_breached_passwords,
       metrics.quantity.contentblocking_category,
       metrics.quantity.policies_count,
-      metrics.quantity.startup_profile_count
+      metrics.quantity.startup_profile_count,
+      metrics.quantity.networking_loading_certs_task,
+      metrics.quantity.networking_nss_initialization
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1426,7 +1431,8 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
-      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
+      metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations
     ) AS `labeled_custom_distribution`
   ) AS `metrics`,
   normalized_app_name,
@@ -1853,7 +1859,9 @@ SELECT
       metrics.quantity.pwmgr_potentially_breached_passwords,
       metrics.quantity.contentblocking_category,
       metrics.quantity.policies_count,
-      metrics.quantity.startup_profile_count
+      metrics.quantity.startup_profile_count,
+      metrics.quantity.networking_loading_certs_task,
+      metrics.quantity.networking_nss_initialization
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -2146,7 +2154,8 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection
     ) AS `labeled_timing_distribution`,
     STRUCT(
-      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio
+      metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
+      metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations
     ) AS `labeled_custom_distribution`
   ) AS `metrics`,
   normalized_app_name,

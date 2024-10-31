@@ -2815,6 +2815,12 @@ fields:
     - name: startup_profile_count
       type: INTEGER
       mode: NULLABLE
+    - name: networking_loading_certs_task
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_nss_initialization
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -11007,6 +11013,33 @@ fields:
     mode: NULLABLE
     fields:
     - name: networking_http_3_ecn_ce_ect0_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: quotamanager_initialize_repository_number_of_iterations
       type: RECORD
       mode: REPEATED
       fields:

@@ -270,7 +270,12 @@ jobs:
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
-            - *copy_staged_sql
+            - &copy_generated_sql
+              run:
+                name: Move generated-sql into place
+                command: |
+                  rm -rf sql/
+                  cp -r /tmp/workspace/generated-sql/sql sql
             - run:
                 name: Verify that backfill.yaml files are valid
                 command: |
@@ -340,12 +345,7 @@ jobs:
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
-            - &copy_generated_sql
-              run:
-                name: Move generated-sql into place
-                command: |
-                  rm -rf sql/
-                  cp -r /tmp/workspace/generated-sql/sql sql
+            - *copy_generated_sql
             - *authenticate
             - run:
                 name: Generate DAGs
@@ -1141,7 +1141,7 @@ workflows:
             - deploy-changes-to-stage
       - validate-backfills:
           requires:
-            - deploy-changes-to-stage
+            - generate-sql
       - validate-dags:
           requires:
             - generate-dags

@@ -14,4 +14,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_historical_pre202408
+  - moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v2

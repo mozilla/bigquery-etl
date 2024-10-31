@@ -63,10 +63,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
         external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -661,7 +661,7 @@ with DAG(
     )
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
@@ -697,7 +697,7 @@ with DAG(
     )
 
     firefox_ios_derived__clients_activation__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
@@ -773,5 +773,5 @@ with DAG(
     )
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )

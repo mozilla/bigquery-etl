@@ -140,10 +140,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
         external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -533,7 +533,7 @@ with DAG(
     )
 
     fenix_derived__attributable_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     fenix_derived__attributable_clients__v2.set_upstream(wait_for_copy_deduplicate_all)
@@ -543,7 +543,7 @@ with DAG(
     )
 
     fenix_derived__attributable_clients__v2.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     fenix_derived__client_adclicks_history__v1.set_upstream(

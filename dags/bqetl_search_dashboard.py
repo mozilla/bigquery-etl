@@ -72,10 +72,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
         external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
         execution_delta=datetime.timedelta(seconds=9000),
         check_existence=True,
         mode="reschedule",
@@ -379,7 +379,7 @@ with DAG(
     )
 
     search_derived__mobile_search_aggregates_for_searchreport__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     search_derived__search_dau_aggregates__v1.set_upstream(

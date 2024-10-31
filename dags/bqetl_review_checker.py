@@ -101,10 +101,10 @@ with DAG(
         )
     )
 
-    wait_for_search_derived__mobile_search_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_search_derived__mobile_search_clients_daily__v1",
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
         external_dag_id="bqetl_mobile_search",
-        external_task_id="search_derived__mobile_search_clients_daily__v1",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
         execution_delta=datetime.timedelta(days=-1, seconds=79200),
         check_existence=True,
         mode="reschedule",
@@ -247,7 +247,7 @@ with DAG(
     )
 
     org_mozilla_fenix_review_checker_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     org_mozilla_fenix_review_checker_events__v1.set_upstream(
@@ -259,7 +259,7 @@ with DAG(
     )
 
     org_mozilla_ios_firefox_review_checker_clients__v1.set_upstream(
-        wait_for_search_derived__mobile_search_clients_daily__v1
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     org_mozilla_ios_firefox_review_checker_events__v1.set_upstream(

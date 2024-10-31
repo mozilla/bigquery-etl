@@ -41,7 +41,7 @@ search_clients AS (
     search_count,
     search_with_ads
   FROM
-    `moz-fx-data-shared-prod.search_derived.mobile_search_clients_daily_v1` search
+    `moz-fx-data-shared-prod.search.mobile_search_clients_daily` search
   INNER JOIN
     `moz-fx-data-shared-prod.fenix.deletion_request` AS request
     ON client_info.client_id = client_id

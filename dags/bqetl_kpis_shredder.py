@@ -87,6 +87,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
@@ -218,6 +229,10 @@ with DAG(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
+    fenix_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
     firefox_desktop_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
@@ -242,6 +257,10 @@ with DAG(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
+    firefox_ios_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
     focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -254,6 +273,10 @@ with DAG(
         wait_for_search_derived__mobile_search_clients_daily__v1
     )
 
+    focus_ios_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -264,4 +287,8 @@ with DAG(
 
     klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
         wait_for_search_derived__mobile_search_clients_daily__v1
+    )
+
+    klar_ios_active_users_aggregates_for_deletion_requests.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )

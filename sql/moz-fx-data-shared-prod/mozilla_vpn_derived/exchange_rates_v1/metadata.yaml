@@ -57,6 +57,24 @@ scheduling:
       "HUF",
       "PLN",
       "RON",
+      # Starting 2024-10-30:
+      "AUD",
+      "BDT",
+      "IDR",
+      "INR",
+      "KES",
+      "KRW",
+      "MAD",
+      "MXN",
+      "NGN",
+      "NOK",
+      "SAR",
+      "THB",
+      "TRY",
+      "TWD",
+      "UAH",
+      "VND",
+      "ZAR",
     ]
 bigquery:
   time_partitioning:

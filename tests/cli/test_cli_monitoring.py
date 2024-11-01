@@ -298,7 +298,9 @@ class TestMonitoring:
             )
             mock_client.delete_metrics.return_value = None
 
-            runner.invoke(delete, [f"{str(SQL_DIR)}"], catch_exceptions=False)
+            runner.invoke(
+                delete, [f"{str(SQL_DIR)}", "--metrics"], catch_exceptions=False
+            )
             mock_client.delete_metrics.assert_called_once_with(metrics=[1234])
 
     @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
@@ -337,7 +339,7 @@ class TestMonitoring:
 
             runner.invoke(
                 delete,
-                [f"{str(SQL_DIR)}", "--custom-sql-only"],
+                [f"{str(SQL_DIR)}", "--custom-sql"],
                 catch_exceptions=False,
             )
 

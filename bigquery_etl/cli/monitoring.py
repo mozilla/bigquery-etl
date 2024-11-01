@@ -585,7 +585,7 @@ def set_partition_column(
 
 @monitoring.command(
     help="""
-    Delete deployed monitors.
+    Delete deployed monitors. Use --custom-sql and/or --metrics flags to select which types of monitors to delete.
     """
 )
 @click.argument("name")
@@ -603,11 +603,17 @@ def set_partition_column(
     help="Bigeye base URL.",
 )
 @click.option(
-    "--custom-sql-only",
-    "--custom_sql_only",
+    "--custom-sql",
+    "--custom_sql",
     is_flag=True,
     default=False,
-    help="Only deletes custom SQL rules, but leaves monitors untouched.",
+    help="Deletes custom SQL rules.",
+)
+@click.option(
+    "--metrics",
+    is_flag=True,
+    default=False,
+    help="Deletes metrics checks.",
 )
 def delete(
     name: str,
@@ -615,7 +621,8 @@ def delete(
     project_id: Optional[str],
     base_url: str,
     workspace: int,
-    custom_sql_only: bool,
+    custom_sql: bool,
+    metrics: bool,
 ) -> None:
     """Validate BigConfig file."""
     api_key = os.environ.get("BIGEYE_API_KEY")
@@ -638,24 +645,25 @@ def delete(
 
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
-        if not custom_sql_only:
-            metrics = client.get_metric_info_batch_post(
+        if metrics:
+            deployed_metrics = client.get_metric_info_batch_post(
                 table_name=table,
                 schema_name=f"{project}.{dataset}",
                 warehouse_ids=[warehouse_id],
             )
-            client.delete_metrics(metrics=metrics.metrics)
+            client.delete_metrics(metrics=deployed_metrics.metrics)
 
-        if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
-            for select_statement in _sql_rules_from_file(
-                metadata_file.parent / CUSTOM_RULES_FILE, project, dataset, table
-            ):
-                sql = select_statement.sql(dialect="bigquery")
-                if sql in existing_rules:
-                    client.delete_custom_rule(existing_rules[sql])
-                    click.echo(
-                        f"Deleted custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
-                    )
+        if custom_sql:
+            if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
+                for select_statement in _sql_rules_from_file(
+                    metadata_file.parent / CUSTOM_RULES_FILE, project, dataset, table
+                ):
+                    sql = select_statement.sql(dialect="bigquery")
+                    if sql in existing_rules:
+                        client.delete_custom_rule(existing_rules[sql])
+                        click.echo(
+                            f"Deleted custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
+                        )
 
 
 # TODO: remove this command once checks have been migrated

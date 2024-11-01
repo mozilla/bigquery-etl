@@ -1,41 +1,41 @@
 fields:
-- description: null
+- description: Submission Date - The date the crash data was received at our edge servers.
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: null
+- description: Client ID - A UUID that represents a unique client.
   mode: NULLABLE
   name: client_id
   type: STRING
-- description: null
+- description: Sample ID - A number from 0 - 99 derived from client ID, used for sampling client data over time.
   mode: NULLABLE
   name: sample_id
   type: INTEGER
-- description: null
+- description: Application Name - The application the crash was recorded from; for example, Firefox, Fennec, etc.
   mode: NULLABLE
   name: application_name
   type: STRING
-- description: null
+- description: Build ID - The build ID associated with the application that the crash was reported from; for example, 20230824132758
   mode: NULLABLE
   name: build_id
   type: STRING
-- description: null
+- description: Channel - The channel type of the application; for example, release, nightly, esr, beta, aurora, etc.
   mode: NULLABLE
   name: channel
   type: STRING
-- description: null
+- description: Operating System - The device operating system; for example, Android, Mac, Windows, Linux, etc
   mode: NULLABLE
   name: os
   type: STRING
-- description: null
+- description: Operating System Version - The version of the device's operating system.
   mode: NULLABLE
   name: os_version
   type: STRING
-- description: null
+- description: Country Code - A 2 digit country code, for example, US, CA, FR, etc.
   mode: NULLABLE
   name: country_code
   type: STRING
-- description: NULL
+- description: Process Crash Counts
   mode: REPEATED
   type: RECORD
   name: process_crash_counts
@@ -43,10 +43,12 @@ fields:
   - mode: NULLABLE
     name: key
     type: STRING
+    description: Key
   - mode: NULLABLE
     name: value
     type: INTEGER
-- description: NULL
+    description: Value
+- description: Proces Shutdown Kill Crash Counts
   mode: REPEATED
   type: RECORD
   name: process_shutdown_kill_crash_counts

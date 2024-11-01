@@ -15,6 +15,7 @@ from bigquery_etl.cli.monitoring import (
     delete,
     deploy,
     deploy_custom_rules,
+    run,
     set_partition_column,
     update,
     validate,

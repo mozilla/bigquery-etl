@@ -674,6 +674,7 @@ def delete(
                             f"Deleted custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
                         )
 
+
 @monitoring.command(
     help="""
     Runs Bigeye monitors.
@@ -804,6 +805,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
 
     if failed:
         sys.exit(1)
+
 
 # TODO: remove this command once checks have been migrated
 @monitoring.command(

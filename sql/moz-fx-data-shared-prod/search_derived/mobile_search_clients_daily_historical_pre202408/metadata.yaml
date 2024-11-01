@@ -13,7 +13,14 @@ owners:
 labels:
   owner1: akommasani
   owner2: mbowerman
-bigquery: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

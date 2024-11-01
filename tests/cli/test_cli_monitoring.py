@@ -1,23 +1,22 @@
+import json
+import os
+from distutils.dir_util import copy_tree
 from pathlib import Path
-
+from types import SimpleNamespace
+from unittest import mock
 from unittest.mock import patch
 
+import bigeye_sdk
 import pytest
 from click.testing import CliRunner
-import os
-import bigeye_sdk
-from distutils.dir_util import copy_tree
-from unittest import mock
-from types import SimpleNamespace
-import json
 
 from bigquery_etl.cli.monitoring import (
+    delete,
     deploy,
     deploy_custom_rules,
+    set_partition_column,
     update,
     validate,
-    set_partition_column,
-    delete,
 )
 
 TEST_DIR = Path(__file__).parent.parent
@@ -353,5 +352,5 @@ class MockBigeyeClient:
     def __init__(*args, **kwargs):
         pass
 
-    def collections():
+    def collections(self):
         return

@@ -1,0 +1,19 @@
+SELECT
+  id,
+  type,
+  type_id,
+  _fivetran_synced,
+  amount,
+  checkout_session_id,
+  checkout_session_line_item_id,
+  coupon_id,
+  credit_note_line_item_id,
+  customer_id,
+  `end`,
+  invoice_id,
+  invoice_item_id,
+  promotion_code,
+  start,
+  subscription_id,
+FROM
+  `moz-fx-data-bq-fivetran.stripe.discount`

@@ -157,7 +157,8 @@ def _get_references(
             raise click.ClickException(*e.args)
         except ValueError as e:
             fail = True
-            print(f"Failed to parse {path}: {e}", file=sys.stderr)
+            print(f"Failed to parse file {path}: {e}", file=sys.stderr)
+
     if fail:
         raise click.ClickException("Some paths could not be analyzed")
 

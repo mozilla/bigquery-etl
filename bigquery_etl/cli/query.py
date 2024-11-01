@@ -1775,6 +1775,13 @@ def update(
     query_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=["query.sql"]
     )
+    # skip updating schemas that are not to be deployed
+    query_files = [
+        query_file
+        for query_file in query_files
+        if str(query_file)
+        not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
+    ]
     dependency_graph = get_dependency_graph([sql_dir], without_views=True)
     manager = multiprocessing.Manager()
     tmp_tables = manager.dict({})
@@ -2215,6 +2222,8 @@ def deploy(
         future_to_query = {
             executor.submit(_deploy, query_file): query_file
             for query_file in query_files
+            if str(query_file)
+            not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
         }
         for future in futures.as_completed(future_to_query):
             query_file = future_to_query[future]

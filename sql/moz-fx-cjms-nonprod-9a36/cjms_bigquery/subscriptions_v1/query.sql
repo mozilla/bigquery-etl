@@ -83,7 +83,7 @@ initial_discounts AS (
   FROM
     initial_invoices
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v1 AS invoice_discounts
+    `moz-fx-data-shared-prod`.stripe_external.nonprod_invoice_discount_v2 AS invoice_discounts
     USING (invoice_id)
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.nonprod_promotion_code_v1 AS promotion_codes

@@ -31,6 +31,7 @@ dry_run:
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_completeness_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
@@ -202,6 +203,8 @@ dry_run:
     # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/fenix_metrics.template.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/mobile_search_clients_daily.template.sql
   # Query too complex
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests
@@ -258,6 +261,10 @@ schema:
   skip_prefixes:
   - pioneer
   - rally
+  deploy:
+    skip:
+    # see comment in query file
+    - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
 
 docs:
   docs_dir: docs

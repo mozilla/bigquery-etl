@@ -264,14 +264,23 @@ class TestMetadata:
     @patch("google.cloud.bigquery.Table")
     def test_metadata_publish(self, mock_bigquery_table, mock_bigquery_client, runner):
         mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+        from distutils import log
+
+        log.set_verbosity(log.WARN)
+        log.set_threshold(log.WARN)
 
         with tempfile.TemporaryDirectory() as tmpdirname:
             distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
-            name = [
+            name = (
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
-            ]
-            runner.invoke(publish, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            )
+
+            runner.invoke(
+                publish,
+                [name, "--parallelism=0", "--sql_dir=" + str(tmpdirname) + "/sql"],
+                catch_exceptions=False,
+            )
 
         assert mock_bigquery_client().update_table.call_count == 1
         assert (

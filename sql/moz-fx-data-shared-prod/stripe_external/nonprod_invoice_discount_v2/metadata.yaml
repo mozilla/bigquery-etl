@@ -1,0 +1,19 @@
+friendly_name: Non-production Stripe invoice discounts
+description: |-
+  Non-production Stripe invoice discounts combined from Fivetran's newer `discount` and older `invoice_discount` tables.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_cjms_nonprod
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

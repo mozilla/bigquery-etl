@@ -28,5 +28,5 @@ references:
 monitoring:
   enabled: true
   collection: null
-  partition_column: null
-  partition_column_set: false
+  partition_column: submission_date
+  partition_column_set: true

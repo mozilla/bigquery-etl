@@ -16,3 +16,4 @@ scheduling:
   dag_name: bqetl_ssl_ratios
 monitoring:
   enabled: true
+  partition_column: submission_date

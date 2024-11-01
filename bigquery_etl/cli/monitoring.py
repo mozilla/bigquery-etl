@@ -44,6 +44,7 @@ from ..util.common import render as render_template
 BIGCONFIG_FILE = "bigconfig.yml"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
 VIEW_FILE = "view.sql"
+QUERY_FILE = "query.sql"
 
 
 @click.group(
@@ -127,12 +128,13 @@ def deploy(
                 ).exists() or "public_bigquery" in metadata.labels:
                     # monitoring to be deployed on a view
                     # Bigeye requires to explicitly set the partition column for views
-                    ctx.invoke(
-                        set_partition_column,
-                        name=metadata_file.parent,
-                        sql_dir=sql_dir,
-                        project_id=project_id,
-                    )
+                    if metadata.monitoring.partition_column:
+                        ctx.invoke(
+                            set_partition_column,
+                            name=metadata_file.parent,
+                            sql_dir=sql_dir,
+                            project_id=project_id,
+                        )
 
                 if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
                     ctx.invoke(
@@ -167,10 +169,9 @@ def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:
             "dataset_id": dataset,
             "table_name": table,
             "project_id": project,
+            "format": False,
         },
     }
-    if "format" not in jinja_params:
-        jinja_params["format"] = False
 
     rendered_result = render_template(
         custom_rules_file.name,
@@ -310,7 +311,9 @@ def deploy_custom_rules(
                         if "There was an error processing your request" in str(e):
                             # API throws an error when partition column was already set.
                             # There is no API endpoint to check for partition columns though
-                            pass
+                            click.echo(
+                                f"Partition column for `{project}.{dataset}.{table}` already set."
+                            )
                         else:
                             raise e
 
@@ -407,20 +410,8 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                     bigconfig = BigConfig(type="BIGCONFIG_FILE")
 
                 if (
-                    metadata_file.parent / VIEW_FILE
+                    metadata_file.parent / QUERY_FILE
                 ).exists() or "public_bigquery" in metadata.labels:
-                    _update_bigconfig(
-                        bigconfig=bigconfig,
-                        metadata=metadata,
-                        project=project,
-                        dataset=dataset,
-                        table=table,
-                        default_metrics=[
-                            SimplePredefinedMetricName.FRESHNESS_DATA,
-                            SimplePredefinedMetricName.VOLUME_DATA,
-                        ],
-                    )
-                else:
                     _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,
@@ -594,7 +585,7 @@ def set_partition_column(
 
 @monitoring.command(
     help="""
-    Rollback deployed monitors.
+    Delete deployed monitors.
     """
 )
 @click.argument("name")
@@ -618,7 +609,7 @@ def set_partition_column(
     default=False,
     help="Only deletes custom SQL rules, but leaves monitors untouched.",
 )
-def rollback(
+def delete(
     name: str,
     sql_dir: Optional[str],
     project_id: Optional[str],
@@ -666,6 +657,7 @@ def rollback(
                         f"Deleted custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
                     )
 
+
 # TODO: remove this command once checks have been migrated
 @monitoring.command(
     help="""
@@ -700,6 +692,9 @@ def migrate(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) -
                 project_id=project_id,
             )
 
+            # clearing Bigeye file index after running the `update` command
+            # this is necessary as Bigeye throws an exception when it sees the same config file twice,
+            # which will be the case after doing `update` previously
             _BIGEYE_YAML_FILE_IX.clear()
             bigconfig_file = check_file.parent / BIGCONFIG_FILE
             if bigconfig_file.exists():
@@ -865,4 +860,3 @@ def migrate(ctx, name: str, sql_dir: Optional[str], project_id: Optional[str]) -
     click.echo(
         "Please manually check the migration logic as it might not be 100% correct"
     )
-

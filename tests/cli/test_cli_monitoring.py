@@ -17,7 +17,7 @@ from bigquery_etl.cli.monitoring import (
     update,
     validate,
     set_partition_column,
-    rollback,
+    delete,
 )
 
 TEST_DIR = Path(__file__).parent.parent
@@ -274,7 +274,7 @@ class TestMonitoring:
     @patch(
         "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
     )
-    def test_rollback(self, mock_metric_controller_init, mock_client_factory, runner):
+    def test_delete(self, mock_metric_controller_init, mock_client_factory, runner):
         with runner.isolated_filesystem():
             test_query = (
                 TEST_DIR
@@ -298,14 +298,14 @@ class TestMonitoring:
             )
             mock_client.delete_metrics.return_value = None
 
-            runner.invoke(rollback, [f"{str(SQL_DIR)}"], catch_exceptions=False)
+            runner.invoke(delete, [f"{str(SQL_DIR)}"], catch_exceptions=False)
             mock_client.delete_metrics.assert_called_once_with(metrics=[1234])
 
     @patch("bigquery_etl.cli.monitoring.datawatch_client_factory")
     @patch(
         "bigeye_sdk.controller.metric_suite_controller.MetricSuiteController.__init__"
     )
-    def test_rollback_custom_sql(
+    def test_delete_custom_sql(
         self, mock_metric_controller_init, mock_client_factory, runner
     ):
         with runner.isolated_filesystem():
@@ -336,7 +336,7 @@ class TestMonitoring:
             mock_client.delete_metrics.return_value = None
 
             runner.invoke(
-                rollback,
+                delete,
                 [f"{str(SQL_DIR)}", "--custom-sql-only"],
                 catch_exceptions=False,
             )

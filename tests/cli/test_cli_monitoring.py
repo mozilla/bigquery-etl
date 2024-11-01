@@ -422,7 +422,9 @@ class TestMonitoring:
                                 status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
                             )
                         ],
-                        metric_configuration=SimpleNamespace(id=123, name="test"),
+                        metric_configuration=SimpleNamespace(
+                            id=123, name="test [fail]"
+                        ),
                         active_issue=SimpleNamespace(display_name="error"),
                     )
                 ]

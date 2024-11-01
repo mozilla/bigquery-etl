@@ -45,7 +45,6 @@ from ..util.common import render as render_template
 BIGCONFIG_FILE = "bigconfig.yml"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
 VIEW_FILE = "view.sql"
-QUERY_FILE = "query.sql"
 METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL,
     MetricRunStatus.METRIC_RUN_STATUS_LOWERBOUND_CRITICAL,
@@ -358,6 +357,11 @@ def _update_bigconfig(
                 ],
                 metrics=[
                     SimpleMetricDefinition(
+                        metric_name=(
+                            f"{metric.name} [warn]"
+                            if "volume" not in metric.name.lower()
+                            else f"{metric.name} [fail]"
+                        ),
                         metric_type=SimplePredefinedMetric(
                             type="PREDEFINED", predefined_metric=metric
                         ),
@@ -419,8 +423,9 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                     bigconfig = BigConfig(type="BIGCONFIG_FILE")
 
                 if (
-                    metadata_file.parent / QUERY_FILE
-                ).exists() or "public_bigquery" in metadata.labels:
+                    not (metadata_file.parent / VIEW_FILE).exists()
+                    or "public_bigquery" in metadata.labels
+                ):
                     _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,
@@ -755,8 +760,8 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
                         latest_metric_run
                         and latest_metric_run.status in METRIC_STATUS_FAILURES
                     ):
-                        if not metric_info.metric_configuration.name.lower().endswith(
-                            "[warn]"
+                        if metric_info.metric_configuration.name.lower().endswith(
+                            "[fail]"
                         ):
                             failed = True
                         click.echo(

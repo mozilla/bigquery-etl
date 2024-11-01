@@ -3941,7 +3941,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -6400,6 +6401,19 @@ fields:
       description: 'Records a count of interactions with keyboard shortcuts. See https://firefox-source-
         docs.mozilla.org/browser/BrowserUsageTelemetry.html This metric was generated
         to correspond to the Legacy Telemetry scalar browser.ui.interaction.keyboard.
+
+        '
+    - name: networking_http_3_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTTP3 connections closed, labeled by reason.
 
         '
   - name: quantity

@@ -5296,6 +5296,19 @@ fields:
         ended.
 
         '
+    - name: networking_http_3_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTTP3 connections closed, labeled by reason.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -5443,6 +5456,20 @@ fields:
         "only-icons", "only-text".
 
         '
+    - name: calendar_google_token_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: STRING
+        mode: NULLABLE
+      description: How Google calendar OAuth tokens are stored. There is a variety
+        of old formats we would like to remove, but migration is difficult and may
+        not be worth attempting for some formats. See MailGlue.sys.mjs for a description
+        of each label.
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

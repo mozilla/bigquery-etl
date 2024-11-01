@@ -487,7 +487,8 @@ SELECT
       metrics.labeled_counter.printing_settings_changed,
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
-      metrics.labeled_counter.browser_ui_interaction_keyboard
+      metrics.labeled_counter.browser_ui_interaction_keyboard,
+      metrics.labeled_counter.networking_http_3_connection_close_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1432,7 +1433,8 @@ SELECT
       metrics.labeled_counter.printing_settings_changed,
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
-      metrics.labeled_counter.browser_ui_interaction_keyboard
+      metrics.labeled_counter.browser_ui_interaction_keyboard,
+      metrics.labeled_counter.networking_http_3_connection_close_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2395,7 +2397,8 @@ SELECT
       metrics.labeled_counter.printing_settings_changed,
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
-      metrics.labeled_counter.browser_ui_interaction_keyboard
+      metrics.labeled_counter.browser_ui_interaction_keyboard,
+      metrics.labeled_counter.networking_http_3_connection_close_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3367,7 +3370,8 @@ SELECT
       metrics.labeled_counter.printing_settings_changed,
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
-      metrics.labeled_counter.browser_ui_interaction_keyboard
+      metrics.labeled_counter.browser_ui_interaction_keyboard,
+      metrics.labeled_counter.networking_http_3_connection_close_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4321,7 +4325,8 @@ SELECT
       metrics.labeled_counter.printing_settings_changed,
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
-      metrics.labeled_counter.browser_ui_interaction_keyboard
+      metrics.labeled_counter.browser_ui_interaction_keyboard,
+      metrics.labeled_counter.networking_http_3_connection_close_reason
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

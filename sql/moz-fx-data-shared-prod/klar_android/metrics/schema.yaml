@@ -3878,6 +3878,19 @@ fields:
         to correspond to the Legacy Telemetry scalar browser.ui.interaction.keyboard.
 
         '
+    - name: networking_http_3_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTTP3 connections closed, labeled by reason.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

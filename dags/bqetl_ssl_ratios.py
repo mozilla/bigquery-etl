@@ -63,6 +63,16 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    bigeye__telemetry_derived__ssl_ratios__v1 = RunMetricsOperator(
+        task_id="bigeye__telemetry_derived__ssl_ratios__v1",
+        connection_id="bigeye_connection",
+        warehouse_id=1939,
+        schema_name="moz-fx-data-shared-prod.telemetry_derived",
+        table_name="ssl_ratios_v1",
+        circuit_breaker_mode=False,
+        retries=0,
+    )
+
     checks__fail_telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(
         task_id="checks__fail_telemetry_derived__ssl_ratios__v1",
         source_table="ssl_ratios_v1",
@@ -85,6 +95,10 @@ with DAG(
         email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    bigeye__telemetry_derived__ssl_ratios__v1.set_upstream(
+        telemetry_derived__ssl_ratios__v1
     )
 
     checks__fail_telemetry_derived__ssl_ratios__v1.set_upstream(

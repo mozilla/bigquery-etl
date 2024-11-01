@@ -65,6 +65,7 @@ class TestPublishMetadata(object):
             "deprecated": "true",
             "incremental": "",
             "incremental_export": "",
+            "monitoring": "true",
             "owner1": "test",
             "public_json": "",
             "schedule": "daily",

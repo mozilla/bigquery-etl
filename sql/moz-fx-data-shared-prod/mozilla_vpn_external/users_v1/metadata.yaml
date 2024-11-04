@@ -27,7 +27,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:platform-infra/internal
+  - workgroup:dataplatform/developers
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)

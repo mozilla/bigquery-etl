@@ -20,7 +20,7 @@ workgroup_access:
   - workgroup:stripe/viewers
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:platform-infra/internal
+  - workgroup:dataplatform/developers
 references:
   query.sql:
   - moz-fx-data-shared-prod.stripe_external.discount_v1

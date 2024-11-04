@@ -25,6 +25,35 @@ CREATE TEMP FUNCTION in_available_geos(`date` DATE, country STRING) AS (
       "Slovenia"
     )
   )
+  OR (
+    `date` >= "2024-11-04"
+    AND country IN (
+      "Australia",
+      "Bangladesh",
+      "Brazil",
+      "Chile",
+      "Colombia",
+      "Egypt",
+      "Greece",
+      "India",
+      "Indonesia",
+      "Kenya",
+      "Mexico",
+      "Morocco",
+      "Nigeria",
+      "Norway",
+      "Saudi Arabia",
+      "Senegal",
+      "South Africa",
+      "South Korea",
+      "Taiwan",
+      "Thailand",
+      "Türkiye",
+      "Uganda",
+      "Ukraine",
+      "Vietnam"
+    )
+  )
 );
 
 WITH website_base AS (

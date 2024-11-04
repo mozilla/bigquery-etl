@@ -17,7 +17,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  bigeye_custom_rules.sql:
+  - ..
 monitoring:
   enabled: true
   collection: Test

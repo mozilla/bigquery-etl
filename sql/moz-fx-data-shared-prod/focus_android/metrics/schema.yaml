@@ -595,6 +595,9 @@ fields:
     - name: mathml_doc_count
       type: INTEGER
       mode: NULLABLE
+    - name: web_push_detected_duplicated_message_ids
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -2390,6 +2393,26 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: networking_http_3_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: web_push_content_encoding
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: web_push_error_code
       type: RECORD
       mode: REPEATED
       fields:

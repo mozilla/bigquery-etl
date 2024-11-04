@@ -228,7 +228,8 @@ SELECT
       metrics.counter.dom_contentprocess_os_priority_change_considered,
       metrics.counter.dom_contentprocess_os_priority_lowered,
       metrics.counter.dom_contentprocess_os_priority_raised,
-      metrics.counter.mathml_doc_count
+      metrics.counter.mathml_doc_count,
+      metrics.counter.web_push_detected_duplicated_message_ids
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -488,7 +489,9 @@ SELECT
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
       metrics.labeled_counter.browser_ui_interaction_keyboard,
-      metrics.labeled_counter.networking_http_3_connection_close_reason
+      metrics.labeled_counter.networking_http_3_connection_close_reason,
+      metrics.labeled_counter.web_push_content_encoding,
+      metrics.labeled_counter.web_push_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1174,7 +1177,8 @@ SELECT
       metrics.counter.dom_contentprocess_os_priority_change_considered,
       metrics.counter.dom_contentprocess_os_priority_lowered,
       metrics.counter.dom_contentprocess_os_priority_raised,
-      metrics.counter.mathml_doc_count
+      metrics.counter.mathml_doc_count,
+      metrics.counter.web_push_detected_duplicated_message_ids
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1434,7 +1438,9 @@ SELECT
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
       metrics.labeled_counter.browser_ui_interaction_keyboard,
-      metrics.labeled_counter.networking_http_3_connection_close_reason
+      metrics.labeled_counter.networking_http_3_connection_close_reason,
+      metrics.labeled_counter.web_push_content_encoding,
+      metrics.labeled_counter.web_push_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2138,7 +2144,8 @@ SELECT
       metrics.counter.dom_contentprocess_os_priority_change_considered,
       metrics.counter.dom_contentprocess_os_priority_lowered,
       metrics.counter.dom_contentprocess_os_priority_raised,
-      metrics.counter.mathml_doc_count
+      metrics.counter.mathml_doc_count,
+      metrics.counter.web_push_detected_duplicated_message_ids
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2398,7 +2405,9 @@ SELECT
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
       metrics.labeled_counter.browser_ui_interaction_keyboard,
-      metrics.labeled_counter.networking_http_3_connection_close_reason
+      metrics.labeled_counter.networking_http_3_connection_close_reason,
+      metrics.labeled_counter.web_push_content_encoding,
+      metrics.labeled_counter.web_push_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3111,7 +3120,8 @@ SELECT
       metrics.counter.dom_contentprocess_os_priority_change_considered,
       metrics.counter.dom_contentprocess_os_priority_lowered,
       metrics.counter.dom_contentprocess_os_priority_raised,
-      metrics.counter.mathml_doc_count
+      metrics.counter.mathml_doc_count,
+      metrics.counter.web_push_detected_duplicated_message_ids
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3371,7 +3381,9 @@ SELECT
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
       metrics.labeled_counter.browser_ui_interaction_keyboard,
-      metrics.labeled_counter.networking_http_3_connection_close_reason
+      metrics.labeled_counter.networking_http_3_connection_close_reason,
+      metrics.labeled_counter.web_push_content_encoding,
+      metrics.labeled_counter.web_push_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4066,7 +4078,8 @@ SELECT
       metrics.counter.dom_contentprocess_os_priority_change_considered,
       metrics.counter.dom_contentprocess_os_priority_lowered,
       metrics.counter.dom_contentprocess_os_priority_raised,
-      metrics.counter.mathml_doc_count
+      metrics.counter.mathml_doc_count,
+      metrics.counter.web_push_detected_duplicated_message_ids
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4326,7 +4339,9 @@ SELECT
       metrics.labeled_counter.printing_target_type,
       metrics.labeled_counter.dom_parentprocess_process_launch_errors,
       metrics.labeled_counter.browser_ui_interaction_keyboard,
-      metrics.labeled_counter.networking_http_3_connection_close_reason
+      metrics.labeled_counter.networking_http_3_connection_close_reason,
+      metrics.labeled_counter.web_push_content_encoding,
+      metrics.labeled_counter.web_push_error_code
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

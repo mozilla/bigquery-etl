@@ -1082,6 +1082,13 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar mathml.doc_count.
 
         '
+    - name: web_push_detected_duplicated_message_ids
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the duplicated IDs from the server. The ability to detect
+        depends on the pref `dom.push.maxRecentMessageIDsPerSubscription`.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -3595,6 +3602,32 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Number of HTTP3 connections closed, labeled by reason.
+
+        '
+    - name: web_push_content_encoding
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Which content encoding is being used for push.
+
+        '
+    - name: web_push_error_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The code indicating why the push message couldn''t be processed.
 
         '
   - name: memory_distribution

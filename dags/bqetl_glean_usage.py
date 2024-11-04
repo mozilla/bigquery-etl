@@ -741,20 +741,6 @@ with DAG(
         task_group=task_group_klar_android,
     )
 
-    checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_social_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_org_mozilla_social_nightly,
-    )
-
     checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -4798,18 +4784,6 @@ with DAG(
         org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
         checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -5120,14 +5094,6 @@ with DAG(
 
     checks__warn_org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(

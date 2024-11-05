@@ -1,0 +1,22 @@
+{{ header_yaml }}
+friendly_name: DAU Reporting Clients Daily
+description: |-
+  A daily aggregate of the dau_reporting ping representing user activity.
+
+owners:
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - channel
+    - locale

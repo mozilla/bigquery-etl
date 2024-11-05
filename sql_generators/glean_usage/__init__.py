@@ -21,6 +21,7 @@ from sql_generators.glean_usage import (
     dau_reporting_clients_daily,
     dau_reporting_clients_first_seen,
     dau_reporting_clients_last_seen,
+    dau_reporting_active_users_aggregates,
     event_error_monitoring,
     event_flow_monitoring,
     event_monitoring_live,
@@ -49,6 +50,7 @@ GLEAN_TABLES = [
     dau_reporting_clients_daily.DauReportingClientsDailyTable(),
     dau_reporting_clients_first_seen.DauReportingClientsFirstSeenTable(),
     dau_reporting_clients_last_seen.DauReportingClientsLastSeenTable(),
+    dau_reporting_active_users_aggregates.DauReportingActiveUsersAggregatesTable(),
 ]
 
 

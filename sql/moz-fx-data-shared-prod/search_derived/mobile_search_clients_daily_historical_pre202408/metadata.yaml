@@ -10,3 +10,9 @@ description: |-
 owners:
   - akommasani@mozilla.com
   - mbowerman@mozilla.com
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null

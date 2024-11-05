@@ -547,9 +547,9 @@ google-cloud-core==2.4.1 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-datacatalog-lineage==0.3.9 \
-    --hash=sha256:629145a13b5278b4839294e8ddff479e7c171dc97bfe63ca4ff075479df7fd38 \
-    --hash=sha256:bbb4e0aaf2a376588603dbb20eab3213aae92c3e9a7981c4527ea947539ffc73
+google-cloud-datacatalog-lineage==0.3.10 \
+    --hash=sha256:1a3b0e7a89a9d27949dc3e915251d281ea9063217b8c7650eb5e642855281e3e \
+    --hash=sha256:c343393605cfc9e3fcf392735fb57ebfa9b64da237e451dbc4beeedfd94ae9f1
     # via -r requirements.in
 google-cloud-storage==2.18.2 \
     --hash=sha256:97a4d45c368b7d401ed48c4fdfe86e1e1cb96401c9e199e419d289e2c0370166 \
@@ -919,9 +919,9 @@ mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \
     --hash=sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134
     # via mkdocs
-mkdocs-material==9.5.42 \
-    --hash=sha256:452a7c5d21284b373f36b981a2cbebfff59263feebeede1bc28652e9c5bbe316 \
-    --hash=sha256:92779b5e9b5934540c574c11647131d217dc540dce72b05feeda088c8eb1b8f2
+mkdocs-material==9.5.43 \
+    --hash=sha256:4aae0664c456fd12837a3192e0225c17960ba8bf55d7f0a7daef7e4b0b914a34 \
+    --hash=sha256:83be7ff30b65a1e4930dfa4ab911e75780a3afc9583d162692e434581cb46979
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \

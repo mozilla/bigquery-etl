@@ -17,3 +17,6 @@ SELECT
   subscription_id,
 FROM
   `moz-fx-data-bq-fivetran.stripe.discount`
+WHERE
+  -- Fivetran used to have a bug where it synced subscription discounts as customer discounts.
+  NOT (type = 'CUSTOMER' AND subscription_id IS NOT NULL)

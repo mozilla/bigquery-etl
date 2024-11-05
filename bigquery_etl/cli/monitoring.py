@@ -17,6 +17,7 @@ from bigeye_sdk.client.datawatch_client import datawatch_client_factory
 from bigeye_sdk.client.enum import Method
 from bigeye_sdk.controller.metric_suite_controller import MetricSuiteController
 from bigeye_sdk.exceptions.exceptions import FileLoadException
+from bigeye_sdk.generated.com.bigeye.models.generated import MetricRunStatus
 from bigeye_sdk.model.big_config import (
     BigConfig,
     ColumnSelector,
@@ -43,8 +44,16 @@ from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
-VIEW_FILE = "view.sql"
 QUERY_FILE = "query.sql"
+VIEW_FILE = "view.sql"
+METRIC_STATUS_FAILURES = [
+    MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL,
+    MetricRunStatus.METRIC_RUN_STATUS_LOWERBOUND_CRITICAL,
+    MetricRunStatus.METRIC_RUN_STATUS_GROUPS_CRITICAL,
+    MetricRunStatus.METRIC_RUN_STATUS_MUTABLE_UPPERBOUND_CRITICAL,
+    MetricRunStatus.METRIC_RUN_STATUS_MUTABLE_LOWERBOUND_CRITICAL,
+    MetricRunStatus.METRIC_RUN_STATUS_GROUPS_LIMIT_FAILED,
+]
 
 
 @click.group(
@@ -349,6 +358,11 @@ def _update_bigconfig(
                 ],
                 metrics=[
                     SimpleMetricDefinition(
+                        metric_name=(
+                            f"{metric.name} [warn]"
+                            if "volume" not in metric.name.lower()
+                            else f"{metric.name} [fail]"
+                        ),
                         metric_type=SimplePredefinedMetric(
                             type="PREDEFINED", predefined_metric=metric
                         ),
@@ -411,7 +425,7 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
 
                 if (
                     metadata_file.parent / QUERY_FILE
-                ).exists() or "public_bigquery" in metadata.labels:
+                ).exists() and "public_bigquery" not in metadata.labels:
                     _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,
@@ -664,6 +678,138 @@ def delete(
                         click.echo(
                             f"Deleted custom rule {existing_rules[sql]} for {project}.{dataset}.{table}"
                         )
+
+
+@monitoring.command(
+    help="""
+    Runs Bigeye monitors.
+
+    Example:
+
+    \t./bqetl monitoring run ga_derived.downloads_with_attribution_v2
+    """,
+    context_settings=dict(
+        ignore_unknown_options=True,
+        allow_extra_args=True,
+    ),
+)
+@click.argument("name")
+@project_id_option()
+@sql_dir_option
+@click.option(
+    "--workspace",
+    default=463,
+    help="Bigeye workspace to use when authenticating to API.",
+)
+@click.option(
+    "--base-url",
+    "--base_url",
+    default="https://app.bigeye.com",
+    help="Bigeye base URL.",
+)
+@click.option("--marker", default="", help="Marker to filter checks.")
+def run(name, project_id, sql_dir, workspace, base_url, marker):
+    """Run Bigeye checks."""
+    api_key = os.environ.get("BIGEYE_API_KEY")
+    if api_key is None:
+        click.echo(
+            "Bigeye API token needs to be set via `BIGEYE_API_KEY` env variable."
+        )
+        sys.exit(1)
+
+    api_auth = APIKeyAuth(base_url=base_url, api_key=api_key)
+    client = datawatch_client_factory(api_auth, workspace_id=workspace)
+    warehouse_id = ConfigLoader.get("monitoring", "bigeye_warehouse_id")
+    existing_rules = {
+        rule.custom_rule.sql: {"id": rule.id, "name": rule.custom_rule.name}
+        for rule in client.get_rules_for_source(warehouse_id=warehouse_id).custom_rules
+        if rule.custom_rule.name.endswith(marker or "")
+    }
+
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+
+    failed = False
+
+    for metadata_file in list(set(metadata_files)):
+        project, dataset, table = extract_from_query_path(metadata_file)
+        try:
+            metadata = Metadata.from_file(metadata_file)
+            if metadata.monitoring and metadata.monitoring.enabled:
+                metrics = client.get_metric_info_batch_post(
+                    table_name=table,
+                    schema_name=f"{project}.{dataset}",
+                    warehouse_ids=[warehouse_id],
+                ).metrics
+
+                if marker:
+                    metrics = [
+                        metric for metric in metrics if metric.name.endswith(marker)
+                    ]
+
+                metric_ids = [metric.metric_configuration.id for metric in metrics]
+
+                click.echo(
+                    f"Trigger metric runs for {project}.{dataset}.{table}: {metric_ids}"
+                )
+                response = client.run_metric_batch(metric_ids=metric_ids)
+                for metric_info in response.metric_infos:
+                    latest_metric_run = metric_info.latest_metric_runs[-1]
+                    if (
+                        latest_metric_run
+                        and latest_metric_run.status in METRIC_STATUS_FAILURES
+                    ):
+                        if metric_info.metric_configuration.name.lower().endswith(
+                            "[fail]"
+                        ):
+                            failed = True
+                        click.echo(
+                            f"Error running check {metric_info.metric_configuration.id}: {metric_info.active_issue.display_name}"
+                        )
+                        click.echo(
+                            f"Check {base_url}/w/{workspace}/catalog/data-sources/metric/{metric_info.metric_configuration.id}/chart for more information."
+                        )
+
+                if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
+                    for select_statement in _sql_rules_from_file(
+                        metadata_file.parent / CUSTOM_RULES_FILE,
+                        project,
+                        dataset,
+                        table,
+                    ):
+                        sql = select_statement.sql(dialect="bigquery")
+                        if sql in existing_rules:
+                            response = client._call_datawatch(
+                                Method.GET,
+                                url=f"/api/v1/custom-rules/run/{existing_rules[sql]['id']}",
+                            )
+                            click.echo(
+                                f"Triggered custom rule {existing_rules[sql]['id']} for {project}.{dataset}.{table}"
+                            )
+
+                            latest_rule_run = response.get("latestRuns", [])
+                            if latest_rule_run and latest_rule_run[-1].get(
+                                "status"
+                            ) in {status.name for status in METRIC_STATUS_FAILURES}:
+                                if (
+                                    not existing_rules[sql]["name"]
+                                    .lower()
+                                    .endswith("[warn]")
+                                ):
+                                    failed = True
+
+                                click.echo(
+                                    f"Error running custom rule {existing_rules[sql]} for {project}.{dataset}.{table}. "
+                                    + f"Check {base_url}/w/{workspace}/catalog/data-sources/{warehouse_id}/rules/{existing_rules[sql]['id']}/runs "
+                                    + "for more information."
+                                )
+
+        except FileNotFoundError:
+            print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+
+    if failed:
+        sys.exit(1)
 
 
 # TODO: remove this command once checks have been migrated

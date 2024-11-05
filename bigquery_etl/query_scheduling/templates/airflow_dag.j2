@@ -29,7 +29,7 @@ from airflow.providers.cncf.kubernetes.secret import Secret
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 {% if ns.uses_fivetran -%}
@@ -272,13 +272,28 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             cluster_name={{ task.gke_cluster_name | format_repr }},
             {%+ endif -%}
     {% elif task.is_bigeye_check -%}
-        {{ task.task_name }} = RunMetricsOperator(
-            task_id="{{ task.task_name }}",
-            connection_id="{{ bigeye_conn_id }}",
-            warehouse_id={{ bigeye_warehouse_id }},
-            schema_name="{{ task.project }}.{{ task.dataset }}",
-            table_name="{{ task.table }}_{{ task.version }}",
-            circuit_breaker_mode=False,
+        {{ task.task_name }} = bigquery_bigeye_check(
+            task_id='{{ task.task_name }}',
+            table_id='{{ task.project }}.{{ task.dataset }}.{{ task.table }}_{{ task.version }}',
+            warehouse_id='{{ bigeye_warehouse_id }}',
+            owner='{{ task.owner }}',
+            {%+ if task.email | length > 0 -%}
+            email={{ task.email | sort }},
+            {%+ endif -%}
+            {%+ if task.start_date -%}
+            start_date={{ task.start_date | format_date | format_repr }},
+            {%+ endif -%}
+            depends_on_past={{ task.depends_on_past }},
+            {%+ if (
+                task.destination_table
+                and not task.date_partition_parameter
+                and not '$' in task.destination_table
+                and not task.depends_on_past
+                and not task.task_concurrency
+            ) -%}
+            {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
+            task_concurrency=1,
+            {%+ endif -%}
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             {% if name == "bqetl_default" -%}

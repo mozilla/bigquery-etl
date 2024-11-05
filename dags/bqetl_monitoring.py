@@ -232,6 +232,7 @@ with DAG(
         email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
     )
 
     monitoring_derived__jobs_by_organization__v1 = GKEPodOperator(

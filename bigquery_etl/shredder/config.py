@@ -633,6 +633,25 @@ def find_glean_targets(
             and not table.table_id.startswith(derived_source_prefix)
             and qualified_table_id(table) not in manually_added_tables
         },
+        **{
+            # glean derived tables that contain client_info.client_id but not client_id
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(GLEAN_CLIENT_ID,) * len(sources[table.dataset_id]),
+            ): sources[table.dataset_id]
+            for table in glean_derived_tables
+            if any(
+                field.name == "client_info"
+                and any(
+                    [nested_field.name == "client_id" for nested_field in field.fields]
+                )
+                for field in table.schema
+            )
+            and all(field.name != CLIENT_ID for field in table.schema)
+            and not table.table_id.startswith(derived_source_prefix)
+            and qualified_table_id(table) not in manually_added_tables
+        },
     }
 
 

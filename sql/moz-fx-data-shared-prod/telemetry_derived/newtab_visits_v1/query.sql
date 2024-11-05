@@ -234,15 +234,15 @@ pocket_events AS (
     mozfun.map.get_key(event_details, "recommendation_id") AS pocket_recommendation_id,
     COUNTIF(
       event_name = 'save'
-      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS pocket_saves,
     COUNTIF(
       event_name = 'click'
-      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS pocket_clicks,
     COUNTIF(
       event_name = 'impression'
-      AND mozfun.map.get_key(event_details, "is_list_card") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS pocket_impressions,
     COUNTIF(
       event_name = 'click'

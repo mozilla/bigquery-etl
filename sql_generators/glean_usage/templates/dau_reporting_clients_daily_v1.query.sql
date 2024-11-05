@@ -96,13 +96,9 @@ windowed AS (
   WHERE
     {% raw %}
     {% if is_init() %}
-    {% endraw %}
       submission_date >= '2024-10-10'
-    {% raw %}
     {% else %}
-    {% endraw %}
       submission_date = @submission_date
-    {% raw %}
     {% endif %}
     {% endraw %}
 

@@ -8,12 +8,16 @@ WITH _current AS (
     -- dau_reporting ping in the submission_date and similarly, the rightmost bit in
     -- days_active_bits represents whether the user counts as active on that date.
     CAST(TRUE AS INT64) AS days_seen_bits,
+    {% if app_name == "firefox_desktop" %}
+    -- 0 uris and > 0 active ticks on desktop
+    CAST(TRUE AS INT64) & CAST(browser_engagement_uri_count > 0  AS INT64) & CAST(browser_engagement_active_ticks > 0  AS INT64) AS days_active_bits,
+    {% else %}
     CAST(TRUE AS INT64) & CAST(durations > 0  AS INT64) AS days_active_bits,
+    {% endif %}
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
     client_id,
-    -- dau_id,
   FROM
     `{{ dau_reporting_clients_daily_table }}`
   WHERE
@@ -36,13 +40,18 @@ _previous AS (
 SELECT
   @submission_date AS submission_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-    {% for ut in usage_types %}
-      udf.combine_adjacent_days_28_bits(
-        _previous.days_{{ ut }}_bits,
-        _current.days_{{ ut }}_bits
-      ) AS days_{{ ut }}_bits
-      {{ "," if not loop.last }}
-    {% endfor %}
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_seen_bits,
+      _current.days_seen_bits
+    ) AS days_seen_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_active_bits,
+      _current.days_active_bits
+    ) AS days_active_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_created_profile_bits,
+      _current.days_created_profile_bits
+    ) AS days_created_profile_bits
   )
 FROM
   _current

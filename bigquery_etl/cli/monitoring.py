@@ -44,6 +44,7 @@ from ..util.common import render as render_template
 
 BIGCONFIG_FILE = "bigconfig.yml"
 CUSTOM_RULES_FILE = "bigeye_custom_rules.sql"
+QUERY_FILE = "query.sql"
 VIEW_FILE = "view.sql"
 METRIC_STATUS_FAILURES = [
     MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL,
@@ -423,9 +424,8 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                     bigconfig = BigConfig(type="BIGCONFIG_FILE")
 
                 if (
-                    not (metadata_file.parent / VIEW_FILE).exists()
-                    or "public_bigquery" in metadata.labels
-                ):
+                    metadata_file.parent / QUERY_FILE
+                ).exists() and "public_bigquery" not in metadata.labels:
                     _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,

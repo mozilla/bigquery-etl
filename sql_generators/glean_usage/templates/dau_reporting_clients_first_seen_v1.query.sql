@@ -53,6 +53,6 @@ WHERE
 QUALIFY
   IF(
     COUNT(*) OVER (PARTITION BY client_id) > 1,
-    ERROR("Duplicate client_id detected for the same first_seen_date."),
+    ERROR("Duplicate client_id detected."),
     TRUE
   )

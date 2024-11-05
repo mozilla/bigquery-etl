@@ -18,7 +18,6 @@ WITH _current AS (
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
     client_id,
-    -- dau_id,
   FROM
     `{{ dau_reporting_clients_daily_table }}`
   WHERE
@@ -41,13 +40,18 @@ _previous AS (
 SELECT
   @submission_date AS submission_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
-    {% for ut in usage_types %}
-      udf.combine_adjacent_days_28_bits(
-        _previous.days_{{ ut }}_bits,
-        _current.days_{{ ut }}_bits
-      ) AS days_{{ ut }}_bits
-      {{ "," if not loop.last }}
-    {% endfor %}
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_seen_bits,
+      _current.days_seen_bits
+    ) AS days_seen_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_active_bits,
+      _current.days_active_bits
+    ) AS days_active_bits,
+    udf.combine_adjacent_days_28_bits(
+      _previous.days_created_profile_bits,
+      _current.days_created_profile_bits
+    ) AS days_created_profile_bits
   )
 FROM
   _current

@@ -12,12 +12,12 @@ Antigua and Barbuda,AG,ATG,North America,Caribbean,FALSE,FALSE,FALSE,null
 Argentina,AR,ARG,South America,South America,FALSE,FALSE,FALSE,null
 Armenia,AM,ARM,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Aruba,AW,ABW,North America,Caribbean,FALSE,FALSE,FALSE,null
-Australia,AU,AUS,Oceania,Australia and New Zealand,FALSE,FALSE,TRUE,tier 3
+Australia,AU,AUS,Oceania,Australia and New Zealand,FALSE,TRUE,TRUE,tier 3
 Austria,AT,AUT,Europe,Western Europe,TRUE,TRUE,TRUE,null
 Azerbaijan,AZ,AZE,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Bahamas,BS,BHS,North America,Caribbean,FALSE,FALSE,FALSE,null
 Bahrain,BH,BHR,Asia,Western Asia,FALSE,FALSE,FALSE,null
-Bangladesh,BD,BGD,Asia,Southern Asia,FALSE,FALSE,FALSE,null
+Bangladesh,BD,BGD,Asia,Southern Asia,FALSE,TRUE,FALSE,null
 Barbados,BB,BRB,North America,Caribbean,FALSE,FALSE,FALSE,null
 Belarus,BY,BLR,Europe,Eastern Europe,FALSE,FALSE,FALSE,null
 Belgium,BE,BEL,Europe,Western Europe,TRUE,TRUE,TRUE,null
@@ -30,7 +30,7 @@ Bhutan,BT,BTN,Asia,Southern Asia,FALSE,FALSE,FALSE,null
 Bosnia and Herzegovina,BA,BIH,Europe,Southern Europe,FALSE,FALSE,FALSE,null
 Botswana,BW,BWA,Africa,Southern Africa,FALSE,FALSE,FALSE,null
 Bouvet Island,BV,BVT,South America,South America,FALSE,FALSE,FALSE,null
-Brazil,BR,BRA,South America,South America,FALSE,FALSE,TRUE,tier 3
+Brazil,BR,BRA,South America,South America,FALSE,TRUE,TRUE,tier 3
 British Indian Ocean Territory,IO,IOT,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Brunei Darussalam,BN,BRN,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
 Bulgaria,BG,BGR,Europe,Eastern Europe,FALSE,TRUE,FALSE,null
@@ -43,11 +43,11 @@ Cape Verde,CV,CPV,Africa,Western Africa,FALSE,FALSE,FALSE,null
 Cayman Islands,KY,CYM,North America,Caribbean,FALSE,FALSE,FALSE,null
 Central African Republic,CF,CAF,Africa,Middle Africa,FALSE,FALSE,FALSE,null
 Chad,TD,TCD,Africa,Middle Africa,FALSE,FALSE,FALSE,null
-Chile,CL,CHL,South America,South America,FALSE,FALSE,FALSE,null
+Chile,CL,CHL,South America,South America,FALSE,TRUE,FALSE,null
 China,CN,CHN,Asia,Eastern Asia,FALSE,FALSE,FALSE,null
 Christmas Island,CX,CXR,Oceania,Australia and New Zealand,FALSE,FALSE,FALSE,null
 Cocos (Keeling) Islands,CC,CCK,Oceania,Australia and New Zealand,FALSE,FALSE,FALSE,null
-Colombia,CO,COL,South America,South America,FALSE,FALSE,FALSE,null
+Colombia,CO,COL,South America,South America,FALSE,TRUE,FALSE,null
 Comoros,KM,COM,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Congo,CG,COG,Africa,Middle Africa,FALSE,FALSE,FALSE,null
 "Congo, the Democratic Republic of the",CD,COD,Africa,Middle Africa,FALSE,FALSE,FALSE,null
@@ -64,7 +64,7 @@ Djibouti,DJ,DJI,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Dominica,DM,DMA,North America,Caribbean,FALSE,FALSE,FALSE,null
 Dominican Republic,DO,DOM,North America,Caribbean,FALSE,FALSE,FALSE,null
 Ecuador,EC,ECU,South America,South America,FALSE,FALSE,FALSE,null
-Egypt,EG,EGY,Africa,Northern Africa,FALSE,FALSE,FALSE,null
+Egypt,EG,EGY,Africa,Northern Africa,FALSE,TRUE,FALSE,null
 El Salvador,SV,SLV,North America,Central America,FALSE,FALSE,FALSE,null
 Equatorial Guinea,GQ,GNQ,Africa,Middle Africa,FALSE,FALSE,FALSE,null
 Eritrea,ER,ERI,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
@@ -84,7 +84,7 @@ Georgia,GE,GEO,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Germany,DE,DEU,Europe,Western Europe,TRUE,TRUE,TRUE,tier 1
 Ghana,GH,GHA,Africa,Western Africa,FALSE,FALSE,FALSE,null
 Gibraltar,GI,GIB,Europe,Southern Europe,FALSE,FALSE,FALSE,null
-Greece,GR,GRC,Europe,Southern Europe,FALSE,FALSE,FALSE,null
+Greece,GR,GRC,Europe,Southern Europe,FALSE,TRUE,FALSE,null
 Greenland,GL,GRL,North America,Northern America,FALSE,FALSE,FALSE,null
 Grenada,GD,GRD,North America,Caribbean,FALSE,FALSE,FALSE,null
 Guadeloupe,GP,GLP,North America,Caribbean,FALSE,FALSE,FALSE,null
@@ -101,8 +101,8 @@ Honduras,HN,HND,North America,Central America,FALSE,FALSE,FALSE,null
 Hong Kong,HK,HKG,Asia,Eastern Asia,FALSE,FALSE,FALSE,null
 Hungary,HU,HUN,Europe,Eastern Europe,FALSE,TRUE,FALSE,null
 Iceland,IS,ISL,Europe,Northern Europe,FALSE,FALSE,FALSE,null
-India,IN,IND,Asia,Southern Asia,TRUE,FALSE,TRUE,tier 3
-Indonesia,ID,IDN,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
+India,IN,IND,Asia,Southern Asia,TRUE,TRUE,TRUE,tier 3
+Indonesia,ID,IDN,Asia,South-eastern Asia,FALSE,TRUE,FALSE,null
 "Iran, Islamic Republic of",IR,IRN,Asia,Southern Asia,FALSE,FALSE,FALSE,null
 Iraq,IQ,IRQ,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Ireland,IE,IRL,Europe,Northern Europe,TRUE,TRUE,FALSE,null
@@ -114,10 +114,10 @@ Japan,JP,JPN,Asia,Eastern Asia,FALSE,FALSE,TRUE,tier 3
 Jersey,JE,JEY,Europe,Northern Europe,FALSE,FALSE,FALSE,null
 Jordan,JO,JOR,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Kazakhstan,KZ,KAZ,Asia,Central Asia,FALSE,FALSE,FALSE,null
-Kenya,KE,KEN,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
+Kenya,KE,KEN,Africa,Eastern Africa,FALSE,TRUE,FALSE,null
 Kiribati,KI,KIR,Oceania,Micronesia,FALSE,FALSE,FALSE,null
 "Korea, Democratic People's Republic of",KP,PRK,Asia,Eastern Asia,FALSE,FALSE,FALSE,null
-"Korea, Republic of",KR,KOR,Asia,Eastern Asia,FALSE,FALSE,FALSE,null
+"Korea, Republic of",KR,KOR,Asia,Eastern Asia,FALSE,TRUE,FALSE,null
 Kuwait,KW,KWT,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Kyrgyzstan,KG,KGZ,Asia,Central Asia,FALSE,FALSE,FALSE,null
 Lao People's Democratic Republic,LA,LAO,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
@@ -142,14 +142,14 @@ Martinique,MQ,MTQ,North America,Caribbean,FALSE,FALSE,FALSE,null
 Mauritania,MR,MRT,Africa,Western Africa,FALSE,FALSE,FALSE,null
 Mauritius,MU,MUS,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Mayotte,YT,MYT,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
-Mexico,MX,MEX,North America,Central America,FALSE,FALSE,TRUE,tier 3
+Mexico,MX,MEX,North America,Central America,FALSE,TRUE,TRUE,tier 3
 "Micronesia, Federated States of",FM,FSM,Oceania,Micronesia,FALSE,FALSE,FALSE,null
 "Moldova, Republic of",MD,MDA,Europe,Eastern Europe,FALSE,FALSE,FALSE,null
 Monaco,MC,MCO,Europe,Western Europe,FALSE,FALSE,FALSE,null
 Mongolia,MN,MNG,Asia,Eastern Asia,FALSE,FALSE,FALSE,null
 Montenegro,ME,MNE,Europe,Southern Europe,FALSE,FALSE,FALSE,null
 Montserrat,MS,MSR,North America,Caribbean,FALSE,FALSE,FALSE,null
-Morocco,MA,MAR,Africa,Northern Africa,FALSE,FALSE,FALSE,null
+Morocco,MA,MAR,Africa,Northern Africa,FALSE,TRUE,FALSE,null
 Mozambique,MZ,MOZ,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Myanmar,MM,MMR,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
 Namibia,NA,NAM,Africa,Southern Africa,FALSE,FALSE,FALSE,null
@@ -160,11 +160,11 @@ New Caledonia,NC,NCL,Oceania,Melanesia,FALSE,FALSE,FALSE,null
 New Zealand,NZ,NZL,Oceania,Australia and New Zealand,FALSE,TRUE,FALSE,null
 Nicaragua,NI,NIC,North America,Central America,FALSE,FALSE,FALSE,null
 Niger,NE,NER,Africa,Western Africa,FALSE,FALSE,FALSE,null
-Nigeria,NG,NGA,Africa,Western Africa,FALSE,FALSE,FALSE,null
+Nigeria,NG,NGA,Africa,Western Africa,FALSE,TRUE,FALSE,null
 Niue,NU,NIU,Oceania,Polynesia,FALSE,FALSE,FALSE,null
 Norfolk Island,NF,NFK,Oceania,Australia and New Zealand,FALSE,FALSE,FALSE,null
 Northern Mariana Islands,MP,MNP,Oceania,Micronesia,FALSE,FALSE,FALSE,null
-Norway,NO,NOR,Europe,Northern Europe,FALSE,FALSE,FALSE,null
+Norway,NO,NOR,Europe,Northern Europe,FALSE,TRUE,FALSE,null
 Oman,OM,OMN,Asia,Western Asia,FALSE,FALSE,FALSE,null
 Pakistan,PK,PAK,Asia,Southern Asia,FALSE,FALSE,FALSE,null
 Palau,PW,PLW,Oceania,Micronesia,FALSE,FALSE,FALSE,null
@@ -193,8 +193,8 @@ Saint Vincent and the Grenadines,VC,VCT,North America,Caribbean,FALSE,FALSE,FALS
 Samoa,WS,WSM,Oceania,Polynesia,FALSE,FALSE,FALSE,null
 San Marino,SM,SMR,Europe,Southern Europe,FALSE,FALSE,FALSE,null
 Sao Tome and Principe,ST,STP,Africa,Middle Africa,FALSE,FALSE,FALSE,null
-Saudi Arabia,SA,SAU,Asia,Western Asia,FALSE,FALSE,FALSE,null
-Senegal,SN,SEN,Africa,Western Africa,FALSE,FALSE,FALSE,null
+Saudi Arabia,SA,SAU,Asia,Western Asia,FALSE,TRUE,FALSE,null
+Senegal,SN,SEN,Africa,Western Africa,FALSE,TRUE,FALSE,null
 Serbia,RS,SRB,Europe,Southern Europe,FALSE,FALSE,FALSE,null
 Seychelles,SC,SYC,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Sierra Leone,SL,SLE,Africa,Western Africa,FALSE,FALSE,FALSE,null
@@ -204,7 +204,7 @@ Slovakia,SK,SVK,Europe,Eastern Europe,FALSE,TRUE,FALSE,null
 Slovenia,SI,SVN,Europe,Southern Europe,FALSE,TRUE,FALSE,null
 Solomon Islands,SB,SLB,Oceania,Melanesia,FALSE,FALSE,FALSE,null
 Somalia,SO,SOM,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
-South Africa,ZA,ZAF,Africa,Southern Africa,FALSE,FALSE,FALSE,null
+South Africa,ZA,ZAF,Africa,Southern Africa,FALSE,TRUE,FALSE,null
 South Georgia and the South Sandwich Islands,GS,SGS,South America,South America,FALSE,FALSE,FALSE,null
 South Sudan,SS,SSD,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
 Spain,ES,ESP,Europe,Southern Europe,TRUE,TRUE,TRUE,tier 2
@@ -216,22 +216,22 @@ Swaziland,SZ,SWZ,Africa,Southern Africa,FALSE,FALSE,FALSE,null
 Sweden,SE,SWE,Europe,Northern Europe,FALSE,TRUE,FALSE,null
 Switzerland,CH,CHE,Europe,Western Europe,TRUE,TRUE,TRUE,null
 Syrian Arab Republic,SY,SYR,Asia,Western Asia,FALSE,FALSE,FALSE,null
-"Taiwan, Province of China",TW,TWN,Asia,Eastern Asia,FALSE,FALSE,FALSE,null
+"Taiwan, Province of China",TW,TWN,Asia,Eastern Asia,FALSE,TRUE,FALSE,null
 Tajikistan,TJ,TJK,Asia,Central Asia,FALSE,FALSE,FALSE,null
 "Tanzania, United Republic of",TZ,TZA,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
-Thailand,TH,THA,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
+Thailand,TH,THA,Asia,South-eastern Asia,FALSE,TRUE,FALSE,null
 Timor-Leste,TL,TLS,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
 Togo,TG,TGO,Africa,Western Africa,FALSE,FALSE,FALSE,null
 Tokelau,TK,TKL,Oceania,Polynesia,FALSE,FALSE,FALSE,null
 Tonga,TO,TON,Oceania,Polynesia,FALSE,FALSE,FALSE,null
 Trinidad and Tobago,TT,TTO,North America,Caribbean,FALSE,FALSE,FALSE,null
 Tunisia,TN,TUN,Africa,Northern Africa,FALSE,FALSE,FALSE,null
-Turkey,TR,TUR,Asia,Western Asia,FALSE,FALSE,FALSE,null
+Turkey,TR,TUR,Asia,Western Asia,FALSE,TRUE,FALSE,null
 Turkmenistan,TM,TKM,Asia,Central Asia,FALSE,FALSE,FALSE,null
 Turks and Caicos Islands,TC,TCA,North America,Caribbean,FALSE,FALSE,FALSE,null
 Tuvalu,TV,TUV,Oceania,Polynesia,FALSE,FALSE,FALSE,null
-Uganda,UG,UGA,Africa,Eastern Africa,FALSE,FALSE,FALSE,null
-Ukraine,UA,UKR,Europe,Eastern Europe,FALSE,FALSE,FALSE,null
+Uganda,UG,UGA,Africa,Eastern Africa,FALSE,TRUE,FALSE,null
+Ukraine,UA,UKR,Europe,Eastern Europe,FALSE,TRUE,FALSE,null
 United Arab Emirates,AE,ARE,Asia,Western Asia,FALSE,FALSE,FALSE,null
 United Kingdom,GB,GBR,Europe,Northern Europe,TRUE,TRUE,TRUE,tier 2
 United States,US,USA,North America,Northern America,TRUE,TRUE,TRUE,tier 1
@@ -240,7 +240,7 @@ Uruguay,UY,URY,South America,South America,FALSE,FALSE,FALSE,null
 Uzbekistan,UZ,UZB,Asia,Central Asia,FALSE,FALSE,FALSE,null
 Vanuatu,VU,VUT,Oceania,Melanesia,FALSE,FALSE,FALSE,null
 "Venezuela, Bolivarian Republic of",VE,VEN,South America,South America,FALSE,FALSE,FALSE,null
-Viet Nam,VN,VNM,Asia,South-eastern Asia,FALSE,FALSE,FALSE,null
+Viet Nam,VN,VNM,Asia,South-eastern Asia,FALSE,TRUE,FALSE,null
 "Virgin Islands, British",VG,VGB,North America,Caribbean,FALSE,FALSE,FALSE,null
 "Virgin Islands, U.S.",VI,VIR,North America,Caribbean,FALSE,FALSE,FALSE,null
 Wallis and Futuna,WF,WLF,Oceania,Polynesia,FALSE,FALSE,FALSE,null

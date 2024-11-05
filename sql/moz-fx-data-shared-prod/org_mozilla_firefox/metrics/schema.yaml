@@ -3948,7 +3948,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -6715,6 +6716,13 @@ fields:
       description: 'The time in milliseconds to initialize the NSS component in the
         parent process. This metric was generated to correspond to the Legacy Telemetry
         scalar networking.nss_initialization.
+
+        '
+    - name: bounce_tracking_protection_mode
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the pref value of privacy.bounceTrackingProtection.mode.
+        Values are any of nsIBounceTrackingProtection#Modes.
 
         '
   - name: string

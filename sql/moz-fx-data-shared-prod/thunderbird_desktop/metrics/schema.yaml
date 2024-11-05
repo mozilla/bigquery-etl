@@ -5342,6 +5342,19 @@ fields:
       description: 'The code indicating why the push message couldn''t be processed.
 
         '
+    - name: mail_mbox_read_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts mbox read failures by type.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -6020,6 +6033,13 @@ fields:
       description: 'The time in milliseconds to initialize the NSS component in the
         parent process. This metric was generated to correspond to the Legacy Telemetry
         scalar networking.nss_initialization.
+
+        '
+    - name: bounce_tracking_protection_mode
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the pref value of privacy.bounceTrackingProtection.mode.
+        Values are any of nsIBounceTrackingProtection#Modes.
 
         '
   - name: rate

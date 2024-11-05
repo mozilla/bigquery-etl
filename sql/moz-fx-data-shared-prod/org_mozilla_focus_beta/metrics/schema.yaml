@@ -4433,6 +4433,13 @@ fields:
         scalar networking.nss_initialization.
 
         '
+    - name: bounce_tracking_protection_mode
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the pref value of privacy.bounceTrackingProtection.mode.
+        Values are any of nsIBounceTrackingProtection#Modes.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

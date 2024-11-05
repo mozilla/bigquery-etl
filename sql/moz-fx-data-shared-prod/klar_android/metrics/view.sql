@@ -419,7 +419,8 @@ SELECT
       metrics.quantity.policies_count,
       metrics.quantity.startup_profile_count,
       metrics.quantity.networking_loading_certs_task,
-      metrics.quantity.networking_nss_initialization
+      metrics.quantity.networking_nss_initialization,
+      metrics.quantity.bounce_tracking_protection_mode
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,

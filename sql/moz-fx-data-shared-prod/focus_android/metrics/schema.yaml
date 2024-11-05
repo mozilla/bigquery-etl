@@ -2854,6 +2854,9 @@ fields:
     - name: networking_nss_initialization
       type: INTEGER
       mode: NULLABLE
+    - name: bounce_tracking_protection_mode
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

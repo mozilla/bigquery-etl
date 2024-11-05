@@ -7,7 +7,7 @@ from airflow.utils.task_group import TaskGroup
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
@@ -411,266 +411,266 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    bigeye__fenix_derived__attribution_clients__v1 = RunMetricsOperator(
+    bigeye__fenix_derived__attribution_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__attribution_clients__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.fenix_derived",
-        table_name="attribution_clients_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.fenix_derived.attribution_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_fenix,
     )
 
-    bigeye__fenix_derived__engagement__v1 = RunMetricsOperator(
+    bigeye__fenix_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__engagement__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.fenix_derived",
-        table_name="engagement_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.fenix_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_fenix,
     )
 
-    bigeye__fenix_derived__new_profiles__v1 = RunMetricsOperator(
+    bigeye__fenix_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__new_profiles__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.fenix_derived",
-        table_name="new_profiles_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.fenix_derived.new_profiles_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_fenix,
     )
 
-    bigeye__fenix_derived__retention__v1 = RunMetricsOperator(
+    bigeye__fenix_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__retention__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.fenix_derived",
-        table_name="retention_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.fenix_derived.retention_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_fenix,
     )
 
-    bigeye__firefox_ios_derived__attribution_clients__v1 = RunMetricsOperator(
+    bigeye__firefox_ios_derived__attribution_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__attribution_clients__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.firefox_ios_derived",
-        table_name="attribution_clients_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__firefox_ios_derived__engagement__v1 = RunMetricsOperator(
+    bigeye__firefox_ios_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__engagement__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.firefox_ios_derived",
-        table_name="engagement_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__firefox_ios_derived__new_profiles__v1 = RunMetricsOperator(
+    bigeye__firefox_ios_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__new_profiles__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.firefox_ios_derived",
-        table_name="new_profiles_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.new_profiles_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__firefox_ios_derived__retention__v1 = RunMetricsOperator(
+    bigeye__firefox_ios_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__retention__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.firefox_ios_derived",
-        table_name="retention_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.retention_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__focus_android_derived__attribution_clients__v1 = RunMetricsOperator(
+    bigeye__focus_android_derived__attribution_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_android_derived__attribution_clients__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_android_derived",
-        table_name="attribution_clients_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_android,
     )
 
-    bigeye__focus_android_derived__engagement__v1 = RunMetricsOperator(
+    bigeye__focus_android_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_android_derived__engagement__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_android_derived",
-        table_name="engagement_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_android_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_android,
     )
 
-    bigeye__focus_android_derived__new_profiles__v1 = RunMetricsOperator(
+    bigeye__focus_android_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_android_derived__new_profiles__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_android_derived",
-        table_name="new_profiles_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_android_derived.new_profiles_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_android,
     )
 
-    bigeye__focus_android_derived__retention__v1 = RunMetricsOperator(
+    bigeye__focus_android_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_android_derived__retention__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_android_derived",
-        table_name="retention_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_android_derived.retention_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_android,
     )
 
-    bigeye__focus_ios_derived__attribution_clients__v1 = RunMetricsOperator(
+    bigeye__focus_ios_derived__attribution_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_ios_derived__attribution_clients__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_ios_derived",
-        table_name="attribution_clients_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.attribution_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_ios,
     )
 
-    bigeye__focus_ios_derived__engagement__v1 = RunMetricsOperator(
+    bigeye__focus_ios_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_ios_derived__engagement__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_ios_derived",
-        table_name="engagement_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_ios,
     )
 
-    bigeye__focus_ios_derived__new_profiles__v1 = RunMetricsOperator(
+    bigeye__focus_ios_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_ios_derived__new_profiles__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_ios_derived",
-        table_name="new_profiles_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.new_profiles_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_ios,
     )
 
-    bigeye__focus_ios_derived__retention__v1 = RunMetricsOperator(
+    bigeye__focus_ios_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_ios_derived__retention__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.focus_ios_derived",
-        table_name="retention_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.retention_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_focus_ios,
     )
 
-    bigeye__klar_android_derived__attribution_clients__v1 = RunMetricsOperator(
+    bigeye__klar_android_derived__attribution_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_android_derived__attribution_clients__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_android_derived",
-        table_name="attribution_clients_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_android_derived.attribution_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_android,
     )
 
-    bigeye__klar_android_derived__engagement__v1 = RunMetricsOperator(
+    bigeye__klar_android_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_android_derived__engagement__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_android_derived",
-        table_name="engagement_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_android_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_android,
     )
 
-    bigeye__klar_android_derived__new_profiles__v1 = RunMetricsOperator(
+    bigeye__klar_android_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_android_derived__new_profiles__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_android_derived",
-        table_name="new_profiles_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_android_derived.new_profiles_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_android,
     )
 
-    bigeye__klar_android_derived__retention__v1 = RunMetricsOperator(
+    bigeye__klar_android_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_android_derived__retention__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_android_derived",
-        table_name="retention_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_android_derived.retention_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_android,
     )
 
-    bigeye__klar_ios_derived__attribution_clients__v1 = RunMetricsOperator(
+    bigeye__klar_ios_derived__attribution_clients__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_ios_derived__attribution_clients__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_ios_derived",
-        table_name="attribution_clients_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_ios_derived.attribution_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_ios,
     )
 
-    bigeye__klar_ios_derived__engagement__v1 = RunMetricsOperator(
+    bigeye__klar_ios_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_ios_derived__engagement__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_ios_derived",
-        table_name="engagement_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_ios_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_ios,
     )
 
-    bigeye__klar_ios_derived__new_profiles__v1 = RunMetricsOperator(
+    bigeye__klar_ios_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_ios_derived__new_profiles__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_ios_derived",
-        table_name="new_profiles_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_ios_derived.new_profiles_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_ios,
     )
 
-    bigeye__klar_ios_derived__retention__v1 = RunMetricsOperator(
+    bigeye__klar_ios_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_ios_derived__retention__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.klar_ios_derived",
-        table_name="retention_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.klar_ios_derived.retention_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
         task_group=task_group_klar_ios,
     )

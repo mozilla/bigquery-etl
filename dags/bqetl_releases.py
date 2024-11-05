@@ -7,7 +7,7 @@ from airflow.utils.task_group import TaskGroup
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
-from utils.gcp import bigquery_etl_query, bigquery_dq_check
+from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
@@ -55,13 +55,13 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    bigeye__org_mozilla_fenix_derived__releases__v1 = RunMetricsOperator(
+    bigeye__org_mozilla_fenix_derived__releases__v1 = bigquery_bigeye_check(
         task_id="bigeye__org_mozilla_fenix_derived__releases__v1",
-        connection_id="bigeye_connection",
-        warehouse_id=1939,
-        schema_name="moz-fx-data-shared-prod.org_mozilla_fenix_derived",
-        table_name="releases_v1",
-        circuit_breaker_mode=False,
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_derived.releases_v1",
+        warehouse_id="1939",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
         retries=0,
     )
 

@@ -5,6 +5,8 @@ WITH base AS (
     submission_timestamp,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
+    -- TODO: Once this field exists we should update the reference.
+    CAST(NULL AS STRING) AS usage_profile_id,
     sample_id,
     normalized_channel,
     client_info.app_display_version,
@@ -12,7 +14,6 @@ WITH base AS (
     normalized_os,
     normalized_os_version,
     client_info.locale,
-    -- metadata.geo.country,
     {% if has_distribution_id %}
     metrics.string.metrics_distribution_id AS distribution_id,
     {% else %}
@@ -30,7 +31,8 @@ WITH base AS (
     {% endif %}
     SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) AS first_run_date,
     mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
-    -- udf.glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS duration, -- TODO: duration appears to be missing in the ping?
+    -- TODO: add duration once it has been added to the dau_reporting ping.
+    -- udf.glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS duration,
   FROM
     `{{ project_id }}.{{ dau_reporting_stable_table }}`
 ),
@@ -40,8 +42,10 @@ with_dates AS (
     *,
     -- For explanation of session start time calculation, see Glean docs:
     -- https://mozilla.github.io/glean/book/user/pings/baseline.html#contents
-    DATE(SAFE.TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
-    DATE(parsed_end_time) AS session_end_date,
+    --
+    -- TODO: uncomment once duration is added to the dau_reporting ping
+    -- DATE(SAFE.TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
+    -- DATE(parsed_end_time) AS session_end_date,
   FROM
     base
 ),
@@ -49,7 +53,8 @@ with_dates AS (
 with_date_offsets AS (
   SELECT
     *,
-    DATE_DIFF(submission_date, session_start_date, DAY) AS session_start_date_offset,
+    -- TODO: uncomment once duration is added to the dau_reporting ping
+    -- DATE_DIFF(submission_date, session_start_date, DAY) AS session_start_date_offset,
     DATE_DIFF(submission_date, session_end_date, DAY) AS session_end_date_offset,
   FROM
     with_dates
@@ -64,18 +69,6 @@ windowed AS (
     --
     -- Take the earliest first_run_date if ambiguous.
     MIN(first_run_date) OVER w1 AS first_run_date,
-    --
-    -- Sums over distinct dau_reporting pings.
-    -- SUM(IF(duration BETWEEN 0 AND 100000, duration, 0)) OVER w1 AS durations,
-    --
-    -- Bit patterns capturing activity dates relative to the submission date.
-    BIT_OR(
-      1 << IF(session_start_date_offset BETWEEN 0 AND 27, session_start_date_offset, NULL)
-    ) OVER w1 AS days_seen_session_start_bits,
-    BIT_OR(
-      1 << IF(session_end_date_offset BETWEEN 0 AND 27, session_end_date_offset, NULL)
-    ) OVER w1 AS days_seen_session_end_bits,
-    --
     -- For all other dimensions, we use the mode of observed values in the day.
     udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
     udf.mode_last(ARRAY_AGG(normalized_os) OVER w1) AS normalized_os,
@@ -91,6 +84,20 @@ windowed AS (
     SUM(browser_engagement_active_ticks) AS browser_engagement_active_ticks,
     udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id) OVER w1) AS legacy_telemetry_client_id,
     {% endif %}
+    --
+    -- TODO: uncomment once duration is added to the dau_reporting ping
+    --
+    -- Sums over distinct dau_reporting pings.
+    -- SUM(IF(duration BETWEEN 0 AND 100000, duration, 0)) OVER w1 AS durations,
+    --
+    -- Bit patterns capturing activity dates relative to the submission date.
+    -- BIT_OR(
+    --   1 << IF(session_start_date_offset BETWEEN 0 AND 27, session_start_date_offset, NULL)
+    -- ) OVER w1 AS days_seen_session_start_bits,
+    -- BIT_OR(
+    --   1 << IF(session_end_date_offset BETWEEN 0 AND 27, session_end_date_offset, NULL)
+    -- ) OVER w1 AS days_seen_session_end_bits,
+    --
   FROM
     with_date_offsets
   WHERE

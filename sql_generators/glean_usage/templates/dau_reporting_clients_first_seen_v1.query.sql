@@ -54,6 +54,7 @@ LEFT JOIN
   USING (client_id, usage_profile_id)
 WHERE
   _previous.client_id IS NULL
+  AND _previous.usage_profile_id IS NULL
 QUALIFY
   IF(
     COUNT(*) OVER (PARTITION BY client_id, usage_profile_id) > 1,

@@ -250,6 +250,9 @@ joined AS (
     visits_data.visits_with_non_default_ui,
     visits_data.is_new_profile,
     visits_data.activity_segment,
+    ktd.key_tentpole,
+    ktd.start_date,
+    ktd.end_date,
     -- COALESCE calls for visits where no interactions with a surface were performed and are all Null
     COALESCE(search_data.searches, 0) AS searches,
     COALESCE(search_data.tagged_search_ad_clicks, 0) AS tagged_search_ad_clicks,
@@ -359,6 +362,9 @@ joined AS (
   LEFT JOIN
     topic_selection_data
     USING (client_id)
+  LEFT JOIN `mozdata.static.key_tentpole_dates` ktd
+    ON submission_date >= ktd.start_date
+    OR submission_date <= ktd.start_date
 )
 SELECT
   *,

@@ -153,6 +153,18 @@ pocket_data AS (
     SUM(pocket_thumbs_up) AS pocket_thumbs_up,
     SUM(pocket_thumbs_down) AS pocket_thumbs_down,
     SUM(pocket_thumbs_down) + SUM(pocket_thumbs_up) AS pocket_thumb_voting_events,
+    SUM(list_card_clicks) AS list_card_clicks,
+    SUM(organic_list_card_clicks) AS organic_list_card_clicks,
+    SUM(sponsored_list_card_clicks) AS sponsored_list_card_clicks,
+    SUM(list_card_impressions) AS list_card_impressions,
+    SUM(organic_list_card_impressions) AS organic_list_card_impressions,
+    SUM(sponsored_list_card_impressions) AS sponsored_list_card_impressions,
+    SUM(list_card_saves) AS list_card_saves,
+    SUM(organic_list_card_saves) AS organic_list_card_saves,
+    SUM(sponsored_list_card_saves) AS sponsored_list_card_saves,
+    SUM(list_card_dismissals) AS list_card_dismissals,
+    SUM(organic_list_card_dismissals) AS organic_list_card_dismissals,
+    SUM(sponsored_list_card_dismissals) AS sponsored_list_card_dismissals,
   FROM
     visits_data_base
   CROSS JOIN
@@ -314,7 +326,19 @@ joined AS (
     COALESCE(topic_selection_data.topic_selection_opened, 0) AS topic_selection_opened,
     COALESCE(topic_selection_data.topic_selection_dismissals, 0) AS topic_selection_dismissals,
     visits_data.profile_group_id AS profile_group_id,
-    visits_data.topsites_sponsored_tiles_configured AS topsites_sponsored_tiles_configured
+    visits_data.topsites_sponsored_tiles_configured AS topsites_sponsored_tiles_configured,
+    COALESCE(pocket_data.list_card_clicks, 0) AS list_card_clicks,
+    COALESCE(pocket_data.organic_list_card_clicks, 0) AS organic_list_card_clicks,
+    COALESCE(pocket_data.sponsored_list_card_clicks, 0) AS sponsored_list_card_clicks,
+    COALESCE(pocket_data.list_card_impressions, 0) AS list_card_impressions,
+    COALESCE(pocket_data.organic_list_card_impressions, 0) AS organic_list_card_impressions,
+    COALESCE(pocket_data.sponsored_list_card_impressions, 0) AS sponsored_list_card_impressions,
+    COALESCE(pocket_data.list_card_saves, 0) AS list_card_saves,
+    COALESCE(pocket_data.organic_list_card_saves, 0) AS organic_list_card_saves,
+    COALESCE(pocket_data.sponsored_list_card_saves, 0) AS sponsored_list_card_saves,
+    COALESCE(pocket_data.list_card_dismissals, 0) AS list_card_dismissals,
+    COALESCE(pocket_data.organic_list_card_dismissals, 0) AS organic_list_card_dismissals,
+    COALESCE(pocket_data.sponsored_list_card_dismissals, 0) AS sponsored_list_card_dismissals,
   FROM
     visits_data
   LEFT JOIN

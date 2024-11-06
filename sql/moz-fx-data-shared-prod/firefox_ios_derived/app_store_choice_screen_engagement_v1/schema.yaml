@@ -1,0 +1,46 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: app_apple_identifier
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: event
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: device
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: platform_version
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: territory
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: counts
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: unique_devices
+  type: INTEGER
+  description:

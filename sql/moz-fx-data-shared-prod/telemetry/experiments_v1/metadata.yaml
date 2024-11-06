@@ -4,12 +4,9 @@ description: |-
 owners: []
 labels: {}
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:dataops-managed/taar
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiments_v0
   - moz-fx-data-shared-prod.telemetry_derived.experiments_v1
+deprecated: true

@@ -147,7 +147,9 @@ SELECT
       metrics.counter.dom_contentprocess_os_priority_lowered,
       metrics.counter.dom_contentprocess_os_priority_raised,
       metrics.counter.mathml_doc_count,
-      metrics.counter.web_push_detected_duplicated_message_ids
+      metrics.counter.web_push_detected_duplicated_message_ids,
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_added,
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

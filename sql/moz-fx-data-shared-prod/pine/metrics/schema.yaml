@@ -1315,6 +1315,79 @@ fields:
         depends on the pref `dom.push.maxRecentMessageIDsPerSubscription`.
 
         '
+    - name: browser_engagement_bookmarks_toolbar_bookmark_added
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of bookmarks added to the bookmarks toolbar. This counts
+        bookmarks created on the bookmarks toolbar and bookmarks moved to the bookmarks
+        toolbar. This metric was generated to correspond to the Legacy Telemetry scalar
+        browser.engagement.bookmarks_toolbar_bookmark_added.
+
+        '
+    - name: browser_engagement_bookmarks_toolbar_bookmark_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of bookmarks opened from the Bookmarks Toolbar. This
+        counts bookmarks opened on the toolbar and bookmarks opened from the ''symlinked''
+        Other Bookmarks folder on the Bookmarks Toolbar. It does not count Bookmarks
+        Toolbar bookmarks opened via the Library, Bookmarks Menu, or other UI since
+        the goal is to measure interactions that pass through the toolbar. This metric
+        was generated to correspond to the Legacy Telemetry scalar browser.engagement.bookmarks_toolbar_bookmark_opened.
+
+        '
+    - name: browser_engagement_tab_open_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab open events per subsession, across all windows,
+        after the session has been restored. This includes tab open events from private
+        windows and from manual session restorations (i.e. after crashes and from
+        about:home), but excludes tabs opened vertically. This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.engagement.tab_open_event_count.
+
+        '
+    - name: browser_engagement_tab_pinned_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab pinned events per subsession, across all windows,
+        after the session has been restored. This includes tab pinned events from
+        private windows. This metric was generated to correspond to the Legacy Telemetry
+        scalar browser.engagement.tab_pinned_event_count.
+
+        '
+    - name: browser_engagement_unfiltered_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of the total non-unique URIs visited in a subsession,
+        not restricted to a specific protocol, including page reloads and about:*
+        pages (other than initial pages such as about:blank, ...), after the session
+        has been restored. This does not include background page requests and URIs
+        from embedded pages or private browsing. This metric was generated to correspond
+        to the Legacy Telemetry scalar browser.engagement.unfiltered_uri_count.
+
+        '
+    - name: browser_engagement_vertical_tab_open_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab open events with vertical tabs enabled. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.vertical_tab_open_event_count.
+
+        '
+    - name: browser_engagement_vertical_tab_pinned_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab pinned events with vertical tabs enabled. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.vertical_tab_pinned_event_count.
+
+        '
+    - name: browser_engagement_window_open_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of browser window open events per subsession, after
+        the session has been restored. The count includes private windows and the
+        ones from manual session restorations (i.e. after crashes and from about:home).
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.window_open_event_count.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -7586,6 +7659,33 @@ fields:
       mode: NULLABLE
       description: 'Records the pref value of privacy.bounceTrackingProtection.mode.
         Values are any of nsIBounceTrackingProtection#Modes.
+
+        '
+    - name: browser_engagement_session_time_excluding_suspend
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The duration of the session in milliseconds, excluding the time
+        the device was suspended. This metric was generated to correspond to the Legacy
+        Telemetry scalar browser.engagement.session_time_excluding_suspend.
+
+        '
+    - name: browser_engagement_session_time_including_suspend
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The duration of the session in milliseconds, including the time
+        the device was suspended. This metric was generated to correspond to the Legacy
+        Telemetry scalar browser.engagement.session_time_including_suspend.
+
+        '
+    - name: browser_engagement_unique_domains_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of the unique domains visited in a subsession, after
+        the session has been restored. Subdomains under eTLD are aggregated after
+        the first level (i.e. test.example.com and other.example.com are only counted
+        once). This does not include background page requests and domains from embedded
+        pages or private browsing. The count is limited to 100 unique domains. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.unique_domains_count.
 
         '
   - name: string

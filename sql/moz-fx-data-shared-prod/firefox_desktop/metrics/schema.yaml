@@ -1498,6 +1498,213 @@ fields:
         depends on the pref `dom.push.maxRecentMessageIDsPerSubscription`.
 
         '
+    - name: browser_engagement_bookmarks_toolbar_bookmark_added
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of bookmarks added to the bookmarks toolbar. This counts
+        bookmarks created on the bookmarks toolbar and bookmarks moved to the bookmarks
+        toolbar. This metric was generated to correspond to the Legacy Telemetry scalar
+        browser.engagement.bookmarks_toolbar_bookmark_added.
+
+        '
+    - name: browser_engagement_bookmarks_toolbar_bookmark_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of bookmarks opened from the Bookmarks Toolbar. This
+        counts bookmarks opened on the toolbar and bookmarks opened from the ''symlinked''
+        Other Bookmarks folder on the Bookmarks Toolbar. It does not count Bookmarks
+        Toolbar bookmarks opened via the Library, Bookmarks Menu, or other UI since
+        the goal is to measure interactions that pass through the toolbar. This metric
+        was generated to correspond to the Legacy Telemetry scalar browser.engagement.bookmarks_toolbar_bookmark_opened.
+
+        '
+    - name: browser_engagement_tab_open_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab open events per subsession, across all windows,
+        after the session has been restored. This includes tab open events from private
+        windows and from manual session restorations (i.e. after crashes and from
+        about:home), but excludes tabs opened vertically. This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.engagement.tab_open_event_count.
+
+        '
+    - name: browser_engagement_tab_pinned_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab pinned events per subsession, across all windows,
+        after the session has been restored. This includes tab pinned events from
+        private windows. This metric was generated to correspond to the Legacy Telemetry
+        scalar browser.engagement.tab_pinned_event_count.
+
+        '
+    - name: browser_engagement_tab_reload_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab reload events by the user after unloaded. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.tab_reload_count.
+
+        '
+    - name: browser_engagement_tab_unload_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab unload events by TabUnloader due to a low-memory
+        situation. This metric was generated to correspond to the Legacy Telemetry
+        scalar browser.engagement.tab_unload_count.
+
+        '
+    - name: browser_engagement_unfiltered_uri_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of the total non-unique URIs visited in a subsession,
+        not restricted to a specific protocol, including page reloads and about:*
+        pages (other than initial pages such as about:blank, ...), after the session
+        has been restored. This does not include background page requests and URIs
+        from embedded pages or private browsing. This metric was generated to correspond
+        to the Legacy Telemetry scalar browser.engagement.unfiltered_uri_count.
+
+        '
+    - name: browser_engagement_vertical_tab_open_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab open events with vertical tabs enabled. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.vertical_tab_open_event_count.
+
+        '
+    - name: browser_engagement_vertical_tab_pinned_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of tab pinned events with vertical tabs enabled. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.vertical_tab_pinned_event_count.
+
+        '
+    - name: browser_engagement_window_open_event_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of browser window open events per subsession, after
+        the session has been restored. The count includes private windows and the
+        ones from manual session restorations (i.e. after crashes and from about:home).
+        This metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.window_open_event_count.
+
+        '
+    - name: urlbar_abandonment_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A uint recording the number of abandoned engagements in the urlbar.
+        An abandonment occurs when the user begins using the urlbar but stops before
+        completing the engagement. This can happen when the user clicks outside the
+        urlbar to focus a different part of the window. It can also happen when the
+        user switches to another window while the urlbar is focused. This metric was
+        generated to correspond to the Legacy Telemetry scalar urlbar.abandonment.
+
+        '
+    - name: urlbar_autofill_deletion
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A uint recording the deletion count for autofilled string in the
+        urlbar. This occurs when the user deletes whole autofilled string by BACKSPACE
+        or DELETE key while the autofilled string is selected. This metric was generated
+        to correspond to the Legacy Telemetry scalar urlbar.autofill_deletion.
+
+        '
+    - name: urlbar_engagement_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A uint recording the number of engagements the user completes
+        in the urlbar.  An engagement occurs when the user navigates to a page using
+        the urlbar, for example by picking a result in the urlbar panel or typing
+        a search term or URL in the urlbar and pressing the enter key. This metric
+        was generated to correspond to the Legacy Telemetry scalar urlbar.engagement.
+
+        '
+    - name: urlbar_impression_autofill_about
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times about-page type was autofilled per engagement.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.impression.autofill_about.
+
+        '
+    - name: urlbar_impression_autofill_adaptive
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times adaptive history type was autofilled per
+        engagement. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.impression.autofill_adaptive.
+
+        '
+    - name: urlbar_impression_autofill_origin
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times origin type was autofilled per engagement.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.impression.autofill_origin.
+
+        '
+    - name: urlbar_impression_autofill_other
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times other type was autofilled per engagement.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.impression.autofill_other.
+
+        '
+    - name: urlbar_impression_autofill_url
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times url type was autofilled per engagement.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.impression.autofill_url.
+
+        '
+    - name: urlbar_persistedsearchterms_revert_by_popup_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of the number of times search terms were removed from
+        the urlbar due to a shown PopupNotification. This event can happen when a
+        user loads a SERP and a PopupNotification is shown, as well as when a user
+        switches away from a tab on a SERP showing a PopupNotification and switches
+        back to it. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.persistedsearchterms.revert_by_popup_count.
+
+        '
+    - name: urlbar_persistedsearchterms_view_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of the number of times search terms persisted in the
+        Urlbar. This gets recorded after a user loads a SERP that persists search
+        terms, or switches back to an existing tab that should be showing the persisted
+        search terms in the Urlbar, regardless of whether PopupNotification cleared
+        the search terms from the Urlbar. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.persistedsearchterms.view_count.
+
+        '
+    - name: urlbar_trending_block
+      type: INTEGER
+      mode: NULLABLE
+      description: 'User has blocked seeing trending results. This metric was generated
+        to correspond to the Legacy Telemetry scalar urlbar.trending.block.
+
+        '
+    - name: urlbar_zeroprefix_abandonment
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times the zero-prefix urlbar results panel was
+        abandoned. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.zeroprefix.abandonment.
+
+        '
+    - name: urlbar_zeroprefix_engagement
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times a result was picked in the zero-prefix urlbar
+        results panel. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.zeroprefix.engagement.
+
+        '
+    - name: urlbar_zeroprefix_exposure
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how many times the zero-prefix urlbar results panel was
+        shown to the user. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.zeroprefix.exposure.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -5619,6 +5826,829 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The code indicating why the push message couldn''t be processed.
+
+        '
+    - name: browser_engagement_sessionrestore_interstitial
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether we show about:sessionrestore or not. Split by key, which
+        indicates why we showed the item or not. Specifically, ''deferred_restore''
+        means we didn''t autorestore and thus didn''t show the interstitial; ''autorestore''
+        indicates we autorestored without showing the interstitial. ''shown_old_session'',
+        ''shown_only_about_welcomeback'', ''shown_many_crashes'', ''shown_many_crashes_old_session''
+        all indicate we did show the interstitial because of a crash, and the text
+        after ''shown'' indicates what secondary reason there was to show this page
+        (as we don''t show it for ''just'' one crash). This metric was generated to
+        correspond to the Legacy Telemetry scalar browser.engagement.sessionrestore_interstitial.
+
+        '
+    - name: urlbar_picked_autofill_about
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times an about-page autofill result (e.g., "about:config")
+        was picked at a given index. This metric was generated to correspond to the
+        Legacy Telemetry scalar urlbar.picked.autofill_about.
+
+        '
+    - name: urlbar_picked_autofill_adaptive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.autofill_adaptive.
+
+        '
+    - name: urlbar_picked_autofill_origin
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times an origin (domain) autofill result (e.g.,
+        "mozilla.org") was picked at a given index. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.autofill_origin.
+
+        '
+    - name: urlbar_picked_autofill_other
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times some other type of autofill result that
+        does not have a specific keyed scalar was picked at a given index. This is
+        a fallback that is used when the code is not properly setting a specific autofill
+        type, and it should not normally be used. If it appears in the data, it means
+        we need to investigate and fix the code that is not properly setting a specific
+        autofill type. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.picked.autofill_other.
+
+        '
+    - name: urlbar_picked_autofill_url
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times a URL autofill result (e.g., "mozilla.org/firefox")
+        was picked at a given index. This metric was generated to correspond to the
+        Legacy Telemetry scalar urlbar.picked.autofill_url.
+
+        '
+    - name: urlbar_picked_bookmark
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.bookmark.
+
+        '
+    - name: urlbar_picked_bookmark_adaptive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.bookmark_adaptive.
+
+        '
+    - name: urlbar_picked_clipboard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.clipboard.
+
+        '
+    - name: urlbar_picked_dynamic
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.dynamic.
+
+        '
+    - name: urlbar_picked_dynamic_wikipedia
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.dynamic_wikipedia.
+
+        '
+    - name: urlbar_picked_extension
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.extension.
+
+        '
+    - name: urlbar_picked_formhistory
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.formhistory.
+
+        '
+    - name: urlbar_picked_history
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.history.
+
+        '
+    - name: urlbar_picked_history_adaptive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.history_adaptive.
+
+        '
+    - name: urlbar_picked_keyword
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.keyword.
+
+        '
+    - name: urlbar_picked_navigational
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.navigational.
+
+        '
+    - name: urlbar_picked_quickaction
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.quickaction.
+
+        '
+    - name: urlbar_picked_quicksuggest
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.quicksuggest.
+
+        '
+    - name: urlbar_picked_recent_search
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.recent_search.
+
+        '
+    - name: urlbar_picked_remotetab
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.remotetab.
+
+        '
+    - name: urlbar_picked_restrict_keyword_actions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this restrict actions result was picked
+        at a given index. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.picked.restrict_keyword_actions.
+
+        '
+    - name: urlbar_picked_restrict_keyword_bookmarks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this restrict bookmarks result was picked
+        at a given index. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.picked.restrict_keyword_bookmarks.
+
+        '
+    - name: urlbar_picked_restrict_keyword_history
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this restrict history result was picked
+        at a given index. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.picked.restrict_keyword_history.
+
+        '
+    - name: urlbar_picked_restrict_keyword_tabs
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this restrict tabs result was picked at
+        a given index. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.picked.restrict_keyword_tabs.
+
+        '
+    - name: urlbar_picked_searchengine
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.searchengine.
+
+        '
+    - name: urlbar_picked_searchmode_bookmarkmenu
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode from the Search
+        Bookmarks menu item in the Library menu. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.searchmode.bookmarkmenu.
+
+        '
+    - name: urlbar_picked_searchmode_handoff
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by being handed
+        off from the search bar on the new tab page. This metric was generated to
+        correspond to the Legacy Telemetry scalar urlbar.picked.searchmode.handoff.
+
+        '
+    - name: urlbar_picked_searchmode_historymenu
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode from the Search
+        History menu item in a History menu. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.searchmode.historymenu.
+
+        '
+    - name: urlbar_picked_searchmode_keywordoffer
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a keyword offer result. This metric was generated to correspond to the Legacy
+        Telemetry scalar urlbar.picked.searchmode.keywordoffer.
+
+        '
+    - name: urlbar_picked_searchmode_oneoff
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a one-off. This metric was generated to correspond to the Legacy Telemetry
+        scalar urlbar.picked.searchmode.oneoff.
+
+        '
+    - name: urlbar_picked_searchmode_other
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode from an unknown
+        entry point. If values appear for this probe in Telemetry, we should review
+        the entry points to search mode. This metric was generated to correspond to
+        the Legacy Telemetry scalar urlbar.picked.searchmode.other.
+
+        '
+    - name: urlbar_picked_searchmode_searchbutton
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user entered a particular
+        search mode by unified search button. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.searchmode.searchbutton.
+
+        '
+    - name: urlbar_picked_searchmode_shortcut
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by pressing
+        a keyboard shortcut. This metric was generated to correspond to the Legacy
+        Telemetry scalar urlbar.picked.searchmode.shortcut.
+
+        '
+    - name: urlbar_picked_searchmode_tabmenu
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        the Search Tabs menu item in the Tab Overflow menu. This metric was generated
+        to correspond to the Legacy Telemetry scalar urlbar.picked.searchmode.tabmenu.
+
+        '
+    - name: urlbar_picked_searchmode_tabtosearch
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a tab-to-search result. This metric was generated to correspond to the Legacy
+        Telemetry scalar urlbar.picked.searchmode.tabtosearch.
+
+        '
+    - name: urlbar_picked_searchmode_tabtosearch_onboard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a tab-to-search onboarding result. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.searchmode.tabtosearch_onboard.
+
+        '
+    - name: urlbar_picked_searchmode_topsites_newtab
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a search shortcut Top Site on the New Tab Page. This metric was generated
+        to correspond to the Legacy Telemetry scalar urlbar.picked.searchmode.topsites_newtab.
+
+        '
+    - name: urlbar_picked_searchmode_topsites_urlbar
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a search shortcut Top Site in the Urlbar. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.searchmode.topsites_urlbar.
+
+        '
+    - name: urlbar_picked_searchmode_touchbar
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by selecting
+        a search shortcut on the macOS Touch Bar. This metric was generated to correspond
+        to the Legacy Telemetry scalar urlbar.picked.searchmode.touchbar.
+
+        '
+    - name: urlbar_picked_searchmode_typed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user picked a particular
+        kind of result while in search mode after entering search mode by typing an
+        alias. This metric was generated to correspond to the Legacy Telemetry scalar
+        urlbar.picked.searchmode.typed.
+
+        '
+    - name: urlbar_picked_searchsuggestion
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.searchsuggestion.
+
+        '
+    - name: urlbar_picked_searchsuggestion_rich
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.searchsuggestion_rich.
+
+        '
+    - name: urlbar_picked_switchtab
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.switchtab.
+
+        '
+    - name: urlbar_picked_tabtosearch
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.tabtosearch.
+
+        '
+    - name: urlbar_picked_tip
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.tip.
+
+        '
+    - name: urlbar_picked_topsite
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.topsite.
+
+        '
+    - name: urlbar_picked_trending
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.trending.
+
+        '
+    - name: urlbar_picked_trending_rich
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.trending_rich.
+
+        '
+    - name: urlbar_picked_unknown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times an unknown result type was picked at a given
+        index. This metric was generated to correspond to the Legacy Telemetry scalar
+        urlbar.picked.unknown.
+
+        '
+    - name: urlbar_picked_visiturl
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.visiturl.
+
+        '
+    - name: urlbar_picked_weather
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how many times this result type was picked at a given index.
+        This metric was generated to correspond to the Legacy Telemetry scalar urlbar.picked.weather.
+
+        '
+    - name: urlbar_tabtosearch_impressions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times non-onboarding tab-to-search
+        results are shown in the Urlbar for a particular search engine. This metric
+        was generated to correspond to the Legacy Telemetry scalar urlbar.tabtosearch.impressions.
+
+        '
+    - name: urlbar_tabtosearch_impressions_onboarding
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times onboarding tab-to-search
+        results are shown in the Urlbar for a particular search engine. This metric
+        was generated to correspond to the Legacy Telemetry scalar urlbar.tabtosearch.impressions_onboarding.
+
+        '
+    - name: urlbar_tips
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times particular tips are shown
+        in the Urlbar and how often their confirm and help buttons are pressed. This
+        metric was generated to correspond to the Legacy Telemetry scalar urlbar.tips.
 
         '
   - name: memory_distribution
@@ -14445,6 +15475,33 @@ fields:
       mode: NULLABLE
       description: 'Records the pref value of privacy.bounceTrackingProtection.mode.
         Values are any of nsIBounceTrackingProtection#Modes.
+
+        '
+    - name: browser_engagement_session_time_excluding_suspend
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The duration of the session in milliseconds, excluding the time
+        the device was suspended. This metric was generated to correspond to the Legacy
+        Telemetry scalar browser.engagement.session_time_excluding_suspend.
+
+        '
+    - name: browser_engagement_session_time_including_suspend
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The duration of the session in milliseconds, including the time
+        the device was suspended. This metric was generated to correspond to the Legacy
+        Telemetry scalar browser.engagement.session_time_including_suspend.
+
+        '
+    - name: browser_engagement_unique_domains_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The count of the unique domains visited in a subsession, after
+        the session has been restored. Subdomains under eTLD are aggregated after
+        the first level (i.e. test.example.com and other.example.com are only counted
+        once). This does not include background page requests and domains from embedded
+        pages or private browsing. The count is limited to 100 unique domains. This
+        metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.unique_domains_count.
 
         '
   - name: labeled_boolean

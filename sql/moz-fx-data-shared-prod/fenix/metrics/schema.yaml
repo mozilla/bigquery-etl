@@ -835,6 +835,12 @@ fields:
     - name: web_push_detected_duplicated_message_ids
       type: INTEGER
       mode: NULLABLE
+    - name: browser_engagement_bookmarks_toolbar_bookmark_added
+      type: INTEGER
+      mode: NULLABLE
+    - name: browser_engagement_bookmarks_toolbar_bookmark_opened
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

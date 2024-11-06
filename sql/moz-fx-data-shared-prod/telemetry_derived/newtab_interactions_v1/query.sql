@@ -297,9 +297,15 @@ side_filled AS (
     USING (legacy_telemetry_client_id)
 )
 SELECT
-  * EXCEPT (visit_had_any_interaction)
+  * EXCEPT (visit_had_any_interaction),
+  ktd.key_tentpole,
+  ktd.start_date,
+  ktd.end_date
 FROM
   side_filled
+LEFT JOIN `mozdata.static.key_tentpole_dates` ktd
+  ON submission_date >= ktd.start_date
+  OR submission_date <= ktd.start_date
 WHERE
    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition

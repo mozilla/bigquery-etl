@@ -7,7 +7,6 @@ WITH base AS (
     client_info.client_id,
     -- TODO: Once this field exists we should update the reference.
     CAST(NULL AS STRING) AS usage_profile_id,
-    sample_id,
     normalized_channel,
     client_info.app_display_version,
     client_info.app_build,
@@ -64,7 +63,6 @@ windowed AS (
   SELECT
     submission_date,
     client_id,
-    sample_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
     --
     -- Take the earliest first_run_date if ambiguous.
@@ -112,7 +110,6 @@ windowed AS (
   WINDOW
     w1 AS (
       PARTITION BY
-        sample_id,
         client_id,
         submission_date
       ORDER BY
@@ -124,7 +121,6 @@ windowed AS (
     -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
     w1_unframed AS (
       PARTITION BY
-        sample_id,
         client_id,
         submission_date
       ORDER BY

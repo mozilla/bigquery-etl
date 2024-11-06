@@ -44,7 +44,7 @@ with_dates AS (
     --
     -- TODO: uncomment once duration is added to the dau_reporting ping
     -- DATE(SAFE.TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
-    -- DATE(parsed_end_time) AS session_end_date,
+    DATE(parsed_end_time) AS session_end_date,
   FROM
     base
 ),

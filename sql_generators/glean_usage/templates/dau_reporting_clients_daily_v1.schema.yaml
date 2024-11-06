@@ -10,6 +10,11 @@ fields:
   description:
 
 - mode: NULLABLE
+  name: usage_profile_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
   name: sample_id
   type: INTEGER
   description:
@@ -17,16 +22,6 @@ fields:
 - mode: NULLABLE
   name: first_run_date
   type: DATE
-  description:
-
-- mode: NULLABLE
-  name: days_seen_session_start_bits
-  type: INTEGER
-  description:
-
-- mode: NULLABLE
-  name: days_seen_session_end_bits
-  type: INTEGER
   description:
 
 - mode: NULLABLE
@@ -96,7 +91,18 @@ fields:
   type: BOOLEAN
   description:
 
+# TODO: uncomment once duration has been added to the dau_reporting ping
 # - mode: NULLABLE
 #   name: durations
+#   type: INTEGER
+#   description:
+
+# - mode: NULLABLE
+#   name: days_seen_session_start_bits
+#   type: INTEGER
+#   description:
+
+# - mode: NULLABLE
+#   name: days_seen_session_end_bits
 #   type: INTEGER
 #   description:

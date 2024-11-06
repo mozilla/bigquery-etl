@@ -3,9 +3,16 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: |
+    A UUID uniquely identifying the client.
+
+- mode: NULLABLE
+  name: usage_profile_id
+  type: STRING
   description:
 
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description:
+  description: |
+    Logical date of when we observed the client for the first time in our warehouse.

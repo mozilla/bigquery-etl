@@ -6,22 +6,6 @@ tag_deployments:
     metrics:
     - metric_type:
         type: PREDEFINED
-        predefined_metric: UNDEFINED
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: UNDEFINED
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
-- deployments:
-  - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.baseline_clients_last_seen_v1.*
-    metrics:
-    - metric_type:
-        type: PREDEFINED
         predefined_metric: FRESHNESS
       metric_name: FRESHNESS [warn]
       metric_schedule:

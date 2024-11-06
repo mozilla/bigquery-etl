@@ -614,8 +614,14 @@ SELECT
       THEN "default"
     ELSE "non-default"
   END AS newtab_default_ui,
+  ktd.key_tentpole,
+  ktd.start_date,
+  ktd.end_date
 FROM
   combined_newtab_activity
 LEFT JOIN
   client_profile_info
   USING (legacy_telemetry_client_id)
+LEFT JOIN `mozdata.static.key_tentpole_dates` ktd
+  ON submission_date >= ktd.start_date
+  OR submission_date <= ktd.start_date

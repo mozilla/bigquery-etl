@@ -21,4 +21,4 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
-    - country
+    - locale

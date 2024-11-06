@@ -4,6 +4,8 @@ WITH
   _current AS (
     SELECT
       client_info.client_id,
+      -- TODO: Once this field exists we should update the reference.
+      CAST(NULL AS STRING) AS usage_profile_id,
       {% raw %}
       {% if is_init() %}
       DATE(MIN(submission_timestamp)) AS first_seen_date,
@@ -28,6 +30,7 @@ WITH
 _previous AS (
   SELECT
     client_id,
+    usage_profile_id,
   FROM
     `{{ dau_reporting_clients_first_seen_table }}`
   WHERE
@@ -43,16 +46,17 @@ _previous AS (
 SELECT
   first_seen_date,
   client_id,
+  usage_profile_id,
 FROM
   _previous
 LEFT JOIN
   _current
-  USING (client_id)
+  USING (client_id, usage_profile_id)
 WHERE
   _previous.client_id IS NULL
 QUALIFY
   IF(
-    COUNT(*) OVER (PARTITION BY client_id) > 1,
-    ERROR("Duplicate client_id detected."),
+    COUNT(*) OVER (PARTITION BY client_id, usage_profile_id) > 1,
+    ERROR("Duplicate client_id, usage_profile_id combination detected."),
     TRUE
   )

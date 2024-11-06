@@ -18,6 +18,7 @@ WITH _current AS (
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
     client_id,
+    usage_profile_id,
   FROM
     `{{ dau_reporting_clients_daily_table }}`
   WHERE
@@ -29,7 +30,7 @@ _previous AS (
     days_active_bits,
     days_created_profile_bits,
     client_id,
-    -- dau_id,
+    usage_profile_id
   FROM
     `{{ dau_reporting_clients_last_seen_table }}`
   WHERE
@@ -57,4 +58,4 @@ FROM
   _current
 FULL JOIN
   _previous
-  USING (client_id)
+  USING (client_id, usage_profile_id)

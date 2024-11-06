@@ -72,7 +72,6 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(normalized_os) OVER w1) AS normalized_os,
     udf.mode_last(ARRAY_AGG(normalized_os_version) OVER w1) AS normalized_os_version,
     udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    -- udf.mode_last(ARRAY_AGG(country) OVER w1) AS country,
     udf.mode_last(ARRAY_AGG(app_build) OVER w1) AS app_build,
     udf.mode_last(ARRAY_AGG(app_display_version) OVER w1) AS app_display_version,
     udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,

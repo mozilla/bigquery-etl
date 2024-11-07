@@ -33,7 +33,7 @@ subscriptions_customers_history AS (
     AND subscriptions_history.valid_from >= customers_history.valid_from
     AND subscriptions_history.valid_from < customers_history.valid_to
   UNION ALL
-  -- Include customer changes during the subscription history periods.
+  -- Include customer changes during the active subscription history periods.
   SELECT
     CONCAT(
       subscriptions_history.subscription.id,
@@ -53,6 +53,8 @@ subscriptions_customers_history AS (
     ON subscriptions_history.subscription.customer_id = customers_history.customer.id
     AND subscriptions_history.valid_from < customers_history.valid_from
     AND subscriptions_history.valid_to > customers_history.valid_from
+  WHERE
+    subscriptions_history.subscription.ended_at IS NULL
 )
 SELECT
   id,

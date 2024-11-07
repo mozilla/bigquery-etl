@@ -2,10 +2,10 @@ friendly_name: legacy core pings
 description: |-
   Event counts of legacy core pings
 owners:
-- amiyaguchi@mozilla.com
+- bewu@mozilla.com
 labels:
   incremental: true
-  owner1: amiyaguchi
+  owner1: bewu
 bigquery:
   time_partitioning:
     type: day
@@ -14,10 +14,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_stable.core_v10
@@ -29,3 +26,5 @@ references:
   - moz-fx-data-shared-prod.telemetry_stable.core_v7
   - moz-fx-data-shared-prod.telemetry_stable.core_v8
   - moz-fx-data-shared-prod.telemetry_stable.core_v9
+deprecated: true
+deletion_date: 2025-01-01

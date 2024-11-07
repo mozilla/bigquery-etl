@@ -602,18 +602,6 @@ with DAG(
         depends_on_past=True,
     )
 
-    org_mozilla_ios_firefox__unified_metrics__v1 = GKEPodOperator(
-        task_id="org_mozilla_ios_firefox__unified_metrics__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox/unified_metrics_v1/query.py",
-        ]
-        + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kik@mozilla.com",
-        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-    )
-
     checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
         checks__fail_firefox_ios_derived__clients_activation__v1
     )

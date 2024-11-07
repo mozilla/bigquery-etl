@@ -6,16 +6,16 @@ WITH first_seen AS (
     first_seen_date,
     second_seen_date
   FROM
-    telemetry.clients_last_seen
+    `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
     days_since_seen = 0
     AND submission_date = @submission_date
 ),
 daily_events AS (
   SELECT
-    *
+    * EXCEPT (profile_group_id)
   FROM
-    telemetry_derived.clients_daily_event_v1
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_event_v1`
   WHERE
     submission_date = @submission_date
 ),
@@ -32,14 +32,14 @@ crashes_daily AS (
     utility_crash_count,
     vr_crash_count,
   FROM
-    telemetry.crashes_daily
+    `moz-fx-data-shared-prod.telemetry.crashes_daily`
   WHERE
     submission_date = @submission_date
 )
 SELECT
   *
 FROM
-  telemetry_derived.clients_daily_v6 AS cd
+  `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` AS cd
 LEFT JOIN
   daily_events
   USING (submission_date, sample_id, client_id)

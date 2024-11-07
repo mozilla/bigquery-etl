@@ -2,33 +2,35 @@ WITH extracted AS (
   -- We'll look at the metrics ping to estimate the major geckoview version.
   -- The metrics section is aliased, so we must rename the table for this to
   -- work as expected (e.g. t1).
+  -- geckoview_version was replaced with gecko_version but still used as fallback
+  -- in case we're processing that is prior to the replacement.
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.geckoview_version,
+    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
-    org_mozilla_fenix.metrics AS t1
+    `moz-fx-data-shared-prod.org_mozilla_fenix.metrics` AS t1
   WHERE
     mozfun.norm.fenix_app_info('org_mozilla_fenix', client_info.app_build).channel = 'nightly'
   UNION ALL
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.geckoview_version,
+    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
-    org_mozilla_fenix_nightly.metrics AS t1
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics` AS t1
   UNION ALL
   SELECT
     submission_timestamp,
     client_info.app_build,
-    metrics.string.geckoview_version,
+    COALESCE(metrics.string.gecko_version, metrics.string.geckoview_version) AS gecko_version,
   FROM
-    org_mozilla_fennec_aurora.metrics AS t1
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.metrics` AS t1
 ),
 transformed AS (
   SELECT
     app_build,
-    geckoview_version,
+    gecko_version,
     -- Truncate to the hour, since older builds give minute resolution.
     DATETIME_TRUNC(mozfun.norm.fenix_build_to_datetime(app_build), HOUR) AS build_hour
   FROM
@@ -43,22 +45,22 @@ grouped_build_hours AS (
   -- We choose a minimum number of pings for each group to filter out noise.
   SELECT
     build_hour,
-    geckoview_version,
+    gecko_version,
     COUNT(*) AS n_pings
   FROM
     transformed
   WHERE
-    geckoview_version IS NOT NULL
+    gecko_version IS NOT NULL
     AND app_build IS NOT NULL
     AND build_hour IS NOT NULL
   GROUP BY
     build_hour,
-    geckoview_version
+    gecko_version
   HAVING
     n_pings > 5
   ORDER BY
     build_hour DESC,
-    geckoview_version
+    gecko_version
 ),
 aggregated_build_hours AS (
   SELECT
@@ -97,7 +99,7 @@ estimated_version AS (
     build_hour,
     -- Versions are expected to be monotonically increasing. We use the major
     -- version for integer comparisons when the version hits 100.
-    MAX(CAST(SPLIT(geckoview_version, ".")[OFFSET(0)] AS INT64)) OVER (
+    MAX(CAST(SPLIT(gecko_version, ".")[OFFSET(0)] AS INT64)) OVER (
       ORDER BY
         build_hour ASC
       ROWS BETWEEN

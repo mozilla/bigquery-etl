@@ -1,0 +1,23 @@
+friendly_name: Braze Subscriptions Map
+description: |-
+  This is a map from Basket/CTMS newsletter and waitlist data to Braze subscriptions.
+  Each time a new subscription is added in Braze, it must also be added to this map.
+
+  The table is connected to a Google Sheet, with limited edit access
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-3503
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: false
+  owner: cbeck
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/1ilLz0THm5gzzqaBqfzIa_83b74Y-ElykPed_bOLoy9s
+  options:
+    skip_leading_rows: 1
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze

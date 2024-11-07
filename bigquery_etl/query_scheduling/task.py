@@ -28,7 +28,7 @@ from bigquery_etl.query_scheduling.utils import (
 AIRFLOW_TASK_TEMPLATE = "airflow_task.j2"
 QUERY_FILE_RE = re.compile(
     r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
-    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py|checks\.sql)$"
+    r"([a-zA-Z0-9_]+)_(v[0-9]+)/(?:query\.sql|part1\.sql|script\.sql|query\.py|checks\.sql|bigconfig\.yml)$"
 )
 CHECKS_FILE_RE = re.compile(
     r"^(?:.*/)?([a-zA-Z0-9_-]+)/([a-zA-Z0-9_]+)/"
@@ -95,7 +95,11 @@ class TaskRef:
     @property
     def task_key(self):
         """Key to uniquely identify the task."""
-        return f"{self.dag_name}.{self.task_id}"
+        return (
+            f"{self.dag_name}.{self.task_group}.{self.task_id}"
+            if self.task_group
+            else f"{self.dag_name}.{self.task_id}"
+        )
 
     @execution_delta.validator
     def validate_execution_delta(self, attribute, value):
@@ -187,6 +191,33 @@ class FivetranTask:
     """Representation of a Fivetran data import task."""
 
     task_id: str = attr.ib()
+
+
+class SecretDeployType(Enum):
+    """Specifies how secret should be exposed in Airflow."""
+
+    ENV = "env"
+    VOLUME = "volume"
+
+
+@attr.s(auto_attribs=True, frozen=True)
+class Secret:
+    """Represents the secret configuration used to expose credentials in the task."""
+
+    deploy_target: str
+    key: str
+    deploy_type: str = attr.ib("env")
+    secret: str = attr.ib("airflow-gke-secrets")
+
+    @deploy_type.validator
+    def validate_deploy_type(self, attribute, value):
+        """Check that deploy_type is a valid option."""
+        if value is not None and value not in set(
+            deploy_type.value for deploy_type in SecretDeployType
+        ):
+            raise ValueError(
+                f"Invalid deploy_type {value}. Needs to be either 'env' or 'volume'."
+            )
 
 
 # Known tasks in telemetry-airflow, like stable table tasks
@@ -291,6 +322,7 @@ class Task:
     is_dq_check: bool = attr.ib(False)
     # Failure of the checks task will stop the dag from executing further
     is_dq_check_fail: bool = attr.ib(True)
+    is_bigeye_check: bool = attr.ib(False)
     task_concurrency: Optional[int] = attr.ib(None)
     retry_delay: Optional[str] = attr.ib(None)
     retries: Optional[int] = attr.ib(None)
@@ -304,6 +336,8 @@ class Task:
     container_resources: Optional[Dict[str, str]] = attr.ib(None)
     node_selector: Optional[Dict[str, str]] = attr.ib(None)
     startup_timeout_seconds: Optional[int] = attr.ib(None)
+    secrets: Optional[List[Secret]] = attr.ib(None)
+    monitoring_enabled: Optional[bool] = attr.ib(False)
 
     @property
     def task_key(self):
@@ -402,7 +436,7 @@ class Task:
             raise ValueError(
                 "query_file must be a path with format:"
                 " sql/<project>/<dataset>/<table>_<version>"
-                "/(query.sql|part1.sql|script.sql|query.py)"
+                "/(query.sql|part1.sql|script.sql|query.py|checks.sql)"
                 f" but is {self.query_file}"
             )
 
@@ -452,6 +486,13 @@ class Task:
                     f"{owner} removed from email list in DAG {metadata.scheduling['dag_name']}"
                 )
         task_config["email"] = list(set(email + metadata.owners))
+
+        # expose secret config
+        task_config["secrets"] = metadata.scheduling.get("secrets", [])
+
+        # to determine if BigEye task should be generated
+        if metadata.monitoring:
+            task_config["monitoring_enabled"] = metadata.monitoring.enabled
 
         # data processed in task should be published
         if metadata.is_public_json():
@@ -564,6 +605,26 @@ class Task:
             task.validate_task_name(None, task.task_name)
         return task
 
+    @classmethod
+    def of_bigeye_check(cls, query_file, metadata=None, dag_collection=None):
+        """Create a task to trigger BigEye metric run via Airflow."""
+        task = cls.of_query(query_file, metadata, dag_collection)
+        task.query_file_path = None
+        task.is_bigeye_check = True
+        task.depends_on_past = False
+        task.destination_table = None
+        task.retries = 0
+        task.depends_on_fivetran = []
+        task.referenced_tables = None
+        task.depends_on = []
+        if task.is_bigeye_check:
+            task.task_name = f"bigeye__{task.dataset}__{task.table}__{task.version}"[
+                -MAX_TASK_NAME_LENGTH:
+            ]
+            task.validate_task_name(None, task.task_name)
+
+        return task
+
     def to_ref(self, dag_collection):
         """Return the task as `TaskRef`."""
         return TaskRef(
@@ -580,8 +641,8 @@ class Task:
         """Use sqlglot to get tables the query depends on."""
         logging.info(f"Get dependencies for {self.task_key}")
 
-        if self.is_python_script:
-            # cannot do dry runs for python scripts
+        if self.is_python_script or self.is_bigeye_check:
+            # cannot do dry runs for python scripts or BigEye config
             return self.referenced_tables or []
 
         if self.referenced_tables is None:
@@ -615,7 +676,7 @@ class Task:
             )
 
         parent_task = None
-        if self.is_dq_check:
+        if self.is_dq_check or self.is_bigeye_check:
             parent_task = dag_collection.task_for_table(
                 self.project, self.dataset, f"{self.table}_{self.version}"
             )
@@ -629,12 +690,21 @@ class Task:
             checks_upstream_task = dag_collection.fail_checks_task_for_table(
                 table[0], table[1], table[2]
             )
+            bigeye_checks_upstream_task = (
+                dag_collection.fail_bigeye_checks_task_for_table(
+                    table[0], table[1], table[2]
+                )
+            )
             upstream_task = dag_collection.task_for_table(table[0], table[1], table[2])
 
             if upstream_task is not None:
                 if upstream_task != self and upstream_task != parent_task:
                     if checks_upstream_task is not None:
                         upstream_task = checks_upstream_task
+
+                    if bigeye_checks_upstream_task is not None:
+                        upstream_task = bigeye_checks_upstream_task
+
                     task_ref = upstream_task.to_ref(dag_collection)
                     if not _duplicate_dependency(task_ref):
                         # Get its upstream dependencies so its date_partition_offset gets set.

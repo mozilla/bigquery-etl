@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.10
+ARG PYTHON_VERSION=3.11
 # pin Google Cloud SDK to old version due to https://stackoverflow.com/questions/76159439/job-failing-with-error-gcloud-crashed-attributeerror-bool-object-has-no-at
 ARG GOOGLE_CLOUD_SDK_VERSION=417.0.0
 
@@ -22,7 +22,7 @@ FROM google/cloud-sdk:${GOOGLE_CLOUD_SDK_VERSION}-alpine AS google-cloud-sdk
 
 FROM base
 # add bash for entrypoint
-RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash git
+RUN mkdir -p /usr/share/man/man1 && apt-get update -qqy && apt-get install -qqy bash git jq
 COPY --from=google-cloud-sdk /google-cloud-sdk /google-cloud-sdk
 ENV PATH /google-cloud-sdk/bin:$PATH
 COPY --from=python-deps /usr/local /usr/local

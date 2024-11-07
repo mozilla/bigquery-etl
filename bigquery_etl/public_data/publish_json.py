@@ -79,7 +79,7 @@ class JsonPublisher:
             self.table = query_file_re.group(2)
             self.version = query_file_re.group(3)
         else:
-            logging.error("Invalid file naming format: {}", self.query_file)
+            logging.error("Invalid file naming format: %s", self.query_file)
             sys.exit(1)
 
     def _clear_stage_directory(self):

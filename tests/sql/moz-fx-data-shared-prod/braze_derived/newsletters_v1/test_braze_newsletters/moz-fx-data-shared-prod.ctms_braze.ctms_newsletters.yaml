@@ -1,0 +1,96 @@
+# ctms_newsletters
+---
+# user 1
+- email_id: email_id_1
+  name: newsletter_1
+  subscribed: true
+  format: H
+  lang: EN
+  unsub_reason: "too long"
+  create_timestamp: 2020-01-01 10:00:00
+  update_timestamp: 2021-01-01 11:00:00
+  source: https://some.url.com
+- email_id: email_id_1
+  name: newsletter_2
+  subscribed: true
+  format: H
+  lang: EN
+  unsub_reason: ""
+  create_timestamp: 2020-02-01 10:00:00
+  update_timestamp: 2021-02-01 11:00:00
+  source: https://some.url.com
+- email_id: email_id_1
+  name: newsletter_not_subscribed
+  subscribed: false
+  format: H
+  lang: EN
+  unsub_reason: ""
+  create_timestamp: 2020-02-01 10:00:00
+  update_timestamp: 2021-02-01 11:00:00
+  source: https://some.url.com
+# user 2
+- email_id: email_id_2
+  name: newsletter_1
+  subscribed: true
+  format: H
+  lang: DE
+  unsub_reason: ""
+  create_timestamp: 2020-01-01 10:00:00
+  update_timestamp: 2021-01-01 11:00:00
+  source: https://some.url.com
+# user 3 with multiple entries
+- email_id: email_id_3_sort_multiple_entries
+  name: newsletter_1
+  subscribed: true
+  format: H
+  lang: DE
+  unsub_reason: ""
+  create_timestamp: 2020-01-01 10:00:00
+  update_timestamp: 2021-01-01 11:00:00
+  source: https://some.other.url.com
+- email_id: email_id_3_sort_multiple_entries
+  name: newsletter_2
+  subscribed: true
+  format: H
+  lang: de
+  unsub_reason: ""
+  create_timestamp: 2020-01-01 10:00:00
+  update_timestamp: 2021-01-01 11:00:01
+  source: https://some.url.com
+- email_id: email_id_3_sort_multiple_entries
+  name: newsletter_3
+  subscribed: true
+  format: H
+  lang: DE
+  unsub_reason: ""
+  create_timestamp: 2020-01-01 10:00:01
+  update_timestamp: 2021-01-01 11:00:00
+  source: https://some.url.com
+- email_id: email_id_3_sort_multiple_entries
+  name: newsletter_11
+  subscribed: true
+  format: H
+  lang: DE
+  unsub_reason: ""
+  create_timestamp: 2020-01-01 10:00:00
+  update_timestamp: 2021-01-01 11:00:00
+  source: https://some.url.com
+# user 4 should not show up no current newsletters
+- email_id: email_id_4
+  name: newsletter_1
+  subscribed: false
+  format: H
+  lang: EN
+  unsub_reason: "too long"
+  create_timestamp: 2020-01-01 10:00:00
+  update_timestamp: 2021-01-01 11:00:00
+  source: https://some.url.com
+- email_id: email_id_4
+  name: newsletter_2
+  subscribed: false
+  format: H
+  lang: EN
+  unsub_reason: ""
+  create_timestamp: 2020-02-01 10:00:00
+  update_timestamp: 2021-02-01 11:00:00
+  source: https://some.url.com

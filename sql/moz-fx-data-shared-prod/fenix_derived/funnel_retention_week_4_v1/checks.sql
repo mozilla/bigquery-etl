@@ -1,4 +1,4 @@
-#fail
+#warn
 {{ is_unique([
   "first_seen_date", "first_reported_country", "first_reported_isp",
   "adjust_ad_group", "adjust_campaign", "adjust_creative", "adjust_network", "install_source"
@@ -7,10 +7,10 @@
 #warn
 {{ not_null(["first_seen_date", "adjust_network"], "submission_date = @submission_date") }}
 
-#fail
+#warn
 {{ min_row_count(1, "submission_date = @submission_date") }}
 
-#fail
+#warn
 WITH new_profile_count AS (
   SELECT
     SUM(new_profiles)
@@ -42,7 +42,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH repeat_user_count AS (
   SELECT
     SUM(repeat_user)
@@ -74,7 +74,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 WITH retained_week_4_count AS (
   SELECT
     SUM(retained_week_4)
@@ -106,7 +106,7 @@ SELECT
     NULL
   );
 
-#fail
+#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 27,

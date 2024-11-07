@@ -5,6 +5,7 @@ import logging
 import os
 import re
 from collections import namedtuple
+from functools import cache
 from pathlib import Path
 
 import requests
@@ -26,15 +27,22 @@ NO_BASELINE_PING_APPS = (
     "mozilla_vpn",
     "mozillavpn_backend_cirrus",
     "accounts_backend",
+    "accounts_cirrus",
     "burnham",
+    "firefox_crashreporter",
     "firefox_reality_pc",
     "lockwise_android",
     "mach",
+    "monitor_backend",
     "monitor_cirrus",
     "moso_mastodon_backend",
     "mozphab",
     "mozregression",
 )
+
+APPS_WITH_DISTRIBUTION_ID = ("fenix",)
+
+APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
 
 
 def write_dataset_metadata(output_dir, full_table_id, derived_dataset_metadata=False):
@@ -102,6 +110,26 @@ def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1")
     ]
 
 
+@cache
+def _get_pings_without_metrics():
+    def metrics_in_schema(fields):
+        for field in fields:
+            if field["name"] == "metrics":
+                return True
+        return False
+
+    return {
+        (schema.bq_dataset_family, schema.bq_table_unversioned)
+        for schema in get_stable_table_schemas()
+        if "glean" in schema.schema_id and not metrics_in_schema(schema.schema)
+    }
+
+
+def ping_has_metrics(dataset_family: str, unversioned_table: str) -> bool:
+    """Return true if the given stable table schema has a metrics column at the top-level."""
+    return (dataset_family, unversioned_table) not in _get_pings_without_metrics()
+
+
 def table_names_from_baseline(baseline_table, include_project_id=True):
     """Return a dict with full table IDs for derived tables and views.
 
@@ -126,9 +154,9 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
     )
 
 
-def referenced_table_exists(view_sql):
+def referenced_table_exists(view_sql, id_token=None):
     """Dry run the given view SQL to see if its referent exists."""
-    dryrun = DryRun("foo/bar/view.sql", content=view_sql)
+    dryrun = DryRun("foo/bar/view.sql", content=view_sql, id_token=id_token)
     # 403 is returned if referenced dataset doesn't exist; we need to check that the 403 is due to dataset not existing
     # since dryruns on views will also return 403 due to the table CREATE
     # 404 is returned if referenced table or view doesn't exist
@@ -179,7 +207,6 @@ class GleanTable:
         self.target_table_id = ""
         self.prefix = ""
         self.custom_render_kwargs = {}
-        self.no_init = True
         self.per_app_id_enabled = True
         self.per_app_enabled = True
         self.across_apps_enabled = True
@@ -207,6 +234,7 @@ class GleanTable:
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
+        id_token=None
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -214,12 +242,12 @@ class GleanTable:
 
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
-        init_filename = f"{self.target_table_id}.init.sql"
         query_filename = f"{self.target_table_id}.query.sql"
         checks_filename = f"{self.target_table_id}.checks.sql"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
+        schema_filename = f"{self.target_table_id}.schema.yaml"
 
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
@@ -239,6 +267,8 @@ class GleanTable:
             project_id=project_id,
             derived_dataset=derived_dataset,
             app_name=app_name,
+            has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
+            has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -272,18 +302,16 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
-        if not self.no_init:
-            try:
-                init_sql = render(
-                    init_filename, template_folder=PATH / "templates", **render_kwargs
-                )
-            except TemplateNotFound:
-                init_sql = render(
-                    query_filename,
-                    template_folder=PATH / "templates",
-                    init=True,
-                    **render_kwargs,
-                )
+        # Schema files are optional
+        try:
+            schema = render(
+                schema_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            schema = None
 
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
@@ -293,7 +321,7 @@ class GleanTable:
             Artifact(table, "query.sql", query_sql),
         ]
 
-        if not (referenced_table_exists(view_sql)):
+        if not (referenced_table_exists(view_sql, id_token)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")
         else:
             artifacts.append(Artifact(view, "view.sql", view_sql))
@@ -301,9 +329,6 @@ class GleanTable:
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            if not self.no_init:
-                artifacts.append(Artifact(table, "init.sql", init_sql))
-
             if checks_sql:
                 if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
                     logging.info(
@@ -312,6 +337,9 @@ class GleanTable:
                     )
                 else:
                     artifacts.append(Artifact(table, "checks.sql", checks_sql))
+
+            if schema:
+                artifacts.append(Artifact(table, "schema.yaml", schema))
 
             for artifact in artifacts:
                 destination = (
@@ -336,6 +364,7 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
+        id_token=None
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
@@ -381,7 +410,7 @@ class GleanTable:
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if not (referenced_table_exists(sql)):
+            if not (referenced_table_exists(sql, id_token=id_token)):
                 logging.info("Skipping view for table which doesn't exist:" f" {view}")
                 return
 
@@ -415,7 +444,7 @@ class GleanTable:
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if not (referenced_table_exists(query_sql)):
+            if not (referenced_table_exists(query_sql, id_token=id_token)):
                 logging.info(
                     "Skipping query for table which doesn't exist:"
                     f" {self.target_table_id}"

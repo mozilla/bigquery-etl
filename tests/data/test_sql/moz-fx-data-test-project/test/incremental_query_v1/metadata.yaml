@@ -2,7 +2,7 @@
 friendly_name: "Test table for an incremental query"
 description: "Test table for an incremental query"
 owners:
-  - ascholtz@mozilla.com
+  - test@mozilla.com
 labels:
   schedule: daily
   public_json: true
@@ -14,4 +14,13 @@ scheduling:
   dag_name: "bqetl_events"
   depends_on_past: false
   arguments: ["--append_table"]
+  secrets:
+    - deploy_target: SECRET
+      key: some_secret_stored
+      deploy_type: env
+      secret: gke-secrets
+    - deploy_target: SECRET2
+      key: some_secret_stored_2
 deprecated: true
+monitoring:
+  enabled: true

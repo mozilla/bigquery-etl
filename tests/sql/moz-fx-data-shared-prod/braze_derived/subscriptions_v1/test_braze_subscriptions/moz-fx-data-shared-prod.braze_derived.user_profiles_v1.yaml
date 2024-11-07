@@ -1,0 +1,48 @@
+# test_braze_subscriptions - braze user profiles w/ newsletter and waitlist data
+---
+# user 1
+- external_id: user_1
+  newsletters:
+    - newsletter_name: newsletter_1
+      subscribed: true
+      update_timestamp: 2020-01-01T10:00:00+00:00
+    - newsletter_name: newsletter_2
+      subscribed: true
+      update_timestamp: 2020-01-02T10:00:00+00:00
+    - newsletter_name: newsletter_3
+      subscribed: false
+      update_timestamp: 2020-01-03T10:00:00+00:00
+    - newsletter_name: newsletter_4
+      subscribed: false
+      update_timestamp: 2020-01-04T10:00:00+00:00
+  waitlists:
+    - waitlist_name: waitlist_1
+      subscribed: true
+      update_timestamp: 2020-01-01 11:00:00+00:00
+# user 2
+- external_id: user_2
+  newsletters:
+    - newsletter_name: newsletter_1
+      subscribed: true
+      update_timestamp: 2020-02-01 10:00:00+00:00
+  waitlists:
+    - waitlist_name: waitlist_1
+      subscribed: true
+      update_timestamp: 2020-02-01 11:00:00+00:00
+# user 3
+- external_id: user_3
+  newsletters:
+    - newsletter_name: newsletter_1
+      subscribed: true
+      update_timestamp: 2020-03-01 10:00:00+00:00
+    - newsletter_name: not_a_newsletter
+      subscribed: true
+      update_timestamp: 2020-03-10 10:00:00+00:00
+  waitlists:
+    - waitlist_name: waitlist_2
+      subscribed: true
+      update_timestamp: 2020-03-02 11:00:00+00:00
+    - waitlist_name: not_a_waitlist
+      subscribed: true
+      update_timestamp: 2020-03-11 11:00:00+00:00
+# user 4 not in braze_users

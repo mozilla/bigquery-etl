@@ -5,11 +5,13 @@ import re
 import string
 import sys
 from fnmatch import fnmatchcase
+from functools import partial
 from graphlib import TopologicalSorter
 from multiprocessing.pool import Pool, ThreadPool
 from traceback import print_exc
 
 import rich_click as click
+from google.cloud import bigquery
 
 from ..cli.utils import (
     parallelism_option,
@@ -19,7 +21,7 @@ from ..cli.utils import (
     sql_dir_option,
 )
 from ..config import ConfigLoader
-from ..dryrun import DryRun
+from ..dryrun import DryRun, get_credentials, get_id_token
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..util.bigquery_id import sql_table_id
 from ..util.client_queue import ClientQueue
@@ -102,7 +104,8 @@ def validate(
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
-    views = [View.from_file(f) for f in view_files]
+    id_token = get_id_token()
+    views = [View.from_file(f, id_token=id_token) for f in view_files]
 
     with Pool(parallelism) as p:
         result = p.map(_view_is_valid, views)
@@ -197,6 +200,7 @@ def publish(
         logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
     except ValueError as e:
         raise click.ClickException(f"argument --log-level: {e}")
+    credentials = get_credentials()
 
     views = _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized)
     if respect_dryrun_skip:
@@ -205,9 +209,11 @@ def publish(
         for view in views:
             view.labels["managed"] = ""
     if not force:
+        has_changes = partial(_view_has_changes, target_project, credentials)
+
         # only views with changes
-        with ThreadPool(parallelism) as p:
-            changes = p.map(lambda v: v.has_changes(target_project), views, chunksize=1)
+        with Pool(parallelism) as p:
+            changes = p.map(has_changes, views)
         views = [v for v, has_changes in zip(views, changes) if has_changes]
     views_by_id = {v.view_identifier: v for v in views}
 
@@ -220,10 +226,12 @@ def publish(
 
     view_id_order = TopologicalSorter(view_id_graph).static_order()
 
+    client = bigquery.Client(credentials=credentials)
+
     result = []
     for view_id in view_id_order:
         try:
-            result.append(views_by_id[view_id].publish(target_project, dry_run))
+            result.append(views_by_id[view_id].publish(target_project, dry_run, client))
         except Exception:
             print(f"Failed to publish view: {view_id}")
             print_exc()
@@ -235,12 +243,17 @@ def publish(
     click.echo("All have been published.")
 
 
+def _view_has_changes(target_project, credentials, view):
+    return view.has_changes(target_project, credentials)
+
+
 def _collect_views(name, sql_dir, project_id, user_facing_only, skip_authorized):
     view_files = paths_matching_name_pattern(
         name, sql_dir, project_id, files=("view.sql",)
     )
+    id_token = get_id_token()
 
-    views = [View.from_file(f) for f in view_files]
+    views = [View.from_file(f, id_token=id_token) for f in view_files]
     if user_facing_only:
         views = [v for v in views if v.is_user_facing]
     if skip_authorized:
@@ -345,16 +358,19 @@ def clean(
                 )
             )
         ]
+
     with ThreadPool(parallelism) as p:
         managed_view_ids = {
-            sql_table_id(view)
+            view
             for views in p.starmap(
                 client_q.with_client,
-                ((_list_managed_views, dataset, name) for dataset in datasets),
+                (
+                    (_list_managed_views, dataset, name, skip_authorized)
+                    for dataset in datasets
+                ),
                 chunksize=1,
             )
             for view in views
-            if not skip_authorized or "authorized" not in view.labels
         }
 
         remove_view_ids = sorted(managed_view_ids - expected_view_ids)
@@ -365,13 +381,32 @@ def clean(
         )
 
 
-def _list_managed_views(client, dataset, pattern):
+def _list_managed_views(client, dataset, pattern, skip_authorized):
+    query = f"""
+      SELECT
+        table_catalog || "." || table_schema || "." || table_name AS table_id,
+        CONTAINS_SUBSTR(option_value, 'STRUCT("authorized", "")') AS is_authorized
+      FROM
+        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.VIEWS`
+      INNER JOIN
+        `{dataset.project}.{dataset.dataset_id}.INFORMATION_SCHEMA.TABLE_OPTIONS`
+      USING
+        (table_catalog,
+         table_schema,
+         table_name)
+      WHERE
+        option_name = "labels"
+      AND CONTAINS_SUBSTR(option_value, 'STRUCT("managed", "")')
+    """
+
+    # running a query against information schema instead of using the API to list tables is much faster
+    job = client.query(query)
+    result = list(job.result())
     return [
-        table
-        for table in client.list_tables(dataset)
-        if table.table_type == "VIEW"
-        and "managed" in table.labels
-        and (pattern is None or fnmatchcase(sql_table_id(table), f"*{pattern}"))
+        row.table_id
+        for row in result
+        if (pattern is None or fnmatchcase(sql_table_id(row.table_id), f"*{pattern}"))
+        and (not skip_authorized or not row.is_authorized)
     ]
 
 

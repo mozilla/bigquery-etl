@@ -1,0 +1,368 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.submission_date
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.os
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_ROWS
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.non_ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.reporting_ratio
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS_DATA
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME_DATA
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.submission_date
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.os
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_ROWS
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.non_ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.reporting_ratio
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.submission_date
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.os
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_ROWS
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.non_ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.reporting_ratio
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.submission_date
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.os
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_ROWS
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.non_ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.reporting_ratio
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.submission_date
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.os
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: PERCENT_NOT_NULL
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: COUNT_ROWS
+      threshold:
+        type: CONSTANT
+        lower_bound: 1.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.non_ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.ssl_loads
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.ssl_ratios_v1.reporting_ratio
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: MIN
+      metric_name: Range
+      threshold:
+        type: CONSTANT
+        lower_bound: 0.0

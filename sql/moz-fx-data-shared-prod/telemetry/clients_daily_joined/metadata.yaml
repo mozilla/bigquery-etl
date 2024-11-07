@@ -3,4 +3,4 @@ description: Joined clients_daily view
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:cloudops-managed/poucave
+      - workgroup:cloudops-managed/telescope

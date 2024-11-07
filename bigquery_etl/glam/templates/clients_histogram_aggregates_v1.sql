@@ -14,25 +14,9 @@
       -- only keep builds from the last year
       AND {{ build_date_udf }}(app_build_id) > DATE_SUB(@submission_date, INTERVAL 365 day)
       {% if filter_version %}
-      AND app_version > (latest_version - {{ num_versions_to_keep }})
+      AND app_version BETWEEN (latest_version - {{ num_versions_to_keep }}) AND latest_version
       {% endif %}
 {% endset %}
-
-CREATE TEMP FUNCTION filter_values(aggs ARRAY<STRUCT<key STRING, value INT64>>)
-RETURNS ARRAY<STRUCT<key STRING, value INT64>>
-AS (
-  ARRAY(
-    SELECT AS STRUCT agg.key, SUM(agg.value) AS value
-    FROM UNNEST(aggs) agg
-    -- Prevent overflows by only keeping buckets where value is less than 2^40
-    -- allowing 2^24 entries. This value was chosen somewhat abitrarily, typically
-    -- the max histogram value is somewhere on the order of ~20 bits.
-    -- Negative values are incorrect and should not happen but were observed,
-    -- probably due to some bit flips.
-    WHERE agg.value BETWEEN 0 AND POW(2, 40)
-    GROUP BY agg.key
-  )
-);
 
 WITH extracted_accumulated AS (
   SELECT
@@ -84,7 +68,7 @@ aggregated_daily AS (
   SELECT
     {{ attributes }},
     {{ metric_attributes }},
-    mozfun.map.sum(ARRAY_CONCAT_AGG(filter_values(value))) AS value
+    mozfun.map.sum(ARRAY_CONCAT_AGG(mozfun.glam.histogram_filter_high_values(value))) AS value
   FROM
     filtered_daily
   GROUP BY

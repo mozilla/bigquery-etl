@@ -43,7 +43,8 @@ impressions_main AS (
     1,
     2
 ),
-  ------ DESKTOP Dismissals and Disables
+------ DESKTOP Dismissals and Disables
+--- Note PingCentre was deprecated as of Fx123 (Feb 20, 2024)
 desktop_activity_stream_events AS (
   SELECT
     client_id,
@@ -62,9 +63,69 @@ desktop_activity_stream_events AS (
     `moz-fx-data-shared-prod.activity_stream.events`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND CAST(metadata.user_agent.version AS INT64) < 123
   GROUP BY
-    1,
-    2
+    client_id,
+    submission_date
+),
+--- Current telemetry for dismissals and deactivations comes in Glean's newtab ping as of Fx120 (Nov 21, 2023)
+desktop_newtab_events AS (
+  SELECT
+    n.client_info.client_id AS client_id,
+    n.metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    DATE(submission_timestamp) AS submission_date,
+    COUNTIF(
+      e.category = 'topsites'
+      AND e.name = 'dismiss'
+      AND `mozfun.map.get_key`(e.extra, 'is_sponsored') = 'true'
+    ) AS sponsored_tiles_dismissal_count,
+    COUNTIF(
+      e.name = 'pref_changed'
+      AND `mozfun.map.get_key`(
+        e.extra,
+        'pref_name'
+      ) = 'browser.newtabpage.activity-stream.showSponsoredTopSites'
+      AND `mozfun.map.get_key`(e.extra, 'new_value') = 'false'
+    ) AS sponsored_tiles_disable_count
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.newtab` n,
+    UNNEST(events) e
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND `mozfun`.norm.browser_version_info(client_info.app_display_version).major_version >= 123
+  GROUP BY
+    client_id,
+    legacy_telemetry_client_id,
+    submission_date
+),
+desktop_joint_events AS (
+  SELECT
+    n.submission_date,
+    n.legacy_telemetry_client_id AS client_id,
+    n.sponsored_tiles_dismissal_count,
+    n.sponsored_tiles_disable_count
+  FROM
+    desktop_newtab_events n
+  UNION ALL
+  SELECT
+    a.submission_date,
+    a.client_id,
+    a.sponsored_tiles_dismissal_count,
+    a.sponsored_tiles_disable_count
+  FROM
+    desktop_activity_stream_events a
+),
+desktop_agg_events AS (
+  SELECT
+    submission_date,
+    client_id,
+    SUM(sponsored_tiles_dismissal_count) AS sponsored_tiles_dismissal_count,
+    SUM(sponsored_tiles_disable_count) AS sponsored_tiles_disable_count
+  FROM
+    desktop_joint_events
+  GROUP BY
+    submission_date,
+    client_id
 ),
 ------ iOS SPONSORED TILES
 ios_data AS (
@@ -93,6 +154,20 @@ ios_data AS (
     1,
     2
 ),
+overactive_android_clients AS (
+  -- Find client_ids with over 3 000 000 events in a day,
+  -- which could cause errors in the next step due to aggregation overflows.
+  SELECT
+    client_info.client_id AS client_id
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_unnested`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_id
+  HAVING
+    COUNT(*) > 3000000
+),
 --- ANDROID SPONSORED TILES
 android_events AS (
   SELECT
@@ -114,8 +189,12 @@ android_events AS (
     ) AS sponsored_tiles_disable_count
   FROM
     `moz-fx-data-shared-prod.fenix.events_unnested` events
+  LEFT JOIN
+    overactive_android_clients
+    ON overactive_android_clients.client_id = client_info.client_id
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND overactive_android_clients.client_id IS NULL
   GROUP BY
     1,
     2
@@ -165,8 +244,86 @@ unified_metrics AS (
         AND browser_version_info.major_version >= 100
       )
     )
+),
+desktop_unified AS (
+  SELECT
+    *
+  FROM
+    unified_metrics
+  WHERE
+    normalized_os NOT IN ("Android", "iOS")
+),
+ios_unified AS (
+  SELECT
+    *
+  FROM
+    unified_metrics
+  WHERE
+    normalized_os = "iOS"
+),
+android_unified AS (
+  SELECT
+    *
+  FROM
+    unified_metrics
+  WHERE
+    normalized_os = "Android"
+),
+clients_daily_redux AS (
+  SELECT
+    submission_date,
+    client_id,
+    profile_group_id,
+    experiments
+  FROM
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
+  WHERE
+    submission_date = @submission_date
+),
+ios_experiments_info AS (
+  SELECT
+    client_info.client_id AS client_id,
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    mozfun.map.mode_last(
+      ARRAY_CONCAT_AGG(
+        mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS experiments
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.events_unnested`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+  GROUP BY
+    client_info.client_id
+),
+fenix_experiments_info AS (
+  SELECT
+    client_info.client_id AS client_id,
+    ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
+      OFFSET(0)
+    ] AS submission_date,
+    mozfun.map.mode_last(
+      ARRAY_CONCAT_AGG(
+        mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
+        ORDER BY
+          submission_timestamp
+      )
+    ) AS experiments
+  FROM
+    `moz-fx-data-shared-prod.fenix.events_unnested`
+  LEFT JOIN
+    overactive_android_clients
+    ON overactive_android_clients.client_id = client_info.client_id
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND overactive_android_clients.client_id IS NULL
+  GROUP BY
+    client_info.client_id
 )
-  --- desktop
 SELECT
   @submission_date AS submission_date,
   device,
@@ -182,9 +339,10 @@ SELECT
   COALESCE(sponsored_tiles_click_count, 0) AS sponsored_tiles_click_count,
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   COALESCE(sponsored_tiles_dismissal_count, 0) AS sponsored_tiles_dismissal_count,
-  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count
+  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
+  profile_group_id
 FROM
-  (SELECT * FROM unified_metrics WHERE normalized_os NOT IN ("Android", "iOS")) desktop_unified
+  desktop_unified
 LEFT JOIN
   clicks_main
   USING (client_id, submission_date)
@@ -192,20 +350,11 @@ LEFT JOIN
   impressions_main
   USING (client_id, submission_date)
 LEFT JOIN
-  desktop_activity_stream_events
+  desktop_agg_events
   USING (client_id, submission_date)
 -- add experiments data
 LEFT JOIN
-  (
-    SELECT
-      submission_date,
-      client_id,
-      experiments
-    FROM
-      `moz-fx-data-shared-prod.telemetry.clients_daily`
-    WHERE
-      submission_date = @submission_date
-  )
+  clients_daily_redux
   USING (submission_date, client_id)
 UNION ALL
   --- iOS
@@ -224,34 +373,16 @@ SELECT
   COALESCE(sponsored_tiles_click_count, 0) AS sponsored_tiles_click_count,
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
-  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count
+  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
+  CAST(NULL AS STRING) AS profile_group_id
 FROM
-  (SELECT * FROM unified_metrics WHERE normalized_os = "iOS") ios_unified
+  ios_unified
 LEFT JOIN
   ios_data
   USING (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
-  (
-    SELECT
-      client_info.client_id AS client_id,
-      ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
-        OFFSET(0)
-      ] AS submission_date,
-      mozfun.map.mode_last(
-        ARRAY_CONCAT_AGG(
-          mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
-          ORDER BY
-            submission_timestamp
-        )
-      ) AS experiments
-    FROM
-      `moz-fx-data-shared-prod.firefox_ios.events_unnested`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
-    GROUP BY
-      client_info.client_id
-  ) experiments_info
+  ios_experiments_info
   USING (submission_date, client_id)
 UNION ALL
 --- Android
@@ -270,39 +401,14 @@ SELECT
   COALESCE(sponsored_tiles_click_count, 0) AS sponsored_tiles_click_count,
   COALESCE(sponsored_tiles_impression_count, 0) AS sponsored_tiles_impression_count,
   NULL AS sponsored_tiles_dismissal_count,
-  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count
+  COALESCE(sponsored_tiles_disable_count, 0) AS sponsored_tiles_disable_count,
+  CAST(NULL AS STRING) AS profile_group_id
 FROM
-  (-- note unified_metrics drops known Android bots
-    SELECT
-      *
-    FROM
-      unified_metrics
-    WHERE
-      normalized_os = "Android"
-  ) android_unified
+  android_unified
 LEFT JOIN
   android_events
   USING (submission_date, client_id)
 -- add experiments data
 LEFT JOIN
-  (
-    SELECT
-      client_info.client_id AS client_id,
-      ARRAY_AGG(DATE(submission_timestamp) ORDER BY submission_timestamp DESC)[
-        OFFSET(0)
-      ] AS submission_date,
-      mozfun.map.mode_last(
-        ARRAY_CONCAT_AGG(
-          mozfun.glean.legacy_compatible_experiments(ping_info.experiments)
-          ORDER BY
-            submission_timestamp
-        )
-      ) AS experiments
-    FROM
-      `moz-fx-data-shared-prod.fenix.events_unnested`
-    WHERE
-      DATE(submission_timestamp) = @submission_date
-    GROUP BY
-      client_info.client_id
-  )
+  fenix_experiments_info
   USING (submission_date, client_id)

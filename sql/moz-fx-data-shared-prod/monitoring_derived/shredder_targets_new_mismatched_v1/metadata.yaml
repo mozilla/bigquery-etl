@@ -1,0 +1,17 @@
+friendly_name: Shredder New Mismatched Targets
+description: |-
+  Daily list of new shredder deletion targets that don't have configured deletion sources
+  or have deletion sources that do not match the sources based on lineage.
+owners:
+  - bewu@mozilla.com
+labels:
+  incremental: true
+  owner1: benwu
+  schedule: daily
+scheduling:
+  dag_name: bqetl_shredder_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: run_date
+    require_partition_filter: true

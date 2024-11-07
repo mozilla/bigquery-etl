@@ -18,7 +18,7 @@ WITH filtered_data AS (
     os = 'Windows'
     AND channel = 'release' AS sampled
   FROM
-    clients_histogram_aggregates_v2
+    `moz-fx-data-shared-prod.telemetry_derived.clients_histogram_aggregates_v2`
   CROSS JOIN
     UNNEST(histogram_aggregates)
   WHERE
@@ -57,13 +57,13 @@ data_with_enough_wau AS (
     build_ids
     USING (app_build_id, channel)
 ),
-normalized_histograms AS (
+all_histograms AS (
   SELECT
     * EXCEPT (sampled) REPLACE(
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
-      mozfun.glam.histogram_normalized_sum(
+      mozfun.glam.histogram_normalized_sum_with_original(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
         IF(MAX(sampled), 10.0, 1.0)
       ) AS aggregates,
@@ -93,7 +93,7 @@ normalized_histograms AS (
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
-      mozfun.glam.histogram_normalized_sum(
+      mozfun.glam.histogram_normalized_sum_with_original(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
         IF(MAX(sampled), 10.0, 1.0)
       ) AS aggregates,
@@ -123,7 +123,7 @@ normalized_histograms AS (
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
-      mozfun.glam.histogram_normalized_sum(
+      mozfun.glam.histogram_normalized_sum_with_original(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
         IF(MAX(sampled), 10.0, 1.0)
       ) AS aggregates,
@@ -153,7 +153,7 @@ normalized_histograms AS (
     -- This returns true if at least 1 row has sampled=true.
     -- ~0.0025% of the population uses more than 1 os for the same set of dimensions
     -- and in this case we treat them as Windows+Release users when fudging numbers
-      mozfun.glam.histogram_normalized_sum(
+      mozfun.glam.histogram_normalized_sum_with_original(
         mozfun.map.sum(ARRAY_CONCAT_AGG(aggregates)),
         IF(MAX(sampled), 10.0, 1.0)
       ) AS aggregates,
@@ -188,15 +188,19 @@ SELECT
   num_buckets,
   metric,
   metric_type,
-  normalized_histograms.key AS key,
+  all_histograms.key AS key,
   process,
   agg_type,
   STRUCT<key STRING, value FLOAT64>(
     CAST(aggregates.key AS STRING),
     1.0 * SUM(aggregates.value)
-  ) AS record
+  ) AS record,
+  STRUCT<key STRING, value FLOAT64>(
+    CAST(aggregates.key AS STRING),
+    1.0 * SUM(aggregates.non_norm_value)
+  ) AS non_norm_record
 FROM
-  normalized_histograms
+  all_histograms
 CROSS JOIN
   UNNEST(aggregates) AS aggregates
 GROUP BY

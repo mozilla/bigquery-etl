@@ -106,7 +106,24 @@ class TestDagCollection:
             "test",
             ["test@example.org"],
             {},
-            {"dag_name": "bqetl_test_dag", "depends_on_past": True},
+            {
+                "dag_name": "bqetl_test_dag",
+                "depends_on_past": True,
+                "secrets": [
+                    {
+                        "deploy_target": "SECRET",
+                        "key": "some_secret_stored",
+                        "deploy_type": "env",
+                        "secret": "gke-secrets",
+                    },
+                    {
+                        "deploy_target": "SECRET2",
+                        "key": "some_secret_stored_2",
+                        "deploy_type": "env",
+                        "secret": "gke-secrets",
+                    },
+                ],
+            },
         )
 
         tasks = [Task.of_query(query_file, metadata)]
@@ -126,6 +143,7 @@ class TestDagCollection:
 
         assert task
         assert task.dag_name == "bqetl_test_dag"
+        assert len(task.secrets) == 2
 
     def test_task_for_non_existing_table(self):
         dags = DagCollection.from_dict(
@@ -290,7 +308,10 @@ class TestDagCollection:
             },
         )
 
-        tasks = [Task.of_python_script(query_file, metadata)]
+        tasks = [
+            Task.of_python_script(query_file, metadata),
+            Task.of_bigeye_check(query_file, metadata),
+        ]
 
         default_args = {
             "depends_on_past": False,
@@ -825,5 +846,52 @@ class TestDagCollection:
             (TEST_DIR / "data" / "dags" / "test_dag_with_bigquery_table_sensors")
             .read_text()
             .strip()
+        )
+        assert result == expected
+
+    def test_to_airflow_with_secrets(self, tmp_path):
+        query_file = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
+        metadata = Metadata.from_file(
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "metadata.yaml"
+        )
+
+        tasks = [Task.of_query(query_file, metadata)]
+
+        default_args = {
+            "depends_on_past": False,
+            "owner": "test@example.org",
+            "email": ["test@example.org"],
+            "start_date": "2020-01-01",
+            "retry_delay": "1h",
+        }
+        dags = DagCollection.from_dict(
+            {
+                "bqetl_events": {
+                    "schedule_interval": "daily",
+                    "default_args": default_args,
+                }
+            }
+        ).with_tasks(tasks)
+
+        dags.to_airflow_dags(tmp_path)
+        result = (tmp_path / "bqetl_events.py").read_text().strip()
+        print(result)
+        expected = (
+            (TEST_DIR / "data" / "dags" / "test_dag_with_secrets").read_text().strip()
         )
         assert result == expected

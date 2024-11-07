@@ -2,6 +2,7 @@
 - &base
   submission_date: '2017-01-01'
   client_id: a
+  profile_group_id: prfl_a
   country: US
   sap: 0
   organic: 0
@@ -29,45 +30,94 @@
   scalar_parent_urlbar_searchmode_typed_sum: []
   is_sap_monetizable: False
   has_adblocker_addon: False
+  policies_is_enterprise: True
+  os: 'Darwin'
+  os_version: '23.4.0'
+  os_version_major: '23'
+  os_version_minor: '23.4'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: searchbar
   sap: 1
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine2
   source: 'in-content:sap:code'
   tagged_sap: 2
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine2
   source: 'in-content:sap-follow-on:code'
   tagged_follow_on: 3
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine2
   source: 'in-content:organic:none'
   organic: 4
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: 'ad-click:'
   ad_click: 2
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: 'ad-click:organic.none'
   ad_click_organic: 3
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: b
+  profile_group_id: prfl_b
   engine: engine1
   source: 'search-with-ads:sap.code'
   search_with_ads: 3
+  policies_is_enterprise: True
+  os: 'Windows_NT'
+  os_version: '10.0'
+  os_version_major: 'Windows 11'
+  os_version_minor: 'Windows 11'
 - <<: *base
   client_id: c
+  profile_group_id: prfl_c
   addon_version: 0.9.6
   engine: engine2
   source: contextmenu
   sap: 2
   has_adblocker_addon: true
+  policies_is_enterprise: False

@@ -11,7 +11,7 @@ WITH pop AS (
     COALESCE(environment.settings.attribution.ua, '') AS attribution_ua,
     DATE(submission_timestamp) AS date
   FROM
-    telemetry.new_profile
+    `moz-fx-data-shared-prod.telemetry.new_profile`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND payload.processes.parent.scalars.startup_profile_selection_reason = 'firstrun-created-default'

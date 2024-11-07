@@ -75,6 +75,7 @@ def main():
     parser.add_argument("--dataset", default="glam_etl")
     parser.add_argument("--sql-root", default="sql/")
     parser.add_argument("--daily-view-only", action="store_true", default=False)
+    parser.add_argument("--use-sample-id", action="store_true", default=False)
     args = parser.parse_args()
 
     env = Environment(loader=PackageLoader("bigquery_etl", "glam/templates"))
@@ -271,6 +272,8 @@ def main():
                 source_table=f"glam_etl.{args.prefix}__clients_histogram_aggregates_v1",
                 **config[args.prefix],
             ),
+            channel=channel_prefixes[args.prefix],
+            use_sample_id=args.use_sample_id,
         ),
         table(
             "probe_counts_v1",
@@ -290,13 +293,6 @@ def main():
             ),
             channel=channel_prefixes[args.prefix],
         ),
-        table(
-            "scalar_percentiles_v1",
-            **models.scalar_percentiles(
-                source_table=f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
-            ),
-        ),
-        table("histogram_percentiles_v1"),
         view("view_probe_counts_v1"),
         view("view_user_counts_v1", **models.user_counts()),
         view(

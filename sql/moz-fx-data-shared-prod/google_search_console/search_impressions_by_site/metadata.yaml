@@ -1,0 +1,13 @@
+friendly_name: Search Impressions By Site
+description: |-
+  Google Search impressions aggregated by site for the following domains:
+    * addons.mozilla.org (since 2023-07-11)
+    * blog.mozilla.org (since 2023-07-11)
+    * developer.mozilla.org (since 2024-04-10)
+    * getpocket.com (since 2023-07-24)
+    * support.mozilla.org (since 2023-07-11)
+    * www.mozilla.org (since 2023-07-11)
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose

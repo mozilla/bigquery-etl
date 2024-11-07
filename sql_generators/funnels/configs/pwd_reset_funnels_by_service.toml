@@ -1,0 +1,83 @@
+destination_dataset = "accounts_frontend_derived"
+platform = "accounts_frontend"
+owners = ["ksiegler@mozilla.org"]
+version = "1"
+
+[funnels]
+
+[funnels.pwd_reset_without_recovery_key]
+
+friendly_name = "Password Reset Funnel w/o use of Recovery Key"
+description = "Funnel steps beginning from entering email to successful password reset without the use of a recovery key"
+steps = ["pwd_reset_view", "create_new_pwd_view_no_rk", "pwd_reset_success_no_rk"]
+dimensions = ["service"]
+
+[funnels.pwd_reset_with_recovery_key]
+
+friendly_name = "Password Reset Funnel w/o use of Recovery Key"
+description = "Funnel steps beginning from entering email to successful password reset without the use of a recovery key"
+steps = ["pwd_reset_view", "create_new_pwd_view_with_rk", "pwd_reset_success_with_rk"]
+dimensions = ["service"]
+
+[steps]
+
+[steps.pwd_reset_view]
+friendly_name = "Password Reset Email View"
+description = "Step of the password reset funnel requesting email - from there the funnel path depends on whether user has a recovery key"
+data_source = "monitor_frontend"
+select_expression = "client_id"
+where_expression = "event = 'password_reset.view'"
+aggregation = "count distinct"
+join_previous_step_on = "client_id"
+
+[steps.create_new_pwd_view_no_rk]
+friendly_name = "Password Reset Create New w/o Recovery Key"
+description = "Step of the password reset funnel prompting for new password if user does not have a recovery key"
+data_source = "monitor_frontend"
+select_expression = "client_id"
+where_expression = "event = 'password_reset.create_new_view'"
+aggregation = "count distinct"
+join_previous_step_on = "client_id"
+
+[steps.pwd_reset_success_no_rk]
+friendly_name = "Password Reset Successful w/o Recovery Key"
+description = "Final step of the password reset funnel without the use of recovery key indicating reset was a success"
+data_source = "monitor_frontend"
+select_expression = "client_id"
+where_expression = "event = 'password_reset.create_new_success_view'"
+aggregation = "count distinct"
+join_previous_step_on = "client_id"
+
+[steps.create_new_pwd_view_with_rk]
+friendly_name = "Password Reset Create New w/ Recovery Key"
+description = "Step of the password reset funnel prompting for new password if user does not have a recovery key"
+data_source = "monitor_frontend"
+select_expression = "client_id"
+where_expression = "event = 'password_reset.recovery_key_create_new_view'"
+aggregation = "count distinct"
+join_previous_step_on = "client_id"
+
+[steps.pwd_reset_success_with_rk]
+friendly_name = "Password Reset Successful w/ Recovery Key"
+description = "Final step of the password reset funnel without the use of recovery key indicating reset was a success"
+data_source = "monitor_frontend"
+select_expression = "client_id"
+where_expression = "event = 'password_reset.recovery_key_create_success_view'"
+aggregation = "count distinct"
+join_previous_step_on = "client_id"
+
+[data_sources]
+
+[data_sources.monitor_frontend]
+from_expression = "mozdata.accounts_frontend.events_stream"
+submission_date_column = "DATE(submission_timestamp)"
+client_id_column = "client_id"
+
+[dimensions]
+
+[dimensions.service]
+data_source = "monitor_frontend"
+select_expression = "IF(COALESCE(NULLIF(metrics.string.relying_party_oauth_client_id, ''), NULLIF(metrics.string.relying_party_service, '')) IN ('sync', '5882386c6d801776'), 'Sync', 'Non-Sync')"
+friendly_name = "Service"
+description = "Oauth Client ID is used to map to service name for which service the user logged in through"
+client_id_column = "client_id"

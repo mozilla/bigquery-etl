@@ -1,0 +1,308 @@
+fields:
+
+- name: external_id
+  type: STRING
+  mode: NULLABLE
+
+- name: email
+  type: STRING
+  mode: NULLABLE
+
+- name: mailing_country
+  type: STRING
+  mode: NULLABLE
+
+- name: email_subscribe
+  type: STRING
+  mode: NULLABLE
+
+- name: basket_token
+  type: STRING
+  mode: NULLABLE
+
+- name: email_lang
+  type: STRING
+  mode: NULLABLE
+
+- name: create_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+
+- name: update_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+
+- name: fxa_id_sha256
+  type: STRING
+  mode: NULLABLE
+
+- name: has_fxa
+  type: BOOLEAN
+  mode: NULLABLE
+
+- name: fxa_primary_email
+  type: STRING
+  mode: NULLABLE
+
+- name: fxa_lang
+  type: STRING
+  mode: NULLABLE
+
+- name: fxa_first_service
+  type: STRING
+  mode: NULLABLE
+
+- name: fxa_created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+
+- name: newsletters
+  type: RECORD
+  mode: REPEATED
+  fields:
+
+  - name: newsletter_name
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscribed
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: newsletter_lang
+    type: STRING
+    mode: NULLABLE
+
+  - name: newsletter_source
+    type: STRING
+    mode: NULLABLE
+
+  - name: create_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: update_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+
+- name: waitlists
+  type: RECORD
+  mode: REPEATED
+  fields:
+
+  - name: waitlist_name
+    type: STRING
+    mode: NULLABLE
+
+  - name: waitlist_geo
+    type: STRING
+    mode: NULLABLE
+
+  - name: waitlist_platform
+    type: STRING
+    mode: NULLABLE
+
+  - name: waitlist_source
+    type: STRING
+    mode: NULLABLE
+
+  - name: create_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: subscribed
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: unsub_reason
+    type: STRING
+    mode: NULLABLE
+
+  - name: update_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+
+- name: products
+  type: RECORD
+  mode: REPEATED
+  fields:
+
+  - name: provider
+    type: STRING
+    mode: NULLABLE
+
+  - name: payment_provider
+    type: STRING
+    mode: NULLABLE
+
+  - name: product_name
+    type: STRING
+    mode: NULLABLE
+
+  - name: service_name
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_plan_id
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_product_id
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_started_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: subscription_ended_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: subscription_summary
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_billing_interval
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_interval_count
+    type: INTEGER
+    mode: NULLABLE
+
+  - name: subscription_currency
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_amount
+    type: NUMERIC
+    mode: NULLABLE
+
+  - name: is_bundle
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: is_trial
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: is_active
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: subscription_status
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_country_code
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_country_name
+    type: STRING
+    mode: NULLABLE
+
+  - name: current_period_started_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: current_period_ends_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: is_auto_renew
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: auto_renew_disabled_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: has_refunds
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: has_fraudulent_charges
+    type: BOOLEAN
+    mode: NULLABLE
+
+  - name: first_touch_impression_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: first_touch_entrypoint
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_utm_campaign
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_utm_content
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_utm_medium
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_utm_source
+    type: STRING
+    mode: NULLABLE
+
+  - name: first_touch_utm_term
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_impression_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: last_touch_entrypoint
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_utm_campaign
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_utm_content
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_utm_medium
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_utm_source
+    type: STRING
+    mode: NULLABLE
+
+  - name: last_touch_utm_term
+    type: STRING
+    mode: NULLABLE
+
+  - name: subscription_created_at
+    type: TIMESTAMP
+    mode: NULLABLE
+
+  - name: subscription_updated_at
+    type: TIMESTAMP
+    mode: NULLABLE

@@ -1,0 +1,24 @@
+friendly_name: GA4 Site Metrics Summary for Mozilla VPN
+description: |-
+  GA4 Site Metrics Summary for Mozilla VPN within mozilla.org
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_mozilla_vpn_site_metrics
+  depends_on:
+  - task_id: wait_for_wmo_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
+    execution_delta: 3h
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - browser
+references: {}

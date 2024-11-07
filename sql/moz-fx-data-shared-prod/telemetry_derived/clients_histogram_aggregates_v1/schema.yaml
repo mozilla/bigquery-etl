@@ -1,0 +1,43 @@
+fields:
+- name: submission_date
+  type: DATE
+- name: sample_id
+  type: INTEGER
+- name: client_id
+  type: STRING
+- name: os
+  type: STRING
+- name: app_version
+  type: INTEGER
+- name: app_build_id
+  type: STRING
+- name: channel
+  type: STRING
+- fields:
+  - name: first_bucket
+    type: INTEGER
+  - name: last_bucket
+    type: INTEGER
+  - name: num_buckets
+    type: INTEGER
+  - name: metric
+    type: STRING
+  - name: metric_type
+    type: STRING
+  - name: key
+    type: STRING
+  - name: process
+    type: STRING
+  - name: agg_type
+    type: STRING
+  - fields:
+    - name: key
+      type: STRING
+    - name: value
+      type: INTEGER
+    mode: REPEATED
+    name: aggregates
+    type: RECORD
+  mode: REPEATED
+  name: histogram_aggregates
+  type: RECORD

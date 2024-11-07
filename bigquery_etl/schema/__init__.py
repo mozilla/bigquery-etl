@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import attr
 import yaml
@@ -70,6 +70,9 @@ class Schema:
                 dryrun.DryRun(
                     os.path.join(project, dataset, table, "query.sql"),
                     query,
+                    project=project,
+                    dataset=dataset,
+                    table=table,
                     *args,
                     **kwargs,
                 ).get_schema()
@@ -78,7 +81,7 @@ class Schema:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
             return cls({"fields": []})
 
-    def deploy(self, destination_table: str):
+    def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
         client = bigquery.Client()
         tmp_schema_file = NamedTemporaryFile()
@@ -89,10 +92,10 @@ class Schema:
             # destination table already exists, update schema
             table = client.get_table(destination_table)
             table.schema = bigquery_schema
-            client.update_table(table, ["schema"])
+            return client.update_table(table, ["schema"])
         except NotFound:
             table = bigquery.Table(destination_table, schema=bigquery_schema)
-            client.create_table(table)
+            return client.create_table(table)
 
     def merge(
         self,
@@ -247,7 +250,7 @@ class Schema:
                                     f"for {prefix}.{field_path} are incompatible"
                                 )
 
-                if dtype == "RECORD":
+                if dtype == "RECORD" and nodes[node_name]["type"] == "RECORD":
                     # keep traversing nested fields
                     self._traverse(
                         f"{prefix}.{field_path}",
@@ -292,3 +295,148 @@ class Schema:
     def from_bigquery_schema(cls, fields: List[SchemaField]) -> "Schema":
         """Construct a Schema from the BigQuery representation."""
         return cls({"fields": [field.to_api_repr() for field in fields]})
+
+    def generate_compatible_select_expression(
+        self,
+        target_schema: "Schema",
+        fields_to_remove: Optional[Iterable[str]] = None,
+        unnest_structs: bool = False,
+        max_unnest_depth: int = 0,
+        unnest_allowlist: Optional[Iterable[str]] = None,
+    ) -> str:
+        """Generate the select expression for the source schema based on the target schema.
+
+        The output will include all fields of the target schema in the same order of the target.
+        Any fields that are missing in the source schema are set to NULL.
+
+        :param target_schema: The schema to coerce the current schema to.
+        :param fields_to_remove: Given fields are removed from the output expression. Expressed as a
+            list of strings with `.` separating each level of nesting, e.g. record_name.field.
+        :param unnest_structs: If true, all record fields are expressed as structs with all nested
+            fields explicitly listed. This allows the expression to be compatible even if the
+            source schemas get new fields added. Otherwise, records are only unnested if they
+            do not match the target schema.
+        :param max_unnest_depth: Maximum level of struct nesting to explicitly unnest in
+            the expression.
+        :param unnest_allowlist: If set, only the given top-level structs are unnested.
+        """
+
+        def _type_info(node):
+            """Determine the BigQuery type information from Schema object field."""
+            dtype = node["type"]
+            if dtype == "RECORD":
+                dtype = (
+                    "STRUCT<"
+                    + ", ".join(
+                        f"`{field['name']}` {_type_info(field)}"
+                        for field in node["fields"]
+                    )
+                    + ">"
+                )
+            elif dtype == "FLOAT":
+                dtype = "FLOAT64"
+            if node.get("mode") == "REPEATED":
+                return f"ARRAY<{dtype}>"
+            return dtype
+
+        def recurse_fields(
+            _source_schema_nodes: List[Dict],
+            _target_schema_nodes: List[Dict],
+            path=None,
+        ) -> str:
+            if path is None:
+                path = []
+
+            select_expr = []
+            source_schema_nodes = {n["name"]: n for n in _source_schema_nodes}
+            target_schema_nodes = {n["name"]: n for n in _target_schema_nodes}
+
+            # iterate through fields
+            for node_name, node in target_schema_nodes.items():
+                dtype = node["type"]
+                node_path = path + [node_name]
+                node_path_str = ".".join(node_path)
+
+                if node_name in source_schema_nodes:  # field exists in app schema
+                    # field matches, can query as-is
+                    if node == source_schema_nodes[node_name] and (
+                        # don't need to unnest scalar
+                        dtype != "RECORD"
+                        or not unnest_structs
+                        # reached max record depth to unnest
+                        or len(node_path) > max_unnest_depth > 0
+                        # field not in unnest allowlist
+                        or (
+                            unnest_allowlist is not None
+                            and node_path[0] not in unnest_allowlist
+                        )
+                    ):
+                        if (
+                            fields_to_remove is None
+                            or node_path_str not in fields_to_remove
+                        ):
+                            select_expr.append(node_path_str)
+                    elif (
+                        dtype == "RECORD"
+                    ):  # for nested fields, recursively generate select expression
+                        if (
+                            node.get("mode", None) == "REPEATED"
+                        ):  # unnest repeated record
+                            select_expr.append(
+                                f"""
+                                    ARRAY(
+                                        SELECT
+                                            STRUCT(
+                                                {recurse_fields(
+                                                    source_schema_nodes[node_name]['fields'],
+                                                    node['fields'],
+                                                    [node_name],
+                                                )}
+                                            )
+                                        FROM UNNEST({node_path_str}) AS `{node_name}`
+                                    ) AS `{node_name}`
+                                """
+                            )
+                        else:  # select struct fields
+                            select_expr.append(
+                                f"""
+                                    STRUCT(
+                                        {recurse_fields(
+                                            source_schema_nodes[node_name]['fields'],
+                                            node['fields'],
+                                            node_path,
+                                        )}
+                                    ) AS `{node_name}`
+                                """
+                            )
+                    else:  # scalar value doesn't match, e.g. different types
+                        select_expr.append(
+                            f"CAST(NULL AS {_type_info(node)}) AS `{node_name}`"
+                        )
+                else:  # field not found in source schema
+                    select_expr.append(
+                        f"CAST(NULL AS {_type_info(node)}) AS `{node_name}`"
+                    )
+
+            return ", ".join(select_expr)
+
+        return recurse_fields(
+            self.schema["fields"],
+            target_schema.schema["fields"],
+        )
+
+    def generate_select_expression(
+        self,
+        remove_fields: Optional[Iterable[str]] = None,
+        unnest_structs: bool = False,
+        max_unnest_depth: int = 0,
+        unnest_allowlist: Optional[Iterable[str]] = None,
+    ) -> str:
+        """Generate the select expression for the schema which includes each field."""
+        return self.generate_compatible_select_expression(
+            self,
+            remove_fields,
+            unnest_structs,
+            max_unnest_depth,
+            unnest_allowlist,
+        )

@@ -1,16 +1,26 @@
 """bigquery-etl CLI metadata command."""
 
+from datetime import datetime
+from functools import partial
+from multiprocessing.pool import Pool
 from pathlib import Path
 from typing import Optional
 
 import click
+from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 
 from bigquery_etl.metadata.parse_metadata import DatasetMetadata, Metadata
 from bigquery_etl.metadata.publish_metadata import publish_metadata
 
-from ..cli.utils import paths_matching_name_pattern, project_id_option, sql_dir_option
+from ..cli.utils import (
+    parallelism_option,
+    paths_matching_name_pattern,
+    project_id_option,
+    sql_dir_option,
+)
 from ..config import ConfigLoader
+from ..dryrun import get_credentials
 from ..util import extract_from_query_path
 
 
@@ -109,20 +119,83 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
     ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
 )
 @sql_dir_option
-def publish(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+@parallelism_option()
+def publish(
+    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+) -> None:
     """Publish Bigquery metadata."""
-    client = bigquery.Client(project_id)
+    table_metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
 
+    if parallelism > 0:
+        credentials = get_credentials()
+
+        with Pool(parallelism) as pool:
+            pool.map(
+                partial(_publish_metadata, project_id, credentials),
+                table_metadata_files,
+            )
+    else:
+        for metadata_file in table_metadata_files:
+            _publish_metadata(project_id, credentials=None, metadata_file=metadata_file)
+
+
+def _publish_metadata(project_id, credentials, metadata_file):
+    project, dataset, table = extract_from_query_path(metadata_file)
+    try:
+        metadata = Metadata.from_file(metadata_file)
+        publish_metadata(
+            bigquery.Client(project=project_id, credentials=credentials),
+            project,
+            dataset,
+            table,
+            metadata,
+        )
+    except FileNotFoundError:
+        print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+
+
+@metadata.command(
+    help="""
+    Deprecate BigQuery table by updating metadata.yaml file.
+    Deletion date is by default 3 months from current date if not provided.
+
+    Example:
+     ./bqetl metadata deprecate ga_derived.downloads_with_attribution_v2 --deletion_date=2024-03-02
+    """
+)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@sql_dir_option
+@click.option(
+    "--deletion_date",
+    "--deletion-date",
+    help="Date when table is scheduled for deletion. Date format: yyyy-mm-dd",
+    type=click.DateTime(formats=["%Y-%m-%d"]),
+    default=datetime.today() + relativedelta(months=+3),
+)
+def deprecate(
+    name: str,
+    sql_dir: str,
+    project_id: str,
+    deletion_date: datetime,
+) -> None:
+    """Deprecate Bigquery table by updating metadata yaml file(s)."""
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
     for metadata_file in table_metadata_files:
-        project, dataset, table = extract_from_query_path(metadata_file)
-        try:
-            metadata = Metadata.from_file(metadata_file)
-            publish_metadata(client, project, dataset, table, metadata)
-        except FileNotFoundError:
-            print("No metadata file for: {}.{}.{}".format(project, dataset, table))
+        metadata = Metadata.from_file(metadata_file)
 
-    return None
+        metadata.deprecated = True
+        metadata.deletion_date = deletion_date.date()
+
+        metadata.write(metadata_file)
+        click.echo(f"Updated {metadata_file} with deprecation.")
+
+    if not table_metadata_files:
+        raise FileNotFoundError(f"No metadata file(s) were found for: {name}")

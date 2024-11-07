@@ -1,0 +1,23 @@
+friendly_name: Firefox iOS Client LTV
+description: |-
+  LTV States by client, rather than by client-day
+  Uses the most recently seen values for a client
+  LTV here is number of ad-clicks
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_org_mozilla_firefox_derived
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - "submission_date:DATE:{{ds}}"
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+    - first_reported_country
+references: {}

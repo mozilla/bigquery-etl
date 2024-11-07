@@ -66,3 +66,10 @@ workflows:
             .circleci/.* validate-sql true
             .circleci/.* validate-bqetl true
             .circleci/.* validate-routines true
+  setup-tag:
+    jobs:
+      - continuation/continue:
+          configuration_path: .circleci/workflows.yml
+          filters:
+            branches:
+              ignore: /.*/

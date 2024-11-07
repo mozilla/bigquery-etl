@@ -1,0 +1,15 @@
+2024-05-02:
+  start_date: 2023-05-01
+  end_date: 2023-12-31
+  reason: Backfill table with one year of data as requested by stakeholder in https://mozilla-hub.atlassian.net/browse/DENG-2621.
+  watchers:
+  - wichan@mozilla.com
+  status: Complete
+
+2024-04-24:
+  start_date: 2024-01-01
+  end_date: 2024-04-23
+  reason: Backfill a smaller sample for a new table to ensure data is correct.
+  watchers:
+  - wichan@mozilla.com
+  status: Complete

@@ -25,6 +25,7 @@ THEN
       ping_type,
       os,
       build_id,
+      build_date,
       metric,
       metric_type,
       metric_key,
@@ -32,6 +33,8 @@ THEN
       total_users,
       histogram,
       percentiles,
+      non_norm_histogram,
+      non_norm_percentiles,
       total_sample
     )
   VALUES
@@ -40,13 +43,16 @@ THEN
       S.ping_type,
       S.os,
       S.build_id,
+      S.build_date,
       S.metric,
       S.metric_type,
       S.metric_key,
       S.client_agg_type,
       S.total_users,
       S.histogram,
-      S.percentiles,
+      NULL,
+      S.non_norm_histogram,
+      NULL,
       S.total_sample
     )
   WHEN MATCHED
@@ -54,5 +60,7 @@ THEN
   UPDATE
     SET T.total_users = S.total_users,
     T.histogram = S.histogram,
-    T.percentiles = S.percentiles,
+    T.percentiles = NULL,
+    T.non_norm_histogram = S.non_norm_histogram,
+    T.non_norm_percentiles = NULL,
     T.total_sample = S.total_sample

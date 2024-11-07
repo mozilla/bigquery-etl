@@ -3,7 +3,7 @@
 set -e
 
 # Absolute path this script is in
-SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_PATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd )"
 CMD=$1
 
 if [ "$PWD" != "$SCRIPT_PATH" ]; then
@@ -27,6 +27,7 @@ if [ "$CMD" == "bootstrap" ]; then
     venv/bin/pip install --no-deps -r requirements.txt
     venv/bin/pip install -e .
     echo "bqetl configured! It should now be ready for use."
+    export BIGEYE_API_CRED_FILE='bigeye_credentials.ini'
     exit 0
 fi
 

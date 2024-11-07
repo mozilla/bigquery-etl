@@ -1,4 +1,4 @@
-#fail
+#warn
 {{ is_unique(["submission_date", "country"], "country IS NOT NULL") }}
 -- min_row_count helps us detect if we're seeing delays in the data arriving
 -- could also be an indicator of an upstream issue.
@@ -6,7 +6,7 @@
 #fail
 {{ min_row_count(1, "submission_date = @submission_date") }}
 
-#fail
+#warn
 WITH fx_ios_count AS (
   SELECT
     COUNT(*)
@@ -52,25 +52,6 @@ FROM
   base;
 
 #warn
-WITH base AS (
-  SELECT
-    SUM(new_profiles) AS new_funnel_new_profiles,
-    SUM(total_downloads) AS total_downloads,
-  FROM
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    new_funnel_new_profiles > total_downloads,
-    ERROR("There are more new_profiles than app downloads."),
-    NULL
-  )
-FROM
-  base;
-
-#fail
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 7,

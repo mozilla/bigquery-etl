@@ -1,0 +1,22 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: n_logged_event
+  type: INTEGER
+  mode: NULLABLE
+- name: n_created_pictureinpicture
+  type: INTEGER
+  mode: NULLABLE
+- name: n_viewed_protection_report
+  type: INTEGER
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE

@@ -4,6 +4,7 @@ from textwrap import dedent
 import yaml
 from google.cloud.bigquery import SchemaField
 
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema
 
 TEST_DIR = Path(__file__).parent.parent
@@ -453,3 +454,238 @@ class TestQuerySchema:
                 ),
             ),
         )
+
+
+def test_generate_compatible_select_expression():
+    source_schema = {
+        "fields": [
+            {"name": "scalar", "type": "INTEGER"},
+            {"name": "mismatch_scalar", "type": "INTEGER"},
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_extra", "type": "DATE"},
+                    {
+                        "name": "nested_record",
+                        "type": "RECORD",
+                        "fields": [
+                            {"name": "v1", "type": "INTEGER"},
+                            {"name": "v2", "type": "INTEGER"},
+                        ],
+                    },
+                    {
+                        "name": "mismatch_record",
+                        "type": "RECORD",
+                        "fields": [{"name": "nested_str", "type": "STRING"}],
+                    },
+                ],
+            },
+            {"name": "array_scalar", "type": "INTEGER", "mode": "REPEATED"},
+            {
+                "name": "array_record",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                    {"name": "key", "type": "STRING"},
+                    {"name": "value", "type": "STRING"},
+                ],
+            },
+            {"name": "extra", "type": "STRING"},
+        ]
+    }
+    target_schema = {
+        "fields": [
+            {"name": "scalar", "type": "INTEGER"},
+            {"name": "mismatch_scalar", "type": "STRING"},
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "nested_missing", "type": "DATE"},
+                    {
+                        "name": "nested_record",
+                        "type": "RECORD",
+                        "fields": [
+                            {"name": "v1", "type": "INTEGER"},
+                            {"name": "v2", "type": "INTEGER"},
+                        ],
+                    },
+                    {
+                        "name": "mismatch_record",
+                        "type": "RECORD",
+                        "fields": [{"name": "nested_int", "type": "INTEGER"}],
+                    },
+                ],
+            },
+            {"name": "array_scalar", "type": "INTEGER", "mode": "REPEATED"},
+            {
+                "name": "array_record",
+                "type": "RECORD",
+                "mode": "REPEATED",
+                "fields": [
+                    {"name": "value", "type": "STRING"},
+                    {"name": "key", "type": "STRING"},
+                ],
+            },
+            {"name": "missing", "type": "STRING"},
+        ]
+    }
+    expected_expr = """
+    scalar,
+    CAST(NULL AS STRING) AS `mismatch_scalar`,
+    STRUCT(
+        CAST(NULL AS DATE) AS `nested_missing`,
+        record.nested_record,
+        STRUCT(CAST(NULL AS INTEGER) AS `nested_int`) AS `mismatch_record`
+    ) AS `record`,
+    array_scalar,
+    ARRAY(
+        SELECT
+            STRUCT(
+                array_record.value,
+                array_record.key
+            )
+        FROM
+            UNNEST(array_record) AS `array_record`
+    ) AS `array_record`,
+    CAST(NULL AS STRING) AS `missing`
+    """
+
+    source = Schema.from_json(source_schema)
+    target = Schema.from_json(target_schema)
+
+    select_expr = source.generate_compatible_select_expression(
+        target, unnest_structs=False
+    )
+    assert reformat(select_expr) == reformat(expected_expr)
+
+
+def test_generate_select_expression_unnest_struct():
+    """unnest_struct argument should unnest records even when they match."""
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "key", "type": "STRING"},
+                    {"name": "value", "type": "STRING"},
+                ],
+            },
+        ]
+    }
+
+    source = Schema.from_json(source_schema)
+
+    unnest_expr = source.generate_select_expression(unnest_structs=True)
+    assert reformat(unnest_expr) == reformat(
+        "STRUCT(record.key, record.value) AS `record`"
+    )
+
+    no_unnest_expr = source.generate_select_expression(unnest_structs=False)
+    assert reformat(no_unnest_expr) == reformat("record")
+
+
+def test_generate_select_expression_remove_fields():
+    """remove_fields argument remove the given fields from the output."""
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {"name": "key", "type": "STRING"},
+                    {"name": "value", "type": "STRING"},
+                ],
+            },
+            {"name": "scalar", "type": "INTEGER"},
+        ]
+    }
+
+    source = Schema.from_json(source_schema)
+
+    unnest_expr = source.generate_select_expression(
+        unnest_structs=True, remove_fields=["record.value", "scalar"]
+    )
+    assert reformat(unnest_expr) == reformat("STRUCT(record.key) AS `record`")
+
+
+def test_generate_select_expression_max_unnest_depth():
+    """max_unnest_depth argument should stop unnesting at the given depth."""
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [
+                    {
+                        "name": "record2",
+                        "type": "RECORD",
+                        "fields": [
+                            {
+                                "name": "record3",
+                                "type": "RECORD",
+                                "fields": [{"name": "key", "type": "STRING"}],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+    }
+
+    source = Schema.from_json(source_schema)
+
+    expected_expr = """
+    STRUCT(
+        STRUCT(
+            record.record2.record3
+        ) AS `record2`
+    ) AS `record`
+    """
+
+    unnest_expr = source.generate_select_expression(
+        unnest_structs=True, max_unnest_depth=2
+    )
+    assert reformat(unnest_expr) == reformat(expected_expr)
+
+
+def test_generate_select_expression_unnest_allowlist():
+    """unnest_allowlist argument should cause only the given fields to be unnested."""
+    source_schema = {
+        "fields": [
+            {
+                "name": "record",
+                "type": "RECORD",
+                "fields": [{"name": "key", "type": "STRING"}],
+            },
+            {
+                "name": "record2",
+                "type": "RECORD",
+                "fields": [
+                    {
+                        "name": "record3",
+                        "type": "RECORD",
+                        "fields": [{"name": "key", "type": "STRING"}],
+                    }
+                ],
+            },
+        ]
+    }
+
+    source = Schema.from_json(source_schema)
+
+    expected_expr = """
+        record,
+        STRUCT(
+            STRUCT(
+                record2.record3.key
+            ) AS `record3`
+        ) AS `record2`
+        """
+
+    unnest_expr = source.generate_select_expression(
+        unnest_structs=True, unnest_allowlist=["record2"]
+    )
+    assert reformat(unnest_expr) == reformat(expected_expr)

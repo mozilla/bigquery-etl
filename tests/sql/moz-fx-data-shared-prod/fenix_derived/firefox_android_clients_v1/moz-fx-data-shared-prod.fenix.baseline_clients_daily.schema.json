@@ -55,5 +55,9 @@
   {
     "type": "BOOLEAN",
     "name": "is_new_profile"
+  },
+  {
+    "type": "STRING",
+    "name": "distribution_id"
   }
 ]

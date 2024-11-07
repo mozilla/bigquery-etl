@@ -7,7 +7,7 @@ WITH baseline_clients AS (
     normalized_channel AS channel,
     normalized_country_code AS country
   FROM
-    firefox_ios.baseline
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     metrics.timespan.glean_baseline_duration.value > 0
     AND LOWER(metadata.isp.name) <> "browserstack"
@@ -28,10 +28,9 @@ WITH baseline_clients AS (
 client_attribution AS (
   SELECT
     client_id,
-    channel,
     adjust_network,
   FROM
-    firefox_ios.firefox_ios_clients
+    `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 ),
 default_browser AS (
   SELECT
@@ -45,7 +44,7 @@ default_browser AS (
     normalized_country_code AS country,
     IF(SUM(metrics.counter.app_opened_as_default_browser) > 0, TRUE, FALSE) AS is_default_browser
   FROM
-    firefox_ios.metrics AS metric_ping
+    `moz-fx-data-shared-prod.firefox_ios.metrics` AS metric_ping
   WHERE
     LOWER(metadata.isp.name) <> "browserstack"
     -- we need to work with a larger time window as some metrics ping arrive with a multi day delay
@@ -250,9 +249,29 @@ event_ping_clients_feature_usage AS (
       AND event_name = 'notification_permission'
       AND extra.key = 'alert_setting'
       AND extra.value = 'enabled'
-    ) AS notification_alert_setting_enabled
+    ) AS notification_alert_setting_enabled,
+      /*Address*/
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_dismissed'
+    ) AS address_autofill_prompt_dismissed,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_expanded'
+    ) AS address_autofill_prompt_expanded,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'autofill_prompt_shown'
+    ) AS address_autofill_prompt_shown,
+    COUNTIF(event_category = 'addresses' AND event_name = 'autofilled') AS address_autofilled,
+    COUNTIF(event_category = 'addresses' AND event_name = 'form_detected') AS address_form_detected,
+    COUNTIF(event_category = 'addresses' AND event_name = 'modified') AS address_modified,
+    COUNTIF(
+      event_category = 'addresses'
+      AND event_name = 'settings_autofill'
+    ) AS address_settings_autofill
   FROM
-    firefox_ios.events_unnested
+    `moz-fx-data-shared-prod.firefox_ios.events_unnested`
   LEFT JOIN
     UNNEST(event_extra) AS extra
   WHERE
@@ -494,6 +513,35 @@ SELECT
     DISTINCT IF(notification_alert_setting_enabled > 0, client_id, NULL)
   ) AS notification_alert_setting_enabled_users,
   SUM(notification_alert_setting_enabled) AS notification_alert_setting_enabled,
+-- address_autofill_prompt_dismissed
+  COUNT(
+    DISTINCT IF(address_autofill_prompt_dismissed > 0, client_id, NULL)
+  ) AS address_autofill_prompt_dismissed_users,
+  SUM(address_autofill_prompt_dismissed) AS address_autofill_prompt_dismissed,
+-- address_autofill_prompt_expanded
+  COUNT(
+    DISTINCT IF(address_autofill_prompt_expanded > 0, client_id, NULL)
+  ) AS address_autofill_prompt_expanded_users,
+  SUM(address_autofill_prompt_expanded) AS address_autofill_prompt_expanded,
+-- address_autofill_prompt_shown
+  COUNT(
+    DISTINCT IF(address_autofill_prompt_shown > 0, client_id, NULL)
+  ) AS address_autofill_prompt_shown_users,
+  SUM(address_autofill_prompt_shown) AS address_autofill_prompt_shown,
+-- address_autofilled
+  COUNT(DISTINCT IF(address_autofilled > 0, client_id, NULL)) AS address_autofilled_users,
+  SUM(address_autofilled) AS address_autofilled,
+-- address_form_detected
+  COUNT(DISTINCT IF(address_form_detected > 0, client_id, NULL)) AS address_form_detected_users,
+  SUM(address_form_detected) AS address_form_detected,
+-- address_modified
+  COUNT(DISTINCT IF(address_modified > 0, client_id, NULL)) AS address_modified_users,
+  SUM(address_modified) AS address_modified,
+-- address_settings_autofill
+  COUNT(
+    DISTINCT IF(address_settings_autofill > 0, client_id, NULL)
+  ) AS address_settings_autofill_users,
+  SUM(address_settings_autofill) AS address_settings_autofill
 FROM
   event_ping_clients_feature_usage
 INNER JOIN
@@ -501,7 +549,7 @@ INNER JOIN
   USING (ping_date, client_id, channel, country)
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id)
 LEFT JOIN
   default_browser
   USING (ping_date, client_id, channel, country)

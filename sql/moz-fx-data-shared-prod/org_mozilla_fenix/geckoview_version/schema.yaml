@@ -1,0 +1,7 @@
+fields:
+- type: DATETIME
+  name: build_hour
+- type: INTEGER
+  name: geckoview_major_version
+- type: INTEGER
+  name: n_pings

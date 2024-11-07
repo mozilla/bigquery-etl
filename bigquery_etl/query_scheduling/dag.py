@@ -6,6 +6,7 @@ import attr
 import cattrs
 from jinja2 import Environment, PackageLoader
 
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.query_scheduling import formatters
 from bigquery_etl.query_scheduling.task import Task, TaskRef
 from bigquery_etl.query_scheduling.utils import (
@@ -248,6 +249,12 @@ class Dag:
         dag_template = env.get_template(AIRFLOW_DAG_TEMPLATE)
         args = self.__dict__
         args["task_groups"] = self.task_groups
+        args["bigeye_warehouse_id"] = ConfigLoader.get(
+            "monitoring", "bigeye_warehouse_id", fallback=1939
+        )
+        args["bigeye_conn_id"] = ConfigLoader.get(
+            "monitoring", "bigeye_conn_id", fallback="bigeye_connection"
+        )
 
         return dag_template.render(args)
 

@@ -1,0 +1,21 @@
+friendly_name: Send Suppression List Update To CampaignMonitor
+description: |-
+  This python script gets the table new_suppression_list_entries_for_mofo_v1 and uploads the result to the Campaign Monitor API.
+  Emails that are malformed and cannot be uploaded to Campaign Monitor due to not being real emails will be added to the table.
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  owner1: leli
+scheduling:
+  dag_name: bqetl_marketing_suppression_list
+  arguments:
+  - --api_key={{ var.value.campaign_monitor_api_key }}
+  - --client_id={{ var.value.campaign_monitor_client_id }}
+  depends_on:
+  - task_id: marketing_suppression_list_external__campaign_monitor_suppression_list__v1
+    dag_name: bqetl_marketing_suppression_list
+  - task_id: marketing_suppression_list_derived__main_suppression_list__v1
+    dag_name: bqetl_marketing_suppression_list
+bigquery: null
+references: {}

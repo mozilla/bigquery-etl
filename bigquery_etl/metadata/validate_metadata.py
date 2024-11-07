@@ -4,13 +4,16 @@ import logging
 import os
 import sys
 from argparse import ArgumentParser
+from pathlib import Path
 
 import click
+import yaml
 
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 from ..util import standard_args
-from ..util.common import project_dirs
+from ..util.common import extract_last_group_by_from_query, project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
 
 parser = ArgumentParser(description=__doc__)
@@ -20,6 +23,8 @@ standard_args.add_log_level(parser)
 
 CODEOWNERS_FILE = "CODEOWNERS"
 CHANGE_CONTROL_LABEL = "change_controlled"
+SHREDDER_MITIGATION_LABEL = "shredder_mitigation"
+ID_LEVEL_COLUMNS_FILE_PATH = Path(__file__).parent / "id_level_columns.yaml"
 
 
 def validate_public_data(metadata, path):
@@ -98,6 +103,72 @@ def validate_change_control(
     return True
 
 
+def validate_shredder_mitigation(query_dir, metadata):
+    """Check queries with shredder mitigation label comply with requirements."""
+    has_shredder_mitigation = SHREDDER_MITIGATION_LABEL in metadata.labels
+
+    if has_shredder_mitigation:
+        schema_file = Path(query_dir) / SCHEMA_FILE
+        schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
+
+        # This label requires that the query doesn't have id-level columns,
+        # has a group by that is explicit & all schema columns have descriptions.
+        query_file = Path(query_dir) / "query.sql"
+        query_group_by = extract_last_group_by_from_query(sql_path=query_file)
+
+        # Validate that the query group by is as required.
+        integers_in_group_by = False
+        for e in query_group_by:
+            try:
+                int(e)
+                integers_in_group_by = True
+            except ValueError:
+                continue
+        if (
+            "ALL" in query_group_by
+            or not all(isinstance(e, str) for e in query_group_by)
+            or not query_group_by
+            or integers_in_group_by
+        ):
+            click.echo(
+                "Shredder mitigation validation failed, GROUP BY must use an explicit list "
+                "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
+            )
+            return False
+
+        with open(ID_LEVEL_COLUMNS_FILE_PATH, "r") as columns_file:
+            columns_from_file = yaml.safe_load(columns_file)
+            id_level_columns = columns_from_file.get("id_level_columns", [])
+
+        for field in schema:
+            # Validate that the query columns have descriptions.
+            if not field.description:
+                click.echo(
+                    f"Shredder mitigation validation failed, {field.name} does not have "
+                    f"a description in the schema."
+                )
+                return False
+            # Validate that id-level columns are not present in the query schema.
+            if field.name in id_level_columns:
+                click.echo(
+                    f"Shredder mitigation validation failed, {field.name} is an id-level"
+                    f" column that is not allowed for this type of backfill."
+                )
+                return False
+    return True
+
+
+def validate_deprecation(metadata, path):
+    """Check that deprecated is True when deletion date exists."""
+    if metadata.deletion_date and not metadata.deprecated:
+        click.echo(
+            f"Deletion date should only be added when table is deprecated in {path}"
+        )
+        return False
+
+    return True
+
+
 def validate(target):
     """Validate metadata files."""
     failed = False
@@ -117,6 +188,15 @@ def validate(target):
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
                     ):
+                        failed = True
+
+                    if not validate_shredder_mitigation(
+                        query_dir=root,
+                        metadata=metadata,
+                    ):
+                        failed = True
+
+                    if not validate_deprecation(metadata, path):
                         failed = True
 
                     # todo more validation

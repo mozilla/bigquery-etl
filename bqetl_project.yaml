@@ -17,53 +17,38 @@ default:
   - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
+monitoring:
+  bigeye_warehouse_id: 1939
+  bigeye_conn_id: bigeye_connection
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  function_accounts:
+  - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
+  - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
   skip:
+  ## skip all data-observability-dev queries due to CI lacking permissions in that project.
+  # TODO: once data observability platform assessment concludes this should be removed.
+  - sql/data-observability-dev/**/**/*.sql
   # Access Denied
-  - sql/moz-fx-data-shared-prod/monitoring_derived/glean_server_knob_experiments_v1/query.sql
-  - sql/moz-fx-data-shared-prod/ads/nt_visits_to_sessions_conversion_factors_daily/view.sql
-  - sql/moz-fx-data-shared-prod/account_ecosystem_derived/ecosystem_client_id_lookup_v1/query.sql
-  - sql/moz-fx-data-shared-prod/account_ecosystem_derived/desktop_clients_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/account_ecosystem_restricted/ecosystem_client_id_deletion_v1/query.sql
-  - sql/moz-fx-data-shared-prod/account_ecosystem_derived/fxa_logging_users_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
-  - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
-  - sql/moz-fx-data-shared-prod/app_store_external/**/*.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_completeness_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
+  - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v1/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/schema_error_counts_v2/query.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/suggest_impression_rate_v1/init.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/suggest_impression_rate_v1/query.sql
-  - sql/moz-fx-data-shared-prod/monitoring/schema_error_counts_v1/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/structured_error_counts_v1/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring/structured_error_counts/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v1/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v2/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns_v2/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring*/suggest*_rate*_live*/*.sql
-  - sql/moz-fx-data-shared-prod/monitoring*/topsites*_rate*_live*/*.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend/nonprod_accounts/view.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend_derived/users_services_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
-  - sql/moz-fx-data-shared-prod/accounts_backend/accounts/view.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
-  - sql/moz-fx-data-shared-prod/accounts_db/**/*view.sql
-  - sql/moz-fx-data-shared-prod/accounts_db_derived/**/*.sql
-  - sql/moz-fx-data-shared-prod/ads/fakespot_daily_events_rollup/view.sql
+  - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
+  - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_delete_events_v2/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_oauth_events_v1/query.sql
@@ -75,7 +60,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_export_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_amplitude_user_ids_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stderr_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_gcp_stdout_events_v1/query.sql
@@ -84,25 +68,17 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stdout_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/nonprod_fxa_gcp_stderr_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_admin_server_sanitized_v2/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/init.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/docker_fxa_customs_sanitized_v2/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/destinations_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/incremental_mar_v1/query.sql
   - sql/moz-fx-data-shared-prod/fivetran_costs_derived/monthly_costs_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fakespot/**/*.sql
   - sql/**/apple_ads_external*/**/query.sql
-  - sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_update/view.sql
-  - sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1/query.sql
-  - sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_structured/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring/payload_bytes_error_all/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_distinct_docids_v1/query.sql
-  - sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized/query.sql
-  - sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_normalized_v1/query.sql
   - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/stripe_external/**/*.sql
   - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_live/view.sql
@@ -123,8 +99,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_products_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_revised_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/stripe_subscriptions_history_v1/query.sql
-  - sql/moz-fx-data-shared-prod/stripe/itemized_payout_reconciliation/view.sql
-  - sql/moz-fx-data-shared-prod/stripe/itemized_tax_transactions/view.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/devices_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/fxa_attribution_v1/query.sql
@@ -141,16 +115,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v3/query.sql
-  - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns/view.sql
-  - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_external/subscriptions_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_external/users_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/protected_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_derived/add_device_events_v1/init.sql
-  - sql/moz-fx-data-shared-prod/mozilla_vpn_external/devices_v1/init.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/google_ads_campaign_cost_breakdowns_v1/query.sql
-  - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
-  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/search_terms*/**/*.sql
   - sql/moz-fx-data-bq-performance/release_criteria/dashboard_health_v1/query.sql
   - sql/moz-fx-data-bq-performance/release_criteria/rc_flattened_test_data_v1/query.sql
@@ -159,86 +124,41 @@ dry_run:
   - sql/moz-fx-data-bq-performance/release_criteria/release_criteria_v1/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services/**/*.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/**/*.sql
-  - sql/moz-fx-data-shared-prod/**/topsites_impression/view.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/contextual_services_derived/event_aggregates_v1/init.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/adm_forecasting_v1/query.sql
-  - sql/moz-fx-data-shared-prod/regrets_reporter/regrets_reporter_summary/view.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/regrets_reporter_derived/regrets_reporter_summary_v1/*.sql
-  - sql/moz-fx-data-shared-prod/mlhackweek_search/**/*.sql
-  - sql/moz-fx-data-shared-prod/regrets_reporter_ucs/**/*.sql
-  - sql/moz-fx-data-shared-prod/telemetry/xfocsp_error_report/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/regrets_reporter_update/view.sql
-  - sql/moz-fx-data-marketing-prod/acoustic/**/*.sql
+  - sql/moz-fx-data-shared-prod/acoustic_external/**/query.sql
   - sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql
   - sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/**/client_deduplication*/*.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v1/query.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/search_impressions_by_site_v2/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/site_impression_exports_empty_check_v1/query.sql
-  - sql/moz-fx-data-marketing-prod/google_search_console_derived/url_impression_exports_empty_check_v1/query.sql
-  - sql/moz-fx-data-shared-prod/fenix_external/installs_by_country_v1/query.sql
-  - sql/moz-fx-data-shared-prod/fenix/installs_by_country/view.sql
-  - sql/moz-fx-data-shared-prod/firefox_desktop/top_sites/view.sql
-  - sql/moz-fx-data-shared-prod/firefox_desktop/quick_suggest/view.sql
-  - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
-  - sql/moz-fx-data-shared-prod/stub_attribution_service/dl_token_ga_attribution_lookup/view.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
+  - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v2/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v1/query.sql
-  - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
-  - sql/moz-fx-data-shared-prod/mozilla_org/gclid_conversions/view.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_tiktokreporter/**/*.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter_tiktok_reportershare/**/*.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter/**/*.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v2/query.sql
-  # Materialized views
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/experiment_search_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/experiment_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/experiment_search_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/experiment_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_search_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/experiment_events_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_cumulative_population_estimate_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/experiment_enrollment_cumulative_population_estimate/view.sql
-  - sql/moz-fx-data-shared-prod/**/event_monitoring_live_v1/init.sql
-  - sql/moz-fx-data-shared-prod/monitoring/event_monitoring_live/view.sql
-  # Already exists (and lacks an "OR REPLACE" clause)
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_first_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry/fxa_users_last_seen_raw_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/cfr_users_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/onboarding_users_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/snippets_users_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/messaging_system_derived/whats_new_panel_users_last_seen_v1/init.sql
-  # Reference table not found
-  - sql/moz-fx-data-shared-prod/adjust/adjust_kpi_deliverables/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring_derived/structured_detailed_error_counts_v1/view.sql
-  - sql/moz-fx-data-shared-prod/monitoring/structured_detailed_error_counts/view.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/migrated_clients_v1/query.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/incline_executive_v1/query.sql
-  - sql/moz-fx-data-shared-prod/org_mozilla_firefox/migrated_clients/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/sponsored_tiles_ad_request_fill/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/glean_server_knob_experiments_v1/query.sql
+  - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
+  - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
+  - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring/structured_missing_columns/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring/telemetry_missing_columns/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/table_partition_expirations_v1/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_daily/query.sql
-  # Syntax error
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/init.sql
   # HTTP Error 408: Request Time-out
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
@@ -246,10 +166,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/init.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
@@ -263,28 +183,31 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_client_probe_counts_extract_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_sample_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/histogram_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
+  - sql/moz-fx-data-shared-prod/sumo_ga/analytics_314096102/view.sql
+  - sql/moz-fx-data-shared-prod/sumo_ga/analytics_432581103/view.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
-  # Query templates
+  # Source table does not have a verifiable schema
+  - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_v1/view.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/rayserve_cost_fakespot_tenant_prod_v1/view.sql
+    # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
-  # Temporary table does not exist
-  # TODO: remove this in a follow up PR
-  - sql/moz-fx-data-shared-prod/*/baseline_clients_first_seen_v1/*.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/fenix_metrics.template.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/mobile_search_clients_daily.template.sql
   # Query too complex
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/init.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
@@ -292,80 +215,8 @@ dry_run:
 format:
   skip:
   - bigquery_etl/glam/templates/*.sql
-  - sql_generators/events_daily/templates/**/*.sql
-  - sql_generators/glean_usage/templates/*.sql
-  - sql_generators/search/templates/*.sql
-  - sql_generators/experiment_monitoring/templates/**/*.sql
-  - sql_generators/feature_usage/templates/*.sql
-  - sql_generators/funnels/templates/*.sql
-  - sql/moz-fx-data-shared-prod/telemetry/fenix_events_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/fennec_ios_events_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/fire_tv_events_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/first_shutdown_summary/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/first_shutdown_summary_v4/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/focus_android_events_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/lockwise_mobile_events_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/rocket_android_events_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/simpleprophet_forecasts/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_0/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/smoot_usage_day_13/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/sync/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_anonymous_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_anonymous_parquet_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_core_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_core_parquet_v3/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_downgrade_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_downgrade_parquet_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_focus_event_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_focus_event_parquet_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_heartbeat_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_heartbeat_parquet_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_ip_privacy_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_ip_privacy_parquet_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_mobile_event_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_mobile_event_parquet_v2/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_new_profile_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_new_profile_parquet_v2/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_shield_study_parquet/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/telemetry_shield_study_parquet_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/windows_10_aggregate/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/windows_10_build_distribution/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry/windows_10_patch_adoption/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_histogram_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_boolean_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_histogram_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_probe_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_histogram_bucket_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_non_norm_histogram_bucket_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/clients_scalar_probe_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_last_seen_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/core_live/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/devtools_events_amplitude_v1/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/error_aggregates/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/event_events_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/event_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/events_live/view.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_enrollment_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/firefox_desktop_exact_mau28_by_client_count_dimensions_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/fxa_users_services_last_seen_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/glam_user_counts_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_events_v1/init.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_events_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/scalar_percentiles_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_desktop_v2/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_fxa_v2/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/smoot_usage_new_profiles_v2/query.sql
+  - sql_generators/**/*.sql
+  - tests/**/*.sql
   - sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql
   - sql/moz-fx-data-shared-prod/udf_js/bootstrap_percentile_ci/udf.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/contains.sql
@@ -373,6 +224,8 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
+  skip_qualifying_references:
+  - sql/mozfun/**/examples/*.sql
 
 routine:
   dependency_dir: udf_js_lib/
@@ -383,6 +236,10 @@ routine:
     - sql/moz-fx-data-shared-prod/udf/main_summary_scalars/udf.sql
   example_dir: examples
   project: mozfun
+  test_projects:
+  - sql/mozfun
+  - sql/moz-fx-data-shared-prod
+  - sql/bigquery-etl-integration-test
 
 view:
   validation:
@@ -405,6 +262,10 @@ schema:
   skip_prefixes:
   - pioneer
   - rally
+  deploy:
+    skip:
+    # see comment in query file
+    - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
 
 docs:
   docs_dir: docs
@@ -430,9 +291,15 @@ generate:
     skip_existing: # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/metadata.yaml
+    - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/bigconfig.yml
+    - sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android
+    - moso_mastodon_web
+    - moso_mastodon_backend
     - regrets_reporter
     - regrets_reporter_ucs
     - tiktokreporter_android
@@ -441,18 +308,27 @@ generate:
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
     events_stream:
-      datasets:
-      - fenix
-      app_ids:
-      - bedrock
-      - debug_ping_view
-      - glean_dictionary
-      - org_mozilla_fenix
-      - org_mozilla_fenix_beta
-      - org_mozilla_firefox
+      skip_apps:
+      - bergamot
+      - firefox_echo_show
+      - firefox_fire_tv
+      - firefox_reality
+      - firefox_reality_pc
+      - lockwise_android
+      - lockwise_ios
+      - org_mozilla_ios_tiktok_reporter
+      - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
+      - org_mozilla_tiktokreporter
+      metrics_as_struct:
+      - accounts_frontend
+      - accounts_backend
     events_monitoring:
-      default_event_table: events_v1
-      event_table:
-        mozillavpn: main_v1
-        accounts_frontend: accounts_events_v1
-        accounts_backend: accounts_events_v1
+      skip_apps:
+      - ads_backend  # restricted dataset, we don't want to include it aggregate view
+      skip_pings:
+      - topsites-impression # access denied
+      - serp-categorization # access denied
+      - background-update # table doesn't exist
+      events_tables: # overwrite event tables
+        pine: # Probe info returns pings that don't have tables, only use events_v1
+        - events_v1

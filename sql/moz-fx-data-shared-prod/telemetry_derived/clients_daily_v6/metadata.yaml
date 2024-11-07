@@ -35,6 +35,7 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
@@ -43,5 +44,5 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-  - workgroup:cloudops-managed/poucave
+  - workgroup:cloudops-managed/telescope
 references: {}

@@ -17,3 +17,6 @@ SELECT
   subscription_id,
 FROM
   `dev-fivetran.stripe_nonprod.discount`
+WHERE
+  -- Fivetran used to have a bug where it synced subscription discounts as customer discounts.
+  NOT (type = 'CUSTOMER' AND subscription_id IS NOT NULL)

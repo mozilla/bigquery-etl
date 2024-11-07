@@ -48,9 +48,9 @@ SELECT
   client_id,
   usage_profile_id,
 FROM
-  _previous
-LEFT JOIN
   _current
+LEFT JOIN
+  _previous
   USING (client_id, usage_profile_id)
 WHERE
   _previous.client_id IS NULL

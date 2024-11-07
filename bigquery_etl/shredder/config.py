@@ -500,6 +500,15 @@ SEARCH_IGNORE_FIELDS = {
     ("telemetry_stable.prio_v4", ID),
 }
 
+# list of dataset_id.table_id to ignore in find_glean_targets function
+GLEAN_IGNORE_LIST = {
+    # deletion request table
+    "firefox_desktop_derived.migration_esr_incorrect_deletion_request_v1",
+    # subset of firefox_desktop_stable.pageload_v1 which doesn't have client ids
+    "firefox_desktop_derived.pageload_1pct_v1",
+    "firefox_desktop_derived.pageload_nightly_v1",
+}
+
 
 def find_glean_targets(
     pool: ThreadPool, client: bigquery.Client, project: str = SHARED_PROD
@@ -603,6 +612,7 @@ def find_glean_targets(
 
     # skip tables already added to DELETE_TARGETS
     manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
+    skipped_tables = manually_added_tables | GLEAN_IGNORE_LIST
 
     return {
         **{
@@ -619,7 +629,7 @@ def find_glean_targets(
             and not table.table_id.startswith("migration")
             # skip tables with explicitly excluded client ids
             and table.labels.get("include_client_id", "true").lower() != "false"
-            and qualified_table_id(table) not in manually_added_tables
+            and qualified_table_id(table) not in skipped_tables
         },
         **{
             # glean derived tables that contain client_id
@@ -631,7 +641,7 @@ def find_glean_targets(
             for table in glean_derived_tables
             if any(field.name == CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
-            and qualified_table_id(table) not in manually_added_tables
+            and qualified_table_id(table) not in skipped_tables
         },
         **{
             # glean derived tables that contain client_info.client_id but not client_id
@@ -650,7 +660,7 @@ def find_glean_targets(
             )
             and all(field.name != CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
-            and qualified_table_id(table) not in manually_added_tables
+            and qualified_table_id(table) not in skipped_tables
         },
     }
 

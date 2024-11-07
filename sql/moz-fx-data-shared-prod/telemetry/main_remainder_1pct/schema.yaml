@@ -23200,6 +23200,18 @@ fields:
         - name: blocklist_mlbf_softblocks_source
           type: STRING
           mode: NULLABLE
+        - name: browser_backup_enabled
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: browser_backup_location_on_device
+          type: INTEGER
+          mode: NULLABLE
+        - name: browser_backup_pswd_encrypted
+          type: BOOLEAN
+          mode: NULLABLE
+        - name: browser_backup_scheduler_enabled
+          type: BOOLEAN
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE

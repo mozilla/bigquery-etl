@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -4050,6 +4050,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: web_push_error_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_cache_hit_miss_stat_per_cache_size
       type: RECORD
       mode: REPEATED
       fields:
@@ -12470,6 +12480,44 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: network_cache_miss_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -13835,6 +13883,33 @@ fields:
             type: INTEGER
             mode: NULLABLE
     - name: quotamanager_initialize_repository_number_of_iterations
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: network_cache_hit_rate_per_cache_size
       type: RECORD
       mode: REPEATED
       fields:

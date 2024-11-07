@@ -3936,6 +3936,20 @@ fields:
       description: 'The code indicating why the push message couldn''t be processed.
 
         '
+    - name: network_cache_hit_miss_stat_per_cache_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Hit/Miss count split by cache size in file count Hit 0-5000, Miss
+        0-5000, Hit 5001-10000, ...
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -13484,6 +13498,50 @@ fields:
         a particular origin or process.
 
         '
+    - name: network_cache_miss_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent to find out a cache entry file is missing. (Migrated
+        from the geckoview metric of the same name).
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -14664,6 +14722,40 @@ fields:
         repository type, helping to identify performance trends or potential inefficiencies
         across these repositories. This can provide insight into the impacts of specific
         code changes, including potential optimizations or regressions.
+
+        '
+    - name: network_cache_hit_rate_per_cache_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Hit rate for a specific cache size in file count. The hit rate
+        is split into 20 buckets. The key is the cacheSize (20 buckets) and the value
+        is between 0 and 100.
 
         '
 - name: normalized_app_name

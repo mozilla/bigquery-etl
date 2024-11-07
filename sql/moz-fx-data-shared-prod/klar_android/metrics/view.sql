@@ -343,7 +343,8 @@ SELECT
       metrics.labeled_counter.browser_ui_interaction_keyboard,
       metrics.labeled_counter.networking_http_3_connection_close_reason,
       metrics.labeled_counter.web_push_content_encoding,
-      metrics.labeled_counter.web_push_error_code
+      metrics.labeled_counter.web_push_error_code,
+      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -652,7 +653,8 @@ SELECT
       metrics.timing_distribution.network_sub_open_to_first_sent,
       metrics.timing_distribution.network_sub_tcp_connection,
       metrics.timing_distribution.network_sub_tls_handshake,
-      metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time
+      metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
+      metrics.timing_distribution.network_cache_miss_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -716,7 +718,8 @@ SELECT
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
-      metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations
+      metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
+      metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
     ) AS `labeled_custom_distribution`
   ) AS `metrics`,
   normalized_app_name,

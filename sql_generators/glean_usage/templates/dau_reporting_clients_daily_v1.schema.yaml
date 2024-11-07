@@ -6,12 +6,6 @@ fields:
     Logical date used for processing and paritioning.
 
 - mode: NULLABLE
-  name: client_id
-  type: STRING
-  description: |
-    A UUID uniquely identifying the client.
-
-- mode: NULLABLE
   name: usage_profile_id
   type: STRING
   description:
@@ -69,61 +63,32 @@ fields:
     A string containing the distribution identifier. This was used to identify installs
     from Mozilla Online, but now also identifies partnership deal distributions.
 
-- mode: NULLABLE
-  name: profile_group_id
-  type: STRING
-  description: |
-    The profile_group_id according to Telemetry. Might not always have a value due
-    to being too early for it to have loaded. Does not need to be sent in the Glean
-    "deletion-request" ping.
+# {% if app_name == "firefox_desktop" -%}
+# - mode: NULLABLE
+#   name: browser_engagement_uri_count
+#   type: INTEGER
+#   description: |
+#     The number of total non-unique http(s) URIs visited, including page reloads,
+#     after the session has been restored. URIs on minimized or background tabs may also be counted.
+#     Private browsing uris are included. Migrated from Telemetry's browser.engagement.total_uri_count_normal_and_private_mode.
 
-{% if app_name == "firefox_desktop" -%}
-- mode: NULLABLE
-  name: browser_engagement_uri_count
-  type: INTEGER
-  description: |
-    The number of total non-unique http(s) URIs visited, including page reloads,
-    after the session has been restored. URIs on minimized or background tabs may also be counted.
-    Private browsing uris are included. Migrated from Telemetry's browser.engagement.total_uri_count_normal_and_private_mode.
-
-
-- mode: NULLABLE
-  name: browser_engagement_active_ticks
-  type: INTEGER
-  description: |
-    The number of five-second intervals ('ticks') the user was considered 'active'.
-    'active' means keyboard or mouse interaction with the application.
-    It doesn't take into account whether or not the window has focus or is in the foreground,
-    only if it is receiving these interaction events. Migrated from Telemetry's browser.engagement.active_ticks.
+# - mode: NULLABLE
+#   name: browser_engagement_active_ticks
+#   type: INTEGER
+#   description: |
+#     The number of five-second intervals ('ticks') the user was considered 'active'.
+#     'active' means keyboard or mouse interaction with the application.
+#     It doesn't take into account whether or not the window has focus or is in the foreground,
+#     only if it is receiving these interaction events. Migrated from Telemetry's browser.engagement.active_ticks.
+# {% endif -%}
 
 - mode: NULLABLE
-  name: legacy_telemetry_client_id
-  type: STRING
-  description: |
-    The client_id according to Telemetry. Might not always have a value due to being
-    too early for it to have loaded. Value may be the canary client id
-    c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0 in pings near when the data upload pref is disabled
-    (if Telemetry gets to go first), or between when a client_id has been removed and
-    when it has been regenerated. Does not need to be sent in the Glean "deletion-request" ping.
-{% endif -%}
-
-- mode: NULLABLE
-  name: first_seen_date
-  type: DATE
-  description: |
-    Logical date of when we observed the client for the first time in our warehouse.
-
-- mode: NULLABLE
-  name: is_new_profile
+  name: is_active
   type: BOOLEAN
-  description:
+  description: |
+    A flag field indicating whether the specific client was active.
 
 # TODO: uncomment once duration has been added to the dau_reporting ping
-# - mode: NULLABLE
-#   name: durations
-#   type: INTEGER
-#   description:
-
 # - mode: NULLABLE
 #   name: days_seen_session_start_bits
 #   type: INTEGER

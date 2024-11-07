@@ -6,6 +6,12 @@ fields:
     Logical date used for processing and paritioning.
 
 - mode: NULLABLE
+  name: usage_profile_id
+  type: STRING
+  description: |
+    A UUID of the usage_profile.
+
+- mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
   description: |
@@ -22,14 +28,3 @@ fields:
   type: INTEGER
   description: |
     bit field indicating how many days lapsed since profile creation.
-
-- mode: NULLABLE
-  name: client_id
-  type: STRING
-  description: |
-    A UUID uniquely identifying the client.
-
-- mode: NULLABLE
-  name: usage_profile_id
-  type: STRING
-  description:

@@ -62,6 +62,8 @@
           value: 1
         - key: is_sponsored
           value: false
+        - key: is_list_card
+          value: false
     - category: newtab
       name: wallpaper_click
       extra:

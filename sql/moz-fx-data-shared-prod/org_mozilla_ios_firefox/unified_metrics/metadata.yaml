@@ -4,6 +4,5 @@ labels:
   incremental: true
 owners:
   - kik@mozilla.com
-scheduling:
-  dag_name: bqetl_firefox_ios
-  depends_on_past: false
+deprecated: true
+deletion_date: 2025-01-01

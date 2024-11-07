@@ -3,7 +3,13 @@ WITH subscriptions_history AS (
     id,
     `timestamp` AS valid_from,
     COALESCE(
-      LEAD(`timestamp`) OVER (PARTITION BY subscription.id ORDER BY `timestamp`),
+      LEAD(`timestamp`) OVER (
+        PARTITION BY
+          subscription.id
+        ORDER BY
+          `timestamp`,
+          stripe_subscriptions_changelog_id
+      ),
       '9999-12-31 23:59:59.999999'
     ) AS valid_to,
     id AS stripe_subscriptions_revised_changelog_id,

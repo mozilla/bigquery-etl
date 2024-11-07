@@ -176,12 +176,7 @@ questionable_subscription_plan_changes AS (
   SELECT
     invoice_line_items.subscription_id,
     invoice_line_items.plan_id,
-    COALESCE(
-      TIMESTAMP_SECONDS(
-        CAST(JSON_VALUE(invoice_line_items.metadata, '$.plan_change_date') AS INT64)
-      ),
-      invoice_line_items.period_start
-    ) AS subscription_plan_start
+    invoice_line_items.period_start AS subscription_plan_start
   FROM
     questionable_resync_changelog AS changelog
   JOIN

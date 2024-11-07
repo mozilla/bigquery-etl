@@ -2,23 +2,17 @@
 
 WITH _current AS (
   SELECT
+    usage_profile_id,
     -- In this raw table, we capture the history of activity over the past
     -- 28 days for each usage criterion as a single 64-bit integer. The
     -- rightmost bit in 'days_since_seen' represents whether the user sent a
     -- dau_reporting ping in the submission_date and similarly, the rightmost bit in
     -- days_active_bits represents whether the user counts as active on that date.
     CAST(TRUE AS INT64) AS days_seen_bits,
-    {% if app_name == "firefox_desktop" %}
-    -- 0 uris and > 0 active ticks on desktop
-    CAST(TRUE AS INT64) & CAST(browser_engagement_uri_count > 0  AS INT64) & CAST(browser_engagement_active_ticks > 0  AS INT64) AS days_active_bits,
-    {% else %}
-    CAST(TRUE AS INT64) & CAST(durations > 0  AS INT64) AS days_active_bits,
-    {% endif %}
+    CAST(TRUE AS INT64) & CAST(is_active AS INT64) AS days_active_bits,
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
-    client_id,
-    usage_profile_id,
   FROM
     `{{ dau_reporting_clients_daily_table }}`
   WHERE
@@ -26,11 +20,10 @@ WITH _current AS (
 ),
 _previous AS (
   SELECT
+    usage_profile_id,
     days_seen_bits,
     days_active_bits,
     days_created_profile_bits,
-    client_id,
-    usage_profile_id
   FROM
     `{{ dau_reporting_clients_last_seen_table }}`
   WHERE
@@ -40,7 +33,7 @@ _previous AS (
 )
 SELECT
   @submission_date AS submission_date,
-  IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
+  IF(_current.usage_profile_id IS NOT NULL, _current, _previous).* REPLACE (
     udf.combine_adjacent_days_28_bits(
       _previous.days_seen_bits,
       _current.days_seen_bits
@@ -58,4 +51,4 @@ FROM
   _current
 FULL JOIN
   _previous
-  USING (client_id, usage_profile_id)
+  USING (usage_profile_id)

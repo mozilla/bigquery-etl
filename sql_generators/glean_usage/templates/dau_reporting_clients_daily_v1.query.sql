@@ -4,7 +4,6 @@ WITH base AS (
   SELECT
     submission_timestamp,
     DATE(submission_timestamp) AS submission_date,
-    client_info.client_id,
     -- TODO: Once this field exists we should update the reference.
     CAST(NULL AS STRING) AS usage_profile_id,
     normalized_channel,
@@ -18,22 +17,19 @@ WITH base AS (
     {% else %}
     CAST(NULL AS STRING) AS distribution_id,
     {% endif %}
-    {% if has_profile_group_id %}
-    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
-    {% else %}
-    CAST(NULL AS STRING) AS profile_group_id,
-    {% endif %}
-    {% if app_name == "firefox_desktop" %}
+    {% if "_desktop" in app_name %}
     metrics.counter.browser_engagement_uri_count,
     metrics.counter.browser_engagement_active_ticks,
-    metrics.uuid.legacy_telemetry_client_id,
     {% endif %}
+    CAST(NULL AS BOOLEAN) AS is_active,
     SAFE.PARSE_DATE('%F', SUBSTR(client_info.first_run_date, 1, 10)) AS first_run_date,
     mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
     -- TODO: add duration once it has been added to the dau_reporting ping.
     -- udf.glean_timespan_seconds(metrics.timespan.glean_baseline_duration) AS duration,
   FROM
     `{{ project_id }}.{{ dau_reporting_stable_table }}`
+  WHERE
+    usage_profile_id IS NOT NULL
 ),
 --
 with_dates AS (
@@ -59,87 +55,68 @@ with_date_offsets AS (
     with_dates
 ),
 --
-windowed AS (
-  SELECT
-    submission_date,
-    client_id,
-    ROW_NUMBER() OVER w1_unframed AS _n,
-    --
-    -- Take the earliest first_run_date if ambiguous.
-    MIN(first_run_date) OVER w1 AS first_run_date,
-    -- For all other dimensions, we use the mode of observed values in the day.
-    udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
-    udf.mode_last(ARRAY_AGG(normalized_os) OVER w1) AS normalized_os,
-    udf.mode_last(ARRAY_AGG(normalized_os_version) OVER w1) AS normalized_os_version,
-    udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
-    udf.mode_last(ARRAY_AGG(app_build) OVER w1) AS app_build,
-    udf.mode_last(ARRAY_AGG(app_display_version) OVER w1) AS app_display_version,
-    udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
-    udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
-    {% if app_name == "firefox_desktop" %}
-    SUM(browser_engagement_uri_count) AS browser_engagement_uri_count,
-    SUM(browser_engagement_active_ticks) AS browser_engagement_active_ticks,
-    udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id) OVER w1) AS legacy_telemetry_client_id,
-    {% endif %}
-    --
-    -- TODO: uncomment once duration is added to the dau_reporting ping
-    --
-    -- Sums over distinct dau_reporting pings.
-    -- SUM(IF(duration BETWEEN 0 AND 100000, duration, 0)) OVER w1 AS durations,
-    --
-    -- Bit patterns capturing activity dates relative to the submission date.
-    -- BIT_OR(
-    --   1 << IF(session_start_date_offset BETWEEN 0 AND 27, session_start_date_offset, NULL)
-    -- ) OVER w1 AS days_seen_session_start_bits,
-    -- BIT_OR(
-    --   1 << IF(session_end_date_offset BETWEEN 0 AND 27, session_end_date_offset, NULL)
-    -- ) OVER w1 AS days_seen_session_end_bits,
-    --
-  FROM
-    with_date_offsets
-  WHERE
-    {% raw %}
-    {% if is_init() %}
-      submission_date >= '2024-10-10'
-    {% else %}
-      submission_date = @submission_date
-    {% endif %}
-    {% endraw %}
-
-  WINDOW
-    w1 AS (
-      PARTITION BY
-        client_id,
-        submission_date
-      ORDER BY
-        submission_timestamp
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND UNBOUNDED FOLLOWING
-    ),
-    -- We must provide a modified window for ROW_NUMBER which cannot accept a frame clause.
-    w1_unframed AS (
-      PARTITION BY
-        client_id,
-        submission_date
-      ORDER BY
-        submission_timestamp
-    )
-),
-joined as (
-  SELECT
-    cd.* EXCEPT (_n),
-    cfs.first_seen_date,
-    (cd.submission_date = cfs.first_seen_date) AS is_new_profile
-  FROM
-    windowed AS cd
-  LEFT JOIN
-    `{{ project_id }}.{{ dau_reporting_clients_first_seen_table }}` AS cfs
-    USING (client_id)
-  WHERE
-    _n = 1
-)
 SELECT
-  *
+  submission_date,
+  usage_profile_id,
+  --
+  -- Take the earliest first_run_date if ambiguous.
+  MIN(first_run_date) OVER w1 AS first_run_date,
+  -- For all other dimensions, we use the mode of observed values in the day.
+  udf.mode_last(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
+  udf.mode_last(ARRAY_AGG(normalized_os) OVER w1) AS normalized_os,
+  udf.mode_last(ARRAY_AGG(normalized_os_version) OVER w1) AS normalized_os_version,
+  udf.mode_last(ARRAY_AGG(locale) OVER w1) AS locale,
+  udf.mode_last(ARRAY_AGG(app_build) OVER w1) AS app_build,
+  udf.mode_last(ARRAY_AGG(app_display_version) OVER w1) AS app_display_version,
+  udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+  {% if "_desktop" in app_name %}
+  COALESCE(is_active, SUM(browser_engagement_uri_count) > 0 AND SUM(browser_engagement_active_ticks) > 0, False) AS is_active,
+  -- SUM(browser_engagement_uri_count) AS browser_engagement_uri_count,
+  -- SUM(browser_engagement_active_ticks) AS browser_engagement_active_ticks,
+  {% else %}
+  -- At the moment we do not have duration, default to True.
+  -- TODO: uncomment once duration is added to the dau_reporting ping
+  -- COALESCE(is_active, SUM(IF(duration BETWEEN 0 AND 100000, duration, 0)) OVER w1 > 0, False) AS is_active,
+  True AS is_active
+  {% endif %}
+  --
+  -- TODO: uncomment once duration is added to the dau_reporting ping
+  --
+  -- Bit patterns capturing activity dates relative to the submission date.
+  -- BIT_OR(
+  --   1 << IF(session_start_date_offset BETWEEN 0 AND 27, session_start_date_offset, NULL)
+  -- ) OVER w1 AS days_seen_session_start_bits,
+  -- BIT_OR(
+  --   1 << IF(session_end_date_offset BETWEEN 0 AND 27, session_end_date_offset, NULL)
+  -- ) OVER w1 AS days_seen_session_end_bits,
+  --
 FROM
-  joined
+  with_date_offsets
+WHERE
+  {% raw %}
+  {% if is_init() %}
+    submission_date >= '2024-10-10'
+  {% else %}
+    submission_date = @submission_date
+  {% endif %}
+  {% endraw %}
+QUALIFY
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      usage_profile_id,
+      submission_date
+    ORDER BY
+      submission_timestamp
+  ) = 1
+
+WINDOW
+  w1 AS (
+    PARTITION BY
+      usage_profile_id,
+      submission_date
+    ORDER BY
+      submission_timestamp
+    ROWS BETWEEN
+      UNBOUNDED PRECEDING
+      AND UNBOUNDED FOLLOWING
+  )

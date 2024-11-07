@@ -110,6 +110,7 @@ WITH original_changelog AS (
         )
     ) AS subscription,
     ROW_NUMBER() OVER subscription_changes_asc AS subscription_change_number,
+    LAG(`timestamp`) OVER subscription_changes_asc AS previous_subscription_change_at,
     LEAD(`timestamp`) OVER subscription_changes_asc AS next_subscription_change_at,
     LAG(subscription.ended_at) OVER subscription_changes_asc AS previous_subscription_ended_at
   FROM
@@ -136,6 +137,7 @@ adjusted_original_changelog AS (
           AND previous_subscription_ended_at IS NULL
           AND subscription_change_number > 1
           AND subscription.ended_at < `timestamp`
+          AND subscription.ended_at > previous_subscription_change_at
           THEN STRUCT(subscription.ended_at AS `timestamp`, 'adjusted_subscription_end' AS type)
         ELSE STRUCT(`timestamp`, 'original' AS type)
       END
@@ -174,27 +176,29 @@ questionable_subscription_plan_changes AS (
   SELECT
     invoice_line_items.subscription_id,
     invoice_line_items.plan_id,
-    COALESCE(
-      TIMESTAMP_SECONDS(
-        CAST(JSON_VALUE(invoice_line_items.metadata, '$.plan_change_date') AS INT64)
-      ),
-      invoice_line_items.period_start
-    ) AS subscription_plan_start
+    invoice_line_items.period_start AS subscription_plan_start
   FROM
     questionable_resync_changelog AS changelog
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.invoice_line_item_v1 AS invoice_line_items
     ON changelog.subscription.id = invoice_line_items.subscription_id
-    AND invoice_line_items.type = 'subscription'
-    AND invoice_line_items.period_start < changelog.subscription.metadata.plan_change_date
   WHERE
     changelog.subscription.metadata.plan_change_date IS NOT NULL
+    AND invoice_line_items.period_start < changelog.subscription.metadata.plan_change_date
+    AND (
+      invoice_line_items.type = 'subscription'
+      OR (
+        invoice_line_items.type = 'invoiceitem'
+        AND invoice_line_items.description LIKE 'Remaining time on %'
+      )
+    )
   QUALIFY
     invoice_line_items.plan_id IS DISTINCT FROM LAG(invoice_line_items.plan_id) OVER (
       PARTITION BY
         invoice_line_items.subscription_id
       ORDER BY
-        invoice_line_items.period_start
+        invoice_line_items.period_start,
+        invoice_line_items.period_end
     )
 ),
 questionable_subscription_plans_history AS (

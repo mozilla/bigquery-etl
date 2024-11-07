@@ -1,15 +1,10 @@
 fields:
 
 - mode: NULLABLE
-  name: client_id
-  type: STRING
-  description: |
-    A UUID uniquely identifying the client.
-
-- mode: NULLABLE
   name: usage_profile_id
   type: STRING
-  description:
+  description: |
+    A UUID of the usage_profile.
 
 - mode: NULLABLE
   name: first_seen_date

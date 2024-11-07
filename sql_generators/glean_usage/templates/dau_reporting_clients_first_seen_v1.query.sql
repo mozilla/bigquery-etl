@@ -3,9 +3,8 @@
 WITH
   _current AS (
     SELECT
-      client_info.client_id,
       -- TODO: Once this field exists we should update the reference.
-      CAST(NULL AS STRING) AS usage_profile_id,
+      usage_profile_id,
       {% raw %}
       {% if is_init() %}
       DATE(MIN(submission_timestamp)) AS first_seen_date,
@@ -14,9 +13,9 @@ WITH
       {% endif %}
       {% endraw %}
     FROM
-      `{{ dau_reporting_stable_table }}`
+      `{{ dau_reporting_clients_daily_table }}`
     WHERE
-      client_info.client_id IS NOT NULL
+      usage_profile_id IS NOT NULL
       {% raw %}
       {% if is_init() %}
       AND DATE(submission_timestamp) > "2014-10-10"
@@ -25,11 +24,10 @@ WITH
       {% endif %}
       {% endraw %}
     GROUP BY
-      client_id
+      usage_profile_id
   ),
 _previous AS (
   SELECT
-    client_id,
     usage_profile_id,
   FROM
     `{{ dau_reporting_clients_first_seen_table }}`
@@ -45,19 +43,17 @@ _previous AS (
 
 SELECT
   first_seen_date,
-  client_id,
   usage_profile_id,
 FROM
-  _previous
-LEFT JOIN
   _current
-  USING (client_id, usage_profile_id)
+LEFT JOIN
+  _previous
+  USING (usage_profile_id)
 WHERE
-  _previous.client_id IS NULL
-  AND _previous.usage_profile_id IS NULL
+  _previous.usage_profile_id IS NULL
 QUALIFY
   IF(
-    COUNT(*) OVER (PARTITION BY client_id, usage_profile_id) > 1,
-    ERROR("Duplicate client_id, usage_profile_id combination detected."),
+    COUNT(*) OVER (PARTITION BY usage_profile_id) > 1,
+    ERROR("Duplicate usage_profile_id combination detected."),
     TRUE
   )

@@ -197,7 +197,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.core_clients_daily_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.core_clients_last_seen_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.event_events_v1"): DESKTOP_SRC,
-    client_id_target(table="telemetry_derived.experiments_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_events_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_1pct_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.main_remainder_1pct_v1"): DESKTOP_SRC,

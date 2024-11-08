@@ -13,7 +13,6 @@ labels:
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: submission_date
-  parameters: ["conversion_window:INT64:30"]
   date_partition_offset: 0
 bigquery:
   time_partitioning:

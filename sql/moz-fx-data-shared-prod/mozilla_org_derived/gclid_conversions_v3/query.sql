@@ -10,7 +10,7 @@ WITH gclids_to_ga_ids AS (
   CROSS JOIN
     UNNEST(all_reported_stub_session_ids) AS stub_session_id
   WHERE
-    session_date >= DATE_SUB(@submission_date, INTERVAL @conversion_window DAY)
+    session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
     -- Next line is needed for backfilling purposes
     AND session_date <= @submission_date
     AND gclid IS NOT NULL

@@ -624,4 +624,4 @@ LEFT JOIN
   USING (legacy_telemetry_client_id)
 LEFT JOIN `mozdata.static.key_tentpole_dates` ktd
   ON submission_date >= ktd.start_date
-  OR submission_date <= ktd.start_date
+  AND submission_date <= ktd.end_date

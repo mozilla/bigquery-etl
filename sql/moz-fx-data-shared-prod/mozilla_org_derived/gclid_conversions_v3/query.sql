@@ -102,12 +102,14 @@ returned_second_day AS (
   SELECT
     client_id AS telemetry_client_id,
     TRUE AS returned_second_day,
+    @submission_date AS activity_date,
     COUNT(DISTINCT(submission_date)) AS nbr_active_days
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   GROUP BY
     1,
-    2
+    2,
+    3
   HAVING
     COUNT(DISTINCT(submission_date)) = 2
     AND MAX(submission_date) = @submission_date

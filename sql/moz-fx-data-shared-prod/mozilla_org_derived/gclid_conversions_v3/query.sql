@@ -179,7 +179,6 @@ telemetry_id_to_activity_staging AS (
     CAST(NULL AS BOOLEAN) AS firefox_first_ad_click,
     CAST(NULL AS BOOLEAN) AS firefox_first_search,
     returned_second_day,
-    CAST(NULL AS BOOLEAN) AS returned_second_day,
     CAST(NULL AS BOOLEAN) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_24_active_minutes,

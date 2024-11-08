@@ -59,6 +59,8 @@ firefox_first_run AS (
     MIN(submission_date) AS activity_date
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+  WHERE
+    submission_date <= current_date
   GROUP BY
     1,
     2
@@ -75,6 +77,7 @@ firefox_first_ad_click AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     IFNULL(ad_clicks_count_all, 0) > 0
+    AND submission_date <= current_date
   GROUP BY
     1,
     2
@@ -91,6 +94,7 @@ firefox_first_search AS (
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
   WHERE
     IFNULL(search_count_all, 0) > 0
+    AND submission_date <= current_date
   GROUP BY
     1,
     2
@@ -106,6 +110,8 @@ returned_second_day AS (
     COUNT(DISTINCT(submission_date)) AS nbr_active_days
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+  WHERE
+    submission_date <= current_date
   GROUP BY
     1,
     2,

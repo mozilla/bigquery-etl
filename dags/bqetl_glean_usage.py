@@ -489,20 +489,6 @@ with DAG(
         task_group=task_group_thunderbird_android,
     )
 
-    checks__fail_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__fail_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="net_thunderbird_android_daily_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_thunderbird_android,
-    )
-
     checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -4572,18 +4558,6 @@ with DAG(
         org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
-    checks__fail_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
-        net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
     checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
         checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -4881,15 +4855,7 @@ with DAG(
     )
 
     checks__warn_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
         net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(

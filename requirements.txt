@@ -516,9 +516,9 @@ google-api-core[grpc]==2.17.1 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
-google-auth==2.35.0 \
-    --hash=sha256:25df55f327ef021de8be50bad0dfd4a916ad0de96da86cd05661c9297723ad3f \
-    --hash=sha256:f4c64ed4e01e8e8b646ef34c018f8bf3338df0c8e37d8b3bba40e7f574a3278a
+google-auth==2.36.0 \
+    --hash=sha256:51a15d47028b66fd36e5c64a82d2d57480075bccc7da37cde257fc94177a61fb \
+    --hash=sha256:545e9618f2df0bcbb7dcbc45a546485b1212624716975a1ea5ae8149ce769ab1
     # via
     #   -r requirements.in
     #   gcsfs
@@ -2048,12 +2048,12 @@ stripe==6.4.0 \
     --hash=sha256:d1ab2739aa6511f34ba77f66fca9f86cffe2dbb17df84bd224a38e7254efe61b \
     --hash=sha256:d99e97e6d3f6dbaf9361ebd07b3024ec6f9d7b1f77724c8127338e0754314e9d
     # via -r requirements.in
-symbolic==12.12.0 \
-    --hash=sha256:4e990af86deb859ef3fe90b18e6ecfb053512c40bd8ed8dc8d20f4c34c9254b8 \
-    --hash=sha256:6d19a1bd29a1dcfb73a03a0be1f67b4e96d7be85eaf34693d19b53a525e7fb85 \
-    --hash=sha256:976ffdcb94d2a7f45b4e4ada5857f2510e38df5ee4edb6469fadd71ff606b23e \
-    --hash=sha256:a3cbe3dddbf2dfb7c259fa74f0b95a6cdb51ecad4ca1ec0a20f9544d7b6fc578 \
-    --hash=sha256:ebd94c908c8c20aa1391e9f0f1d3649bbf40a9b35d0e10c941c2a0e3e1e4ad5a
+symbolic==12.12.1 \
+    --hash=sha256:1535d55b95a099fe0f11320350b1dbf85215846029aa9f51089186c725e31fbe \
+    --hash=sha256:178885178cc204558ecdba6b159dd0fd52003f3a4bde76c601d29b1807074e91 \
+    --hash=sha256:7a63b32a67d8680445803269d1f435a5e12e9ab4c74beeeb6f904509a3f1834e \
+    --hash=sha256:9b856c67f35fbc525caf310c21e5dd774f399cd437dddada0d6441fc968555d5 \
+    --hash=sha256:c7083e50fdeb31c9cc9dcda406c9bea5d4607d87271ab182c338a330dd41c9c4
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \

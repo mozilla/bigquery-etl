@@ -10,6 +10,7 @@ from pathlib import Path
 import rich_click as click
 from google.cloud import bigquery
 from google.cloud.bigquery.enums import EntityTypes
+from google.cloud.exceptions import NotFound
 
 from .. import ConfigLoader
 from ..cli.query import deploy as deploy_query_schema
@@ -573,14 +574,19 @@ def create_dataset_if_not_exists(project_id, dataset, suffix=None, access_entrie
 @click.option(
     "--delete-expired",
     "--delete_expired",
-    help="Remove datasets that have expired",
-    default=True,
+    help="Remove all datasets that have expired including those that do not match the suffix",
+    default=False,
     is_flag=True,
 )
 def clean(project_id, dataset_suffix, delete_expired):
     """Reset the stage environment."""
     client = bigquery.Client(project_id)
-    datasets = list(client.list_datasets())
+
+    dataset_filter = (
+        None if delete_expired is True else f"labels.suffix:{dataset_suffix}"
+    )
+    datasets = client.list_datasets(filter=dataset_filter)
+
     current_timestamp = int(
         (datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000
     )
@@ -596,4 +602,9 @@ def clean(project_id, dataset_suffix, delete_expired):
                     and label == "expires_on"
                     and int(value) < current_timestamp
                 ):
-                    client.delete_dataset(dataset, delete_contents=True)
+                    click.echo(f"Deleting dataset {dataset.full_dataset_id}")
+                    try:
+                        client.delete_dataset(dataset, delete_contents=True)
+                    except NotFound as e:
+                        # account for other concurrent CI runs
+                        click.echo(f"Failed to delete: {e.message}")

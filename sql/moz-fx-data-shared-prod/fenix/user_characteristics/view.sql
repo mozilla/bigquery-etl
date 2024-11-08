@@ -119,7 +119,8 @@ SELECT
       metrics.quantity.characteristics_microphone_count,
       metrics.quantity.characteristics_speaker_count,
       metrics.quantity.characteristics_voices_count,
-      metrics.quantity.characteristics_voices_local_count
+      metrics.quantity.characteristics_voices_local_count,
+      metrics.quantity.characteristics_gl_version_software
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -192,7 +193,16 @@ SELECT
       metrics.string.characteristics_voices_all_ssdeep,
       metrics.string.characteristics_voices_default,
       metrics.string.characteristics_voices_local_ssdeep,
-      metrics.string.characteristics_voices_nonlocal_ssdeep
+      metrics.string.characteristics_voices_nonlocal_ssdeep,
+      metrics.string.characteristics_gl_context_type,
+      metrics.string.characteristics_gl_context_type_software,
+      metrics.string.characteristics_gl_fragment_shader_software,
+      metrics.string.characteristics_gl_renderer_raw_software,
+      metrics.string.characteristics_gl_renderer_software,
+      metrics.string.characteristics_gl_vendor_raw_software,
+      metrics.string.characteristics_gl_vendor_software,
+      metrics.string.characteristics_gl_version_raw_software,
+      metrics.string.characteristics_gl_vertex_shader_software
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -232,7 +242,15 @@ SELECT
       metrics.text2.characteristics_media_capabilities_not_smooth,
       metrics.text2.characteristics_media_capabilities_unsupported,
       metrics.text2.characteristics_voices_sample,
-      metrics.text2.characteristics_voices_sha1
+      metrics.text2.characteristics_voices_sha1,
+      metrics.text2.characteristics_gl_extensions_raw_software,
+      metrics.text2.characteristics_gl_extensions_software,
+      metrics.text2.characteristics_gl_minimal_source_software,
+      metrics.text2.characteristics_gl_params_extensions_software,
+      metrics.text2.characteristics_gl_params_v1_software,
+      metrics.text2.characteristics_gl_params_v2_software,
+      metrics.text2.characteristics_gl_precision_fragment_software,
+      metrics.text2.characteristics_gl_precision_vertex_software
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -362,7 +380,8 @@ SELECT
       metrics.quantity.characteristics_microphone_count,
       metrics.quantity.characteristics_speaker_count,
       metrics.quantity.characteristics_voices_count,
-      metrics.quantity.characteristics_voices_local_count
+      metrics.quantity.characteristics_voices_local_count,
+      metrics.quantity.characteristics_gl_version_software
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -435,7 +454,16 @@ SELECT
       metrics.string.characteristics_voices_all_ssdeep,
       metrics.string.characteristics_voices_default,
       metrics.string.characteristics_voices_local_ssdeep,
-      metrics.string.characteristics_voices_nonlocal_ssdeep
+      metrics.string.characteristics_voices_nonlocal_ssdeep,
+      metrics.string.characteristics_gl_context_type,
+      metrics.string.characteristics_gl_context_type_software,
+      metrics.string.characteristics_gl_fragment_shader_software,
+      metrics.string.characteristics_gl_renderer_raw_software,
+      metrics.string.characteristics_gl_renderer_software,
+      metrics.string.characteristics_gl_vendor_raw_software,
+      metrics.string.characteristics_gl_vendor_software,
+      metrics.string.characteristics_gl_version_raw_software,
+      metrics.string.characteristics_gl_vertex_shader_software
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -475,7 +503,15 @@ SELECT
       metrics.text2.characteristics_media_capabilities_not_smooth,
       metrics.text2.characteristics_media_capabilities_unsupported,
       metrics.text2.characteristics_voices_sample,
-      metrics.text2.characteristics_voices_sha1
+      metrics.text2.characteristics_voices_sha1,
+      metrics.text2.characteristics_gl_extensions_raw_software,
+      metrics.text2.characteristics_gl_extensions_software,
+      metrics.text2.characteristics_gl_minimal_source_software,
+      metrics.text2.characteristics_gl_params_extensions_software,
+      metrics.text2.characteristics_gl_params_v1_software,
+      metrics.text2.characteristics_gl_params_v2_software,
+      metrics.text2.characteristics_gl_precision_fragment_software,
+      metrics.text2.characteristics_gl_precision_vertex_software
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -605,7 +641,8 @@ SELECT
       metrics.quantity.characteristics_microphone_count,
       metrics.quantity.characteristics_speaker_count,
       metrics.quantity.characteristics_voices_count,
-      metrics.quantity.characteristics_voices_local_count
+      metrics.quantity.characteristics_voices_local_count,
+      metrics.quantity.characteristics_gl_version_software
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -678,7 +715,16 @@ SELECT
       metrics.string.characteristics_voices_all_ssdeep,
       metrics.string.characteristics_voices_default,
       metrics.string.characteristics_voices_local_ssdeep,
-      metrics.string.characteristics_voices_nonlocal_ssdeep
+      metrics.string.characteristics_voices_nonlocal_ssdeep,
+      metrics.string.characteristics_gl_context_type,
+      metrics.string.characteristics_gl_context_type_software,
+      metrics.string.characteristics_gl_fragment_shader_software,
+      metrics.string.characteristics_gl_renderer_raw_software,
+      metrics.string.characteristics_gl_renderer_software,
+      metrics.string.characteristics_gl_vendor_raw_software,
+      metrics.string.characteristics_gl_vendor_software,
+      metrics.string.characteristics_gl_version_raw_software,
+      metrics.string.characteristics_gl_vertex_shader_software
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -718,7 +764,15 @@ SELECT
       metrics.text2.characteristics_media_capabilities_not_smooth,
       metrics.text2.characteristics_media_capabilities_unsupported,
       metrics.text2.characteristics_voices_sample,
-      metrics.text2.characteristics_voices_sha1
+      metrics.text2.characteristics_voices_sha1,
+      metrics.text2.characteristics_gl_extensions_raw_software,
+      metrics.text2.characteristics_gl_extensions_software,
+      metrics.text2.characteristics_gl_minimal_source_software,
+      metrics.text2.characteristics_gl_params_extensions_software,
+      metrics.text2.characteristics_gl_params_v1_software,
+      metrics.text2.characteristics_gl_params_v2_software,
+      metrics.text2.characteristics_gl_precision_fragment_software,
+      metrics.text2.characteristics_gl_precision_vertex_software
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -848,7 +902,8 @@ SELECT
       metrics.quantity.characteristics_microphone_count,
       metrics.quantity.characteristics_speaker_count,
       metrics.quantity.characteristics_voices_count,
-      metrics.quantity.characteristics_voices_local_count
+      metrics.quantity.characteristics_voices_local_count,
+      metrics.quantity.characteristics_gl_version_software
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -921,7 +976,16 @@ SELECT
       metrics.string.characteristics_voices_all_ssdeep,
       metrics.string.characteristics_voices_default,
       metrics.string.characteristics_voices_local_ssdeep,
-      metrics.string.characteristics_voices_nonlocal_ssdeep
+      metrics.string.characteristics_voices_nonlocal_ssdeep,
+      metrics.string.characteristics_gl_context_type,
+      metrics.string.characteristics_gl_context_type_software,
+      metrics.string.characteristics_gl_fragment_shader_software,
+      metrics.string.characteristics_gl_renderer_raw_software,
+      metrics.string.characteristics_gl_renderer_software,
+      metrics.string.characteristics_gl_vendor_raw_software,
+      metrics.string.characteristics_gl_vendor_software,
+      metrics.string.characteristics_gl_version_raw_software,
+      metrics.string.characteristics_gl_vertex_shader_software
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -961,7 +1025,15 @@ SELECT
       metrics.text2.characteristics_media_capabilities_not_smooth,
       metrics.text2.characteristics_media_capabilities_unsupported,
       metrics.text2.characteristics_voices_sample,
-      metrics.text2.characteristics_voices_sha1
+      metrics.text2.characteristics_voices_sha1,
+      metrics.text2.characteristics_gl_extensions_raw_software,
+      metrics.text2.characteristics_gl_extensions_software,
+      metrics.text2.characteristics_gl_minimal_source_software,
+      metrics.text2.characteristics_gl_params_extensions_software,
+      metrics.text2.characteristics_gl_params_v1_software,
+      metrics.text2.characteristics_gl_params_v2_software,
+      metrics.text2.characteristics_gl_precision_fragment_software,
+      metrics.text2.characteristics_gl_precision_vertex_software
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -1091,7 +1163,8 @@ SELECT
       metrics.quantity.characteristics_microphone_count,
       metrics.quantity.characteristics_speaker_count,
       metrics.quantity.characteristics_voices_count,
-      metrics.quantity.characteristics_voices_local_count
+      metrics.quantity.characteristics_voices_local_count,
+      metrics.quantity.characteristics_gl_version_software
     ) AS `quantity`,
     STRUCT(
       metrics.string.characteristics_canvasdata1,
@@ -1164,7 +1237,16 @@ SELECT
       metrics.string.characteristics_voices_all_ssdeep,
       metrics.string.characteristics_voices_default,
       metrics.string.characteristics_voices_local_ssdeep,
-      metrics.string.characteristics_voices_nonlocal_ssdeep
+      metrics.string.characteristics_voices_nonlocal_ssdeep,
+      metrics.string.characteristics_gl_context_type,
+      metrics.string.characteristics_gl_context_type_software,
+      metrics.string.characteristics_gl_fragment_shader_software,
+      metrics.string.characteristics_gl_renderer_raw_software,
+      metrics.string.characteristics_gl_renderer_software,
+      metrics.string.characteristics_gl_vendor_raw_software,
+      metrics.string.characteristics_gl_vendor_software,
+      metrics.string.characteristics_gl_version_raw_software,
+      metrics.string.characteristics_gl_vertex_shader_software
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -1204,7 +1286,15 @@ SELECT
       metrics.text2.characteristics_media_capabilities_not_smooth,
       metrics.text2.characteristics_media_capabilities_unsupported,
       metrics.text2.characteristics_voices_sample,
-      metrics.text2.characteristics_voices_sha1
+      metrics.text2.characteristics_voices_sha1,
+      metrics.text2.characteristics_gl_extensions_raw_software,
+      metrics.text2.characteristics_gl_extensions_software,
+      metrics.text2.characteristics_gl_minimal_source_software,
+      metrics.text2.characteristics_gl_params_extensions_software,
+      metrics.text2.characteristics_gl_params_v1_software,
+      metrics.text2.characteristics_gl_params_v2_software,
+      metrics.text2.characteristics_gl_precision_fragment_software,
+      metrics.text2.characteristics_gl_precision_vertex_software
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,

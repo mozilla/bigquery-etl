@@ -482,6 +482,9 @@ fields:
     - name: characteristics_voices_local_count
       type: INTEGER
       mode: NULLABLE
+    - name: characteristics_gl_version_software
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -699,6 +702,33 @@ fields:
     - name: characteristics_voices_nonlocal_ssdeep
       type: STRING
       mode: NULLABLE
+    - name: characteristics_gl_context_type
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_context_type_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_fragment_shader_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_renderer_raw_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_renderer_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_vendor_raw_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_vendor_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_version_raw_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_vertex_shader_software
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -819,6 +849,30 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: characteristics_voices_sha1
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_extensions_raw_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_extensions_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_minimal_source_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_params_extensions_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_params_v1_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_params_v2_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_precision_fragment_software
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_gl_precision_vertex_software
       type: STRING
       mode: NULLABLE
   - name: uuid

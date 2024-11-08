@@ -48,7 +48,8 @@ SELECT
       metrics.boolean.contentblocking_cryptomining_blocking_enabled,
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
       metrics.boolean.policies_is_enterprise,
-      metrics.boolean.dom_parentprocess_private_window_used
+      metrics.boolean.dom_parentprocess_private_window_used,
+      metrics.boolean.widget_dark_mode
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -666,7 +667,9 @@ SELECT
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
       metrics.labeled_boolean.a11y_theme,
       metrics.labeled_boolean.media_video_hardware_decoding_support,
-      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
+      metrics.labeled_boolean.mediadrm_decryption,
+      metrics.labeled_boolean.widget_pointing_devices
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -781,7 +784,8 @@ SELECT
       metrics.boolean.contentblocking_cryptomining_blocking_enabled,
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
       metrics.boolean.policies_is_enterprise,
-      metrics.boolean.dom_parentprocess_private_window_used
+      metrics.boolean.dom_parentprocess_private_window_used,
+      metrics.boolean.widget_dark_mode
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -1399,7 +1403,9 @@ SELECT
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
       metrics.labeled_boolean.a11y_theme,
       metrics.labeled_boolean.media_video_hardware_decoding_support,
-      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
+      metrics.labeled_boolean.mediadrm_decryption,
+      metrics.labeled_boolean.widget_pointing_devices
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1514,7 +1520,8 @@ SELECT
       metrics.boolean.contentblocking_cryptomining_blocking_enabled,
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
       metrics.boolean.policies_is_enterprise,
-      metrics.boolean.dom_parentprocess_private_window_used
+      metrics.boolean.dom_parentprocess_private_window_used,
+      metrics.boolean.widget_dark_mode
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -2132,7 +2139,9 @@ SELECT
       metrics.labeled_boolean.pdfjs_image_alt_text_edit,
       metrics.labeled_boolean.a11y_theme,
       metrics.labeled_boolean.media_video_hardware_decoding_support,
-      metrics.labeled_boolean.media_video_hd_hardware_decoding_support
+      metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
+      metrics.labeled_boolean.mediadrm_decryption,
+      metrics.labeled_boolean.widget_pointing_devices
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

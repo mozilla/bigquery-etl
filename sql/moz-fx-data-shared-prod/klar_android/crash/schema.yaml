@@ -511,6 +511,12 @@ fields:
         clients.
 
         '
+    - name: crash_stack_traces
+      type: JSON
+      mode: NULLABLE
+      description: 'Stack trace and module information of the crashing process.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

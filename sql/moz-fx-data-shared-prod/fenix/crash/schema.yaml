@@ -344,6 +344,9 @@ fields:
     - name: crash_quota_manager_shutdown_timeout
       type: JSON
       mode: NULLABLE
+    - name: crash_stack_traces
+      type: JSON
+      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

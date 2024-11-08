@@ -303,6 +303,9 @@ fields:
     - name: dom_parentprocess_private_window_used
       type: BOOLEAN
       mode: NULLABLE
+    - name: widget_dark_mode
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -10328,6 +10331,26 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
     - name: media_video_hd_hardware_decoding_support
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: mediadrm_decryption
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: widget_pointing_devices
       type: RECORD
       mode: REPEATED
       fields:

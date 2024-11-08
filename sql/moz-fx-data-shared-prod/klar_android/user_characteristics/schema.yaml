@@ -837,6 +837,12 @@ fields:
       description: 'Number of local speechSynthesis voices available to the user.
 
         '
+    - name: characteristics_gl_version_software
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The version of OpenGL supported by the user''s system.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -1301,6 +1307,60 @@ fields:
       description: 'ssdeep hash of non-local speechSynthesis voices.
 
         '
+    - name: characteristics_gl_context_type
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
+    - name: characteristics_gl_context_type_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
+    - name: characteristics_gl_fragment_shader_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
+    - name: characteristics_gl_renderer_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
+    - name: characteristics_gl_renderer_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
+    - name: characteristics_gl_vendor_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
+    - name: characteristics_gl_vendor_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
+    - name: characteristics_gl_version_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
+    - name: characteristics_gl_vertex_shader_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -1552,6 +1612,54 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'SHA1 hash of all the voices.
+
+        '
+    - name: characteristics_gl_extensions_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl_extensions_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl_minimal_source_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
+    - name: characteristics_gl_params_extensions_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
+    - name: characteristics_gl_params_v1_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
+    - name: characteristics_gl_params_v2_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
+    - name: characteristics_gl_precision_fragment_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
+    - name: characteristics_gl_precision_vertex_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the vertex shader.
 
         '
   - name: uuid

@@ -817,6 +817,13 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar dom.parentprocess.private_window_used.
 
         '
+    - name: widget_dark_mode
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the OS theme is dark. This metric was generated to correspond
+        to the Legacy Telemetry scalar widget.dark_mode.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3968,8 +3975,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -17675,6 +17681,32 @@ fields:
         video codec, this only records video in HD (1280*720) or higher resultion.
         The key is the type of video codec, eg. video/vp9. This metric was generated
         to correspond to the Legacy Telemetry scalar media.video_hd_hardware_decoding_support.
+
+        '
+    - name: mediadrm_decryption
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Record the statuses related with the media decryption.
+
+        '
+    - name: widget_pointing_devices
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Whether the system has any matching pointing device for each label.
 
         '
   - name: rate

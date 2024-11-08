@@ -610,6 +610,13 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar dom.parentprocess.private_window_used.
 
         '
+    - name: widget_dark_mode
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the OS theme is dark. This metric was generated to correspond
+        to the Legacy Telemetry scalar widget.dark_mode.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3158,6 +3165,32 @@ fields:
         mode: NULLABLE
       description: 'The widgets in the toolbars. See https://firefox-source- docs.mozilla.org/browser/BrowserUsageTelemetry.html
         This metric was generated to correspond to the Legacy Telemetry scalar browser.ui.toolbar_widgets.
+
+        '
+    - name: mediadrm_decryption
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Record the statuses related with the media decryption.
+
+        '
+    - name: widget_pointing_devices
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Whether the system has any matching pointing device for each label.
 
         '
   - name: labeled_counter

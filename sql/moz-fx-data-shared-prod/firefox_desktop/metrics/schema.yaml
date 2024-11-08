@@ -15863,6 +15863,19 @@ fields:
       description: 'Whether the system has any matching pointing device for each label.
 
         '
+    - name: mediadrm_decryption
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Record the statuses related with the media decryption.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

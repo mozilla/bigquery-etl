@@ -1,0 +1,37 @@
+fields:
+  - name: activity_date
+    mode: NULLABLE
+    type: DATE
+    description: "The date that the conversion action took place."
+  - name: gclid
+    mode: NULLABLE
+    type: STRING
+    description: "A Google Click ID, which uniquely represent an ad impression for Google ads."
+  - name: did_firefox_first_run
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install which ran the first time on this day."
+  - name: did_search
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install with a search on this day."
+  - name: did_click_ad
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install with an ad click on this day."
+  - name: did_returned_second_day
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the GA session associated with this GCLID resulted in a Firefox install that returned on this day."
+  - name: first_wk_5_actv_days_and_1_or_more_search_w_ads
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the client ID associated with this GCLID had 5 or more days of use and 1 or more search with ads in first week"
+  - name: first_wk_3_actv_days_and_1_or_more_search_w_ads
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the client ID associated with this GCLID had 3 or more days of use and 1 or more search with ads in first week"
+  - name: first_wk_3_actv_days_and_24_active_minutes
+    mode: NULLABLE
+    type: BOOLEAN
+    description: "Whether the client ID associated with this GCLID had 3 or more days of use and 0.5 or more active hours in first week"

@@ -59,8 +59,6 @@ firefox_first_run AS (
     MIN(submission_date) AS activity_date
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
-  WHERE
-    was_active IS TRUE
   GROUP BY
     1,
     2
@@ -107,8 +105,6 @@ returned_second_day AS (
     COUNT(DISTINCT(submission_date)) AS nbr_active_days
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
-  WHERE
-    was_active IS TRUE
   GROUP BY
     1,
     2
@@ -188,6 +184,7 @@ telemetry_id_to_activity_staging AS (
   FROM
     returned_second_day
 ),
+--Step 10 - Aggregate to 1 row per client ID/activity date
 telemetry_id_to_activity AS (
   SELECT
     telemetry_client_id,
@@ -211,31 +208,22 @@ telemetry_id_to_activity AS (
     telemetry_client_id,
     activity_date
 )
-
---I THINK GOOD ABOVE HERE
---Step 5: Get Click IDs and associated events on this activity date (using previous defined events)
+--Step 11: Get Click IDs and associated events on this activity date
 SELECT
   activity_date,
   gclid,
-  MAX(firefox_first_run) AS did_firefox_first_run,
-  COALESCE(LOGICAL_OR(did_firefox_first_searchsearch), FALSE) AS did_search,
-  COALESCE(LOGICAL_OR(firefox_first_ad_click), FALSE) AS did_click_ad,
-  --fix below
-  COALESCE(
-    LOGICAL_OR(was_active AND activity_date > first_seen_date),
-    FALSE
-  ) AS did_returned_second_day,
-  COALESCE(
-    LOGICAL_OR(first_wk_5_actv_days_and_1_or_more_search_w_ads),
-    FALSE
+  MAX(COALESCE(firefox_first_run, FALSE)) AS firefox_first_run,
+  MAX(COALESCE(firefox_first_search, FALSE)) AS firefox_first_search,
+  MAX(COALESCE(firefox_first_ad_click, FALSE)) AS firefox_first_ad_click,
+  MAX(COALESCE(returned_second_day, FALSE)) AS firefox_active_a_second_day,
+  MAX(
+    COALESCE(first_wk_5_actv_days_and_1_or_more_search_w_ads, FALSE)
   ) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
-  COALESCE(
-    LOGICAL_OR(first_wk_3_actv_days_and_1_or_more_search_w_ads),
-    FALSE
+  MAX(
+    COALESCE(first_wk_3_actv_days_and_1_or_more_search_w_ads, FALSE)
   ) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-  COALESCE(
-    LOGICAL_OR(first_wk_3_actv_days_and_24_active_minutes),
-    FALSE
+  MAX(
+    COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
   ) AS first_wk_3_actv_days_and_24_active_minutes
 FROM
   gclids_to_ga_ids

@@ -40,7 +40,7 @@ FROM
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`
 LEFT JOIN `mozdata.static.key_tentpole_dates` ktd
   ON submission_date >= ktd.start_date
-  OR submission_date <= ktd.start_date
+  AND submission_date <= ktd.end_date
 UNION ALL
 SELECT
   segment,
@@ -81,4 +81,4 @@ FROM
   `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`
 LEFT JOIN `mozdata.static.key_tentpole_dates` ktd
   ON submission_date >= ktd.start_date
-  OR submission_date <= ktd.start_date
+  AND submission_date <= ktd.end_date

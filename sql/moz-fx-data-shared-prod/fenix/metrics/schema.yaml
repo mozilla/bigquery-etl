@@ -844,6 +844,15 @@ fields:
     - name: browser_engagement_bookmarks_toolbar_bookmark_opened
       type: INTEGER
       mode: NULLABLE
+    - name: devtools_accessibility_opened_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_accessibility_picker_used_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_changesview_opened_count
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

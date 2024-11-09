@@ -232,7 +232,10 @@ SELECT
       metrics.counter.mathml_doc_count,
       metrics.counter.web_push_detected_duplicated_message_ids,
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_added,
-      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
+      metrics.counter.devtools_accessibility_opened_count,
+      metrics.counter.devtools_accessibility_picker_used_count,
+      metrics.counter.devtools_changesview_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1190,7 +1193,10 @@ SELECT
       metrics.counter.mathml_doc_count,
       metrics.counter.web_push_detected_duplicated_message_ids,
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_added,
-      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
+      metrics.counter.devtools_accessibility_opened_count,
+      metrics.counter.devtools_accessibility_picker_used_count,
+      metrics.counter.devtools_changesview_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2166,7 +2172,10 @@ SELECT
       metrics.counter.mathml_doc_count,
       metrics.counter.web_push_detected_duplicated_message_ids,
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_added,
-      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
+      metrics.counter.devtools_accessibility_opened_count,
+      metrics.counter.devtools_accessibility_picker_used_count,
+      metrics.counter.devtools_changesview_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3151,7 +3160,10 @@ SELECT
       metrics.counter.mathml_doc_count,
       metrics.counter.web_push_detected_duplicated_message_ids,
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_added,
-      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
+      metrics.counter.devtools_accessibility_opened_count,
+      metrics.counter.devtools_accessibility_picker_used_count,
+      metrics.counter.devtools_changesview_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4118,7 +4130,10 @@ SELECT
       metrics.counter.mathml_doc_count,
       metrics.counter.web_push_detected_duplicated_message_ids,
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_added,
-      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened
+      metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
+      metrics.counter.devtools_accessibility_opened_count,
+      metrics.counter.devtools_accessibility_picker_used_count,
+      metrics.counter.devtools_changesview_opened_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

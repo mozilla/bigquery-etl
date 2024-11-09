@@ -1940,6 +1940,28 @@ fields:
         was generated to correspond to the Legacy Telemetry scalar browser.engagement.bookmarks_toolbar_bookmark_opened.
 
         '
+    - name: devtools_accessibility_opened_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools Accessibility tool has been opened.
+        This metric was generated to correspond to the Legacy Telemetry scalar devtools.accessibility.opened_count.
+
+        '
+    - name: devtools_accessibility_picker_used_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the picker tool has been used in DevTools Accessibility
+        panel. This metric was generated to correspond to the Legacy Telemetry scalar
+        devtools.accessibility.picker_used_count.
+
+        '
+    - name: devtools_changesview_opened_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the Changes panel has been opened. This metric
+        was generated to correspond to the Legacy Telemetry scalar devtools.changesview.opened_count.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

@@ -14,8 +14,8 @@ description: |-
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
   
-  The label "shredder mitigation" indicates that this table is suitable to run
-  a managed backfill with shredder mitigation:
+  The label "shredder mitigation" indicates that this table is set up for
+  managed backfill with shredder mitigation, as described in
   https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill.
 
   Proposal:

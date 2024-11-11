@@ -51,6 +51,26 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date when ping is received on the server side.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the browser is set as the default browser on the client side.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: A string containing the distribution identifier. This was used to identify installs from Mozilla Online, but now also identifies partnership deal distributions.
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The utm_term this install is attributed to. Reported by the install referrer service, not Adjust.
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The utm_medium this install is attributed to. Reported by the install referrer service, not Adjust.
+- name: attributed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the attribution source and medium are present.
 - name: adjust_network
   type: STRING
   mode: NULLABLE

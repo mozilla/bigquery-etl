@@ -1,0 +1,17 @@
+friendly_name: bugzilla_metrics
+dataset_base_acl: syndicate
+description: bugzilla_metrics syndicate views
+user_facing: true
+labels: {}
+syndication:
+  stage:
+    syndicated_project: "moz-fx-bugzilla-nonprod"
+    syndicated_dataset: "bugzilla_dev_metrics"
+  prod:
+    syndicated_project: "moz-fx-bugzilla-prod"
+    syndicated_dataset: "bugzilla_prod_metrics"
+  administer_views: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

@@ -4,6 +4,56 @@ CREATE TEMP FUNCTION in_available_geos(`date` DATE, country STRING) AS (
   OR (`date` >= "2021-07-12" AND country IN ("Austria", "Belgium", "Spain", "Italy", "Switzerland"))
   OR (`date` >= "2021-10-05" AND country IN ("Ireland", "Netherlands"))
   OR (`date` >= "2022-03-08" AND country IN ("Finland", "Sweden"))
+  OR (
+    `date` >= "2023-07-04"
+    AND country IN (
+      "Bulgaria",
+      "Croatia",
+      "Cyprus",
+      "Czechia",
+      "Denmark",
+      "Estonia",
+      "Hungary",
+      "Latvia",
+      "Lithuania",
+      "Luxembourg",
+      "Malta",
+      "Poland",
+      "Portugal",
+      "Romania",
+      "Slovakia",
+      "Slovenia"
+    )
+  )
+  OR (
+    `date` >= "2024-11-04"
+    AND country IN (
+      "Australia",
+      "Bangladesh",
+      "Brazil",
+      "Chile",
+      "Colombia",
+      "Egypt",
+      "Greece",
+      "India",
+      "Indonesia",
+      "Kenya",
+      "Mexico",
+      "Morocco",
+      "Nigeria",
+      "Norway",
+      "Saudi Arabia",
+      "Senegal",
+      "South Africa",
+      "South Korea",
+      "Taiwan",
+      "Thailand",
+      "Türkiye",
+      "Uganda",
+      "Ukraine",
+      "Vietnam"
+    )
+  )
 );
 
 WITH website_base AS (

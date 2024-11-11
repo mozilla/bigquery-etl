@@ -5,6 +5,7 @@ import logging
 import os
 import re
 from collections import namedtuple
+from functools import cache
 from pathlib import Path
 
 import requests
@@ -107,6 +108,26 @@ def list_tables(project_id, only_tables, table_filter, table_name="baseline_v1")
         for d in stable_datasets
         if table_filter(f"{d}.{table_name}")
     ]
+
+
+@cache
+def _get_pings_without_metrics():
+    def metrics_in_schema(fields):
+        for field in fields:
+            if field["name"] == "metrics":
+                return True
+        return False
+
+    return {
+        (schema.bq_dataset_family, schema.bq_table_unversioned)
+        for schema in get_stable_table_schemas()
+        if "glean" in schema.schema_id and not metrics_in_schema(schema.schema)
+    }
+
+
+def ping_has_metrics(dataset_family: str, unversioned_table: str) -> bool:
+    """Return true if the given stable table schema has a metrics column at the top-level."""
+    return (dataset_family, unversioned_table) not in _get_pings_without_metrics()
 
 
 def table_names_from_baseline(baseline_table, include_project_id=True):

@@ -243,7 +243,7 @@ def generate(name, dags_config, sql_dir, output_dir):
             sys.exit(1)
 
         dags.to_airflow_dags(output_dir, dag_to_generate=dag)
-        click.echo(f"Generated {output_dir}{dag.name}.py")
+        click.echo(f"Generated {os.path.join(output_dir, dag.name)}.py")
     else:
         # re-generate all DAGs
         dags.to_airflow_dags(output_dir)

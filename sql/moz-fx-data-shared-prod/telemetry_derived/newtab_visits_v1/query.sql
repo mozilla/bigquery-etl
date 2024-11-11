@@ -42,6 +42,9 @@ visit_metadata AS (
     ANY_VALUE(metrics.boolean.pocket_sponsored_stories_enabled) AS pocket_sponsored_stories_enabled,
     ANY_VALUE(metrics.boolean.topsites_enabled) AS topsites_enabled,
     ANY_VALUE(metrics.boolean.topsites_sponsored_enabled) AS topsites_sponsored_enabled,
+    ANY_VALUE(
+      metrics.quantity.topsites_sponsored_tiles_configured
+    ) AS topsites_sponsored_tiles_configured,
     ANY_VALUE(metrics.string.newtab_homepage_category) AS newtab_homepage_category,
     ANY_VALUE(metrics.string.newtab_newtab_category) AS newtab_newtab_category,
     ANY_VALUE(metrics.boolean.newtab_search_enabled) AS newtab_search_enabled,
@@ -229,40 +232,57 @@ pocket_events AS (
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS pocket_story_position,
     mozfun.map.get_key(event_details, "tile_id") AS pocket_tile_id,
     mozfun.map.get_key(event_details, "recommendation_id") AS pocket_recommendation_id,
-    COUNTIF(event_name = 'save') AS pocket_saves,
-    COUNTIF(event_name = 'click') AS pocket_clicks,
-    COUNTIF(event_name = 'impression') AS pocket_impressions,
+    COUNTIF(
+      event_name = 'save'
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+    ) AS pocket_saves,
+    COUNTIF(
+      event_name = 'click'
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+    ) AS pocket_clicks,
+    COUNTIF(
+      event_name = 'impression'
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+    ) AS pocket_impressions,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS sponsored_pocket_clicks,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS organic_pocket_clicks,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS sponsored_pocket_impressions,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS organic_pocket_impressions,
     COUNTIF(
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS sponsored_pocket_saves,
     COUNTIF(
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS organic_pocket_saves,
     COUNTIF(
       event_name = 'dismiss'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS sponsored_pocket_dismissals,
     COUNTIF(
       event_name = 'dismiss'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
+      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
     ) AS organic_pocket_dismissals,
     COUNTIF(
       event_name = 'thumb_voting_interaction'

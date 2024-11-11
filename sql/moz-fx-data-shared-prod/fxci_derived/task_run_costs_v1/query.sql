@@ -10,24 +10,30 @@ WITH run AS (
   WHERE
     task_runs.submission_date = @submission_date
 ),
-worker AS (
+worker_cost AS (
   SELECT
-    worker_cost.zone AS zone,
-    worker_cost.instance_id AS instance_id,
-    SUM(worker_cost.total_cost) AS total_cost,
-    SUM(worker_metrics.uptime) AS uptime,
+    zone,
+    instance_id,
+    SUM(total_cost) AS total_cost,
   FROM
-    `moz-fx-data-shared-prod.fxci.worker_metrics_v1` AS worker_metrics
-  INNER JOIN
-    `moz-fx-data-shared-prod.fxci_derived.worker_costs_v1` AS worker_cost
-    ON worker_metrics.project = worker_cost.project
-    AND worker_metrics.zone = worker_cost.zone
-    AND worker_metrics.instance_id = worker_cost.instance_id
+    `moz-fx-data-shared-prod.fxci_derived.worker_costs_v1`
   WHERE
-    worker_metrics.submission_date
+    usage_start_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND @submission_date
-    AND worker_cost.usage_start_date
+  GROUP BY
+    zone,
+    instance_id
+),
+worker_metric AS (
+  SELECT
+    zone,
+    instance_id,
+    SUM(uptime) AS total_uptime
+  FROM
+    `moz-fx-data-shared-prod.fxci.worker_metrics_v1`
+  WHERE
+    submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
     AND @submission_date
   GROUP BY
@@ -38,19 +44,23 @@ SELECT
   run.task_id AS task_id,
   run.run_id AS run_id,
   @submission_date AS submission_date,
-  (run.duration / worker.uptime) * worker.total_cost AS run_cost,
+  (run.duration / worker_metric.total_uptime) * worker_cost.total_cost AS run_cost,
 FROM
   run
 INNER JOIN
-  worker
-  ON run.worker_group = worker.zone
-  AND run.worker_id = worker.instance_id
+  worker_cost
+  ON run.worker_group = worker_cost.zone
+  AND run.worker_id = worker_cost.instance_id
+INNER JOIN
+  worker_metric
+  ON run.worker_group = worker_metric.zone
+  AND run.worker_id = worker_metric.instance_id
 WHERE
-  worker.uptime > run.duration
+  worker_metric.total_uptime > run.duration
 GROUP BY
   task_id,
   run_id,
   submission_date,
   run.duration,
-  worker.uptime,
-  worker.total_cost
+  worker_cost.total_cost,
+  worker_metric.total_uptime

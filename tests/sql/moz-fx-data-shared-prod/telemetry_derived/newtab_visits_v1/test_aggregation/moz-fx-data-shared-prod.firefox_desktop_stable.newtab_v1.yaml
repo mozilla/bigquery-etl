@@ -8,6 +8,8 @@
       legacy_telemetry_profile_group_id: profile_group_id_1
     string:
       newtab_newtab_category: enabled
+    quantity:
+      topsites_sponsored_tiles_configured: 2
   events:
     - category: newtab
       name: opened
@@ -59,6 +61,8 @@
         - key: position
           value: 1
         - key: is_sponsored
+          value: false
+        - key: is_list_card
           value: false
     - category: newtab
       name: wallpaper_click

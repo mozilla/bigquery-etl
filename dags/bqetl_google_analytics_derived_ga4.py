@@ -194,6 +194,33 @@ with DAG(
             checks__fail_mozilla_org_derived__gclid_conversions__v2
         )
 
+    checks__fail_mozilla_org_derived__gclid_conversions__v3 = bigquery_dq_check(
+        task_id="checks__fail_mozilla_org_derived__gclid_conversions__v3",
+        source_table="gclid_conversions_v3",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    with TaskGroup(
+        "checks__fail_mozilla_org_derived__gclid_conversions__v3_external",
+    ) as checks__fail_mozilla_org_derived__gclid_conversions__v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_census_feed__wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v3",
+            external_dag_id="bqetl_census_feed",
+            external_task_id="wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=68400)).isoformat() }}",
+        )
+
+        checks__fail_mozilla_org_derived__gclid_conversions__v3_external.set_upstream(
+            checks__fail_mozilla_org_derived__gclid_conversions__v3
+        )
+
     checks__warn_mozilla_org_derived__blogs_goals__v2 = bigquery_dq_check(
         task_id="checks__warn_mozilla_org_derived__blogs_goals__v2",
         source_table="blogs_goals_v2",
@@ -354,6 +381,17 @@ with DAG(
         parameters=["conversion_window:INT64:30"],
     )
 
+    mozilla_org_derived__gclid_conversions__v3 = bigquery_etl_query(
+        task_id="mozilla_org_derived__gclid_conversions__v3",
+        destination_table="gclid_conversions_v3",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     mozilla_org_derived__www_site_downloads__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__www_site_downloads__v2",
         destination_table="www_site_downloads_v2",
@@ -455,6 +493,10 @@ with DAG(
         mozilla_org_derived__gclid_conversions__v2
     )
 
+    checks__fail_mozilla_org_derived__gclid_conversions__v3.set_upstream(
+        mozilla_org_derived__gclid_conversions__v3
+    )
+
     checks__warn_mozilla_org_derived__blogs_goals__v2.set_upstream(
         mozilla_org_derived__blogs_goals__v2
     )
@@ -518,6 +560,26 @@ with DAG(
     )
 
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
+    )
+
+    mozilla_org_derived__gclid_conversions__v3.set_upstream(
+        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+    )
+
+    mozilla_org_derived__gclid_conversions__v3.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
+    )
+
+    mozilla_org_derived__gclid_conversions__v3.set_upstream(
+        wait_for_google_ads_derived__conversion_event_categorization__v1
+    )
+
+    mozilla_org_derived__gclid_conversions__v3.set_upstream(
+        mozilla_org_derived__ga_sessions__v2
+    )
+
+    mozilla_org_derived__gclid_conversions__v3.set_upstream(
         wait_for_telemetry_derived__clients_daily__v6
     )
 

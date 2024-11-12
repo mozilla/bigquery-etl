@@ -24,7 +24,7 @@ SELECT
     ELSE NULL
   END AS conversion_name,
 FROM
-  `moz-fx-data-shared-prod.mozilla_org_derived.gclid_conversions_v2` UNPIVOT(
+  `moz-fx-data-shared-prod.mozilla_org_derived.gclid_conversions_v3` UNPIVOT(
     did_conversion FOR conversion_name IN (
       did_firefox_first_run,
       did_search,

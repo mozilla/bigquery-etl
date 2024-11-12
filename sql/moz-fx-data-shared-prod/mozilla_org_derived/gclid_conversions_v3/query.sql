@@ -193,10 +193,10 @@ telemetry_id_to_activity AS (
 SELECT
   activity_date,
   gclid,
-  MAX(COALESCE(firefox_first_run, FALSE)) AS firefox_first_run,
-  MAX(COALESCE(firefox_first_search, FALSE)) AS firefox_first_search,
-  MAX(COALESCE(firefox_first_ad_click, FALSE)) AS firefox_first_ad_click,
-  MAX(COALESCE(returned_second_day, FALSE)) AS firefox_active_a_second_day,
+  MAX(COALESCE(firefox_first_run, FALSE)) AS did_firefox_first_run,
+  MAX(COALESCE(firefox_first_search, FALSE)) AS did_search,
+  MAX(COALESCE(firefox_first_ad_click, FALSE)) AS did_click_ad,
+  MAX(COALESCE(returned_second_day, FALSE)) AS did_returned_second_day,
   MAX(
     COALESCE(first_wk_5_actv_days_and_1_or_more_search_w_ads, FALSE)
   ) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,

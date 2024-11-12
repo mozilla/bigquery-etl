@@ -17,24 +17,38 @@ WITH gclids_to_ga_ids AS (
 ),
 --Step 2: Get all the download tokens associated with a known GA client ID & stub session ID
 ga_ids_to_dl_token AS (
-  SELECT
-    ga_client_id,
-    stub_session_id,
-    dl_token,
+  SELECT DISTINCT
+    a.ga_client_id,
+    a.stub_session_id,
+    a.dl_token,
+    b.gclid
   FROM
-    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1`
+    `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1` a
+  JOIN
+    gclids_to_ga_ids b
+    ON a.ga_client_id = b.ga_client_id
+    AND a.stub_session_id = b.stub_session_id
   WHERE
-    ga_client_id IS NOT NULL
-    AND stub_session_id IS NOT NULL
+    a.ga_client_id IS NOT NULL
+    AND a.stub_session_id IS NOT NULL
+),
+dist_dl_tokens AS (
+  SELECT DISTINCT
+    dl_token
+  FROM
+    ga_ids_to_dl_token
 ),
 --Step 3: Get the telemetry clent ID & first seen date for each download token
 dl_token_to_telemetry_id AS (
   SELECT
-    client_id AS telemetry_client_id,
-    first_seen_date,
-    attribution_dltoken AS dl_token,
+    a.client_id AS telemetry_client_id,
+    a.first_seen_date,
+    a.attribution_dltoken AS dl_token,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` a
+  JOIN
+    dist_dl_tokens b
+    ON a.attribution_dltoken = b.dl_token
 ),
 --Step 4: Get the new conversion event types from conversion_event_categorization_v1
 new_conversion_events AS (
@@ -45,7 +59,10 @@ new_conversion_events AS (
     event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     event_3 AS first_wk_3_actv_days_and_24_active_minutes
   FROM
-    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
+    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1` a
+  JOIN
+    dl_token_to_telemetry_id b
+    ON a.client_id = b.telemetry_client_id
   WHERE
     (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
     AND report_date = @submission_date
@@ -54,28 +71,31 @@ new_conversion_events AS (
 --Step 5: Get, for each client, their first run date, first ad click date, first search date, the # of days running Firefox, and their most recent run date
 old_events_staging AS (
   SELECT
-    client_id AS telemetry_client_id,
-    MIN(submission_date) AS firefox_first_run_date,
+    a.client_id AS telemetry_client_id,
+    MIN(a.submission_date) AS firefox_first_run_date,
     MIN(
       CASE
-        WHEN IFNULL(ad_clicks_count_all, 0) > 0
-          THEN submission_date
+        WHEN IFNULL(a.ad_clicks_count_all, 0) > 0
+          THEN a.submission_date
         ELSE NULL
       END
     ) AS firefox_first_ad_click_date,
     MIN(
       CASE
-        WHEN IFNULL(search_count_all, 0) > 0
-          THEN submission_date
+        WHEN IFNULL(a.search_count_all, 0) > 0
+          THEN a.submission_date
         ELSE NULL
       END
     ) AS firefox_first_search_date,
-    COUNT(DISTINCT(submission_date)) AS nbr_days_running_firefox,
-    MAX(submission_date) AS most_recent_date_running_firefox
+    COUNT(DISTINCT(a.submission_date)) AS nbr_days_running_firefox,
+    MAX(a.submission_date) AS most_recent_date_running_firefox
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` a
+  JOIN
+    dl_token_to_telemetry_id b
+    ON a.client_id = b.telemetry_client_id
   WHERE
-    submission_date <= current_date
+    a.submission_date <= current_date
   GROUP BY
     1
 ),
@@ -187,10 +207,7 @@ SELECT
     COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
   ) AS first_wk_3_actv_days_and_24_active_minutes
 FROM
-  gclids_to_ga_ids
-INNER JOIN
   ga_ids_to_dl_token
-  USING (ga_client_id, stub_session_id)
 INNER JOIN
   dl_token_to_telemetry_id
   USING (dl_token)

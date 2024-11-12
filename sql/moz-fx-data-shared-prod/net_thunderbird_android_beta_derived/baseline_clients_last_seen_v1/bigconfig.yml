@@ -25,6 +25,9 @@ saved_metric_definitions:
       bucket_size: DAY
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
   - saved_metric_id: COUNT_VALUE_IN_LIST
     metric_type:
       type: PREDEFINED
@@ -50,6 +53,9 @@ saved_metric_definitions:
       bucket_size: DAY
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
   - saved_metric_id: COUNTRY_REGEX_CHECK
     metric_type:
       type: TEMPLATE
@@ -77,11 +83,14 @@ saved_metric_definitions:
       bucket_size: DAY
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
   - saved_metric_id: FRESHNESS
     metric_type:
       type: PREDEFINED
       predefined_metric: FRESHNESS
-    metric_name: Freshness
+    metric_name: FRESHNESS [warn]
     threshold:
       type: AUTO
       sensitivity: MEDIUM
@@ -95,11 +104,14 @@ saved_metric_definitions:
       bucket_size: HOUR
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
   - saved_metric_id: VOLUME
     metric_type:
       type: PREDEFINED
       predefined_metric: VOLUME
-    metric_name: Volume
+    metric_name: VOLUME [fail]
     threshold:
       type: AUTO
       sensitivity: MEDIUM
@@ -113,6 +125,9 @@ saved_metric_definitions:
       bucket_size: HOUR
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
   - saved_metric_id: COUNT_DUPLICATES
     metric_type:
       type: PREDEFINED
@@ -133,6 +148,9 @@ saved_metric_definitions:
       bucket_size: DAY
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
   - saved_metric_id: STRING_LENGTH_MAX
     metric_type:
       type: PREDEFINED
@@ -149,11 +167,14 @@ saved_metric_definitions:
       bucket_size: DAY
     rct_overrides:
     - submission_date
+    metric_schedule:   
+        named_schedule:              
+          name: Default Schedule - 13:00 UTC
 
 tag_deployments:
 - collection:
-    name: baseline_clients_last_seen_v1
-    description: SDK Generated
+    name: Thunderbird
+    description: Checks related to thunderbird datasets
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.submission_date

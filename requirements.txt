@@ -516,9 +516,9 @@ google-api-core[grpc]==2.17.1 \
     #   google-cloud-core
     #   google-cloud-datacatalog-lineage
     #   google-cloud-storage
-google-auth==2.35.0 \
-    --hash=sha256:25df55f327ef021de8be50bad0dfd4a916ad0de96da86cd05661c9297723ad3f \
-    --hash=sha256:f4c64ed4e01e8e8b646ef34c018f8bf3338df0c8e37d8b3bba40e7f574a3278a
+google-auth==2.36.0 \
+    --hash=sha256:51a15d47028b66fd36e5c64a82d2d57480075bccc7da37cde257fc94177a61fb \
+    --hash=sha256:545e9618f2df0bcbb7dcbc45a546485b1212624716975a1ea5ae8149ce769ab1
     # via
     #   -r requirements.in
     #   gcsfs
@@ -547,9 +547,9 @@ google-cloud-core==2.4.1 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-datacatalog-lineage==0.3.9 \
-    --hash=sha256:629145a13b5278b4839294e8ddff479e7c171dc97bfe63ca4ff075479df7fd38 \
-    --hash=sha256:bbb4e0aaf2a376588603dbb20eab3213aae92c3e9a7981c4527ea947539ffc73
+google-cloud-datacatalog-lineage==0.3.10 \
+    --hash=sha256:1a3b0e7a89a9d27949dc3e915251d281ea9063217b8c7650eb5e642855281e3e \
+    --hash=sha256:c343393605cfc9e3fcf392735fb57ebfa9b64da237e451dbc4beeedfd94ae9f1
     # via -r requirements.in
 google-cloud-storage==2.18.2 \
     --hash=sha256:97a4d45c368b7d401ed48c4fdfe86e1e1cb96401c9e199e419d289e2c0370166 \
@@ -919,9 +919,9 @@ mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \
     --hash=sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134
     # via mkdocs
-mkdocs-material==9.5.42 \
-    --hash=sha256:452a7c5d21284b373f36b981a2cbebfff59263feebeede1bc28652e9c5bbe316 \
-    --hash=sha256:92779b5e9b5934540c574c11647131d217dc540dce72b05feeda088c8eb1b8f2
+mkdocs-material==9.5.44 \
+    --hash=sha256:47015f9c167d58a5ff5e682da37441fc4d66a1c79334bfc08d774763cacf69ca \
+    --hash=sha256:f3a6c968e524166b3f3ed1fb97d3ed3e0091183b0545cedf7156a2a6804c56c0
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
@@ -931,8 +931,8 @@ more-itertools==10.4.0 \
     --hash=sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27 \
     --hash=sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923
     # via jaraco-classes
-mozilla-metric-config-parser==2024.10.1 \
-    --hash=sha256:7816d0a5a98d48bb5c9b236e147ecd76ca0f6029ed69dbaae0d309307dfd3897
+mozilla-metric-config-parser==2024.10.2 \
+    --hash=sha256:f66540ce807718a0fa329207982eeb00d1b10e2937789d88872849b4271ff043
     # via -r requirements.in
 mozilla-nimbus-schemas==2024.9.3 \
     --hash=sha256:5e1196637308fb0241a209eee027a436e986fc6220ad416eebb06b7162e226bc \
@@ -1490,9 +1490,9 @@ pytest==7.4.3 \
 pytest-black==0.3.12 \
     --hash=sha256:1d339b004f764d6cd0f06e690f6dd748df3d62e6fe1a692d6a5500ac2c5b75a5
     # via -r requirements.in
-pytest-flake8==1.1.2 \
-    --hash=sha256:0b95bb75509e1a8d23b973d315de5cfa6d83908cb6320c7d02a9d97c242b0efe \
-    --hash=sha256:e73e0c24146e260832d08a14f1b6ae914a4ff874dd7db8edfc77ef281f1f0ae7
+pytest-flake8==1.3.0 \
+    --hash=sha256:88fb35562ce32d915c6ba41ef0d5e1cfcdd8ff884a32b7d46aa99fc77a3d1fe6 \
+    --hash=sha256:de10517c59fce25c0a7abb2a2b2a9d0b0ceb59ff0add7fa8e654d613bb25e218
     # via -r requirements.in
 pytest-isort==4.0.0 \
     --hash=sha256:00e99642e282b00b849cf9b49d9102a02ab8c4ec549ace57d7868b723713aaa9 \
@@ -2004,9 +2004,9 @@ shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de
     # via typer
-siggen==2.1.20240726 \
-    --hash=sha256:079aa2409f91bb3435ed78c7179dff47ef464515e8b5ff3707cef8b7ea5f03f3 \
-    --hash=sha256:b37807bab6a4716b7ab031a9daa4223d406dddcac1fa09d7d307136189d86334
+siggen==2.2.20241029 \
+    --hash=sha256:887305e795624742494ae7c373fdf486ec87e5c2ce07d60e9cad558bc392ff63 \
+    --hash=sha256:a752bc70cb2083071729d4b8570d89cf5de08feca6670260a082cb96f9c0a4e8
     # via -r requirements.in
 six==1.16.0 \
     --hash=sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926 \
@@ -2033,9 +2033,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==25.26.0 \
-    --hash=sha256:638264ab99b3aa837cd85d8864b655632580a7979162b4f740407d170dd8b376 \
-    --hash=sha256:863e7539ec20ff9168cf030359e23af87d323a0936a94e5f46cbc8ab7ea3a525
+sqlglot==25.28.0 \
+    --hash=sha256:01a6b76dd916c2ce39a5f808559e337600ea261873d25be0dc7f99da3d24860d \
+    --hash=sha256:1bfcadada28bcab873382b271ed30138597cbf8893d90cc259563f9498bd1b49
     # via -r requirements.in
 sqlparse==0.5.1 \
     --hash=sha256:773dcbf9a5ab44a090f3441e2180efe2560220203dc2f8c0b0fa141e18b505e4 \
@@ -2048,12 +2048,12 @@ stripe==6.4.0 \
     --hash=sha256:d1ab2739aa6511f34ba77f66fca9f86cffe2dbb17df84bd224a38e7254efe61b \
     --hash=sha256:d99e97e6d3f6dbaf9361ebd07b3024ec6f9d7b1f77724c8127338e0754314e9d
     # via -r requirements.in
-symbolic==12.12.0 \
-    --hash=sha256:4e990af86deb859ef3fe90b18e6ecfb053512c40bd8ed8dc8d20f4c34c9254b8 \
-    --hash=sha256:6d19a1bd29a1dcfb73a03a0be1f67b4e96d7be85eaf34693d19b53a525e7fb85 \
-    --hash=sha256:976ffdcb94d2a7f45b4e4ada5857f2510e38df5ee4edb6469fadd71ff606b23e \
-    --hash=sha256:a3cbe3dddbf2dfb7c259fa74f0b95a6cdb51ecad4ca1ec0a20f9544d7b6fc578 \
-    --hash=sha256:ebd94c908c8c20aa1391e9f0f1d3649bbf40a9b35d0e10c941c2a0e3e1e4ad5a
+symbolic==12.12.1 \
+    --hash=sha256:1535d55b95a099fe0f11320350b1dbf85215846029aa9f51089186c725e31fbe \
+    --hash=sha256:178885178cc204558ecdba6b159dd0fd52003f3a4bde76c601d29b1807074e91 \
+    --hash=sha256:7a63b32a67d8680445803269d1f435a5e12e9ab4c74beeeb6f904509a3f1834e \
+    --hash=sha256:9b856c67f35fbc525caf310c21e5dd774f399cd437dddada0d6441fc968555d5 \
+    --hash=sha256:c7083e50fdeb31c9cc9dcda406c9bea5d4607d87271ab182c338a330dd41c9c4
     # via -r requirements.in
 toml==0.10.2 \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \

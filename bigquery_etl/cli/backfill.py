@@ -202,9 +202,7 @@ def create(
 )
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
-@project_id_option(
-    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
-)
+@project_id_option()
 @click.pass_context
 def validate(
     ctx,
@@ -224,34 +222,34 @@ def validate(
             sql_dir, project_id
         )
 
-    for qualified_table_name in backfills_dict:
+    for table_name in backfills_dict:
 
-        if not validate_depends_on_past(sql_dir, qualified_table_name):
+        if not validate_depends_on_past(sql_dir, table_name):
             click.echo(
-                f"Tables that depend on past are currently not supported:  {qualified_table_name}"
+                f"Tables that depend on past are currently not supported:  {table_name}"
             )
             sys.exit(1)
 
-        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+        if not validate_metadata_workgroups(sql_dir, table_name):
             click.echo(
-                f"Only mozilla-confidential workgroups are supported.  {qualified_table_name} contain workgroup access that is not supported"
+                f"Only mozilla-confidential workgroups are supported.  {table_name} contain workgroup access that is not supported"
             )
             sys.exit(1)
 
         try:
             backfill_file = get_backfill_file_from_qualified_table_name(
-                sql_dir, qualified_table_name
+                sql_dir, table_name
             )
             validate_file(backfill_file)
         except (yaml.YAMLError, ValueError) as e:
             click.echo(
-                f"Backfill.yaml file for {qualified_table_name} contains the following error:\n {e}"
+                f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
             )
             sys.exit(1)
 
-    if qualified_table_name:
-        click.echo(f"{BACKFILL_FILE} has been validated for {qualified_table_name}.")
-    elif backfills_dict:
+        click.echo(f"{BACKFILL_FILE} has been validated for {table_name}.")
+
+    if backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
         )

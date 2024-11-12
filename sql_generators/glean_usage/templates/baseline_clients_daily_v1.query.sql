@@ -69,6 +69,33 @@ with_date_offsets AS (
     with_dates
 ),
 --
+overactive AS (
+  -- Find client_ids with over 150 000 pings in a day,
+  -- which could cause errors in the next step due to aggregation overflows.
+  SELECT
+    submission_date,
+    client_id
+  FROM
+    with_date_offsets
+  WHERE
+    {% raw %}
+    {% if is_init() %}
+    {% endraw %}
+      submission_date >= '2018-01-01'
+    {% raw %}
+    {% else %}
+    {% endraw %}
+      submission_date = @submission_date
+    {% raw %}
+    {% endif %}
+    {% endraw %}
+  GROUP BY
+    submission_date,
+    client_id
+  HAVING
+    COUNT(*) > 150000
+),
+--
 windowed AS (
   SELECT
     submission_date,
@@ -112,7 +139,11 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
   FROM
     with_date_offsets
+  LEFT JOIN
+    overactive
+    USING (submission_date, client_id)
   WHERE
+    overactive.client_id IS NULL AND
     {% raw %}
     {% if is_init() %}
     {% endraw %}

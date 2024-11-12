@@ -10,4 +10,4 @@ workgroup_access:
   - workgroup:stripe/viewers
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:platform-infra/internal
+  - workgroup:dataplatform/developers

@@ -53,20 +53,20 @@ dl_token_to_telemetry_id AS (
 --Step 4: Get the new conversion event types from conversion_event_categorization_v1
 new_conversion_events AS (
   SELECT
-    client_id AS telemetry_client_id,
-    report_date AS activity_date,
-    event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
-    event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-    event_3 AS first_wk_3_actv_days_and_24_active_minutes
+    a.client_id AS telemetry_client_id,
+    a.report_date AS activity_date,
+    a.event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
+    a.event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
+    a.event_3 AS first_wk_3_actv_days_and_24_active_minutes
   FROM
     `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1` a
   JOIN
     dl_token_to_telemetry_id b
     ON a.client_id = b.telemetry_client_id
   WHERE
-    (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
-    AND report_date = @submission_date
-    AND first_seen_date < @submission_date
+    (a.event_1 IS TRUE OR a.event_2 IS TRUE OR a.event_3 IS TRUE)
+    AND a.report_date = @submission_date
+    AND a.first_seen_date < @submission_date
 ),
 --Step 5: Get, for each client, their first run date, first ad click date, first search date, the # of days running Firefox, and their most recent run date
 old_events_staging AS (

@@ -2900,6 +2900,17 @@ fields:
       description: 'Whether the system has any matching pointing device for each label.
 
         '
+    - name: calendar_preferences_boolean
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: Values of boolean preferences.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

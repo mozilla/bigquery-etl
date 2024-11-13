@@ -6,7 +6,7 @@ row_creation_times:
 
 saved_metric_definitions:
   metrics:
-  - saved_metric_id: PERCENT_NULL
+  - saved_metric_id: PERCENT_NULL_net_thunderbird_android_daily_derived
     metric_type:
       type: PREDEFINED
       predefined_metric: PERCENT_NULL
@@ -28,7 +28,7 @@ saved_metric_definitions:
     metric_schedule:
       named_schedule:
         name: Default Schedule - 13:00 UTC
-  - saved_metric_id: FRESHNESS
+  - saved_metric_id: FRESHNESS_net_thunderbird_android_daily_derived
     metric_type:
       type: PREDEFINED
       predefined_metric: FRESHNESS
@@ -49,7 +49,7 @@ saved_metric_definitions:
     metric_schedule:
       named_schedule:
         name: Default Schedule - 13:00 UTC
-  - saved_metric_id: VOLUME
+  - saved_metric_id: VOLUME_net_thunderbird_android_daily_derived
     metric_type:
       type: PREDEFINED
       predefined_metric: VOLUME
@@ -70,7 +70,7 @@ saved_metric_definitions:
     metric_schedule:
       named_schedule:
         name: Default Schedule - 13:00 UTC
-  - saved_metric_id: COUNT_DUPLICATES
+  - saved_metric_id: COUNT_DUPLICATES_net_thunderbird_android_daily_derived
     metric_type:
       type: PREDEFINED
       predefined_metric: COUNT_DUPLICATES
@@ -93,7 +93,7 @@ saved_metric_definitions:
     metric_schedule:
       named_schedule:
         name: Default Schedule - 13:00 UTC
-  - saved_metric_id: STRING_LENGTH_MAX
+  - saved_metric_id: STRING_LENGTH_MAX_net_thunderbird_android_daily_derived
     metric_type:
       type: PREDEFINED
       predefined_metric: STRING_LENGTH_MAX
@@ -129,14 +129,14 @@ tag_deployments:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_daily_derived.baseline_clients_last_seen_v1.days_active_bits
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_daily_derived.baseline_clients_last_seen_v1.client_id
     metrics:
-    - saved_metric_id: PERCENT_NULL
+    - saved_metric_id: PERCENT_NULL_net_thunderbird_android_daily_derived
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_daily_derived.baseline_clients_last_seen_v1.*
     metrics:
-    - saved_metric_id: FRESHNESS
-    - saved_metric_id: VOLUME
+    - saved_metric_id: FRESHNESS_net_thunderbird_android_daily_derived
+    - saved_metric_id: VOLUME_net_thunderbird_android_daily_derived
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_daily_derived.baseline_clients_last_seen_v1.client_id
     metrics:
-    - saved_metric_id: COUNT_DUPLICATES
-    - saved_metric_id: STRING_LENGTH_MAX
+    - saved_metric_id: COUNT_DUPLICATES_net_thunderbird_android_daily_derived
+    - saved_metric_id: STRING_LENGTH_MAX_net_thunderbird_android_daily_derived

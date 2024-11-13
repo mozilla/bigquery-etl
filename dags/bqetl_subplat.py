@@ -1061,8 +1061,10 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     stripe_external__tax_rate__v1 = bigquery_etl_query(

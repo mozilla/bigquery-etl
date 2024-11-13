@@ -18,7 +18,10 @@ labels:
   owner1: srose
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
 bigquery:
   time_partitioning:
     type: day

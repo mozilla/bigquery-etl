@@ -1,16 +1,16 @@
 type: BIGCONFIG_FILE
 
 tag_definitions:
-  - tag_id: UNIQUE_FIELDS
+  - tag_id: UNIQUE_FIELDS_{{ dataset }}_{{ name }}_{{ version }}
     column_selectors:
       - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
-  - tag_id: ALL_FIELDS
+  - tag_id: ALL_FIELDS_{{ dataset }}_{{ name }}_{{ version }}
     column_selectors:
       - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
 
 saved_metric_definitions:
   metrics:
-    - saved_metric_id: is_not_null
+    - saved_metric_id: is_not_null_{{ dataset }}_{{ name }}_{{ version }}
       metric_type:
         predefined_metric: PERCENT_NULL
       threshold:
@@ -19,7 +19,7 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
-    - saved_metric_id: is_unique
+    - saved_metric_id: is_unique_{{ dataset }}_{{ name }}_{{ version }}
       metric_type:
         predefined_metric: COUNT_DUPLICATES
       threshold:
@@ -28,7 +28,7 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
-    - saved_metric_id: freshness_fail
+    - saved_metric_id: freshness_fail_{{ dataset }}_{{ name }}_{{ version }}
       metric_name: FRESHNESS [fail]
       metric_type:
         type: PREDEFINED
@@ -36,7 +36,7 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
-    - saved_metric_id: volume_fail
+    - saved_metric_id: volume_fail_{{ dataset }}_{{ name }}_{{ version }}
       metric_name: VOLUME [fail]
       metric_type:
         type: PREDEFINED
@@ -49,11 +49,11 @@ tag_deployments:
 - collection:
     name: {{ bigeye_collection }}
   deployments:
-  - tag_id: UNIQUE_FIELDS
+  - tag_id: UNIQUE_FIELDS_{{ dataset }}_{{ name }}_{{ version }}
     metrics:
-      - saved_metric_id: is_unique
-      - saved_metric_id: is_not_null
-  - tag_id: ALL_FIELDS
+      - saved_metric_id: is_unique_{{ dataset }}_{{ name }}_{{ version }}
+      - saved_metric_id: is_not_null_{{ dataset }}_{{ name }}_{{ version }}
+  - tag_id: ALL_FIELDS_{{ dataset }}_{{ name }}_{{ version }}
     metrics:
-      - saved_metric_id: freshness_fail
-      - saved_metric_id: volume_fail
+      - saved_metric_id: freshness_fail_{{ dataset }}_{{ name }}_{{ version }}
+      - saved_metric_id: volume_fail_{{ dataset }}_{{ name }}_{{ version }}

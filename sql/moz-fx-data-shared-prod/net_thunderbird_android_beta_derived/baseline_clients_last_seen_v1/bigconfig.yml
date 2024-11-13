@@ -1,0 +1,208 @@
+type: BIGCONFIG_FILE
+
+row_creation_times:
+  column_selectors:
+  - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.submission_date
+
+saved_metric_definitions:
+  metrics:
+  - saved_metric_id: PERCENT_NULL
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: PERCENT_NULL
+    metric_name: Null (%)
+    group_by:
+    - submission_date
+    threshold:
+      type: CONSTANT
+      upper_bound: 0.0
+      lower_bound: 0.0
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+  - saved_metric_id: COUNT_VALUE_IN_LIST
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: COUNT_VALUE_IN_LIST
+    metric_name: Value in list (#)
+    group_by:
+    - submission_date
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: false
+      lower_bound_only: false
+    parameters:
+    - key: list
+      string_value: nightly, aurora, release, Other, beta, esr
+      column_name: ''
+      number_value: 0.0
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+  - saved_metric_id: COUNTRY_REGEX_CHECK
+    metric_type:
+      type: TEMPLATE
+      template_id: 945
+      aggregation_type: COUNT
+      template_name: country_regex_check
+    metric_name: COUNT of country_regex_check
+    group_by:
+    - submission_date
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: false
+      lower_bound_only: false
+    parameters:
+    - key: column
+      string_value: country
+    - key: column_name
+      string_value: country
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+  - saved_metric_id: FRESHNESS
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: FRESHNESS
+    metric_name: FRESHNESS [warn]
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: true
+      lower_bound_only: false
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: HOUR
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+  - saved_metric_id: VOLUME
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: VOLUME
+    metric_name: VOLUME [fail]
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: false
+      lower_bound_only: false
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: HOUR
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+  - saved_metric_id: COUNT_DUPLICATES
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: COUNT_DUPLICATES
+    metric_name: Duplicates (#)
+    group_by:
+    - submission_date
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: false
+      lower_bound_only: false
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+  - saved_metric_id: STRING_LENGTH_MAX
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: STRING_LENGTH_MAX
+    metric_name: Maximum string length
+    threshold:
+      type: CONSTANT
+      upper_bound: 36.0
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - submission_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+
+tag_deployments:
+- collection:
+    name: Thunderbird
+    description: Checks related to thunderbird datasets
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.submission_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.sample_id
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.first_seen_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.days_seen_session_start_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.days_seen_session_end_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.days_seen_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.days_created_profile_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.days_active_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.client_id
+    metrics:
+    - saved_metric_id: PERCENT_NULL
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.normalized_channel
+    metrics:
+    - saved_metric_id: COUNT_VALUE_IN_LIST
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1
+    metrics:
+    - saved_metric_id: COUNTRY_REGEX_CHECK
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.*
+    metrics:
+    - saved_metric_id: FRESHNESS
+    - saved_metric_id: VOLUME
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.net_thunderbird_android_beta_derived.baseline_clients_last_seen_v1.client_id
+    metrics:
+    - saved_metric_id: COUNT_DUPLICATES
+    - saved_metric_id: STRING_LENGTH_MAX

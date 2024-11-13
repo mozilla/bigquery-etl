@@ -157,6 +157,7 @@ adjusted_original_changelog AS (
         -- Otherwise we'll create a separate synthetic customer creation changelog for them.
         WHEN customer_change_number = 1
           AND customer.is_deleted IS NOT TRUE
+          AND customer.created < `timestamp`
           AND TIMESTAMP_DIFF(`timestamp`, customer.created, HOUR) < 24
           THEN STRUCT(customer.created AS `timestamp`, 'adjusted_customer_creation' AS type)
         ELSE STRUCT(`timestamp`, type)
@@ -179,7 +180,7 @@ synthetic_customer_creation_changelog AS (
   WHERE
     customer_change_number = 1
     AND (customer.is_deleted OR TIMESTAMP_DIFF(`timestamp`, customer.created, HOUR) >= 24)
-    AND customer.created IS NOT NULL
+    AND customer.created < `timestamp`
 ),
 -- `stripe_external.customers_changelog_v1` began capturing incremental customer changes on 2023-07-10,
 -- but the underlying Fivetran `customer` table doesn't preserve historical changes, so the initial
@@ -209,6 +210,7 @@ synthetic_discount_start_changelog AS (
     questionable_initial_changelog
   WHERE
     customer.discount.start > customer.created
+    AND customer.discount.start < `timestamp`
 ),
 synthetic_geolocation_changelog AS (
   SELECT
@@ -224,6 +226,7 @@ synthetic_geolocation_changelog AS (
     questionable_initial_changelog
   WHERE
     customer.metadata.geoip_date > customer.created
+    AND customer.metadata.geoip_date < `timestamp`
 ),
 synthetic_customer_deletion_changelog AS (
   -- For customers that were already deleted when the changelog started capturing changes we can't know
@@ -239,12 +242,12 @@ synthetic_customer_deletion_changelog AS (
     ) AS customer
   FROM
     questionable_initial_changelog AS changelog
-  LEFT JOIN
+  JOIN
     customer_subscription_dates
     ON changelog.customer.id = customer_subscription_dates.customer_id
   WHERE
     changelog.customer.is_deleted
-    AND customer_subscription_dates.last_subscription_ended_at IS NOT NULL
+    AND customer_subscription_dates.last_subscription_ended_at < `timestamp`
 ),
 synthetic_changelog_union AS (
   SELECT

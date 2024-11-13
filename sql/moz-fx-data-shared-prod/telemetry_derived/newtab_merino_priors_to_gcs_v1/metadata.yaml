@@ -1,0 +1,24 @@
+friendly_name: Newtab Merino BigQuery Prior stats to Google Cloud Storage (GCS)
+description: |-
+  Newtab stats that inform the Thompson sampling priors are exported to a GCS
+  bucket for Merino to consume. The table rebuilds daily and aggregates 7 days
+  of data.
+owners:
+- cbeck@mozilla.com
+- gkatre@mozilla.com
+labels:
+  incremental: false
+  owner1: cbeck
+scheduling:
+  dag_name: bqetl_merino_newtab_priors_to_gcs
+  arguments:
+  - --source-project=moz-fx-data-shared-prod
+  - --source-dataset=telemetry_derived
+  - --source-table=newtab_merino_priors_v1
+  - --destination-bucket=merino-airflow-data-prodpy
+  - --destination-prefix=newtab-merino-exports/priors
+  - --deletion-days-old=3
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_priors_v1']
+bigquery: null
+references: {}

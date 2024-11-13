@@ -18,6 +18,7 @@ SCRIPT_FILE = "script.sql"
 PYTHON_SCRIPT_FILE = "query.py"
 DEFAULT_DAGS_DIR = "dags"
 CHECKS_FILE = "checks.sql"
+BIGEYE_FILE = "bigconfig.yml"
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument(
@@ -93,6 +94,18 @@ def get_dags(project_id, dags_config, sql_dir=None):
                     logging.error(f"Error processing task for query {query_file}")
                     raise e
                 else:
+                    if BIGEYE_FILE in files:
+                        bigeye_file = os.path.join(root, BIGEYE_FILE)
+                        bigeye_task = copy.deepcopy(
+                            Task.of_bigeye_check(
+                                bigeye_file,
+                                dag_collection=dag_collection,
+                            )
+                        )
+
+                        if bigeye_task.monitoring_enabled:
+                            tasks.append(bigeye_task)
+
                     if CHECKS_FILE in files:
                         checks_file = os.path.join(root, CHECKS_FILE)
                         # todo: validate checks file

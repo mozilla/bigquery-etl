@@ -1,11 +1,13 @@
 CREATE MATERIALIZED VIEW
 IF
   NOT EXISTS `{{ project_id }}.{{ derived_dataset }}.event_monitoring_live_v1`
+  PARTITION BY DATE(submission_date)
+  CLUSTER BY channel, event_category, event_name
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60) AS
-    {% if dataset_id not in ["telemetry"] %}
     SELECT
-      DATE(submission_timestamp) AS submission_date,
+      -- used for partitioning, only allows TIMESTAMP columns
+      TIMESTAMP_TRUNC(submission_timestamp, DAY) AS submission_date,
       TIMESTAMP_ADD(
         TIMESTAMP_TRUNC(submission_timestamp, HOUR),
         -- Aggregates event counts over 60-minute intervals
@@ -79,7 +81,6 @@ IF
       UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
     LEFT JOIN
       UNNEST(event.extra) AS event_extra
-    {% endif %}
     WHERE
       DATE(submission_timestamp) >= "{{ current_date }}"
     GROUP BY

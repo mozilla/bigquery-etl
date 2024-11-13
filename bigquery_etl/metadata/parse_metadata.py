@@ -158,6 +158,8 @@ class MonitoringMetadata:
 
     enabled: bool = attr.ib(True)
     collection: Optional[str] = attr.ib(None)
+    partition_column: Optional[str] = attr.ib(None)
+    partition_column_set: bool = attr.ib(False)
 
 
 @attr.s(auto_attribs=True)
@@ -335,6 +337,12 @@ class Metadata:
                         metadata["monitoring"], MonitoringMetadata
                     )
 
+                    if "partition_column" in metadata["monitoring"]:
+                        # check if partition column metadata has been set explicitly;
+                        # needed for monitoring config validation for views where partition
+                        # column needs to be set explicitly
+                        monitoring.partition_column_set = True
+
                 return cls(
                     friendly_name,
                     description,
@@ -470,6 +478,7 @@ class DatasetMetadata:
     user_facing: bool = attr.ib(False)
     labels: Dict = attr.ib({})
     default_table_workgroup_access: Optional[List[Dict[str, Any]]] = attr.ib(None)
+    default_table_expiration_ms: str = attr.ib(None)
     workgroup_access: list = attr.ib(DEFAULT_WORKGROUP_ACCESS)
     syndication: Dict = attr.ib({})
 

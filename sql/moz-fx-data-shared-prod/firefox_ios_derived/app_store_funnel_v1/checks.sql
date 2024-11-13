@@ -52,25 +52,6 @@ FROM
   base;
 
 #warn
-WITH base AS (
-  SELECT
-    SUM(new_profiles) AS new_funnel_new_profiles,
-    SUM(total_downloads) AS total_downloads,
-  FROM
-    `{{ project_id }}.{{ dataset_id }}.{{ table_name }}`
-  WHERE
-    submission_date = @submission_date
-)
-SELECT
-  IF(
-    new_funnel_new_profiles > total_downloads,
-    ERROR("There are more new_profiles than app downloads."),
-    NULL
-  )
-FROM
-  base;
-
-#warn
 SELECT
   IF(
     DATE_DIFF(submission_date, first_seen_date, DAY) <> 7,

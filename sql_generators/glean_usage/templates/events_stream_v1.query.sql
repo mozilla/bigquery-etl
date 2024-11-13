@@ -92,7 +92,7 @@ WITH base AS (
         ping_info.parsed_end_time,
         ping_info.ping_type
       ) AS ping_info
-      {% if not metrics_as_struct %}
+      {% if not metrics_as_struct and has_metrics %}
       ,
       metrics_to_json(TO_JSON(metrics)) AS metrics
       {% endif %}

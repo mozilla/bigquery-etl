@@ -15,6 +15,7 @@
   newtab_default_ui: default
   newtab_newtab_category: enabled
   profile_group_id: profile_group_id_1
+  topsites_sponsored_tiles_configured: 2
   search_interactions:
     - search_engine: Engine1
       search_access_point: urlbar
@@ -53,6 +54,18 @@
       organic_pocket_dismissals: 0
       pocket_thumbs_up: 0
       pocket_thumbs_down: 0
+      list_card_clicks: 0
+      organic_list_card_clicks: 0
+      sponsored_list_card_clicks: 0
+      list_card_impressions: 0
+      organic_list_card_impressions: 0
+      sponsored_list_card_impressions: 0
+      list_card_saves: 0
+      organic_list_card_saves: 0
+      sponsored_list_card_saves: 0
+      list_card_dismissals: 0
+      organic_list_card_dismissals: 0
+      sponsored_list_card_dismissals: 0
   wallpaper_interactions:
     - wallpaper_selected_wallpaper: wallpaper_1
       wallpaper_clicks: 1

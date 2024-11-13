@@ -17,14 +17,21 @@ default:
   - moz-fx-data-glam-prod-fca7
   public_project: mozilla-public-data
 
+monitoring:
+  bigeye_warehouse_id: 1939
+  bigeye_conn_id: bigeye_connection
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
+  function_accounts:
+  - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
+  - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
   skip:
   ## skip all data-observability-dev queries due to CI lacking permissions in that project.
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_completeness_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
   - sql/moz-fx-data-shared-prod/app_store/**/*.sql
@@ -162,6 +169,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
@@ -183,6 +191,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry/client_probe_counts/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_etl_sql_run_check_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
+  - sql/moz-fx-data-shared-prod/sumo_ga/analytics_314096102/view.sql
+  - sql/moz-fx-data-shared-prod/sumo_ga/analytics_432581103/view.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
@@ -194,6 +204,8 @@ dry_run:
     # Query templates
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/fenix_metrics.template.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v1/mobile_search_clients_daily.template.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/fenix_metrics.template.sql
+  - sql/moz-fx-data-shared-prod/search_derived/mobile_search_clients_daily_v2/mobile_search_clients_daily.template.sql
   # Query too complex
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests
@@ -250,6 +262,10 @@ schema:
   skip_prefixes:
   - pioneer
   - rally
+  deploy:
+    skip:
+    # see comment in query file
+    - sql/moz-fx-data-shared-prod/search_terms_derived/suggest_impression_sanitized_v2_external/query.sql
 
 docs:
   docs_dir: docs
@@ -276,6 +292,10 @@ generate:
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/metadata.yaml
+    - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/bigconfig.yml
+    - sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android
@@ -288,8 +308,6 @@ generate:
     - org_mozilla_ios_tiktok_reporter
     - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     - org_mozilla_tiktokreporter
-    - relay_backend  # see https://mozilla-hub.atlassian.net/browse/DENG-3720
-    - monitor_backend  # see https://bugzilla.mozilla.org/show_bug.cgi?id=1905444
     events_stream:
       skip_apps:
       - bergamot

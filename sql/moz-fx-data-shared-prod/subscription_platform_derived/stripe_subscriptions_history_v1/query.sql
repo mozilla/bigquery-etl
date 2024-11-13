@@ -387,7 +387,7 @@ subscriptions_history_promotions AS (
       OR subscriptions_history.valid_to IS NULL
     )
   JOIN
-    `moz-fx-data-shared-prod`.stripe_external.invoice_discount_v1 AS invoice_discounts
+    `moz-fx-data-shared-prod`.stripe_external.invoice_discount_v2 AS invoice_discounts
     ON invoices.id = invoice_discounts.invoice_id
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.promotion_code_v1 AS promotion_codes

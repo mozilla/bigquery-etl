@@ -78,6 +78,7 @@ CREATE TEMP FUNCTION extract_ios_provider(list ARRAY<STRUCT<key STRING, value IN
     )
 );
 
+
 WITH core_flattened_searches AS (
   SELECT
     *,

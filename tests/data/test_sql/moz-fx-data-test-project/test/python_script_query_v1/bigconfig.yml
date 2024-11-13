@@ -1,0 +1,20 @@
+---
+type: BIGCONFIG_FILE
+table_deployments:
+- collection:
+    name: Test
+  deployments:
+  - fq_table_name: moz-fx-data-test-project.test.python_script_query_v1
+    table_metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS [warn]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 17:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME [fail]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 17:00 UTC

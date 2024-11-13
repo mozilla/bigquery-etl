@@ -519,8 +519,8 @@ bqetl_desktop_platform:
 
 bqetl_internal_tooling:
   description: |
-    This DAG schedules queries for populating queries related to Mozilla's
-    internal developer tooling (e.g. mozregression and Firefox-CI).
+    This DAG schedules queries for populating tables related to Mozilla's
+    internal developer tooling (e.g. mozregression).
   default_args:
     depends_on_past: false
     email:
@@ -1790,6 +1790,27 @@ bqetl_merino_newtab_extract_to_gcs:
     - repo/bigquery-etl
     - impact/tier_1
 
+bqetl_merino_newtab_priors_to_gcs:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 5m
+    start_date: '2024-10-08'
+  description: |
+    Aggregates Newtab stats that land in a GCS bucket for Merino to derive Thompson sampling priors.
+  repo: bigquery-etl
+  schedule_interval: "0 2 * * *"
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_1
+
 bqetl_dynamic_dau:
   default_args:
     depends_on_past: false
@@ -1810,3 +1831,58 @@ bqetl_dynamic_dau:
   tags:
     - repo/bigquery-etl
     - impact/tier_2
+
+bqetl_shredder_monitoring:
+  default_args:
+    depends_on_past: false
+    email:
+      - bewu@mozilla.com
+    email_on_failure: true
+    email_on_retry: False
+    end_date: null
+    owner: bewu@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-10-01'
+  description: '[EXPERIMENTAL] Monitoring queries for shredder operation'
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_3
+    - triage/no_triage
+
+bqetl_fxci:
+  description: |
+    This DAG schedules queries for populating tables related to the
+    Firefox-CI Taskcluster instance.
+  default_args:
+    depends_on_past: false
+    email:
+      - ahalberstadt@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: ahalberstadt@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: "2020-10-11"
+  # This DAG needs to run late as it depends on the GCP billing export which
+  # often isn't finalized until the afternoon of the following day.
+  schedule_interval: 0 18 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_monitoring_weekly:
+  schedule_interval: 40 12 * * 7
+  description: |
+    This DAG populates monitoring datasets that only need to be updated weekly
+  default_args:
+    owner: kwindau@mozilla.com
+    email: ["kwindau@mozilla.com"]
+    start_date: "2024-10-25"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

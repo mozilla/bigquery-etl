@@ -1,0 +1,15 @@
+friendly_name: Production Stripe subscription discounts
+description: |-
+  Production Stripe subscription discounts combined from Fivetran's newer `discount` and older `subscription_discount` tables.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering: null

@@ -13,13 +13,13 @@ SELECT
       {{ field.name }}{% if not loop.last %},{% endif %}
     {% if loop.last %}){% endif %}
   {% endfor %}
-  {% for field in product.all_possible_attribution_fields if field.exists and template_grain == "CLIENT" and not field.name.endswith("_timestamp") %}
+  {% for field in product.all_possible_attribution_fields if field.exists and template_grain == "CLIENT" %}
     {% if loop.first %}EXCEPT({% endif %}
       {{ field.name }}{% if not loop.last %},{% endif %}
     {% if loop.last %}){% endif %}
   {% endfor %}
   ,
-{% for field in product.all_possible_attribution_fields if not field.name.endswith("_timestamp")%}
+{% for field in product.all_possible_attribution_fields %}
   {% if template_grain == "AGGREGATE" and not field.client_only %}
     {% if field.exists %}
     {{ field.name }},

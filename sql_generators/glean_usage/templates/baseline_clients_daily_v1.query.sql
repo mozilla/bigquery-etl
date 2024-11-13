@@ -29,6 +29,11 @@ WITH base AS (
     {% else %}
     CAST(NULL AS STRING) AS distribution_id,
     {% endif %}
+    {% if app_name == "fenix" %}
+    metrics.string.first_session_install_source AS install_source,
+    {% else %}
+    CAST(NULL AS STRING) AS install_source,
+    {% endif %}
     metadata.geo.subdivision1 AS geo_subdivision,
     {% if has_profile_group_id %}
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
@@ -62,6 +67,33 @@ with_date_offsets AS (
     DATE_DIFF(submission_date, session_end_date, DAY) AS session_end_date_offset,
   FROM
     with_dates
+),
+--
+overactive AS (
+  -- Find client_ids with over 150 000 pings in a day,
+  -- which could cause errors in the next step due to aggregation overflows.
+  SELECT
+    submission_date,
+    client_id
+  FROM
+    with_date_offsets
+  WHERE
+    {% raw %}
+    {% if is_init() %}
+    {% endraw %}
+      submission_date >= '2018-01-01'
+    {% raw %}
+    {% else %}
+    {% endraw %}
+      submission_date = @submission_date
+    {% raw %}
+    {% endif %}
+    {% endraw %}
+  GROUP BY
+    submission_date,
+    client_id
+  HAVING
+    COUNT(*) > 150000
 ),
 --
 windowed AS (
@@ -102,11 +134,16 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(device_model) OVER w1) AS device_model,
     udf.mode_last(ARRAY_AGG(telemetry_sdk_build) OVER w1) AS telemetry_sdk_build,
     udf.mode_last(ARRAY_AGG(distribution_id) OVER w1) AS distribution_id,
+    udf.mode_last(ARRAY_AGG(install_source) OVER w1) AS install_source,
     udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
     udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
   FROM
     with_date_offsets
+  LEFT JOIN
+    overactive
+    USING (submission_date, client_id)
   WHERE
+    overactive.client_id IS NULL AND
     {% raw %}
     {% if is_init() %}
     {% endraw %}

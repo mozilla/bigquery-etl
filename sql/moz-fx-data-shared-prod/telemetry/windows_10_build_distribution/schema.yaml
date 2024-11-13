@@ -2,6 +2,7 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: null
 - name: build_group
   type: STRING
   mode: NULLABLE

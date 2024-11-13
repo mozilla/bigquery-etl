@@ -10,7 +10,7 @@ scheduling:
   dag_name: bqetl_cinder
 bigquery:
   time_partitioning:
-    type: day
+    type: date
     field: ''
     require_partition_filter: false
     expiration_days: null

@@ -2065,9 +2065,9 @@ toml==0.10.2 \
     # via
     #   mozilla-metric-config-parser
     #   pytest-black
-tomli==2.0.2 \
-    --hash=sha256:2ebe24485c53d303f690b0ec092806a085f07af5a5aa1464f3931eec36caaa38 \
-    --hash=sha256:d46d457a85337051c36524bc5349dd91b1877838e2979ac5ced3e710ed8a60ed
+tomli==2.1.0 \
+    --hash=sha256:3f646cae2aec94e17d04973e4249548320197cfabdf130015d023de4b74d8ab8 \
+    --hash=sha256:a5c57c3d1c56f5ccdf89f6523458f60ef716e210fc47c4cfb188c5ba473e0391
     # via -r requirements.in
 typer==0.12.5 \
     --hash=sha256:62fe4e471711b147e3365034133904df3e235698399bc4de2b36c8579298d52b \

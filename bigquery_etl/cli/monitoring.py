@@ -376,7 +376,7 @@ def _update_bigconfig(
 
                     raise Exception(err_message)
 
-                if metric.metric_type.predefined_metric in default_metrics:
+                if metric.metric_type and metric.metric_type.predefined_metric in default_metrics:
                     default_metrics.remove(metric.metric_type.predefined_metric)
 
         if metadata.monitoring.collection and collection.collection is None:

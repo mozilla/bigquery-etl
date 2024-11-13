@@ -26,7 +26,6 @@ CSV_FIELDS = [
 ]
 
 CINDER_BEARER_TOKEN = os.environ.get("CINDER_TOKEN")
-# bearer token = 20b00a9a43bd6c1c72657854fc4b8e8cf47fe5f8
 
 
 def post_response(url, headers, data):

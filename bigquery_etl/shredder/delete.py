@@ -643,8 +643,7 @@ def main():
                         FROM
                           `{args.state_table}`
                         WHERE
-                          start_date = '{args.start_date}'
-                          AND end_date = '{args.end_date}'
+                          end_date = '{args.end_date}'
                         ORDER BY
                           job_created
                         """

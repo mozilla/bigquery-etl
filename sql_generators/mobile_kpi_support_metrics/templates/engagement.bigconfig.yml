@@ -1,22 +1,102 @@
 type: BIGCONFIG_FILE
+
+tag_definitions:
+  - tag_id: UNIQUE_FIELDS
+    column_selectors:
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
+  - tag_id: ALL_FIELDS
+    column_selectors:
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+  - tag_id: VALUE_EXPECTED_FIELDS
+    column_selectors:
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.first_seen_date
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.app_name
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.is_mobile
+  - tag_id: CHANNEL_FIELDS
+    column_selectors:
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
+  - tag_id: COUNTRY_CODE_FIELDS
+    column_selectors:
+      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.country
+
+saved_metric_definitions:
+  metrics:
+    - saved_metric_id: is_not_null
+      metric_type:
+        predefined_metric: PERCENT_NULL
+      threshold:
+        type: CONSTANT
+        upper_bound: 0
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: is_unique
+      metric_type:
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        upper_bound: 0
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: is_valid_channel
+      metric_type:
+        predefined_metric: PERCENT_VALUE_IN_LIST
+      parameters:
+        - key: list
+          string_value: "release,beta,nightly"
+      threshold:
+        type: CONSTANT
+        upper_bound: 100
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: is_2_char_len
+      metric_type:
+        predefined_metric: STRING_LENGTH_MIN
+      threshold:
+        type: CONSTANT
+        lower_bound: 2
+        upper_bound: 2
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: freshness_fail
+      metric_name: FRESHNESS [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: volume_fail
+      metric_name: VOLUME [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_schedule:
+        named_schedule:
+          name: default
+
 tag_deployments:
 - collection:
     name: {{ bigeye_collection }}
   deployments:
-  - column_selectors:
-    - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+  - tag_id: UNIQUE_FIELDS
     metrics:
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: FRESHNESS
-      metric_name: FRESHNESS [warn]
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: VOLUME
-      metric_name: VOLUME [fail]
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
+      - saved_metric_id: is_unique
+      - saved_metric_id: is_not_null
+  - tag_id: VALUE_EXPECTED_FIELDS
+    metrics:
+      - saved_metric_id: is_not_null
+  - tag_id: ALL_FIELDS
+    metrics:
+      - saved_metric_id: freshness_fail
+      - saved_metric_id: volume_fail
+  - tag_id: CHANNEL_FIELDS
+    metrics:
+      - saved_metric_id: is_valid_channel
+  - tag_id: COUNTRY_CODE_FIELDS
+    metrics:
+      - saved_metric_id: is_2_char_len

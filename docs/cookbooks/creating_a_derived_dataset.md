@@ -161,7 +161,7 @@ Use bqetl to set up the schema that will be used to create the table.
 Review the schema.YAML generated as an output of the following command, and make sure all data types are set correctly and according to the data expected from the query.
 
 ```bash
-./bqetl query schema update <dataset>.<table>`
+./bqetl query schema update <dataset>.<table>
 ```
 
 For our example:
@@ -269,10 +269,10 @@ For our example:
   ```
 
   - If the backfill requires [shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation) to maintain metrics stable, use the `--shredder_mitigation` parameter in the backfill command:
-  
+
   ```bash
   bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
-  ``` 
+  ```
 
 2. Fill out the missing details:
   - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.

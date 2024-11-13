@@ -1729,7 +1729,7 @@ with DAG(
     )
 
     subscription_platform_derived__monthly_active_logical_subscriptions__v1.set_upstream(
-        subscription_platform_derived__daily_active_logical_subscriptions__v1
+        subscription_platform_derived__logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__nonprod_apple_subscriptions__v1.set_upstream(

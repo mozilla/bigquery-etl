@@ -16,7 +16,11 @@ labels:
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
+  # The table as a whole is appended to each time, not a specific date partition.
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
 bigquery:
   time_partitioning:
     type: day

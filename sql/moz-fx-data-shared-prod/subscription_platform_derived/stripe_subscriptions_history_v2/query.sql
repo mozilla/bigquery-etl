@@ -23,7 +23,8 @@ subscriptions_customers_history AS (
     subscriptions_history.id,
     subscriptions_history.valid_from,
     IF(
-      customers_history.valid_to IS NOT NULL,
+      subscriptions_history.subscription.ended_at IS NULL
+      AND customers_history.valid_to IS NOT NULL,
       LEAST(subscriptions_history.valid_to, customers_history.valid_to),
       subscriptions_history.valid_to
     ) AS valid_to,

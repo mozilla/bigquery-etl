@@ -26,7 +26,7 @@ SELECT
   UNIX_SECONDS(CAST(MIN(a.activity_datetime) AS TIMESTAMP)) AS activity_date,
   CAST(MIN(a.activity_datetime) AS TIMESTAMP) AS activity_date_timestamp
 FROM
-  `moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v1` a
+  `moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v2` a
 JOIN
   all_clicks_from_united_states b
   ON a.gclid = b.gclid

@@ -49,7 +49,10 @@ SELECT
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
       metrics.boolean.policies_is_enterprise,
       metrics.boolean.dom_parentprocess_private_window_used,
-      metrics.boolean.widget_dark_mode
+      metrics.boolean.widget_dark_mode,
+      metrics.boolean.devtools_shadowdom_reveal_link_clicked,
+      metrics.boolean.devtools_shadowdom_shadow_root_displayed,
+      metrics.boolean.devtools_shadowdom_shadow_root_expanded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -153,7 +156,18 @@ SELECT
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
       metrics.counter.devtools_accessibility_opened_count,
       metrics.counter.devtools_accessibility_picker_used_count,
-      metrics.counter.devtools_changesview_opened_count
+      metrics.counter.devtools_changesview_opened_count,
+      metrics.counter.devtools_accessibility_accessible_context_menu_opened,
+      metrics.counter.devtools_accessibility_node_inspected_count,
+      metrics.counter.devtools_grid_gridinspector_opened,
+      metrics.counter.devtools_inspector_node_selection_count,
+      metrics.counter.devtools_layout_flexboxhighlighter_opened,
+      metrics.counter.devtools_markup_flexboxhighlighter_opened,
+      metrics.counter.devtools_markup_gridinspector_opened,
+      metrics.counter.devtools_markup_scrollable_badge_clicked,
+      metrics.counter.devtools_responsive_toolbox_opened_first,
+      metrics.counter.devtools_rules_flexboxhighlighter_opened,
+      metrics.counter.devtools_rules_gridinspector_opened
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -348,7 +362,17 @@ SELECT
       metrics.labeled_counter.networking_http_3_connection_close_reason,
       metrics.labeled_counter.web_push_content_encoding,
       metrics.labeled_counter.web_push_error_code,
-      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size
+      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size,
+      metrics.labeled_counter.devtools_accessibility_accessible_context_menu_item_activated,
+      metrics.labeled_counter.devtools_accessibility_audit_activated,
+      metrics.labeled_counter.devtools_accessibility_select_accessible_for_node,
+      metrics.labeled_counter.devtools_accessibility_simulation_activated,
+      metrics.labeled_counter.devtools_current_theme,
+      metrics.labeled_counter.devtools_inspector_three_pane_enabled,
+      metrics.labeled_counter.devtools_responsive_open_trigger,
+      metrics.labeled_counter.devtools_toolbox_tabs_reordered,
+      metrics.labeled_counter.devtools_tooltip_shown,
+      metrics.labeled_counter.networking_http_3_quic_frame_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -672,7 +696,8 @@ SELECT
       metrics.labeled_boolean.media_video_hardware_decoding_support,
       metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
       metrics.labeled_boolean.mediadrm_decryption,
-      metrics.labeled_boolean.widget_pointing_devices
+      metrics.labeled_boolean.widget_pointing_devices,
+      metrics.labeled_boolean.devtools_tool_registered
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -788,7 +813,10 @@ SELECT
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
       metrics.boolean.policies_is_enterprise,
       metrics.boolean.dom_parentprocess_private_window_used,
-      metrics.boolean.widget_dark_mode
+      metrics.boolean.widget_dark_mode,
+      metrics.boolean.devtools_shadowdom_reveal_link_clicked,
+      metrics.boolean.devtools_shadowdom_shadow_root_displayed,
+      metrics.boolean.devtools_shadowdom_shadow_root_expanded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -892,7 +920,18 @@ SELECT
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
       metrics.counter.devtools_accessibility_opened_count,
       metrics.counter.devtools_accessibility_picker_used_count,
-      metrics.counter.devtools_changesview_opened_count
+      metrics.counter.devtools_changesview_opened_count,
+      metrics.counter.devtools_accessibility_accessible_context_menu_opened,
+      metrics.counter.devtools_accessibility_node_inspected_count,
+      metrics.counter.devtools_grid_gridinspector_opened,
+      metrics.counter.devtools_inspector_node_selection_count,
+      metrics.counter.devtools_layout_flexboxhighlighter_opened,
+      metrics.counter.devtools_markup_flexboxhighlighter_opened,
+      metrics.counter.devtools_markup_gridinspector_opened,
+      metrics.counter.devtools_markup_scrollable_badge_clicked,
+      metrics.counter.devtools_responsive_toolbox_opened_first,
+      metrics.counter.devtools_rules_flexboxhighlighter_opened,
+      metrics.counter.devtools_rules_gridinspector_opened
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1087,7 +1126,17 @@ SELECT
       metrics.labeled_counter.networking_http_3_connection_close_reason,
       metrics.labeled_counter.web_push_content_encoding,
       metrics.labeled_counter.web_push_error_code,
-      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size
+      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size,
+      metrics.labeled_counter.devtools_accessibility_accessible_context_menu_item_activated,
+      metrics.labeled_counter.devtools_accessibility_audit_activated,
+      metrics.labeled_counter.devtools_accessibility_select_accessible_for_node,
+      metrics.labeled_counter.devtools_accessibility_simulation_activated,
+      metrics.labeled_counter.devtools_current_theme,
+      metrics.labeled_counter.devtools_inspector_three_pane_enabled,
+      metrics.labeled_counter.devtools_responsive_open_trigger,
+      metrics.labeled_counter.devtools_toolbox_tabs_reordered,
+      metrics.labeled_counter.devtools_tooltip_shown,
+      metrics.labeled_counter.networking_http_3_quic_frame_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1411,7 +1460,8 @@ SELECT
       metrics.labeled_boolean.media_video_hardware_decoding_support,
       metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
       metrics.labeled_boolean.mediadrm_decryption,
-      metrics.labeled_boolean.widget_pointing_devices
+      metrics.labeled_boolean.widget_pointing_devices,
+      metrics.labeled_boolean.devtools_tool_registered
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1527,7 +1577,10 @@ SELECT
       metrics.boolean.contentblocking_fingerprinting_blocking_enabled,
       metrics.boolean.policies_is_enterprise,
       metrics.boolean.dom_parentprocess_private_window_used,
-      metrics.boolean.widget_dark_mode
+      metrics.boolean.widget_dark_mode,
+      metrics.boolean.devtools_shadowdom_reveal_link_clicked,
+      metrics.boolean.devtools_shadowdom_shadow_root_displayed,
+      metrics.boolean.devtools_shadowdom_shadow_root_expanded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -1631,7 +1684,18 @@ SELECT
       metrics.counter.browser_engagement_bookmarks_toolbar_bookmark_opened,
       metrics.counter.devtools_accessibility_opened_count,
       metrics.counter.devtools_accessibility_picker_used_count,
-      metrics.counter.devtools_changesview_opened_count
+      metrics.counter.devtools_changesview_opened_count,
+      metrics.counter.devtools_accessibility_accessible_context_menu_opened,
+      metrics.counter.devtools_accessibility_node_inspected_count,
+      metrics.counter.devtools_grid_gridinspector_opened,
+      metrics.counter.devtools_inspector_node_selection_count,
+      metrics.counter.devtools_layout_flexboxhighlighter_opened,
+      metrics.counter.devtools_markup_flexboxhighlighter_opened,
+      metrics.counter.devtools_markup_gridinspector_opened,
+      metrics.counter.devtools_markup_scrollable_badge_clicked,
+      metrics.counter.devtools_responsive_toolbox_opened_first,
+      metrics.counter.devtools_rules_flexboxhighlighter_opened,
+      metrics.counter.devtools_rules_gridinspector_opened
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1826,7 +1890,17 @@ SELECT
       metrics.labeled_counter.networking_http_3_connection_close_reason,
       metrics.labeled_counter.web_push_content_encoding,
       metrics.labeled_counter.web_push_error_code,
-      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size
+      metrics.labeled_counter.network_cache_hit_miss_stat_per_cache_size,
+      metrics.labeled_counter.devtools_accessibility_accessible_context_menu_item_activated,
+      metrics.labeled_counter.devtools_accessibility_audit_activated,
+      metrics.labeled_counter.devtools_accessibility_select_accessible_for_node,
+      metrics.labeled_counter.devtools_accessibility_simulation_activated,
+      metrics.labeled_counter.devtools_current_theme,
+      metrics.labeled_counter.devtools_inspector_three_pane_enabled,
+      metrics.labeled_counter.devtools_responsive_open_trigger,
+      metrics.labeled_counter.devtools_toolbox_tabs_reordered,
+      metrics.labeled_counter.devtools_tooltip_shown,
+      metrics.labeled_counter.networking_http_3_quic_frame_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2150,7 +2224,8 @@ SELECT
       metrics.labeled_boolean.media_video_hardware_decoding_support,
       metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
       metrics.labeled_boolean.mediadrm_decryption,
-      metrics.labeled_boolean.widget_pointing_devices
+      metrics.labeled_boolean.widget_pointing_devices,
+      metrics.labeled_boolean.devtools_tool_registered
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

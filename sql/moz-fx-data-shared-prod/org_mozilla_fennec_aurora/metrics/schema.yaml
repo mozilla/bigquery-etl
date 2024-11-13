@@ -824,6 +824,29 @@ fields:
         to the Legacy Telemetry scalar widget.dark_mode.
 
         '
+    - name: devtools_shadowdom_reveal_link_clicked
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user clicked on any "reveal" link. "reveal" links
+        are displayed in shadow dom trees in the markup view. This metric was generated
+        to correspond to the Legacy Telemetry scalar devtools.shadowdom.reveal_link_clicked.
+
+        '
+    - name: devtools_shadowdom_shadow_root_displayed
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the markup view displayed any #shadow-root element in
+        the UI. This metric was generated to correspond to the Legacy Telemetry scalar
+        devtools.shadowdom.shadow_root_displayed.
+
+        '
+    - name: devtools_shadowdom_shadow_root_expanded
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user expanded any #shadow-root element. This metric
+        was generated to correspond to the Legacy Telemetry scalar devtools.shadowdom.shadow_root_expanded.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1960,6 +1983,94 @@ fields:
       mode: NULLABLE
       description: 'Number of times the Changes panel has been opened. This metric
         was generated to correspond to the Legacy Telemetry scalar devtools.changesview.opened_count.
+
+        '
+    - name: devtools_accessibility_accessible_context_menu_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a context menu was opened for an accessible object
+        in the accessibility tree. This metric was generated to correspond to the
+        Legacy Telemetry scalar devtools.accessibility.accessible_context_menu_opened.
+
+        '
+    - name: devtools_accessibility_node_inspected_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a DOM node was inspected from within the Accessibility
+        tool. This metric was generated to correspond to the Legacy Telemetry scalar
+        devtools.accessibility.node_inspected_count.
+
+        '
+    - name: devtools_grid_gridinspector_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools grid inspector was opened from the
+        grid view. This metric was generated to correspond to the Legacy Telemetry
+        scalar devtools.grid.gridinspector.opened.
+
+        '
+    - name: devtools_inspector_node_selection_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times a different node is marked as selected in the
+        Inspector regardless of the cause: context menu, manual selection in markup
+        view, etc. This metric was generated to correspond to the Legacy Telemetry
+        scalar devtools.inspector.node_selection_count.
+
+        '
+    - name: devtools_layout_flexboxhighlighter_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools flexbox highlighter was activated
+        from the layout view. This metric was generated to correspond to the Legacy
+        Telemetry scalar devtools.layout.flexboxhighlighter.opened.
+
+        '
+    - name: devtools_markup_flexboxhighlighter_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools flexbox highlighter was activated
+        from the markup view. This metric was generated to correspond to the Legacy
+        Telemetry scalar devtools.markup.flexboxhighlighter.opened.
+
+        '
+    - name: devtools_markup_gridinspector_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools grid inspector was opened from the
+        markup view. This metric was generated to correspond to the Legacy Telemetry
+        scalar devtools.markup.gridinspector.opened.
+
+        '
+    - name: devtools_markup_scrollable_badge_clicked
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the scrollable inspector badge has been clicked.
+        This metric was generated to correspond to the Legacy Telemetry scalar devtools.markup.scrollable.badge.clicked.
+
+        '
+    - name: devtools_responsive_toolbox_opened_first
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of Responsive Design Mode opens with a toolbox already
+        open. This metric was generated to correspond to the Legacy Telemetry scalar
+        devtools.responsive.toolbox_opened_first.
+
+        '
+    - name: devtools_rules_flexboxhighlighter_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools flexbox highlighter was activated
+        from the rules view. This metric was generated to correspond to the Legacy
+        Telemetry scalar devtools.rules.flexboxhighlighter.opened.
+
+        '
+    - name: devtools_rules_gridinspector_opened
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the DevTools grid inspector was opened from the
+        rules view. This metric was generated to correspond to the Legacy Telemetry
+        scalar devtools.rules.gridinspector.opened.
 
         '
   - name: custom_distribution
@@ -3997,8 +4108,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -6510,6 +6620,158 @@ fields:
         mode: NULLABLE
       description: 'Hit/Miss count split by cache size in file count Hit 0-5000, Miss
         0-5000, Hit 5001-10000, ...
+
+        '
+    - name: devtools_accessibility_accessible_context_menu_item_activated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times a context menu item for an accessible object was
+        activated (with mouse or keyboard) from the context menu opened in the accessibility
+        tree. Keyed by the id of the context menu item. This metric was generated
+        to correspond to the Legacy Telemetry scalar devtools.accessibility.accessible_context_menu_item_activated.
+
+        '
+    - name: devtools_accessibility_audit_activated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times accessibility audit was activated (with mouse
+        or keyboard) from the accessibility panel''s toolbar. Keyed by the audit filter
+        type (e.g. "CONTRAST"). This metric was generated to correspond to the Legacy
+        Telemetry scalar devtools.accessibility.audit_activated.
+
+        '
+    - name: devtools_accessibility_select_accessible_for_node
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times an accessible object was inspected from outside
+        the Accessibility tool (navigation to Accessibility panel). Keyed by the source
+        of user action (inspector context menu, browser context menu, etc). This metric
+        was generated to correspond to the Legacy Telemetry scalar devtools.accessibility.select_accessible_for_node.
+
+        '
+    - name: devtools_accessibility_simulation_activated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times accessibility simulation was activated (with mouse
+        or keyboard) from the accessibility panel''s toolbar. Keyed by the simulation
+        type (e.g. "DEUTERANOPIA"). This metric was generated to correspond to the
+        Legacy Telemetry scalar devtools.accessibility.simulation_activated.
+
+        '
+    - name: devtools_current_theme
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times DevTools was opened, keyed by theme. This metric
+        was generated to correspond to the Legacy Telemetry scalar devtools.current_theme.
+
+        '
+    - name: devtools_inspector_three_pane_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times the DevTools inspector was opened with the 3 pane
+        inspector enabled, keyed by true/false. This metric was generated to correspond
+        to the Legacy Telemetry scalar devtools.inspector.three_pane_enabled.
+
+        '
+    - name: devtools_responsive_open_trigger
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of Responsive Design Mode opens keyed by the UI entry point
+        used. This metric was generated to correspond to the Legacy Telemetry scalar
+        devtools.responsive.open_trigger.
+
+        '
+    - name: devtools_toolbox_tabs_reordered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times the DevTools tab was reordered. Keyed by tab''s
+        id. This metric was generated to correspond to the Legacy Telemetry scalar
+        devtools.toolbox.tabs_reordered.
+
+        '
+    - name: devtools_tooltip_shown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of times a tooltip was shown, keyed by tooltip type. Currently
+        supported types are "image", "font-family", "inactive- css", "css-compatibility",
+        "css-query-container" and "variable." This metric was generated to correspond
+        to the Legacy Telemetry scalar devtools.tooltip.shown.
+
+        '
+    - name: networking_http_3_quic_frame_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of QUIC frames send and received by type.
 
         '
   - name: quantity
@@ -17730,6 +17992,23 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
       description: 'Whether the system has any matching pointing device for each label.
+
+        '
+    - name: devtools_tool_registered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Recorded on enable tool checkbox check/uncheck in Developer Tools
+        options panel. Boolean stating if the tool was enabled or disabled by the
+        user. Keyed by tool id. Current default tools with their id''s are defined
+        in https://searchfox.org/mozilla- central/source/devtools/client/definitions.js
+        This metric was generated to correspond to the Legacy Telemetry scalar devtools.tool.registered.
 
         '
   - name: rate

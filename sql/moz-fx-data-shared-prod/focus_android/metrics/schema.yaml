@@ -306,6 +306,15 @@ fields:
     - name: widget_dark_mode
       type: BOOLEAN
       mode: NULLABLE
+    - name: devtools_shadowdom_reveal_link_clicked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: devtools_shadowdom_shadow_root_displayed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: devtools_shadowdom_shadow_root_expanded
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -614,6 +623,39 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: devtools_changesview_opened_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_accessibility_accessible_context_menu_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_accessibility_node_inspected_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_grid_gridinspector_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_inspector_node_selection_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_layout_flexboxhighlighter_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_markup_flexboxhighlighter_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_markup_gridinspector_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_markup_scrollable_badge_clicked
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_responsive_toolbox_opened_first
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_rules_flexboxhighlighter_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: devtools_rules_gridinspector_opened
       type: INTEGER
       mode: NULLABLE
   - name: datetime
@@ -2441,6 +2483,106 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: network_cache_hit_miss_stat_per_cache_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_accessibility_accessible_context_menu_item_activated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_accessibility_audit_activated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_accessibility_select_accessible_for_node
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_accessibility_simulation_activated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_current_theme
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_inspector_three_pane_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_responsive_open_trigger
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_toolbox_tabs_reordered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: devtools_tooltip_shown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_http_3_quic_frame_count
       type: RECORD
       mode: REPEATED
       fields:
@@ -10360,6 +10502,16 @@ fields:
         type: BOOLEAN
         mode: NULLABLE
     - name: widget_pointing_devices
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+    - name: devtools_tool_registered
       type: RECORD
       mode: REPEATED
       fields:

@@ -342,6 +342,14 @@ def _update_bigconfig(
     for collection in bigconfig.tag_deployments:
         for deployment in collection.deployments:
             for metric in deployment.metrics:
+                if metric.metric_type is None:
+                    err_message = f"""There appears to be an issue parsing \
+                    a metric type definition for `{project}.{dataset}.{table}` \
+                    metric: {str(metric)} \
+                    deployment: {str(deployment)}."""
+
+                    raise Exception(err_message)
+
                 if metric.metric_type.predefined_metric in default_metrics:
                     default_metrics.remove(metric.metric_type.predefined_metric)
 

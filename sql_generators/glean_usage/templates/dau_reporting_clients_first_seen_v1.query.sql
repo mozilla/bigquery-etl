@@ -3,7 +3,6 @@
 WITH
   _current AS (
     SELECT
-      -- TODO: Once this field exists we should update the reference.
       usage_profile_id,
       {% raw %}
       {% if is_init() %}

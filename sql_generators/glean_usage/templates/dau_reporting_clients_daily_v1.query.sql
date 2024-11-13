@@ -4,8 +4,7 @@ WITH base AS (
   SELECT
     submission_timestamp,
     DATE(submission_timestamp) AS submission_date,
-    -- TODO: Once this field exists we should update the reference.
-    CAST(NULL AS STRING) AS usage_profile_id,
+    metrics.uuid.usage_profile_id,
     normalized_channel,
     client_info.app_display_version,
     client_info.app_build,

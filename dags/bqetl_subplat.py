@@ -1769,7 +1769,23 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__coupon__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
         stripe_external__invoice__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__invoice_discount__v2
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__invoice_line_item__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
+        stripe_external__promotion_code__v1
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(

@@ -1,3 +1,12 @@
+CREATE TEMP FUNCTION calculate_discount_amount(
+  amount_off INTEGER,
+  percent_off FLOAT64,
+  original_amount INTEGER
+)
+RETURNS DECIMAL AS (
+  CAST(COALESCE(amount_off, ROUND(original_amount * percent_off / 100), 0) AS DECIMAL) / 100
+);
+
 WITH subscriptions_history AS (
   SELECT
     id,
@@ -96,6 +105,88 @@ subscriptions_history_charge_summaries AS (
     ON charges.id = refunds.charge_id
   GROUP BY
     subscriptions_history_id
+),
+subscription_period_discounts AS (
+  SELECT
+    invoice_line_items.subscription_id,
+    invoice_line_items.period_start,
+    invoice_line_items.period_end,
+    ARRAY_AGG(
+      STRUCT(
+        invoices.created AS invoice_created_at,
+        coupons.name AS coupon_name,
+        promotion_codes.code AS promotion_code,
+        coupons.amount_off,
+        coupons.percent_off
+      )
+      ORDER BY
+        invoices.created,
+        invoice_line_items.id
+      LIMIT
+        1
+    )[ORDINAL(1)].*
+  FROM
+    `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
+  JOIN
+    `moz-fx-data-shared-prod.stripe_external.invoice_line_item_v1` AS invoice_line_items
+    ON invoices.id = invoice_line_items.invoice_id
+    AND invoice_line_items.type = 'subscription'
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.invoice_discount_v2` AS invoice_discounts
+    ON invoices.id = invoice_discounts.invoice_id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.coupon_v1` AS coupons
+    ON invoice_discounts.coupon_id = coupons.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.promotion_code_v1` AS promotion_codes
+    ON invoice_discounts.promotion_code = promotion_codes.id
+  GROUP BY
+    invoice_line_items.subscription_id,
+    invoice_line_items.period_start,
+    invoice_line_items.period_end
+),
+subscription_initial_discounts AS (
+  SELECT
+    *
+  FROM
+    subscription_period_discounts
+  QUALIFY
+    1 = ROW_NUMBER() OVER (PARTITION BY subscription_id ORDER BY invoice_created_at)
+),
+subscriptions_history_ongoing_discounts AS (
+  SELECT
+    history.id AS subscriptions_history_id,
+    (
+      CASE
+        WHEN history.subscription.discount.coupon.duration = 'forever'
+          OR history.subscription.discount.`end` > history.subscription.current_period_end
+          THEN STRUCT(
+              history.subscription.discount.coupon.name AS coupon_name,
+              subscription_promotion_codes.code AS promotion_code,
+              history.subscription.discount.coupon.amount_off,
+              history.subscription.discount.coupon.percent_off,
+              history.subscription.discount.`end` AS ends_at
+            )
+        WHEN history.subscription.customer.discount.coupon.duration = 'forever'
+          OR history.subscription.customer.discount.`end` > history.subscription.current_period_end
+          THEN STRUCT(
+              history.subscription.customer.discount.coupon.name AS coupon_name,
+              customer_promotion_codes.code AS promotion_code,
+              history.subscription.customer.discount.coupon.amount_off,
+              history.subscription.customer.discount.coupon.percent_off,
+              history.subscription.customer.discount.`end` AS ends_at
+            )
+        ELSE NULL
+      END
+    ).*
+  FROM
+    active_subscriptions_history AS history
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.promotion_code_v1` AS subscription_promotion_codes
+    ON history.subscription.discount.promotion_code_id = subscription_promotion_codes.id
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.promotion_code_v1` AS customer_promotion_codes
+    ON history.subscription.customer.discount.promotion_code_id = customer_promotion_codes.id
 )
 SELECT
   CONCAT(
@@ -182,8 +273,23 @@ SELECT
       history.subscription.canceled_at,
       NULL
     ) AS auto_renew_disabled_at,
-    -- TODO: promotion_codes
-    -- TODO: promotion_discounts_amount
+    initial_discounts.coupon_name AS initial_discount_name,
+    initial_discounts.promotion_code AS initial_discount_promotion_code,
+    current_period_discounts.coupon_name AS current_period_discount_name,
+    current_period_discounts.promotion_code AS current_period_discount_promotion_code,
+    calculate_discount_amount(
+      current_period_discounts.amount_off,
+      current_period_discounts.percent_off,
+      subscription_item.plan.amount
+    ) AS current_period_discount_amount,
+    ongoing_discounts.coupon_name AS ongoing_discount_name,
+    ongoing_discounts.promotion_code AS ongoing_discount_promotion_code,
+    calculate_discount_amount(
+      ongoing_discounts.amount_off,
+      ongoing_discounts.percent_off,
+      subscription_item.plan.amount
+    ) AS ongoing_discount_amount,
+    ongoing_discounts.ends_at AS ongoing_discount_ends_at,
     COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
     COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
@@ -200,3 +306,14 @@ LEFT JOIN
 LEFT JOIN
   subscriptions_history_charge_summaries AS charge_summaries
   ON history.id = charge_summaries.subscriptions_history_id
+LEFT JOIN
+  subscription_initial_discounts AS initial_discounts
+  ON history.subscription.id = initial_discounts.subscription_id
+LEFT JOIN
+  subscription_period_discounts AS current_period_discounts
+  ON history.subscription.id = current_period_discounts.subscription_id
+  AND history.subscription.current_period_start = current_period_discounts.period_start
+  AND history.subscription.current_period_end = current_period_discounts.period_end
+LEFT JOIN
+  subscriptions_history_ongoing_discounts AS ongoing_discounts
+  ON history.id = ongoing_discounts.subscriptions_history_id

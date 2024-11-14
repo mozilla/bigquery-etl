@@ -5,7 +5,7 @@
     https://github.com/mozilla/bigquery-etl/pull/6474.
   watchers:
   - srose@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
 
 2024-11-07:

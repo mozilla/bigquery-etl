@@ -5,7 +5,7 @@ WITH events_unnested AS (
     name AS event_name,
     timestamp AS event_timestamp,
     client_info,
-    metadata,
+    METADATA,
     normalized_os,
     normalized_os_version,
     normalized_country_code,
@@ -234,55 +234,55 @@ pocket_events AS (
     mozfun.map.get_key(event_details, "recommendation_id") AS pocket_recommendation_id,
     COUNTIF(
       event_name = 'save'
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS pocket_saves,
     COUNTIF(
       event_name = 'click'
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS pocket_clicks,
     COUNTIF(
       event_name = 'impression'
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS pocket_impressions,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_clicks,
     COUNTIF(
       event_name = 'click'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_clicks,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_impressions,
     COUNTIF(
       event_name = 'impression'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_impressions,
     COUNTIF(
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_saves,
     COUNTIF(
       event_name = 'save'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_saves,
     COUNTIF(
       event_name = 'dismiss'
       AND mozfun.map.get_key(event_details, "is_sponsored") = "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS sponsored_pocket_dismissals,
     COUNTIF(
       event_name = 'dismiss'
       AND mozfun.map.get_key(event_details, "is_sponsored") != "true"
-      AND mozfun.map.get_key(event_details, "is_list_card") != "true"
+      AND COALESCE(mozfun.map.get_key(event_details, "is_list_card"), "false") = "false"
     ) AS organic_pocket_dismissals,
     COUNTIF(
       event_name = 'thumb_voting_interaction'
@@ -581,9 +581,9 @@ combined_newtab_activity AS (
     topic_selection_summary
     USING (newtab_visit_id)
   WHERE
-   -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
-   -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
-   -- (these are suspected to be from pre-loaded tabs)
+    -- Keep only rows with interactions, unless we receive a valid newtab.opened event.
+    -- This is meant to drop only interactions that only have a newtab.closed event on the same partition
+    -- (these are suspected to be from pre-loaded tabs)
     newtab_open_source IS NOT NULL
     OR search_interactions IS NOT NULL
     OR topsite_tile_interactions IS NOT NULL

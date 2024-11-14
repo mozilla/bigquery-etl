@@ -15,23 +15,34 @@ steps = [
         "first_card_primary_click",
         "first_card_secondary_click",
         "first_card_close_click",
+        "first_card_multiple_choice_click",
         "second_card_impression",
         "second_card_primary_click",
         "second_card_secondary_click",
         "second_card_close_click",
+        "second_card_multiple_choice_click",
         "third_card_impression",
         "third_card_primary_click",
         "third_card_secondary_click",
         "third_card_close_click",
+        "third_card_multiple_choice_click",
         "fourth_card_impression",
         "fourth_card_primary_click",
         "fourth_card_secondary_click",
         "fourth_card_close_click",
+        "fourth_card_multiple_choice_click",
         "fifth_card_impression",
         "fifth_card_primary_click",
         "fifth_card_secondary_click",
         "fifth_card_close_click",
+        "fifth_card_multiple_choice_click",
          "sync_sign_in",
+         "allow_notification",
+         "toolbar_bottom",
+         "toolbar_top",
+         "theme_dark",
+         "theme_light",
+         "theme_system_auto"
          ]
 
 dimensions = [
@@ -95,6 +106,15 @@ select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_pos
     event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
+[steps.first_card_multiple_choice_click]
+friendly_name = "First Card Multiple Choice Click"
+description = "First Onboarding Card Multiple Choice Button Click"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
 [steps.second_card_impression]
 friendly_name = "Second Card"
 description = "Second Onboarding Card Impression"
@@ -130,6 +150,15 @@ description = "Second Onboarding Card Close Button Click"
 data_source = "onboarding_events"
 select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2' AND
     event_name = 'close_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.second_card_multiple_choice_click]
+friendly_name = "Second Card Multiple Choice Click"
+description = "Second Onboarding Card Multiple Choice Button Click"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2' AND
+    event_name = 'multiple_choice_button_tap' AND
     event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
@@ -170,6 +199,15 @@ select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_pos
     event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
+[steps.third_card_multiple_choice_click]
+friendly_name = "Third Card Multiple Choice Click"
+description = "Third Onboarding Card Multiple Choice Button Click"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3' AND
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
 [steps.fourth_card_impression]
 friendly_name = "fourth Card"
 description = "fourth Onboarding Card Impression"
@@ -204,6 +242,15 @@ description = "fourth Onboarding Card Close Button Click"
 data_source = "onboarding_events"
 select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '4' AND
     event_name = 'close_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.fourth_card_multiple_choice_click]
+friendly_name = "Fourth Card Multiple Choice Click"
+description = "Fourth Onboarding Card Multiple Choice Button Click"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '4' AND
+    event_name = 'multiple_choice_button_tap' AND
     event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
@@ -244,6 +291,15 @@ select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_pos
     event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
+[steps.fifth_card_multiple_choice_click]
+friendly_name = "Fifth Card Multiple Choice Click"
+description = "Fifth Onboarding Card Multiple Choice Button Click"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '5' AND
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
 [steps.sync_sign_in]
 friendly_name = "Signed into Sync"
 description = "User Successfully Signed into FxA (Signed in OR up)"
@@ -251,6 +307,60 @@ data_source = "onboarding_events"
 select_expression = """CASE WHEN event_name IN ('login_completed_view', 'registration_completed_view') AND
     event_category = 'sync'
 THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.allow_notification]
+friendly_name = "Allowed Notification"
+description = "User Allowed Notification during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN event_category = 'onboarding' AND event_name = 'notification_permission_prompt'
+AND `mozfun.map.get_key`(event_extra, 'granted') = 'true'
+THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.toolbar_bottom]
+friendly_name = "Bottom Toolbar"
+description = "User Selected Bottom Toolbar during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'toolbar-bottom'
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.toolbar_top]
+friendly_name = "Top Toolbar"
+description = "User Selected Top Toolbar during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'toolbar-top'
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.theme_dark]
+friendly_name = "Dark Theme"
+description = "User Selected Dark Theme during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-dark'
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.theme_light]
+friendly_name = "Light Theme"
+description = "User Selected Light Theme during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-light'
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.theme_system_auto]
+friendly_name = "System Auto Theme"
+description = "User Selected System Auto Theme during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-system-default'
+    event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
 

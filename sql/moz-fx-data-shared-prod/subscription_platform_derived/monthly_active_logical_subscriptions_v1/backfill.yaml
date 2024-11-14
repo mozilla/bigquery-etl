@@ -7,5 +7,5 @@
     That bug was fixed in https://github.com/mozilla/bigquery-etl/pull/6458.
   watchers:
   - srose@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false

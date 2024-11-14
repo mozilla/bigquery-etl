@@ -100,7 +100,7 @@ with DAG(
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
-        depends_on_past=False,
+        depends_on_past=True,
         parameters=["activity_date:DATE:{{macros.ds_add(ds, -2)}}"]
         + ["submission_date:DATE:{{ds}}"],
     )

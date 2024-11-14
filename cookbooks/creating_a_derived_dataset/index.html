@@ -1869,7 +1869,7 @@ If there are no problems, you should see no output.</p>
 <h2 id="creating-the-table-schema">Creating the table schema</h2>
 <p>Use bqetl to set up the schema that will be used to create the table.</p>
 <p>Review the schema.YAML generated as an output of the following command, and make sure all data types are set correctly and according to the data expected from the query.</p>
-<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;<span class="sb">`</span>
+<div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>&lt;dataset&gt;.&lt;table&gt;
 </code></pre></div>
 <p>For our example:
 <div class="highlight"><pre><span></span><code>./bqetl<span class="w"> </span>query<span class="w"> </span>schema<span class="w"> </span>update<span class="w"> </span>org_mozilla_mozregression_derived.mozregression_aggregates_v1

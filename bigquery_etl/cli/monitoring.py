@@ -75,7 +75,7 @@ def monitoring(ctx):
     """
 )
 @click.argument("name")
-@project_id_option()
+@project_id_option("moz-fx-data-shared-prod")
 @sql_dir_option
 @click.option(
     "--workspace",
@@ -88,6 +88,14 @@ def monitoring(ctx):
     default="https://app.bigeye.com",
     help="Bigeye base URL.",
 )
+@click.option(
+    "--dry-run",
+    "--dry_run",
+    "--dryrun",
+    is_flag=True,
+    help="Dry run the BigConfig files without applying them.",
+    default=False,
+)
 @click.pass_context
 def deploy(
     ctx,
@@ -96,6 +104,7 @@ def deploy(
     project_id: Optional[str],
     workspace: str,
     base_url: str,
+    dry_run: bool,
 ) -> None:
     """Deploy Bigeye config."""
     api_key = os.environ.get("BIGEYE_API_KEY")
@@ -109,6 +118,10 @@ def deploy(
     metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+
+    if len(metadata_files) == 0:
+        print(f"No metadata files matching {name}")
+        return
 
     for metadata_file in list(set(metadata_files)):
         project, dataset, table = extract_from_query_path(metadata_file)
@@ -137,7 +150,7 @@ def deploy(
                 ).exists() or "public_bigquery" in metadata.labels:
                     # monitoring to be deployed on a view
                     # Bigeye requires to explicitly set the partition column for views
-                    if metadata.monitoring.partition_column:
+                    if metadata.monitoring.partition_column and not dry_run:
                         ctx.invoke(
                             set_partition_column,
                             name=metadata_file.parent,
@@ -146,29 +159,42 @@ def deploy(
                         )
 
                 if (metadata_file.parent / CUSTOM_RULES_FILE).exists():
-                    ctx.invoke(
-                        deploy_custom_rules,
-                        name=metadata_file.parent,
-                        sql_dir=sql_dir,
-                        project_id=project_id,
-                    )
+                    if dry_run:
+                        print(
+                            f"Dry run; Skip deploying custom SQL rule {metadata_file.parent}"
+                        )
+                    else:
+                        ctx.invoke(
+                            deploy_custom_rules,
+                            name=metadata_file.parent,
+                            sql_dir=sql_dir,
+                            project_id=project_id,
+                        )
 
         except FileNotFoundError:
             print("No metadata file for: {}.{}.{}".format(project, dataset, table))
 
-    # Deploy BigConfig files at once.
-    # Deploying BigConfig files separately can lead to previously deployed metrics being removed.
-    mc.execute_bigconfig(
-        input_path=[
-            metadata_file.parent / BIGCONFIG_FILE
-            for metadata_file in list(set(metadata_files))
-        ],
-        output_path=Path(sql_dir).parent if sql_dir else None,
-        apply=True,
-        recursive=False,
-        strict_mode=True,
-        auto_approve=True,
-    )
+    try:
+        # Deploy BigConfig files at once.
+        # Deploying BigConfig files separately can lead to previously deployed metrics being removed.
+        mc.execute_bigconfig(
+            input_path=[
+                metadata_file.parent / BIGCONFIG_FILE
+                for metadata_file in list(set(metadata_files))
+            ],
+            output_path=Path(sql_dir).parent if sql_dir else None,
+            apply=not dry_run,
+            recursive=False,
+            strict_mode=True,
+            auto_approve=True,
+        )
+    except Exception as e:
+        if dry_run:
+            bigconfig_result = Path(f"{project_id}_PLAN.yml")
+        else:
+            bigconfig_result = Path(f"{project_id}_APPLY.yml")
+        click.echo(bigconfig_result.read_text())
+        raise e
 
 
 def _sql_rules_from_file(custom_rules_file, project, dataset, table) -> list:

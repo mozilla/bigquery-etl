@@ -1,0 +1,14 @@
+friendly_name: Tiles Monthly Forecast
+description: |-
+  Contains tiles inventory and revenue forecasts.
+
+  Generated in outerbounds with the moz-forecasting repo.
+owners:
+  - jsnyder@mozilla.com
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:ads
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:revenue/external-outerbounds-task-revenue

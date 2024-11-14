@@ -12,6 +12,7 @@ scheduling:
   date_partition_offset: -2
   parameters:
   - submission_date:DATE:{{ds}}
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

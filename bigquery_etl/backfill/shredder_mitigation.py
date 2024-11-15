@@ -30,6 +30,7 @@ THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 SHREDDER_MITIGATION_QUERY_NAME = "shredder_mitigation_query"
 SHREDDER_MITIGATION_CHECKS_NAME = "shredder_mitigation_checks"
+DEFAULT_FOR_NULLS = "??"
 WILDCARD_STRING = "???????"
 WILDCARD_NUMBER = -9999999
 QUERY_FILE_RE = re.compile(
@@ -202,7 +203,7 @@ class Subset:
         if not select_list or not from_clause:
             raise click.ClickException(
                 f"Missing required clause to generate query.\n"
-                f"Actuals: SELECT: {select_list}, FROM: {self.full_table_id}"
+                f"Actual: SELECT: {select_list}, FROM: {self.full_table_id}"
             )
         query = f"SELECT {', '.join(map(str, select_list))}"
         query += f" FROM {from_clause}" if from_clause is not None else ""
@@ -575,7 +576,8 @@ def generate_query_with_shredder_mitigation(
     common_select = (
         [previous.partitioning["field"]]
         + [
-            f"COALESCE({dim.name}, '{WILDCARD_STRING}') AS {dim.name}"
+            f"IF({dim.name} IS NULL OR {dim.name} = '{DEFAULT_FOR_NULLS}', '{WILDCARD_STRING}',"
+            f" {dim.name}) AS {dim.name}"
             for dim in common_dimensions
             if (
                 dim.name != previous.partitioning["field"]
@@ -688,7 +690,7 @@ def generate_query_with_shredder_mitigation(
             if metric.data_type != DataTypeGroup.FLOAT
         ]
         + [
-            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "  # Round FLOAT to avoid exponentials.
+            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "  # Round FLOAT to avoid exponential numbers.
             f"ROUND(COALESCE({new_agg.query_cte}.{metric.name}, 0), 10) AS {metric.name}"
             for metric in metrics
             if metric.data_type == DataTypeGroup.FLOAT
@@ -758,13 +760,13 @@ def generate_query_with_shredder_mitigation(
     final_select = f"{', '.join(combined_list)}"
 
     # Generate formatted output strings to display generated-query information in console.
-    common_ouput = "".join(
+    common_output = "".join(
         [
             f"{dim.column_type.name} > {dim.name}:{dim.data_type.name}\n"
             for dim in common_dimensions
         ]
     )
-    metrics_ouput = "".join(
+    metrics_output = "".join(
         [
             f"{dim.column_type.name} > {dim.name}:{dim.data_type.name}\n"
             for dim in metrics
@@ -778,7 +780,7 @@ def generate_query_with_shredder_mitigation(
     )
     click.echo(
         click.style(
-            f"Query columns:\n" f"{common_ouput + metrics_ouput + changed_output}",
+            f"Query columns:\n" f"{common_output + metrics_output + changed_output}",
             fg="yellow",
         )
     )
@@ -817,9 +819,21 @@ def generate_query_with_shredder_mitigation(
     checks_select = (
         [new.partitioning["field"]]
         + [
+            f"IF({dim.name} IS NULL OR {dim.name} = '{DEFAULT_FOR_NULLS}', '{WILDCARD_STRING}',"
+            f" {dim.name}) AS {dim.name}"
+            for dim in common_dimensions
+            if (
+                dim.name != previous.partitioning["field"]
+                and dim.data_type == DataTypeGroup.STRING
+            )
+        ]
+        + [
             dim.name
             for dim in common_dimensions
-            if (dim.name != new.partitioning["field"])
+            if (
+                dim.name != new.partitioning["field"]
+                and dim.data_type != DataTypeGroup.STRING
+            )
         ]
         + [f"SUM({metric.name})" f" AS {metric.name}" for metric in metrics]
     )

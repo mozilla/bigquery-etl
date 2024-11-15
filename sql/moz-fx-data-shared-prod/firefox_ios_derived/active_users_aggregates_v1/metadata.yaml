@@ -19,4 +19,6 @@ description: |-
 owners:
 - lvargas@mozilla.com
 - mozilla/kpi_table_reviewers
+bigquery:
+  expiration_days: 780
 deprecated: true

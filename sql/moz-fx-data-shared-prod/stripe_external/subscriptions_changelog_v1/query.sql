@@ -216,6 +216,10 @@ subscriptions_history_latest_discounts AS (
     `moz-fx-data-shared-prod`.stripe_external.subscription_discount_v2 AS subscription_discounts
     ON subscriptions_history.subscription_id = subscription_discounts.subscription_id
     AND subscriptions_history._fivetran_start >= subscription_discounts.start
+    AND (
+      subscriptions_history._fivetran_start < subscription_discounts.`end`
+      OR subscription_discounts.`end` IS NULL
+    )
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
     ON subscription_discounts.coupon_id = coupons.id

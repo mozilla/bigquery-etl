@@ -22,7 +22,10 @@ owners:
 - mozilla/kpi_table_reviewers
 labels:
   owner1: lvargas
-bigquery: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
 workgroup_access: []
 references: {}
 deprecated: true

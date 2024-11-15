@@ -4,7 +4,7 @@
   reason: Backfill dates where error in query caused Pocket clicks to be 0.
   watchers:
     - mbowerman@mozilla.com
-  status: Initiate
+  status: Complete
 
 2024-08-26:
   start_date: 2024-08-01

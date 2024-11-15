@@ -1,0 +1,20 @@
+friendly_name: Cinder Decisions Raw
+description: |-
+  Download of decisions regarding addon moderations
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: example
+scheduling:
+  dag_name: bqetl_addons
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'date'
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}

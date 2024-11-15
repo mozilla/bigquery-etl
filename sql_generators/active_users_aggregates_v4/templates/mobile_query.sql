@@ -209,4 +209,23 @@ SELECT
 FROM
   todays_metrics
 GROUP BY
-  ALL
+    segment,
+    app_version,
+    attribution_medium,
+    attribution_source,
+    attributed,
+    city,
+    country,
+    distribution_id,
+    first_seen_year,
+    is_default_browser,
+    locale,
+    app_name,
+    channel,
+    os,
+    os_version,
+    os_version_major,
+    os_version_minor,
+    submission_date,
+    adjust_network,
+    install_source

@@ -1,0 +1,113 @@
+fields:
+- name: segment
+  type: STRING
+  mode: NULLABLE
+  description: Classification of client_ids based on usage and active state.
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: Browser name.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser version installed on the client.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Browser installation channel installed on the client.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country reported by the client.
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: City reported by the client.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale reported by the client, which is a combination of language and regional settings.
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+  description: Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating system reported by the client.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: OS version reported by the client.
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Major or first part of the OS version reported by the client.
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: Minor or second part of the OS version reported by the client.
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when ping is received on the server side.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the browser is set as the default browser on the client side.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: A string containing the distribution identifier. This was used to identify installs from Mozilla Online, but now also identifies partnership deal distributions.
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The utm_term this install is attributed to. Reported by the install referrer service, not Adjust.
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The utm_medium this install is attributed to. Reported by the install referrer service, not Adjust.
+- name: attributed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the attribution source and medium are present.
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: The source of a client installation.
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+  description: The id of the browser distribution made available in installation sources.
+- name: daily_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who report a ping in a day.
+- name: weekly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 7 days.
+- name: monthly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 28 days.
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who reported a ping on the submission_date that qualify as active.
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 7 days and qualify as active.
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 28 days and qualify as active.
+- name: uri_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of uri.
+- name: active_hours
+  type: FLOAT64
+  mode: NULLABLE
+  description: Count of active hours.

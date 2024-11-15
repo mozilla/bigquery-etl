@@ -6213,6 +6213,10 @@ fields:
       description: 'Static data recorded to verify the new object metric type end-to-end.
 
         '
+    - name: mail_account_preferences
+      type: JSON
+      mode: NULLABLE
+      description: Values of basic account preferences.
   - name: quantity
     type: RECORD
     mode: NULLABLE

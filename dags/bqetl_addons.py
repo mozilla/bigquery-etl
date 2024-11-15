@@ -90,6 +90,22 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    addon_moderations_derived__cinder_decisions_raw__v1 = GKEPodOperator(
+        task_id="addon_moderations_derived__cinder_decisions_raw__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/addon_moderations_derived/cinder_decisions_raw_v1/query.py",
+        ]
+        + [],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kik@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
     telemetry_derived__addon_aggregates__v2 = bigquery_etl_query(
         task_id="telemetry_derived__addon_aggregates__v2",
         destination_table="addon_aggregates_v2",

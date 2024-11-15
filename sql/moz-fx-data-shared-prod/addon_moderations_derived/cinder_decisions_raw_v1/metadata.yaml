@@ -5,16 +5,20 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: mhirose
+  dag: bqetl_addons
 scheduling:
   dag_name: bqetl_addons
 bigquery:
   time_partitioning:
     type: day
-    field: 'date'
+    field: date
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields: []
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}

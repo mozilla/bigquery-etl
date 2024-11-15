@@ -317,6 +317,7 @@ def test_glean_targets_override(mock_requests):
                 table_ids = [
                     "adclick_history_v1",  # should use value from override
                     "other_table_v1",
+                    "pageload_1pct_v1",  # should be ignored
                 ]
             else:
                 raise Exception(f"unexpected dataset: {dataset_ref}")

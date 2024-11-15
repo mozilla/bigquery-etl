@@ -30,7 +30,7 @@ THIS_PATH = Path(os.path.dirname(__file__))
 DEFAULT_PROJECT_ID = "moz-fx-data-shared-prod"
 SHREDDER_MITIGATION_QUERY_NAME = "shredder_mitigation_query"
 SHREDDER_MITIGATION_CHECKS_NAME = "shredder_mitigation_checks"
-DEFAULT_FOR_NULLS = '??'
+DEFAULT_FOR_NULLS = "??"
 WILDCARD_STRING = "???????"
 WILDCARD_NUMBER = -9999999
 QUERY_FILE_RE = re.compile(
@@ -817,25 +817,25 @@ def generate_query_with_shredder_mitigation(
 
     # Generate checks to compare versions after each partition backfill.
     checks_select = (
-            [new.partitioning["field"]]
-            + [
-                f"IF({dim.name} IS NULL OR {dim.name} = '{DEFAULT_FOR_NULLS}', '{WILDCARD_STRING}',"
-                f" {dim.name}) AS {dim.name}"
-                for dim in common_dimensions
-                if (
-                    dim.name != previous.partitioning["field"]
-                    and dim.data_type == DataTypeGroup.STRING
-                )
-            ]
-            + [
-                dim.name
-                for dim in common_dimensions
-                if (
-                    dim.name != new.partitioning["field"]
-                    and dim.data_type != DataTypeGroup.STRING
-                )
-            ]
-            + [f"SUM({metric.name})" f" AS {metric.name}" for metric in metrics]
+        [new.partitioning["field"]]
+        + [
+            f"IF({dim.name} IS NULL OR {dim.name} = '{DEFAULT_FOR_NULLS}', '{WILDCARD_STRING}',"
+            f" {dim.name}) AS {dim.name}"
+            for dim in common_dimensions
+            if (
+                dim.name != previous.partitioning["field"]
+                and dim.data_type == DataTypeGroup.STRING
+            )
+        ]
+        + [
+            dim.name
+            for dim in common_dimensions
+            if (
+                dim.name != new.partitioning["field"]
+                and dim.data_type != DataTypeGroup.STRING
+            )
+        ]
+        + [f"SUM({metric.name})" f" AS {metric.name}" for metric in metrics]
     )
     previous_checks_query = previous.generate_query(
         select_list=checks_select,

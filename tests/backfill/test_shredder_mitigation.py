@@ -1746,7 +1746,6 @@ class TestGenerateQueryWithShredderMitigation:
                             call(
                                 select_list=[
                                     "column_1",
-                                    "COALESCE(column_2, '???????') AS column_2",
                                     "IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],

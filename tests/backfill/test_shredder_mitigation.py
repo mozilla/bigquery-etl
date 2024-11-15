@@ -932,7 +932,7 @@ class TestSubset:
             )
         assert str(e.value.message) == (
             f"Missing required clause to generate query.\n"
-            f"Actuals: SELECT: [], FROM: {test_subset.full_table_id}"
+            f"Actual: SELECT: [], FROM: {test_subset.full_table_id}"
         )
 
     @patch("google.cloud.bigquery.Client")
@@ -1007,7 +1007,7 @@ class TestGenerateQueryWithShredderMitigation:
                         new_agg AS (
                           SELECT
                             submission_date,
-                            COALESCE(column_1, '???????') AS column_1,
+                            IF(column_1 IS NULL OR column_1 = '??', '???????', column_1) AS column_1,
                             SUM(metric_1) AS metric_1
                           FROM
                             new_version
@@ -1017,7 +1017,7 @@ class TestGenerateQueryWithShredderMitigation:
                         previous_agg AS (
                           SELECT
                             submission_date,
-                            COALESCE(column_1, '???????') AS column_1,
+                            IF(column_1 IS NULL OR column_1 = '??', '???????', column_1) AS column_1,
                             SUM(metric_1) AS metric_1
                           FROM
                             `moz-fx-data-shared-prod.test.test_query_v1`
@@ -1259,7 +1259,7 @@ class TestGenerateQueryWithShredderMitigation:
         WITH previous AS (
           SELECT
             column_1,
-            column_2,
+            IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2,
             SUM(metric_1) AS metric_1,
             SUM(metric_2) AS metric_2
           FROM
@@ -1272,7 +1272,7 @@ class TestGenerateQueryWithShredderMitigation:
         new_version AS (
           SELECT
             column_1,
-            column_2,
+            IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2,
             SUM(metric_1) AS metric_1,
             SUM(metric_2) AS metric_2
           FROM
@@ -1300,8 +1300,8 @@ class TestGenerateQueryWithShredderMitigation:
                 CONCAT(
                   ((SELECT COUNT(*) FROM previous_not_matching)),
                   " rows in the previous data don't match backfilled data! Run auto-generated checks for ",
-                  "all mismatches & search for rows missing or with differences in metrics. 5 sample rows: ",
-                  (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM previous_not_matching LIMIT 5)))
+                  "all mismatches & search for rows missing or with differences in metrics. Sample row in previous version: ",
+                  (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM previous_not_matching LIMIT 1)))
                   )
                 ),
             NULL
@@ -1313,7 +1313,7 @@ class TestGenerateQueryWithShredderMitigation:
         WITH previous AS (
           SELECT
             column_1,
-            column_2,
+            IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2,
             SUM(metric_1) AS metric_1,
             SUM(metric_2) AS metric_2
           FROM
@@ -1326,7 +1326,7 @@ class TestGenerateQueryWithShredderMitigation:
         new_version AS (
           SELECT
             column_1,
-            column_2,
+            IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2,
             SUM(metric_1) AS metric_1,
             SUM(metric_2) AS metric_2
           FROM
@@ -1354,8 +1354,8 @@ class TestGenerateQueryWithShredderMitigation:
               CONCAT(
                 ((SELECT COUNT(*) FROM backfilled_not_matching)),
                 " rows in backfill don't match previous version of data! Run auto-generated checks for ",
-                "all mismatches & search for rows added or with differences in metrics. 5 sample rows: ",
-                (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM backfilled_not_matching LIMIT 5)))
+                "all mismatches & search for rows added or with differences in metrics. Sample row in new_version: ",
+                (SELECT TO_JSON_STRING(ARRAY(SELECT AS STRUCT * FROM backfilled_not_matching LIMIT 1)))
               )
             ),
             NULL
@@ -1747,6 +1747,7 @@ class TestGenerateQueryWithShredderMitigation:
                                 select_list=[
                                     "column_1",
                                     "COALESCE(column_2, '???????') AS column_2",
+                                    "IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="new_version",
@@ -1755,7 +1756,7 @@ class TestGenerateQueryWithShredderMitigation:
                             call(
                                 select_list=[
                                     "column_1",
-                                    "COALESCE(column_2, '???????') AS column_2",
+                                    "IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="`moz-fx-data-shared-prod.test.test_query_v1`",
@@ -1779,7 +1780,7 @@ class TestGenerateQueryWithShredderMitigation:
                             call(
                                 select_list=[
                                     "column_1",
-                                    "column_2",
+                                    "IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="`moz-fx-data-shared-prod.test.test_query_v1`",
@@ -1789,7 +1790,7 @@ class TestGenerateQueryWithShredderMitigation:
                             call(
                                 select_list=[
                                     "column_1",
-                                    "column_2",
+                                    "IF(column_2 IS NULL OR column_2 = '??', '???????', column_2) AS column_2",
                                     "SUM(metric_1) AS metric_1",
                                 ],
                                 from_clause="`moz-fx-data-shared-prod.test.test_query_v2__2021_01_01`",

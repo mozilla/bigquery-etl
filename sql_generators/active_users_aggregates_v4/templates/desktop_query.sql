@@ -5,8 +5,8 @@ WITH todays_metrics AS (
     app_name,
     app_version AS app_version,
     normalized_channel AS channel,
-    IFNULL(country, '??') country,
-    IFNULL(city, '??') city,
+    IFNULL(country, '??') AS country,
+    IFNULL(city, '??') AS city,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale,
     os,
     COALESCE(

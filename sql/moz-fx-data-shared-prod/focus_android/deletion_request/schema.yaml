@@ -249,6 +249,9 @@ fields:
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
+    - name: deletion_request_sync_device_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -20,7 +20,10 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.deletion_request_sync_device_id
+    ) AS `string`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
@@ -54,7 +57,10 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.deletion_request_sync_device_id
+    ) AS `string`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
@@ -88,7 +94,10 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.deletion_request_sync_device_id
+    ) AS `string`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
@@ -122,7 +131,10 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.deletion_request_sync_device_id
+    ) AS `string`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
@@ -156,7 +168,10 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.deletion_request_sync_device_id
+    ) AS `string`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,

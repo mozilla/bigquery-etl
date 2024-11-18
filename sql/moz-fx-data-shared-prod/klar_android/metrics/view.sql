@@ -52,7 +52,8 @@ SELECT
       metrics.boolean.widget_dark_mode,
       metrics.boolean.devtools_shadowdom_reveal_link_clicked,
       metrics.boolean.devtools_shadowdom_shadow_root_displayed,
-      metrics.boolean.devtools_shadowdom_shadow_root_expanded
+      metrics.boolean.devtools_shadowdom_shadow_root_expanded,
+      metrics.boolean.formautofill_availability
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -167,7 +168,14 @@ SELECT
       metrics.counter.devtools_markup_scrollable_badge_clicked,
       metrics.counter.devtools_responsive_toolbox_opened_first,
       metrics.counter.devtools_rules_flexboxhighlighter_opened,
-      metrics.counter.devtools_rules_gridinspector_opened
+      metrics.counter.devtools_rules_gridinspector_opened,
+      metrics.counter.formautofill_addresses_detected_sections_count,
+      metrics.counter.formautofill_addresses_submitted_sections_count,
+      metrics.counter.formautofill_credit_cards_detected_sections_count,
+      metrics.counter.formautofill_credit_cards_submitted_sections_count,
+      metrics.counter.network_sso_total_entra_uses,
+      metrics.counter.networking_captive_portal_banner_displayed,
+      metrics.counter.script_preloader_mainthread_recompile
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -372,7 +380,9 @@ SELECT
       metrics.labeled_counter.devtools_responsive_open_trigger,
       metrics.labeled_counter.devtools_toolbox_tabs_reordered,
       metrics.labeled_counter.devtools_tooltip_shown,
-      metrics.labeled_counter.networking_http_3_quic_frame_count
+      metrics.labeled_counter.networking_http_3_quic_frame_count,
+      metrics.labeled_counter.network_sso_entra_success,
+      metrics.labeled_counter.networking_captive_portal_banner_display_time
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -451,7 +461,8 @@ SELECT
       metrics.quantity.startup_profile_count,
       metrics.quantity.networking_loading_certs_task,
       metrics.quantity.networking_nss_initialization,
-      metrics.quantity.bounce_tracking_protection_mode
+      metrics.quantity.bounce_tracking_protection_mode,
+      metrics.quantity.formautofill_addresses_autofill_profiles_count
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -682,7 +693,8 @@ SELECT
       metrics.timing_distribution.network_sub_tcp_connection,
       metrics.timing_distribution.network_sub_tls_handshake,
       metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
-      metrics.timing_distribution.network_cache_miss_time
+      metrics.timing_distribution.network_cache_miss_time,
+      metrics.timing_distribution.javascript_ion_compile_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

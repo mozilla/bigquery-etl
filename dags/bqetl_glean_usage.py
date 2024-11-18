@@ -136,6 +136,8 @@ with DAG(
 
     task_group_relay_backend = TaskGroup("relay_backend")
 
+    task_group_syncstorage = TaskGroup("syncstorage")
+
     task_group_thunderbird_android = TaskGroup("thunderbird_android")
 
     task_group_thunderbird_desktop = TaskGroup("thunderbird_desktop")
@@ -4301,6 +4303,24 @@ with DAG(
         task_group=task_group_relay_backend,
     )
 
+    syncstorage_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="syncstorage_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="syncstorage_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_syncstorage,
+    )
+
     thunderbird_android_derived__metrics_clients_daily__v1 = bigquery_etl_query(
         task_id="thunderbird_android_derived__metrics_clients_daily__v1",
         destination_table="metrics_clients_daily_v1",
@@ -6423,6 +6443,8 @@ with DAG(
     )
 
     relay_backend_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    syncstorage_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     thunderbird_android_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all

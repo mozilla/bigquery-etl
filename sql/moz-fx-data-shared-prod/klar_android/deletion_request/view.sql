@@ -21,7 +21,10 @@ SELECT
       metrics.uuid.legacy_ids_client_id,
       metrics.uuid.characteristics_client_identifier
     ) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.deletion_request_sync_device_id
+    ) AS `string`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -640,6 +640,14 @@ fields:
         was generated to correspond to the Legacy Telemetry scalar devtools.shadowdom.shadow_root_expanded.
 
         '
+    - name: formautofill_availability
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'A boolean sent once per session to represent whether the formautofill
+        is available in the build This metric was generated to correspond to the Legacy
+        Telemetry scalar formautofill.availability.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1526,6 +1534,58 @@ fields:
       description: 'Number of times the DevTools grid inspector was opened from the
         rules view. This metric was generated to correspond to the Legacy Telemetry
         scalar devtools.rules.gridinspector.opened.
+
+        '
+    - name: formautofill_addresses_detected_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at detection time number of address form sections. A single
+        form can contain more than one address form section. This metric was generated
+        to correspond to the Legacy Telemetry scalar formautofill.addresses.detected_sections_count.
+
+        '
+    - name: formautofill_addresses_submitted_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at submission time number of credit card form sections submitted.
+        This metric was generated to correspond to the Legacy Telemetry scalar formautofill.addresses.submitted_sections_count.
+
+        '
+    - name: formautofill_credit_cards_detected_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at detection time number of credit card form sections. A
+        single form can contain more than one credit card form section. This metric
+        was generated to correspond to the Legacy Telemetry scalar formautofill.creditCards.detected_sections_count.
+
+        '
+    - name: formautofill_credit_cards_submitted_sections_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at submission time number of credit card form sections submitted.
+        This metric was generated to correspond to the Legacy Telemetry scalar formautofill.creditCards.submitted_sections_count.
+
+        '
+    - name: network_sso_total_entra_uses
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts how often Entra SSO is used (macOS only).
+
+        '
+    - name: networking_captive_portal_banner_displayed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of times the captive portal banner was displayed in this
+        session. This metric was generated to correspond to the Legacy Telemetry scalar
+        networking.captive_portal_banner_displayed.
+
+        '
+    - name: script_preloader_mainthread_recompile
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times we ended up recompiling a script from the script
+        preloader on the main thread. This metric was generated to correspond to the
+        Legacy Telemetry scalar script.preloader.mainthread_recompile.
 
         '
   - name: custom_distribution
@@ -7375,6 +7435,75 @@ fields:
       description: 'Number of QUIC frames send and received by type.
 
         '
+    - name: contextual_services_topsites_click
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user has clicked on
+        the sponsored TopSites on the newtab page. The key is a combination of the
+        source and the placement of the TopSites tile (1-based). such as ''urlbar_1'',
+        ''newtab_2''. This metric was generated to correspond to the Legacy Telemetry
+        scalar contextual.services.topsites.click.
+
+        '
+    - name: contextual_services_topsites_impression
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A keyed uint recording how many times the user has viewed the
+        sponsored TopSites on the newtab page. The key is a combination of the source
+        and the placement of the TopSites tile (1-based). such as ''urlbar_1'', ''newtab_2''.
+        This metric was generated to correspond to the Legacy Telemetry scalar contextual.services.topsites.impression.
+
+        '
+    - name: network_sso_entra_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often Entra SSO succeeded/failed (macOS only). Labels
+        are ordered in reverse chronological relation to SSO success, meaning the
+        labels higher up are closer to the SSO success. device_headers_missing: only
+        device_headers is missing in the SSO cookie. prt_headers_missing: only prt_headers
+        is missing in the SSO cookie. both_headers_missing: both prt_headers and device_headers
+        are missing in the SSO cookie. invalid_cookie: Failed to parse SSO cookie
+        (could be a null cookie/format is incorrect). no_credential: ASAuthorizationSingleSignOnCredential
+        is not present broker_error: An error from Microsoft''s broker. invalid_controller_setup:
+        ASAuthorizationController is setup incorrectly.
+
+        '
+    - name: networking_captive_portal_banner_display_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Number of seconds the captive portal banner was displayed for,\
+        \ keyed by close reason:\n  \"success\" - the portal login was completed\n\
+        \  \"abort\"   - the portal login was aborted (e.g. loss of network)\n  \"\
+        dismiss\" - the user dismissed the banner\nThis metric was generated to correspond\
+        \ to the Legacy Telemetry scalar networking.captive_portal_banner_display_time.\n"
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -8035,6 +8164,63 @@ fields:
         once). This does not include background page requests and domains from embedded
         pages or private browsing. The count is limited to 100 unique domains. This
         metric was generated to correspond to the Legacy Telemetry scalar browser.engagement.unique_domains_count.
+
+        '
+    - name: browser_searchinit_insecure_opensearch_engine_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of insecure (i.e., using http) OpenSearch search
+        engines a given user has installed. This metric was generated to correspond
+        to the Legacy Telemetry scalar browser.searchinit.insecure_opensearch_engine_count.
+
+        '
+    - name: browser_searchinit_insecure_opensearch_update_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of OpenSearch search engines with insecure
+        updates enabled (i.e., using http) a given user has installed. This metric
+        was generated to correspond to the Legacy Telemetry scalar browser.searchinit.insecure_opensearch_update_count.
+
+        '
+    - name: browser_searchinit_secure_opensearch_engine_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of secure (i.e., using https) OpenSearch search
+        engines a given user has installed. This metric was generated to correspond
+        to the Legacy Telemetry scalar browser.searchinit.secure_opensearch_engine_count.
+
+        '
+    - name: browser_searchinit_secure_opensearch_update_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of OpenSearch search engines with secure updates
+        enabled (i.e., using https) a given user has installed. This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.searchinit.secure_opensearch_update_count.
+
+        '
+    - name: browser_timings_last_shutdown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The time, in milliseconds, it took to complete the last shutdown.
+        On successful shutdown, Telemetry saves this to disk into Telemetry.ShutdownTime.txt.
+        On the next startup this is loaded and recorded. This metric was generated
+        to correspond to the Legacy Telemetry scalar browser.timings.last_shutdown.
+
+        '
+    - name: formautofill_addresses_autofill_profiles_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count at store time how many address autofill profiles user has.
+        This metric was generated to correspond to the Legacy Telemetry scalar formautofill.addresses.autofill_profiles_count.
+
+        '
+    - name: timestamps_about_home_topsites_first_paint
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the timestamp of when the first about:home''s Topsites
+        are painted. Only records if about:home is set as the default homepage, and
+        if sessions are not being restored by default. This metric was generated to
+        correspond to the Legacy Telemetry scalar timestamps.about_home_topsites_first_paint.
 
         '
   - name: string
@@ -15707,6 +15893,49 @@ fields:
           mode: NULLABLE
       description: 'Time spent to find out a cache entry file is missing. (Migrated
         from the geckoview metric of the same name).
+
+        '
+    - name: javascript_ion_compile_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in microseconds of an Ion compilation.
 
         '
   - name: uuid

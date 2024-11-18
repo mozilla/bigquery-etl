@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -436,6 +436,9 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
     - name: devtools_shadowdom_shadow_root_expanded
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: formautofill_availability
       type: BOOLEAN
       mode: NULLABLE
   - name: counter
@@ -893,6 +896,27 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: devtools_rules_gridinspector_opened
+      type: INTEGER
+      mode: NULLABLE
+    - name: formautofill_addresses_detected_sections_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: formautofill_addresses_submitted_sections_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: formautofill_credit_cards_detected_sections_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: formautofill_credit_cards_submitted_sections_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: network_sso_total_entra_uses
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_captive_portal_banner_displayed
+      type: INTEGER
+      mode: NULLABLE
+    - name: script_preloader_mainthread_recompile
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution
@@ -4223,6 +4247,26 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: network_sso_entra_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_captive_portal_banner_display_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -4339,6 +4383,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: bounce_tracking_protection_mode
+      type: INTEGER
+      mode: NULLABLE
+    - name: formautofill_addresses_autofill_profiles_count
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -12635,6 +12682,44 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: network_cache_miss_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: javascript_ion_compile_time
       type: RECORD
       mode: NULLABLE
       fields:

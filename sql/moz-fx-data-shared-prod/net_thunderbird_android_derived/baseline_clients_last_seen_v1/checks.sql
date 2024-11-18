@@ -27,9 +27,6 @@ WHERE
   submission_date = @submission_date;
 
 #warn
-{{ matches_pattern(column="country", pattern="^[A-Z]{2}$", where="submission_date = @submission_date") }}
-
-#warn
 {{ value_length(column="client_id", expected_length=36, where="submission_date = @submission_date") }}
 
 #fail

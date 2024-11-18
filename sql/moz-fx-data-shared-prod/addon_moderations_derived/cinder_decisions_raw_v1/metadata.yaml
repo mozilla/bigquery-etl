@@ -9,6 +9,11 @@ labels:
   dag: bqetl_addons
 scheduling:
   dag_name: bqetl_addons
+  arguments:
+  - --date
+  - '{{ ds }}'
+  - --cinder_bearer_token
+  - '{{ var.value.CINDER_TOKEN }}'
 bigquery:
   time_partitioning:
     type: day

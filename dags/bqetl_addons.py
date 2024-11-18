@@ -96,7 +96,12 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/addon_moderations_derived/cinder_decisions_raw_v1/query.py",
         ]
-        + [],
+        + [
+            "--date",
+            "{{ ds }}",
+            "--cinder_bearer_token",
+            "{{ var.value.CINDER_TOKEN }}",
+        ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
         email=[

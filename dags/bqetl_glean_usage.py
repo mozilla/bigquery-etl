@@ -4579,15 +4579,11 @@ with DAG(
     )
 
     checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+        net_thunderbird_android_derived__baseline_clients_daily__v1
     )
 
     checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
         net_thunderbird_android_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4879,15 +4875,11 @@ with DAG(
     )
 
     checks__warn_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+        net_thunderbird_android_derived__baseline_clients_daily__v1
     )
 
     checks__warn_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
         net_thunderbird_android_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(

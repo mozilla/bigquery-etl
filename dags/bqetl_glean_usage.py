@@ -4519,63 +4519,23 @@ with DAG(
     )
 
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__fail_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_update_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__fail_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_net_thunderbird_android_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4587,127 +4547,43 @@ with DAG(
     )
 
     checks__fail_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
     )
 
-    checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4715,23 +4591,7 @@ with DAG(
     )
 
     checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4739,23 +4599,7 @@ with DAG(
     )
 
     checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4763,23 +4607,7 @@ with DAG(
     )
 
     checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4787,23 +4615,7 @@ with DAG(
     )
 
     checks__fail_pine_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_pine_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__fail_pine_derived__baseline_clients_last_seen__v1.set_upstream(
         pine_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__fail_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4811,63 +4623,23 @@ with DAG(
     )
 
     checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_firefox_desktop_background_tasks_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_update_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_firefox_desktop_background_update_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_firefox_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_net_thunderbird_android_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_net_thunderbird_android_daily_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -4883,127 +4655,43 @@ with DAG(
     )
 
     checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_fenix_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     checks__warn_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -5011,23 +4699,7 @@ with DAG(
     )
 
     checks__warn_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -5035,35 +4707,11 @@ with DAG(
     )
 
     checks__warn_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
@@ -5079,35 +4727,11 @@ with DAG(
     )
 
     checks__warn_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1
     )
 
     checks__warn_pine_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_pine_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    checks__warn_pine_derived__baseline_clients_last_seen__v1.set_upstream(
         pine_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     checks__warn_thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(

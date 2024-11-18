@@ -43,7 +43,7 @@ WITH daily AS (
     submission_date,
     COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_daily_v1`
+    `{{ project_id }}.{{ dataset_id }}.baseline_clients_daily_v1`
   WHERE
     submission_date = @submission_date
     AND sample_id IS NOT NULL
@@ -55,7 +55,7 @@ last_seen AS (
     submission_date,
     COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.baseline_clients_last_seen_v1`
+    `{{ project_id }}.{{ dataset_id }}.baseline_clients_last_seen_v1`
   WHERE
     submission_date = @submission_date
     AND mozfun.bits28.days_since_seen(days_seen_bits) = 0

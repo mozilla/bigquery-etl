@@ -296,6 +296,10 @@ generate:
     - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_last_seen_v1/bigconfig.yml
     - sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/checks.sql
+    - sql/moz-fx-data-shared-prod/net_thunderbird_android_beta_derived/baseline_clients_last_seen_v1/metadata.yaml
+    - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/metadata.yaml
+    - sql/moz-fx-data-shared-prod/net_thunderbird_android_derived/baseline_clients_last_seen_v1/metadata.yaml
+    - sql/moz-fx-data-shared-prod/thunderbird_desktop_derived/baseline_clients_last_seen_v1/metadata.yaml
     skip_apps:
     - mlhackweek_search
     - moso_mastodon_android

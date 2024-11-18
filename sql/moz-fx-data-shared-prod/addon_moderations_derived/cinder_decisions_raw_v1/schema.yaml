@@ -25,12 +25,12 @@ fields:
   type: STRING
   description: ID of UU
 
-- mode: REPEATED
+- mode: NULLABLE
   name: applied_policies
   type: STRING
   description: Policies applied to moderate addon
 
-- mode: REPEATED
+- mode: NULLABLE
   name: entity
   type: STRING
   description: Information about the entity

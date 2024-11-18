@@ -8,6 +8,7 @@ labels:
   owner1: example
 scheduling:
   dag_name: bqetl_addons
+  date_partition_parameter: date
   arguments: ["--date", "{{ ds }}", "--cinder_bearer_token", "{{ var.value.CINDER_TOKEN }}"]
 bigquery:
   time_partitioning:

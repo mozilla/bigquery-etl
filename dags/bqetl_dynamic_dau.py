@@ -126,10 +126,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_firefox_desktop_active_users_aggregates = ExternalTaskSensor(
-        task_id="wait_for_firefox_desktop_active_users_aggregates",
+    wait_for_firefox_desktop_active_users_aggregates_v3 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_active_users_aggregates_v3",
         external_dag_id="bqetl_analytics_aggregations",
-        external_task_id="firefox_desktop_active_users_aggregates",
+        external_task_id="firefox_desktop_active_users_aggregates_v3",
         execution_delta=datetime.timedelta(seconds=35100),
         check_existence=True,
         mode="reschedule",
@@ -194,5 +194,5 @@ with DAG(
     )
 
     telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
-        wait_for_firefox_desktop_active_users_aggregates
+        wait_for_firefox_desktop_active_users_aggregates_v3
     )

@@ -31,7 +31,7 @@ labels:
   owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  task_name: klar_ios_active_users_aggregates_v3
+  task_name: klar_ios_active_users_aggregates_v4
   date_partition_offset: -1
 bigquery:
   time_partitioning:

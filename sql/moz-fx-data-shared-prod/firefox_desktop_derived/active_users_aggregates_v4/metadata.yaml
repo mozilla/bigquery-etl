@@ -1,7 +1,7 @@
-friendly_name: Klar iOS Active Users Aggregates
+friendly_name: Firefox Desktop Active Users Aggregates
 description: |-
   This table contains dau, wau, mau, daily users,
-  weekly users and monthly users for Klar iOS,
+  weekly users and monthly users for Firefox Desktop,
   aggregated by submission_date, attribution, channel,
   country, city, device model, distribution_id, os details
   and activity segment.
@@ -31,7 +31,7 @@ labels:
   owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  task_name: klar_ios_active_users_aggregates_v3
+  task_name: firefox_desktop_active_users_aggregates_v4
   date_partition_offset: -1
 bigquery:
   time_partitioning:
@@ -53,7 +53,7 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  - moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen
+  - moz-fx-data-shared-prod.telemetry_live.main_v5
   query.sql:
-  - moz-fx-data-shared-prod.klar_ios.active_users
-  - moz-fx-data-shared-prod.klar_ios.metrics_clients_last_seen
+  - moz-fx-data-shared-prod.telemetry.desktop_active_users

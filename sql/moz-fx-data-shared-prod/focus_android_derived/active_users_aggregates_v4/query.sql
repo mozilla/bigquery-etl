@@ -4,7 +4,37 @@ WITH baseline AS (
     submission_date,
     normalized_channel,
     client_id,
-    days_active_bits,
+    days_created_profile_bits,
+    os AS normalized_os,
+    osversion AS normalized_os_version,
+    locale,
+    city,
+    country,
+    metadata_app_version AS app_display_version,
+    device AS device_model,
+    first_seen_date,
+    submission_date = first_seen_date AS is_new_profile,
+    distribution_id,
+    CAST(NULL AS string) AS isp,
+    'Focus Android Legacy' AS app_name,
+    CAST(NULL AS STRING) AS segment,
+    CAST(NULL AS BOOLEAN) AS is_daily_user,
+    CAST(NULL AS BOOLEAN) AS is_weekly_user,
+    CAST(NULL AS BOOLEAN) AS is_monthly_user,
+    CAST(NULL AS BOOLEAN) AS is_dau,
+    CAST(NULL AS BOOLEAN) AS is_wau,
+    CAST(NULL AS BOOLEAN) AS is_mau
+  FROM
+    `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
+  WHERE
+    submission_date = @submission_date
+    AND app_name = 'Focus'
+    AND os = 'Android'
+  UNION ALL
+  SELECT
+    submission_date,
+    normalized_channel,
+    client_id,
     days_created_profile_bits,
     normalized_os,
     normalized_os_version,
@@ -26,12 +56,12 @@ WITH baseline AS (
     is_wau,
     is_mau
   FROM
-    `moz-fx-data-shared-prod.focus_ios.active_users`
+    `moz-fx-data-shared-prod.focus_android.active_users`
   WHERE
     submission_date = @submission_date
 ),
 metrics AS (
-    -- Metrics ping may arrive in the same or next day as the baseline ping.
+  -- Metrics ping can arrive either in the same or next day as the baseline ping.
   SELECT
     client_id,
     ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
@@ -42,7 +72,7 @@ metrics AS (
       SAFE_OFFSET(0)
     ] AS is_default_browser
   FROM
-    `moz-fx-data-shared-prod.focus_ios.metrics_clients_last_seen`
+    `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
   WHERE
     DATE(submission_date)
     BETWEEN @submission_date
@@ -103,14 +133,6 @@ unioned AS (
     ON baseline.client_id = metrics.client_id
     AND baseline.normalized_channel IS NOT DISTINCT FROM metrics.normalized_channel
 ),
-unioned_with_attribution AS (
-  SELECT
-    unioned.*,
-    CAST(NULL AS STRING) AS install_source,
-    CAST(NULL AS STRING) AS adjust_network
-  FROM
-    unioned
-),
 todays_metrics AS (
   SELECT
     segment,
@@ -135,16 +157,16 @@ todays_metrics AS (
     client_id,
     uri_count,
     active_hours_sum,
-    adjust_network,
-    install_source,
     is_daily_user,
     is_weekly_user,
     is_monthly_user,
     is_dau,
     is_wau,
-    is_mau
+    is_mau,
+    CAST(NULL AS STRING) AS adjust_network,
+    CAST(NULL AS STRING) AS install_source
   FROM
-    unioned_with_attribution
+    unioned
 )
 SELECT
   todays_metrics.* EXCEPT (
@@ -169,7 +191,6 @@ SELECT
 FROM
   todays_metrics
 GROUP BY
-  segment,
   app_version,
   attribution_medium,
   attribution_source,
@@ -187,5 +208,6 @@ GROUP BY
   os_version_major,
   os_version_minor,
   submission_date,
+  segment,
   adjust_network,
   install_source

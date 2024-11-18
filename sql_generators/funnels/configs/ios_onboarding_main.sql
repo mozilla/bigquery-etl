@@ -37,12 +37,7 @@ steps = [
         "fifth_card_close_click",
         "fifth_card_multiple_choice_click",
          "sync_sign_in",
-         "allow_notification",
-         "toolbar_bottom",
-         "toolbar_top",
-         "theme_dark",
-         "theme_light",
-         "theme_system_auto"
+         "allow_notification"
          ]
 
 dimensions = [
@@ -316,51 +311,6 @@ data_source = "onboarding_events"
 select_expression = """CASE WHEN event_category = 'onboarding' AND event_name = 'notification_permission_prompt'
 AND `mozfun.map.get_key`(event_extra, 'granted') = 'true'
 THEN ic.client_id END"""
-aggregation = "count distinct"
-
-[steps.toolbar_bottom]
-friendly_name = "Bottom Toolbar"
-description = "User Selected Bottom Toolbar during Onboarding"
-data_source = "onboarding_events"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'toolbar-bottom'
-    event_name = 'multiple_choice_button_tap' AND
-    event_category = 'onboarding' THEN ic.client_id END"""
-aggregation = "count distinct"
-
-[steps.toolbar_top]
-friendly_name = "Top Toolbar"
-description = "User Selected Top Toolbar during Onboarding"
-data_source = "onboarding_events"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'toolbar-top'
-    event_name = 'multiple_choice_button_tap' AND
-    event_category = 'onboarding' THEN ic.client_id END"""
-aggregation = "count distinct"
-
-[steps.theme_dark]
-friendly_name = "Dark Theme"
-description = "User Selected Dark Theme during Onboarding"
-data_source = "onboarding_events"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-dark'
-    event_name = 'multiple_choice_button_tap' AND
-    event_category = 'onboarding' THEN ic.client_id END"""
-aggregation = "count distinct"
-
-[steps.theme_light]
-friendly_name = "Light Theme"
-description = "User Selected Light Theme during Onboarding"
-data_source = "onboarding_events"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-light'
-    event_name = 'multiple_choice_button_tap' AND
-    event_category = 'onboarding' THEN ic.client_id END"""
-aggregation = "count distinct"
-
-[steps.theme_system_auto]
-friendly_name = "System Auto Theme"
-description = "User Selected System Auto Theme during Onboarding"
-data_source = "onboarding_events"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-system-default'
-    event_name = 'multiple_choice_button_tap' AND
-    event_category = 'onboarding' THEN ic.client_id END"""
 aggregation = "count distinct"
 
 

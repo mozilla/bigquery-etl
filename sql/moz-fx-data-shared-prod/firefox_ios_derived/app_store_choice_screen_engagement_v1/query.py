@@ -1,11 +1,8 @@
 """Fetch Analytics Report for Choice Screen Engagement in the App store via App Store Connect."""
 
-# import argparse
-# import csv
 import gzip
 import io
-
-# import json
+import logging
 import os
 import tempfile
 import time
@@ -26,7 +23,7 @@ from bigquery_etl.schema import Schema
 # export CONNECT_KEY_FILE_PATH=
 CONNECT_ISSUER_ID = os.environ.get("CONNECT_ISSUER_ID")
 CONNECT_KEY_ID = os.environ.get("CONNECT_KEY_ID")
-CONNECT_KEY_FILE_PATH = os.environ.get("CONNECT_KEY_FILE_PATH")
+CONNECT_KEY = os.environ.get("CONNECT_KEY")
 
 HOST = "https://api.appstoreconnect.apple.com/"
 REPORT_TITLE = "Browser Choice Screen Engagement"
@@ -36,10 +33,8 @@ SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
 SCHEMA = Schema.from_schema_file(SCHEMA_FILE).to_bigquery_schema()
 
 
-def generate_jwt_token(issuer_id, key_id, private_key_path):
-    with open(private_key_path, "r") as key_file:
-        private_key = key_file.read()
-
+def generate_jwt_token(issuer_id, key_id, private_key):
+    """Generate jtw token to be used for API authentication."""
     payload = {
         "iss": issuer_id,
         "exp": int(time.time()) + 20 * 60,  # Token valid for 20 minutes
@@ -55,6 +50,7 @@ def generate_jwt_token(issuer_id, key_id, private_key_path):
 
 
 def download_gz_file(url, target_file_path):
+    """Download and decompress a gz file."""
     with requests.get(url, stream=True) as response:
         response.raise_for_status()
         file_content = io.BytesIO()
@@ -86,6 +82,7 @@ def api_call(url, jwt_token):
 
 
 def get_paginated_data(url, jwt_token):
+    """Get data from all result pages."""
     data = []
     while True:
         result = api_call(url, jwt_token)
@@ -104,14 +101,14 @@ def fetch_app_reports(jwt_token, app_id):
 
 
 def fetch_report_instances(jwt_token, report_id):
+    """Retrieve a list of report instances from the App Store."""
     endpoint = f"v1/analyticsReportInstances/{report_id}/segments"
     response_data = api_call(f"{HOST}/{endpoint}", jwt_token)
     return response_data.get("data")
 
 
 def fetch_report_data(app_id, date, jwt_token, target_file_path):
-    """Fetche and prints the report data."""
-
+    """Fetch and prints the report data."""
     # "ONGOING" provides current data and generates reports daily, weekly and monthly.
     # assumed there is only 1 ongoing report request at any given time
     ongoing_analytics_report_request = list(
@@ -162,8 +159,6 @@ def fetch_report_data(app_id, date, jwt_token, target_file_path):
     response = requests.get(analytics_report_segments["attributes"]["url"])
     response.raise_for_status()
 
-    # target_file_path = f"/Users/kik/Downloads/{date.replace('-', '_')}_{REPORT_TITLE.lower().replace(' ', '_')}.csv"
-
     download_gz_file(
         analytics_report_segments["attributes"]["url"],
         target_file_path=target_file_path,
@@ -174,7 +169,6 @@ def fetch_report_data(app_id, date, jwt_token, target_file_path):
 
 def upload_to_bigquery(local_file_path, project, dataset, table_name, date):
     """Upload the data to bigquery."""
-
     job_config = bigquery.LoadJobConfig(
         create_disposition="CREATE_IF_NEEDED",
         write_disposition="WRITE_TRUNCATE",
@@ -215,33 +209,32 @@ def main():
         "--connect_key_id", default=CONNECT_KEY_ID, help="App Store Connect Key ID"
     )
     parser.add_argument(
-        "--connect_private_key_path",
-        default=CONNECT_KEY_FILE_PATH,
-        help="Path to the private key (.p8) file",
+        "--connect_private_key",
+        default=CONNECT_KEY,
+        help="Private key",
     )
     args = parser.parse_args()
 
     jwt_token = generate_jwt_token(
-        args.connect_issuer_id, args.connect_key_id, args.connect_private_key_path
+        args.connect_issuer_id, args.connect_key_id, args.connect_private_key
     )
 
     with tempfile.NamedTemporaryFile() as temp_file:
-        report_file, checksum = fetch_report_data(
+        report_file, _ = fetch_report_data(
             app_id=args.connect_app_id,
             date=args.date,
             jwt_token=jwt_token,
             target_file_path=temp_file.name,
         )
 
-        # TODO: check the checksum before upload?
-        print(report_file)
+        logging.info("Report file downloaded: %s" % report_file)
 
         table_name = "app_store_choice_screen_engagement_v1"
-        job_result, destination_table = upload_to_bigquery(
+        _, destination_table = upload_to_bigquery(
             temp_file.name, args.project, args.dataset, table_name, args.date
         )
 
-        print(destination_table)
+        logging.info("BigQuery table has been created: %s" % destination_table)
 
 
 if __name__ == "__main__":

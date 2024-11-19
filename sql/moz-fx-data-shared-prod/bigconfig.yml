@@ -1,0 +1,38 @@
+type: BIGCONFIG_FILE
+
+saved_metric_definitions:
+  metrics:
+    - saved_metric_id: is_not_null
+      metric_type:
+        predefined_metric: PERCENT_NULL
+      threshold:
+        type: CONSTANT
+        upper_bound: 0
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: is_unique
+      metric_type:
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        upper_bound: 0
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: freshness_fail
+      metric_name: FRESHNESS [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: volume_fail
+      metric_name: VOLUME [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_schedule:
+        named_schedule:
+          name: default

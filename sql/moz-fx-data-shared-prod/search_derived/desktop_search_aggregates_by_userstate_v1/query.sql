@@ -33,6 +33,6 @@ WHERE
   AND COALESCE(search_count_tagged_sap, 0) < 10000
   AND COALESCE(search_count_organic, 0) < 10000
 GROUP BY
-  1,
-  2,
-  3;
+  submission_date,
+  geo,
+  user_state;

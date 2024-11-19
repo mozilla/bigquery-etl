@@ -3,6 +3,7 @@
 """Search for tables with client id columns."""
 import datetime
 from collections import defaultdict
+from functools import cache
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Set
@@ -11,6 +12,7 @@ import click
 from google.cloud import bigquery
 from google.cloud import datacatalog_lineage_v1 as datacatalog_lineage
 from google.cloud.bigquery import TableReference
+from google.cloud.exceptions import NotFound
 
 from bigquery_etl.schema import Schema
 from bigquery_etl.shredder.config import (
@@ -125,10 +127,22 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
     return upstream_stable_table_map
 
 
+@cache
+def table_exists(client: bigquery.Client, table_name: str) -> bool:
+    """Return true if given project.dataset.table exists, caching results."""
+    try:
+        client.get_table(table_name)
+        return True
+    except NotFound:
+        return False
+
+
 def get_associated_deletions(
     upstream_stable_tables: Dict[str, Set[str]]
 ) -> Dict[str, Set[DeleteSource]]:
     """Get a list of associated deletion requests tables per table based on the stable tables."""
+    client = bigquery.Client()
+
     # deletion targets for stable tables defined in the shredder config
     known_stable_table_sources: Dict[str, Set[DeleteSource]] = {
         f"{target.project}.{target.dataset_id}.{target.table_id}": (
@@ -170,13 +184,21 @@ def get_associated_deletions(
                     stable_table_ref.dataset_id[: -len("_stable")]
                     in glean_channel_names
                 ):
-                    table_to_deletions[stable_table] = {
-                        DeleteSource(
-                            table=f"{stable_table_ref.dataset_id}.deletion_request_v1",
-                            field=GLEAN_CLIENT_ID,
-                            project=SHARED_PROD,
-                        )
-                    }
+                    deletion_request_table = (
+                        f"{stable_table_ref.dataset_id}.deletion_request_v1"
+                    )
+                    if table_exists(client, deletion_request_table):
+                        table_to_deletions[stable_table] = {
+                            DeleteSource(
+                                table=deletion_request_table,
+                                field=GLEAN_CLIENT_ID,
+                                project=SHARED_PROD,
+                            )
+                        }
+                    else:
+                        print(f"No deletion requests for {stable_table_ref.dataset_id}")
+                        table_to_deletions[stable_table] = set()
+
                     if (
                         stable_table_ref.dataset_id
                         in datasets_with_additional_deletion_requests

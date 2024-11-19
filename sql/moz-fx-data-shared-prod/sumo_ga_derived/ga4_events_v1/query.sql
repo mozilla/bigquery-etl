@@ -1,6 +1,35 @@
 SELECT
-  ga.*,
-  @submission_date AS submission_date
+  ga.event_date,
+  ga.event_timestamp,
+  ga.event_name,
+  ga.event_params,
+  ga.event_previous_timestamp,
+  ga.event_value_in_usd,
+  ga.event_bundle_sequence_id,
+  ga.event_server_timestamp_offset,
+  ga.user_id,
+  ga.user_pseudo_id,
+  ga.privacy_info,
+  ga.user_properties,
+  ga.user_first_touch_timestamp,
+  ga.user_ltv,
+  ga.device,
+  ga.geo,
+  ga.app_info,
+  ga.traffic_source,
+  ga.stream_id,
+  ga.platform,
+  ga.event_dimensions,
+  ga.ecommerce,
+  ga.items,
+  ga.collected_traffic_source,
+  ga.is_active_user,
+  ga.batch_event_index,
+  ga.batch_page_id,
+  ga.batch_ordering_id,
+  ga.session_traffic_source_last_click,
+  @submission_date AS submission_date,
+  ga.publisher
 FROM
   `moz-fx-data-marketing-prod.analytics_314403930.events_*` ga
 WHERE

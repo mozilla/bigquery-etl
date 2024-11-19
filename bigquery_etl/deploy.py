@@ -9,7 +9,7 @@ from google.cloud.exceptions import NotFound
 
 from .config import ConfigLoader
 from .dryrun import DryRun, get_id_token
-from .metadata.parse_metadata import Metadata
+from .metadata.parse_metadata import METADATA_FILE, Metadata
 from .metadata.publish_metadata import attach_metadata
 from .schema import SCHEMA_FILE, Schema
 
@@ -41,7 +41,11 @@ def deploy_table(
         raise SkippedDeployException(f"Dry run skipped for {query_file}.")
 
     try:
-        metadata = Metadata.of_query_file(query_file)
+        if query_file.name == METADATA_FILE:
+            metadata = Metadata.from_file(query_file)
+        else:
+            metadata = Metadata.of_query_file(query_file)
+
         if (
             metadata.scheduling
             and "destination_table" in metadata.scheduling

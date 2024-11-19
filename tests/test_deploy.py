@@ -142,3 +142,23 @@ class TestDeploy:
         deploy.deploy_table(query_file=query_path / "query.sql", force=True)
 
         client.create_table.assert_called_once()
+
+    @patch("google.cloud.bigquery.Client")
+    def test_deploy_metadata(self, mock_client, tmp_path):
+        query_path = (
+            tmp_path / "sql" / "moz-fx-data-shared-prod" / "test" / "test_query_v1"
+        )
+        query_path.mkdir(parents=True)
+        (query_path / "schema.yaml").write_text(
+            yaml.dump({"fields": [{"name": "f0_", "type": "INTEGER"}]})
+        )
+        (query_path / "metadata.yaml").write_text(yaml.dump({}))
+        client = mock_client.return_value
+        client.get_table.side_effect = NotFound("table not found")
+
+        deploy.deploy_table(
+            query_file=query_path / "metadata.yaml",
+        )
+
+        client.create_table.assert_called_once()
+        assert client.update_table.call_count == 0

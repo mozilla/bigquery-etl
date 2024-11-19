@@ -2189,7 +2189,11 @@ def deploy(
         name, sql_dir, project_id, ["query.*", "script.sql"]
     )
 
-    if not query_files:
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["metadata.yaml"]
+    )
+
+    if not query_files and not metadata_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
@@ -2199,11 +2203,21 @@ def deploy(
         query_files = paths_matching_name_pattern(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
         )
-        if not query_files:
+        metadata_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["metadata.yaml"]
+        )
+        if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
+
+    query_file_paths = [query_file.parent for query_file in query_files]
+    metadata_files_without_query_file = [
+        metadata_file
+        for metadata_file in metadata_files
+        if metadata_file.parent not in query_file_paths
+    ]
 
     _deploy = partial(
         deploy_table,
@@ -2220,23 +2234,23 @@ def deploy(
     failed_deploys, skipped_deploys = [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
-            executor.submit(_deploy, query_file): query_file
-            for query_file in query_files
-            if str(query_file)
+            executor.submit(_deploy, artifact_file): artifact_file
+            for artifact_file in query_files + metadata_files_without_query_file
+            if str(artifact_file)
             not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
         }
         for future in futures.as_completed(future_to_query):
-            query_file = future_to_query[future]
+            artifact_file = future_to_query[future]
             try:
                 future.result()
             except SkippedDeployException as e:
-                print(f"Skipped deploy for {query_file}: ({e})")
-                skipped_deploys.append(query_file)
+                print(f"Skipped deploy for {artifact_file}: ({e})")
+                skipped_deploys.append(artifact_file)
             except FailedDeployException as e:
-                print(f"Failed deploy for {query_file}: ({e})")
-                failed_deploys.append(query_file)
+                print(f"Failed deploy for {artifact_file}: ({e})")
+                failed_deploys.append(artifact_file)
             else:
-                print(f"{query_file} successfully deployed!")
+                print(f"{artifact_file} successfully deployed!")
 
     if not skip_external_data:
         failed_external_deploys = _deploy_external_data(

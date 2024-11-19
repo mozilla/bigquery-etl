@@ -2,6 +2,7 @@
 
 import csv
 import json
+import os
 import tempfile
 from argparse import ArgumentParser
 from time import sleep
@@ -23,6 +24,8 @@ CSV_FIELDS = [
     "job_assigned_at",
     "typed_metadata",
 ]
+
+cinder_bearer_token = os.environ.get("CINDER_TOKEN")
 
 
 def post_response(url, headers, data):
@@ -152,7 +155,6 @@ def main():
     parser.add_argument("--date", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="addon_moderations_derived")
-    parser.add_argument("--cinder_bearer_token", required=True)
 
     args = parser.parse_args()
 
@@ -161,7 +163,7 @@ def main():
     table_name = "cinder_decisions_raw_v1"
 
     date = args.date
-    bearer_token = args.cinder_bearer_token
+    bearer_token = cinder_bearer_token
 
     data = []
 

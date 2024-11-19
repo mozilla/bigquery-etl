@@ -4,6 +4,7 @@ from airflow import DAG
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
+from airflow.providers.cncf.kubernetes.secret import Secret
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
@@ -30,6 +31,13 @@ kik@mozilla.com
 * impact/tier_2
 * repo/bigquery-etl
 """
+
+addon_moderations_derived__cinder_decisions_raw__v1_bqetl_addons__cinder_bearer_token = Secret(
+    deploy_type="env",
+    deploy_target="CINDER_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_addons__cinder_bearer_token",
+)
 
 
 default_args = {
@@ -96,18 +104,16 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/addon_moderations_derived/cinder_decisions_raw_v1/query.py",
         ]
-        + [
-            "--date",
-            "{{ ds }}",
-            "--cinder_bearer_token",
-            "{{ var.value.CINDER_TOKEN }}",
-        ],
+        + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
         email=[
             "kik@mozilla.com",
             "mhirose@mozilla.com",
             "telemetry-alerts@mozilla.com",
+        ],
+        secrets=[
+            addon_moderations_derived__cinder_decisions_raw__v1_bqetl_addons__cinder_bearer_token,
         ],
     )
 

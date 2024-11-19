@@ -2636,6 +2636,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_https_record_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -3072,6 +3082,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: formautofill_addresses_autofill_profiles_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: timestamps_first_paint
+      type: INTEGER
+      mode: NULLABLE
+    - name: timestamps_first_paint_two
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution

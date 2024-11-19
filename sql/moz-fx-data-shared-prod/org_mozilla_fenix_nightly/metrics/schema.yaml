@@ -2505,7 +2505,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -5207,6 +5208,21 @@ fields:
         \  \"abort\"   - the portal login was aborted (e.g. loss of network)\n  \"\
         dismiss\" - the user dismissed the banner\nThis metric was generated to correspond\
         \ to the Legacy Telemetry scalar networking.captive_portal_banner_display_time.\n"
+    - name: networking_https_record_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Gather the outcome of checking if a HTTPS record can be used:
+        - "invalid" - "succeeded" - "unmatched_cname" - "all_excluded" - "no_default_alpn"
+        - "others"
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -17328,6 +17344,23 @@ fields:
       mode: NULLABLE
       description: 'Count at store time how many address autofill profiles user has.
         This metric was generated to correspond to the Legacy Telemetry scalar formautofill.addresses.autofill_profiles_count.
+
+        '
+    - name: timestamps_first_paint
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the timestamp of the first content window paint, in milliseconds
+        since process start. This metric was generated to correspond to the Legacy
+        Telemetry scalar timestamps.first_paint.
+
+        '
+    - name: timestamps_first_paint_two
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the timestamp of the first main window paint, in milliseconds
+        since process start. Intended to replace first_paint since first_paint is
+        broken. This metric was generated to correspond to the Legacy Telemetry scalar
+        timestamps.first_paint_two.
 
         '
   - name: memory_distribution

@@ -532,7 +532,8 @@ SELECT
       metrics.labeled_counter.devtools_tooltip_shown,
       metrics.labeled_counter.networking_http_3_quic_frame_count,
       metrics.labeled_counter.network_sso_entra_success,
-      metrics.labeled_counter.networking_captive_portal_banner_display_time
+      metrics.labeled_counter.networking_captive_portal_banner_display_time,
+      metrics.labeled_counter.networking_https_record_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -573,7 +574,9 @@ SELECT
       metrics.quantity.networking_loading_certs_task,
       metrics.quantity.networking_nss_initialization,
       metrics.quantity.bounce_tracking_protection_mode,
-      metrics.quantity.formautofill_addresses_autofill_profiles_count
+      metrics.quantity.formautofill_addresses_autofill_profiles_count,
+      metrics.quantity.timestamps_first_paint,
+      metrics.quantity.timestamps_first_paint_two
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1531,7 +1534,8 @@ SELECT
       metrics.labeled_counter.devtools_tooltip_shown,
       metrics.labeled_counter.networking_http_3_quic_frame_count,
       metrics.labeled_counter.network_sso_entra_success,
-      metrics.labeled_counter.networking_captive_portal_banner_display_time
+      metrics.labeled_counter.networking_captive_portal_banner_display_time,
+      metrics.labeled_counter.networking_https_record_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1572,7 +1576,9 @@ SELECT
       metrics.quantity.networking_loading_certs_task,
       metrics.quantity.networking_nss_initialization,
       metrics.quantity.bounce_tracking_protection_mode,
-      metrics.quantity.formautofill_addresses_autofill_profiles_count
+      metrics.quantity.formautofill_addresses_autofill_profiles_count,
+      metrics.quantity.timestamps_first_paint,
+      metrics.quantity.timestamps_first_paint_two
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -2548,7 +2554,8 @@ SELECT
       metrics.labeled_counter.devtools_tooltip_shown,
       metrics.labeled_counter.networking_http_3_quic_frame_count,
       metrics.labeled_counter.network_sso_entra_success,
-      metrics.labeled_counter.networking_captive_portal_banner_display_time
+      metrics.labeled_counter.networking_captive_portal_banner_display_time,
+      metrics.labeled_counter.networking_https_record_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2589,7 +2596,9 @@ SELECT
       metrics.quantity.networking_loading_certs_task,
       metrics.quantity.networking_nss_initialization,
       metrics.quantity.bounce_tracking_protection_mode,
-      metrics.quantity.formautofill_addresses_autofill_profiles_count
+      metrics.quantity.formautofill_addresses_autofill_profiles_count,
+      metrics.quantity.timestamps_first_paint,
+      metrics.quantity.timestamps_first_paint_two
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3574,7 +3583,8 @@ SELECT
       metrics.labeled_counter.devtools_tooltip_shown,
       metrics.labeled_counter.networking_http_3_quic_frame_count,
       metrics.labeled_counter.network_sso_entra_success,
-      metrics.labeled_counter.networking_captive_portal_banner_display_time
+      metrics.labeled_counter.networking_captive_portal_banner_display_time,
+      metrics.labeled_counter.networking_https_record_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3615,7 +3625,9 @@ SELECT
       metrics.quantity.networking_loading_certs_task,
       metrics.quantity.networking_nss_initialization,
       metrics.quantity.bounce_tracking_protection_mode,
-      metrics.quantity.formautofill_addresses_autofill_profiles_count
+      metrics.quantity.formautofill_addresses_autofill_profiles_count,
+      metrics.quantity.timestamps_first_paint,
+      metrics.quantity.timestamps_first_paint_two
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -4582,7 +4594,8 @@ SELECT
       metrics.labeled_counter.devtools_tooltip_shown,
       metrics.labeled_counter.networking_http_3_quic_frame_count,
       metrics.labeled_counter.network_sso_entra_success,
-      metrics.labeled_counter.networking_captive_portal_banner_display_time
+      metrics.labeled_counter.networking_captive_portal_banner_display_time,
+      metrics.labeled_counter.networking_https_record_state
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4623,7 +4636,9 @@ SELECT
       metrics.quantity.networking_loading_certs_task,
       metrics.quantity.networking_nss_initialization,
       metrics.quantity.bounce_tracking_protection_mode,
-      metrics.quantity.formautofill_addresses_autofill_profiles_count
+      metrics.quantity.formautofill_addresses_autofill_profiles_count,
+      metrics.quantity.timestamps_first_paint,
+      metrics.quantity.timestamps_first_paint_two
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,

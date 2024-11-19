@@ -7130,6 +7130,21 @@ fields:
         Legacy Telemetry scalar quickaction.picked.
 
         '
+    - name: networking_https_record_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Gather the outcome of checking if a HTTPS record can be used:
+        - "invalid" - "succeeded" - "unmatched_cname" - "all_excluded" - "no_default_alpn"
+        - "others"
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -16131,6 +16146,23 @@ fields:
         are painted. Only records if about:home is set as the default homepage, and
         if sessions are not being restored by default. This metric was generated to
         correspond to the Legacy Telemetry scalar timestamps.about_home_topsites_first_paint.
+
+        '
+    - name: timestamps_first_paint
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the timestamp of the first content window paint, in milliseconds
+        since process start. This metric was generated to correspond to the Legacy
+        Telemetry scalar timestamps.first_paint.
+
+        '
+    - name: timestamps_first_paint_two
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the timestamp of the first main window paint, in milliseconds
+        since process start. Intended to replace first_paint since first_paint is
+        broken. This metric was generated to correspond to the Legacy Telemetry scalar
+        timestamps.first_paint_two.
 
         '
   - name: labeled_boolean

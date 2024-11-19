@@ -9,6 +9,7 @@ labels:
   dag: bqetl_addons
 scheduling:
   dag_name: bqetl_addons
+  date_partition_parameter: date
   arguments:
   - --date
   - '{{ ds }}'

@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
+  description: Submission Date
 - name: first_seen_date
   type: DATE
   mode: NULLABLE

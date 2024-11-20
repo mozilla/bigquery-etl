@@ -135,7 +135,7 @@ def upload_to_bigquery(csv_data, project, dataset, table_name, date):
                     bigquery.SchemaField("entity", "STRING"),
                     bigquery.SchemaField("entity_slug", "STRING"),
                     bigquery.SchemaField("entity_id", "STRING"),
-                    bigquery.SchemaField("created_at", "DATE"),
+                    bigquery.SchemaField("created_at", "STRING"),
                     bigquery.SchemaField("decision_type", "STRING"),
                     bigquery.SchemaField("job_assigned_at", "STRING"),
                     bigquery.SchemaField("typed_metadata", "STRING"),

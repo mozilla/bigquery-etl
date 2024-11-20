@@ -2219,8 +2219,11 @@ def deploy(
         metadata_file
         for metadata_file in metadata_files
         if metadata_file.parent not in query_file_paths
-        and not (metadata_file.parent / VIEW_FILE).exists()
-        and not (metadata_file.parent / MATERIALIZED_VIEW).exists()
+        and not any(
+            file.suffix == ".sql" or file.name == "query.py"
+            for file in metadata_file.parent.iterdir()
+            if file.is_file()
+        )
     ]
 
     _deploy = partial(

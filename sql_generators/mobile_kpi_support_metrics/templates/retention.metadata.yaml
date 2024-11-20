@@ -13,6 +13,7 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_mobile_kpi_metrics
   depends_on_past: false

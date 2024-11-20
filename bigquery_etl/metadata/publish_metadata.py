@@ -61,10 +61,13 @@ def publish_metadata(client, project, dataset, table, metadata):
         print(e)
 
 
-def attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
+def attach_metadata(artifact_file_path: Path, table: bigquery.Table) -> None:
     """Add metadata from query file's metadata.yaml to table object."""
     try:
-        metadata = Metadata.of_query_file(query_file_path)
+        if artifact_file_path.is_file() and artifact_file_path.name == METADATA_FILE:
+            metadata = Metadata.from_file(artifact_file_path)
+        else:
+            metadata = Metadata.of_query_file(artifact_file_path)
     except FileNotFoundError:
         return
 

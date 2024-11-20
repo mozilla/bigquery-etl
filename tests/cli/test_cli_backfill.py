@@ -2292,7 +2292,7 @@ class TestBackfill:
             assert not mock_from_query_file.called  # schema exists
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
@@ -2385,7 +2385,7 @@ class TestBackfill:
             )
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
@@ -2482,7 +2482,7 @@ class TestBackfill:
             assert not mock_from_query_file.called  # schema exists
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
@@ -2579,7 +2579,7 @@ class TestBackfill:
             )
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )

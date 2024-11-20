@@ -2,27 +2,36 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: Submission Date
 - mode: NULLABLE
   name: usage
   type: STRING
+  description: Usage
 - mode: NULLABLE
   name: id_bucket
   type: INTEGER
+  description: ID Bucket
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Country
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Locale
 - mode: NULLABLE
   name: os
   type: STRING
+  description: Operating System
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: Channel
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN
+  description: Attributed
 - mode: NULLABLE
   name: new_profiles
   type: INTEGER
+  description: New Profiles

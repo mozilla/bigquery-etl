@@ -8,6 +8,7 @@ labels:
   application: nondesktop
   schedule: daily
   incremental: true
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_nondesktop
 bigquery:

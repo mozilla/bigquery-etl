@@ -2,36 +2,48 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: Submission Date
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: product
   type: STRING
   mode: NULLABLE
+  description: Product
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
+  description: Normalized Engine
 - name: clients
   type: INTEGER
   mode: NULLABLE
+  description: Clients
 - name: search_clients
   type: INTEGER
   mode: NULLABLE
+  description: Search Clients
 - name: sap
   type: INTEGER
   mode: NULLABLE
+  description: SAP
 - name: tagged_sap
   type: INTEGER
   mode: NULLABLE
+  description: Tagged SAP
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
+  description: Tagged Follow On
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
+  description: Ad Click
 - name: search_with_ads
   type: INTEGER
   mode: NULLABLE
+  description: Search with Ads
 - name: organic
   type: INTEGER
   mode: NULLABLE
+  description: Organic

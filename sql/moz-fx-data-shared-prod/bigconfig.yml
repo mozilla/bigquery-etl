@@ -36,3 +36,25 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
+    - saved_metric_id: is_valid_channel
+      metric_type:
+        predefined_metric: PERCENT_VALUE_IN_LIST
+      parameters:
+        - key: list
+          string_value: "release,beta,nightly"
+      threshold:
+        type: CONSTANT
+        upper_bound: 100
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: is_2_char_len
+      metric_type:
+        predefined_metric: STRING_LENGTH_MIN
+      threshold:
+        type: CONSTANT
+        lower_bound: 2
+        upper_bound: 2
+      metric_schedule:
+        named_schedule:
+          name: default

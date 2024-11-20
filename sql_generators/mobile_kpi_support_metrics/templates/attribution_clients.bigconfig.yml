@@ -1,9 +1,16 @@
 type: BIGCONFIG_FILE
 
 tag_deployments:
-  - deployments:
-    - column_selectors:
-      - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
-      metrics:
-        - saved_metric_id: is_unique
-        - saved_metric_id: is_not_null
+  - collection:
+      name: {{ bigeye_collection }}
+    deployments:
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
+        metrics:
+          - saved_metric_id: is_unique
+          - saved_metric_id: is_not_null
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
+          - saved_metric_id: freshness_fail
+          - saved_metric_id: volume_fail

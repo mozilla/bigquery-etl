@@ -204,6 +204,42 @@ with DAG(
         )
     )
 
+    wait_for_org_mozilla_ios_fennec_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_fennec_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefox_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefox_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     accounts_frontend_derived__account_pref_delete_funnel__v1 = bigquery_etl_query(
         task_id="accounts_frontend_derived__account_pref_delete_funnel__v1",
         destination_table="account_pref_delete_funnel_v1",
@@ -388,9 +424,24 @@ with DAG(
         )
     )
 
-    firefox_ios_derived__ios_onboarding__v1 = bigquery_etl_query(
-        task_id="firefox_ios_derived__ios_onboarding__v1",
-        destination_table="ios_onboarding_v1",
+    firefox_ios_derived__ios_onboarding_main__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__ios_onboarding_main__v1",
+        destination_table="ios_onboarding_main_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rzhao@mozilla.org",
+        email=[
+            "ascholtz@mozilla.com",
+            "rzhao@mozilla.org",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__ios_onboarding_multiple_choice__v1",
+        destination_table="ios_onboarding_multiple_choice_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="rzhao@mozilla.org",
@@ -504,21 +555,51 @@ with DAG(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
 
-    firefox_ios_derived__ios_onboarding__v1.set_upstream(
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
     )
 
-    firefox_ios_derived__ios_onboarding__v1.set_upstream(
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
-    firefox_ios_derived__ios_onboarding__v1.set_upstream(wait_for_copy_deduplicate_all)
-
-    firefox_ios_derived__ios_onboarding__v1.set_upstream(
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
         wait_for_firefox_ios_derived__funnel_retention_clients_week_2__v1
     )
 
-    firefox_ios_derived__ios_onboarding__v1.set_upstream(
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
+        wait_for_firefox_ios_derived__funnel_retention_clients_week_4__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
+        wait_for_org_mozilla_ios_fennec_derived__events_stream__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
+        wait_for_org_mozilla_ios_firefox_derived__events_stream__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
+        wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
+        wait_for_firefox_ios_derived__funnel_retention_clients_week_2__v1
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
         wait_for_firefox_ios_derived__funnel_retention_clients_week_4__v1
     )
 

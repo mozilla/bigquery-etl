@@ -11089,6 +11089,26 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page TypedArray is Type III subclassed
+    - name: use_counter2_js_ishtmldda_fuse_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has used the document.all getter (popping the
+        EmulatesUndefined Fuse)
+    - name: use_counter2_js_ishtmldda_fuse_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has used the document.all getter (popping the EmulatesUndefined
+        Fuse)
+    - name: use_counter2_js_optimizegetiterator_fuse_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has modified any builtins such that the GetIterator
+        fuse is popped
+    - name: use_counter2_js_optimizegetiterator_fuse_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has modified any builtins such that the GetIterator
+        fuse is popped
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22030,6 +22050,26 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page TypedArray is Type III subclassed
+        - name: use_counter2_js_ishtmldda_fuse_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has used the document.all getter (popping
+            the EmulatesUndefined Fuse)
+        - name: use_counter2_js_ishtmldda_fuse_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has used the document.all getter (popping the
+            EmulatesUndefined Fuse)
+        - name: use_counter2_js_optimizegetiterator_fuse_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has modified any builtins such that the
+            GetIterator fuse is popped
+        - name: use_counter2_js_optimizegetiterator_fuse_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has modified any builtins such that the GetIterator
+            fuse is popped
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

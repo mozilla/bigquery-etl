@@ -7332,6 +7332,18 @@ fields:
     - name: use_counter_css_page_css_position_try
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_is_htmldda_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_optimize_get_iterator_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_is_htmldda_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_optimize_get_iterator_fuse
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -19359,6 +19359,42 @@ fields:
         is between 0 and 100.
 
         '
+  - name: labeled_quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_searchinit_engine_invalid_webextension
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the WebExtension ID of a search engine where the WebExtension
+        is not installed (= 1), disabled (= 2), search engine no longer specified
+        (= 4), a different name (= 5), where the submission URL is different between
+        the search engine and the WebExtension (= 6). The value ''3'' has been replaced
+        by ''6'' to distinguish newer entries. This metric was generated to correspond
+        to the Legacy Telemetry scalar browser.searchinit.engine_invalid_webextension.
+
+        '
+    - name: normandy_recipe_freshness
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'For each recipe ID seen by the Normandy client, its last_modified.
+        This metric was generated to correspond to the Legacy Telemetry scalar normandy.recipe_freshness.
+
+        '
   - name: url
     type: RECORD
     mode: NULLABLE

@@ -257,6 +257,12 @@ fields:
       description: 'PDF viewer support reported by the navigator
 
         '
+    - name: characteristics_using_accelerated_canvas
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user''s device is using accelerated canvas
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

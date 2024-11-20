@@ -188,6 +188,9 @@ fields:
     - name: characteristics_video_dynamic_range
       type: BOOLEAN
       mode: NULLABLE
+    - name: characteristics_using_accelerated_canvas
+      type: BOOLEAN
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

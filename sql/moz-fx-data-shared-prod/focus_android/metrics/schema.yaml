@@ -11513,6 +11513,20 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+  - name: labeled_quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: normandy_recipe_freshness
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -14266,6 +14266,20 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+  - name: labeled_quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: normandy_recipe_freshness
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: url
     type: RECORD
     mode: NULLABLE

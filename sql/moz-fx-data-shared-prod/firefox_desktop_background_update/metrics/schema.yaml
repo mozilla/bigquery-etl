@@ -14894,6 +14894,24 @@ fields:
         is between 0 and 100.
 
         '
+  - name: labeled_quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: normandy_recipe_freshness
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'For each recipe ID seen by the Normandy client, its last_modified.
+        This metric was generated to correspond to the Legacy Telemetry scalar normandy.recipe_freshness.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

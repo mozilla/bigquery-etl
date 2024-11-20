@@ -29,7 +29,8 @@ SELECT
       metrics.boolean.characteristics_prefs_privacy_globalprivacycontrol_enabled,
       metrics.boolean.characteristics_prefs_zoom_text_only,
       metrics.boolean.characteristics_use_document_colors,
-      metrics.boolean.characteristics_video_dynamic_range
+      metrics.boolean.characteristics_video_dynamic_range,
+      metrics.boolean.characteristics_using_accelerated_canvas
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -290,7 +291,8 @@ SELECT
       metrics.boolean.characteristics_prefs_privacy_globalprivacycontrol_enabled,
       metrics.boolean.characteristics_prefs_zoom_text_only,
       metrics.boolean.characteristics_use_document_colors,
-      metrics.boolean.characteristics_video_dynamic_range
+      metrics.boolean.characteristics_video_dynamic_range,
+      metrics.boolean.characteristics_using_accelerated_canvas
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -551,7 +553,8 @@ SELECT
       metrics.boolean.characteristics_prefs_privacy_globalprivacycontrol_enabled,
       metrics.boolean.characteristics_prefs_zoom_text_only,
       metrics.boolean.characteristics_use_document_colors,
-      metrics.boolean.characteristics_video_dynamic_range
+      metrics.boolean.characteristics_video_dynamic_range,
+      metrics.boolean.characteristics_using_accelerated_canvas
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -812,7 +815,8 @@ SELECT
       metrics.boolean.characteristics_prefs_privacy_globalprivacycontrol_enabled,
       metrics.boolean.characteristics_prefs_zoom_text_only,
       metrics.boolean.characteristics_use_document_colors,
-      metrics.boolean.characteristics_video_dynamic_range
+      metrics.boolean.characteristics_video_dynamic_range,
+      metrics.boolean.characteristics_using_accelerated_canvas
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -1073,7 +1077,8 @@ SELECT
       metrics.boolean.characteristics_prefs_privacy_globalprivacycontrol_enabled,
       metrics.boolean.characteristics_prefs_zoom_text_only,
       metrics.boolean.characteristics_use_document_colors,
-      metrics.boolean.characteristics_video_dynamic_range
+      metrics.boolean.characteristics_video_dynamic_range,
+      metrics.boolean.characteristics_using_accelerated_canvas
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

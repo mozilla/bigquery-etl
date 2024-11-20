@@ -2391,7 +2391,11 @@ SELECT
       metrics.counter.use_counter_css_doc_css_view_transition_name,
       metrics.counter.use_counter_css_page_css_view_transition_name,
       metrics.counter.use_counter_css_doc_css_position_try,
-      metrics.counter.use_counter_css_page_css_position_try
+      metrics.counter.use_counter_css_page_css_position_try,
+      metrics.counter.use_counter_doc_js_is_htmldda_fuse,
+      metrics.counter.use_counter_doc_js_optimize_get_iterator_fuse,
+      metrics.counter.use_counter_page_js_is_htmldda_fuse,
+      metrics.counter.use_counter_page_js_optimize_get_iterator_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -4804,7 +4808,11 @@ SELECT
       metrics.counter.use_counter_css_doc_css_view_transition_name,
       metrics.counter.use_counter_css_page_css_view_transition_name,
       metrics.counter.use_counter_css_doc_css_position_try,
-      metrics.counter.use_counter_css_page_css_position_try
+      metrics.counter.use_counter_css_page_css_position_try,
+      metrics.counter.use_counter_doc_js_is_htmldda_fuse,
+      metrics.counter.use_counter_doc_js_optimize_get_iterator_fuse,
+      metrics.counter.use_counter_page_js_is_htmldda_fuse,
+      metrics.counter.use_counter_page_js_optimize_get_iterator_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7217,7 +7225,11 @@ SELECT
       metrics.counter.use_counter_css_doc_css_view_transition_name,
       metrics.counter.use_counter_css_page_css_view_transition_name,
       metrics.counter.use_counter_css_doc_css_position_try,
-      metrics.counter.use_counter_css_page_css_position_try
+      metrics.counter.use_counter_css_page_css_position_try,
+      metrics.counter.use_counter_doc_js_is_htmldda_fuse,
+      metrics.counter.use_counter_doc_js_optimize_get_iterator_fuse,
+      metrics.counter.use_counter_page_js_is_htmldda_fuse,
+      metrics.counter.use_counter_page_js_optimize_get_iterator_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

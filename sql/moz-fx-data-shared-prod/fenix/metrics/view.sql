@@ -989,6 +989,7 @@ SELECT
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
     ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -1991,6 +1992,7 @@ SELECT
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
     ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -3011,6 +3013,7 @@ SELECT
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
     ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -4040,6 +4043,7 @@ SELECT
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
     ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -5051,6 +5055,7 @@ SELECT
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
     ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,

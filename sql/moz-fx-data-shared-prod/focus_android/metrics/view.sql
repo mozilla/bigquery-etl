@@ -767,7 +767,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
-    ) AS `labeled_custom_distribution`
+    ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -1547,7 +1548,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
-    ) AS `labeled_custom_distribution`
+    ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -2327,7 +2329,8 @@ SELECT
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
       metrics.labeled_custom_distribution.quotamanager_initialize_repository_number_of_iterations,
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size
-    ) AS `labeled_custom_distribution`
+    ) AS `labeled_custom_distribution`,
+    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

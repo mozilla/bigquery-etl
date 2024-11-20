@@ -1,5 +1,5 @@
 fields:
-- name: date
+- name: as_of_date
   type: DATE
   mode: NULLABLE
 - name: table_name

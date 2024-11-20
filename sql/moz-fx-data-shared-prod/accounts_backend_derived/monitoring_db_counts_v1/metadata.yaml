@@ -3,8 +3,6 @@ description: |-
   Simple aggregation of counts of records in the FxA DB tables.
   Enables to identify trends within accounts data. E.g. "How many
   inactive accounts are there?"
-  Note: because its source tables are overwritten daily, query used to
-  populate this table is not idempotent so this table should not be backfilled.
 owners:
 - wclouser@mozilla.com
 labels:
@@ -12,9 +10,11 @@ labels:
   owner1: wclouser@mozilla.com
 scheduling:
   dag_name: bqetl_accounts_derived
+  parameters:
+  - "as_of_date:DATE:{{ ds }}"
 bigquery:
   time_partitioning:
     type: day
-    field: date
+    field: as_of_date
     require_partition_filter: false
     expiration_days: null

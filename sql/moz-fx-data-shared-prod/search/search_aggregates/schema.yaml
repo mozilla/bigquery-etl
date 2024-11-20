@@ -5,90 +5,120 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: Submission Date
 - name: addon_version
   type: STRING
   mode: NULLABLE
+  description: Add-On Version
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: App Version
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: Distribution ID
 - name: engine
   type: STRING
   mode: NULLABLE
+  description: Search Engine
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Locale
 - name: search_cohort
   type: STRING
   mode: NULLABLE
+  description: Search Cohort
 - name: source
   type: STRING
   mode: NULLABLE
+  description: Source
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
+  description: Default Search Engine
 - name: default_private_search_engine
   type: STRING
   mode: NULLABLE
+  description: Default Private Search Engine
 - name: os
   type: STRING
   mode: NULLABLE
+  description: Operating System
 - name: os_version
   type: STRING
   mode: NULLABLE
+  description: Operating System Version
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Default Browser
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: Channel
 - name: client_count
   type: INTEGER
   mode: NULLABLE
+  description: Client Count
 - name: organic
   type: INTEGER
   mode: NULLABLE
+  description: Number of Organic Searches
 - name: tagged_sap
   type: INTEGER
   mode: NULLABLE
+  description: Tagged SAP
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
+  description: Tagged Follow On
 - name: sap
   type: INTEGER
   mode: NULLABLE
+  description: SAP
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
+  description: Ad Click
 - name: ad_click_organic
   type: INTEGER
   mode: NULLABLE
+  description: Ad Click Organic
 - name: search_with_ads
   type: INTEGER
   mode: NULLABLE
+  description: Number of Searches with Ads
 - name: search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
+  description: Number of Organic Searches with Ads
 - name: unknown
   type: INTEGER
   mode: NULLABLE
+  description: Unknown
 - name: policies_is_enterprise
   type: BOOLEAN
   mode: NULLABLE
+  description: Policies Is Enterprise
 - name: normalized_default_search_engine
   type: STRING
   mode: NULLABLE
+  description: Normalized Default Search Engine
 - name: is_sap_monetizable
   type: BOOLEAN
   mode: NULLABLE
+  description: Is SAP Monetizable
 - name: is_acer_cohort
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Acer Cohort
 - name: normalized_engine
   type: STRING
   mode: NULLABLE
+  description: Normalized Search Engine

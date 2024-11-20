@@ -10,6 +10,7 @@ labels:
   incremental: true
   schedule: daily
   change_controlled: true
+  shredder_mitigation: true
   dag: bqetl_search_dashboard
 scheduling:
   dag_name: bqetl_search_dashboard

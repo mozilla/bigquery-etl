@@ -13,6 +13,7 @@ labels:
   dag: bqetl_search_dashboard
   owner1: cmorales
   owner2: xluo
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false

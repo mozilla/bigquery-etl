@@ -6,6 +6,7 @@ owners:
 - cmorales@mozilla.com
 labels:
   schedule: daily
+  shredder_mitigation: true
   dag: bqetl_mobile_search
   owner1: akomar
   owner2: cmorales

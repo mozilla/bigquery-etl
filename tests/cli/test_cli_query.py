@@ -870,3 +870,51 @@ class TestQuery:
             )
             mock_get_id_token.assert_called_once()
             mock_get_credentials.assert_called_once()
+
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_prevent_deploy_for_views(
+        self, mock_deploy_table, mock_get_id_token, mock_get_credentials, runner
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/view.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write(
+                    """
+                fields:
+                - name: x
+                  type: INTEGER
+                  mode: NULLABLE
+                """
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(deploy, ["telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            mock_deploy_table.assert_not_called()

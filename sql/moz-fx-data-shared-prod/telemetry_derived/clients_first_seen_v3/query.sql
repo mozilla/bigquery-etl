@@ -11,7 +11,7 @@ WITH error_check AS (
       0
     ) AS result
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
 ),
 new_profile_ping_agg AS (
   SELECT

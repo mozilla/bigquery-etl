@@ -44,7 +44,7 @@ WHERE
   normalized_app_name IN ('Fenix', 'Fennec', 'Firefox Preview', 'Focus')
   AND submission_date = @submission_date
 GROUP BY
-  1,
-  2,
-  3,
-  4
+  submission_date,
+  country,
+  product,
+  normalized_engine

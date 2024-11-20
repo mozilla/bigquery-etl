@@ -3,18 +3,23 @@ fields:
   - name: submission_date
     type: DATE
     mode: NULLABLE
+    description: Submission Date
   - name: normalized_country_code
     type: STRING
     mode: NULLABLE
+    description: Normalized Country Code
   - name: normalized_channel
     type: STRING
     mode: NULLABLE
+    description: Normalized Channel
   - name: firefox_suggest_enabled
     type: BOOLEAN
     mode: NULLABLE
+    description: Firefox Suggest Enabled
   - name: sponsored_suggestions_enabled
     type: BOOLEAN
     mode: NULLABLE
+    description: Sponsored Suggestions Enabled
   - name: selected_position
     type: INTEGER
     mode: NULLABLE

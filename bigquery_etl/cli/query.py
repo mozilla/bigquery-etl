@@ -79,6 +79,8 @@ DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 10
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
+VIEW_FILE = "view.sql"
+MATERIALIZED_VIEW = "materialized_view.sql"
 
 
 @click.group(help="Commands for managing queries.")
@@ -2217,6 +2219,8 @@ def deploy(
         metadata_file
         for metadata_file in metadata_files
         if metadata_file.parent not in query_file_paths
+        and not (metadata_file.parent / VIEW_FILE).exists()
+        and not (metadata_file.parent / MATERIALIZED_VIEW).exists()
     ]
 
     _deploy = partial(

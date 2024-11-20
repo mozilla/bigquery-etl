@@ -36,7 +36,7 @@ class TestDeploy:
         client.get_table.side_effect = NotFound("table not found")
 
         deploy.deploy_table(
-            query_file=query_path / "query.sql",
+            artifact_file=query_path / "query.sql",
         )
 
         client.create_table.assert_called_once()
@@ -61,7 +61,7 @@ class TestDeploy:
         with pytest.raises(
             deploy.FailedDeployException, match="Unable to create table"
         ):
-            deploy.deploy_table(query_file=query_path / "query.sql")
+            deploy.deploy_table(artifact_file=query_path / "query.sql")
 
     def test_deploy_table_without_schema_raises_skip(self, tmp_path):
         query_path = (
@@ -71,7 +71,7 @@ class TestDeploy:
         (query_path / "query.sql").write_text("SELECT 1")
 
         with pytest.raises(deploy.SkippedDeployException, match="Schema missing"):
-            deploy.deploy_table(query_file=query_path / "query.sql")
+            deploy.deploy_table(artifact_file=query_path / "query.sql")
 
     def test_deploy_with_null_destination_raises_skip(self, tmp_path):
         query_path = (
@@ -89,7 +89,7 @@ class TestDeploy:
         with pytest.raises(
             deploy.SkippedDeployException, match="null destination_table configured"
         ):
-            deploy.deploy_table(query_file=query_path / "query.sql")
+            deploy.deploy_table(artifact_file=query_path / "query.sql")
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.dryrun.DryRun")
@@ -100,7 +100,7 @@ class TestDeploy:
 
         client = mock_client.return_value
         deploy.deploy_table(
-            query_file=query_path / "query.sql",
+            artifact_file=query_path / "query.sql",
         )
 
         client.update_table.assert_called_once()
@@ -116,7 +116,9 @@ class TestDeploy:
         }
 
         with pytest.raises(deploy.SkippedDeployException, match="already exists"):
-            deploy.deploy_table(query_file=query_path / "query.sql", skip_existing=True)
+            deploy.deploy_table(
+                artifact_file=query_path / "query.sql", skip_existing=True
+            )
 
     @patch("bigquery_etl.dryrun.DryRun")
     def test_deploy_fails_when_schemas_dont_match(self, mock_dryrun, query_path):
@@ -125,7 +127,7 @@ class TestDeploy:
         }
         with pytest.raises(deploy.FailedDeployException, match="does not match schema"):
             deploy.deploy_table(
-                query_file=query_path / "query.sql",
+                artifact_file=query_path / "query.sql",
             )
 
     @patch("google.cloud.bigquery.Client")
@@ -139,7 +141,7 @@ class TestDeploy:
         client = mock_client.return_value
         client.get_table.side_effect = NotFound("table not found")
 
-        deploy.deploy_table(query_file=query_path / "query.sql", force=True)
+        deploy.deploy_table(artifact_file=query_path / "query.sql", force=True)
 
         client.create_table.assert_called_once()
 
@@ -157,7 +159,7 @@ class TestDeploy:
         client.get_table.side_effect = NotFound("table not found")
 
         deploy.deploy_table(
-            query_file=query_path / "metadata.yaml",
+            artifact_file=query_path / "metadata.yaml",
         )
 
         client.create_table.assert_called_once()

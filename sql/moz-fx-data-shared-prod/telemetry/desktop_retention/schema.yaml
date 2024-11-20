@@ -2,7 +2,7 @@ fields:
 - name: metric_date
   type: DATE
   mode: NULLABLE
-  description: Metric DAte
+  description: Metric Date
 - name: first_seen_date
   type: DATE
   mode: NULLABLE

@@ -6,6 +6,7 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  shredder_mitigation: true
   dag: bqetl_analytics_tables
   owner1: kik
 scheduling:

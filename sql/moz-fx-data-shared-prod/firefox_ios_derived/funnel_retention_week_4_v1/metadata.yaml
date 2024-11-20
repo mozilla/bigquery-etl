@@ -6,6 +6,7 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  shredder_mitigation: true
   dag: bqetl_firefox_ios
   owner1: kik
 scheduling:

@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  shredder_mitigation: true
   dag: bqetl_desktop_engagement_model
 scheduling:
   dag_name: bqetl_desktop_engagement_model

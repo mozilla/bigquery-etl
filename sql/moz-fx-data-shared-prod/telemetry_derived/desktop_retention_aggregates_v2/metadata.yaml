@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: mhirose
+  shredder_mitigation: true
   dag: bqetl_desktop_retention_model
 scheduling:
   dag_name: bqetl_desktop_retention_model

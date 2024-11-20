@@ -5,6 +5,7 @@ owners:
 - jklukas@mozilla.com
 labels:
   incremental: true
+  shredder_mitigation: true
   dag: bqetl_gud
   owner1: jklukas
 scheduling:

@@ -7,6 +7,7 @@ labels:
   application: desktop
   incremental: true
   schedule: daily
+  shredder_mitigation: true
   dag: bqetl_gud
   owner1: jklukas
 scheduling:
@@ -26,6 +27,4 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.smoot_usage_fxa_v2
+references: {}

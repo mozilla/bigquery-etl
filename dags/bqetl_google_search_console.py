@@ -67,8 +67,9 @@ with DAG(
             table_id="searchdata_url_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -81,8 +82,9 @@ with DAG(
             table_id="searchdata_url_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -95,8 +97,9 @@ with DAG(
             table_id="searchdata_url_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -109,8 +112,9 @@ with DAG(
             table_id="searchdata_url_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -123,8 +127,9 @@ with DAG(
             table_id="searchdata_url_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -137,8 +142,9 @@ with DAG(
             table_id="searchdata_url_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -151,8 +157,9 @@ with DAG(
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -165,8 +172,9 @@ with DAG(
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -179,8 +187,9 @@ with DAG(
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -193,8 +202,9 @@ with DAG(
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -207,8 +217,9 @@ with DAG(
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )
@@ -221,8 +232,9 @@ with DAG(
             table_id="searchdata_site_impression",
             partition_id="{{ data_interval_start.subtract(days=1) | ds_nodash }}",
             gcp_conn_id="google_cloud_shared_prod",
-            deferrable=True,
-            poke_interval=datetime.timedelta(minutes=5),
+            deferrable=False,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=15),
             timeout=datetime.timedelta(hours=8),
         )
     )

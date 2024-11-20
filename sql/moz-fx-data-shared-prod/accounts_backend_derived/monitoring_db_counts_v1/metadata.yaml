@@ -10,8 +10,7 @@ labels:
   owner1: wclouser@mozilla.com
 scheduling:
   dag_name: bqetl_accounts_derived
-  parameters:
-  - "as_of_date:DATE:{{ ds }}"
+  date_partition_parameter: as_of_date
 bigquery:
   time_partitioning:
     type: day

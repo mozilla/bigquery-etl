@@ -2,7 +2,7 @@ fields:
 
 - mode: NULLABLE
   name: date
-  type: DATE
+  type: DATETIME
   description:
 
 - mode: NULLABLE
@@ -43,4 +43,9 @@ fields:
 - mode: NULLABLE
   name: unique_devices
   type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: logical_date
+  type: DATETIME
   description:

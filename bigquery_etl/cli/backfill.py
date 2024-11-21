@@ -432,7 +432,7 @@ def initiate(
 
     try:
         deploy_table(
-            query_file=query_path,
+            artifact_file=query_path,
             destination_table=backfill_staging_qualified_table_name,
             respect_dryrun_skip=False,
         )

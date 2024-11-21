@@ -1,0 +1,20 @@
+2024-11-13:
+  start_date: 2019-10-01
+  end_date: 2024-10-01
+  reason: To populate the new subscription discount fields which were added in
+    https://github.com/mozilla/bigquery-etl/pull/6474.
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+
+2024-11-07:
+  start_date: 2019-10-01
+  end_date: 2024-10-01
+  reason: A bug was causing conflicting `stripe_subscriptions_revised_changelog_v1`
+    records, which ended up causing incorrect subscription records in this table.
+    That bug was fixed in https://github.com/mozilla/bigquery-etl/pull/6458.
+  watchers:
+  - srose@mozilla.com
+  status: Complete
+  shredder_mitigation: false

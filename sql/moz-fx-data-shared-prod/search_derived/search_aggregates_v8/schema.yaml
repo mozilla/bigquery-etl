@@ -2,90 +2,120 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: Submission Date
 - mode: NULLABLE
   name: addon_version
   type: STRING
+  description: Add-On Version
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: App Version
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Country
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: Distribution ID
 - mode: NULLABLE
   name: engine
   type: STRING
+  description: Search Engine
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Locale
 - mode: NULLABLE
   name: search_cohort
   type: STRING
+  description: Search Cohort
 - mode: NULLABLE
   name: source
   type: STRING
+  description: Source
 - mode: NULLABLE
   name: default_search_engine
   type: STRING
+  description: Default Search Engine
 - mode: NULLABLE
   name: default_private_search_engine
   type: STRING
+  description: Default Private Search Engine
 - mode: NULLABLE
   name: os
   type: STRING
+  description: Operating System
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: Operating System Version
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+  description: Is Default Browser
 - mode: NULLABLE
   name: policies_is_enterprise
   type: BOOLEAN
+  description: Policies Is Enterprise
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: Channel
 - mode: NULLABLE
   name: normalized_engine
   type: STRING
+  description: Normalized Search Engine
 - mode: NULLABLE
   name: normalized_default_search_engine
   type: STRING
+  description: Normalized Default Search Engine
 - mode: NULLABLE
   name: is_sap_monetizable
   type: BOOLEAN
+  description: Is SAP Monetizable
 - mode: NULLABLE
   name: client_count
   type: INTEGER
+  description: Client Count
 - mode: NULLABLE
   name: organic
   type: INTEGER
+  description: Number of Organic Searches
 - mode: NULLABLE
   name: tagged_sap
   type: INTEGER
+  description: Tagged SAP
 - mode: NULLABLE
   name: tagged_follow_on
   type: INTEGER
+  description: Tagged Follow On
 - mode: NULLABLE
   name: sap
   type: INTEGER
+  description: SAP
 - mode: NULLABLE
   name: ad_click
   type: INTEGER
+  description: Ad Click
 - mode: NULLABLE
   name: ad_click_organic
   type: INTEGER
+  description: Ad Click Organic
 - mode: NULLABLE
   name: search_with_ads
   type: INTEGER
+  description: Number of Searches with Ads
 - mode: NULLABLE
   name: search_with_ads_organic
   type: INTEGER
+  description: Number of Organic Searches with Ads
 - mode: NULLABLE
   name: unknown
   type: INTEGER
+  description: Unknown
 - mode: NULLABLE
   name: is_acer_cohort
   type: BOOLEAN
+  description: Is Acer Cohort

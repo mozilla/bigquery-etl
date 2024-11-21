@@ -16,7 +16,7 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 780
   range_partitioning: null
   clustering:
     fields:

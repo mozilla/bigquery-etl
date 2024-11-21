@@ -5,6 +5,7 @@ owners:
 - jklukas@mozilla.com
 labels:
   incremental: true
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_gud
 bigquery:

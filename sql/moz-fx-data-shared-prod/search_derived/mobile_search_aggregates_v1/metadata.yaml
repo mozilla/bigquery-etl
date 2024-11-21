@@ -8,6 +8,7 @@ owners:
   - cmorales@mozilla.com
 labels:
   schedule: daily
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_mobile_search
 bigquery:

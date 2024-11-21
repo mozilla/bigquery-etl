@@ -13,6 +13,10 @@ description: |-
 
   The table is labeled as "change_controlled", which implies
   that changes require the approval of at least one owner.
+  
+  The label "shredder mitigation" indicates that this table is set up for
+  managed backfill with shredder mitigation, as described in
+  https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill.
 
   Proposal:
   https://docs.google.com/document/d/1qvWO49Lr_Z_WErh3I3058A3B1YuiuURx19K3aTdmejM/edit?usp=sharing
@@ -22,9 +26,10 @@ owners:
 labels:
   incremental: true
   change_controlled: true
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
-  task_name: {{ app_name }}_active_users_aggregates
+  task_name: {{ app_name }}_active_users_aggregates_v3
   date_partition_offset: -1
 bigquery:
   time_partitioning:

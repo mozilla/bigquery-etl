@@ -171,6 +171,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     template_folder=THIS_PATH / "templates",
                     app_value=browser.value,
                     app_name=browser.name,
+                    table_name=TABLE_NAME,
                     format=False,
                 ),
             skip_existing=False,

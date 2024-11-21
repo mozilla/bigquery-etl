@@ -22,4 +22,6 @@ bigquery:
     - country
     - language
     - event_name
+monitoring:
+  enabled: true
 references: {}

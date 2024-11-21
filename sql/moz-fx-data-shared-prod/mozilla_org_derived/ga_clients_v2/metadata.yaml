@@ -17,3 +17,6 @@ bigquery:
   clustering:
     fields: ["first_seen_date"]
 references: {}
+monitoring:
+  enabled: true
+

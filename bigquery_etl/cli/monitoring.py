@@ -376,7 +376,10 @@ def _update_bigconfig(
 
                     raise Exception(err_message)
 
-                if metric.metric_type.predefined_metric in default_metrics:
+                if (
+                    metric.metric_type
+                    and metric.metric_type.predefined_metric in default_metrics
+                ):
                     default_metrics.remove(metric.metric_type.predefined_metric)
 
         if metadata.monitoring.collection and collection.collection is None:
@@ -620,7 +623,9 @@ def set_partition_column(
                             f"Set partition column {column_id} for `{project}.{dataset}.{table}`"
                         )
                 except Exception as e:
-                    if "There was an error processing your request" in str(e):
+                    if "There was an error processing your request" in str(
+                        e
+                    ) or "Dataset already requires a partition filter" in str(e):
                         # API throws an error when partition column was already set.
                         # There is no API endpoint to check for partition columns though
                         pass

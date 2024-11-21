@@ -2,7 +2,7 @@ type: BIGCONFIG_FILE
 
 row_creation_times:
   column_selectors:
-  - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.blogs_goals_v2.date
+  - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v2.date
 
 saved_metric_definitions:
   metrics:
@@ -12,7 +12,7 @@ saved_metric_definitions:
       template_id: 947
       aggregation_type: COUNT
       template_name: visit_identifier_regex_check
-    metric_name: COUNT of visit_identifier_regex_check
+    metric_name: mozilla_org_derived.www_site_hits_v2 - COUNT of visit_identifier_regex_check
     group_by:
     - date
     threshold:
@@ -40,6 +40,6 @@ tag_deployments:
     description: All checks related to GA tables
   deployments:
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.blogs_goals_v2
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v2
     metrics:
     - saved_metric_id: VISIT_IDENTIFIER_REGEX_CHECK

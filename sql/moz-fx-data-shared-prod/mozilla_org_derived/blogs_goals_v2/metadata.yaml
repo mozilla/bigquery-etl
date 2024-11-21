@@ -20,4 +20,6 @@ bigquery:
   clustering:
     fields:
     - visit_identifier
+monitoring:
+  enabled: true
 references: {}

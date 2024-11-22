@@ -4,9 +4,6 @@ dataset_base_acl: syndicate
 user_facing: true
 labels: {}
 syndication:
-  stage:
-    syndicated_project: "glam-fenix-dev"
-    syndicated_dataset: "glam_etl_dev"
   prod:
     syndicated_project: "moz-fx-data-glam-prod-fca7"
     syndicated_dataset: "glam_etl"

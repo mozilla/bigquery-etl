@@ -60,3 +60,6 @@ bigquery:
     expiration_days: null
   clustering: null
 references: {}
+monitoring:
+  enabled: true
+

@@ -1,0 +1,61 @@
+type: BIGCONFIG_FILE
+
+row_creation_times:
+  column_selectors:
+  - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.ga_clients_v2.first_seen_date
+
+saved_metric_definitions:
+  metrics:
+  - saved_metric_id: COUNT_DUPLICATES
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: COUNT_DUPLICATES
+    metric_name: Duplicates (#)
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: false
+      lower_bound_only: false
+    rct_overrides:
+    - bigeye-no-rct
+  - saved_metric_id: COUNT_ROWS
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: COUNT_ROWS
+    metric_name: Row count (#)
+    conditions:
+    - "first_seen_date >= '2024-01-01'\n  and first_reported.country IN ('United States',\
+      \ 'Canada')"
+    group_by:
+    - first_seen_date
+    - first_reported.country
+    threshold:
+      type: AUTO
+      sensitivity: MEDIUM
+      upper_bound_only: false
+      lower_bound_only: false
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - first_seen_date
+    metric_schedule:
+      named_schedule:
+        name: Default Schedule - 13:00 UTC
+
+tag_deployments:
+- collection:
+    name: Google Analytics
+    description: All checks related to GA tables
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.ga_clients_v2.ga_client_id
+    metrics:
+    - saved_metric_id: COUNT_DUPLICATES
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.ga_clients_v2.*
+    metrics:
+    - saved_metric_id: COUNT_ROWS

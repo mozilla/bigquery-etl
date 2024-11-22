@@ -1,0 +1,65 @@
+type: BIGCONFIG_FILE
+
+row_creation_times:
+  column_selectors:
+  - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.blogs_goals_v2.date
+
+saved_metric_definitions:
+  metrics:
+  - saved_metric_id: COUNT_DUPLICATES
+    metric_type:
+      type: PREDEFINED
+      predefined_metric: COUNT_DUPLICATES
+    metric_name: Duplicates (#)
+    group_by:
+    - date
+    threshold:
+      type: CONSTANT
+      upper_bound: 0.0
+      lower_bound: 0.0
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - date
+  - saved_metric_id: VISIT_IDENTIFIER_REGEX_CHECK
+    metric_type:
+      type: TEMPLATE
+      template_id: 947
+      aggregation_type: COUNT
+      template_name: visit_identifier_regex_check
+    metric_name: COUNT of visit_identifier_regex_check
+    group_by:
+    - date
+    threshold:
+      type: CONSTANT
+      upper_bound: 0.0
+      lower_bound: 0.0
+    parameters:
+    - key: column_name
+      string_value: visit_identifier
+    lookback:
+      lookback_window:
+        interval_type: DAYS
+        interval_value: -1
+      lookback_type: METRIC_TIME
+      bucket_size: DAY
+    rct_overrides:
+    - date
+
+tag_deployments:
+- collection:
+    name: blogs_goals_v2
+    description: SDK Generated
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.blogs_goals_v2.visit_identifier
+    metrics:
+    - saved_metric_id: COUNT_DUPLICATES
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.blogs_goals_v2
+    metrics:
+    - saved_metric_id: VISIT_IDENTIFIER_REGEX_CHECK

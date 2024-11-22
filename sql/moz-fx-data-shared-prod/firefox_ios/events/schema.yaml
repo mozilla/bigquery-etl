@@ -252,6 +252,9 @@ fields:
     - name: tabs_grouped_tab_closed
       type: INTEGER
       mode: NULLABLE
+    - name: tabs_pull_to_refresh
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

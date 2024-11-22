@@ -333,6 +333,12 @@ fields:
       description: 'Recorded when a user closes the tab in a group
 
         '
+    - name: tabs_pull_to_refresh
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record event when user has executed pull to refresh.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

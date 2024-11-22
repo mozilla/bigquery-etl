@@ -1078,9 +1078,7 @@ fields:
     - name: tabs_pull_to_refresh
       type: INTEGER
       mode: NULLABLE
-      description: 'Record the number of times a user pulls down
-
-        on a page to reload.
+      description: 'Record event when user has executed pull to refresh.
 
         '
     - name: firefox_home_page_jump_back_in_group_opened

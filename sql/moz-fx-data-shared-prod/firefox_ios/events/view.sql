@@ -20,7 +20,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.counter.firefox_home_page_history_highlights_item_opened,
-      metrics.counter.tabs_grouped_tab_closed
+      metrics.counter.tabs_grouped_tab_closed,
+      metrics.counter.tabs_pull_to_refresh
     ) AS `counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
@@ -55,7 +56,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.counter.firefox_home_page_history_highlights_item_opened,
-      metrics.counter.tabs_grouped_tab_closed
+      metrics.counter.tabs_grouped_tab_closed,
+      metrics.counter.tabs_pull_to_refresh
     ) AS `counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,
@@ -90,7 +92,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.counter.firefox_home_page_history_highlights_item_opened,
-      metrics.counter.tabs_grouped_tab_closed
+      metrics.counter.tabs_grouped_tab_closed,
+      metrics.counter.tabs_pull_to_refresh
     ) AS `counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
   ) AS `metrics`,

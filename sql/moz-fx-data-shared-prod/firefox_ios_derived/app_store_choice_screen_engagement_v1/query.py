@@ -18,10 +18,6 @@ from bigquery_etl.schema import Schema
 
 #
 # https://developer.apple.com/documentation/AppStoreConnectAPI/downloading-analytics-reports
-#
-# export CONNECT_ISSUER_ID=
-# export CONNECT_KEY_ID=
-# export CONNECT_KEY_FILE_PATH=
 CONNECT_ISSUER_ID = os.environ.get("CONNECT_ISSUER_ID")
 CONNECT_KEY_ID = os.environ.get("CONNECT_KEY_ID")
 CONNECT_KEY = os.environ.get("CONNECT_KEY")

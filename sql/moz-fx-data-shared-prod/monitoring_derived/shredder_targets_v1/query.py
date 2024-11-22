@@ -74,7 +74,7 @@ WHERE
 
 def find_client_id_tables(project: str) -> List[str]:
     """Return a list of tables that have columns ending with 'client_id'."""
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
     row_results = client.query_and_wait(
         query=FIND_TABLES_QUERY_TEMPLATE.format(project=project)
     )
@@ -138,10 +138,11 @@ def table_exists(client: bigquery.Client, table_name: str) -> bool:
 
 
 def get_associated_deletions(
+    project: str,
     upstream_stable_tables: Dict[str, Set[str]]
 ) -> Dict[str, Set[DeleteSource]]:
     """Get a list of associated deletion requests tables per table based on the stable tables."""
-    client = bigquery.Client()
+    client = bigquery.Client(project=project)
 
     # deletion targets for stable tables defined in the shredder config
     known_stable_table_sources: Dict[str, Set[DeleteSource]] = {
@@ -185,7 +186,7 @@ def get_associated_deletions(
                     in glean_channel_names
                 ):
                     deletion_request_table = (
-                        f"{stable_table_ref.dataset_id}.deletion_request_v1"
+                        f"{stable_table_ref.project}.{stable_table_ref.dataset_id}.deletion_request_v1"
                     )
                     if table_exists(client, deletion_request_table):
                         table_to_deletions[stable_table] = {
@@ -361,7 +362,7 @@ def main(run_date, output_table, project_id):
 
     upstream_stable_tables = get_upstream_stable_tables(client_id_tables)
 
-    associated_deletions = get_associated_deletions(upstream_stable_tables)
+    associated_deletions = get_associated_deletions(project_id, upstream_stable_tables)
 
     table_deletions = get_missing_deletions(associated_deletions)
 

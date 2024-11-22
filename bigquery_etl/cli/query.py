@@ -79,6 +79,8 @@ DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 10
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
+VIEW_FILE = "view.sql"
+MATERIALIZED_VIEW = "materialized_view.sql"
 
 
 @click.group(help="Commands for managing queries.")
@@ -1424,8 +1426,8 @@ def _initialize_in_parallel(
 @click.option(
     "--skip-existing",
     "--skip_existing",
-    help="Skip initialization for existing artifacts. "
-    + "This ensures that artifacts, like materialized views only get initialized if they don't already exist.",
+    help="Skip initialization for existing artifacts, "
+    "otherwise initialization is run for empty tables.",
     default=False,
     is_flag=True,
 )
@@ -1457,7 +1459,7 @@ def initialize(
     else:
         file_regex = re.compile(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-            r"(?:query\.sql|init\.sql)$"
+            r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
         )
         query_files = paths_matching_name_pattern(
             name, sql_dir, project_id, file_regex=file_regex
@@ -1499,7 +1501,7 @@ def initialize(
             except NotFound:
                 # continue with creating the table
                 pass
-        else:
+        elif len(materialized_views) == 0:
             return
 
         try:
@@ -1574,17 +1576,30 @@ def initialize(
                             default_dataset=f"{project}.{dataset}",
                         )
 
-                        if file in materialized_views:
-                            click.echo(f"Create materialized view for {file}")
-                            # existing materialized view have to be deleted before re-creation
-                            client.delete_table(full_table_id, not_found_ok=True)
-                        else:
-                            click.echo(f"Create destination table for {file}")
+                        # only deploy materialized view if it doesn't exist
+                        # TODO: https://github.com/mozilla/bigquery-etl/issues/5804
+                        try:
+                            materialized_view_table = client.get_table(full_table_id)
 
-                        job = client.query(init_sql, job_config=job_config)
+                            # Best-effort check, don't fail if there's an error
+                            try:
+                                has_changes = materialized_view_has_changes(
+                                    materialized_view_table.mview_query, init_sql
+                                )
+                            except Exception as e:
+                                change_str = f"failed to compare changes: {e}"
+                            else:
+                                change_str = (
+                                    "sql changed" if has_changes else "sql not changed"
+                                )
+                            click.echo(
+                                f"Skipping materialized view {full_table_id}, already exists, {change_str}"
+                            )
+                        except NotFound:
+                            job = client.query(init_sql, job_config=job_config)
 
-                        if not dry_run:
-                            job.result()
+                            if not dry_run:
+                                job.result()
         except Exception:
             print_exc()
             return query_file
@@ -1597,6 +1612,27 @@ def initialize(
         for failed_deploy in failed_initializations:
             click.echo(failed_deploy, err=True)
         sys.exit(1)
+
+
+def materialized_view_has_changes(deployed_sql: str, file_sql: str) -> bool:
+    """Return true if the sql in the materialized view file doesn't match the deployed sql."""
+    file_sql_formatted = sqlparse.format(
+        re.sub(
+            r"CREATE+(?:\s+OR\s+REPLACE)?\s+MATERIALIZED\s+VIEW.*?AS",
+            "",
+            file_sql,
+            flags=re.DOTALL,
+        ),
+        strip_comments=True,
+        strip_whitespace=True,
+    )
+
+    deployed_sql_formatted = sqlparse.format(
+        deployed_sql,
+        strip_comments=True,
+        strip_whitespace=True,
+    )
+    return file_sql_formatted != deployed_sql_formatted
 
 
 @query.command(
@@ -2189,7 +2225,11 @@ def deploy(
         name, sql_dir, project_id, ["query.*", "script.sql"]
     )
 
-    if not query_files:
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["metadata.yaml"]
+    )
+
+    if not query_files and not metadata_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
@@ -2199,11 +2239,26 @@ def deploy(
         query_files = paths_matching_name_pattern(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
         )
-        if not query_files:
+        metadata_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["metadata.yaml"]
+        )
+        if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
+
+    query_file_paths = [query_file.parent for query_file in query_files]
+    metadata_files_without_query_file = [
+        metadata_file
+        for metadata_file in metadata_files
+        if metadata_file.parent not in query_file_paths
+        and not any(
+            file.suffix == ".sql" or file.name == "query.py"
+            for file in metadata_file.parent.iterdir()
+            if file.is_file()
+        )
+    ]
 
     _deploy = partial(
         deploy_table,
@@ -2220,23 +2275,23 @@ def deploy(
     failed_deploys, skipped_deploys = [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
-            executor.submit(_deploy, query_file): query_file
-            for query_file in query_files
-            if str(query_file)
+            executor.submit(_deploy, artifact_file): artifact_file
+            for artifact_file in query_files + metadata_files_without_query_file
+            if str(artifact_file)
             not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
         }
         for future in futures.as_completed(future_to_query):
-            query_file = future_to_query[future]
+            artifact_file = future_to_query[future]
             try:
                 future.result()
             except SkippedDeployException as e:
-                print(f"Skipped deploy for {query_file}: ({e})")
-                skipped_deploys.append(query_file)
+                print(f"Skipped deploy for {artifact_file}: ({e})")
+                skipped_deploys.append(artifact_file)
             except FailedDeployException as e:
-                print(f"Failed deploy for {query_file}: ({e})")
-                failed_deploys.append(query_file)
+                print(f"Failed deploy for {artifact_file}: ({e})")
+                failed_deploys.append(artifact_file)
             else:
-                print(f"{query_file} successfully deployed!")
+                print(f"{artifact_file} successfully deployed!")
 
     if not skip_external_data:
         failed_external_deploys = _deploy_external_data(

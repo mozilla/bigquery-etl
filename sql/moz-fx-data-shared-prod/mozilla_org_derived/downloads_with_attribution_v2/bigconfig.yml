@@ -1,8 +1,7 @@
 type: BIGCONFIG_FILE
-
 saved_metric_definitions:
   metrics:
-  - saved_metric_id: COUNT_ROWS
+  - saved_metric_id: count_number_rows
     metric_type:
       type: PREDEFINED
       predefined_metric: COUNT_ROWS
@@ -14,7 +13,6 @@ saved_metric_definitions:
       lower_bound: 50000.0
     rct_overrides:
     - download_date
-
 tag_deployments:
 - collection:
     name: Google Analytics
@@ -23,4 +21,21 @@ tag_deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.downloads_with_attribution_v2.*
     metrics:
-    - saved_metric_id: COUNT_ROWS
+    - saved_metric_id: count_number_rows
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.downloads_with_attribution_v2.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_name: FRESHNESS [warn]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_name: VOLUME [fail]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC

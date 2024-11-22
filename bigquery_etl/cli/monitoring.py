@@ -368,6 +368,8 @@ def _update_bigconfig(
     for collection in bigconfig.tag_deployments:
         for deployment in collection.deployments:
             for metric in deployment.metrics:
+                print("im here")
+                print(deployment)
                 if metric.metric_type is None:
                     err_message = f"""There appears to be an issue parsing \
                     a metric type definition for `{project}.{dataset}.{table}` \

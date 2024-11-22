@@ -61,6 +61,16 @@ fields:
   description: Date addon report was assigned to a moderator
 
 - mode: NULLABLE
-  name: typed_metadata
+  name: legacy_decision
   type: STRING
-  description: Contains more data
+  description: Legacy decision
+
+- mode: NULLABLE
+  name: policy_map
+  type: STRING
+  description: Policy map
+
+- mode: NULLABLE
+  name: escalation_details
+  type: STRING
+  description: Escalation details

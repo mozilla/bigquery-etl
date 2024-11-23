@@ -27,13 +27,48 @@ fields:
 
 - mode: NULLABLE
   name: applied_policies
-  type: STRING
-  description: Policies applied to moderate addon
+  type: ARRAY
+  description: List of policies applied to moderate addon
 
 - mode: NULLABLE
-  name: entity
+  name: attributes_id
   type: STRING
-  description: Information about the entity
+  description: Attributes ID
+
+- mode: NULLABLE
+  name: attributes_slug
+  type: STRING
+  description: Attributes Slug
+
+- mode: NULLABLE
+  name: attributes_guid
+  type: STRING
+  description: Attributes GUID
+
+- mode: NULLABLE
+  name: attributes_name
+  type: STRING
+  description: Attributes Name
+
+- mode: NULLABLE
+  name: attributes_summary
+  type: STRING
+  description: Attributes Summary
+
+- mode: NULLABLE
+  name: attributes_average_daily_users
+  type: INT64
+  description: Attributes Average Daily Users
+
+- mode: NULLABLE
+  name: attributes_created
+  type: STRING
+  description: Date Attributes Created
+
+- mode: NULLABLE
+  name: attributes_promoted
+  type: STRING
+  description: Attributes Promoted
 
 - mode: NULLABLE
   name: entity_slug

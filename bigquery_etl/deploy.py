@@ -10,7 +10,7 @@ from google.cloud.exceptions import NotFound
 from .config import ConfigLoader
 from .dryrun import DryRun, get_id_token
 from .metadata.parse_metadata import METADATA_FILE, Metadata
-from .metadata.publish_metadata import attach_metadata
+from .metadata.publish_metadata import attach_external_data_config, attach_metadata
 from .schema import SCHEMA_FILE, Schema
 
 log = logging.getLogger(__name__)
@@ -24,12 +24,17 @@ class FailedDeployException(Exception):
     """Raised for failed deployments."""
 
 
+class SkippedExternalDataException(Exception):
+    """Raised for external data tables if skip_external_data is True."""
+
+
 def deploy_table(
     artifact_file: Path,
     destination_table: Optional[str] = None,
     force: bool = False,
     use_cloud_function: bool = False,
     skip_existing: bool = False,
+    skip_external_data: bool = False,
     update_metadata: bool = True,
     respect_dryrun_skip: bool = True,
     sql_dir=ConfigLoader.get("default", "sql_dir"),
@@ -45,6 +50,17 @@ def deploy_table(
             metadata = Metadata.from_file(artifact_file)
         else:
             metadata = Metadata.of_query_file(artifact_file)
+
+        if metadata.external_data:
+            if str(artifact_file).endswith("query.sql"):
+                raise FailedDeployException(
+                    f"Invalid metadata: {artifact_file} has both a SQL file and "
+                    f"external data config"
+                )
+            if skip_external_data:
+                raise SkippedExternalDataException(
+                    f"Skipping deploy of external data table {artifact_file}"
+                )
 
         if (
             metadata.scheduling
@@ -94,6 +110,9 @@ def deploy_table(
     except NotFound:
         table = bigquery.Table(destination_table)
     table.schema = existing_schema.to_bigquery_schema()
+
+    if metadata.external_data:
+        attach_external_data_config(artifact_file, table)
 
     if update_metadata:
         attach_metadata(artifact_file, table)

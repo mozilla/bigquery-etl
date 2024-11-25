@@ -866,6 +866,7 @@ class TestQuery:
                 force=False,
                 use_cloud_function=True,
                 skip_existing=False,
+                skip_external_data=False,
                 respect_dryrun_skip=True,
                 sql_dir="sql/",
                 credentials=None,

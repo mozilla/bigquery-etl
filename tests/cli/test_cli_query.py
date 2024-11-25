@@ -12,6 +12,7 @@ from bigquery_etl.cli.query import (
     create,
     deploy,
     info,
+    materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
 )
@@ -918,3 +919,36 @@ class TestQuery:
 
             assert result.exit_code == 0
             mock_deploy_table.assert_not_called()
+
+    def test_materialized_view_has_changes(self):
+        deployed_sql = " SELECT  * FROM project.dataset.table "
+
+        assert not materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE MATERIALIZED VIEW project.dataset.view AS SELECT * FROM
+            project.dataset.table
+            """,
+        )
+        assert not materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE MATERIALIZED VIEW IF NOT EXISTS project.dataset.view AS SELECT * FROM
+            project.dataset.table
+            """,
+        )
+        assert materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE MATERIALIZED VIEW IF NOT EXISTS project.dataset.view AS SELECT * FROM
+            project.dataset.table WHERE TRUE
+            """,
+        )
+        assert not materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE OR REPLACE MATERIALIZED VIEW
+            project.dataset.view AS SELECT * FROM
+            project.dataset.table
+            """,
+        )

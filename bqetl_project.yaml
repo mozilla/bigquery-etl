@@ -212,6 +212,11 @@ dry_run:
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
 
+retention_policy_exclusions:
+- moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
+- moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2
+
+
 format:
   skip:
   - bigquery_etl/glam/templates/*.sql

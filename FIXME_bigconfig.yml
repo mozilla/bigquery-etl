@@ -1,0 +1,43 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Google Analytics
+    description: All GA related data
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.downloads_with_attribution_v2.*
+    metrics:
+    - metric_type:
+      type: PREDEFINED
+>>>>
+Invalid attribute: 'predefined_metric' is not a valid attribute in SimpleMetricDefinition.  
+<<<<
+      predefined_metric: COUNT_ROWS
+      metric_name: downloads_with_attribution_v2_row_count
+      group_by:
+      - download_date
+      threshold:
+        type: CONSTANT
+        lower_bound: 50000.0
+      rct_overrides:
+      - download_date
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.mozilla_org_derived.downloads_with_attribution_v2.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_name: FRESHNESS [warn]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_name: VOLUME [fail]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC

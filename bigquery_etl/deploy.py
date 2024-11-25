@@ -45,7 +45,7 @@ def deploy_table(
     if respect_dryrun_skip and str(artifact_file) in DryRun.skipped_files():
         raise SkippedDeployException(f"Dry run skipped for {artifact_file}.")
 
-    metadata: Optional[Metadata] = None
+    metadata = None
     try:
         if artifact_file.name == METADATA_FILE:
             metadata = Metadata.from_file(artifact_file)

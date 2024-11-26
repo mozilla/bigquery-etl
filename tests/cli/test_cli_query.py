@@ -542,6 +542,7 @@ class TestQuery:
                     "--exclude=2021-01-06",
                     "--parallelism=0",
                     "--billing-project=backfill-project",
+                    "--override-retention-range-limit=True",
                 ],
             )
 
@@ -604,6 +605,7 @@ class TestQuery:
                     "--end_date=2021-01-06",
                     "--parallelism=0",
                     """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    "--override-retention-range-limit=True",
                 ],
             )
             assert result.exit_code == 0
@@ -668,6 +670,7 @@ class TestQuery:
                     "--start_date=2021-01-05",
                     "--end_date=2021-01-09",
                     "--parallelism=0",
+                    "--override-retention-range-limit=True",
                 ],
             )
 

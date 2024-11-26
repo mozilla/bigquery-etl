@@ -177,6 +177,10 @@ with DAG(
         depends_on_past=True,
     )
 
+    search_derived__mobile_search_aggregates__v1.set_upstream(
+        search_derived__mobile_search_clients_daily__v2
+    )
+
     search_derived__mobile_search_clients_daily__v2.set_upstream(
         wait_for_copy_deduplicate_all
     )

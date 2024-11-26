@@ -9,12 +9,9 @@ WITH daily_stats AS (
     ) AS campaign_country_code,
     ad_group_name,
     ad_group_id,
-    -- DATE_TRUNC(date_day, WEEK) AS week_start, -- TODO: this doesn't appear to be used later on, should it be?
-    -- FORMAT_DATE("%b", date_day) AS `month`, -- TODO: this doesn't appear to be used later on, should it be?
     SUM(spend) AS spend,
     SUM(taps) AS clicks,
     SUM(impressions) AS impressions,
-    SUM(redownloads) AS redownloads, -- TODO: this doesn't appear to be used later on, is this needed?
     SUM(total_downloads) AS total_downloads,
   FROM
     `moz-fx-data-shared-prod.apple_ads.ad_group_report`
@@ -27,8 +24,6 @@ WITH daily_stats AS (
     campaign_country_code,
     ad_group_name,
     ad_group_id
-    -- week_start,
-    -- `month`
 ),
 activations AS (
   SELECT

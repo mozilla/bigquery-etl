@@ -38,6 +38,14 @@ from bigquery_etl.cli.backfill import (
 from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException
 
+# Get relative dates to test different aspects of the backfill (i.e. retention functionality)
+backfill_creation_date = date.today() - timedelta(days=2)
+in_range_backfill_start_date = backfill_creation_date - timedelta(days=100)
+backfill_end_date = backfill_creation_date - timedelta(days=3)
+out_of_range_backfill_start_date = backfill_creation_date - timedelta(days=1200)
+excluded_date = in_range_backfill_start_date + timedelta(days=15)
+backfill_creation_date_2 = backfill_creation_date - timedelta(days=1)
+
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
 VALID_WATCHER = "test@example.org"
@@ -51,11 +59,11 @@ VALID_BACKFILL = Backfill(
     DEFAULT_STATUS,
 )
 BACKFILL_YAML_TEMPLATE = (
-    "2021-05-04:\n"
-    "  start_date: 2021-01-03\n"
-    "  end_date: 2021-05-03\n"
+    f"{str(backfill_creation_date)}:\n"
+    f"  start_date: {str(in_range_backfill_start_date)}\n"
+    f"  end_date: {str(backfill_end_date)}\n"
     "  excluded_dates:\n"
-    "  - 2021-02-03\n"
+    f"  - {str(excluded_date)}\n"
     "  reason: test_reason\n"
     "  watchers:\n"
     "  - test@example.org\n"
@@ -155,7 +163,7 @@ class TestBackfill:
                 create,
                 [
                     "moz-fx-data-shared-prod.test.test_query_v1",
-                    "--start_date=2021-03-01",
+                    f"--start_date={str(in_range_backfill_start_date)}",
                 ],
             )
 
@@ -168,7 +176,7 @@ class TestBackfill:
             backfill = Backfill.entries_from_file(backfill_file)[0]
 
             assert backfill.entry_date == date.today()
-            assert backfill.start_date == date(2021, 3, 1)
+            assert backfill.start_date == in_range_backfill_start_date
             assert backfill.end_date == date.today()
             assert backfill.watchers == [DEFAULT_WATCHER]
             assert backfill.reason == DEFAULT_REASON
@@ -2240,7 +2248,8 @@ class TestBackfill:
 
         mock_client().get_table.side_effect = [
             NotFound(  # Check that staging data does not exist
-                f"{backfill_staging_table_name}_backup_2021_05_03" "not found"
+                f"{backfill_staging_table_name}_backup_{backfill_creation_date.year}_{backfill_creation_date.strftime('%m')}_{backfill_creation_date.strftime('%d')}"
+                "not found"
             ),
             None,  # Check that production data exists during dry run
             None,  # Check that production data exists
@@ -2272,10 +2281,10 @@ class TestBackfill:
 
             backfill_file = Path(SQL_DIR) / BACKFILL_FILE
             backfill_file.write_text(
-                """
-            2021-05-03:
-              start_date: 2021-01-03
-              end_date: 2021-01-08
+                f"""
+            {str(backfill_creation_date)}:
+              start_date: {str(in_range_backfill_start_date)}
+              end_date: {str(backfill_end_date)}
               reason: test_reason
               watchers:
               - test@example.org
@@ -2296,14 +2305,14 @@ class TestBackfill:
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
-
+            ## FIX BELOW
             expected_submission_date_params = [
                 f"--parameter=submission_date:DATE:2021-01-0{day}"
                 for day in range(3, 9)
             ]
 
             expected_destination_table_params = [
-                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_2021_05_03$2021010{day}"
+                f"--destination_table=moz-fx-data-shared-prod:backfills_staging_derived.test__test_query_v1_{backfill_creation_date.year}_{backfill_creation_date.strftime('%m')}_{backfill_creation_date.strftime('%d')}$2021010{day}"
                 for day in range(3, 9)
             ]
 

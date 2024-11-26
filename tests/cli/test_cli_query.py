@@ -1,14 +1,15 @@
 import os
 import types
+from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 import yaml
 from click.testing import CliRunner
-from datetime import date, timedelta
 
 from bigquery_etl.cli.query import (
+    NBR_DAYS_RETAINED,
     backfill,
     create,
     deploy,
@@ -16,7 +17,6 @@ from bigquery_etl.cli.query import (
     materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
-    NBR_DAYS_RETAINED,
 )
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 

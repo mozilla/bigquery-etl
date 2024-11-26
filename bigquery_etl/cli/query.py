@@ -687,17 +687,16 @@ def backfill(
         )
         sys.exit(1)
 
-    # If the start date is less than NBR_DAYS_RETAINED
-    if (
-        not override_retention_policy
-        and start_date.date()
-        < datetime.date.today() - timedelta(days=NBR_DAYS_RETAINED)
+    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
+    if not override_retention_policy and start_date < datetime.date.today() - timedelta(
+        days=NBR_DAYS_RETAINED
     ):
+        # Exit - cannot backfill due to risk of losing data
         click.echo(
             f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
         )
         sys.exit(1)
-
+    # If override retention policy is true, continue to run the backfill
     if override_retention_policy:
         click.echo("Over-riding retention limit - ensure data exists in source tables")
 

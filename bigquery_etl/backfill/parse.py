@@ -203,7 +203,9 @@ class Backfill:
                         status=BackfillStatus[entry["status"].upper()],
                         custom_query_path=entry.get("custom_query_path", None),
                         shredder_mitigation=entry.get("shredder_mitigation", False),
-                        override_retention_limit=entry.get("override_retention_limit", False),
+                        override_retention_limit=entry.get(
+                            "override_retention_limit", False
+                        ),
                         billing_project=entry.get("billing_project", None),
                     )
 

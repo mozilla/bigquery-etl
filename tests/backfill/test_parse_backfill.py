@@ -480,6 +480,7 @@ class TestParseBackfill(object):
             "  - nobody@mozilla.com\n"
             "  status: Initiate\n"
             "  shredder_mitigation: false\n"
+            "  override_retention_limit: false\n"
         )
 
         TEST_BACKFILL_1.excluded_dates = []

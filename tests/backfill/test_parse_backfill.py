@@ -446,6 +446,7 @@ class TestParseBackfill(object):
             "  - nobody@mozilla.com\n"
             "  status: Initiate\n"
             "  shredder_mitigation: false\n"
+            "  override_retention_limit: false\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()

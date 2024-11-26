@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 import yaml
 from click.testing import CliRunner
+from datetime import date, timedelta
 
 from bigquery_etl.cli.query import (
     backfill,
@@ -15,6 +16,7 @@ from bigquery_etl.cli.query import (
     materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
+    NBR_DAYS_RETAINED,
 )
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 
@@ -955,3 +957,54 @@ class TestQuery:
             project.dataset.table
             """,
         )
+
+    # Check that if you try to run a backfill for a start date < retention days and retention = False, it exits
+    def test_query_backfill_with_scheduling_overrides_outside_retention_limit(
+        self, runner
+    ):
+        with (
+            runner.isolated_filesystem(),
+            # Mock client to avoid NotFound
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date WHERE submission_date = @submission_date"
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {
+                    "dag_name": "bqetl_test",
+                    "date_partition_parameter": None,
+                    "parameters": [
+                        "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
+                    ],
+                },
+                "bigquery": {"time_partitioning": {"type": "day"}},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    f"--start_date={str(date.today() - timedelta(days=10+NBR_DAYS_RETAINED))}",
+                    f"--end_date={str(date.today() - timedelta(days=10))}",
+                    "--parallelism=0",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    "--override-retention-range-limit=False",
+                ],
+            )
+            assert result.exit_code == 1

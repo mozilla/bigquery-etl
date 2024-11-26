@@ -24,7 +24,7 @@ TEST_BACKFILL_1 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
-    "override_retention_limit: true"
+    "override_retention_limit: true",
 )
 
 TEST_BACKFILL_2 = Backfill(
@@ -35,7 +35,7 @@ TEST_BACKFILL_2 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
-    "override_retention_limit: true"
+    "override_retention_limit: true",
 )
 
 TEST_BACKFILL_3 = Backfill(
@@ -67,6 +67,7 @@ class TestParseBackfill(object):
         assert backfill.shredder_mitigation is False
         assert backfill.custom_query_path is None
         assert backfill.billing_project is None
+        assert backfill.override_retention_limit is True
 
     def test_backfill_instantiation_with_billing_project(self):
         backfill = TEST_BACKFILL_3
@@ -81,6 +82,7 @@ class TestParseBackfill(object):
         assert backfill.shredder_mitigation is False
         assert backfill.custom_query_path == "custom_query.sql"
         assert backfill.billing_project == DEFAULT_BILLING_PROJECT
+        assert backfill.override_retention_limit is True
 
     def test_invalid_billing_project(self):
         with pytest.raises(ValueError) as e:
@@ -95,6 +97,7 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.status,
                 None,
                 None,
+                "override_retention_limit: true",
                 invalid_billing_project,
             )
 
@@ -449,6 +452,7 @@ class TestParseBackfill(object):
             "  - nobody@mozilla.com\n"
             "  status: Initiate\n"
             "  shredder_mitigation: false\n"
+            "  override_retention_limit: true\n"  ## CHECK IF THIS IS RIGHT - should be true or false here?
         )
 
         results = TEST_BACKFILL_1.to_yaml()

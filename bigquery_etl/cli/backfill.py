@@ -126,7 +126,7 @@ def backfill(ctx):
     "--override-retention-range-limit",
     required=True,
     type=bool,
-    help= "True to allow running a backfill outside the retention policy limit.",
+    help="True to allow running a backfill outside the retention policy limit.",
     default=False,
 )
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
@@ -575,7 +575,7 @@ def _initiate_backfill(
                 }
             ),
             billing_project=billing_project,
-            override_retention_range_limit=override_retention_limit
+            override_retention_range_limit=override_retention_limit,
         )
     except subprocess.CalledProcessError as e:
         raise ValueError(

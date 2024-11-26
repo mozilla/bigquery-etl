@@ -130,6 +130,7 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.reason,
                 invalid_watchers,
                 TEST_BACKFILL_1.status,
+                "override_retention_limit: true",
             )
 
         assert "Invalid" in str(e.value)
@@ -146,6 +147,7 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.reason,
                 invalid_watchers,
                 TEST_BACKFILL_1.status,
+                "override_retention_limit: true",
             )
 
         assert "Invalid" in str(e.value)
@@ -162,6 +164,7 @@ class TestParseBackfill(object):
                 invalid_reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
+                "override_retention_limit: true",
             )
 
         assert "Reason in backfill entry should not be empty" in str(e.value)
@@ -179,6 +182,7 @@ class TestParseBackfill(object):
             TEST_BACKFILL_1.reason,
             valid_watchers,
             TEST_BACKFILL_1.status,
+            "override_retention_limit: true",
         )
 
         assert backfill.watchers == TEST_BACKFILL_1.watchers + [
@@ -197,6 +201,7 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.reason,
                 duplicate_watchers,
                 TEST_BACKFILL_1.status,
+                "override_retention_limit: true",
             )
 
         assert "Duplicate watcher" in str(e.value)
@@ -452,7 +457,7 @@ class TestParseBackfill(object):
             "  - nobody@mozilla.com\n"
             "  status: Initiate\n"
             "  shredder_mitigation: false\n"
-            "  override_retention_limit: true\n"  ## CHECK IF THIS IS RIGHT - should be true or false here?
+            "  override_retention_limit: true\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()

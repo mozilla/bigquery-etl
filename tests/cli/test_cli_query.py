@@ -669,7 +669,7 @@ class TestQuery:
                     "--start_date=2021-01-05",
                     "--end_date=2021-01-09",
                     "--parallelism=0",
-                    "--override-retention-range-limit=True"
+                    "--override-retention-range-limit=True",
                 ],
             )
 

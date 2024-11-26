@@ -22,7 +22,7 @@ CONNECT_ISSUER_ID = os.environ.get("CONNECT_ISSUER_ID")
 CONNECT_KEY_ID = os.environ.get("CONNECT_KEY_ID")
 CONNECT_KEY = os.environ.get("CONNECT_KEY")
 
-HOST = "https://api.appstoreconnect.apple.com/"
+HOST = "https://api.appstoreconnect.apple.com"
 REPORT_TITLE = "Browser Choice Screen Engagement"
 REPORT_DATA_DELIMITER = "\t"
 
@@ -34,15 +34,17 @@ def generate_jwt_token(issuer_id, key_id, private_key):
     """Generate jtw token to be used for API authentication."""
     payload = {
         "iss": issuer_id,
+        "iat": int(time.time()),
         "exp": int(time.time()) + 20 * 60,  # Token valid for 20 minutes
         "aud": "appstoreconnect-v1",
     }
+    algorithm = "ES256"
 
     return jwt.encode(
         payload,
         private_key,
-        algorithm="ES256",
-        headers={"kid": key_id, "alg": "ES256", "typ": "JWT"},
+        algorithm=algorithm,
+        headers={"kid": key_id, "alg": algorithm, "typ": "JWT"},
     )
 
 

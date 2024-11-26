@@ -24,6 +24,7 @@ TEST_BACKFILL_1 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
+    "override_retention_limit: true"
 )
 
 TEST_BACKFILL_2 = Backfill(
@@ -34,6 +35,7 @@ TEST_BACKFILL_2 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
+    "override_retention_limit: true"
 )
 
 TEST_BACKFILL_3 = Backfill(
@@ -46,6 +48,7 @@ TEST_BACKFILL_3 = Backfill(
     DEFAULT_STATUS,
     "custom_query.sql",
     False,
+    "override_retention_limit: true",
     DEFAULT_BILLING_PROJECT,
 )
 

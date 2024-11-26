@@ -663,7 +663,7 @@ def _backfill_query(
     "--override-retention-range-limit",
     required=True,
     type=bool,
-    help= "True to allow running a backfill outside the retention policy limit.",
+    help="True to allow running a backfill outside the retention policy limit.",
     default=False,
 )
 @click.pass_context

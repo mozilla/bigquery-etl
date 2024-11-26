@@ -174,6 +174,7 @@ class TestBackfill:
             assert backfill.reason == DEFAULT_REASON
             assert backfill.status == DEFAULT_STATUS
             assert backfill.billing_project is None
+            # assert backfill.override_retention_range_limit is True #temporary add
 
     def test_create_backfill_with_billing_project(self, runner):
         with runner.isolated_filesystem():
@@ -2231,8 +2232,16 @@ class TestBackfill:
     @patch("subprocess.check_call")
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
+    ##
+    # @patch("")
+    ##
     def test_initiate_partitioned_backfill(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        check_call,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2284,7 +2293,11 @@ class TestBackfill:
 
             result = runner.invoke(
                 initiate,
-                ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                    "--override-retention-range-limit=True",
+                ],
             )
 
             assert result.exit_code == 0
@@ -2575,6 +2588,7 @@ class TestBackfill:
             mock_from_query_file.assert_called_with(
                 query_file=query_path,
                 respect_skip=False,
+                ##
                 sql_dir="sql/",
             )
 

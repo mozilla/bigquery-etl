@@ -2,19 +2,28 @@ type: BIGCONFIG_FILE
 
 tag_deployments:
   - collection:
-      name: {{ bigeye_collection }}
+      name: Growth Program
     deployments:
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.date
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.campaign
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.campaign_id
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.campaign_country_code
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.ad_group_name
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.ad_group_id
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.date
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.campaign
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.campaign_id
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.campaign_country_code
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.ad_group_name
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.ad_group_id
         metrics:
           - saved_metric_id: is_not_null
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.*
+        metrics:
+          - saved_metric_id: freshness
+          - saved_metric_id: volume
+
+  - collection:
+      name: Operational Checks
+    deployments:
+      - column_selectors:
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external_derived.ios_app_campaign_stats_v1.*
         metrics:
           - saved_metric_id: freshness
           - saved_metric_id: volume

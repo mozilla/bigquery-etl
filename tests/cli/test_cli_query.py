@@ -542,6 +542,7 @@ class TestQuery:
                     "--exclude=2021-01-06",
                     "--parallelism=0",
                     "--billing-project=backfill-project",
+                    "--override-retention-range-limit=True",
                 ],
             )
 

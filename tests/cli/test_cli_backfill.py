@@ -2284,7 +2284,8 @@ class TestBackfill:
               reason: test_reason
               watchers:
               - test@example.org
-              status: Initiate"""
+              status: Initiate
+              override_retention_limit: True"""
             )
 
             result = runner.invoke(
@@ -2376,7 +2377,8 @@ class TestBackfill:
               reason: test_reason
               watchers:
               - test@example.org
-              status: Initiate"""
+              status: Initiate
+              override_retention_limit: true"""
             )
 
             result = runner.invoke(
@@ -2476,6 +2478,7 @@ class TestBackfill:
               - test@example.org
               status: Initiate
               billing_project: {VALID_BILLING_PROJECT}
+              override_retention_limit: true
               """
             )
 

@@ -28,17 +28,17 @@ kik@mozilla.com
 * repo/bigquery-etl
 """
 
-firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key_id = Secret(
+firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_issuer_id = Secret(
     deploy_type="env",
     deploy_target="CONNECT_ISSUER_ID",
     secret="airflow-gke-secrets",
-    key="bqetl_firefox_ios__app_store_connect_key_id",
+    key="bqetl_firefox_ios__app_store_connect_issuer_id",
 )
-firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_issuer_id = Secret(
+firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key_id = Secret(
     deploy_type="env",
     deploy_target="CONNECT_KEY_ID",
     secret="airflow-gke-secrets",
-    key="bqetl_firefox_ios__app_store_connect_issuer_id",
+    key="bqetl_firefox_ios__app_store_connect_key_id",
 )
 firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key = Secret(
     deploy_type="env",
@@ -471,8 +471,8 @@ with DAG(
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         secrets=[
-            firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key_id,
             firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_issuer_id,
+            firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key_id,
             firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key,
         ],
     )

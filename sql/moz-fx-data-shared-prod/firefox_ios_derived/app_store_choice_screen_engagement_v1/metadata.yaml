@@ -19,9 +19,9 @@ scheduling:
   - --partition_field=logical_date
   secrets:
   - deploy_target: CONNECT_ISSUER_ID
-    key: bqetl_firefox_ios__app_store_connect_key_id
-  - deploy_target: CONNECT_KEY_ID
     key: bqetl_firefox_ios__app_store_connect_issuer_id
+  - deploy_target: CONNECT_KEY_ID
+    key: bqetl_firefox_ios__app_store_connect_key_id
   - deploy_target: CONNECT_KEY
     key: bqetl_firefox_ios__app_store_connect_key
 bigquery:

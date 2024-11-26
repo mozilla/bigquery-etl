@@ -465,6 +465,7 @@ class TestParseBackfill(object):
             status = Initiate
             custom_query_path = None
             shredder_mitigation = False
+            override_retention_limit = False
             """
 
         assert actual_backfill_str == expected_backfill_str

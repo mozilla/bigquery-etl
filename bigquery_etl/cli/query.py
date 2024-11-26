@@ -81,6 +81,7 @@ DEFAULT_INIT_PARALLELISM = 10
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
+NBR_DAYS_RETAINED = 775
 
 
 @click.group(help="Commands for managing queries.")
@@ -658,6 +659,12 @@ def _backfill_query(
         "parameters and/or date_partition_parameter as needed."
     ),
 )
+@click.option(
+    "--override-retention-range-limit",
+    type=bool,
+    help="Whether to allow running a backfill outside the range limit",
+    default=False,
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -676,6 +683,7 @@ def backfill(
     checks_file_name,
     custom_query_path,
     scheduling_overrides,
+    override_retention_range_limit,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -684,6 +692,20 @@ def backfill(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
+    if not override_retention_range_limit and datetime.datetime.strptime(
+        str(start_date), "%Y-%m-%d"
+    ).date() < datetime.date.today() - timedelta(days=NBR_DAYS_RETAINED):
+        # Exit - cannot backfill due to risk of losing data
+        click.echo(
+            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    # If override retention policy is true, continue to run the backfill
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     if custom_query_path:
         query_files = paths_matching_name_pattern(

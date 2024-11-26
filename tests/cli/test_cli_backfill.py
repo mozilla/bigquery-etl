@@ -2292,7 +2292,6 @@ class TestBackfill:
                 [
                     "moz-fx-data-shared-prod.test.test_query_v1",
                     "--parallelism=0",
-                    "--override-retention-range-limit=True",
                 ],
             )
 

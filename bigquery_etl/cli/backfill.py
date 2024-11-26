@@ -125,8 +125,9 @@ def backfill(ctx):
 @click.option(
     "--override-retention-range-limit",
     "--override_retention_range_limit",
-    required=True,
+    required=False,
     type=bool,
+    is_flag=True,
     help="True to allow running a backfill outside the retention policy limit.",
     default=False,
 )

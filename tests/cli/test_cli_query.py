@@ -605,6 +605,7 @@ class TestQuery:
                     "--end_date=2021-01-06",
                     "--parallelism=0",
                     """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    "--override-retention-range-limit=True",
                 ],
             )
             assert result.exit_code == 0

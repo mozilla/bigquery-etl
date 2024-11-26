@@ -2584,7 +2584,6 @@ class TestBackfill:
             mock_from_query_file.assert_called_with(
                 query_file=query_path,
                 respect_skip=False,
-                ##
                 sql_dir="sql/",
             )
 

@@ -28,8 +28,24 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
+    - saved_metric_id: freshness
+      metric_name: FRESHNESS
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: default
     - saved_metric_id: volume_fail
       metric_name: VOLUME [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: volume
+      metric_name: VOLUME
       metric_type:
         type: PREDEFINED
         predefined_metric: VOLUME

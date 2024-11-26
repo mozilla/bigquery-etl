@@ -22,8 +22,5 @@ tag_deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:
-          - saved_metric_id: volume_fail
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
-        metrics:
-          - saved_metric_id: freshness_fail
+          - saved_metric_id: volume
+          - saved_metric_id: freshness

@@ -23,7 +23,7 @@ CONNECT_KEY_ID = os.environ.get("CONNECT_KEY_ID")
 CONNECT_KEY = os.environ.get("CONNECT_KEY")
 
 HOST = "https://api.appstoreconnect.apple.com"
-REPORT_TITLE = "Browser Choice Screen Engagement"
+REPORT_TITLE = "Browser Choice Screen Engagement (iOS versions before 18.2)"
 REPORT_DATA_DELIMITER = "\t"
 
 SCHEMA_FILE = Path(__file__).parent / "schema.yaml"
@@ -127,7 +127,7 @@ def fetch_report_data(app_id, date, jwt_token, target_file_path):
     # for now we just assume there is only one ongoing browser choice screen report
     browser_choice_screen_analytics_report = list(
         filter(
-            lambda x: x["attributes"]["name"].startswith(REPORT_TITLE),
+            lambda x: x["attributes"]["name"] == REPORT_TITLE,
             analytics_reports,
         )
     )[0]

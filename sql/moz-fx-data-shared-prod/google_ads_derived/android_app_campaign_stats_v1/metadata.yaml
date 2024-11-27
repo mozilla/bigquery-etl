@@ -8,10 +8,10 @@ description: |-
   model can be summed to get information for
   just that campaign on that date.
 owners:
-- frank@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: kwindau@mozilla.com
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

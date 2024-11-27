@@ -37,7 +37,7 @@ activations AS (
     `mozdata.ltv.firefox_ios_client_ltv` AS ltv
   INNER JOIN
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` AS clients
-    USING(client_id, sample_id)
+    USING (client_id, sample_id)
   WHERE
     clients.channel = "release"
   GROUP BY

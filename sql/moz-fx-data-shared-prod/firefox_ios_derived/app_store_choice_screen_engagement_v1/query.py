@@ -42,7 +42,7 @@ def generate_jwt_token(issuer_id, key_id, private_key):
 
     return jwt.encode(
         payload,
-        private_key,
+        private_key.replace("\\n", "\n"),
         algorithm=algorithm,
         headers={"kid": key_id, "alg": algorithm, "typ": "JWT"},
     )

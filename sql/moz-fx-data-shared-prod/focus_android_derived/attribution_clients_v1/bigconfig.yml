@@ -4,6 +4,27 @@ tag_deployments:
     name: Browser Metrics (non-KPI)
   deployments:
   - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1.client_id
+    metrics:
+    - saved_metric_id: is_unique
+    - saved_metric_id: is_not_null
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1.*
+    metrics:
+    - saved_metric_id: freshness
+    - saved_metric_id: volume
+- collection:
+    name: Operational Checks
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1.*
+    metrics:
+    - saved_metric_id: freshness
+    - saved_metric_id: volume
+- collection:
+    name: Browser Metrics (non-KPI)
+  deployments:
+  - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1.*
     metrics:
     - metric_type:

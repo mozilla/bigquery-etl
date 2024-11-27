@@ -17,7 +17,6 @@ WHERE DATE(submission_timestamp) BETWEEN DATE_TRUNC(@submission_date, MONTH) AND
   AND client_info.app_channel = 'prod'
   AND REGEXP_CONTAINS(pge.metrics.url2.page_path, r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)')
   AND pge.metrics.string.page_http_status = '200'
-  AND pge.metrics.string.navigator_user_agent LIKE 'Mozilla%'
 GROUP BY Page
 ORDER BY Pageviews DESC
 """

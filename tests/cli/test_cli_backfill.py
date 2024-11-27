@@ -2232,7 +2232,12 @@ class TestBackfill:
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.cli.backfill.Schema.from_query_file")
     def test_initiate_partitioned_backfill(
-        self, mock_from_query_file, mock_deploy_table, check_call, mock_client, runner
+        self,
+        mock_from_query_file,
+        mock_deploy_table,
+        check_call,
+        mock_client,
+        runner,
     ):
         backfill_staging_table_name = (
             "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
@@ -2279,12 +2284,16 @@ class TestBackfill:
               reason: test_reason
               watchers:
               - test@example.org
-              status: Initiate"""
+              status: Initiate
+              override_retention_limit: True"""
             )
 
             result = runner.invoke(
                 initiate,
-                ["moz-fx-data-shared-prod.test.test_query_v1", "--parallelism=0"],
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                    "--parallelism=0",
+                ],
             )
 
             assert result.exit_code == 0
@@ -2292,7 +2301,7 @@ class TestBackfill:
             assert not mock_from_query_file.called  # schema exists
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
@@ -2368,7 +2377,8 @@ class TestBackfill:
               reason: test_reason
               watchers:
               - test@example.org
-              status: Initiate"""
+              status: Initiate
+              override_retention_limit: true"""
             )
 
             result = runner.invoke(
@@ -2385,7 +2395,7 @@ class TestBackfill:
             )
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
@@ -2468,6 +2478,7 @@ class TestBackfill:
               - test@example.org
               status: Initiate
               billing_project: {VALID_BILLING_PROJECT}
+              override_retention_limit: true
               """
             )
 
@@ -2482,7 +2493,7 @@ class TestBackfill:
             assert not mock_from_query_file.called  # schema exists
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )
@@ -2579,7 +2590,7 @@ class TestBackfill:
             )
 
             mock_deploy_table.assert_called_with(
-                query_file=query_path,
+                artifact_file=query_path,
                 destination_table=f"{backfill_staging_table_name}_2021_05_03",
                 respect_dryrun_skip=False,
             )

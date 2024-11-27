@@ -122,6 +122,15 @@ def backfill(ctx):
     "--shredder_mitigation/--no_shredder_mitigation",
     help="Wether to run a backfill using an auto-generated query that mitigates shredder effect.",
 )
+@click.option(
+    "--override-retention-range-limit",
+    "--override_retention_range_limit",
+    required=False,
+    type=bool,
+    is_flag=True,
+    help="True to allow running a backfill outside the retention policy limit.",
+    default=False,
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -135,6 +144,7 @@ def create(
     watcher,
     custom_query_path,
     shredder_mitigation,
+    override_retention_range_limit,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -163,6 +173,7 @@ def create(
         status=BackfillStatus.INITIATE,
         custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,
+        override_retention_limit=override_retention_range_limit,
         billing_project=billing_project,
     )
 
@@ -432,7 +443,7 @@ def initiate(
 
     try:
         deploy_table(
-            query_file=query_path,
+            artifact_file=query_path,
             destination_table=backfill_staging_qualified_table_name,
             respect_dryrun_skip=False,
         )
@@ -539,6 +550,8 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
+    override_retention_limit = entry.override_retention_limit
+
     # Backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
     try:
@@ -564,6 +577,7 @@ def _initiate_backfill(
                 }
             ),
             billing_project=billing_project,
+            override_retention_range_limit=override_retention_limit,
         )
     except subprocess.CalledProcessError as e:
         raise ValueError(

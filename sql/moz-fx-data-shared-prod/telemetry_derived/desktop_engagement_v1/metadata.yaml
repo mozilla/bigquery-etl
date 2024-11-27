@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_desktop_engagement_model
 bigquery:

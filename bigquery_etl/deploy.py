@@ -53,7 +53,7 @@ def deploy_table(
             metadata = Metadata.of_query_file(artifact_file)
 
         if metadata.external_data:
-            if str(artifact_file).endswith("query.sql"):
+            if artifact_file.suffix == ".sql" or artifact_file.name == "query.py":
                 raise FailedDeployException(
                     f"Invalid metadata: {artifact_file} has both a SQL file and "
                     f"external data config"

@@ -425,21 +425,21 @@ def test_delete_target_fields_match_sources():
 def test_delete_source_invalid():
     """DeleteSource constructor should fail when the given table is invalid."""
     DeleteSource(
-        table=f"dataset.deletion_request_v1",
+        table="dataset.deletion_request_v1",
         field="client_id",
         project="project",
     )
 
     with pytest.raises(ValueError):
         DeleteSource(
-            table=f"deletion_request_v1",
+            table="deletion_request_v1",
             field="client_id",
             project="project",
         )
 
     with pytest.raises(ValueError):
         DeleteSource(
-            table=f"project.dataset.deletion_request_v1",
+            table="project.dataset.deletion_request_v1",
             field="client_id",
             project="project",
         )
@@ -447,23 +447,22 @@ def test_delete_source_invalid():
 
 def test_delete_target_invalid():
     """DeleteTarget constructor should fail when the given table is invalid."""
-    DeleteSource(
-        table=f"dataset.deletion_request_v1",
+    DeleteTarget(
+        table="dataset.deletion_request_v1",
         field="client_id",
         project="project",
     )
 
     with pytest.raises(ValueError):
-        DeleteSource(
-            table=f"deletion_request_v1",
+        DeleteTarget(
+            table="deletion_request_v1",
             field="client_id",
             project="project",
         )
 
     with pytest.raises(ValueError):
-        DeleteSource(
-            table=f"project.dataset.deletion_request_v1",
+        DeleteTarget(
+            table="project.dataset.deletion_request_v1",
             field="client_id",
             project="project",
         )
-

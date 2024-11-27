@@ -132,9 +132,9 @@ babel==2.12.1 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.4.91 \
-    --hash=sha256:a5295bef0b4d2f488db6094049ee4e5e9ae86dfb22d274c2488ea18ef898e32e \
-    --hash=sha256:b99cc7a8409031e326dfffb3ac946e9c7af5c189ee3f9e4593793c8cebb90308
+bigeye-sdk==0.4.92 \
+    --hash=sha256:3ccd40062e431bfa00126429c7b04aeae2a4185b544f1ad27f060f478a52453b \
+    --hash=sha256:6bb248741d1629eb39fef3f3781050d94b86071c14e1a77656a400e2d1eea166
     # via -r requirements.in
 black==24.10.0 \
     --hash=sha256:14b3502784f09ce2443830e3133dacf2c0110d45191ed470ecb04d0f5f6fcb0f \
@@ -934,9 +934,9 @@ mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \
     --hash=sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134
     # via mkdocs
-mkdocs-material==9.5.44 \
-    --hash=sha256:47015f9c167d58a5ff5e682da37441fc4d66a1c79334bfc08d774763cacf69ca \
-    --hash=sha256:f3a6c968e524166b3f3ed1fb97d3ed3e0091183b0545cedf7156a2a6804c56c0
+mkdocs-material==9.5.46 \
+    --hash=sha256:98f0a2039c62e551a68aad0791a8d41324ff90c03a6e6cea381a384b84908b83 \
+    --hash=sha256:ae2043f4238e572f9a40e0b577f50400d6fc31e2fef8ea141800aebf3bd273d7
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
@@ -1581,6 +1581,10 @@ pygments==2.16.1 \
     # via
     #   mkdocs-material
     #   rich
+pyjwt==2.10.0 \
+    --hash=sha256:543b77207db656de204372350926bed5a86201c4cbff159f623f79c7bb487a15 \
+    --hash=sha256:7628a7eb7938959ac1b26e819a1df0fd3259505627b575e4bad6d08f76db695c
+    # via -r requirements.in
 pymdown-extensions==10.3 \
     --hash=sha256:77a82c621c58a83efc49a389159181d570e370fff9f810d3a4766a75fc678b66 \
     --hash=sha256:94a0d8a03246712b64698af223848fd80aaf1ae4c4be29c8c61939b0467b5722

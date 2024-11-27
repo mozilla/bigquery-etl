@@ -14,3 +14,12 @@ tag_deployments:
         metrics:
           - saved_metric_id: freshness
           - saved_metric_id: volume
+
+  - collection:
+      name: Operational Checks
+    deployments:
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
+          - saved_metric_id: freshness
+          - saved_metric_id: volume

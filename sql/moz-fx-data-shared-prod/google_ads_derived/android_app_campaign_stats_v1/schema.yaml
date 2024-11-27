@@ -20,9 +20,17 @@ fields:
   type: STRING
   description: "Language the campaign ran in."
 - mode: NULLABLE
+  name: campaign_segments
+  type: STRING
+  description:
+- mode: NULLABLE
   name: ad_group
   type: STRING
   description: "Name of the Ad Group."
+- mode: NULLABLE
+  name: ad_group_segments
+  type: STRING
+  description:
 - mode: NULLABLE
   name: impressions
   type: INTEGER

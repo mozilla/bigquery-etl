@@ -98,6 +98,7 @@ partition_stats AS (
     current_partitions.first_non_empty_partition_current,
     current_partitions.first_partition_row_count,
     CAST(CAST(option_value AS FLOAT64) AS INT) AS partition_expiration_days,
+    previous.partition_expiration_days AS previous_partition_expiration_days,
   FROM
     current_partitions
   LEFT JOIN
@@ -125,5 +126,6 @@ SELECT
     ),
     INTERVAL partition_expiration_days DAY
   ) AS next_deletion_date,
+  COALESCE(previous_partition_expiration_days, -1) != COALESCE(partition_expiration_days, -1) AS expiration_changed,
 FROM
   partition_stats

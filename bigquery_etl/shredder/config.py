@@ -31,6 +31,10 @@ class DeleteSource:
     project: str = SHARED_PROD
     conditions: tuple[str, ...] = ()
 
+    def __post_init__(self):
+        if len(self.table.split(".")) != 2:
+            raise ValueError("DeleteSource table must be in the 'dataset.table' format.")
+
     @property
     def table_id(self):
         """Table Id."""
@@ -54,6 +58,10 @@ class DeleteTarget:
     table: str
     field: str | tuple[str, ...]
     project: str = SHARED_PROD
+
+    def __post_init__(self):
+        if len(self.table.split(".")) != 2:
+            raise ValueError("DeleteTarget table must be in the 'dataset.table' format.")
 
     @property
     def table_id(self):

@@ -1,6 +1,7 @@
 from multiprocessing.pool import ThreadPool
 from unittest import mock
 
+import pytest
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
@@ -419,3 +420,50 @@ def test_delete_target_fields_match_sources():
             f"Invalid delete target for {target.table}: number of fields in target "
             f"(found {field_count}) must match number of sources (found {source_count})"
         )
+
+
+def test_delete_source_invalid():
+    """DeleteSource constructor should fail when the given table is invalid."""
+    DeleteSource(
+        table=f"dataset.deletion_request_v1",
+        field="client_id",
+        project="project",
+    )
+
+    with pytest.raises(ValueError):
+        DeleteSource(
+            table=f"deletion_request_v1",
+            field="client_id",
+            project="project",
+        )
+
+    with pytest.raises(ValueError):
+        DeleteSource(
+            table=f"project.dataset.deletion_request_v1",
+            field="client_id",
+            project="project",
+        )
+
+
+def test_delete_target_invalid():
+    """DeleteTarget constructor should fail when the given table is invalid."""
+    DeleteSource(
+        table=f"dataset.deletion_request_v1",
+        field="client_id",
+        project="project",
+    )
+
+    with pytest.raises(ValueError):
+        DeleteSource(
+            table=f"deletion_request_v1",
+            field="client_id",
+            project="project",
+        )
+
+    with pytest.raises(ValueError):
+        DeleteSource(
+            table=f"project.dataset.deletion_request_v1",
+            field="client_id",
+            project="project",
+        )
+

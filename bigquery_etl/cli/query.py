@@ -46,7 +46,12 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
-from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
+from ..deploy import (
+    FailedDeployException,
+    SkippedDeployException,
+    SkippedExternalDataException,
+    deploy_table,
+)
 from ..dryrun import DryRun, get_credentials, get_id_token
 from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
@@ -56,12 +61,10 @@ from ..metadata.parse_metadata import (
     BigQueryMetadata,
     ClusteringMetadata,
     DatasetMetadata,
-    ExternalDataFormat,
     Metadata,
     PartitionMetadata,
     PartitionType,
 )
-from ..metadata.publish_metadata import attach_metadata
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
@@ -81,6 +84,7 @@ DEFAULT_INIT_PARALLELISM = 10
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
+NBR_DAYS_RETAINED = 775
 
 
 @click.group(help="Commands for managing queries.")
@@ -658,6 +662,14 @@ def _backfill_query(
         "parameters and/or date_partition_parameter as needed."
     ),
 )
+@click.option(
+    "--override-retention-range-limit",
+    required=False,
+    type=bool,
+    is_flag=True,
+    help="True to allow running a backfill outside the retention policy limit.",
+    default=False,
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -676,6 +688,7 @@ def backfill(
     checks_file_name,
     custom_query_path,
     scheduling_overrides,
+    override_retention_range_limit,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -684,6 +697,21 @@ def backfill(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=NBR_DAYS_RETAINED)
+    ):
+        # Exit - cannot backfill due to risk of losing data
+        click.echo(
+            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    # If override retention policy is true, continue to run the backfill
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     if custom_query_path:
         query_files = paths_matching_name_pattern(
@@ -2266,13 +2294,14 @@ def deploy(
         force=force,
         use_cloud_function=use_cloud_function,
         skip_existing=skip_existing,
+        skip_external_data=skip_external_data,
         respect_dryrun_skip=respect_dryrun_skip,
         sql_dir=sql_dir,
         credentials=credentials,
         id_token=id_token,
     )
 
-    failed_deploys, skipped_deploys = [], []
+    failed_deploys, skipped_deploys, external_deploys = [], [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
             executor.submit(_deploy, artifact_file): artifact_file
@@ -2290,106 +2319,27 @@ def deploy(
             except FailedDeployException as e:
                 print(f"Failed deploy for {artifact_file}: ({e})")
                 failed_deploys.append(artifact_file)
+            except SkippedExternalDataException as e:
+                print(f"Skipping deploy for external data table {artifact_file}: ({e})")
+                external_deploys.append(artifact_file)
             else:
                 print(f"{artifact_file} successfully deployed!")
-
-    if not skip_external_data:
-        failed_external_deploys = _deploy_external_data(
-            name, sql_dir, project_id, skip_existing, credentials=credentials
-        )
-        failed_deploys += failed_external_deploys
 
     if skipped_deploys:
         click.echo("The following deploys were skipped:")
         for skipped_deploy in skipped_deploys:
             click.echo(skipped_deploy)
 
+    if external_deploys:
+        click.echo("The following deploys of external data tables were skipped:")
+        for external_deploy in external_deploys:
+            click.echo(external_deploy)
+
     if failed_deploys:
         click.echo("The following tables could not be deployed:")
         for failed_deploy in failed_deploys:
             click.echo(failed_deploy)
         sys.exit(1)
-
-
-def _deploy_external_data(
-    name, sql_dir, project_id, skip_existing, credentials
-) -> list:
-    """Publish external data tables."""
-    # whether a table should be created from external data is defined in the metadata
-    metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, ["metadata.yaml"]
-    )
-    client = bigquery.Client(credentials=credentials)
-    failed_deploys = []
-    for metadata_file_path in metadata_files:
-        metadata = Metadata.from_file(metadata_file_path)
-        if not metadata.external_data:
-            # skip all tables that are not created from external data
-            continue
-
-        existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
-
-        if not existing_schema_path.is_file():
-            # tables created from external data must specify a schema
-            click.echo(f"No schema file found for {metadata_file_path}")
-            continue
-
-        try:
-            table_name = metadata_file_path.parent.name
-            dataset_name = metadata_file_path.parent.parent.name
-            project_name = metadata_file_path.parent.parent.parent.name
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-
-            try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
-
-            bigquery_schema = existing_schema.to_bigquery_schema()
-            table.schema = bigquery_schema
-            attach_metadata(metadata_file_path, table)
-
-            if not table.created:
-                if metadata.external_data.format in (
-                    ExternalDataFormat.GOOGLE_SHEETS,
-                    ExternalDataFormat.CSV,
-                ):
-                    external_config = bigquery.ExternalConfig(
-                        metadata.external_data.format.value.upper()
-                    )
-                    external_config.source_uris = metadata.external_data.source_uris
-                    external_config.ignore_unknown_values = True
-                    external_config.autodetect = False
-
-                    for key, v in metadata.external_data.options.items():
-                        setattr(external_config.options, key, v)
-
-                    table.external_data_configuration = external_config
-                    table = client.create_table(table)
-                    click.echo(f"Destination table {full_table_id} created.")
-
-                else:
-                    click.echo(
-                        f"External data format {metadata.external_data.format} unsupported."
-                    )
-            elif not skip_existing:
-                client.update_table(
-                    table,
-                    [
-                        "schema",
-                        "friendly_name",
-                        "description",
-                        "labels",
-                    ],
-                )
-                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
-        except Exception:
-            print_exc()
-            failed_deploys.append(metadata_file_path)
-
-    return failed_deploys
 
 
 def _validate_schema_from_path(

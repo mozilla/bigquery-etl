@@ -72,6 +72,7 @@ class Backfill:
     status: BackfillStatus = attr.ib()
     custom_query_path: Optional[str] = attr.ib(None)
     shredder_mitigation: Optional[bool] = attr.ib(False)
+    override_retention_limit: Optional[bool] = attr.ib(False)
     billing_project: Optional[str] = attr.ib(None)
 
     def __str__(self):
@@ -93,6 +94,7 @@ class Backfill:
             status = {self.status.value}
             custom_query_path = {self.custom_query_path}
             shredder_mitigation = {self.shredder_mitigation}
+            override_retention_limit = {self.override_retention_limit}
             """
 
         return backfill_str.replace("'", "")
@@ -201,6 +203,9 @@ class Backfill:
                         status=BackfillStatus[entry["status"].upper()],
                         custom_query_path=entry.get("custom_query_path", None),
                         shredder_mitigation=entry.get("shredder_mitigation", False),
+                        override_retention_limit=entry.get(
+                            "override_retention_limit", False
+                        ),
                         billing_project=entry.get("billing_project", None),
                     )
 
@@ -225,6 +230,7 @@ class Backfill:
                 "status": self.status.value,
                 "custom_query_path": self.custom_query_path,
                 "shredder_mitigation": self.shredder_mitigation,
+                "override_retention_limit": self.override_retention_limit,
                 "billing_project": self.billing_project,
             }
         }
@@ -237,6 +243,9 @@ class Backfill:
 
         if yaml_dict[self.entry_date]["shredder_mitigation"] is None:
             del yaml_dict[self.entry_date]["shredder_mitigation"]
+
+        if yaml_dict[self.entry_date]["override_retention_limit"] is None:
+            del yaml_dict[self.entry_date]["override_retention_limit"]
 
         if yaml_dict[self.entry_date]["billing_project"] is None:
             del yaml_dict[self.entry_date]["billing_project"]

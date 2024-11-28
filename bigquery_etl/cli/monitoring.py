@@ -181,7 +181,8 @@ def deploy(
             input_path=[
                 metadata_file.parent / BIGCONFIG_FILE
                 for metadata_file in list(set(metadata_files))
-            ],
+            ]
+            + [f"{sql_dir}/{BIGCONFIG_FILE}"],
             output_path=Path(sql_dir).parent if sql_dir else None,
             apply=not dry_run,
             recursive=False,

@@ -58,6 +58,7 @@ CHECKS_TEMPLATE_CHANNELS = {
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
+    firefox_desktop = "Firefox Desktop"
     fenix = "Fenix"
     focus_ios = "Focus iOS"
     focus_android = "Focus Android"

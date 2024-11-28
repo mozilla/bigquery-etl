@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "syncstorage" AS normalized_app_id,
-  e.* EXCEPT (events) REPLACE(
+  e.* EXCEPT (events, metrics) REPLACE(
     -- Order of some fields differs between tables; we're verbose here for compatibility
     STRUCT(
       client_info.android_sdk_version AS android_sdk_version,

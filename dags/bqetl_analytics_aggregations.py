@@ -626,9 +626,9 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3 = bigquery_dq_check(
-        task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v3",
-        source_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v4 = bigquery_dq_check(
+        task_id="checks__warn_firefox_desktop_derived__active_users_aggregates__v4",
+        source_table='active_users_aggregates_v4${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -744,9 +744,9 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    firefox_desktop_active_users_aggregates_v3 = bigquery_etl_query(
-        task_id="firefox_desktop_active_users_aggregates_v3",
-        destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+    firefox_desktop_active_users_aggregates_v4 = bigquery_etl_query(
+        task_id="firefox_desktop_active_users_aggregates_v4",
+        destination_table='active_users_aggregates_v4${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="lvargas@mozilla.com",
@@ -761,17 +761,17 @@ with DAG(
     )
 
     with TaskGroup(
-        "firefox_desktop_active_users_aggregates_v3_external",
-    ) as firefox_desktop_active_users_aggregates_v3_external:
+        "firefox_desktop_active_users_aggregates_v4_external",
+    ) as firefox_desktop_active_users_aggregates_v4_external:
         ExternalTaskMarker(
-            task_id="bqetl_dynamic_dau__wait_for_firefox_desktop_active_users_aggregates_v3",
+            task_id="bqetl_dynamic_dau__wait_for_firefox_desktop_active_users_aggregates_v4",
             external_dag_id="bqetl_dynamic_dau",
-            external_task_id="wait_for_firefox_desktop_active_users_aggregates_v3",
+            external_task_id="wait_for_firefox_desktop_active_users_aggregates_v4",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=51300)).isoformat() }}",
         )
 
-        firefox_desktop_active_users_aggregates_v3_external.set_upstream(
-            firefox_desktop_active_users_aggregates_v3
+        firefox_desktop_active_users_aggregates_v4_external.set_upstream(
+            firefox_desktop_active_users_aggregates_v4
         )
 
     firefox_ios_active_users_aggregates_v3 = bigquery_etl_query(
@@ -958,12 +958,12 @@ with DAG(
         fenix_active_users_aggregates_v3
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v4.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
-    checks__warn_firefox_desktop_derived__active_users_aggregates__v3.set_upstream(
-        firefox_desktop_active_users_aggregates_v3
+    checks__warn_firefox_desktop_derived__active_users_aggregates__v4.set_upstream(
+        firefox_desktop_active_users_aggregates_v4
     )
 
     checks__warn_firefox_ios_derived__active_users_aggregates__v3.set_upstream(
@@ -1014,7 +1014,7 @@ with DAG(
         wait_for_fenix_derived__metrics_clients_last_seen__v1
     )
 
-    firefox_desktop_active_users_aggregates_v3.set_upstream(
+    firefox_desktop_active_users_aggregates_v4.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 

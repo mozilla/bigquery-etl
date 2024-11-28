@@ -226,3 +226,6 @@ fields:
 - name: event_extra
   type: JSON
   mode: NULLABLE
+- name: metrics
+  type: JSON
+  mode: NULLABLE

@@ -871,7 +871,16 @@ SELECT
       metrics.timing_distribution.network_sub_tls_handshake,
       metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
       metrics.timing_distribution.network_cache_miss_time,
-      metrics.timing_distribution.javascript_ion_compile_time
+      metrics.timing_distribution.javascript_ion_compile_time,
+      metrics.timing_distribution.javascript_gc_animation,
+      metrics.timing_distribution.javascript_gc_budget,
+      metrics.timing_distribution.javascript_gc_budget_overrun,
+      metrics.timing_distribution.javascript_gc_mark_gray,
+      metrics.timing_distribution.javascript_gc_mark_weak,
+      metrics.timing_distribution.javascript_gc_max_pause,
+      metrics.timing_distribution.javascript_gc_task_start_delay,
+      metrics.timing_distribution.javascript_gc_time_between,
+      metrics.timing_distribution.javascript_gc_time_between_slices
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -982,7 +991,15 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
       metrics.labeled_timing_distribution.networking_trr_fetch_duration,
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection,
-      metrics.labeled_timing_distribution.network_http3_avg_read_interval
+      metrics.labeled_timing_distribution.network_http3_avg_read_interval,
+      metrics.labeled_timing_distribution.networking_trr_complete_load,
+      metrics.labeled_timing_distribution.networking_trr_dns_end,
+      metrics.labeled_timing_distribution.networking_trr_dns_start,
+      metrics.labeled_timing_distribution.networking_trr_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_sent,
+      metrics.labeled_timing_distribution.networking_trr_tcp_connection,
+      metrics.labeled_timing_distribution.networking_trr_tls_handshake
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -1874,7 +1891,16 @@ SELECT
       metrics.timing_distribution.network_sub_tls_handshake,
       metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
       metrics.timing_distribution.network_cache_miss_time,
-      metrics.timing_distribution.javascript_ion_compile_time
+      metrics.timing_distribution.javascript_ion_compile_time,
+      metrics.timing_distribution.javascript_gc_animation,
+      metrics.timing_distribution.javascript_gc_budget,
+      metrics.timing_distribution.javascript_gc_budget_overrun,
+      metrics.timing_distribution.javascript_gc_mark_gray,
+      metrics.timing_distribution.javascript_gc_mark_weak,
+      metrics.timing_distribution.javascript_gc_max_pause,
+      metrics.timing_distribution.javascript_gc_task_start_delay,
+      metrics.timing_distribution.javascript_gc_time_between,
+      metrics.timing_distribution.javascript_gc_time_between_slices
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1985,7 +2011,15 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
       metrics.labeled_timing_distribution.networking_trr_fetch_duration,
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection,
-      metrics.labeled_timing_distribution.network_http3_avg_read_interval
+      metrics.labeled_timing_distribution.network_http3_avg_read_interval,
+      metrics.labeled_timing_distribution.networking_trr_complete_load,
+      metrics.labeled_timing_distribution.networking_trr_dns_end,
+      metrics.labeled_timing_distribution.networking_trr_dns_start,
+      metrics.labeled_timing_distribution.networking_trr_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_sent,
+      metrics.labeled_timing_distribution.networking_trr_tcp_connection,
+      metrics.labeled_timing_distribution.networking_trr_tls_handshake
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -2895,7 +2929,16 @@ SELECT
       metrics.timing_distribution.network_sub_tls_handshake,
       metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
       metrics.timing_distribution.network_cache_miss_time,
-      metrics.timing_distribution.javascript_ion_compile_time
+      metrics.timing_distribution.javascript_ion_compile_time,
+      metrics.timing_distribution.javascript_gc_animation,
+      metrics.timing_distribution.javascript_gc_budget,
+      metrics.timing_distribution.javascript_gc_budget_overrun,
+      metrics.timing_distribution.javascript_gc_mark_gray,
+      metrics.timing_distribution.javascript_gc_mark_weak,
+      metrics.timing_distribution.javascript_gc_max_pause,
+      metrics.timing_distribution.javascript_gc_task_start_delay,
+      metrics.timing_distribution.javascript_gc_time_between,
+      metrics.timing_distribution.javascript_gc_time_between_slices
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3006,7 +3049,15 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
       metrics.labeled_timing_distribution.networking_trr_fetch_duration,
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection,
-      metrics.labeled_timing_distribution.network_http3_avg_read_interval
+      metrics.labeled_timing_distribution.network_http3_avg_read_interval,
+      metrics.labeled_timing_distribution.networking_trr_complete_load,
+      metrics.labeled_timing_distribution.networking_trr_dns_end,
+      metrics.labeled_timing_distribution.networking_trr_dns_start,
+      metrics.labeled_timing_distribution.networking_trr_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_sent,
+      metrics.labeled_timing_distribution.networking_trr_tcp_connection,
+      metrics.labeled_timing_distribution.networking_trr_tls_handshake
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -3925,7 +3976,16 @@ SELECT
       metrics.timing_distribution.network_sub_tls_handshake,
       metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
       metrics.timing_distribution.network_cache_miss_time,
-      metrics.timing_distribution.javascript_ion_compile_time
+      metrics.timing_distribution.javascript_ion_compile_time,
+      metrics.timing_distribution.javascript_gc_animation,
+      metrics.timing_distribution.javascript_gc_budget,
+      metrics.timing_distribution.javascript_gc_budget_overrun,
+      metrics.timing_distribution.javascript_gc_mark_gray,
+      metrics.timing_distribution.javascript_gc_mark_weak,
+      metrics.timing_distribution.javascript_gc_max_pause,
+      metrics.timing_distribution.javascript_gc_task_start_delay,
+      metrics.timing_distribution.javascript_gc_time_between,
+      metrics.timing_distribution.javascript_gc_time_between_slices
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4036,7 +4096,15 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
       metrics.labeled_timing_distribution.networking_trr_fetch_duration,
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection,
-      metrics.labeled_timing_distribution.network_http3_avg_read_interval
+      metrics.labeled_timing_distribution.network_http3_avg_read_interval,
+      metrics.labeled_timing_distribution.networking_trr_complete_load,
+      metrics.labeled_timing_distribution.networking_trr_dns_end,
+      metrics.labeled_timing_distribution.networking_trr_dns_start,
+      metrics.labeled_timing_distribution.networking_trr_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_sent,
+      metrics.labeled_timing_distribution.networking_trr_tcp_connection,
+      metrics.labeled_timing_distribution.networking_trr_tls_handshake
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4937,7 +5005,16 @@ SELECT
       metrics.timing_distribution.network_sub_tls_handshake,
       metrics.timing_distribution.localstorage_database_request_allow_to_close_response_time,
       metrics.timing_distribution.network_cache_miss_time,
-      metrics.timing_distribution.javascript_ion_compile_time
+      metrics.timing_distribution.javascript_ion_compile_time,
+      metrics.timing_distribution.javascript_gc_animation,
+      metrics.timing_distribution.javascript_gc_budget,
+      metrics.timing_distribution.javascript_gc_budget_overrun,
+      metrics.timing_distribution.javascript_gc_mark_gray,
+      metrics.timing_distribution.javascript_gc_mark_weak,
+      metrics.timing_distribution.javascript_gc_max_pause,
+      metrics.timing_distribution.javascript_gc_task_start_delay,
+      metrics.timing_distribution.javascript_gc_time_between,
+      metrics.timing_distribution.javascript_gc_time_between_slices
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5048,7 +5125,15 @@ SELECT
       metrics.labeled_timing_distribution.netwerk_http3_0rtt_state_duration,
       metrics.labeled_timing_distribution.networking_trr_fetch_duration,
       metrics.labeled_timing_distribution.netwerk_http3_time_to_reuse_idle_connection,
-      metrics.labeled_timing_distribution.network_http3_avg_read_interval
+      metrics.labeled_timing_distribution.network_http3_avg_read_interval,
+      metrics.labeled_timing_distribution.networking_trr_complete_load,
+      metrics.labeled_timing_distribution.networking_trr_dns_end,
+      metrics.labeled_timing_distribution.networking_trr_dns_start,
+      metrics.labeled_timing_distribution.networking_trr_first_sent_to_last_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_received,
+      metrics.labeled_timing_distribution.networking_trr_open_to_first_sent,
+      metrics.labeled_timing_distribution.networking_trr_tcp_connection,
+      metrics.labeled_timing_distribution.networking_trr_tls_handshake
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

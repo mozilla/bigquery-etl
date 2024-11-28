@@ -233,6 +233,18 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: usage_profile_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A UUID uniquely identifying the profile,
+
+        not shared with other telemetry data.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

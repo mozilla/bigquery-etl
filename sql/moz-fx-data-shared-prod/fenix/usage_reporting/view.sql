@@ -21,7 +21,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.metrics_distribution_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -51,7 +52,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.metrics_distribution_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -81,7 +83,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.metrics_distribution_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -111,7 +114,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.metrics_distribution_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -141,7 +145,8 @@ SELECT
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.metrics_distribution_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

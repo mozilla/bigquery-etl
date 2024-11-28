@@ -91,7 +91,8 @@ WITH base AS (
         ping_info.end_time,
         ping_info.parsed_end_time,
         ping_info.ping_type
-      ) AS ping_info
+      ) AS ping_info,
+      metrics_to_json(TO_JSON(metrics)) AS metrics
     ),
     client_info.client_id AS client_id,
     ping_info.reason AS reason,

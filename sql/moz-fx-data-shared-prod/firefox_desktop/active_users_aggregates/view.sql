@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`
 AS
 SELECT
-  * EXCEPT (app_version, app_name, uri_count, active_hours),
+  * EXCEPT (app_version, app_name),
   app_name,
   app_version,
   `mozfun.norm.browser_version_info`(app_version).major_version AS app_version_major,
@@ -12,4 +12,4 @@ SELECT
   `mozfun.norm.browser_version_info`(app_version).is_major_release AS app_version_is_major_release,
   `mozfun.norm.os`(os) AS os_grouped
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.active_users_aggregates_v3`
+  `moz-fx-data-shared-prod.firefox_desktop_derived.active_users_aggregates_v4`

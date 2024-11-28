@@ -309,6 +309,50 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: syncstorage_device_family
+      type: STRING
+      mode: NULLABLE
+      description: 'Device family from which sync action was initiated.
+
+        Desktop PC, Tablet, Mobile, and Other.
+
+        '
+    - name: syncstorage_hashed_device_id
+      type: STRING
+      mode: NULLABLE
+      description: "Hashed device id that is associated with a given account. This\
+        \ is used\nentirely to associate opt-out or removal requests, as they make\
+        \ use of \nthe \"deletion-request\" ping associated with the client side of\
+        \ Sync.\n"
+    - name: syncstorage_hashed_fxa_uid
+      type: STRING
+      mode: NULLABLE
+      description: 'User identifier. Uses `hashed_fxa_uid` for accurate count of sync
+        actions. Used to determine which user has initiated sync activity. This is
+        the Firefox Accounts (FxA) User Identifier (UID) value passed through a SHA-256
+        hash to render a value that is unique, but ensures the privacy of the original
+        UID. A single user could make numerous sync actions in a given time and this
+        id is required to ensure only a single count of daily active use is made,
+        given a number of actions. Sync_id is not used due to possibility of new keys
+        being generated during resets or timeouts, whenever encryption keys change.
+
+        '
+    - name: syncstorage_platform
+      type: STRING
+      mode: NULLABLE
+      description: 'Platform from which sync action was initiated.
+
+        Firefox Desktop, Fenix, or Firefox iOS.
+
+        '
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE

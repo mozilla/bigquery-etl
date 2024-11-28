@@ -187,6 +187,13 @@ fields:
     - name: metrics_distribution_id
       type: STRING
       mode: NULLABLE
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: usage_profile_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

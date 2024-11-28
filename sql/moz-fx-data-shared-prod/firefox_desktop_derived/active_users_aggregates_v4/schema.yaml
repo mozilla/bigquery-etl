@@ -26,6 +26,7 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: Operating System reported by the client.
 - name: os_version_build
   type: STRING
   mode: NULLABLE

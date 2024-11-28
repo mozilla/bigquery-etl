@@ -40,11 +40,11 @@ PyYAML==6.0.2
 rich-click==1.8.3
 smart_open==6.4.0
 sqlglot==25.28.0
-sqlparse==0.5.1
+sqlparse==0.5.2
 stripe==6.4.0
 symbolic==12.12.1
 siggen==2.2.20241029
-tomli==2.0.2 # for backwards compatibility with python < 3.11
+tomli==2.2.1 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20241003
 types-pytz==2024.2.0.20241003
 types-PyYAML==6.0.12.20240917

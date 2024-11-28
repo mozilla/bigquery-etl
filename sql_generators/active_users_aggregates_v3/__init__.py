@@ -58,7 +58,6 @@ CHECKS_TEMPLATE_CHANNELS = {
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
-    firefox_desktop = "Firefox Desktop"
     fenix = "Fenix"
     focus_ios = "Focus iOS"
     focus_android = "Focus Android"
@@ -172,6 +171,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     template_folder=THIS_PATH / "templates",
                     app_value=browser.value,
                     app_name=browser.name,
+                    table_name=TABLE_NAME,
                     format=False,
                 ),
             skip_existing=False,

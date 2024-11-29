@@ -9,7 +9,11 @@ WITH daily_stats AS (
   FROM
     `moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1`
   WHERE
-    `date` = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    {% if is_init() %}
+      `date` <= DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    {% else %}
+      `date` = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    {% endif %}
     AND account_name = "Mozilla Firefox UAC"
     AND campaign_name NOT LIKE '%iOS%'
 ),
@@ -38,7 +42,11 @@ retention_aggs AS (
   FROM
     `moz-fx-data-shared-prod.fenix.funnel_retention_week_4`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date <= CURRENT_DATE
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
     `date`,
     ad_group_id

@@ -14,4 +14,4 @@ class UsageReportingClientsDailyTable(GleanTable):
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
-        self.base_table_name = "dau_reporting_v1"
+        self.base_table_name = "usage_reporting_v1"

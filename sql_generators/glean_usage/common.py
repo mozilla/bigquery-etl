@@ -144,6 +144,7 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         events_view=f"{prefix}.events",
         events_stream_table=f"{prefix}_derived.events_stream_v1",
         events_stream_view=f"{prefix}.events_stream",
+        dau_reporting_stable_table=f"{prefix}_stable.dau_reporting_v1",
         usage_reporting_stable_table=f"{prefix}_stable.usage_reporting_v1",
         usage_reporting_clients_daily_table=f"{prefix}_derived.usage_reporting_clients_daily_v1",
         usage_reporting_clients_first_seen_table=f"{prefix}_derived.usage_reporting_clients_first_seen_v1",

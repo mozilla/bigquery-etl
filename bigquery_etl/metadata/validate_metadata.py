@@ -168,6 +168,7 @@ def validate_deprecation(metadata, path):
 
     return True
 
+
 def validate_exclusion_list_expiration_days(metadata, path):
     """Check if any of the retention exclusion tables have expiration_days set."""
     is_valid = True
@@ -184,7 +185,7 @@ def validate_exclusion_list_expiration_days(metadata, path):
             click.echo(
                 click.style(
                     f"ERROR: Table at {path} is in the retention exclusion list but has expiration_days set to {expiration_days}.",
-                    fg="red"
+                    fg="red",
                 )
             )
             is_valid = False

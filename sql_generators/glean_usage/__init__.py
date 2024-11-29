@@ -26,6 +26,9 @@ from sql_generators.glean_usage import (
     glean_app_ping_views,
     metrics_clients_daily,
     metrics_clients_last_seen,
+    usage_reporting_clients_daily,
+    usage_reporting_clients_first_seen,
+    usage_reporting_clients_last_seen,
 )
 from sql_generators.glean_usage.common import get_app_info, list_tables
 
@@ -43,6 +46,9 @@ GLEAN_TABLES = [
     event_error_monitoring.EventErrorMonitoring(),
     event_flow_monitoring.EventFlowMonitoring(),
     events_stream.EventsStreamTable(),
+    usage_reporting_clients_daily.UsageReportingClientsDailyTable(),
+    usage_reporting_clients_first_seen.UsageReportingClientsFirstSeenTable(),
+    usage_reporting_clients_last_seen.UsageReportingClientsLastSeenTable(),
 ]
 
 

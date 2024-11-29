@@ -29,7 +29,8 @@ SELECT
       metrics.boolean.broken_site_report_tab_info_frameworks_marfeel,
       metrics.boolean.broken_site_report_tab_info_frameworks_mobify,
       metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled,
-      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm
+      metrics.boolean.broken_site_report_browser_info_prefs_third_party_cookie_blocking_enabled_in_pbm,
+      metrics.boolean.broken_site_report_tab_info_antitracking_btp_has_purged_site
     ) AS `boolean`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

@@ -360,6 +360,13 @@ fields:
       description: 'Value of `network.cookie.cookieBehavior.optInPartitioning.pbmode`
 
         '
+    - name: broken_site_report_tab_info_antitracking_btp_has_purged_site
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the site in the current tab has recently been purged by
+        Bounce Tracking Protection.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -16,7 +16,11 @@ WITH daily_stats AS (
   FROM
     `moz-fx-data-shared-prod.apple_ads.ad_group_report`
   WHERE
-    date_day = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    {% if is_init() %}
+      date_day <= DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    {% else %}
+      date_day = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    {% endif %}
   GROUP BY
     `date`,
     campaign_name,
@@ -56,7 +60,11 @@ retention_aggs AS (
     -- TODO: we should update this to use retention_clients view instead
     `moz-fx-data-shared-prod.firefox_ios.funnel_retention_week_4`
   WHERE
-    submission_date = @submission_date
+    {% if is_init() %}
+      submission_date <= CURRENT_DATE
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
     `date`,
     campaign_id,

@@ -151,6 +151,13 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         events_view=f"{prefix}.events",
         events_stream_table=f"{prefix}_derived.events_stream_v1",
         events_stream_view=f"{prefix}.events_stream",
+        usage_reporting_stable_table=f"{prefix}_stable.usage_reporting_v1",
+        usage_reporting_clients_daily_table=f"{prefix}_derived.usage_reporting_clients_daily_v1",
+        usage_reporting_clients_first_seen_table=f"{prefix}_derived.usage_reporting_clients_first_seen_v1",
+        usage_reporting_clients_last_seen_table=f"{prefix}_derived.usage_reporting_clients_last_seen_v1",
+        usage_reporting_clients_daily_view=f"{prefix}.usage_reporting_clients_daily",
+        usage_reporting_clients_first_seen_view=f"{prefix}.usage_reporting_clients_first_seen",
+        usage_reporting_clients_last_seen_view=f"{prefix}.usage_reporting_clients_last_seen",
     )
 
 
@@ -234,7 +241,7 @@ class GleanTable:
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -268,7 +275,7 @@ class GleanTable:
             derived_dataset=derived_dataset,
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
-            has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
+            has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -364,7 +371,7 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:

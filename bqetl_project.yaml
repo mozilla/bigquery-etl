@@ -335,3 +335,6 @@ generate:
       events_tables: # overwrite event tables
         pine: # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
+
+retention_exclusion_list:
+- sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

@@ -8,15 +8,26 @@ description: |-
   model can be summed to get information for
   just that campaign on that date.
 owners:
-- frank@mozilla.com
+- kwindau@mozilla.com
 labels:
-  owner1: frank
+  incremental: true
+  owner1: kwindau
   dag: bqetl_fivetran_google_ads
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
-  date_partition_parameter: null
-bigquery: null
+  date_partition_parameter: date
+  date_partition_offset: -27
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
@@ -31,3 +42,8 @@ references:
   - moz-fx-data-shared-prod.google_ads_derived.campaigns_v2
   - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
   - moz-fx-data-shared-prod.ltv.fenix_client_ltv
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

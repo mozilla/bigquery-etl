@@ -30,6 +30,7 @@ fields:
   - name: value
     type: STRING
     mode: NULLABLE
+  description: null
 - name: ad_group
   type: STRING
   mode: NULLABLE
@@ -44,6 +45,7 @@ fields:
   - name: value
     type: STRING
     mode: NULLABLE
+  description: null
 - name: impressions
   type: INTEGER
   mode: NULLABLE

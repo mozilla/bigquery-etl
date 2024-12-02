@@ -74,6 +74,20 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    bigeye__google_ads_derived__android_app_campaign_stats__v1 = bigquery_bigeye_check(
+        task_id="bigeye__google_ads_derived__android_app_campaign_stats__v1",
+        table_id="moz-fx-data-shared-prod.google_ads_derived.android_app_campaign_stats_v1",
+        warehouse_id="1939",
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        retries=0,
+    )
+
     checks__fail_google_ads_derived__ad_groups__v1 = bigquery_dq_check(
         task_id="checks__fail_google_ads_derived__ad_groups__v1",
         source_table="ad_groups_v1",
@@ -89,14 +103,19 @@ with DAG(
 
     checks__fail_google_ads_derived__android_app_campaign_stats__v1 = bigquery_dq_check(
         task_id="checks__fail_google_ads_derived__android_app_campaign_stats__v1",
-        source_table="android_app_campaign_stats_v1",
+        source_table='android_app_campaign_stats_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         depends_on_past=False,
-        task_concurrency=1,
+        parameters=["date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -152,14 +171,19 @@ with DAG(
 
     google_ads_derived__android_app_campaign_stats__v1 = bigquery_etl_query(
         task_id="google_ads_derived__android_app_campaign_stats__v1",
-        destination_table="android_app_campaign_stats_v1",
+        destination_table='android_app_campaign_stats_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
-        task_concurrency=1,
+        parameters=["date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
     )
 
     google_ads_derived__campaign_conversions_by_date__v1 = bigquery_etl_query(
@@ -246,6 +270,10 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    bigeye__google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        google_ads_derived__android_app_campaign_stats__v1
     )
 
     checks__fail_google_ads_derived__ad_groups__v1.set_upstream(

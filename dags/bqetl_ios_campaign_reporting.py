@@ -102,14 +102,25 @@ with DAG(
 
     apple_ads_external__ios_app_campaign_stats__v1 = bigquery_etl_query(
         task_id="apple_ads_external__ios_app_campaign_stats__v1",
-        destination_table="ios_app_campaign_stats_v1",
+        destination_table='ios_app_campaign_stats_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="apple_ads_external",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        task_concurrency=1,
+        parameters=["date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
+    bigeye__apple_ads_external__ios_app_campaign_stats__v1 = bigquery_bigeye_check(
+        task_id="bigeye__apple_ads_external__ios_app_campaign_stats__v1",
+        table_id="moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1",
+        warehouse_id="1939",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        retries=0,
     )
 
     apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
@@ -126,4 +137,8 @@ with DAG(
 
     apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
         wait_for_firefox_ios_derived__funnel_retention_week_4__v1
+    )
+
+    bigeye__apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
+        apple_ads_external__ios_app_campaign_stats__v1
     )

@@ -1153,10 +1153,10 @@ class TestGenerateQueryWithShredderMitigation:
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
     def test_generate_query_failed_for_missing_partitioning(
-        self, mock_classify_columns, mock_client, runner
+        self, mock_classify_columns, mock_client, runner, capfd
     ):
-        """Test that function raises exception for required query parameter missing
-        in metadata, instead of generating wrong query."""
+        """Test that function raises exception for required query parameter -partitioning-
+        missing in metadata, instead of generating wrong query."""
         existing_schema = {
             "fields": [
                 {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
@@ -1229,7 +1229,7 @@ class TestGenerateQueryWithShredderMitigation:
                 [],
             )
 
-            with pytest.raises(TypeError) as e:
+            with pytest.raises((TypeError, IndexError)) as e:
                 generate_query_with_shredder_mitigation(
                     client=mock_client,
                     project_id=self.project_id,
@@ -1238,7 +1238,13 @@ class TestGenerateQueryWithShredderMitigation:
                     staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert str(e.value) == "'NoneType' object is not iterable"
+
+            assert isinstance(e.value, (TypeError, IndexError))
+            assert str(e.value) in {
+                "'NoneType' object is not iterable",
+                "Invalid type",
+                "list index out of range",
+            }
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")

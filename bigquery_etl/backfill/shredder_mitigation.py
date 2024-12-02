@@ -234,7 +234,7 @@ class Subset:
         partition_type = (
             "DATE" if self.partitioning["type"] == "DAY" else self.partitioning["type"]
         )
-        parameters = None
+        parameters = []
         if partition_field is not None:
             parameters = [
                 bigquery.ScalarQueryParameter(
@@ -537,9 +537,9 @@ def generate_query_with_shredder_mitigation(
         ) = classify_columns(
             new_table_row, previous_group_by, new_group_by, existing_schema, new_schema
         )
-    except TypeError as e:
+    except TypeError:
         raise click.ClickException(
-            f"Table {destination_table} did not return any rows for {backfill_date}.\n{e}"
+            f"Table {destination_table} did not return any rows for {backfill_date}."
         )
 
     if not common_dimensions or not added_dimensions or not metrics:

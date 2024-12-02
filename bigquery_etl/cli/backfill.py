@@ -535,9 +535,11 @@ def _initiate_backfill(
         and entry.shredder_mitigation is False
     ):
         click.echo(
-            "Failed to initiate backfill. This table is labeled to use shredder mitigation."
-            " Please ensure the backfill is created using `shredder_mitigation = true`.",
-            err=True,
+            click.style(
+                f"This backfill cannot continue.\nManaged backfills for tables with metadata label"
+                f" {SHREDDER_MITIGATION_LABEL} require using --shredder_mitigation.",
+                fg="yellow",
+            )
         )
         sys.exit(1)
 

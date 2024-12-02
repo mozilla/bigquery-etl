@@ -2666,15 +2666,17 @@ class TestBackfill:
         path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
         mock_should_initiate.return_value = True
         mock_deploy_table.return_value = None
-        expected_error_output = ("Failed to initiate backfill. This table is labeled to use"
-                                 " shredder mitigation. Please ensure the backfill is "
-                                 "created using `shredder_mitigation = true`.")
+        expected_error_output = (
+            "This backfill cannot continue.\nManaged backfills for "
+            "tables with metadata label shredder_mitigation require "
+            "using option --shredder_mitigation."
+        )
 
-        with (runner.isolated_filesystem()):
+        with runner.isolated_filesystem():
             os.makedirs(path, exist_ok=True)
 
             with open(
-                    "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT 1")
 
@@ -2696,11 +2698,11 @@ class TestBackfill:
                 VALID_REASON,
                 [VALID_WATCHER],
                 BackfillStatus.INITIATE,
-                shredder_mitigation=False
+                shredder_mitigation=False,
             )
 
             backfill_file = (
-                    Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
             )
             backfill_file.write_text(backfill_entry_1.to_yaml())
             assert BACKFILL_FILE in os.listdir(
@@ -2715,7 +2717,7 @@ class TestBackfill:
                     "moz-fx-data-shared-prod.test.test_query_v1",
                     "--parallelism=0",
                 ],
-                )
+            )
 
             assert result.exit_code == 1
             assert expected_error_output in result.output
@@ -2723,18 +2725,18 @@ class TestBackfill:
     @patch("bigquery_etl.cli.backfill.deploy_table")
     @patch("bigquery_etl.backfill.utils._should_initiate")
     def test_initiate_if_label_and_backfill_entry_match(
-            self, mock_should_initiate, mock_deploy_table, runner, capfd
+        self, mock_should_initiate, mock_deploy_table, runner
     ):
-        """Test that process continues if both the table and the backfill entry use shredder_mitigation."""
+        """Test that the process continues if both table & backfill use shredder_mitigation."""
         path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
         mock_should_initiate.return_value = True
         mock_deploy_table.return_value = None
 
-        with (runner.isolated_filesystem()):
+        with runner.isolated_filesystem():
             os.makedirs(path, exist_ok=True)
 
             with open(
-                    "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
             ) as f:
                 f.write("SELECT 1")
 
@@ -2744,7 +2746,7 @@ class TestBackfill:
                 )
 
             with open(
-                    "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
             ) as f:
                 f.write(yaml.dump(DATASET_METADATA_CONF))
 
@@ -2756,11 +2758,11 @@ class TestBackfill:
                 VALID_REASON,
                 [VALID_WATCHER],
                 BackfillStatus.INITIATE,
-                shredder_mitigation=True
+                shredder_mitigation=True,
             )
 
             backfill_file = (
-                    Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
             )
             backfill_file.write_text(backfill_entry_1.to_yaml())
             assert BACKFILL_FILE in os.listdir(
@@ -2769,9 +2771,13 @@ class TestBackfill:
             backfills = Backfill.entries_from_file(backfill_file)
             assert backfills[0] == backfill_entry_1
 
-            with patch("bigquery_etl.cli.backfill.query_backfill", return_value=None) as mock_backfill:
-                with patch("bigquery_etl.cli.backfill.generate_query_with_shredder_mitigation",
-                           return_value=('a', 'b')) as mock_shredder_mitigation:
+            with patch(
+                "bigquery_etl.cli.backfill.query_backfill", return_value=None
+            ) as mock_backfill:
+                with patch(
+                    "bigquery_etl.cli.backfill.generate_query_with_shredder_mitigation",
+                    return_value=("a", "b"),
+                ) as mock_shredder_mitigation:
                     result = runner.invoke(
                         initiate,
                         [

@@ -121,7 +121,7 @@ with DAG(
             task_id="bqetl_search_dashboard__wait_for_search_derived__search_aggregates__v8",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_search_derived__search_aggregates__v8",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
         )
 
         search_derived__search_aggregates__v8_external.set_upstream(
@@ -177,7 +177,7 @@ with DAG(
             task_id="bqetl_search_dashboard__wait_for_search_derived__search_clients_daily__v8",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_search_derived__search_clients_daily__v8",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
         )
 
         ExternalTaskMarker(

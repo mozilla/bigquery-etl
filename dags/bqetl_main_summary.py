@@ -160,7 +160,7 @@ with DAG(
             task_id="bqetl_search_dashboard__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=77400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
         )
 
         ExternalTaskMarker(

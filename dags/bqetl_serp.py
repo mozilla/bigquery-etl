@@ -87,7 +87,7 @@ with DAG(
             task_id="bqetl_search_dashboard__wait_for_firefox_desktop_serp_events__v2",
             external_dag_id="bqetl_search_dashboard",
             external_task_id="wait_for_firefox_desktop_serp_events__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=70200)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=66600)).isoformat() }}",
         )
 
         firefox_desktop_serp_events__v2_external.set_upstream(

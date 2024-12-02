@@ -2669,7 +2669,7 @@ class TestBackfill:
         expected_error_output = (
             "This backfill cannot continue.\nManaged backfills for "
             "tables with metadata label shredder_mitigation require "
-            "using option --shredder_mitigation."
+            "using --shredder_mitigation."
         )
 
         with runner.isolated_filesystem():

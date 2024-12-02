@@ -526,7 +526,13 @@ SELECT
       metrics.custom_distribution.networking_http_3_udp_datagram_segments_received,
       metrics.custom_distribution.networking_http_3_loss_ratio,
       metrics.custom_distribution.networking_http_3_ecn_ce_ect0_ratio_received,
-      metrics.custom_distribution.networking_http_3_ecn_ce_ect0_ratio_sent
+      metrics.custom_distribution.networking_http_3_ecn_ce_ect0_ratio_sent,
+      metrics.custom_distribution.networking_http_1_download_throughput_100,
+      metrics.custom_distribution.networking_http_1_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_1_download_throughput_50_100,
+      metrics.custom_distribution.networking_http_2_download_throughput_100,
+      metrics.custom_distribution.networking_http_2_download_throughput_10_50,
+      metrics.custom_distribution.networking_http_2_download_throughput_50_100
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

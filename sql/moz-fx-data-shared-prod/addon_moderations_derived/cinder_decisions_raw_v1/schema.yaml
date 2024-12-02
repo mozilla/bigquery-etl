@@ -47,7 +47,7 @@ fields:
 
 - mode: NULLABLE
   name: created_at
-  type: DATE
+  type: STRING
   description: Date decision made
 
 - mode: NULLABLE
@@ -57,7 +57,7 @@ fields:
 
 - mode: NULLABLE
   name: job_assigned_at
-  type: DATE
+  type: STRING
   description: Date addon report was assigned to a moderator
 
 - mode: NULLABLE

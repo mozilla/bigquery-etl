@@ -757,6 +757,24 @@ class TestSubset:
             )
 
     @patch("google.cloud.bigquery.Client")
+    def test_destination_table_not_given(self, mock_client):
+        """Test valid version in destination table."""
+        test_destination_table = ""
+
+        with pytest.raises(click.ClickException) as e:
+            Subset(
+                mock_client,
+                test_destination_table,
+                None,
+                self.dataset,
+                self.project_id,
+                None,
+            )
+        assert str(e.value.message) == (
+            "destination_table not given and it's required to continue."
+        )
+
+    @patch("google.cloud.bigquery.Client")
     def test_partitioning(self, mock_client, runner):
         """Test that partitioning type and value associated to a subset are returned as expected."""
         test_subset = Subset(

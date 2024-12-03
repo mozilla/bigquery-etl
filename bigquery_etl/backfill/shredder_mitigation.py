@@ -106,8 +106,18 @@ class Column:
 class Subset:
     """Representation of a subset/CTEs in the query and the actions related to this subset."""
 
+    @staticmethod
+    def attr_not_null(instance, attribute, value):
+        if value is None or value == "":
+            raise click.ClickException(
+                f"{attribute.name} not given and it's required to continue."
+            )
+
     client: bigquery.Client
-    destination_table: str = attrs.field(default="")
+    destination_table: str = attrs.field(
+        default="",
+        validator=attr_not_null,
+    )
     query_cte: str = attrs.field(default="")
     dataset: str = attrs.field(default=TEMP_DATASET)
     project_id: str = attrs.field(default=DEFAULT_PROJECT_ID)

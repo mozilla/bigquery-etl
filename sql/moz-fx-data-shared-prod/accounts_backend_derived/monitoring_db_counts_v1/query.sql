@@ -4,7 +4,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_account_customers_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL

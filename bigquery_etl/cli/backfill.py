@@ -52,6 +52,7 @@ from ..cli.utils import (
 from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from ..schema import SCHEMA_FILE, Schema
 
 logging.basicConfig(level=logging.INFO)
@@ -523,6 +524,25 @@ def _initiate_backfill(
     custom_query_path = None
     checks = None
     custom_checks_name = None
+
+    metadata = Metadata.from_file(
+        Path("sql") / project / dataset / table / METADATA_FILE
+    )
+
+    # Stop if the metadata contains shredder mitigation label and the backfill doesn't.
+    if (
+        SHREDDER_MITIGATION_LABEL in metadata.labels
+        and entry.shredder_mitigation is False
+    ):
+        click.echo(
+            click.style(
+                f"This backfill cannot continue.\nManaged backfills for tables with metadata label"
+                f" {SHREDDER_MITIGATION_LABEL} require using --shredder_mitigation.",
+                fg="yellow",
+            )
+        )
+        sys.exit(1)
+
     if entry.shredder_mitigation is True:
         click.echo(
             click.style(

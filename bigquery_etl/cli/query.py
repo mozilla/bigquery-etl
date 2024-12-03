@@ -1554,6 +1554,7 @@ def initialize(
                         sql_dir=sql_dir,
                         project_id=project,
                         force=True,
+                        respect_dryrun_skip=False,
                     )
 
                 arguments = [

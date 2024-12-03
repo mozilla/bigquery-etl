@@ -13,7 +13,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_account_groups_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -22,7 +22,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_account_reset_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -31,7 +31,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -40,7 +40,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_carts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -49,7 +49,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_device_commands_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -58,7 +58,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_devices_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -67,7 +67,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_email_bounces_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -76,7 +76,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -85,7 +85,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_linked_accounts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -94,7 +94,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_codes_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -103,7 +103,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_refresh_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -112,7 +112,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -121,7 +121,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_password_change_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -130,7 +130,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_password_forgot_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -139,7 +139,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_paypal_customers_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -148,7 +148,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_codes_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -157,7 +157,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_security_events_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -166,7 +166,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_sent_emails_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -175,7 +175,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_session_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -184,7 +184,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_signin_codes_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -193,7 +193,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_totp_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -202,7 +202,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_unblock_codes_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -211,7 +211,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_unverified_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -220,7 +220,7 @@ WITH table_counts AS (
     COUNT(*) AS total_rows
   FROM
     `moz-fx-data-shared-prod.accounts_db_external.fxa_verification_reminders_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-      @as_of_date,
+      @as_of_date + 1,
       'UTC'
     )
   UNION ALL
@@ -232,12 +232,12 @@ WITH table_counts AS (
         ) AS total_rows
       FROM
         `moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-          @as_of_date,
+          @as_of_date + 1,
           'UTC'
         )
       JOIN
         `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-          @as_of_date,
+          @as_of_date + 1,
           'UTC'
         )
         ON `moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1`.uid = `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1`.uid
@@ -253,12 +253,12 @@ WITH table_counts AS (
         ) AS total_rows
       FROM
         `moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-          @as_of_date,
+          @as_of_date + 1,
           'UTC'
         )
       JOIN
         `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-          @as_of_date,
+          @as_of_date + 1,
           'UTC'
         )
         ON `moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1`.uid = `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1`.uid
@@ -272,7 +272,7 @@ WITH table_counts AS (
         COUNT(uid) AS total_rows
       FROM
         `moz-fx-data-shared-prod.accounts_db_external.fxa_linked_accounts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-          @as_of_date,
+          @as_of_date + 1,
           'UTC'
         )
       WHERE
@@ -285,7 +285,7 @@ WITH table_counts AS (
         COUNT(uid) AS total_rows
       FROM
         `moz-fx-data-shared-prod.accounts_db_external.fxa_linked_accounts_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
-          @as_of_date,
+          @as_of_date + 1,
           'UTC'
         )
       WHERE

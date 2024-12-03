@@ -1,0 +1,16 @@
+friendly_name: Pocket DBT Fact Models
+description: |-
+  This dataset contains the DBT fact models for Pocket. These can be used for any Pocket reporting.
+  https://github.com/Pocket/pocket-dbt
+
+
+dataset_base_acl: restricted
+user_facing: true
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/apps
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:dataops-managed/external-dbt-prod

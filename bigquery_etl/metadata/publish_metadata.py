@@ -7,7 +7,7 @@ from google.cloud import bigquery
 
 from ..config import ConfigLoader
 from ..util import standard_args
-from .parse_metadata import Metadata
+from .parse_metadata import ExternalDataFormat, Metadata
 
 METADATA_FILE = "metadata.yaml"
 DEFAULT_PATTERN = (
@@ -26,6 +26,10 @@ parser.add_argument(
 )
 parser.add_argument("--target", help="File or directory containing metadata files")
 standard_args.add_log_level(parser)
+
+
+class InvalidExternalDataConfigException(Exception):
+    """Raised invalid config for external data tables."""
 
 
 def publish_metadata(client, project, dataset, table, metadata):
@@ -61,10 +65,13 @@ def publish_metadata(client, project, dataset, table, metadata):
         print(e)
 
 
-def attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
+def attach_metadata(artifact_file_path: Path, table: bigquery.Table) -> None:
     """Add metadata from query file's metadata.yaml to table object."""
     try:
-        metadata = Metadata.of_query_file(query_file_path)
+        if artifact_file_path.is_file() and artifact_file_path.name == METADATA_FILE:
+            metadata = Metadata.from_file(artifact_file_path)
+        else:
+            metadata = Metadata.of_query_file(artifact_file_path)
     except FileNotFoundError:
         return
 
@@ -101,3 +108,44 @@ def attach_metadata(query_file_path: Path, table: bigquery.Table) -> None:
             for key, value in metadata.labels.items()
             if isinstance(value, str)
         }
+
+
+def attach_external_data_config(artifact_file_path, table) -> None:
+    """Add external data metadata from query file's metadata.yaml to table object."""
+    try:
+        if artifact_file_path.is_file() and artifact_file_path.name == METADATA_FILE:
+            metadata = Metadata.from_file(artifact_file_path)
+        else:
+            metadata = Metadata.of_query_file(artifact_file_path)
+    except FileNotFoundError:
+        raise InvalidExternalDataConfigException(
+            f"Invalid metadata: External data table "
+            f"{artifact_file_path} missing metadata file"
+        )
+
+    if not metadata.external_data:
+        raise InvalidExternalDataConfigException(
+            f"Invalid metadata: External data table "
+            f"{artifact_file_path} has no external_data config"
+        )
+
+    if metadata.external_data.format not in (
+        ExternalDataFormat.GOOGLE_SHEETS,
+        ExternalDataFormat.CSV,
+    ):
+        raise InvalidExternalDataConfigException(
+            f"Invalid metadata: External data table "
+            f"{artifact_file_path} has unsupported format {metadata.external_data.format}"
+        )
+
+    external_config = bigquery.ExternalConfig(
+        metadata.external_data.format.value.upper()
+    )
+    external_config.source_uris = metadata.external_data.source_uris
+    external_config.ignore_unknown_values = True
+    external_config.autodetect = False
+
+    for key, v in metadata.external_data.options.items():
+        setattr(external_config.options, key, v)
+
+    table.external_data_configuration = external_config

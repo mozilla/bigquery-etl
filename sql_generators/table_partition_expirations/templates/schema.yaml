@@ -44,3 +44,10 @@ fields:
   description: >
     Next date on which a partition will be dropped.
     Only partitions after first_non_empty_partition_historical are considered.
+- name: previous_partition_expiration_days
+  type: INTEGER
+  mode: NULLABLE
+- name: expiration_changed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the partition expiration value has changed in the past day

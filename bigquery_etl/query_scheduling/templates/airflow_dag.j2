@@ -30,7 +30,6 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
-from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 {% if ns.uses_fivetran -%}
 from fivetran_provider_async.operators import FivetranOperator
@@ -149,11 +148,12 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         table_id={{ table_name | format_repr }},
         partition_id={{ table_partition_sensor_task.partition_id | format_repr }},
         gcp_conn_id='google_cloud_shared_prod',
-        deferrable=True,
+        deferrable=False,
+        mode='reschedule',
         {% if table_partition_sensor_task.poke_interval != None -%}
         poke_interval={{ table_partition_sensor_task.poke_interval | format_timedelta | format_repr }},
         {% else -%}
-        poke_interval=datetime.timedelta(minutes=5),
+        poke_interval=datetime.timedelta(minutes=15),
         {% endif -%}
         {% if table_partition_sensor_task.timeout != None -%}
         timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},

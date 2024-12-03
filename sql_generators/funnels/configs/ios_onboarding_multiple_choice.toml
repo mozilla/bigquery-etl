@@ -1,0 +1,204 @@
+destination_dataset = "firefox_ios_derived"
+platform = "firefox_ios"
+owners = ["rzhao@mozilla.org"]  # optional; users getting notification if funnel run fails
+version = "1"  # optional; default is set to 1
+
+[funnels]
+
+[funnels.ios_onboarding_funnel]
+
+friendly_name = "Firefox for iOS Onboarding Funnel"
+description = "Funnel Steps for Firefox for iOS Onboarding"
+steps = ["toolbar_bottom",
+         "toolbar_top",
+         "theme_dark",
+         "theme_light",
+         "theme_system_auto"
+         ]
+
+dimensions = [
+              "funnel_id",
+              "repeat_first_month_user",
+              "retained_week_2",
+              "retained_week_4",
+              "country",
+              "ios_version",
+              "channel",
+              "device_model",
+              "device_manufacturer",
+              "first_seen_date",
+              "adjust_network",
+              "adjust_campaign",
+              "adjust_creative",
+              "adjust_ad_group"
+              ]
+
+
+[steps.toolbar_bottom]
+friendly_name = "Bottom Toolbar"
+description = "User Selected Bottom Toolbar during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'toolbar-bottom'
+    AND event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.toolbar_top]
+friendly_name = "Top Toolbar"
+description = "User Selected Top Toolbar during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'toolbar-top'
+    AND event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.theme_dark]
+friendly_name = "Dark Theme"
+description = "User Selected Dark Theme during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-dark'
+    AND event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.theme_light]
+friendly_name = "Light Theme"
+description = "User Selected Light Theme during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-light'
+    AND event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+[steps.theme_system_auto]
+friendly_name = "System Auto Theme"
+description = "User Selected System Auto Theme during Onboarding"
+data_source = "onboarding_events"
+select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'button_action') = 'theme-system-default'
+    AND event_name = 'multiple_choice_button_tap' AND
+    event_category = 'onboarding' THEN ic.client_id END"""
+aggregation = "count distinct"
+
+
+[data_sources]
+
+[data_sources.onboarding_events]
+from_expression = """
+  firefox_ios.firefox_ios_clients ic --each client_id has only one row
+  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
+  ON ic.client_id = r.client_id
+  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
+  ON ic.client_id = r2.client_id
+  LEFT JOIN
+    (SELECT * FROM firefox_ios.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
+  ON ic.client_id = eu.client_info.client_id
+  LEFT JOIN
+    (SELECT client_info.client_id,
+    ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id,
+    1 + LENGTH(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id'))) - 
+             LENGTH(REPLACE(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')), '_', '')) AS number_of_onboarding_cards
+    FROM firefox_ios.events_unnested
+    WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+    AND DATE(submission_timestamp) = @submission_date
+    GROUP BY 1) funnel_ids
+  ON ic.client_id  = funnel_ids.client_id
+
+"""
+submission_date_column = "DATE(ic.submission_timestamp)"
+client_id_column = "ic.client_id"
+
+
+[dimensions]
+
+[dimensions.funnel_id]
+data_source = "onboarding_events"
+select_expression = "COALESCE(funnel_id, 'no_onboarding_reported')"
+friendly_name = "Funnel ID"
+description = "ID of the Onboarding Funnel"
+client_id_column = "ic.client_id"
+
+# these dimensions are sourced from funnel_retention_clients_week_4_v1
+[dimensions.repeat_first_month_user]
+friendly_name = "Repeat First Month User"
+description = "Whether the Client is a Repeat First Month User"
+data_source = "onboarding_events"
+select_expression = "COALESCE(r.repeat_first_month_user, FALSE)"
+client_id_column = "r.client_id"
+
+[dimensions.retained_week_2]
+friendly_name = "Repeat First Month User"
+description = "Whether the Client is Retained in their Second Week"
+data_source = "onboarding_events"
+select_expression = "COALESCE(r.retained_week_2, FALSE)"
+client_id_column = "r.client_id"
+
+[dimensions.retained_week_4]
+friendly_name = "Repeat First Month User"
+description = "Whether the Client is Retained in their Fourth Week"
+data_source = "onboarding_events"
+select_expression = "COALESCE(r.retained_week_4, FALSE)"
+client_id_column = "r.client_id"
+
+# these dimensions are sourced from firefox_ios_clients
+[dimensions.country]
+data_source = "onboarding_events"
+select_expression = "ic.first_reported_country"
+friendly_name = "Country"
+description = "Client's First Reported Country"
+client_id_column = "ic.client_id"
+
+[dimensions.ios_version]
+data_source = "onboarding_events"
+select_expression = "ic.os_version"
+friendly_name = "First Reported iOS OS Version"
+client_id_column = "ic.client_id"
+
+[dimensions.channel]
+data_source = "onboarding_events"
+select_expression = "ic.channel"
+friendly_name = "First Reported Release Channel"
+client_id_column = "ic.client_id"
+
+[dimensions.device_model]
+data_source = "onboarding_events"
+select_expression = "ic.device_model"
+friendly_name = "First Reported Device Model"
+client_id_column = "ic.client_id"
+
+[dimensions.device_manufacturer]
+data_source = "onboarding_events"
+select_expression = "ic.device_manufacturer"
+friendly_name = "First Reported Device Manufacturer"
+client_id_column = "ic.client_id"
+
+[dimensions.first_seen_date]
+data_source = "onboarding_events"
+select_expression = "ic.first_seen_date"
+friendly_name = "First Seen Date"
+description = "First day this client_id shows up in our data."
+client_id_column = "ic.client_id"
+
+[dimensions.adjust_network]
+data_source = "onboarding_events"
+select_expression = "ic.adjust_network"
+friendly_name = "Adjust Network"
+client_id_column = "ic.client_id"
+
+[dimensions.adjust_campaign]
+data_source = "onboarding_events"
+select_expression = "ic.adjust_campaign"
+friendly_name = "Adjust Campaign"
+client_id_column = "ic.client_id"
+
+[dimensions.adjust_creative]
+data_source = "onboarding_events"
+select_expression = "ic.adjust_creative"
+friendly_name = "Adjust Creative"
+client_id_column = "ic.client_id"
+
+[dimensions.adjust_ad_group]
+data_source = "onboarding_events"
+select_expression = "ic.adjust_ad_group"
+friendly_name = "Adjust Ad Group"
+client_id_column = "ic.client_id"
+

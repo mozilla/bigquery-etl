@@ -108,6 +108,7 @@ class Subset:
 
     @staticmethod
     def attr_not_null(instance, attribute, value):
+        """Raise an exception if the value is None or empty."""
         if value is None or value == "":
             raise click.ClickException(
                 f"{attribute.name} not given and it's required to continue."

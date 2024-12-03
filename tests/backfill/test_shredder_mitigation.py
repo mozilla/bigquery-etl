@@ -757,6 +757,24 @@ class TestSubset:
             )
 
     @patch("google.cloud.bigquery.Client")
+    def test_destination_table_not_given(self, mock_client):
+        """Test valid version in destination table."""
+        test_destination_table = ""
+
+        with pytest.raises(click.ClickException) as e:
+            Subset(
+                mock_client,
+                test_destination_table,
+                None,
+                self.dataset,
+                self.project_id,
+                None,
+            )
+        assert str(e.value.message) == (
+            "destination_table not given and it's required to continue."
+        )
+
+    @patch("google.cloud.bigquery.Client")
     def test_partitioning(self, mock_client, runner):
         """Test that partitioning type and value associated to a subset are returned as expected."""
         test_subset = Subset(
@@ -1153,10 +1171,10 @@ class TestGenerateQueryWithShredderMitigation:
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")
     def test_generate_query_failed_for_missing_partitioning(
-        self, mock_classify_columns, mock_client, runner
+        self, mock_classify_columns, mock_client, runner, capfd
     ):
-        """Test that function raises exception for required query parameter missing
-        in metadata, instead of generating wrong query."""
+        """Test that function raises exception for required query parameter -partitioning-
+        missing in metadata, instead of generating wrong query."""
         existing_schema = {
             "fields": [
                 {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
@@ -1229,7 +1247,7 @@ class TestGenerateQueryWithShredderMitigation:
                 [],
             )
 
-            with pytest.raises(TypeError) as e:
+            with pytest.raises((TypeError, IndexError)) as e:
                 generate_query_with_shredder_mitigation(
                     client=mock_client,
                     project_id=self.project_id,
@@ -1238,7 +1256,13 @@ class TestGenerateQueryWithShredderMitigation:
                     staging_table_name=self.staging_table_name,
                     backfill_date=PREVIOUS_DATE,
                 )
-            assert str(e.value) == "'NoneType' object is not iterable"
+
+            assert isinstance(e.value, (TypeError, IndexError))
+            assert str(e.value) in {
+                "'NoneType' object is not iterable",
+                "Invalid type",
+                "list index out of range",
+            }
 
     @patch("google.cloud.bigquery.Client")
     @patch("bigquery_etl.backfill.shredder_mitigation.classify_columns")

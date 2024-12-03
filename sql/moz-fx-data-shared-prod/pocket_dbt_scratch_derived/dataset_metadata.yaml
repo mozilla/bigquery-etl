@@ -1,8 +1,8 @@
-friendly_name: Pocket DBT Fact Models
-description: |- 
-  This dataset contains Pocket's intermediate models that have some light processing before being combined into Pocket's fact models.
+friendly_name: Pocket DBT Snowplow Scratch Models
+description: |-
+  This dataset contains models used by Snowplow for each DBT run. They should not be used for direct reporting.
   https://github.com/Pocket/pocket-dbt
-  
+
 
 dataset_base_acl: restricted
 user_facing: false

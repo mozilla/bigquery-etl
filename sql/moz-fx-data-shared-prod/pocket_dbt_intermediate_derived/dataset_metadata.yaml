@@ -1,8 +1,8 @@
-friendly_name: Pocket DBT Snowplow Manifest Models
-description: |- 
-  This dataset contains models used by Snowplow to incrementally process new data in each run.
+friendly_name: Pocket DBT Fact Models
+description: |-
+  This dataset contains Pocket's intermediate models that have some light processing before being combined into Pocket's fact models.
   https://github.com/Pocket/pocket-dbt
-  
+
 
 dataset_base_acl: restricted
 user_facing: false

@@ -1,6 +1,6 @@
-friendly_name: Pocket DBT Fact Models
+friendly_name: Pocket DBT Snowplow Manifest Models
 description: |-
-  This dataset contains the DBT fact models for Pocket. These can be used for any Pocket reporting.
+  This dataset contains models used by Snowplow to incrementally process new data in each run.
   https://github.com/Pocket/pocket-dbt
 
 

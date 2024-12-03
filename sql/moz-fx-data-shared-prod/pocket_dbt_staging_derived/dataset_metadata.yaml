@@ -1,8 +1,9 @@
-friendly_name: Pocket DBT Snowplow Scratch Models
-description: |- 
-  This dataset contains models used by Snowplow for each DBT run. They should not be used for direct reporting.
+friendly_name: Pocket DBT Staging Models
+description: |-
+  This dataset contains models that are the first step in processing the derived snowplow data for Pocket reporting.
+  These models are used to create the intermediate models that are then used to create the final fact models.
   https://github.com/Pocket/pocket-dbt
-  
+
 
 dataset_base_acl: restricted
 user_facing: false

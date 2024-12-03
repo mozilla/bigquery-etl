@@ -6,9 +6,9 @@ owners:
 labels:
   incremental: true
   owner1: mhirose
-  dag: bqetl_addons
+  dag: bqetl_addons_moderations
 scheduling:
-  dag_name: bqetl_addons
+  dag_name: bqetl_addons_moderations
   arguments:
   - --date
   - '{{ ds }}'

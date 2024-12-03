@@ -5,7 +5,7 @@ description: |-
 
 
 dataset_base_acl: restricted
-user_facing: false
+user_facing: true
 labels: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer

@@ -1408,7 +1408,7 @@ bqetl_mobile_feature_usage:
     retry_delay: 30m
     start_date: '2023-10-24'
   description: Schedule run for mobile feature usage tables
-  schedule_interval: 0 6 * * *
+  schedule_interval: 0 12 * * *
   tags:
     - impact/tier_3
 

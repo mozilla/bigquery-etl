@@ -41,9 +41,13 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   checks.sql:
-  - ..
   - ..baseline_clients_daily_v1
   - ..baseline_clients_last_seen_v1
   query.sql:
   - firefox_desktop_background_update_derived.baseline_clients_daily_v1
   - firefox_desktop_background_update_derived.baseline_clients_last_seen_v1
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

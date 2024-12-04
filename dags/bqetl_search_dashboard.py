@@ -83,6 +83,138 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=12600),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
@@ -95,10 +227,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+    wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+        external_task_id="klar_ios.bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=12600),
         check_existence=True,
         mode="reschedule",
@@ -107,142 +239,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+    wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android.checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android.checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android.checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="klar_ios.checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
-        execution_delta=datetime.timedelta(seconds=12600),
-        check_existence=True,
-        mode="reschedule",
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="klar_android.checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+        external_task_id="klar_android.bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=12600),
         check_existence=True,
         mode="reschedule",
@@ -382,59 +382,59 @@ with DAG(
     )
 
     search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_dau_aggregates__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
     search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )
 
     search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_dau_aggregates__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
     search_derived__search_dau_aggregates__v1.set_upstream(
@@ -450,59 +450,59 @@ with DAG(
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    search_derived__search_revenue_levers_daily__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    search_derived__search_revenue_levers_daily__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
     search_derived__search_revenue_levers_daily__v1.set_upstream(

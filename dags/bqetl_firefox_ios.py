@@ -130,10 +130,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+    wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -142,10 +142,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+    wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -154,10 +154,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+    wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -751,19 +751,19 @@ with DAG(
     )
 
     firefox_ios_derived__clients_activation__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__clients_activation__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__clients_activation__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__clients_activation__v1.set_upstream(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__clients_activation__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__clients_activation__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__clients_activation__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
     firefox_ios_derived__clients_activation__v1.set_upstream(
@@ -787,6 +787,18 @@ with DAG(
     )
 
     firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
         checks__fail_firefox_ios_derived__clients_activation__v1
     )
 
@@ -794,16 +806,16 @@ with DAG(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
 
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
     firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
@@ -812,18 +824,6 @@ with DAG(
 
     firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
         checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
     firefox_ios_derived__funnel_retention_week_4__v1.set_upstream(
@@ -831,15 +831,15 @@ with DAG(
     )
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(

@@ -1,0 +1,74 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.submission_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.client_id
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.sample_id
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.first_seen_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.days_seen_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.days_active_bits
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.days_created_profile_bits
+    metrics:
+    - saved_metric_id: is_not_null
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.normalized_channel
+    metrics:
+    - saved_metric_id: is_valid_channel
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.country
+    metrics:
+    - saved_metric_id: is_2_char_len
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.client_id
+    metrics:
+    - saved_metric_id: is_valid_length_client_id
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.client_id
+    metrics:
+    - metric_type:
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        upper_bound: 1.0
+        lower_bound: 0.0
+      lookback:
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 1
+        lookback_type: DATA_TIME
+      metric_schedule:
+        named_schedule:
+          name: default
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.*
+    metrics:
+    - saved_metric_id: freshness
+    - saved_metric_id: volume
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_name: FRESHNESS [warn]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_name: VOLUME [fail]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC

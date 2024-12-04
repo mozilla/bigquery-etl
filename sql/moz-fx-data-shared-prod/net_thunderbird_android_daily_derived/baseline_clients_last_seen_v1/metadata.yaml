@@ -45,3 +45,8 @@ references:
   query.sql:
   - net_thunderbird_android_daily_derived.baseline_clients_daily_v1
   - net_thunderbird_android_daily_derived.baseline_clients_last_seen_v1
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

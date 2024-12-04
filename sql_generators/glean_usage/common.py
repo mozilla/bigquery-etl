@@ -267,6 +267,7 @@ class GleanTable:
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
             derived_dataset=derived_dataset,
+            target_table=self.target_table_id,
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
@@ -306,7 +307,10 @@ class GleanTable:
         # bigconfig are optional, for now!
         try:
             bigconfig_contents = render(
-                bigconfig_filename, template_folder=PATH / "templates", **render_kwargs
+                bigconfig_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
             )
         except TemplateNotFound:
             bigconfig_contents = None
@@ -347,7 +351,8 @@ class GleanTable:
                 else:
                     if checks_sql:
                         artifacts.append(Artifact(table, "checks.sql", checks_sql))
-                    elif bigconfig_contents:
+
+                    if bigconfig_contents:
                         artifacts.append(
                             Artifact(table, "bigconfig.yml", bigconfig_contents)
                         )

@@ -1,0 +1,14 @@
+friendly_name: Firefox Installer Aggregates
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.firefox_installer_aggregates_v1

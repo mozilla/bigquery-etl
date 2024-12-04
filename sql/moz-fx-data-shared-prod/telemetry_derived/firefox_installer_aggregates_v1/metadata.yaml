@@ -16,5 +16,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering:
-    fields: []
+    fields:
+    - sample_id
+    - normalized_country_code
 references: {}

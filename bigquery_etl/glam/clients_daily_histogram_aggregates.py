@@ -64,8 +64,7 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
 
 
 def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
-    """Return a tuple containing the relevant information about the distributions."""
-    # accumulate relevant information about metrics
+    """Return SQL snippets to fetch metrics' data. Split by labeled and unlabeled."""
     items = []
     for metric_type, metric_names in metrics.items():
         for name in metric_names:
@@ -73,7 +72,7 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
             value_path = f"{path}.values"
             items.append((name, metric_type, value_path))
 
-    # create the query sub-string
+    # build the snippets for labeled and unlabeled metrics
     labeled = []
     unlabeled = []
     for name, metric_type, value_path in sorted(items):

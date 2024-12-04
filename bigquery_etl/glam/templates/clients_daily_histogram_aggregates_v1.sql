@@ -38,6 +38,7 @@ histograms AS (
     {{ attributes }},
     ARRAY<
       STRUCT<
+        key STRING,
         metric STRING,
         metric_type STRING,
         value ARRAY<STRUCT<key STRING, value INT64>>
@@ -56,6 +57,51 @@ flattened_histograms AS (
   WHERE
     value IS NOT NULL
 ),
+labeled_histograms AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<
+      STRUCT<
+        metric STRING,
+        metric_type STRING,
+        keyed_values ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value INT64>>
+          >
+        >
+      >
+    >[{{ labeled_histograms }}] AS metadata
+  FROM
+    sampled_data
+),
+flattened_labeled_histograms AS (
+  SELECT
+    sample_id,
+    client_id,
+    ping_type,
+    submission_date,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    key,
+    metric,
+    metric_type,
+    value
+  FROM
+    labeled_histograms,
+    UNNEST(metadata) AS metadata,
+    UNNEST(metadata.keyed_values) AS keyed_values
+  WHERE
+    key IS NOT NULL
+    AND value IS NOT NULL
+),
+flattened_all_histograms AS (
+  SELECT * FROM flattened_histograms
+  UNION ALL
+  SELECT * FROM flattened_labeled_histograms
+),
 -- ARRAY_CONCAT_AGG may fail if the array of records exceeds 20 MB when
 -- serialized and shuffled. This may exhibit itself in a pathological case where
 -- the a single client sends *many* pings in a single day. However, this case
@@ -69,13 +115,15 @@ flattened_histograms AS (
 aggregated AS (
   SELECT
     {{ attributes }},
+    key,
     metric,
     metric_type,
     mozfun.map.sum(ARRAY_CONCAT_AGG(mozfun.glam.histogram_filter_high_values(value))) as value
   FROM
-    flattened_histograms
+    flattened_all_histograms
   GROUP BY
     {{ attributes }},
+    key,
     metric,
     metric_type
 )
@@ -88,7 +136,7 @@ SELECT
       key STRING,
       agg_type STRING,
       value ARRAY<STRUCT<key STRING, value INT64>>
-    >(metric, metric_type, '', 'summed_histogram', value)
+    >(metric, metric_type, key, 'summed_histogram', value)
   ) AS histogram_aggregates
 FROM
   aggregated

@@ -24,7 +24,7 @@ tag_deployments:
   - collection:
       name: Operational Checks
       notification_channels:
-        - slack: '#ds-bigeye-triage'
+        - slack: '#de-bigeye-triage'
     deployments:
       - column_selectors:
           - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.*

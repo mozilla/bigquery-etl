@@ -45,7 +45,7 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_mobile_feature_usage",
     default_args=default_args,
-    schedule_interval="0 6 * * *",
+    schedule_interval="0 12 * * *",
     doc_md=docs,
     tags=tags,
 ) as dag:
@@ -54,7 +54,6 @@ with DAG(
         task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
         external_task_id="fenix.bigeye__fenix_derived__attribution_clients__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=64800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -66,7 +65,7 @@ with DAG(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=18000),
+        execution_delta=datetime.timedelta(seconds=39600),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,
@@ -78,7 +77,6 @@ with DAG(
         task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
         external_task_id="firefox_ios.bigeye__firefox_ios_derived__attribution_clients__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=64800),
         check_existence=True,
         mode="reschedule",
         allowed_states=ALLOWED_STATES,

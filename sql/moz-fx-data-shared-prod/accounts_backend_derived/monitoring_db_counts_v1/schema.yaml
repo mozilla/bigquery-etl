@@ -1,0 +1,10 @@
+fields:
+- name: as_of_date
+  type: DATE
+  mode: NULLABLE
+- name: table_name
+  type: STRING
+  mode: NULLABLE
+- name: total_rows
+  type: INTEGER
+  mode: NULLABLE

@@ -305,7 +305,6 @@ def generate(target_project, output_dir, use_cloud_function):
     }
 
     query_support_configs = (
-        "checks.sql",
         "metadata.yaml",
         "schema.yaml",
         "bigconfig.yml",

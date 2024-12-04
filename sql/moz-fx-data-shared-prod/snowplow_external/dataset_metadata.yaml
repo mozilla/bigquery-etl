@@ -9,6 +9,7 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:pocket/apps
+      - workgroup:dataops-managed/external-dbt-prod
   - role: roles/bigquery.dataEditor
     members:
       - workgroup:dataops-managed/external-snowplow

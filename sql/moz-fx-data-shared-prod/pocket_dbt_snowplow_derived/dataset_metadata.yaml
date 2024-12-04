@@ -1,0 +1,17 @@
+friendly_name: Pocket DBT Derived Snowplow Models
+description: |-
+  This dataset contains models derived from Snowplow data for Pocket. These are used in downstream Pocket fact models for sessionization.
+  They come from https://docs.snowplow.io/docs/modeling-your-data/modeling-your-data-with-dbt/dbt-models/dbt-unified-data-model/
+  https://github.com/Pocket/pocket-dbt
+
+
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/apps
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:dataops-managed/external-dbt-prod

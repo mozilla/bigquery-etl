@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Projects
+description: |-
+  Jira projects for Service Desk synced via Fivetran.

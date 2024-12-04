@@ -155,6 +155,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/telemetry_missing_columns_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_partition_expirations_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
+  - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
@@ -334,3 +335,6 @@ generate:
       events_tables: # overwrite event tables
         pine: # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
+
+retention_exclusion_list:
+- sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

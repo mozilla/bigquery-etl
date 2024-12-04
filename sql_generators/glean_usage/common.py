@@ -234,7 +234,7 @@ class GleanTable:
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -244,6 +244,7 @@ class GleanTable:
 
         query_filename = f"{self.target_table_id}.query.sql"
         checks_filename = f"{self.target_table_id}.checks.sql"
+        bigconfig_filename = f"{self.target_table_id}.bigconfig.yml"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
@@ -266,9 +267,10 @@ class GleanTable:
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
             derived_dataset=derived_dataset,
+            target_table=self.target_table_id,
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
-            has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
+            has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -302,6 +304,17 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
+        # bigconfig are optional, for now!
+        try:
+            bigconfig_contents = render(
+                bigconfig_filename,
+                format=False,
+                template_folder=PATH / "templates",
+                **render_kwargs,
+            )
+        except TemplateNotFound:
+            bigconfig_contents = None
+
         # Schema files are optional
         try:
             schema = render(
@@ -329,14 +342,20 @@ class GleanTable:
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            if checks_sql:
+            if checks_sql or bigconfig_contents:
                 if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
                     logging.info(
                         "Skipped copying ETL check for %s as app: %s is marked as not having baseline ping"
                         % (table, app_name)
                     )
                 else:
-                    artifacts.append(Artifact(table, "checks.sql", checks_sql))
+                    if checks_sql:
+                        artifacts.append(Artifact(table, "checks.sql", checks_sql))
+
+                    if bigconfig_contents:
+                        artifacts.append(
+                            Artifact(table, "bigconfig.yml", bigconfig_contents)
+                        )
 
             if schema:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
@@ -364,7 +383,7 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:

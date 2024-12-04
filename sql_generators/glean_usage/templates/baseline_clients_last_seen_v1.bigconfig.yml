@@ -1,0 +1,59 @@
+{{ header_yaml }}
+type: BIGCONFIG_FILE
+
+tag_deployments:
+  - collection:
+      name: Operational Checks
+      notification_channels:
+        - slack: '#de-bigeye-triage'
+    deployments:
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.submission_date
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.sample_id
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.first_seen_date
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.days_seen_bits
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.days_active_bits
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.days_created_profile_bits
+        metrics:
+          - saved_metric_id: is_not_null
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
+        metrics:
+          - saved_metric_id: is_valid_channel
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
+        metrics:
+          - saved_metric_id: is_2_char_len
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
+        metrics:
+          - saved_metric_id: is_valid_length_client_id
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
+        metrics:
+          - metric_type:
+              predefined_metric: COUNT_DUPLICATES
+            lookback:
+              lookback_type: DATA_TIME
+              lookback_window:
+                interval_type: DAYS
+                interval_value: 1
+            threshold:
+              type: CONSTANT
+              lower_bound: 0
+              upper_bound: 1
+            metric_schedule:
+              named_schedule:
+                name: default
+
+  - collection:
+      name: Operational Checks
+      notification_channels:
+        - slack: '#de-bigeye-triage'
+    deployments:
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
+        metrics:
+          - saved_metric_id: freshness
+          - saved_metric_id: volume

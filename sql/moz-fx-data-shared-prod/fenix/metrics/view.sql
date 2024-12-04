@@ -886,7 +886,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_max_pause,
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
-      metrics.timing_distribution.javascript_gc_time_between_slices
+      metrics.timing_distribution.javascript_gc_time_between_slices,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1912,7 +1913,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_max_pause,
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
-      metrics.timing_distribution.javascript_gc_time_between_slices
+      metrics.timing_distribution.javascript_gc_time_between_slices,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2956,7 +2958,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_max_pause,
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
-      metrics.timing_distribution.javascript_gc_time_between_slices
+      metrics.timing_distribution.javascript_gc_time_between_slices,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4009,7 +4012,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_max_pause,
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
-      metrics.timing_distribution.javascript_gc_time_between_slices
+      metrics.timing_distribution.javascript_gc_time_between_slices,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5044,7 +5048,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_max_pause,
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
-      metrics.timing_distribution.javascript_gc_time_between_slices
+      metrics.timing_distribution.javascript_gc_time_between_slices,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

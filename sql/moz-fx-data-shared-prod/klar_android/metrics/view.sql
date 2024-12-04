@@ -712,7 +712,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_max_pause,
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
-      metrics.timing_distribution.javascript_gc_time_between_slices
+      metrics.timing_distribution.javascript_gc_time_between_slices,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

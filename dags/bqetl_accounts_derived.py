@@ -66,6 +66,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    accounts_backend_derived__monitoring_db_counts__v1 = bigquery_etl_query(
+        task_id="accounts_backend_derived__monitoring_db_counts__v1",
+        destination_table="monitoring_db_counts_v1",
+        dataset_id="accounts_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wclouser@mozilla.com",
+        email=["akomar@mozilla.com", "ksiegler@mozilla.com", "wclouser@mozilla.com"],
+        date_partition_parameter="as_of_date",
+        depends_on_past=False,
+    )
+
     accounts_backend_derived__users_services_daily__v1 = bigquery_etl_query(
         task_id="accounts_backend_derived__users_services_daily__v1",
         destination_table="users_services_daily_v1",

@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -13198,6 +13198,44 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: javascript_gc_time_between_slices
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: fingerprinting_protection_canvas_noise_calculate_time_ns
       type: RECORD
       mode: NULLABLE
       fields:

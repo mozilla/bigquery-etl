@@ -1,0 +1,56 @@
+friendly_name: FxA DB Counts Monitoring
+description: |-
+  Simple aggregation of counts of records in the FxA DB tables.
+  Enables to identify trends within accounts data. E.g. "How many
+  inactive accounts are there?"
+owners:
+- wclouser@mozilla.com
+labels:
+  incremental: true
+  owner1: wclouser
+  dag: bqetl_accounts_derived
+scheduling:
+  dag_name: bqetl_accounts_derived
+  date_partition_parameter: as_of_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: as_of_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_account_customers_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_account_groups_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_account_reset_tokens_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_accounts_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_carts_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_device_commands_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_devices_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_email_bounces_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_linked_accounts_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_codes_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_refresh_tokens_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_tokens_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_password_change_tokens_v1 FOR
+    SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_password_forgot_tokens_v1 FOR
+    SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_paypal_customers_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_codes_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_security_events_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_sent_emails_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_session_tokens_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_signin_codes_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_totp_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_unblock_codes_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_unverified_tokens_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_verification_reminders_v1 FOR
+    SYSTEM_TIME

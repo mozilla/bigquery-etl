@@ -2163,9 +2163,9 @@ snowballstemmer==2.2.0 \
     --hash=sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1 \
     --hash=sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a
     # via pydocstyle
-sqlglot==25.28.0 \
-    --hash=sha256:01a6b76dd916c2ce39a5f808559e337600ea261873d25be0dc7f99da3d24860d \
-    --hash=sha256:1bfcadada28bcab873382b271ed30138597cbf8893d90cc259563f9498bd1b49
+sqlglot==25.33.0 \
+    --hash=sha256:2f6a5cbb20ad6f70d9f3770c2e7e48c2c2469b49252b53d77d8b7ab444f92934 \
+    --hash=sha256:80a638b1a1af6e6a20693e7f90e046b73700531ce08ca4c6578c3d99a6e62608
     # via -r requirements.in
 sqlparse==0.5.2 \
     --hash=sha256:9e37b35e16d1cc652a2545f0997c1deb23ea28fa1f3eefe609eee3063c3b105f \

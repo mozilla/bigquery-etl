@@ -978,7 +978,7 @@ bqetl_fivetran_google_ads:
     email_on_failure: true
     email_on_retry: false
     end_date: null
-    owner: frank@mozilla.com
+    owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-01-01'

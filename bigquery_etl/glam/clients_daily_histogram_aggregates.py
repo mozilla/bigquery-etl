@@ -42,6 +42,8 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
         "timing_distribution",
         "memory_distribution",
         "custom_distribution",
+        "labeled_timing_distribution",
+        "labeled_custom_distribution",
     }
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
@@ -61,9 +63,8 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
     return metrics
 
 
-def get_metrics_sql(metrics: Dict[str, List[str]]) -> str:
-    """Return a tuple containing the relevant information about the distributions."""
-    # accumulate relevant information about metrics
+def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
+    """Return SQL snippets to fetch metrics' data. Split by labeled and unlabeled."""
     items = []
     for metric_type, metric_names in metrics.items():
         for name in metric_names:
@@ -71,11 +72,31 @@ def get_metrics_sql(metrics: Dict[str, List[str]]) -> str:
             value_path = f"{path}.values"
             items.append((name, metric_type, value_path))
 
-    # create the query sub-string
-    results = []
+    # build the snippets for labeled and unlabeled metrics
+    labeled = []
+    unlabeled = []
     for name, metric_type, value_path in sorted(items):
-        results.append(f"""("{name}", "{metric_type}", {value_path})""")
-    return ",".join(results)
+        if metric_type.startswith("labeled"):
+            labeled.append(
+                f"""
+                (
+                    "{name}",
+                    "{metric_type}",
+                    ARRAY
+                    (
+                        SELECT(key, value.values)
+                        FROM UNNEST(metrics.{metric_type}.{name})
+                    )
+                )
+                """
+            )
+        else:
+            unlabeled.append(f"""('', "{name}", "{metric_type}", {value_path})""")
+
+    return {
+        "labeled": ",".join(labeled).strip(),
+        "unlabeled": ",".join(unlabeled).strip(),
+    }
 
 
 def main():
@@ -114,8 +135,8 @@ def main():
 
     schema = get_schema(args.source_table)
     distributions = get_distribution_metrics(schema)
-    metrics_sql = get_metrics_sql(distributions).strip()
-    if not metrics_sql:
+    metrics_sql = get_metrics_sql(distributions)
+    if not metrics_sql["labeled"] or not metrics_sql["unlabeled"]:
         print(header)
         print("-- Empty query: no probes found!")
         sys.exit(1)
@@ -125,7 +146,8 @@ def main():
             source_table=args.source_table,
             submission_date=submission_date,
             attributes=ATTRIBUTES,
-            histograms=metrics_sql,
+            histograms=metrics_sql["unlabeled"],
+            labeled_histograms=metrics_sql["labeled"],
             ping_type=ping_type_from_table(args.source_table),
         )
     )

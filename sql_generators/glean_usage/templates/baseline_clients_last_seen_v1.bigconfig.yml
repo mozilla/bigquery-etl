@@ -38,7 +38,7 @@ tag_deployments:
               lookback_type: DATA_TIME
               lookback_window:
                 interval_type: DAYS
-                interval_value: 1
+                interval_value: 0
             threshold:
               type: CONSTANT
               lower_bound: 0
@@ -46,12 +46,6 @@ tag_deployments:
             metric_schedule:
               named_schedule:
                 name: default
-
-  - collection:
-      name: Operational Checks
-      notification_channels:
-        - slack: '#de-bigeye-triage'
-    deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

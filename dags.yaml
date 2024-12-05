@@ -974,11 +974,11 @@ bqetl_fivetran_google_ads:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
+      - kwindau@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     end_date: null
-    owner: frank@mozilla.com
+    owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-01-01'
@@ -1904,5 +1904,24 @@ bqetl_addons_moderations:
     the external API Cinder.
   repo: bigquery-etl
   schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_firefox_installer_aggregates:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-05'
+  description: This DAG schedules the build of a new aggregate table about Firefox Installs
+  repo: bigquery-etl
+  schedule_interval: 0 15 * * *
   tags:
     - impact/tier_3

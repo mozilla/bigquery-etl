@@ -24,5 +24,3 @@ bigquery:
     type: day
     field: date
     require_partition_filter: false
-monitoring:
-  enabled: true

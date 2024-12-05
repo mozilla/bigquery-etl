@@ -224,6 +224,7 @@ class Secret:
 class TaskContainerResources:
     """Represents the Kubernetes container resources configuration for a task."""
 
+    # example dict: {"memory": "4Gi", "cpu": "500m"}
     requests: Optional[Dict[str, str]] = attr.ib(None)
     limits: Optional[Dict[str, str]] = attr.ib(None)
 

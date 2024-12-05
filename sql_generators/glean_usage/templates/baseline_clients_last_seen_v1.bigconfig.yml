@@ -38,7 +38,7 @@ tag_deployments:
               lookback_type: DATA_TIME
               lookback_window:
                 interval_type: DAYS
-                interval_value: 1
+                interval_value: 0
             threshold:
               type: CONSTANT
               lower_bound: 0

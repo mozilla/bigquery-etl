@@ -74,16 +74,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    bigeye__google_ads_derived__android_app_campaign_stats__v1 = bigquery_bigeye_check(
-        task_id="bigeye__google_ads_derived__android_app_campaign_stats__v1",
-        table_id="moz-fx-data-shared-prod.google_ads_derived.android_app_campaign_stats_v1",
-        warehouse_id="1939",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        retries=0,
-    )
-
     checks__fail_google_ads_derived__ad_groups__v1 = bigquery_dq_check(
         task_id="checks__fail_google_ads_derived__ad_groups__v1",
         source_table="ad_groups_v1",
@@ -302,10 +292,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-    )
-
-    bigeye__google_ads_derived__android_app_campaign_stats__v1.set_upstream(
-        google_ads_derived__android_app_campaign_stats__v1
     )
 
     checks__fail_google_ads_derived__ad_groups__v1.set_upstream(

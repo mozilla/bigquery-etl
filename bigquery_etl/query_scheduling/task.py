@@ -220,6 +220,14 @@ class Secret:
             )
 
 
+@attr.s(auto_attribs=True, frozen=True)
+class TaskContainerResources:
+    """Represents the Kubernetes container resources configuration for a task."""
+
+    requests: Optional[Dict[str, str]] = attr.ib(None)
+    limits: Optional[Dict[str, str]] = attr.ib(None)
+
+
 # Known tasks in telemetry-airflow, like stable table tasks
 # https://github.com/mozilla/telemetry-airflow/blob/main/dags/copy_deduplicate.py
 EXTERNAL_TASKS = {
@@ -333,7 +341,7 @@ class Task:
     gke_cluster_name: Optional[str] = attr.ib(None)
     query_project: Optional[str] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
-    container_resources: Optional[Dict[str, str]] = attr.ib(None)
+    container_resources: Optional[TaskContainerResources] = attr.ib(None)
     node_selector: Optional[Dict[str, str]] = attr.ib(None)
     startup_timeout_seconds: Optional[int] = attr.ib(None)
     secrets: Optional[List[Secret]] = attr.ib(None)

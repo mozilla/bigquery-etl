@@ -2,46 +2,36 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Date Airflow DAG is executed, and partition date
 - name: reference_project_id
   type: STRING
   mode: NULLABLE
-  description: The ID of the project referenced by the job
 - name: reference_dataset_id
   type: STRING
   mode: NULLABLE
-  description: The ID of the dataset referenced by the job
 - name: reference_table_id
   type: STRING
   mode: NULLABLE
-  description: The ID of the table referenced by the job
 - name: creation_date
   type: DATE
   mode: NULLABLE
-  description: Job creation date
 - name: task_duration
   type: INTERVAL
   mode: NULLABLE
-  description: The time it took to run the job
 - name: total_terabytes_processed
   type: FLOAT
   mode: NULLABLE
-  description: Total terabytes processed by the job
 - name: total_terabytes_billed
   type: FLOAT
   mode: NULLABLE
-  description: Total terabytes billed by the job if on-demand pricing is used
 - name: total_slot_ms
   type: INTEGER
   mode: NULLABLE
-  description: Slot milliseconds for the job over its entire duration
 - name: cost
   type: FLOAT
   mode: NULLABLE
 - name: job_id
   type: STRING
   mode: NULLABLE
-  description: ID of job
 - name: service_account
   type: STRING
   mode: NULLABLE

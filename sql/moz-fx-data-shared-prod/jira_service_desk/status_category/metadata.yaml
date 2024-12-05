@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Status Category
+description: |-
+  Jira status category for Service Desk synced via Fivetran.

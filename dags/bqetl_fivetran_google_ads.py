@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_fivetran_google_ads.py`](https://gith
 Queries for Google Ads data coming from Fivetran. Fivetran updates these tables every hour.
 #### Owner
 
-frank@mozilla.com
+kwindau@mozilla.com
 
 #### Tags
 
@@ -29,14 +29,14 @@ frank@mozilla.com
 
 
 default_args = {
-    "owner": "frank@mozilla.com",
+    "owner": "kwindau@mozilla.com",
     "start_date": datetime.datetime(2023, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "frank@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "kwindau@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
-    "email_on_retry": True,
+    "email_on_retry": False,
     "retries": 2,
 }
 
@@ -79,11 +79,7 @@ with DAG(
         table_id="moz-fx-data-shared-prod.google_ads_derived.android_app_campaign_stats_v1",
         warehouse_id="1939",
         owner="kwindau@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         retries=0,
     )
@@ -95,7 +91,11 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -108,11 +108,7 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="kwindau@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -27)}}"]
         + ["submission_date:DATE:{{ds}}"],
@@ -126,7 +122,11 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -139,7 +139,11 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -151,7 +155,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -163,7 +171,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -175,11 +187,7 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["date:DATE:{{macros.ds_add(ds, -27)}}"]
@@ -192,7 +200,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -204,7 +216,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -230,7 +246,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -242,7 +262,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -254,7 +278,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -266,7 +294,11 @@ with DAG(
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,

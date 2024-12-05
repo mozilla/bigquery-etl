@@ -39,7 +39,7 @@ tag_deployments:
       lookback:
         lookback_window:
           interval_type: DAYS
-          interval_value: 1
+          interval_value: 0
         lookback_type: DATA_TIME
       metric_schedule:
         named_schedule:

@@ -21,5 +21,3 @@ bigquery:
   clustering:
     fields:
     - campaign
-monitoring:
-  enabled: true

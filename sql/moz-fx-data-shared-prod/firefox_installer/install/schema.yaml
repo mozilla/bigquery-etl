@@ -40,8 +40,7 @@ fields:
 - name: disk_space_error
   type: BOOLEAN
   mode: NULLABLE
-  description: True if the installation failed because the drive we're trying to install
-    to does not have enough space
+  description: '[DEPRECATED] Use `disk_space_req_not_met` instead.'
 - name: document_id
   type: STRING
   mode: NULLABLE
@@ -251,8 +250,7 @@ fields:
 - name: no_write_access
   type: BOOLEAN
   mode: NULLABLE
-  description: "True if the installation failed because the user doesn\u2019t have\
-    \ permission to write to the path we\u2019re trying to install to."
+  description: '[DEPRECATED] Use `writeable_req_not_met` instead.'
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -284,8 +282,8 @@ fields:
 - name: old_running
   type: BOOLEAN
   mode: NULLABLE
-  description: "True if the installation succeeded and we weren\u2019t able to launch\
-    \ the newly installed application because a copy of Firefox was already running."
+  description: '[DEPRECATED] Should always be false since Firefox 74, since this check
+    was removed in that version.'
 - name: old_version
   type: STRING
   mode: NULLABLE
@@ -396,6 +394,33 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Build ID of the stub installer
+- name: disk_space_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because the drive we're trying to install
+    to does not have enough space.
+- name: hardware_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the system hardware does not meet the minimum hardware requirements.
+- name: os_version_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: ' True if the system does not meet the minimum OS version requirements.'
+- name: sig_check_timeout
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if there was a timeout on the the certificate checks
+- name: unknown_error
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Default failure exit code. Seeing this in telemetry indicates that
+    the stub installer has exited unsuccessfully, but no reason has been specified
+- name: writeable_req_not_met
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the installation failed because the user doesn't have permission
+    to write to the path we're trying to install to.
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

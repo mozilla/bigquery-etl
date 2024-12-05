@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -4388,6 +4388,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: networking_https_record_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_https_http_or_local
       type: RECORD
       mode: REPEATED
       fields:
@@ -13236,6 +13246,44 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: fingerprinting_protection_canvas_noise_calculate_time_ns
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: fingerprinting_protection_canvas_noise_calculate_time_2
       type: RECORD
       mode: NULLABLE
       fields:

@@ -383,7 +383,8 @@ SELECT
       metrics.labeled_counter.networking_http_3_quic_frame_count,
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
-      metrics.labeled_counter.networking_https_record_state
+      metrics.labeled_counter.networking_https_record_state,
+      metrics.labeled_counter.networking_https_http_or_local
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -713,7 +714,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_task_start_delay,
       metrics.timing_distribution.javascript_gc_time_between,
       metrics.timing_distribution.javascript_gc_time_between_slices,
-      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns,
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

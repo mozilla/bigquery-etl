@@ -44,11 +44,6 @@ tag_deployments:
       metric_schedule:
         named_schedule:
           name: default
-- collection:
-    name: Operational Checks
-    notification_channels:
-    - slack: '#de-bigeye-triage'
-  deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.baseline_clients_last_seen_v1.*
     metrics:

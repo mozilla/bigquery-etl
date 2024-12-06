@@ -31,17 +31,14 @@ tag_deployments:
       #   - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
       #   metrics:
       #     - saved_metric_id: is_valid_client_id
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
-        metrics:
-          - saved_metric_id: is_unique
-            lookback:
-              lookback_type: DATA_TIME
-              lookback_window:
-                interval_type: DAYS
-                interval_value: 0
-            rct_overrides:
-              - submission_date
+      #     - saved_metric_id: is_unique
+      #       lookback:
+      #         lookback_type: DATA_TIME
+      #         lookback_window:
+      #           interval_type: DAYS
+      #           interval_value: 0
+      #       rct_overrides:
+      #         - submission_date
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

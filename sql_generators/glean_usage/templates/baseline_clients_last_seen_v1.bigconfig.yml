@@ -25,27 +25,23 @@ tag_deployments:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
         metrics:
           - saved_metric_id: is_2_char_len
+      # For now being commented out due to a bug in the predefined metric (wrong regex being used) resulting in 0 matches.
+      # Will uncomment once the underlaying issue has been fixed.
+      # - column_selectors:
+      #   - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
+      #   metrics:
+      #     - saved_metric_id: is_valid_client_id
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
+        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
         metrics:
-          - saved_metric_id: is_valid_length_client_id
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
-        metrics:
-          - metric_type:
-              predefined_metric: COUNT_DUPLICATES
+          - saved_metric_id: is_unique
             lookback:
               lookback_type: DATA_TIME
               lookback_window:
                 interval_type: DAYS
                 interval_value: 0
-            threshold:
-              type: CONSTANT
-              lower_bound: 0
-              upper_bound: 1
-            metric_schedule:
-              named_schedule:
-                name: default
+            rct_overrides:
+              - submission_date
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

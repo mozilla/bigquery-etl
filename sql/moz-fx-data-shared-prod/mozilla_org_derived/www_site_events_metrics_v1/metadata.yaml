@@ -23,6 +23,8 @@ bigquery:
     - event_category
     - event_action
     - event_label
-workgroup_access: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references: {}
-deprecated: true

@@ -20,11 +20,10 @@ scheduling:
     - telemetry_derived
     - crash_frames_v1
   container_resources:
-    request_memory: 102400Mi
-    request_cpu: null
-    limit_memory: 102400Mi
-    limit_cpu: null
-    limit_gpu: null
+    requests:
+      memory: 102400Mi
+    limits:
+      memory: 102400Mi
   node_selector:
     nodepool: highmem-16
   startup_timeout_seconds: 360

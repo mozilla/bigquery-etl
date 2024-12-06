@@ -5,6 +5,7 @@ from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
 import datetime
+from kubernetes.client import models as k8s
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
@@ -106,6 +107,12 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="dthorn@mozilla.com",
         email=["dthorn@mozilla.com", "telemetry-alerts@mozilla.com"],
+        container_resources=k8s.V1ResourceRequirements(
+            requests={"memory": "102400Mi"},
+            limits={"memory": "102400Mi"},
+        ),
+        node_selector={"nodepool": "highmem-16"},
+        startup_timeout_seconds=360,
         retry_delay=datetime.timedelta(seconds=300),
     )
 

@@ -1,0 +1,25 @@
+fields:
+- name: id
+  type: STRING
+  mode: NULLABLE
+- name: _fivetran_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+- name: _fivetran_synced
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: description
+  type: STRING
+  mode: NULLABLE
+- name: dimension_table
+  type: STRING
+  mode: NULLABLE
+- name: is_array
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_custom
+  type: BOOLEAN
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE

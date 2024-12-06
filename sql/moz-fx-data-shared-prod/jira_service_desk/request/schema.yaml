@@ -1,0 +1,16 @@
+fields:
+- name: issue_id
+  type: INTEGER
+  mode: NULLABLE
+- name: _fivetran_synced
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: link
+  type: STRING
+  mode: NULLABLE
+- name: request_type_id
+  type: INTEGER
+  mode: NULLABLE
+- name: service_desk_id
+  type: INTEGER
+  mode: NULLABLE

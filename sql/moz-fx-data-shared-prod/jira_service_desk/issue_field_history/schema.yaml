@@ -1,0 +1,22 @@
+fields:
+- name: field_id
+  type: STRING
+  mode: NULLABLE
+- name: issue_id
+  type: INTEGER
+  mode: NULLABLE
+- name: time
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: _fivetran_synced
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: author_id
+  type: STRING
+  mode: NULLABLE
+- name: is_active
+  type: BOOLEAN
+  mode: NULLABLE
+- name: value
+  type: STRING
+  mode: NULLABLE

@@ -72,7 +72,7 @@ distribution_metadata AS (
         [
             {% for meta in custom_distribution_metadata_list %}
                 STRUCT(
-                    "custom_distribution" as metric_type,
+                    "{{ meta.type }}" as metric_type,
                     "{{ meta.name.replace('.', '_') }}" as metric,
                     {{ meta.range_min }} as range_min,
                     {{ meta.range_max }} as range_max,
@@ -94,7 +94,7 @@ distribution_metadata AS (
     FROM
       unnested
     WHERE
-      metric_type <> "custom_distribution"
+      NOT ENDS_WITH(metric_type, "custom_distribution")
     GROUP BY
       metric_type,
       metric

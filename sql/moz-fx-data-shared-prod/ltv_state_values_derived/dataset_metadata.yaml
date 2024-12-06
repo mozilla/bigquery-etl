@@ -1,7 +1,7 @@
 friendly_name: LTV State Values Derived
 description: |
   Dataset where the data science team has write access to write LTV state values from their models
-dataset_base_acl: derived_restricted
+dataset_base_acl: derived
 user_facing: false
 labels: {}
 workgroup_access:

@@ -139,6 +139,20 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_google_ads_derived__daily_campaign_stats__v1 = bigquery_dq_check(
+        task_id="checks__fail_google_ads_derived__daily_campaign_stats__v1",
+        source_table="daily_campaign_stats_v1",
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     google_ads_derived__accounts__v1 = bigquery_etl_query(
         task_id="google_ads_derived__accounts__v1",
         destination_table="accounts_v1",
@@ -283,15 +297,12 @@ with DAG(
         destination_table="daily_campaign_stats_v1",
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=[
-            "frank@mozilla.com",
-            "kwindau@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     checks__fail_google_ads_derived__ad_groups__v1.set_upstream(
@@ -308,6 +319,10 @@ with DAG(
 
     checks__fail_google_ads_derived__campaigns__v2.set_upstream(
         google_ads_derived__campaigns__v2
+    )
+
+    checks__fail_google_ads_derived__daily_campaign_stats__v1.set_upstream(
+        google_ads_derived__daily_campaign_stats__v1
     )
 
     google_ads_derived__ad_groups__v1.set_upstream(

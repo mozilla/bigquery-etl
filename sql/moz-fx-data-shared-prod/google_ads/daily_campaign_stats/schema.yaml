@@ -35,3 +35,6 @@ fields:
 - name: impressions
   type: INTEGER
   mode: NULLABLE
+- name: last_updated_date
+  type: DATE
+  mode: NULLABLE

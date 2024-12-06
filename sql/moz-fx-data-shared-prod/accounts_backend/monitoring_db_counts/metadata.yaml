@@ -1,0 +1,15 @@
+friendly_name: FxA DB Counts Monitoring
+description: |-
+  Simple aggregation of counts of records in the FxA DB tables.
+  Enables to identify trends within accounts data. E.g. "How many
+  inactive accounts are there?"
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.accounts_backend_derived.monitoring_db_counts_v1

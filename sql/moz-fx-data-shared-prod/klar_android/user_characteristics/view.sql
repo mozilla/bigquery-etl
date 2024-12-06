@@ -201,7 +201,15 @@ SELECT
       metrics.string.characteristics_gl_vendor_raw_software,
       metrics.string.characteristics_gl_vendor_software,
       metrics.string.characteristics_gl_version_raw_software,
-      metrics.string.characteristics_gl_vertex_shader_software
+      metrics.string.characteristics_gl_vertex_shader_software,
+      metrics.string.characteristics_canvasdata3avif,
+      metrics.string.characteristics_canvasdata3avifsoftware,
+      metrics.string.characteristics_canvasdata3cspsafe,
+      metrics.string.characteristics_canvasdata3cspsafesoftware,
+      metrics.string.characteristics_canvasdata3png,
+      metrics.string.characteristics_canvasdata3pngsoftware,
+      metrics.string.characteristics_canvasdata3webp,
+      metrics.string.characteristics_canvasdata3webpsoftware
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(

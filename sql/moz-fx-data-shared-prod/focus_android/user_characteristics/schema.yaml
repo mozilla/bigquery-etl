@@ -732,6 +732,30 @@ fields:
     - name: characteristics_gl_vertex_shader_software
       type: STRING
       mode: NULLABLE
+    - name: characteristics_canvasdata3avif
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3avifsoftware
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3cspsafe
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3cspsafesoftware
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3png
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3pngsoftware
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3webp
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_canvasdata3webpsoftware
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -1367,6 +1367,62 @@ fields:
       description: 'Hash of the transformed source of the vertex shader.
 
         '
+    - name: characteristics_canvasdata3avif
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3avifsoftware
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3cspsafe
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3cspsafesoftware
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3png
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3pngsoftware
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3webp
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
+    - name: characteristics_canvasdata3webpsoftware
+      type: STRING
+      mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -24,26 +24,16 @@ tag_deployments:
     metrics:
     - saved_metric_id: is_2_char_len
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.client_id
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.country
     metrics:
-    - saved_metric_id: is_valid_length_client_id
-  - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.client_id
-    metrics:
-    - metric_type:
-        predefined_metric: COUNT_DUPLICATES
-      threshold:
-        type: CONSTANT
-        upper_bound: 1.0
-        lower_bound: 0.0
+    - saved_metric_id: is_unique
       lookback:
         lookback_window:
           interval_type: DAYS
           interval_value: 0
         lookback_type: DATA_TIME
-      metric_schedule:
-        named_schedule:
-          name: default
+      rct_overrides:
+      - submission_date
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1.*
     metrics:

@@ -23,4 +23,3 @@ bigquery:
     - locale
     - medium
 references: {}
-deprecated: true

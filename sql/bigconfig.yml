@@ -11,6 +11,13 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
     - saved_metric_id: is_unique
       metric_type:
         predefined_metric: COUNT_DUPLICATES
@@ -20,6 +27,8 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
+      rct_overrides:
+        - submission_date
     - saved_metric_id: freshness_fail
       metric_name: FRESHNESS [fail]
       metric_type:
@@ -57,7 +66,7 @@ saved_metric_definitions:
         predefined_metric: PERCENT_VALUE_IN_LIST
       parameters:
         - key: list
-          string_value: "release,beta,nightly,aurora,esr"
+          string_value: "release,beta,nightly,aurora,esr,Other"
       threshold:
         type: CONSTANT
         lower_bound: 100
@@ -65,6 +74,13 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
     - saved_metric_id: is_2_char_len
       metric_type:
         predefined_metric: STRING_LENGTH_MIN
@@ -75,7 +91,14 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
-    - saved_metric_id: is_valid_length_client_id
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
+    - saved_metric_id: is_valid_client_id
       metric_type:
         predefined_metric: PERCENT_UUID
       threshold:
@@ -85,3 +108,10 @@ saved_metric_definitions:
       metric_schedule:
         named_schedule:
           name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date

@@ -10,7 +10,7 @@ from mozilla_schema_generator.glean_ping import GleanPing
 
 CustomDistributionMeta = namedtuple(
     "CustomDistributionMeta",
-    ["name", "range_min", "range_max", "bucket_count", "histogram_type"],
+    ["name", "type", "range_min", "range_max", "bucket_count", "histogram_type"],
 )
 
 
@@ -72,10 +72,12 @@ def get_custom_distribution_metadata(product_name) -> List[CustomDistributionMet
 
     custom = []
     for probe in probes:
-        if probe.get_type() != "custom_distribution":
+        # We use endswith here to accommodate for types prefixed with "labeled"
+        if not probe.get_type().endswith("custom_distribution"):
             continue
         meta = CustomDistributionMeta(
             probe.get_name(),
+            probe.get_type(),
             probe.get("range_min"),
             probe.get("range_max"),
             probe.get("bucket_count"),

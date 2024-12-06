@@ -23,4 +23,3 @@ bigquery:
     - source
     - medium
 references: {}
-deprecated: true

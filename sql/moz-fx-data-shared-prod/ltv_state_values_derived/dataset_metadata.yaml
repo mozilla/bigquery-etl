@@ -10,4 +10,4 @@ workgroup_access:
       - workgroup:mozilla-confidential
   - role: roles/bigquery.dataEditor
     members:
-      - workgroup:datascience/developers
+      - workgroup:data-science/developers

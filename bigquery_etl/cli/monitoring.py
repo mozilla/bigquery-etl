@@ -374,6 +374,11 @@ def _update_bigconfig(
                     and metric.metric_type.predefined_metric in default_metrics
                 ):
                     default_metrics.remove(metric.metric_type.predefined_metric)
+                elif (
+                    metric.saved_metric_id is not None
+                    and (metric_id := metric.saved_metric_id.upper()) in default_metrics
+                ):
+                    default_metrics.remove(metric_id)
 
         if metadata.monitoring.collection and collection.collection is None:
             collection.collection = SimpleCollection(
@@ -389,7 +394,7 @@ def _update_bigconfig(
                 metrics=[
                     SimpleMetricDefinition(
                         metric_name=(
-                            f"{metric.name} [warn]"
+                            f"{metric.name}"
                             if "volume" not in metric.name.lower()
                             else f"{metric.name} [fail]"
                         ),

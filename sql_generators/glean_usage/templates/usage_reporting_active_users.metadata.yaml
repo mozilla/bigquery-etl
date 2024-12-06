@@ -1,0 +1,14 @@
+{{ header_yaml }}
+friendly_name: Usage Reporting Active_Users
+  A daily client aggregation view for usage_reporting ping. Merges the computations for client first seen
+  and last seen metrics
+
+owners:
+  - gkatre@mozilla.com
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential

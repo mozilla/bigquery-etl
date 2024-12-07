@@ -4,3 +4,5 @@ owners:
 - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_experiments_daily
+labels:
+  shredder_mitigation: true

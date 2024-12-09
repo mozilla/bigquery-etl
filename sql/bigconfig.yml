@@ -69,8 +69,8 @@ saved_metric_definitions:
           string_value: "release,beta,nightly,aurora,esr,Other"
       threshold:
         type: CONSTANT
-        lower_bound: 100
-        upper_bound: 100
+        lower_bound: 1
+        upper_bound: 1
       metric_schedule:
         named_schedule:
           name: default
@@ -103,8 +103,8 @@ saved_metric_definitions:
         predefined_metric: PERCENT_UUID
       threshold:
         type: CONSTANT
-        lower_bound: 100
-        upper_bound: 100
+        lower_bound: 1
+        upper_bound: 1
       metric_schedule:
         named_schedule:
           name: default

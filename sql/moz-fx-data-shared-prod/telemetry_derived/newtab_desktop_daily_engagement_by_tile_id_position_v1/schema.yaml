@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: recommendation_id
+  type: STRING
+  mode: NULLABLE
+- name: tile_id
+  type: INTEGER
+  mode: NULLABLE
+- name: position
+  type: INTEGER
+  mode: NULLABLE
+- name: total_impression_count
+  type: INTEGER
+  mode: NULLABLE
+- name: total_click_count
+  type: INTEGER
+  mode: NULLABLE
+- name: total_save_count
+  type: INTEGER
+  mode: NULLABLE
+- name: total_dismiss_count
+  type: INTEGER
+  mode: NULLABLE

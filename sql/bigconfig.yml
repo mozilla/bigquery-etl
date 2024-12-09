@@ -1,5 +1,14 @@
 type: BIGCONFIG_FILE
 
+tag_definitions:
+  - tag_id: PARTITION_DATE_FIELDS
+    column_selectors:
+      - name: moz-fx-data-shared-prod.*.*.submission_date
+
+row_creation_times:
+  tag_ids:
+    - PARTITION_DATE_FIELDS
+
 saved_metric_definitions:
   metrics:
     - saved_metric_id: is_not_null
@@ -17,7 +26,7 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - submission_date
+        - PARTITION_DATE_FIELDS
     - saved_metric_id: is_unique
       metric_type:
         predefined_metric: COUNT_DUPLICATES
@@ -28,7 +37,7 @@ saved_metric_definitions:
         named_schedule:
           name: default
       rct_overrides:
-        - submission_date
+        - PARTITION_DATE_FIELDS
     - saved_metric_id: freshness_fail
       metric_name: FRESHNESS [fail]
       metric_type:
@@ -69,8 +78,8 @@ saved_metric_definitions:
           string_value: "release,beta,nightly,aurora,esr,Other"
       threshold:
         type: CONSTANT
-        lower_bound: 100
-        upper_bound: 100
+        lower_bound: 1
+        upper_bound: 1
       metric_schedule:
         named_schedule:
           name: default
@@ -80,7 +89,7 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - submission_date
+        - PARTITION_DATE_FIELDS
     - saved_metric_id: is_2_char_len
       metric_type:
         predefined_metric: STRING_LENGTH_MIN
@@ -97,14 +106,14 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - submission_date
+        - PARTITION_DATE_FIELDS
     - saved_metric_id: is_valid_client_id
       metric_type:
         predefined_metric: PERCENT_UUID
       threshold:
         type: CONSTANT
-        lower_bound: 100
-        upper_bound: 100
+        lower_bound: 1
+        upper_bound: 1
       metric_schedule:
         named_schedule:
           name: default
@@ -114,4 +123,4 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - submission_date
+        - PARTITION_DATE_FIELDS

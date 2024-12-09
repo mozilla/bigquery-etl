@@ -42,7 +42,9 @@ SELECT
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
       metrics.boolean.shopping_settings_user_has_onboarded,
-      metrics.boolean.shopping_settings_disabled_ads
+      metrics.boolean.shopping_settings_disabled_ads,
+      metrics.boolean.app_choice_screen_acquisition,
+      metrics.boolean.app_default_browser
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -330,7 +332,9 @@ SELECT
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
       metrics.boolean.shopping_settings_user_has_onboarded,
-      metrics.boolean.shopping_settings_disabled_ads
+      metrics.boolean.shopping_settings_disabled_ads,
+      metrics.boolean.app_choice_screen_acquisition,
+      metrics.boolean.app_default_browser
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -618,7 +622,9 @@ SELECT
       metrics.boolean.shopping_settings_component_opted_out,
       metrics.boolean.shopping_settings_nimbus_disabled_shopping,
       metrics.boolean.shopping_settings_user_has_onboarded,
-      metrics.boolean.shopping_settings_disabled_ads
+      metrics.boolean.shopping_settings_disabled_ads,
+      metrics.boolean.app_choice_screen_acquisition,
+      metrics.boolean.app_default_browser
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,

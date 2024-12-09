@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -7342,6 +7342,246 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: use_counter_page_js_optimize_get_iterator_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_deriveexporter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_generatecredentialbasic
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_generatekeypackage
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_generatesignaturekeypair
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupclose
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupcreate
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupjoin
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupmembers
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupproposeadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupproposeremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_groupremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_receive
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_send
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_statedelete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_mls_statedeletegroup
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_deriveexporter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_generatecredentialbasic
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_generatekeypackage
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_generatesignaturekeypair
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupclose
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupcreate
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupjoin
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupmembers
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupproposeadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupproposeremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_groupremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_receive
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_send
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_statedelete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_mls_statedeletegroup
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_deriveexporter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_generatecredentialbasic
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_generatekeypackage
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_generatesignaturekeypair
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupclose
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupcreate
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupjoin
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupmembers
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupproposeadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupproposeremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_groupremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_receive
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_send
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_statedelete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_mls_statedeletegroup
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_deriveexporter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_generatecredentialbasic
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_generatekeypackage
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_generatesignaturekeypair
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupclose
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupcreate
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupjoin
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupmembers
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupproposeadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupproposeremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_groupremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_receive
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_send
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_statedelete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_mls_statedeletegroup
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_deriveexporter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_generatecredentialbasic
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_generatekeypackage
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_generatesignaturekeypair
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupclose
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupcreate
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupjoin
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupmembers
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupproposeadd
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupproposeremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_groupremove
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_receive
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_send
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_statedelete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_mls_statedeletegroup
       type: INTEGER
       mode: NULLABLE
   - name: labeled_counter

@@ -285,6 +285,12 @@ fields:
     - name: shopping_settings_disabled_ads
       type: BOOLEAN
       mode: NULLABLE
+    - name: app_choice_screen_acquisition
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: app_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

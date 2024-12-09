@@ -456,6 +456,18 @@ fields:
         experience. Set in BrowserViewController and updated when changed by user.
 
         '
+    - name: app_choice_screen_acquisition
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'The user installed the app via the browser choice screen
+
+        '
+    - name: app_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Is Firefox the default browser
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

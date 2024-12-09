@@ -7689,6 +7689,20 @@ fields:
         domain
 
         '
+    - name: telemetry_clamping_time_hgrams
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often do which histograms that use `Telemetry::AccumulateTimeDelta`
+        have clamped samples due to underflow?
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

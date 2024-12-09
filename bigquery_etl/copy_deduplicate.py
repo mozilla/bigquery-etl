@@ -166,7 +166,7 @@ def _get_query_job_configs(
 
 
 def _run_deduplication_query(client, sql, stable_table, job_config, num_retries):
-    query_job = client.query(sql, job_config)
+    query_job = client.query(sql, job_config, job_id_prefix="copy_dedup_")
     if not query_job.dry_run:
         try:
             query_job.result()
@@ -178,7 +178,7 @@ def _run_deduplication_query(client, sql, stable_table, job_config, num_retries)
                 client, sql, stable_table, job_config, num_retries - 1
             )
     logging.info(
-        f"Completed query job for {stable_table}"
+        f"Completed query job {query_job.job_id} for {stable_table}"
         f" with params: {job_config.query_parameters}"
     )
     return stable_table, query_job
@@ -194,7 +194,13 @@ def _copy_join_parts(client, stable_table, query_jobs):
         else:
             logging.info(f"Would process {total_bytes} bytes: {api_repr}")
     else:
-        logging.info(f"Processed {total_bytes} bytes to populate {stable_table}")
+        total_slot_hours = round(
+            sum(query.slot_millis for query in query_jobs) / 1000 / 60 / 60, 3
+        )
+        logging.info(
+            f"Processed {total_bytes} bytes in {total_slot_hours}"
+            f" slot hours to populate {stable_table}"
+        )
         if len(query_jobs) > 1:
             partition_id = stable_table.table_id.split("$", 1)[1]
             sources = [

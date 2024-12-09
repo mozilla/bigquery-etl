@@ -14,6 +14,7 @@ SELECT
   cost,
   job_id,
   user_email AS service_account,
+  labels,
 FROM
   `moz-fx-data-shared-prod.monitoring.bigquery_usage`
 WHERE

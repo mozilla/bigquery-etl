@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  table_type: aggregate
   dag: bqetl_cloudflare_browser_market_share
 scheduling:
   dag_name: bqetl_cloudflare_browser_market_share

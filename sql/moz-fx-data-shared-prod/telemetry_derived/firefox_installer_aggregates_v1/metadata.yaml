@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  shredder_mitigation: true
+  table_type: aggregate
   dag: bqetl_firefox_installer_aggregates
 scheduling:
   dag_name: bqetl_firefox_installer_aggregates

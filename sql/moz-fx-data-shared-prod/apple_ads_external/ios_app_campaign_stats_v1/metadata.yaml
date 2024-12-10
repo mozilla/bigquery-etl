@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
   dag: bqetl_ios_campaign_reporting
 scheduling:
   dag_name: bqetl_ios_campaign_reporting

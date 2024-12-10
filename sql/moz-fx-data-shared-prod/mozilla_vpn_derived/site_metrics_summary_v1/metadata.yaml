@@ -6,6 +6,7 @@ owners:
 labels:
   application: mozilla_vpn
   schedule: daily
+  table_type: aggregate
   owner1: srose
 scheduling:
   date_partition_parameter: date

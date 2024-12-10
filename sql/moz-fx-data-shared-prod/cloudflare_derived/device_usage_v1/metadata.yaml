@@ -5,6 +5,7 @@ owners:
 - kwindau@mozilla.com
 labels:
   owner1: kwindau
+  table_type: aggregate
   dag: bqetl_cloudflare_device_market_share
 scheduling:
   dag_name: bqetl_cloudflare_device_market_share

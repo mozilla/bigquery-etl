@@ -7,6 +7,7 @@ owners:
 labels:
   schedule: daily
   shredder_mitigation: true
+  table_type: aggregate
   dag: bqetl_mobile_search
   owner1: akomar
   owner2: cmorales

@@ -1,0 +1,47 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: reference_project_id
+  type: STRING
+  mode: NULLABLE
+- name: reference_dataset_id
+  type: STRING
+  mode: NULLABLE
+- name: reference_table_id
+  type: STRING
+  mode: NULLABLE
+- name: creation_date
+  type: DATE
+  mode: NULLABLE
+- name: task_duration
+  type: INTERVAL
+  mode: NULLABLE
+- name: total_terabytes_processed
+  type: FLOAT
+  mode: NULLABLE
+- name: total_terabytes_billed
+  type: FLOAT
+  mode: NULLABLE
+- name: total_slot_ms
+  type: INTEGER
+  mode: NULLABLE
+- name: cost
+  type: FLOAT
+  mode: NULLABLE
+- name: job_id
+  type: STRING
+  mode: NULLABLE
+- name: service_account
+  type: STRING
+  mode: NULLABLE
+- name: labels
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: STRING
+    mode: NULLABLE

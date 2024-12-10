@@ -2,7 +2,7 @@ friendly_name: Newtab Desktop Daily Engagement By Tile Id & Position
 description: |-
   Daily Firefox New Tab engagement on desktop by tile ID & position, across all territories and release channels
 owners:
-- cbeck@mozilla.com
+  - cbeck@mozilla.com
 labels:
   incremental: true
   owner1: cbeck@mozilla.com
@@ -16,10 +16,10 @@ scheduling:
     (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
     }}
   parameters:
-  - >-
-    submission_date:DATE:{{
-    (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
-    }}
+    - >-
+      submission_date:DATE:{{
+      (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+      }}
   query_file_path:
     # explicit query file path is necessary because the destination table
     # includes a partition identifier that is not in the path

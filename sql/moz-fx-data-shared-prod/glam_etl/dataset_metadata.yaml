@@ -5,7 +5,7 @@ user_facing: true
 labels: {}
 syndication:
   prod:
-    syndicated_project: "moz-fx-data-glam-prod-fca7"
+    syndicated_project: "moz-fx-glam-prod"
     syndicated_dataset: "glam_etl"
   syndicated_tables:
     - glam_desktop_beta_aggregates
@@ -17,7 +17,7 @@ syndication:
     - glam_fog_beta_aggregates
     - glam_fog_nightly_aggregates
     - glam_fog_release_aggregates
-  administer_views: true
+  administer_views: false
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

@@ -1,6 +1,7 @@
 friendly_name: Newtab Desktop Daily Engagement By Tile Id & Position
 description: |-
   Daily Firefox New Tab engagement on desktop by tile ID & position, across all territories and release channels
+  This table is a temporary solution for supporting AdOps reporting. This table should eventually be merged with the consolidated ad metrics table(s)
 owners:
   - cbeck@mozilla.com
 labels:

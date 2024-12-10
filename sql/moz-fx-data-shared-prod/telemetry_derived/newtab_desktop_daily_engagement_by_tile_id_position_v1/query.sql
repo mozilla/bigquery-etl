@@ -32,7 +32,7 @@ legacy_impression_data AS (
 ),
 legacy_flattened_impression_data AS (
   SELECT
-    UNIX_SECONDS(submission_timestamp) AS submission_timestamp,
+    submission_timestamp,
     impression_id AS client_id,
     flattened_tiles.id AS tile_id,
     IFNULL(flattened_tiles.pos, alt_pos) AS position,

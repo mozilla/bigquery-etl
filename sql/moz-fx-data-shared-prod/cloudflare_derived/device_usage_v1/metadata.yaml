@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: false
   owner1: kwindau@mozilla.com
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_cloudflare_device_market_share
   date_partition_parameter: dte

@@ -8,6 +8,7 @@ owners:
 labels:
   schedule: daily
   shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search
 bigquery:

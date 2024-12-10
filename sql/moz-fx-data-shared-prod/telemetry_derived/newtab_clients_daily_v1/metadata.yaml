@@ -3,7 +3,8 @@ description: |-
   A daily aggregation of `newtab_visits` for each
   Firefox desktop client, partitioned by day.
 owners:
-- mbowerman@mozilla.com
+  - cbeck@mozilla.com
+  - mbowerman@mozilla.com
 labels:
   application: firefox
   incremental: true
@@ -21,6 +22,6 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    - channel
-    - country_code
+      - channel
+      - country_code
 references: {}

@@ -185,13 +185,13 @@ def get_associated_deletions(
                     stable_table_ref.dataset_id[: -len("_stable")]
                     in glean_channel_names
                 ):
-                    deletion_request_table = (
-                        f"{stable_table_ref.project}.{stable_table_ref.dataset_id}.deletion_request_v1"
-                    )
-                    if table_exists(client, deletion_request_table):
+                    if table_exists(
+                        client,
+                        f"{stable_table_ref.project}.{stable_table_ref.dataset_id}.deletion_request_v1",
+                    ):
                         table_to_deletions[stable_table] = {
                             DeleteSource(
-                                table=deletion_request_table,
+                                table=f"{stable_table_ref.dataset_id}.deletion_request_v1",
                                 field=GLEAN_CLIENT_ID,
                                 project=SHARED_PROD,
                             )

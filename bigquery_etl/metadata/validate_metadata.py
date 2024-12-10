@@ -169,6 +169,30 @@ def validate_deprecation(metadata, path):
     return True
 
 
+def validate_exclusion_list_expiration_days(metadata, path):
+    """Check if any of the retention exclusion tables have expiration_days set."""
+    is_valid = True
+    retention_exclusion_list = set(
+        ConfigLoader.get("retention_exclusion_list", fallback=[])
+    )
+    normalized_path = str(Path(path).parent)
+
+    if normalized_path in retention_exclusion_list:
+        # Access and check expiration_days metadata
+        expiration_days = metadata.bigquery.time_partitioning.expiration_days
+
+        if expiration_days is not None:
+            click.echo(
+                click.style(
+                    f"ERROR: Table at {path} is in the retention exclusion list but has expiration_days set to {expiration_days}.",
+                    fg="red",
+                )
+            )
+            is_valid = False
+
+    return is_valid
+
+
 def validate(target):
     """Validate metadata files."""
     failed = False
@@ -197,6 +221,9 @@ def validate(target):
                         failed = True
 
                     if not validate_deprecation(metadata, path):
+                        failed = True
+
+                    if not validate_exclusion_list_expiration_days(metadata, path):
                         failed = True
 
                     # todo more validation

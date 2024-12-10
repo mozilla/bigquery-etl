@@ -1,53 +1,59 @@
 WITH daily_stats AS (
   SELECT
-    date,
+    `date`,
     campaign_id,
     CAST(ad_group_id AS INT64) AS ad_group_id,
     spend,
     clicks,
     impressions,
   FROM
-    `moz-fx-data-shared-prod`.google_ads_derived.daily_ad_group_stats_v1
+    `moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1`
   WHERE
-    date >= '2022-12-01'
+    {% if is_init() %}
+      `date` <= DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    {% else %}
+      `date` = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    {% endif %}
     AND account_name = "Mozilla Firefox UAC"
     AND campaign_name NOT LIKE '%iOS%'
 ),
 activations AS (
   SELECT
-    first_seen_date AS date,
+    first_seen_date AS `date`,
     ad_group_id,
     COUNTIF(activated) AS activated,
     COUNT(*) AS new_profiles,
     SUM(lifetime_value) AS lifetime_value,
   FROM
-    `moz-fx-data-shared-prod`.fenix.firefox_android_clients
+    `moz-fx-data-shared-prod.fenix.firefox_android_clients`
   JOIN
-    `moz-fx-data-shared-prod`.ltv.fenix_client_ltv
+    `moz-fx-data-shared-prod.ltv.fenix_client_ltv`
     USING (client_id)
-  WHERE
-    first_seen_date >= '2022-12-01'
   GROUP BY
-    date,
+    `date`,
     ad_group_id
 ),
 retention_aggs AS (
   SELECT
-    first_seen_date AS date,
+    first_seen_date AS `date`,
     CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
     SUM(repeat_user) AS repeat_users,
     SUM(retained_week_4) AS retained_week_4
   FROM
-    `moz-fx-data-shared-prod`.fenix.funnel_retention_week_4
+    `moz-fx-data-shared-prod.fenix.funnel_retention_week_4`
   WHERE
-    first_seen_date >= '2022-12-01'
+    {% if is_init() %}
+      submission_date <= CURRENT_DATE
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
-    date,
+    `date`,
     ad_group_id
 ),
 by_ad_group_id AS (
   SELECT
-    date,
+    `date`,
     campaign_id,
     ad_group_id,
     SUM(impressions) AS impressions,
@@ -62,17 +68,17 @@ by_ad_group_id AS (
     daily_stats
   LEFT JOIN
     activations
-    USING (date, ad_group_id)
+    USING (`date`, ad_group_id)
   LEFT JOIN
     retention_aggs
-    USING (date, ad_group_id)
+    USING (`date`, ad_group_id)
   GROUP BY
-    date,
+    `date`,
     campaign_id,
     ad_group_id
 )
 SELECT
-  date,
+  `date`,
   campaigns_v2.campaign_name AS campaign,
   CASE
     WHEN LOWER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region")) = "expansion"
@@ -97,8 +103,8 @@ SELECT
 FROM
   by_ad_group_id
 JOIN
-  `moz-fx-data-shared-prod`.google_ads_derived.ad_groups_v1
+  `moz-fx-data-shared-prod.google_ads_derived.ad_groups_v1` AS ad_groups_v1
   USING (ad_group_id)
 JOIN
-  `moz-fx-data-shared-prod`.google_ads_derived.campaigns_v2
+  `moz-fx-data-shared-prod.google_ads_derived.campaigns_v2` AS campaigns_v2
   ON ad_groups_v1.campaign_id = campaigns_v2.campaign_id

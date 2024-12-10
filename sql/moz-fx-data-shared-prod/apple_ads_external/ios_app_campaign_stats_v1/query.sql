@@ -2,52 +2,52 @@ WITH daily_stats AS (
   SELECT
     date_day AS `date`,
     campaign_name AS campaign,
-    campaign_id AS campaign_id,
+    campaign_id,
     REGEXP_EXTRACT(
       campaign_name,
       r'Mozilla_(?:FF|Firefox)_ASA_(?:iOSGeoTest_)?([\w]{2,3})_.*'
     ) AS campaign_country_code,
     ad_group_name,
     ad_group_id,
-    DATE_TRUNC(date_day, WEEK) AS week_start,
-    FORMAT_DATE("%b", date_day) AS `month`,
     SUM(spend) AS spend,
     SUM(taps) AS clicks,
     SUM(impressions) AS impressions,
-    SUM(redownloads) AS redownloads,
-    SUM(total_downloads) AS total_downloads
+    SUM(total_downloads) AS total_downloads,
   FROM
     `moz-fx-data-shared-prod.apple_ads.ad_group_report`
+  WHERE
+    {% if is_init() %}
+      date_day <= DATE_SUB(CURRENT_DATE, INTERVAL 27 DAY)
+    {% else %}
+      date_day = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    {% endif %}
   GROUP BY
-    date_day,
+    `date`,
     campaign_name,
     campaign_id,
-    REGEXP_EXTRACT(campaign_name, r'Mozilla_(?:FF|Firefox)_ASA_(?:iOSGeoTest_)?([\w]{2,3})_.*'),
+    campaign_country_code,
     ad_group_name,
-    ad_group_id,
-    week_start,
-    `month`
+    ad_group_id
 ),
 activations AS (
   SELECT
-    CAST(REGEXP_EXTRACT(cl.adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
+    clients.first_seen_date AS `date`,
+    CAST(REGEXP_EXTRACT(clients.adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
     CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
-    cl.first_seen_date AS date,
     COUNT(DISTINCT ltv.client_id) AS new_profiles,
-    COUNTIF(cl.is_activated) AS activated,
-    SUM(ltv.lifetime_value) AS lifetime_value
+    COUNTIF(clients.is_activated) AS activated,
+    SUM(ltv.lifetime_value) AS lifetime_value,
   FROM
-    `mozdata.ltv.firefox_ios_client_ltv` ltv
+    `mozdata.ltv.firefox_ios_client_ltv` AS ltv
   INNER JOIN
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` cl
-    ON ltv.client_id = cl.client_id
-    AND ltv.sample_id = cl.sample_id
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` AS clients
+    USING (client_id, sample_id)
   WHERE
-    cl.channel = "release"
+    clients.channel = "release"
   GROUP BY
-    1,
-    2,
-    3
+    `date`,
+    campaign_id,
+    ad_group_id
 ),
 retention_aggs AS (
   SELECT
@@ -55,9 +55,16 @@ retention_aggs AS (
     CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
     CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
     SUM(repeat_user) AS repeat_users,
-    SUM(retained_week_4) AS retained_week_4
+    SUM(retained_week_4) AS retained_week_4,
   FROM
+    -- TODO: we should update this to use retention_clients view instead
     `moz-fx-data-shared-prod.firefox_ios.funnel_retention_week_4`
+  WHERE
+    {% if is_init() %}
+      submission_date <= CURRENT_DATE
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
   GROUP BY
     `date`,
     campaign_id,
@@ -83,14 +90,14 @@ FROM
   daily_stats
 LEFT JOIN
   activations
-  USING (date, campaign_id, ad_group_id)
+  USING (`date`, campaign_id, ad_group_id)
 LEFT JOIN
   retention_aggs
-  USING (date, campaign_id, ad_group_id)
+  USING (`date`, campaign_id, ad_group_id)
 GROUP BY
-  date,
+  `date`,
   campaign,
   campaign_id,
   campaign_country_code,
   ad_group_name,
-  ad_group_id;
+  ad_group_id

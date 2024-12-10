@@ -29,4 +29,3 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-

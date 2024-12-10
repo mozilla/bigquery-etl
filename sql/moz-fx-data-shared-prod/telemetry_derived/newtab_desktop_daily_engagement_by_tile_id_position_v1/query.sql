@@ -61,7 +61,7 @@ legacy_flattened_impression_data AS (
 ),
 legacy_summary AS (
   SELECT
-    DATE(TIMESTAMP_SECONDS(submission_timestamp)) AS submission_date,
+    submission_timestamp,
     CAST(NULL AS STRING) AS recommendation_id,
     tile_id,
     position,
@@ -74,7 +74,7 @@ legacy_summary AS (
   WHERE
     clicks < 3
   GROUP BY
-    submission_date,
+    submission_timestamp,
     tile_id,
     position
 ),
@@ -124,7 +124,7 @@ glean_flattened_pocket_events AS (
 ),
 glean_summary AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+    submission_timestamp,
     recommendation_id,
     COALESCE(SAFE_CAST(tile_id AS int), -1) AS tile_id,
     COALESCE(SAFE_CAST(position AS int), -1) AS position,
@@ -137,14 +137,14 @@ glean_summary AS (
   WHERE
     NOT (user_event_count > 50 AND event_name = 'click')
   GROUP BY
-    submission_date,
+    submission_timestamp,
     recommendation_id,
     tile_id,
     position
 )
 -- Combined Query with Full Outer Join
 SELECT
-  COALESCE(l.submission_date, g.submission_date) AS submission_date,
+  COALESCE(l.submission_timestamp, g.submission_timestamp) AS submission_timestamp,
   COALESCE(l.recommendation_id, g.recommendation_id) AS recommendation_id,
   COALESCE(l.tile_id, g.tile_id) AS tile_id,
   COALESCE(l.position, g.position) AS position,
@@ -156,10 +156,10 @@ FROM
   legacy_summary AS l
 FULL OUTER JOIN
   glean_summary AS g
-  ON l.submission_date = g.submission_date
+  ON l.submission_timestamp = g.submission_timestamp
   AND l.tile_id = g.tile_id
   AND l.position = g.position
 ORDER BY
-  submission_date,
+  submission_timestamp,
   tile_id,
   position;

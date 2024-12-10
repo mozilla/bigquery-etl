@@ -6,6 +6,7 @@ owners:
 labels:
   application: mozilla_vpn
   schedule: daily
+  table_type: aggregate
 scheduling:
   # No longer scheduled because we're no longer getting GA3 data from Google.
   # https://bugzilla.mozilla.org/show_bug.cgi?id=1905989

@@ -31,6 +31,5 @@ SELECT
   (total_slot_ms * 0.06) / (60 * 60 * 1000) AS cost,
   total_slot_ms / (60 * 60 * 1000) AS total_slot_hours,
   ROW_NUMBER() OVER (PARTITION BY job_id, submission_date) AS referenced_table_number,
-  labels,
 FROM
   `moz-fx-data-shared-prod.monitoring_derived.bigquery_usage_v2`

@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: ksiegler@mozilla.com
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_accounts_derived
 bigquery:

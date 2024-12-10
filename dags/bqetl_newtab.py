@@ -79,8 +79,12 @@ with DAG(
         destination_table="newtab_clients_daily_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mbowerman@mozilla.com",
-        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -90,8 +94,12 @@ with DAG(
         destination_table="newtab_clients_daily_aggregates_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mbowerman@mozilla.com",
-        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -101,8 +109,12 @@ with DAG(
         destination_table="newtab_interactions_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mbowerman@mozilla.com",
-        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="cbeck@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -113,7 +125,11 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mbowerman@mozilla.com",
-        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
+        email=[
+            "cbeck@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

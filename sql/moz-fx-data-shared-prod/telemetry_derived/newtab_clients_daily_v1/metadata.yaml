@@ -3,13 +3,15 @@ description: |-
   A daily aggregation of `newtab_visits` for each
   Firefox desktop client, partitioned by day.
 owners:
+- cbeck@mozilla.com
 - mbowerman@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
   dag: bqetl_newtab
-  owner1: mbowerman
+  owner1: cbeck
+  owner2: mbowerman
 scheduling:
   dag_name: bqetl_newtab
 bigquery:

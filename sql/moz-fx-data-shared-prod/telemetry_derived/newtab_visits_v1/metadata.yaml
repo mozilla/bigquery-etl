@@ -4,12 +4,14 @@ description: |-
   (identified by the visit id).
 owners:
 - mbowerman@mozilla.com
+- cbeck@mozilla.com
 labels:
   application: firefox
   incremental: true
   schedule: daily
   owner1: mbowerman
   dag: bqetl_newtab
+  owner2: cbeck
 scheduling:
   dag_name: bqetl_newtab
 bigquery:

@@ -1,17 +1,17 @@
-friendly_name: Newtab Desktop Daily Engagement By Tile Id Position
+friendly_name: Newtab Desktop Daily Engagement By Tile Id & Position
 description: |-
-  Please provide a description for the query
+  Daily Firefox New Tab engagement on desktop by tile ID & position, across all territories and release channels
 owners:
-- example@mozilla.com
+- cbeck@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: cbeck@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_newtab_engagement_hourly
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+    field: submission_timestamp
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null

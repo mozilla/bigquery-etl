@@ -22,9 +22,12 @@ legacy_impression_data AS (
   FROM
     legacy_deduplicated_pings AS d
   WHERE
-    loaded IS NULL
+    loaded IS NULL -- don't include loaded ping
+    -- include only data from Firefox > 121
     AND SAFE_CAST(SPLIT(version, '.')[0] AS int64) <= 120
+    -- ensure data is valid/non-empty
     AND ARRAY_LENGTH(tiles) >= 1
+    -- exclude custom Newtab page for Fx China
     AND (page IS NULL OR page != 'https://newtab.firefoxchina.cn/newtab/as/activity-stream.html')
 ),
 legacy_flattened_impression_data AS (

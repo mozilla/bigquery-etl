@@ -1,0 +1,11 @@
+{{ header_yaml }}
+friendly_name: Clients Last Seen Based on the DAU Reporting Ping.
+description: |-
+  A daily aggregate of the dau_reporting ping for each `profile_usage_id`
+  representing their activity.
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily

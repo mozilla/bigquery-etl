@@ -10,6 +10,8 @@ description: |-
   telemetry-airflow and docker-etl)
 owners:
   - cmorales@mozilla.com
+  - cbeck@mozilla.com
+  - lvargas@mozilla.com
 labels:
   authorized: true
 workgroup_access:

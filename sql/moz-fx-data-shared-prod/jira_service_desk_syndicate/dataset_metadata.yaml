@@ -16,6 +16,7 @@ syndication:
     - resolution
     - field
     - issue_field_history
+    - issue_multiselect_history
     - status_category
     - request
     - request_type

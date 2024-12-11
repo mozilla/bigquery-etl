@@ -45,7 +45,7 @@ dl_token_to_telemetry_id AS (
     a.first_seen_date,
     a.attribution_dltoken AS dl_token,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2` a
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` a
   JOIN
     dist_dl_tokens b
     ON a.attribution_dltoken = b.dl_token

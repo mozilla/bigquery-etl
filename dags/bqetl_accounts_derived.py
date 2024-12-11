@@ -61,6 +61,7 @@ with DAG(
         execution_delta=datetime.timedelta(seconds=5400),
         check_existence=True,
         mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",

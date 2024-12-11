@@ -3,7 +3,8 @@ description: |-
   Visits on the newtab page, one row per visit per-day
   (identified by the visit id).
 owners:
-- mbowerman@mozilla.com
+  - mbowerman@mozilla.com
+  - cbeck@mozilla.com
 labels:
   application: firefox
   incremental: true
@@ -21,6 +22,6 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    - channel
-    - country_code
+      - channel
+      - country_code
 references: {}

@@ -1,0 +1,6 @@
+---
+friendly_name: FxA DB Counts Monitoring
+description: |-
+  Simple aggregation of counts of records in the FxA DB tables.
+  Enables to identify trends within accounts data. E.g. "How many
+  inactive accounts are there?"

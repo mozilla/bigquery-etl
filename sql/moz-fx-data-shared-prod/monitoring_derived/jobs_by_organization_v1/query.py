@@ -39,13 +39,7 @@ def create_query(job_date: date, project: str):
           priority,
           project_id,
           project_number,
-          ARRAY_CONCAT(referenced_tables, IFNULL((SELECT ARRAY_AGG(
-            STRUCT(
-              materialized_view.table_reference.project_id AS project_id,
-              materialized_view.table_reference.dataset_id AS dataset_id,
-              materialized_view.table_reference.table_id AS table_id
-            )
-          ) FROM UNNEST(materialized_view_statistics.materialized_view) AS materialized_view), [])) AS referenced_tables,
+          referenced_tables,
           reservation_id,
           start_time,
           state,

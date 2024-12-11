@@ -11,6 +11,7 @@ labels:
   schedule: daily
   change_controlled: true
   shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search_dashboard
 bigquery:

@@ -3,6 +3,8 @@ type: BIGCONFIG_FILE
 tag_deployments:
   - collection:
       name: {{ bigeye_collection }}
+      notification_channels:
+        - slack: '{{ bigeye_notification_slack_channel_ds }}'
     deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.first_seen_date
@@ -27,6 +29,8 @@ tag_deployments:
 
   - collection:
       name: Operational Checks
+      notification_channels:
+        - slack: '{{ bigeye_notification_slack_channel_de }}'
     deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*

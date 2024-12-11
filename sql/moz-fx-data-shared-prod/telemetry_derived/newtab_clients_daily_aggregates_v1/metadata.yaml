@@ -2,6 +2,7 @@ friendly_name: Newtab Clients Daily Aggregates
 description: |-
   A daily aggregation of `newtab_clients_daily`, partitioned by day.
 owners:
+  - cbeck@mozilla.com
   - mbowerman@mozilla.com
 labels:
   application: firefox

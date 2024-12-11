@@ -3,7 +3,8 @@ description: |-
   Interactions on the newtab page, roughly one row per newtab "visit" per-day
   (identified by the visit id).
 owners:
-- mbowerman@mozilla.com
+  - cbeck@mozilla.com
+  - mbowerman@mozilla.com
 labels:
   application: firefox
   incremental: true
@@ -19,5 +20,5 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - channel
-    - country_code
+      - channel
+      - country_code

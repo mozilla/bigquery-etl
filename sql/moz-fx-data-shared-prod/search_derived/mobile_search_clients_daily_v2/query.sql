@@ -95,6 +95,7 @@ baseline_org_mozilla_fenix AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    metrics.string.metrics_distribution_id AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix.baseline` AS org_mozilla_fenix_baseline
 ),
@@ -122,6 +123,7 @@ baseline_org_mozilla_fenix_nightly AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    metrics.string.metrics_distribution_id AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.baseline` AS org_mozilla_fenix_nightly_baseline
 ),
@@ -149,6 +151,7 @@ baseline_org_mozilla_fennec_aurora AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    metrics.string.metrics_distribution_id AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.baseline` AS org_mozilla_fennec_aurora_baseline
 ),
@@ -176,6 +179,7 @@ baseline_org_mozilla_firefox_beta AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    metrics.string.metrics_distribution_id AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline` AS org_mozilla_firefox_beta_baseline
 ),
@@ -203,6 +207,7 @@ baseline_org_mozilla_firefox AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.events_total_uri_count AS total_uri_count,
+    metrics.string.metrics_distribution_id AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox.baseline` AS org_mozilla_firefox_baseline
 ),
@@ -231,6 +236,7 @@ baseline_org_mozilla_ios_firefox AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.tabs_normal_and_private_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline` AS org_mozilla_ios_firefox_baseline
   WHERE
@@ -261,6 +267,7 @@ baseline_org_mozilla_ios_firefoxbeta AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.tabs_normal_and_private_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline` AS org_mozilla_ios_firefoxbeta_baseline
   WHERE
@@ -291,6 +298,7 @@ baseline_org_mozilla_ios_fennec AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.tabs_normal_and_private_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline` AS org_mozilla_ios_fennec_baseline
   WHERE
@@ -320,6 +328,7 @@ baseline_org_mozilla_focus AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus.baseline` AS org_mozilla_focus_baseline
 ),
@@ -347,6 +356,7 @@ baseline_org_mozilla_focus_beta AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline` AS org_mozilla_focus_beta_baseline
 ),
@@ -374,6 +384,7 @@ baseline_org_mozilla_focus_nightly AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline` AS org_mozilla_focus_nightly_baseline
 ),
@@ -401,6 +412,7 @@ baseline_org_mozilla_klar AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_klar.baseline` AS org_mozilla_klar_baseline
 ),
@@ -428,6 +440,7 @@ baseline_org_mozilla_ios_focus AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline` AS org_mozilla_ios_focus_baseline
 ),
@@ -455,6 +468,7 @@ baseline_org_mozilla_ios_klar AS (
     ping_info.end_time,
     ping_info.experiments,
     metrics.counter.browser_total_uri_count AS total_uri_count,
+    CAST(NULL AS STRING) AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline` AS org_mozilla_ios_klar_baseline
 ),
@@ -718,7 +732,7 @@ combined_search_clients AS (
     os_version,
     default_search_engine,
     default_search_engine_submission_url,
-    CAST(NULL AS STRING) AS distribution_id,
+    distribution_id,
     profile_creation_date,
     profile_age_in_days,
     sample_id,

@@ -1,8 +1,11 @@
 friendly_name: Mobile Search Clients Daily
-description: "A daily aggregate of baseline pings that have\nsearches from each (client_id,\
-  \ engine, source) combination,\npartitioned by day.\nAug 2024 onwards this table\
-  \ contains only baseline pings related data.\nThe historical data i.e. prior to\
-  \ Aug 2024 is all from metrics (joined with baseline) \nhas been moved to `mobile_search_client_daily_historical_pre202408`.\n"
+description: |
+  A daily aggregate of baseline pings that have
+  searches from each (client_id, engine, source) combination,
+  partitioned by day.
+  Aug 2024 onwards this table contains only baseline pings related data.
+  The historical data i.e. prior to Aug 2024 is all from metrics (joined with baseline)
+  has been moved to `mobile_search_client_daily_historical_pre202408`.
 owners:
 - cmorales@mozilla.com
 - akommasani@mozilla.com

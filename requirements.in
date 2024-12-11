@@ -40,7 +40,7 @@ PyYAML==6.0.2
 rich-click==1.8.5
 smart_open==6.4.0
 sqlglot==25.28.0
-sqlparse==0.5.2
+sqlparse==0.5.3
 stripe==6.4.0
 symbolic==12.12.3
 siggen==2.2.20241029

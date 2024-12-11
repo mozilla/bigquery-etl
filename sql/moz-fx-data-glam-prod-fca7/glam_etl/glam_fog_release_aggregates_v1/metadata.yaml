@@ -12,3 +12,4 @@ scheduling:
   depends_on:
   - task_id: fog_release_done
     dag_name: glam_fog_release
+    execution_delta: 8h

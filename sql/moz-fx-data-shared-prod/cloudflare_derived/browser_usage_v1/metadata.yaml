@@ -5,6 +5,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_cloudflare_browser_market_share
   date_partition_parameter: dte

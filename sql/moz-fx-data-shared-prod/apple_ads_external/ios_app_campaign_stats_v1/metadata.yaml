@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_ios_campaign_reporting
   depends_on_past: false

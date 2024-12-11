@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: mhirose@mozilla.com
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:

@@ -8,6 +8,7 @@ labels:
   public_bigquery: true
   public_json: true
   owner1: kwindau@mozilla.com
+  table_type: aggregate
   review_bugs:
   - 1866834 
 scheduling:

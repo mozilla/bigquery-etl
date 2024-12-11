@@ -2,7 +2,7 @@
             -- For more information on writing queries see:
             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 MERGE INTO
-  `moz-fx-data-glam-prod-fca7.glam_etl.glam_fenix_nightly_aggregates_v1` T
+  `moz-fx-glam-prod.glam_etl.glam_fenix_nightly_aggregates_v1` T
   USING (
     SELECT
       *

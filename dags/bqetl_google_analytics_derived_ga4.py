@@ -118,6 +118,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v3",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v3",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_wmo_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_wmo_events_table",
         project_id="moz-fx-data-marketing-prod",
@@ -567,7 +579,7 @@ with DAG(
     )
 
     mozilla_org_derived__gclid_conversions__v3.set_upstream(
-        wait_for_checks__fail_telemetry_derived__clients_first_seen__v2
+        wait_for_clients_first_seen_v3
     )
 
     mozilla_org_derived__gclid_conversions__v3.set_upstream(

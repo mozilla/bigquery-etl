@@ -1,14 +1,5 @@
 type: BIGCONFIG_FILE
 
-tag_definitions:
-  - tag_id: PARTITION_DATE_FIELDS
-    column_selectors:
-      - name: moz-fx-data-shared-prod.*.*.submission_date
-
-row_creation_times:
-  tag_ids:
-    - PARTITION_DATE_FIELDS
-
 saved_metric_definitions:
   metrics:
     - saved_metric_id: is_not_null
@@ -26,7 +17,7 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - PARTITION_DATE_FIELDS
+        - submission_date
     - saved_metric_id: is_unique
       metric_type:
         predefined_metric: COUNT_DUPLICATES
@@ -37,7 +28,7 @@ saved_metric_definitions:
         named_schedule:
           name: default
       rct_overrides:
-        - PARTITION_DATE_FIELDS
+        - submission_date
     - saved_metric_id: freshness_fail
       metric_name: FRESHNESS [fail]
       metric_type:
@@ -89,7 +80,7 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - PARTITION_DATE_FIELDS
+        - submission_date
     - saved_metric_id: is_2_char_len
       metric_type:
         predefined_metric: STRING_LENGTH_MIN
@@ -106,7 +97,7 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - PARTITION_DATE_FIELDS
+        - submission_date
     - saved_metric_id: is_valid_client_id
       metric_type:
         predefined_metric: PERCENT_UUID
@@ -123,4 +114,4 @@ saved_metric_definitions:
           interval_type: DAYS
           interval_value: 0
       rct_overrides:
-        - PARTITION_DATE_FIELDS
+        - submission_date

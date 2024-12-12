@@ -1,13 +1,13 @@
 fields:
-- mode: REQUIRED
+- mode: NULLABLE
   name: submission_date
   type: DATE
   description: Submission Date
-- mode: REQUIRED
+- mode: NULLABLE
   name: installer_type
   type: STRING
   description: Installer Type
-- mode: REQUIRED
+- mode: NULLABLE
   name: install_count
   type: INTEGER
   description: Install Count

@@ -1959,3 +1959,22 @@ bqetl_newtab_engagement_hourly:
     retry_delay: 5m
   tags:
     - impact/tier_2
+
+bqetl_fx_health_ind_dashboard:
+  description: |
+    This DAG builds aggregate tables used in the Firefox Health dashboard
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+    - telemetry-alerts@mozilla.com
+    - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-12-15"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *

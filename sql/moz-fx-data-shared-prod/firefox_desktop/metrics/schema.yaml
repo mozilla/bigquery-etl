@@ -754,6 +754,14 @@ fields:
         Telemetry scalar formautofill.availability.
 
         '
+    - name: primary_password_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'If a primary-password is enabled for this profile. Set soon after
+        browser startup. Does not update if a primary password is added or removed
+        after startup.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

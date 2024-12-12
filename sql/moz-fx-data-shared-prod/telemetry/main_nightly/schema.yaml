@@ -33370,6 +33370,9 @@ fields:
         - name: installation_first_seen_version
           type: STRING
           mode: NULLABLE
+        - name: primary_password_enabled
+          type: BOOLEAN
+          mode: NULLABLE
     - name: dynamic
       type: RECORD
       mode: NULLABLE
@@ -33562,6 +33565,9 @@ fields:
         - name: installation_first_seen_version
           type: STRING
           mode: NULLABLE
+        - name: primary_password_enabled
+          type: BOOLEAN
+          mode: NULLABLE
     - name: extension
       type: RECORD
       mode: NULLABLE
@@ -33753,6 +33759,9 @@ fields:
           mode: NULLABLE
         - name: installation_first_seen_version
           type: STRING
+          mode: NULLABLE
+        - name: primary_password_enabled
+          type: BOOLEAN
           mode: NULLABLE
     - name: gpu
       type: RECORD
@@ -34365,6 +34374,9 @@ fields:
           mode: NULLABLE
         - name: installation_first_seen_version
           type: STRING
+          mode: NULLABLE
+        - name: primary_password_enabled
+          type: BOOLEAN
           mode: NULLABLE
     - name: parent
       type: RECORD
@@ -38857,6 +38869,9 @@ fields:
         - name: browser_backup_scheduler_enabled
           type: BOOLEAN
           mode: NULLABLE
+        - name: primary_password_enabled
+          type: BOOLEAN
+          mode: NULLABLE
     - name: socket
       type: RECORD
       mode: NULLABLE
@@ -39670,6 +39685,9 @@ fields:
           mode: NULLABLE
         - name: installation_first_seen_version
           type: STRING
+          mode: NULLABLE
+        - name: primary_password_enabled
+          type: BOOLEAN
           mode: NULLABLE
   - name: simple_measurements
     type: RECORD

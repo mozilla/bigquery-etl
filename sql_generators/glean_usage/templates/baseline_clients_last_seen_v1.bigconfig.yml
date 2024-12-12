@@ -38,7 +38,7 @@ tag_deployments:
       #           interval_type: DAYS
       #           interval_value: 0
       #       rct_overrides:
-      #         - PARTITION_DATE_FIELDS
+      #         - submission_date
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

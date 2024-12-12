@@ -5,8 +5,10 @@ description: |-
   in the future
 owners:
 - cmorales@mozilla.com
+- akommasani@mozilla.com
 labels:
   owner1: cmorales
+  owner2: akommasani
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

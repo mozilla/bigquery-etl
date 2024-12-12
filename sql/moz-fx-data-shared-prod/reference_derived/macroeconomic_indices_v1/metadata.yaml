@@ -13,12 +13,12 @@ description: |-
   table for more information
 owners:
 - cmorales@mozilla.com
-- xluo@mozilla.com
+- akommasani@mozilla.com
 labels:
   schedule: daily
   incremental: true
   owner1: cmorales
-  owner2: xluo
+  owner2: akommasani
   dag: bqetl_reference
 scheduling:
   dag_name: bqetl_reference

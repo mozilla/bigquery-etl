@@ -328,9 +328,9 @@ with DAG(
         owner="cmorales@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "akommasani@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
-            "xluo@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -344,9 +344,9 @@ with DAG(
         owner="cmorales@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "akommasani@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
-            "xluo@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
@@ -360,9 +360,9 @@ with DAG(
         owner="cmorales@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "akommasani@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
-            "xluo@mozilla.com",
         ],
         date_partition_parameter="submission_date",
         depends_on_past=False,

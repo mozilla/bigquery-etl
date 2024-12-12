@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_ads.py`](https://github.com/mozilla/b
 Tables related to ads
 #### Owner
 
-cmorales@mozilla.com
+cbeck@mozilla.com
 
 #### Tags
 
@@ -29,10 +29,16 @@ cmorales@mozilla.com
 
 
 default_args = {
-    "owner": "cmorales@mozilla.com",
+    "owner": "cbeck@mozilla.com",
     "start_date": datetime.datetime(2023, 10, 10, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "cmorales@mozilla.com"],
+    "email": [
+        "telemetry-alerts@mozilla.com",
+        "cmorales@mozilla.com",
+        "cbeck@mozilla.com",
+        "lvargas@mozilla.com",
+        "sbetancourt@mozilla.com",
+    ],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -71,7 +77,9 @@ with DAG(
             project_id="moz-fx-data-shared-prod",
             owner="sbetancourt@mozilla.com",
             email=[
+                "cbeck@mozilla.com",
                 "cmorales@mozilla.com",
+                "lvargas@mozilla.com",
                 "sbetancourt@mozilla.com",
                 "telemetry-alerts@mozilla.com",
             ],

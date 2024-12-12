@@ -3,14 +3,14 @@ description: |-
   Daily search clients, aggregated across unique sets of dimensions
   and partitioned by day.
 owners:
-- akomar@mozilla.com
+- akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily
   shredder_mitigation: true
   table_type: aggregate
   dag: bqetl_search
-  owner1: akomar
+  owner1: akommasani
   owner2: cmorales
 scheduling:
   dag_name: bqetl_search

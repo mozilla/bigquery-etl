@@ -69,9 +69,10 @@ with DAG(
         destination_table="mobile_search_aggregates_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="akomar@mozilla.com",
+        owner="akommasani@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "akommasani@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -168,9 +169,10 @@ with DAG(
         destination_table="mobile_search_clients_last_seen_v1",
         dataset_id="search_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="akomar@mozilla.com",
+        owner="akommasani@mozilla.com",
         email=[
             "akomar@mozilla.com",
+            "akommasani@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

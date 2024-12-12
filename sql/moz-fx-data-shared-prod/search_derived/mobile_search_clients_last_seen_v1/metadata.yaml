@@ -6,12 +6,12 @@ description: |
   Exposed to users as view `search.mobile_search_clients_last_seen` and used
   as the basis for mobile LTV calculations.
 owners:
-- akomar@mozilla.com
+- akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily
   dag: bqetl_mobile_search
-  owner1: akomar
+  owner1: akommasani
   owner2: cmorales
 scheduling:
   dag_name: bqetl_mobile_search

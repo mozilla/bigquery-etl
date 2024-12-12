@@ -4,12 +4,12 @@ description: |
 
   Exposed to users as view `search.search_clients_engines_sources_daily`.
 owners:
-- akomar@mozilla.com
+- akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily
   dag: bqetl_search
-  owner1: akomar
+  owner1: akommasani
   owner2: cmorales
 scheduling:
   dag_name: bqetl_search

@@ -60,8 +60,8 @@ with DAG(
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="cmorales@mozilla.com",
         email=[
+            "akommasani@mozilla.com",
             "cmorales@mozilla.com",
             "telemetry-alerts@mozilla.com",
-            "xluo@mozilla.com",
         ],
     )

@@ -5,6 +5,8 @@ description: |-
 owners:
   - sbetancourt@mozilla.com
   - cmorales@mozilla.com
+  - cbeck@mozilla.com
+  - lvargas@mozilla.com
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

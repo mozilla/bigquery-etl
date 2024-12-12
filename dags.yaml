@@ -1967,8 +1967,8 @@ bqetl_fx_health_ind_dashboard:
     depends_on_past: false
     owner: kwindau@mozilla.com
     email:
-    - telemetry-alerts@mozilla.com
-    - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-12-15"

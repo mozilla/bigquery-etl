@@ -1,0 +1,13 @@
+fields:
+- mode: REQUIRED
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: REQUIRED
+  name: installer_type
+  type: STRING
+  description: Installer Type
+- mode: REQUIRED
+  name: install_count
+  type: INTEGER
+  description: Install Count

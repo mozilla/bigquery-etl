@@ -7,12 +7,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -22,12 +28,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -37,6 +49,9 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_ROWS
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
@@ -47,6 +62,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -57,6 +75,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -67,6 +88,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -93,12 +117,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -108,12 +138,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -123,6 +159,9 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_ROWS
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
@@ -133,6 +172,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -143,6 +185,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -153,6 +198,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -163,12 +211,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -178,12 +232,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -193,6 +253,9 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_ROWS
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
@@ -203,6 +266,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -213,6 +279,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -223,6 +292,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -233,12 +305,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -248,12 +326,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -263,6 +347,9 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_ROWS
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
@@ -273,6 +360,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -283,6 +373,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -293,6 +386,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -303,12 +399,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -318,12 +420,18 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: PERCENT_NOT_NULL
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_DUPLICATES
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -333,6 +441,9 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: COUNT_ROWS
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 1.0
@@ -343,6 +454,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -353,6 +467,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0
@@ -363,6 +480,9 @@ tag_deployments:
         type: PREDEFINED
         predefined_metric: MIN
       metric_name: Range
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
       threshold:
         type: CONSTANT
         lower_bound: 0.0

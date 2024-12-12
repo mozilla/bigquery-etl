@@ -419,13 +419,6 @@ with DAG(
         "checks__fail_telemetry_derived__clients_first_seen__v2_external",
     ) as checks__fail_telemetry_derived__clients_first_seen__v2_external:
         ExternalTaskMarker(
-            task_id="bqetl_review_checker__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            external_dag_id="bqetl_review_checker",
-            external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_analytics_aggregations__wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
@@ -552,6 +545,13 @@ with DAG(
     with TaskGroup(
         "clients_first_seen_v3_external",
     ) as clients_first_seen_v3_external:
+        ExternalTaskMarker(
+            task_id="bqetl_review_checker__wait_for_clients_first_seen_v3",
+            external_dag_id="bqetl_review_checker",
+            external_task_id="wait_for_clients_first_seen_v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_desktop_conv_evnt_categorization__wait_for_clients_first_seen_v3",
             external_dag_id="bqetl_desktop_conv_evnt_categorization",

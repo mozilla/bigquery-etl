@@ -1,0 +1,22 @@
+friendly_name: Fx Health Ind Desktop Dau By Device Type
+description: |-
+  Aggregate table that calculates desktop DAU by device type
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}

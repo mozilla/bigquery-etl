@@ -30,11 +30,13 @@ legacy_impression_data AS (
     -- exclude custom Newtab page for Fx China
     AND (page IS NULL OR page != 'https://newtab.firefoxchina.cn/newtab/as/activity-stream.html')
 ),
+-- this CTE allows us to filter out >2 clicks from a given client on the same tile within 1 second
 legacy_flattened_impression_data AS (
   SELECT
     submission_timestamp,
-    impression_id AS client_id,
+    impression_id AS client_id, -- client_id renamed to impression_id in GCP
     flattened_tiles.id AS tile_id,
+    --the 3x1 layout has a bug where we need to use the position of each element in the tiles array instead of the actual pos field
     IFNULL(flattened_tiles.pos, alt_pos) AS position,
     SUM(
       CASE
@@ -61,7 +63,7 @@ legacy_flattened_impression_data AS (
 ),
 legacy_summary AS (
   SELECT
-    submission_timestamp,
+    DATE(submission_timestamp) AS submission_date,
     CAST(NULL AS STRING) AS recommendation_id,
     tile_id,
     position,
@@ -72,9 +74,9 @@ legacy_summary AS (
   FROM
     legacy_flattened_impression_data
   WHERE
-    clicks < 3
+    clicks < 3 -- filters out >2 clicks from a given client on the same tile within 1 second
   GROUP BY
-    submission_timestamp,
+    submission_date,
     tile_id,
     position
 ),
@@ -116,6 +118,7 @@ glean_flattened_pocket_events AS (
     events.category = 'pocket'
     AND events.name IN ('impression', 'click', 'save', 'dismiss')
     AND (
+      -- keep only data with a non-null recommendation ID or tile ID
       mozfun.map.get_key(events.extra, 'recommendation_id') IS NOT NULL
       OR mozfun.map.get_key(events.extra, 'tile_id') IS NOT NULL
     )
@@ -124,7 +127,7 @@ glean_flattened_pocket_events AS (
 ),
 glean_summary AS (
   SELECT
-    submission_timestamp,
+    DATE(submission_timestamp) AS submission_date,
     recommendation_id,
     COALESCE(SAFE_CAST(tile_id AS int), -1) AS tile_id,
     COALESCE(SAFE_CAST(position AS int), -1) AS position,
@@ -135,31 +138,21 @@ glean_summary AS (
   FROM
     glean_flattened_pocket_events
   WHERE
-    NOT (user_event_count > 50 AND event_name = 'click')
+    -- exclude suspicious activity
+    NOT (user_event_count > 50)
   GROUP BY
     submission_timestamp,
     recommendation_id,
     tile_id,
     position
 )
--- Combined Query with Full Outer Join
+-- union legacy and glean telemetry
 SELECT
-  COALESCE(l.submission_timestamp, g.submission_timestamp) AS submission_timestamp,
-  COALESCE(l.recommendation_id, g.recommendation_id) AS recommendation_id,
-  COALESCE(l.tile_id, g.tile_id) AS tile_id,
-  COALESCE(l.position, g.position) AS position,
-  IFNULL(l.impression_count, 0) + IFNULL(g.impression_count, 0) AS total_impression_count,
-  IFNULL(l.click_count, 0) + IFNULL(g.click_count, 0) AS total_click_count,
-  IFNULL(l.save_count, 0) + IFNULL(g.save_count, 0) AS total_save_count,
-  IFNULL(l.dismiss_count, 0) + IFNULL(g.dismiss_count, 0) AS total_dismiss_count
+  *
 FROM
   legacy_summary AS l
-FULL OUTER JOIN
+UNION ALL
+SELECT
+  *
+FROM
   glean_summary AS g
-  ON l.submission_timestamp = g.submission_timestamp
-  AND l.tile_id = g.tile_id
-  AND l.position = g.position
-ORDER BY
-  submission_timestamp,
-  tile_id,
-  position;

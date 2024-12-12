@@ -1,6 +1,6 @@
 fields:
-- name: submission_timestamp
-  type: TIMESTAMP
+- name: submission_date
+  type: date
   mode: NULLABLE
 - name: recommendation_id
   type: STRING

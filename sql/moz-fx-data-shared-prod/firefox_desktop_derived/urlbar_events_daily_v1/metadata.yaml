@@ -9,6 +9,7 @@ labels:
   incremental: true
   schedule: daily
   shredder_mitigation: true
+  table_type: aggregate
   dag: bqetl_urlbar
   owner1: tbrooks
   owner2: akommasani

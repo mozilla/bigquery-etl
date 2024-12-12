@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   shredder_mitigation: true
+  table_type: aggregate
   dag: bqetl_desktop_funnel
   owner1: ascholtz
 scheduling:

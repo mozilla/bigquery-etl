@@ -15,6 +15,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
   dag: bqetl_analytics_aggregations
   owner1: mhirose
 scheduling:

@@ -5,6 +5,7 @@ owners:
 - jklukas@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
   dag: bqetl_gud
   owner1: jklukas
 scheduling:

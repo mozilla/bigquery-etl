@@ -7,6 +7,8 @@ labels:
   application: desktop
   schedule: daily
   incremental: true
+  shredder_mitigation: true
+  table_type: aggregate
   dag: bqetl_main_summary
   owner1: jklukas
 scheduling:

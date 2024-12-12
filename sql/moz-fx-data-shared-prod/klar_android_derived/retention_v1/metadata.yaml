@@ -13,6 +13,7 @@ labels:
   schedule: daily
   incremental: true
   shredder_mitigation: true
+  table_type: aggregate
   dag: bqetl_mobile_kpi_metrics
   owner1: kik
 scheduling:

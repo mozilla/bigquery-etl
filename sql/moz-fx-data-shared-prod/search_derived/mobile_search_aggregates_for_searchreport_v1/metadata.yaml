@@ -15,6 +15,7 @@ labels:
   owner1: cmorales
   owner2: xluo
   shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search_dashboard
   depends_on_past: false

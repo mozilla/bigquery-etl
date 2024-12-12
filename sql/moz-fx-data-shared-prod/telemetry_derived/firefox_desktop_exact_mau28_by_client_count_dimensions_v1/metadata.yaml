@@ -8,6 +8,8 @@ labels:
   application: desktop
   schedule: daily
   incremental: true
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_main_summary
   task_name: firefox_desktop_exact_mau28_by_client_count_dimensions

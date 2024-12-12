@@ -179,7 +179,13 @@ def validate_exclusion_list_expiration_days(metadata, path):
 
     if normalized_path in retention_exclusion_list:
         # Access and check expiration_days metadata
-        expiration_days = metadata.bigquery.time_partitioning.expiration_days
+        expiration_days = (
+            metadata.bigquery.time_partitioning.expiration_days
+            if metadata
+            and getattr(metadata, "bigquery", None)
+            and getattr(metadata.bigquery, "time_partitioning", None)
+            else None
+        )
 
         if expiration_days is not None:
             click.echo(
@@ -190,6 +196,48 @@ def validate_exclusion_list_expiration_days(metadata, path):
             )
             is_valid = False
 
+    return is_valid
+
+
+def validate_retention_policy_based_on_table_type(metadata, path):
+    """Check if any of the retention exclusion tables have expiration_days set."""
+    is_valid = True
+    table_type = (
+        metadata.labels.get("table_type") if isinstance(metadata.labels, dict) else None
+    )
+    expiration_days = (
+        metadata.bigquery.time_partitioning.expiration_days
+        if metadata
+        and getattr(metadata, "bigquery", None)
+        and getattr(metadata.bigquery, "time_partitioning", None)
+        else None
+    )
+
+    retention_exclusion_list = set(
+        ConfigLoader.get("retention_exclusion_list", fallback=[])
+    )
+
+    normalized_path = str(Path(path).parent)
+    if expiration_days is not None and table_type == "aggregate":
+        click.echo(
+            click.style(
+                f"ERROR: Table at {path} is an aggregate table but has expiration_days set to {expiration_days}.",
+                fg="red",
+            )
+        )
+        is_valid = False
+    if (
+        expiration_days is None
+        and table_type == "client_level"
+        and normalized_path not in retention_exclusion_list
+    ):
+        click.echo(
+            click.style(
+                f"ERROR: Table at {path} is an client level table and needs expiration_days to be set",
+                fg="red",
+            )
+        )
+        is_valid = False
     return is_valid
 
 
@@ -224,6 +272,11 @@ def validate(target):
                         failed = True
 
                     if not validate_exclusion_list_expiration_days(metadata, path):
+                        failed = True
+
+                    if not validate_retention_policy_based_on_table_type(
+                        metadata, path
+                    ):
                         failed = True
 
                     # todo more validation

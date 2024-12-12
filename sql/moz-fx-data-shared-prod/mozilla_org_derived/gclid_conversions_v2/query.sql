@@ -34,7 +34,7 @@ dl_token_to_telemetry_id AS (
     first_seen_date,
     attribution_dltoken AS dl_token,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2`
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
 ),
 --Step 4: Get all clients who were active on the activity date, and the type of activity they had
 telemetry_id_to_activity_staging AS (

@@ -83,6 +83,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         check_existence=True,
         mode='reschedule',
+        poke_interval=datetime.timedelta(minutes=5),
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',

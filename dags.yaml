@@ -1928,3 +1928,16 @@ bqetl_firefox_installer_aggregates:
   schedule_interval: 0 15 * * *
   tags:
     - impact/tier_3
+
+bqetl_newtab_engagement_hourly:
+  schedule_interval: hourly
+  description: |
+    This DAG aggregates Newtab engagement data - on an hourly cadence
+  default_args:
+    owner: cbeck@mozilla.com
+    email: ["cbeck@mozilla.com"]
+    start_date: "2024-12-09"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_2

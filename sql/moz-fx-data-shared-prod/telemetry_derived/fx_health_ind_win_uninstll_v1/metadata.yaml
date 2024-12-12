@@ -1,20 +1,18 @@
 friendly_name: Fx Health Ind Win Uninstll
 description: |-
-  Please provide a description for the query
+  Aggregate view of Windows uninstalls by day
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau@mozilla.com
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
   time_partitioning:
     type: day
-    field: ''
-    require_partition_filter: true
+    field: submission_date
+    require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields: []
 references: {}

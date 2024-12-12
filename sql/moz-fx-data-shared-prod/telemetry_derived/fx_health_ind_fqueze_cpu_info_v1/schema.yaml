@@ -1,0 +1,17 @@
+fields:
+- mode: REQUIRED
+  name: cpu_name
+  type: STRING
+  description: CPU Name
+- mode: REQUIRED
+  name: cpu_tdp
+  type: FLOAT
+  description: CPU TDP
+- mode: REQUIRED
+  name: cpu_cores
+  type: INTEGER
+  description: CPU Cores
+- mode: NULLABLE
+  name: cpu_type
+  type: STRING
+  description: CPU Type

@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: TDP
+  type: STRING
+  description: TDP
+- mode: NULLABLE
+  name: users
+  type: INTEGER
+  description: Number of Users

@@ -1971,7 +1971,7 @@ bqetl_fx_health_ind_dashboard:
       - kwindau@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: "2024-12-15"
+    start_date: "2024-12-13"
     retries: 2
     retry_delay: 5m
   tags:

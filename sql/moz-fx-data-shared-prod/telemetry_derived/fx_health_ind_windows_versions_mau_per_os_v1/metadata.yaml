@@ -18,5 +18,5 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    - os_version
+    - windows_os_version
 references: {}

@@ -756,6 +756,9 @@ fields:
     - name: characteristics_canvasdata3webpsoftware
       type: STRING
       mode: NULLABLE
+    - name: characteristics_canvas_feature_status
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

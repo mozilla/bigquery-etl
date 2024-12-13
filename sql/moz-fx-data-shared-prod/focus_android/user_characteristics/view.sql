@@ -209,7 +209,8 @@ SELECT
       metrics.string.characteristics_canvasdata3png,
       metrics.string.characteristics_canvasdata3pngsoftware,
       metrics.string.characteristics_canvasdata3webp,
-      metrics.string.characteristics_canvasdata3webpsoftware
+      metrics.string.characteristics_canvasdata3webpsoftware,
+      metrics.string.characteristics_canvas_feature_status
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -477,7 +478,8 @@ SELECT
       metrics.string.characteristics_canvasdata3png,
       metrics.string.characteristics_canvasdata3pngsoftware,
       metrics.string.characteristics_canvasdata3webp,
-      metrics.string.characteristics_canvasdata3webpsoftware
+      metrics.string.characteristics_canvasdata3webpsoftware,
+      metrics.string.characteristics_canvas_feature_status
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -745,7 +747,8 @@ SELECT
       metrics.string.characteristics_canvasdata3png,
       metrics.string.characteristics_canvasdata3pngsoftware,
       metrics.string.characteristics_canvasdata3webp,
-      metrics.string.characteristics_canvasdata3webpsoftware
+      metrics.string.characteristics_canvasdata3webpsoftware,
+      metrics.string.characteristics_canvas_feature_status
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(

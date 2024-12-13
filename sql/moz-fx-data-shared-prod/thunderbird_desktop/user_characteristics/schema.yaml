@@ -1415,6 +1415,12 @@ fields:
         stretched photographic image, used to test image operations.
 
         '
+    - name: characteristics_canvas_feature_status
+      type: STRING
+      mode: NULLABLE
+      description: 'Status of and failure id (if failed) of ACCELERATED_CANVAS2D feature
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

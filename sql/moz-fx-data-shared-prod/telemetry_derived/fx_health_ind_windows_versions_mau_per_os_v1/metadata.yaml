@@ -1,0 +1,27 @@
+friendly_name: Fx Health Ind Windows Versions Mau Per Os
+description: |-
+  Aggregate table that calculates MAU, DAU and ER for different Windows versions
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  dag: bqetl_fx_health_ind_dashboard
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - windows_os_version
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

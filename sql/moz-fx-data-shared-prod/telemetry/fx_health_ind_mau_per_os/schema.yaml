@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: DAU
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: MAU
+- name: smoothed_dau
+  type: FLOAT
+  mode: NULLABLE
+  description: Smoothed DAU
+- name: ER
+  type: FLOAT
+  mode: NULLABLE
+  description: ER - Smoothed DAU Divided by MAU

@@ -1,0 +1,19 @@
+friendly_name: Fx Health Ind Fqueze Cpu Info
+description: |-
+  Static table of CPU Information used in Firefox Health Indicators dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - cpu_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

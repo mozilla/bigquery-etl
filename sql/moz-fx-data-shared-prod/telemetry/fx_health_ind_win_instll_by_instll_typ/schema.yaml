@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: installer_type
+  type: STRING
+  mode: NULLABLE
+  description: Installer Type
+- name: install_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Install Count

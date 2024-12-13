@@ -39,7 +39,7 @@ smoothed AS (
     ) AS smoothed_dau,
     COUNT(1) OVER (
       PARTITION BY
-        os
+        os_version
       ORDER BY
         submission_date
       ROWS BETWEEN

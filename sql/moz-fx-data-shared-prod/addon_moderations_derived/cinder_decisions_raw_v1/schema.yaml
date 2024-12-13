@@ -1,9 +1,9 @@
 fields:
 
 - mode: NULLABLE
-  name: date
-  type: DATE
-  description: date when job run and field that the table is partitioned by
+  name: decision_type
+  type: STRING
+  description: The type of decision
 
 - mode: NULLABLE
   name: user
@@ -11,34 +11,9 @@ fields:
   description: User who submitted the report
 
 - mode: NULLABLE
-  name: queue_slug
+  name: created_at
   type: STRING
-  description: Queue_slug
-
-- mode: NULLABLE
-  name: job_id
-  type: STRING
-  description: Job_id of Decision
-
-- mode: NULLABLE
-  name: uuid
-  type: STRING
-  description: ID of UU
-
-- mode: NULLABLE
-  name: applied_policies
-  type: STRING
-  description: Policies applied to moderate addon
-
-- mode: NULLABLE
-  name: entity
-  type: STRING
-  description: Information about the entity
-
-- mode: NULLABLE
-  name: entity_slug
-  type: STRING
-  description: Entity Slug
+  description: Date decision made
 
 - mode: NULLABLE
   name: entity_id
@@ -46,14 +21,24 @@ fields:
   description: Add on ID
 
 - mode: NULLABLE
-  name: created_at
-  type: STRING
-  description: Date decision made
+  name: entity
+  type: RECORD
+  description: Entity includes classifier_scores, attributes(RECORD), entity_type
 
 - mode: NULLABLE
-  name: decision_type
+  name: uuid
   type: STRING
-  description: type of decision
+  description: ID of UU
+
+- mode: NULLABLE
+  name: entity_slug
+  type: STRING
+  description: Entity Slug
+
+- mode: NULLABLE
+  name: job_id
+  type: STRING
+  description: Job_id of Decision
 
 - mode: NULLABLE
   name: job_assigned_at
@@ -62,5 +47,10 @@ fields:
 
 - mode: NULLABLE
   name: typed_metadata
-  type: STRING
-  description: Contains more data
+  type: RECORD
+  description: Typed Metadata includes escalation_details, policy_map, legacy_decision_labels
+
+- mode: REPEATED
+  name: applied_policies
+  type: RECORD
+  description: Applied policies includes parent_uuid, is_illegal field, name, enforcement_actions, uuid

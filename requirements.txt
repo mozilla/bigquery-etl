@@ -562,9 +562,9 @@ google-cloud-core==2.4.1 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-datacatalog-lineage==0.3.10 \
-    --hash=sha256:1a3b0e7a89a9d27949dc3e915251d281ea9063217b8c7650eb5e642855281e3e \
-    --hash=sha256:c343393605cfc9e3fcf392735fb57ebfa9b64da237e451dbc4beeedfd94ae9f1
+google-cloud-datacatalog-lineage==0.3.11 \
+    --hash=sha256:294b18c147c7b16f79b564306516a46ddf1f5ef18702de1c839d66039564f1a2 \
+    --hash=sha256:3862cf67643e1acf33bf2354f23b1d2360574206e0895a13bcf8a688ec011796
     # via -r requirements.in
 google-cloud-storage==2.19.0 \
     --hash=sha256:aeb971b5c29cf8ab98445082cbfe7b161a1f48ed275822f59ed3f1524ea54fba \

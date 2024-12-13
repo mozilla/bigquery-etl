@@ -6,6 +6,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   owner1: mhirose
+  table_type: aggregate
 bigquery:
   time_partitioning:
     type: day

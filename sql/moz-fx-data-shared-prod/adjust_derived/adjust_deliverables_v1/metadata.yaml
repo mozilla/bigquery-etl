@@ -4,6 +4,7 @@ description: |
 owners:
 - mhirose@mozilla.com
 labels:
+  table_type: aggregate
   dag: bqetl_adjust
   owner1: mhirose
 scheduling:

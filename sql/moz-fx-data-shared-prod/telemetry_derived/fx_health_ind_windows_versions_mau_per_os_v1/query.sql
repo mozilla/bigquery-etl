@@ -57,7 +57,7 @@ SELECT
   tot_mau AS mau,
   tot_dau AS dau,
   smoothed_dau,
-  smoothed_dau / mau AS ER
+  smoothed_dau / tot_mau AS ER
 FROM
   smoothed
 WHERE

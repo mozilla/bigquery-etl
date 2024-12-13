@@ -9,4 +9,4 @@ WHERE
   AND update_channel = 'release'
 GROUP BY
   CAST(submission_timestamp AS DATE),
-  installer_type,
+  installer_type

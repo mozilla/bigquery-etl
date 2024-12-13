@@ -38,8 +38,7 @@ def read_json(filename: str) -> dict:
 
 
 def cinder_addon_decisions_download(date, bearer_token):
-    """Download data from Cinder - bearer_token are called here."""
-    # getting overview metrics for different kpis / Deliverables
+    """Download data from Cinder - bearer_token is called here."""
     url = "https://stage.cinder.nonprod.webservices.mozgcp.net/api/v1/decisions/"
     headers = {"accept": "application/json", "authorization": f"Bearer {bearer_token}"}
     print(url)
@@ -64,7 +63,6 @@ def check_json(cinder_addon_decisions_response_text):
 def upload_to_bigquery(data, project, dataset, table_name, date):
     """Upload the data to bigquery."""
     date = date
-    # partition = f"{date}".replace("-", "")
     client = bigquery.Client(project)
     job_config = (
         bigquery.LoadJobConfig(

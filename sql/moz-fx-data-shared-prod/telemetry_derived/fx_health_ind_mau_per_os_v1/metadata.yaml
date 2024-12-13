@@ -1,0 +1,22 @@
+friendly_name: Fx Health Indicator Mau by OS
+description: |-
+  Aggregate table calculating MAU and DAU per OS
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - os
+references: {}

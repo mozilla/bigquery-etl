@@ -28,7 +28,7 @@ WITH sample_cte AS (
 smoothed AS (
   SELECT
     *,
-    AVG(dau) OVER (
+    AVG(tot_dau) OVER (
       PARTITION BY
         os_version
       ORDER BY
@@ -54,8 +54,8 @@ smoothed AS (
 SELECT
   submission_date,
   os_version AS windows_os_version,
-  mau,
-  dau,
+  tot_mau AS mau,
+  tot_dau AS dau,
   smoothed_dau,
   smoothed_dau / mau AS ER
 FROM

@@ -1,6 +1,6 @@
 friendly_name: Firefox Health Indicator Clients Daily By OS Version
 description: |-
-  Calculates active hrs, subsession hrs, and searches per user on a 1% client sample by OS version
+  Calculates active hrs, subsession hrs, & searches per user on a 1% client sample by OS version for Windows NT
 owners:
 - kwindau@mozilla.com
 labels:

@@ -19,3 +19,7 @@ fields:
   name: active_hours_per_user_ratio
   type: FLOAT
   description: Ratio of Active Hours per User
+- mode: NULLABLE
+  name: default_percent
+  type: FLOAT
+  description: Percent of Users with Firefox as Default Browser

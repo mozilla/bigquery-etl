@@ -1,0 +1,21 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: Operating System Version
+- mode: NULLABLE
+  name: searches_per_user_ratio
+  type: FLOAT
+  description: Ratio of Searches per User
+- mode: NULLABLE
+  name: subsession_hours_per_user_ratio
+  type: NUMERIC
+  description: Ratio of Subsession Hours per User
+- mode: NULLABLE
+  name: active_hours_per_user_ratio
+  type: FLOAT
+  description: Ratio of Active Hours per User

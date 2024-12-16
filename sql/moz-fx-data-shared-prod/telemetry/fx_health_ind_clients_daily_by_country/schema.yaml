@@ -1,0 +1,21 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: searches_per_user_ratio
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of Searches per User
+- name: subsession_hours_per_user_ratio
+  type: NUMERIC
+  mode: NULLABLE
+  description: Ratio of Subsession Hours per User
+- name: active_hours_per_user_ratio
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of Active Hours per User

@@ -1,0 +1,32 @@
+friendly_name: Newtab Desktop Daily Engagement By Tile Id & Position
+description: |-
+  Daily Firefox New Tab engagement on desktop by tile ID & position, across all territories and release channels
+  This table is a temporary solution for supporting AdOps reporting. This table should eventually be merged with the consolidated ad metrics table(s)
+owners:
+  - cbeck@mozilla.com
+labels:
+  incremental: true
+  owner1: cbeck@mozilla.com
+scheduling:
+  dag_name: bqetl_newtab_engagement_hourly
+  date_partition_parameter: null
+  # We reprocess the same day every hour up until 1:00 the following day, to give
+  # the live data time to come in
+  destination_table: >-
+    newtab_desktop_daily_engagement_by_tile_id_position_v1${{
+    (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+    - >-
+      submission_date:DATE:{{
+      (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+      }}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    sql/moz-fx-data-shared-prod/ads_derived/newtab_desktop_daily_engagement_by_tile_id_position/query.sql
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true

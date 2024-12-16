@@ -79,7 +79,8 @@ default_percent_by_os AS (
   SELECT
     submission_date_s3,
     os,
-    ROUND(AVG(IF(is_default_browser, 1, 0)) * 100, 1) AS default_percent
+    ROUND(AVG(IF(is_default_browser, 1, 0)) * 100, 1) AS default_percent,
+    SUM(ROUND(profile_age_in_days)) / COUNT(DISTINCT(client_id)) AS average_profile_age
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
@@ -100,7 +101,8 @@ SELECT
   spu.searches_per_user_ratio,
   sshpu.subsession_hours_per_user_ratio,
   ahpu.active_hours_per_user_ratio,
-  dflt.default_percent
+  dflt.default_percent,
+  dflt.average_profile_age
 FROM
   searches_per_user_by_os_and_date AS spu
 FULL OUTER JOIN

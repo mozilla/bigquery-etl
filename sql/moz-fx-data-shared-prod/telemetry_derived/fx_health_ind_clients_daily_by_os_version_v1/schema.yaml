@@ -23,3 +23,7 @@ fields:
   name: default_percent
   type: FLOAT
   description: Percent of Users with Firefox as Default Browser
+- mode: NULLABLE
+  name: average_profile_age
+  type: FLOAT
+  description: Average Profile Age

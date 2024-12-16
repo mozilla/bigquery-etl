@@ -52,7 +52,6 @@ subsession_hours_per_user AS (
   FROM
     subsession_hours_per_user_staging
 ),
---good above here
 active_hours_per_user_staging AS (
   SELECT
     submission_date_s3,

@@ -12,7 +12,7 @@ WITH searches_per_user_by_os_version_and_date_staging AS (
     AND sample_id = 42
     AND search_count_all < 10000
     AND os = 'Windows_NT'
-    and os_version IN ('6.1','6.2','6.3','10.0')
+    AND os_version IN ('6.1', '6.2', '6.3', '10.0')
   GROUP BY
     submission_date_s3,
     os_version
@@ -39,7 +39,7 @@ subsession_hours_per_user_staging AS (
     AND sample_id = 42
     AND subsession_hours_sum < 24
     AND os = 'Windows_NT'
-    AND os_version IN ('6.1','6.2','6.3','10.0')
+    AND os_version IN ('6.1', '6.2', '6.3', '10.0')
   GROUP BY
     submission_date_s3,
     os_version
@@ -52,7 +52,7 @@ subsession_hours_per_user AS (
   FROM
     subsession_hours_per_user_staging
 ),
---good above here 
+--good above here
 active_hours_per_user_staging AS (
   SELECT
     submission_date_s3,
@@ -66,7 +66,7 @@ active_hours_per_user_staging AS (
     AND app_name = 'Firefox'
     AND sample_id = 42
     AND os = 'Windows_NT'
-    AND os_version IN ('6.1','6.2','6.3','10.0')
+    AND os_version IN ('6.1', '6.2', '6.3', '10.0')
   GROUP BY
     submission_date_s3,
     os_version

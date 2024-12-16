@@ -1,6 +1,6 @@
 friendly_name: Firefox Health Indicator Clients Daily OS Aggregates
 description: |-
-  Calculates active hours, subsession hours, and search per user at OS level
+  Calculates active hrs, subsession hrs, and searches per user by on 1% client sample
 owners:
 - kwindau@mozilla.com
 labels:

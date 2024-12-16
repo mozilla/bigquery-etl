@@ -12,10 +12,6 @@ fields:
   type: FLOAT
   description: Ratio of Searches per User
 - mode: NULLABLE
-  name: searches_per_user_ratio
-  type: FLOAT
-  description: Ratio of Searches per User
-- mode: NULLABLE
   name: subsession_hours_per_user_ratio
   type: FLOAT
   description: Ratio of Subsession Hours per User

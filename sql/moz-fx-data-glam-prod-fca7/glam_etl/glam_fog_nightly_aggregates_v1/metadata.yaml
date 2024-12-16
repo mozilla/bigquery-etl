@@ -10,6 +10,6 @@ scheduling:
   dag_name: bqetl_glam_refresh_aggregates
   date_partition_parameter: null
   depends_on:
-  - task_id: export_firefox_desktop_glam_nightly
+  - task_id: query_firefox_desktop_glam_nightly__extract_probe_counts_v1
     dag_name: glam_fog
     execution_delta: 6h

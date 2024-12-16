@@ -13,7 +13,7 @@ fields:
   description: Ratio of Searches per User
 - mode: NULLABLE
   name: subsession_hours_per_user_ratio
-  type: FLOAT
+  type: NUMERIC
   description: Ratio of Subsession Hours per User
 - mode: NULLABLE
   name: active_hours_per_user_ratio

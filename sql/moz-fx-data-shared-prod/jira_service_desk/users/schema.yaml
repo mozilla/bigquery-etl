@@ -11,4 +11,3 @@ fields:
 - name: name
   type: NUMERIC
   mode: NULLABLE
- 

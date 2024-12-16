@@ -6,10 +6,9 @@ labels:
   schedule: daily
   incremental: true
   owner1: jmoscon@mozilla.com
- 
+
 scheduling:
   dag_name: bqetl_jira_user
   arguments:
     - --fivetran-jira-integration-jira-username={{ var.value.fivetran_jira_integration_jira_username }}
     - --fivetran-jira-integration-jira-token={{ var.value.fivetran_jira_integration_jira_token }}
- 

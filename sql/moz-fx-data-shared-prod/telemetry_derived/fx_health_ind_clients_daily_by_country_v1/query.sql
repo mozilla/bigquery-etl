@@ -107,5 +107,5 @@ FULL OUTER JOIN
   active_hours_per_user AS ahpu
   ON COALESCE(spu.country, sshpu.country) = ahpu.country
 FULL OUTER JOIN
-  default_percent_by_country dflt
+  default_percent_by_country AS dflt
   ON COALESCE(COALESCE(spu.country, sshpu.country), ahpu.country) = dflt.country

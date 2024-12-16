@@ -72,6 +72,21 @@ active_hours_per_user AS (
     `hours` / users AS active_hours_per_user_ratio
   FROM
     active_hours_per_user_staging
+),
+default_percent_by_country AS (
+  SELECT
+    submission_date_s3,
+    country,
+    ROUND(AVG(IF(is_default_browser, 1, 0)) * 100, 1) AS default_percent
+  FROM
+    `moz-fx-data-shared-prod.telemetry.clients_daily`
+  WHERE
+    submission_date_s3 = @submission_date
+    AND app_name = 'Firefox'
+    AND sample_id = 42
+  GROUP BY
+    submission_date_s3,
+    country
 )
 SELECT
   COALESCE(
@@ -81,7 +96,8 @@ SELECT
   COALESCE(COALESCE(spu.country, sshpu.country), ahpu.country) AS country,
   spu.searches_per_user_ratio,
   sshpu.subsession_hours_per_user_ratio,
-  ahpu.active_hours_per_user_ratio
+  ahpu.active_hours_per_user_ratio,
+  dflt.default_percent
 FROM
   searches_per_user_by_country_and_date AS spu
 FULL OUTER JOIN
@@ -90,3 +106,6 @@ FULL OUTER JOIN
 FULL OUTER JOIN
   active_hours_per_user AS ahpu
   ON COALESCE(spu.country, sshpu.country) = ahpu.country
+FULL OUTER JOIN
+  default_percent_by_country dflt
+  ON COALESCE(COALESCE(spu.country, sshpu.country), ahpu.country) = dflt.country

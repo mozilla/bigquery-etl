@@ -10,9 +10,9 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 
 docs = """
-### bqetl_newtab_engagement_hourly
+### bqetl_newtab_interactions_hourly
 
-Built from bigquery-etl repo, [`dags/bqetl_newtab_engagement_hourly.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_newtab_engagement_hourly.py)
+Built from bigquery-etl repo, [`dags/bqetl_newtab_interactions_hourly.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_newtab_interactions_hourly.py)
 
 #### Description
 
@@ -24,14 +24,14 @@ cbeck@mozilla.com
 
 #### Tags
 
-* impact/tier_2
+* impact/tier_1
 * repo/bigquery-etl
 """
 
 
 default_args = {
     "owner": "cbeck@mozilla.com",
-    "start_date": datetime.datetime(2024, 12, 9, 0, 0),
+    "start_date": datetime.datetime(2024, 12, 17, 0, 0),
     "end_date": None,
     "email": ["cbeck@mozilla.com"],
     "depends_on_past": False,
@@ -41,19 +41,19 @@ default_args = {
     "retries": 2,
 }
 
-tags = ["impact/tier_2", "repo/bigquery-etl"]
+tags = ["impact/tier_1", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_newtab_engagement_hourly",
+    "bqetl_newtab_interactions_hourly",
     default_args=default_args,
     schedule_interval="@hourly",
     doc_md=docs,
     tags=tags,
 ) as dag:
 
-    telemetry_derived__newtab_desktop_daily_engagement_by_tile_id_position__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__newtab_desktop_daily_engagement_by_tile_id_position__v1",
-        destination_table='newtab_desktop_daily_engagement_by_tile_id_position_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}',
+    telemetry_derived__newtab_interactions_hourly__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_interactions_hourly__v1",
+        destination_table='newtab_interactions_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}',
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="cbeck@mozilla.com",
@@ -63,5 +63,5 @@ with DAG(
         parameters=[
             "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"
         ],
-        sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/newtab_desktop_daily_engagement_by_tile_id_position/query.sql",
+        sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql",
     )

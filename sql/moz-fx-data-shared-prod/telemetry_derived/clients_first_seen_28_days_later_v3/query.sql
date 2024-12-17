@@ -60,7 +60,7 @@ WITH clients_first_seen_28_days_ago AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
   WHERE
-    first_seen_date = DATE_SUB("2024-12-16", INTERVAL 27 day)
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 day)
 ),
 clients_first_seen_28_days_ago_with_days_seen AS (
   SELECT
@@ -73,7 +73,7 @@ clients_first_seen_28_days_ago_with_days_seen AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
     ON clients_first_seen_28_days_ago.client_id = cls.client_id
-    AND cls.submission_date = "2024-12-16"
+    AND cls.submission_date = @submission_date
 )
 SELECT
   * REPLACE (
@@ -118,6 +118,6 @@ SELECT
     ) > 0,
     FALSE
   ) AS qualified_week4,
-  DATE("2024-12-16") AS submission_date,
+  @submission_date AS submission_date,
 FROM
   clients_first_seen_28_days_ago_with_days_seen

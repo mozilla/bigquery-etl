@@ -1947,7 +1947,7 @@ bqetl_firefox_installer_aggregates:
   tags:
     - impact/tier_3
 
-bqetl_newtab_engagement_hourly:
+bqetl_newtab_interactions_hourly:
   schedule_interval: hourly
   description: |
     This DAG aggregates Newtab engagement data - on an hourly cadence

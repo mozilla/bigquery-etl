@@ -47,3 +47,7 @@ fields:
   name: uris_per_user
   type: FLOAT
   description: Ratio of URIs per User
+- mode: NULLABLE
+  name: new_profile_ratio
+  type: FLOAT
+  description: Ratio of New Profiles vs All Profiles

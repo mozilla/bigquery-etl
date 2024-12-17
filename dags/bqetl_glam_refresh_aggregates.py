@@ -89,10 +89,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_export_org_mozilla_fenix_glam_beta = ExternalTaskSensor(
-        task_id="wait_for_export_org_mozilla_fenix_glam_beta",
+    wait_for_query_org_mozilla_fenix_glam_beta__extract_probe_counts_v1 = ExternalTaskSensor(
+        task_id="wait_for_query_org_mozilla_fenix_glam_beta__extract_probe_counts_v1",
         external_dag_id="glam_fenix",
-        external_task_id="export_org_mozilla_fenix_glam_beta",
+        external_task_id="query_org_mozilla_fenix_glam_beta__extract_probe_counts_v1",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -102,10 +102,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_export_org_mozilla_fenix_glam_nightly = ExternalTaskSensor(
-        task_id="wait_for_export_org_mozilla_fenix_glam_nightly",
+    wait_for_query_org_mozilla_fenix_glam_nightly__extract_probe_counts_v1 = ExternalTaskSensor(
+        task_id="wait_for_query_org_mozilla_fenix_glam_nightly__extract_probe_counts_v1",
         external_dag_id="glam_fenix",
-        external_task_id="export_org_mozilla_fenix_glam_nightly",
+        external_task_id="query_org_mozilla_fenix_glam_nightly__extract_probe_counts_v1",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -115,10 +115,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_export_org_mozilla_fenix_glam_release = ExternalTaskSensor(
-        task_id="wait_for_export_org_mozilla_fenix_glam_release",
+    wait_for_query_org_mozilla_fenix_glam_release__extract_probe_counts_v1 = ExternalTaskSensor(
+        task_id="wait_for_query_org_mozilla_fenix_glam_release__extract_probe_counts_v1",
         external_dag_id="glam_fenix",
-        external_task_id="export_org_mozilla_fenix_glam_release",
+        external_task_id="query_org_mozilla_fenix_glam_release__extract_probe_counts_v1",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -128,10 +128,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_export_firefox_desktop_glam_beta = ExternalTaskSensor(
-        task_id="wait_for_export_firefox_desktop_glam_beta",
+    wait_for_firefox_desktop_glam_beta_done = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_glam_beta_done",
         external_dag_id="glam_fog",
-        external_task_id="export_firefox_desktop_glam_beta",
+        external_task_id="firefox_desktop_glam_beta_done",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -141,10 +141,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_export_firefox_desktop_glam_nightly = ExternalTaskSensor(
-        task_id="wait_for_export_firefox_desktop_glam_nightly",
+    wait_for_firefox_desktop_glam_nightly_done = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_glam_nightly_done",
         external_dag_id="glam_fog",
-        external_task_id="export_firefox_desktop_glam_nightly",
+        external_task_id="firefox_desktop_glam_nightly_done",
         execution_delta=datetime.timedelta(seconds=21600),
         check_existence=True,
         mode="reschedule",
@@ -263,21 +263,21 @@ with DAG(
     )
 
     glam_etl__glam_fenix_beta_aggregates__v1.set_upstream(
-        wait_for_export_org_mozilla_fenix_glam_beta
+        wait_for_query_org_mozilla_fenix_glam_beta__extract_probe_counts_v1
     )
 
     glam_etl__glam_fenix_nightly_aggregates__v1.set_upstream(
-        wait_for_export_org_mozilla_fenix_glam_nightly
+        wait_for_query_org_mozilla_fenix_glam_nightly__extract_probe_counts_v1
     )
 
     glam_etl__glam_fenix_release_aggregates__v1.set_upstream(
-        wait_for_export_org_mozilla_fenix_glam_release
+        wait_for_query_org_mozilla_fenix_glam_release__extract_probe_counts_v1
     )
 
     glam_etl__glam_fog_beta_aggregates__v1.set_upstream(
-        wait_for_export_firefox_desktop_glam_beta
+        wait_for_firefox_desktop_glam_beta_done
     )
 
     glam_etl__glam_fog_nightly_aggregates__v1.set_upstream(
-        wait_for_export_firefox_desktop_glam_nightly
+        wait_for_firefox_desktop_glam_nightly_done
     )

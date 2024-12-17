@@ -1947,6 +1947,7 @@ bqetl_firefox_installer_aggregates:
   tags:
     - impact/tier_3
 
+
 bqetl_jira_service_desk:
   default_args:
     depends_on_past: false
@@ -1966,18 +1967,18 @@ bqetl_jira_service_desk:
   tags:
     - impact/tier_2
 
-bqetl_newtab_engagement_hourly:
+bqetl_newtab_interactions_hourly:
   schedule_interval: hourly
   description: |
     This DAG aggregates Newtab engagement data - on an hourly cadence
   default_args:
     owner: cbeck@mozilla.com
     email: ["cbeck@mozilla.com"]
-    start_date: "2024-12-09"
+    start_date: "2024-12-17"
     retries: 2
     retry_delay: 5m
   tags:
-    - impact/tier_2
+    - impact/tier_1
 
 bqetl_fx_health_ind_dashboard:
   description: |

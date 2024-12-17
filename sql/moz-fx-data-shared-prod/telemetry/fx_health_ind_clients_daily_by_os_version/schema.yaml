@@ -19,3 +19,23 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: Ratio of Active Hours per User
+- name: default_percent
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of Users with Firefox as Default Browser
+- name: average_profile_age
+  type: FLOAT
+  mode: NULLABLE
+  description: Average Profile Age
+- name: pct_users_profile_age_less_than_7_days
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of Users with Profile Age Less than 7 Days
+- name: pct_users_profile_age_8_to_365_days
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of Users with Profile Age Between 8 and 365 Days
+- name: pct_users_profile_age_over_365_days
+  type: FLOAT
+  mode: NULLABLE
+  description: Percent of Users with Profile Age Over 365 Days

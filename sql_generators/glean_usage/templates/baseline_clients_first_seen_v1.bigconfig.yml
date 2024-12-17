@@ -8,6 +8,10 @@ tag_deployments:
         - slack: '#de-bigeye-triage'
     deployments:
       - column_selectors:
+          - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
+        metrics:
+          - saved_metric_id: is_unique
+      - column_selectors:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.submission_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.sample_id

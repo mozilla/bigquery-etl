@@ -33,7 +33,7 @@ TEMPLATES = (
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),
 )
-BIGEYE_COLLECTION = "Browser Metrics (non-KPI)"
+BIGEYE_COLLECTION = "Operational Checks"
 BIGEYE_NOTIFICATION_SLACK_CHANNEL_DS = "#ds-bigeye-triage"
 BIGEYE_NOTIFICATION_SLACK_CHANNEL_DE = "#de-bigeye-triage"
 

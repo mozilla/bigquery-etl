@@ -3,7 +3,7 @@ fields:
 - mode: NULLABLE
   name: date
   type: DATE
-  description: date when job run and field that the table is partitioned by
+  description: Date job is run
 
 - mode: NULLABLE
   name: user
@@ -11,39 +11,9 @@ fields:
   description: User who submitted the report
 
 - mode: NULLABLE
-  name: queue_slug
-  type: STRING
-  description: Queue_slug
-
-- mode: NULLABLE
-  name: job_id
-  type: STRING
-  description: Job_id of Decision
-
-- mode: NULLABLE
   name: uuid
   type: STRING
   description: ID of UU
-
-- mode: NULLABLE
-  name: applied_policies
-  type: STRING
-  description: Policies applied to moderate addon
-
-- mode: NULLABLE
-  name: entity
-  type: STRING
-  description: Information about the entity
-
-- mode: NULLABLE
-  name: entity_slug
-  type: STRING
-  description: Entity Slug
-
-- mode: NULLABLE
-  name: entity_id
-  type: STRING
-  description: Add on ID
 
 - mode: NULLABLE
   name: created_at
@@ -53,7 +23,118 @@ fields:
 - mode: NULLABLE
   name: decision_type
   type: STRING
-  description: type of decision
+  description: The type of decision
+
+- fields:
+  - mode: NULLABLE
+    name: uuid
+    type: STRING
+  - mode: NULLABLE
+    name: name
+    type: STRING
+    description: The name of the policy applied
+  - mode: NULLABLE
+    name: is_illegal
+    type: BOOLEAN
+    description: Signifies if the addon illegal or not
+  - mode: NULLABLE
+    name: parent_uuid
+    type: STRING
+    description: Top level UUID
+  - mode: REPEATED
+    name: enforcement_actions
+    type: STRING
+    description: List of enforcement actions
+  mode: REPEATED
+  name: applied_policies
+  type: RECORD
+  description: Applied policies includes parent_uuid, is_illegal field, name, enforcement_actions, uuid
+
+- fields:
+  - mode: NULLABLE
+    name: entity_type
+    type: STRING
+    description: Type of entity
+  - fields:
+    - mode: NULLABLE
+      name: id
+      type: STRING
+      description: Attribute ID
+    - mode: NULLABLE
+      name: slug
+      type: STRING
+      description: Slug
+    - mode: NULLABLE
+      name: guid
+      type: STRING
+      description: GU ID
+    - mode: NULLABLE
+      name: name
+      type: STRING
+      description: Name of attribute
+    - mode: NULLABLE
+      name: summary
+      type: STRING
+      description: Summary of the action taken
+    - mode: NULLABLE
+      name: description
+      type: STRING
+      description: Description of the issue
+    - mode: NULLABLE
+      name: release_notes
+      type: STRING
+      description: notes about the release
+    - mode: NULLABLE
+      name: average_daily_users
+      type: INT64
+      description: Average number of daily users
+    - mode: NULLABLE
+      name: last_updated
+      type: TIMESTAMP
+      description: when the job was last updated
+    - mode: NULLABLE
+      name: version
+      type: STRING
+      description: Which version was this addon
+    - mode: NULLABLE
+      name: privacy_policy
+      type: STRING
+      description: Which privacy policy is used
+    - mode: NULLABLE
+      name: created
+      type: TIMESTAMP
+      description: When the attribute was created
+    - mode: NULLABLE
+      name: promoted
+      type: STRING
+      description: Promoted
+    mode: NULLABLE
+    name: attributes
+    type: RECORD
+    description: All the attributes
+  - mode: NULLABLE
+    name: classifier_scores
+    type: STRING
+    description: Top level UUID
+  mode: NULLABLE
+  name: entity
+  type: RECORD
+  description: Entity includes classifier_scores, attributes(RECORD), entity_type
+
+- mode: NULLABLE
+  name: entity_id
+  type: STRING
+  description: Entity ID
+
+- mode: NULLABLE
+  name: entity_slug
+  type: STRING
+  description: Entity Slug
+
+- mode: NULLABLE
+  name: job_id
+  type: STRING
+  description: Job_id of Decision
 
 - mode: NULLABLE
   name: job_assigned_at
@@ -61,6 +142,24 @@ fields:
   description: Date addon report was assigned to a moderator
 
 - mode: NULLABLE
-  name: typed_metadata
+  name: queue_slug
   type: STRING
-  description: Contains more data
+  description: Queue slug
+
+- fields:
+  - mode: NULLABLE
+    name: legacy_decisions_labels
+    type: STRING
+    description: Legacy decision label
+  - mode: NULLABLE
+    name: policy_map
+    type: STRING
+    description: Policy Map
+  - mode: NULLABLE
+    name: escalation_details
+    type: STRING
+    description: Details about the escalation
+  mode: NULLABLE
+  name: typed_metadata
+  type: RECORD
+  description: Typed Metadata includes escalation_details, policy_map, legacy_decision_labels

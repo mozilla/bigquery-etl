@@ -1958,7 +1958,7 @@ bqetl_newtab_interactions_hourly:
     retries: 2
     retry_delay: 5m
   tags:
-    - impact/tier_2
+    - impact/tier_1
 
 bqetl_fx_health_ind_dashboard:
   description: |

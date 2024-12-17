@@ -64,9 +64,11 @@ def upload_to_bigquery(data, project, dataset, table_name, date):
     """Upload the data to bigquery."""
     date = date
     client = bigquery.Client(project)
-    job_config = bigquery.LoadJobConfig(
-        create_disposition="CREATE_IF_NEEDED",
-        write_disposition="WRITE_TRUNCATE",
+    job_config = (
+        bigquery.LoadJobConfig(
+            create_disposition="CREATE_IF_NEEDED",
+            write_disposition="WRITE_TRUNCATE",
+        ),
     )
     destination = f"{project}.{dataset}.{table_name}"
     job = client.load_table_from_json(data, destination, job_config=job_config)

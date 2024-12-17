@@ -47,9 +47,29 @@ fields:
     - type: STRING
     - description: Summary of the action taken
     - mode: NULLABLE
+    - name: description
+    - type: STRING
+    - description: Description of the issue
+    - mode: NULLABLE
+    - name: release_notes
+    - type: STRING
+    - description: notes about the release
+    - mode: NULLABLE
     - name: average_daily_users
     - type: INT64
     - description: Average number of daily users
+    - mode: NULLABLE
+    - name: last_updated
+    - type: TIMESTAMP
+    - description: when the job was last updated
+    - mode: NULLABLE
+    - name: version
+    - type: STRING
+    - description: Which version was this addon
+    - mode: NULLABLE
+    - name: privacy_policy
+    - type: STRING
+    - description: Which privacy policy is used
     - mode: NULLABLE
     - name: created
     - type: TIMESTAMP
@@ -58,7 +78,7 @@ fields:
     - name: promoted
     - type: STRING
     - description: Promoted
-    mode: NULLABLE
+  - mode: NULLABLE
     name: attributes
     type: RECORD
     description: All the attributes

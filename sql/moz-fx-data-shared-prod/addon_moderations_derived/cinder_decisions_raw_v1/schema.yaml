@@ -54,3 +54,23 @@ fields:
   name: applied_policies
   type: RECORD
   description: Applied policies includes parent_uuid, is_illegal field, name, enforcement_actions, uuid
+- fields:
+  - mode: NULLABLE
+    name: uuid
+    type: STRING
+  - mode: NULLABLE
+    name: name
+    type: STRING
+    description: The name of the policy applied
+  - mode: NULLABLE
+    name: is_illegal
+    type: BOOLEAN
+    description: Signifies if the addon illegal or not
+  - mode: NULLABLE
+    name: parent_uuid
+    type: STRING
+    description: Top level UUID
+  - mode: NULLABLE
+    name: enforcement_actions
+    type: RECORD
+    description: List of enforcement actions

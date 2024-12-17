@@ -79,6 +79,7 @@ default_percent_and_avg_age_by_country AS (
     country,
     ROUND(AVG(IF(is_default_browser, 1, 0)) * 100, 1) AS default_percent,
     SUM(ROUND(profile_age_in_days)) / COUNT(DISTINCT(client_id)) AS average_profile_age,
+    SUM(sessions_started_on_this_day) AS nbr_sessions,
     COUNT(DISTINCT(client_id)) AS total_nbr_users,
     COUNT(
       DISTINCT(CASE WHEN profile_age_in_days <= 7 THEN client_id ELSE NULL END)
@@ -112,7 +113,8 @@ SELECT
   dflt.average_profile_age,
   dflt.nbr_users_profile_age_less_than_7 / dflt.total_nbr_users AS pct_users_profile_age_less_than_7_days,
   dflt.nbr_users_profile_age_between_8_and_365 / dflt.total_nbr_users AS pct_users_profile_age_8_to_365_days,
-  dflt.nbr_users_profile_age_over_365 / dflt.total_nbr_users AS pct_users_profile_age_over_365_days
+  dflt.nbr_users_profile_age_over_365 / dflt.total_nbr_users AS pct_users_profile_age_over_365_days,
+  dflt.nbr_sessions / dflt.total_nbr_users AS sessions_per_user
 FROM
   searches_per_user_by_country_and_date AS spu
 FULL OUTER JOIN

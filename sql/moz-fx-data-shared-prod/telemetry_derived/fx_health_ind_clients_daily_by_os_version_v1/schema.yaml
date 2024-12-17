@@ -51,3 +51,7 @@ fields:
   name: new_profile_ratio
   type: FLOAT
   description: Ratio of New Profiles vs All Profiles
+- mode: NULLABLE
+  name: domains_per_user
+  type: FLOAT
+  description: Domains per User

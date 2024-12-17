@@ -91,7 +91,8 @@ default_percent_and_avg_age_by_country AS (
       DISTINCT(CASE WHEN profile_age_in_days > 365 THEN client_id ELSE NULL END)
     ) AS nbr_users_profile_age_over_365,
     SUM(scalar_parent_browser_engagement_total_uri_count_sum) AS uris,
-    COUNTIF(profile_age_in_days = 0) AS new_profiles
+    COUNTIF(profile_age_in_days = 0) AS new_profiles,
+    SUM(ROUND(scalar_parent_browser_engagement_unique_domains_count_mean)) AS domains
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
@@ -118,7 +119,8 @@ SELECT
   dflt.nbr_users_profile_age_over_365 / dflt.total_nbr_users AS pct_users_profile_age_over_365_days,
   dflt.nbr_sessions / dflt.total_nbr_users AS sessions_per_user,
   dflt.uris / dflt.total_nbr_users AS uris_per_user,
-  dflt.new_profiles / dflt.total_nbr_users AS new_profile_ratio
+  dflt.new_profiles / dflt.total_nbr_users AS new_profile_ratio,
+  dflt.domains / dflt.total_nbr_users AS domains_per_user
 FROM
   searches_per_user_by_country_and_date AS spu
 FULL OUTER JOIN

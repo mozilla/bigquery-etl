@@ -24,7 +24,7 @@ scheduling:
   query_file_path:
     # explicit query file path is necessary because the destination table
     # includes a partition identifier that is not in the path
-    sql/moz-fx-data-shared-prod/ads_derived/newtab_desktop_daily_engagement_by_tile_id_position/query.sql
+    sql/moz-fx-data-shared-prod/telemetry_derived/newtab_desktop_daily_engagement_by_tile_id_position/query.sql
 bigquery:
   time_partitioning:
     type: day

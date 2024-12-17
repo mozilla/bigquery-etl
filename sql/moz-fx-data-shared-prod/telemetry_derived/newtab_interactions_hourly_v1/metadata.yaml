@@ -2,7 +2,7 @@ friendly_name: Newtab Interactions Hourly
 description: |-
   Interactions on Newtab desktop across all territories and release channels.
 
-  This job runs hourly and is aggregated by day, tile ID, and position. 
+  This job runs hourly and is aggregated by day, tile ID, and position.
 owners:
   - cbeck@mozilla.com
 labels:

@@ -115,20 +115,3 @@ saved_metric_definitions:
           interval_value: 0
       rct_overrides:
         - submission_date
-    - saved_metric_id: is_valid_sample_id
-      metric_type:
-        predefined_metric: MAX
-      threshold:
-        type: CONSTANT
-        lower_bound: 0
-        upper_bound: 100
-      schedule_frequency:
-        interval_type: MINUTES
-        interval_value: 0
-      lookback:
-        lookback_type: DATA_TIME
-        lookback_window:
-          interval_type: DAYS
-          interval_value: 0
-      rct_overrides:
-        - submission_date

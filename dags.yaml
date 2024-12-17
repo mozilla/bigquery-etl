@@ -1925,3 +1925,22 @@ bqetl_firefox_installer_aggregates:
   schedule_interval: 0 15 * * *
   tags:
     - impact/tier_3
+
+bqetl_jira_service_desk:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - jmoscon@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: jmoscon@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-16'
+  description: This DAG schedules some tasks that fetch data from the Jira API for service desk tickets
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2

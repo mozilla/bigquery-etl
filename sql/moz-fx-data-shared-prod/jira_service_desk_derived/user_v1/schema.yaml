@@ -3,11 +3,11 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: account_status
-  type: DATE
+  type: STRING
   mode: NULLABLE
 - name: email
-  type: NUMERIC
+  type: STRING
   mode: NULLABLE
 - name: name
-  type: NUMERIC
+  type: STRING
   mode: NULLABLE

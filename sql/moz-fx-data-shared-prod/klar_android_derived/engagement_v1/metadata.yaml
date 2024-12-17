@@ -36,6 +36,6 @@ references:
   - moz-fx-data-shared-prod.klar_android.engagement_clients
 monitoring:
   enabled: true
-  collection: Browser Metrics (non-KPI)
+  collection: Operational Checks
   partition_column: null
   partition_column_set: false

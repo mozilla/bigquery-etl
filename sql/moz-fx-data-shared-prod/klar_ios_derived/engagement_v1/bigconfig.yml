@@ -1,9 +1,9 @@
 type: BIGCONFIG_FILE
 tag_deployments:
 - collection:
-    name: Browser Metrics (non-KPI)
+    name: Operational Checks
     notification_channels:
-    - slack: '#ds-bigeye-triage'
+    - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.klar_ios_derived.engagement_v1.first_seen_date
@@ -25,13 +25,3 @@ tag_deployments:
     metrics:
     - saved_metric_id: volume
     - saved_metric_id: freshness
-- collection:
-    name: Operational Checks
-    notification_channels:
-    - slack: '#de-bigeye-triage'
-  deployments:
-  - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.klar_ios_derived.engagement_v1.*
-    metrics:
-    - saved_metric_id: freshness
-    - saved_metric_id: volume

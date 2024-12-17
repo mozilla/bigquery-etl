@@ -91,8 +91,7 @@ glean_deduplicated_pings AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE
-    DATE(submission_timestamp) >= '2024-11-15'
-    AND DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY

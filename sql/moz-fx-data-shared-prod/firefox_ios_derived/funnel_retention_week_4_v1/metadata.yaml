@@ -7,6 +7,7 @@ labels:
   schedule: daily
   incremental: true
   shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false

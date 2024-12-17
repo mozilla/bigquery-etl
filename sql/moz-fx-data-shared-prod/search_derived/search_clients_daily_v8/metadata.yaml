@@ -4,7 +4,7 @@ description: |
 
   Exposed to users as view `search.search_clients_engines_sources_daily`.
 owners:
-- akomar@mozilla.com
+- akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily

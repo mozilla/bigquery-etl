@@ -5,6 +5,7 @@ description: |-
   in the future
 owners:
 - cmorales@mozilla.com
+- akommasani@mozilla.com
 labels:
   owner1: cmorales
 bigquery: null

@@ -4,7 +4,7 @@ description: >
   Daily mobile clients sending pings that have searches,
   aggregated across unique sets of dimensions and partitioned by day
 owners:
-  - akomar@mozilla.com
+  - akommasani@mozilla.com
   - cmorales@mozilla.com
 labels:
   schedule: daily

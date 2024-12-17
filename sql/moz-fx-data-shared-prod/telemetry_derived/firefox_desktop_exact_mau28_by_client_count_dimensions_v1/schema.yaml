@@ -2,57 +2,76 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: Submission Date
 - mode: NULLABLE
   name: mau
   type: INTEGER
+  description: Monthly Active Users
 - mode: NULLABLE
   name: wau
   type: INTEGER
+  description: Weekly Active Users
 - mode: NULLABLE
   name: dau
   type: INTEGER
+  description: Daily Active Users
 - mode: NULLABLE
   name: visited_5_uri_mau
   type: INTEGER
+  description: Visited 5 URI MAU
 - mode: NULLABLE
   name: visited_5_uri_wau
   type: INTEGER
+  description: Visited 5 URI WAU
 - mode: NULLABLE
   name: visited_5_uri_dau
   type: INTEGER
+  description: Visited 5 URI DAU
 - mode: NULLABLE
   name: dev_tools_mau
   type: INTEGER
+  description: Dev Tools MAU
 - mode: NULLABLE
   name: dev_tools_wau
   type: INTEGER
+  description: Dev Tools WAU
 - mode: NULLABLE
   name: dev_tools_dau
   type: INTEGER
+  description: Dev Tools DAU
 - mode: NULLABLE
   name: app_name
   type: STRING
+  description: App Name
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: App Version
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Country
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Locale
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
+  description: Normalized Channel
 - mode: NULLABLE
   name: os
   type: STRING
+  description: Operating System
 - mode: NULLABLE
   name: os_version
   type: STRING
+  description: Operating System Version
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: Distribution ID
 - mode: NULLABLE
   name: country_name
   type: STRING
+  description: Country Name

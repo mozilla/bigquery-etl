@@ -18,6 +18,7 @@ labels:
   application: desktop
   schedule: daily
   incremental: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_main_summary
   # The source table is already small here, so we completely recreate this

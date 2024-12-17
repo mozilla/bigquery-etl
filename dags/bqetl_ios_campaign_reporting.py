@@ -117,6 +117,16 @@ with DAG(
         + ["submission_date:DATE:{{ds}}"],
     )
 
+    bigeye__apple_ads_external__ios_app_campaign_stats__v1 = bigquery_bigeye_check(
+        task_id="bigeye__apple_ads_external__ios_app_campaign_stats__v1",
+        table_id="moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1",
+        warehouse_id="1939",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        retries=0,
+    )
+
     apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
         wait_for_apple_ads_external__ad_group_report__v1
     )
@@ -131,4 +141,8 @@ with DAG(
 
     apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
         wait_for_firefox_ios_derived__funnel_retention_week_4__v1
+    )
+
+    bigeye__apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
+        apple_ads_external__ios_app_campaign_stats__v1
     )

@@ -36,3 +36,8 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios.funnel_retention_week_4
   - mozdata.ltv.firefox_ios_client_ltv
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

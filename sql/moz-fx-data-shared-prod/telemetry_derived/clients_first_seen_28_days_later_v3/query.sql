@@ -8,6 +8,7 @@ WITH clients_first_seen_28_days_ago AS (
     app_build_id,
     app_name,
     locale,
+    platform_version,
     vendor,
     app_version,
     xpcom_abi,
@@ -118,6 +119,6 @@ SELECT
     ) > 0,
     FALSE
   ) AS qualified_week4,
-  @submission_date AS submission_date,
+  @submission_date AS submission_date
 FROM
   clients_first_seen_28_days_ago_with_days_seen

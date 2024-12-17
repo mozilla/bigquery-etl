@@ -1997,4 +1997,3 @@ bqetl_fx_health_ind_dashboard:
     - impact/tier_2
   repo: bigquery-etl
   schedule_interval: 0 16 * * *
-

@@ -83,7 +83,9 @@ default_percent_by_os_version AS (
     submission_date_s3,
     os_version,
     ROUND(AVG(IF(is_default_browser, 1, 0)) * 100, 1) AS default_percent,
-    SUM(ROUND(profile_age_in_days)) / COUNT(DISTINCT(client_id)) AS average_profile_age
+    SUM(ROUND(profile_age_in_days)) / COUNT(DISTINCT(client_id)) AS average_profile_age,
+    COUNT(DISTINCT(client_id)) AS nbr_clients,
+    count(distinct(CASE WHEN profile_age_in_days < 365 THAN ))
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE

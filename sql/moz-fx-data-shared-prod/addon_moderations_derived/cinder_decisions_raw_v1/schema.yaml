@@ -25,7 +25,40 @@ fields:
     name: entity_type
     type: STRING
     description: Type of entity
-  - mode: NULLABLE
+  - fields:
+    - mode: NULLABLE
+    - name: id
+    - type: STRING
+    - description: Attribute ID
+    - mode: NULLABLE
+    - name: slug
+    - type: STRING
+    - description: Slug
+    - mode: NULLABLE
+    - name: guid
+    - type: STRING
+    - description: GU ID
+    - mode: NULLABLE
+    - name: name
+    - type: STRING
+    - description: Name of attribute
+    - mode: NULLABLE
+    - name: summary
+    - type: STRING
+    - description: Summary of the action taken
+    - mode: NULLABLE
+    - name: average_daily_users
+    - type: INT64
+    - description: Average number of daily users
+    - mode: NULLABLE
+    - name: created
+    - type: TIMESTAMP
+    - description: When the attribute was created
+    - mode: NULLABLE
+    - name: promoted
+    - type: STRING
+    - description: Promoted
+    mode: NULLABLE
     name: attributes
     type: RECORD
     description: All the attributes
@@ -33,6 +66,7 @@ fields:
     name: classifier_scores
     type: STRING
     description: Top level UUID
+
   mode: NULLABLE
   name: entity
   type: RECORD

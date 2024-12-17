@@ -39,3 +39,19 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: Percent of Users with Profile Age Over 365 Days
+- name: sessions_per_user
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of Sessions per User
+- name: uris_per_user
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of URIs per User
+- name: new_profile_ratio
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of New Profiles vs All Profiles
+- name: domains_per_user
+  type: FLOAT
+  mode: NULLABLE
+  description: Domains per User

@@ -337,7 +337,6 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
 
-
 - description: Did client return second day
   name: returned_second_day
   type: BOOLEAN

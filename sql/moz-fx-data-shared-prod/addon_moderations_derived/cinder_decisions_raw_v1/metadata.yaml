@@ -12,3 +12,8 @@ scheduling:
   secrets:
   - deploy_target: CINDER_TOKEN
     key: bqetl_addons__cinder_bearer_token
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false

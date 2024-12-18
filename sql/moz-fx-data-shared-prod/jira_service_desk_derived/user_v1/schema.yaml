@@ -1,0 +1,10 @@
+fields:
+- name: account_id
+  type: STRING
+  mode: NULLABLE
+- name: account_status
+  type: STRING
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE

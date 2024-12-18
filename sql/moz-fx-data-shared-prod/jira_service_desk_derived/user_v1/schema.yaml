@@ -5,9 +5,6 @@ fields:
 - name: account_status
   type: STRING
   mode: NULLABLE
-- name: email
-  type: STRING
-  mode: NULLABLE
 - name: name
   type: STRING
   mode: NULLABLE

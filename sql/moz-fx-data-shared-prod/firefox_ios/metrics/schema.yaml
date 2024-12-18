@@ -1839,6 +1839,13 @@ fields:
       - name: numerator
         type: INTEGER
         mode: NULLABLE
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: nimbus_system_recorded_nimbus_context
+      type: JSON
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

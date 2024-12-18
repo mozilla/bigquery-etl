@@ -277,7 +277,8 @@ SELECT
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
       metrics.rate.places_history_migration_migration_error_rate
-    ) AS `rate`
+    ) AS `rate`,
+    STRUCT(metrics.object.nimbus_system_recorded_nimbus_context) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -567,7 +568,8 @@ SELECT
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
       metrics.rate.places_history_migration_migration_error_rate
-    ) AS `rate`
+    ) AS `rate`,
+    STRUCT(metrics.object.nimbus_system_recorded_nimbus_context) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -857,7 +859,8 @@ SELECT
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
       metrics.rate.places_history_migration_migration_error_rate
-    ) AS `rate`
+    ) AS `rate`,
+    STRUCT(metrics.object.nimbus_system_recorded_nimbus_context) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

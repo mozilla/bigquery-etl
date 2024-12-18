@@ -7,6 +7,8 @@ labels:
   application: fenix
   incremental: true
   owner1: rzhao
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_mobile_feature_usage
 bigquery:

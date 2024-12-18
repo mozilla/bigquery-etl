@@ -460,6 +460,7 @@ class GleanTable:
                 format=False,
                 **render_kwargs,
             )
+
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
@@ -476,6 +477,18 @@ class GleanTable:
                     Artifact(table, "metadata.yaml", metadata),
                     Artifact(view, "view.sql", view_sql),
                 ]
+
+                if self.target_table_id.startswith("metrics_clients_"):
+                    bigconfig_contents = render(
+                        f"{self.target_table_id[:-3]}.bigconfig.yml",
+                        format=False,
+                        template_folder=PATH / "templates",
+                        **render_kwargs,
+                    )
+
+                    artifacts.append(
+                        Artifact(table, "bigconfig.yml", bigconfig_contents)
+                    )
 
                 for artifact in artifacts:
                     destination = (

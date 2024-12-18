@@ -16,4 +16,4 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
-    - root_domain
+      - root_domain

@@ -722,6 +722,25 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    telemetry_derived__clients_first_seen_28_days_later__v3 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_first_seen_28_days_later__v3",
+        destination_table='clients_first_seen_28_days_later_v3${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "mhirose@mozilla.com",
+            "shong@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
         firefox_android_clients
     )
@@ -904,4 +923,12 @@ with DAG(
 
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    telemetry_derived__clients_first_seen_28_days_later__v3.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    telemetry_derived__clients_first_seen_28_days_later__v3.set_upstream(
+        clients_first_seen_v3
     )

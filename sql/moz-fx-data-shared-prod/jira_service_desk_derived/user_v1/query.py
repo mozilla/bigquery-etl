@@ -49,8 +49,8 @@ class JiraAPI:
         self.logger = logging.getLogger(self.__class__.__name__)
 
         self.secrets_dict = {
-          "jira_username": "$bqetl_jira_service_desk__jira_username",
-          "jira_token": "$bqetl_jira_service_desk__jira_token",
+          "jira_username": "$JIRA_USERNAME",
+          "jira_token": "$JIRA_TOKEN",
         }
         self.secrets_dict = {key:os.path.expandvars(self.secrets_dict[key]) for (key,value) in self.secrets_dict.items() }
         self.base_jira_url = args.base_jira_url

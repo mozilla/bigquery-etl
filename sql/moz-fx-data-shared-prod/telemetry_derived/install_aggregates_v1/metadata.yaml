@@ -1,0 +1,21 @@
+friendly_name: Install Aggregates
+description: |-
+  Please provide a description for the query
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_event_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}

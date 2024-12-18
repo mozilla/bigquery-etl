@@ -6,6 +6,9 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  depends_on_past: true
+scheduling:
+  dag_name: bqetl_default
 bigquery:
   time_partitioning:
     type: day

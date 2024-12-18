@@ -3,6 +3,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import json
 import os
+import sys
 
 from google.cloud import bigquery
 import google.auth
@@ -13,8 +14,10 @@ class BigQueryAPI:
     def __init__(self) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def load_jira_user_data(self, destination_table: str, users: list[dict]):
-        """Load downloaded data to BQ table."""
+    def load_jira_user_data(self, destination_table: str, users: list[dict], truncate=True):
+        """Load downloaded data to BQ table.
+        https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json#python
+        """
         credentials, project = google.auth.default(
             scopes=[
                 "https://www.googleapis.com/auth/cloud-platform",
@@ -22,15 +25,16 @@ class BigQueryAPI:
             ]
         )
         client = bigquery.Client(credentials=credentials, project=project)
+        write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE if truncate else bigquery.WriteDisposition.WRITE_APPEND
+        
         job_config = bigquery.LoadJobConfig(
             schema=[
                 bigquery.SchemaField("account_id", "STRING"),
-                bigquery.SchemaField("account_status", "STRING"),
-                bigquery.SchemaField("email", "STRING"),
+                bigquery.SchemaField("account_status", "STRING"),                
                 bigquery.SchemaField("name", "STRING"),
             ],
             autodetect=False,
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            write_disposition=write_disposition,
             source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
         )
 
@@ -44,92 +48,95 @@ class JiraAPI:
     def __init__(self, args) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
 
-        # self.secrets_dict = {
-        #   "jira_username": "$fivetran_jira_integration_username",
-        #   "jira_password": "$fivetran_jira_integration_token",
-        # }
-        # self.secrets_dict = {key:os.path.expandvars(self.secrets_dict[key]) for (key,value) in self.secrets_dict.items() }
-        self.base_url = args.base_url
-        self.auth = HTTPBasicAuth(args.jira_username, args.jira_token)
+        self.secrets_dict = {
+          "jira_username": "$bqetl_jira_service_desk__jira_username",
+          "jira_token": "$bqetl_jira_service_desk__jira_token",
+        }
+        self.secrets_dict = {key:os.path.expandvars(self.secrets_dict[key]) for (key,value) in self.secrets_dict.items() }
+        self.base_jira_url = args.base_jira_url
+        self.auth = HTTPBasicAuth(self.secrets_dict.get('jira_username'), self.secrets_dict.get('jira_token'))
 
     def get_users_paged(self, max_results=300):
         startAt = 0
         headers = {"Accept": "application/json"}
 
-        while True:
+        while True:           
             url = (
-                self.base_url
+                self.base_jira_url
                 + f"/rest/api/3/users/search?query=+&maxResults={max_results}&startAt={startAt}"
             )
-            response = requests.request("GET", url, headers=headers, auth=self.auth)
+            try:
+                response = requests.request("GET", url, headers=headers, auth=self.auth)
+            except Exception as e:
+                self.logger.error(str(e))
+                self.logger.critical("Failed while getting Jira users")
+                sys.exit(1)
+            is_success = 299 >= response.status_code >= 200
+            if not is_success:
+                self.logger.error(f"ERROR: response.status_code = {response.status_code}")
+                self.logger.error(f"ERROR: response.text = {response.text}")
+                self.logger.error(f"ERROR: response.reason = {response.reason}")
+                self.logger.critical("Failed while getting Jira users")
+                sys.exit(1)
+                
+            users = json.loads(response.text)
             yield [
                 {
                     "account_id": user.get("accountId", ""),
                     "account_status": (
                         "active" if user.get("active", "") else "inactive"
-                    ),
-                    "email": user.get("emailAddress", ""),
+                    ),                    
                     "name": user.get("displayName", ""),
                 }
-                for user in json.loads(response.text)
-            ]
-
-            # TODO
-            break
-            # startAt +=max_results
-
-
+                for user in users
+            ] 
+            
+            if len(users)<max_results:
+                break
+            
+            startAt +=max_results    
+             
+             
 class JiraBigQueryIntegration:
 
     def __init__(self) -> None:
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def run(self, args):
+        
+        self.logger.info("Starting Jira BigQuery Integration ...")
         jira = JiraAPI(args)
         bigquery = BigQueryAPI()
-
-        while True:
-            max_results = 2  # initial tests
-
-            for users in jira.get_users_paged(max_results):
-                bigquery.load_jira_user_data(args.destination, users)
-                if len(users) < max_results:
-                    break
-
-
+        
+        truncate = True          
+        for users in jira.get_users_paged():                       
+            bigquery.load_jira_user_data(args.destination, users,truncate)
+            self.logger.info(f"Added {len(users)} users to user table")
+            truncate = False    
+        
+        self.logger.info("End of Jira BigQuery Integration")
+        
+        
 def main():
     parser = ArgumentParser()
-    parser.add_argument(
-        "--fivetran-jira-integration-jira-username",
-        dest="jira_username",
-        default=os.environ.get("JIRA_USERNAME"),
-        required=True,
-    )
-    parser.add_argument(
-        "--fivetran-jira-integration-jira-token",
-        dest="jira_token",
-        default=os.environ.get("JIRA_TOKEN"),
-        required=True,
-    )
     parser.add_argument(
         "--destination",
         dest="destination",
         default="moz-fx-data-shared-prod.jira_service_desk_derived.user_v1",
-        required=True,
+        required=False,
     )
     parser.add_argument(
         "--base-url",
-        dest="base_url",
+        dest="base_jira_url",
         default="https://mozilla-hub-sandbox-721.atlassian.net",
-        required=True
+        required=False
     )
 
     args = parser.parse_args()
 
-    log_level = logging._checkLevel("INFO")
     logging.basicConfig(
         format="%(asctime)s:\t%(name)s.%(funcName)s()[%(filename)s:%(lineno)s]:\t%(levelname)s: %(message)s",
-        level=log_level,
+        level=logging._checkLevel("INFO"),
         encoding="utf-8",
     )
 

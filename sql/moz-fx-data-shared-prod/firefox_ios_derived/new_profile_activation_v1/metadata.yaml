@@ -5,6 +5,7 @@ owners:
 - vsabino@mozilla.com
 labels:
   incremental: true
+  table_type: client_level
 bigquery:
   time_partitioning:
     type: day

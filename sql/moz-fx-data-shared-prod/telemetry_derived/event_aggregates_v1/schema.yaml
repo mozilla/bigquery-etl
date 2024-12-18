@@ -1,0 +1,85 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: event_category
+  type: STRING
+  mode: NULLABLE
+  description: Event Category
+- name: event_object
+  type: STRING
+  mode: NULLABLE
+  description: Event Object
+- name: event_method
+  type: STRING
+  mode: NULLABLE
+  description: Event Method
+- name: event_string_value
+  type: STRING
+  mode: NULLABLE
+  description: Event String Value
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Operating System Version
+- name: installation_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Installation Count
+- name: etp_toggle_off_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: ETP Toggle Off Count
+- name: etp_toggle_on_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: ETP Toggle On Count
+- name: sitenotworking_link_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Site Not Working Link Count
+- name: send_report_link_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Send Report Link Count
+- name: send_report_submit_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Send Report Submit Count
+- name: certerror_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Certificate Error Count
+- name: certerror_aboutcerterror_load_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Certificate Error - About Certificate Error - Load Count
+- name: certerror_aboutcerterror_load_value_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Certificate Error - About Certificate Error - Load Value Count
+- name: browser_language_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Browser Language Count
+- name: browser_language_click_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Browser Language Click Count
+- name: browser_language_language_item_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Browser Language Language Item Count

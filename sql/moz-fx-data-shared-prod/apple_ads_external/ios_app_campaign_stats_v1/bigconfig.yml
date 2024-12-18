@@ -12,16 +12,15 @@ tag_deployments:
           - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.campaign_id
           - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.ad_group_name
           - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.ad_group_id
-          # For now commented out due to attribution being disabled.
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.impressions
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.clicks
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.downloads
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.new_profiles
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.activated_profiles
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.repeat_users
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.week_4_retained_users
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.spend
-          # - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.lifetime_value
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.impressions
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.clicks
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.downloads
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.new_profiles
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.activated_profiles
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.repeat_users
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.week_4_retained_users
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.spend
+          - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.apple_ads_external.ios_app_campaign_stats_v1.lifetime_value
         metrics:
           - saved_metric_id: is_not_null
             lookback:

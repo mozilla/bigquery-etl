@@ -140,7 +140,7 @@ glean_summary AS (
     -- exclude suspicious activity
     NOT (user_event_count > 50)
   GROUP BY
-    submission_timestamp,
+    submission_date,
     recommendation_id,
     tile_id,
     position

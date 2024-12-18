@@ -170,6 +170,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_main_ping",
+        execution_delta=datetime.timedelta(seconds=54000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -253,6 +266,39 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
+    telemetry_derived__fx_health_ind_vid_plybck_by_country__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_vid_plybck_by_country__v1",
+        destination_table="fx_health_ind_vid_plybck_by_country_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_health_ind_vid_plybck_by_os__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_vid_plybck_by_os__v1",
+        destination_table="fx_health_ind_vid_plybck_by_os_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_health_ind_vid_plybck_by_os_version__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_vid_plybck_by_os_version__v1",
+        destination_table="fx_health_ind_vid_plybck_by_os_version_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     telemetry_derived__fx_health_ind_win_instll_by_instll_typ__v1 = bigquery_etl_query(
@@ -359,6 +405,18 @@ with DAG(
 
     telemetry_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
         wait_for_firefox_desktop_active_users_aggregates_v4
+    )
+
+    telemetry_derived__fx_health_ind_vid_plybck_by_country__v1.set_upstream(
+        wait_for_telemetry_derived__main_remainder_1pct__v1
+    )
+
+    telemetry_derived__fx_health_ind_vid_plybck_by_os__v1.set_upstream(
+        wait_for_copy_deduplicate_main_ping
+    )
+
+    telemetry_derived__fx_health_ind_vid_plybck_by_os_version__v1.set_upstream(
+        wait_for_telemetry_derived__main_remainder_1pct__v1
     )
 
     telemetry_derived__fx_health_ind_win_instll_by_instll_typ__v1.set_upstream(

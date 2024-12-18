@@ -79,7 +79,7 @@ SELECT
   daily_stats.ad_group_id,
   COALESCE(SUM(impressions), 0) AS impressions,
   COALESCE(SUM(clicks), 0) AS clicks,
-  COALESCE(SUM(daily_stats., 0)total_downloads) AS downloads,
+  COALESCE(SUM(daily_stats.total_downloads), 0) AS downloads,
   COALESCE(SUM(new_profiles), 0) AS new_profiles,
   COALESCE(SUM(activated), 0) AS activated_profiles,
   COALESCE(SUM(repeat_users), 0) AS repeat_users,

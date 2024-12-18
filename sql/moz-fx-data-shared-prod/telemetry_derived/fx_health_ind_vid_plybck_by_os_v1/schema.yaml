@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- mode: NULLABLE
+  name: play_time_ratio
+  type: FLOAT
+  description: Play Time Ratio

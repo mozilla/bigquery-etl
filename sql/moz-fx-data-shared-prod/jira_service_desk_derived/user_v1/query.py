@@ -79,7 +79,7 @@ class JiraAPI:
                 self.logger.critical("Failed while getting Jira users")
                 sys.exit(1)
                 
-            users = json.loads(response.text)
+            users = response.json()
             yield [
                 {
                     "account_id": user.get("accountId", ""),

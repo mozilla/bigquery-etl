@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+  description: Normalized Country Code
+- mode: NULLABLE
+  name: play_time_ratio
+  type: FLOAT
+  description: Play Time Ratio

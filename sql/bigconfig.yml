@@ -8,9 +8,9 @@ saved_metric_definitions:
       threshold:
         type: CONSTANT
         upper_bound: 0
-      schedule_frequency:
-        interval_type: MINUTES
-        interval_value: 0
+      metric_schedule:
+        named_schedule:
+          name: default
       lookback:
         lookback_type: DATA_TIME
         lookback_window:
@@ -24,9 +24,9 @@ saved_metric_definitions:
       threshold:
         type: CONSTANT
         upper_bound: 0
-      schedule_frequency:
-        interval_type: MINUTES
-        interval_value: 0
+      metric_schedule:
+        named_schedule:
+          name: default
       rct_overrides:
         - submission_date
     - saved_metric_id: freshness_fail
@@ -71,9 +71,9 @@ saved_metric_definitions:
         type: CONSTANT
         lower_bound: 1
         upper_bound: 1
-      schedule_frequency:
-        interval_type: MINUTES
-        interval_value: 0
+      metric_schedule:
+        named_schedule:
+          name: default
       lookback:
         lookback_type: DATA_TIME
         lookback_window:
@@ -88,9 +88,9 @@ saved_metric_definitions:
         type: CONSTANT
         lower_bound: 2
         upper_bound: 2
-      schedule_frequency:
-        interval_type: MINUTES
-        interval_value: 0
+      metric_schedule:
+        named_schedule:
+          name: default
       lookback:
         lookback_type: DATA_TIME
         lookback_window:
@@ -105,9 +105,9 @@ saved_metric_definitions:
         type: CONSTANT
         lower_bound: 1
         upper_bound: 1
-      schedule_frequency:
-        interval_type: MINUTES
-        interval_value: 0
+      metric_schedule:
+        named_schedule:
+          name: default
       lookback:
         lookback_type: DATA_TIME
         lookback_window:

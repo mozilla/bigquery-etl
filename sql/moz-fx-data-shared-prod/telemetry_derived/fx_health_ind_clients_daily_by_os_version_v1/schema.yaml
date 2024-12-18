@@ -1,0 +1,57 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: Operating System Version
+- mode: NULLABLE
+  name: searches_per_user_ratio
+  type: FLOAT
+  description: Ratio of Searches per User
+- mode: NULLABLE
+  name: subsession_hours_per_user_ratio
+  type: NUMERIC
+  description: Ratio of Subsession Hours per User
+- mode: NULLABLE
+  name: active_hours_per_user_ratio
+  type: FLOAT
+  description: Ratio of Active Hours per User
+- mode: NULLABLE
+  name: default_percent
+  type: FLOAT
+  description: Percent of Users with Firefox as Default Browser
+- mode: NULLABLE
+  name: average_profile_age
+  type: FLOAT
+  description: Average Profile Age
+- mode: NULLABLE
+  name: pct_users_profile_age_less_than_7_days
+  type: FLOAT
+  description: Percent of Users with Profile Age Less than 7 Days
+- mode: NULLABLE
+  name: pct_users_profile_age_8_to_365_days
+  type: FLOAT
+  description: Percent of Users with Profile Age Between 8 and 365 Days
+- mode: NULLABLE
+  name: pct_users_profile_age_over_365_days
+  type: FLOAT
+  description: Percent of Users with Profile Age Over 365 Days
+- mode: NULLABLE
+  name: sessions_per_user
+  type: FLOAT
+  description: Ratio of Sessions per User
+- mode: NULLABLE
+  name: uris_per_user
+  type: FLOAT
+  description: Ratio of URIs per User
+- mode: NULLABLE
+  name: new_profile_ratio
+  type: FLOAT
+  description: Ratio of New Profiles vs All Profiles
+- mode: NULLABLE
+  name: domains_per_user
+  type: FLOAT
+  description: Domains per User

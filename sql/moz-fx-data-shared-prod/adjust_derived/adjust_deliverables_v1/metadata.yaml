@@ -7,6 +7,7 @@ owners:
   - mhirose@mozilla.com
 labels:
   incremental: false
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_adjust
   date_partition_parameter: date

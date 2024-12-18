@@ -91,8 +91,7 @@ glean_deduplicated_pings AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE
-    DATE(submission_timestamp) >= '2024-11-15'
-    AND DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -141,7 +140,7 @@ glean_summary AS (
     -- exclude suspicious activity
     NOT (user_event_count > 50)
   GROUP BY
-    submission_timestamp,
+    submission_date,
     recommendation_id,
     tile_id,
     position

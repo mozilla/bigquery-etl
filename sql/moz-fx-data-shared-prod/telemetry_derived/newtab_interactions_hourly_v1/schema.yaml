@@ -1,6 +1,6 @@
 fields:
 - name: submission_date
-  type: date
+  type: DATE
   mode: NULLABLE
   description: Client-side date in Firefox for when the indicated engagement happened.
 - name: recommendation_id

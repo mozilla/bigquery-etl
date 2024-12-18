@@ -4,7 +4,7 @@ tag_deployments:
   - collection:
       name: {{ bigeye_collection }}
       notification_channels:
-        - slack: '{{ bigeye_notification_slack_channel_ds }}'
+        - slack: '{{ bigeye_notification_slack_channel }}'
     deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.first_seen_date
@@ -26,14 +26,3 @@ tag_deployments:
         metrics:
           - saved_metric_id: volume
           - saved_metric_id: freshness
-
-  - collection:
-      name: Operational Checks
-      notification_channels:
-        - slack: '{{ bigeye_notification_slack_channel_de }}'
-    deployments:
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
-        metrics:
-          - saved_metric_id: freshness
-          - saved_metric_id: volume

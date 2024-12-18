@@ -1,0 +1,23 @@
+friendly_name: Event Aggregates
+description: |-
+  Aggregate table based off of telemetry.events
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_event_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - country
+references: {}

@@ -24,3 +24,5 @@ bigquery:
     fields:
       - normalized_channel
       - sample_id
+monitoring:
+  enabled: true

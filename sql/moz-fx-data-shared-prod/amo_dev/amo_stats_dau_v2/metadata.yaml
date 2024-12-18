@@ -8,6 +8,8 @@ labels:
   application: amo
   incremental: true
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_amo_stats
 bigquery:

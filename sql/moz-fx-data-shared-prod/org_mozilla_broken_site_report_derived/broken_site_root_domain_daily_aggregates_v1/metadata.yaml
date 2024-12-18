@@ -1,0 +1,16 @@
+friendly_name: Broken site Root Domain Daily Aggregates
+description: |-
+  A daily aggregation for broken site root domains.
+owners:
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: report_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - root_domain

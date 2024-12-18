@@ -31,3 +31,8 @@ references:
   - org_mozilla_focus.metrics
   - org_mozilla_focus_beta.metrics
   - org_mozilla_focus_nightly.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

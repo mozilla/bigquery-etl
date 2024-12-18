@@ -35,3 +35,8 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_fire_tv.metrics_clients_daily
   - moz-fx-data-shared-prod.firefox_fire_tv_derived.metrics_clients_last_seen_v1
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

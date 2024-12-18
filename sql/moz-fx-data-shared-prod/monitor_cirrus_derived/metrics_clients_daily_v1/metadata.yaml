@@ -30,3 +30,8 @@ workgroup_access:
 references:
   query.sql:
   - monitor_cirrus.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

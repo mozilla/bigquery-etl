@@ -31,3 +31,8 @@ references:
   - org_mozilla_ios_fennec.metrics
   - org_mozilla_ios_firefox.metrics
   - org_mozilla_ios_firefoxbeta.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

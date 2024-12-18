@@ -33,3 +33,8 @@ references:
   - org_mozilla_fennec_aurora.metrics
   - org_mozilla_firefox.metrics
   - org_mozilla_firefox_beta.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

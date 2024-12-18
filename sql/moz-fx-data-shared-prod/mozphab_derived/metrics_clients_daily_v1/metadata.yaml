@@ -29,3 +29,8 @@ workgroup_access:
 references:
   query.sql:
   - mozphab.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

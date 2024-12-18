@@ -31,3 +31,8 @@ references:
   - net_thunderbird_android.metrics
   - net_thunderbird_android_beta.metrics
   - net_thunderbird_android_daily.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

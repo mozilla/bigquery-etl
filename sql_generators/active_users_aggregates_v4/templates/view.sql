@@ -10,6 +10,11 @@ SELECT
   `mozfun.norm.browser_version_info`(app_version).minor_version AS app_version_minor,
   `mozfun.norm.browser_version_info`(app_version).patch_revision AS app_version_patch_revision,
   `mozfun.norm.browser_version_info`(app_version).is_major_release AS app_version_is_major_release,
-  `mozfun.norm.os`(os) AS os_grouped
+  `mozfun.norm.os`(os) AS os_grouped,
+  CASE 
+    WHEN distribution_id LIKE "%vivo%"
+      THEN "vivo"
+    ELSE "other"
+  END AS partnership,
 FROM
   `{{ project_id }}.{{ app_name }}_derived.{{ table_name }}`

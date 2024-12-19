@@ -2,4 +2,11 @@ friendly_name: Broken site Root Domain Daily Aggregates
 description: |-
   A daily aggregation for broken site root domains.
 owners:
-- gkatre@mozilla.com
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: aggregate
+  owner1: gkatre@mozilla.com
+scheduling:
+  dag_name: bqetl_default

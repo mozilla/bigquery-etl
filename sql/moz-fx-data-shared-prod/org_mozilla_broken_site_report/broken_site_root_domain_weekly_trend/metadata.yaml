@@ -2,4 +2,11 @@ friendly_name: Broken site Root Domain Weekly Trends
 description: |-
   Weekly trend computation for broken site reports.
 owners:
-- gkatre@mozilla.com
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  depends_on_past: true
+  owner1: gkatre@mozilla.com
+scheduling:
+  dag_name: bqetl_default

@@ -12,6 +12,8 @@ labels:
   incremental: true
   schedule: daily
   change_controlled: true
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_ctxsvc_derived
 bigquery:

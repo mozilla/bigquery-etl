@@ -12,6 +12,7 @@ labels:
   incremental: true
   schedule: daily
   dag: bqetl_fxa_events
+  table_type: client_level
   owner1: frank
 bigquery:
   time_partitioning:

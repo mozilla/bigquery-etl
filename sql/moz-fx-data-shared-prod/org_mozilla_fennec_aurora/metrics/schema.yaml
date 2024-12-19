@@ -7055,6 +7055,20 @@ fields:
         domain
 
         '
+    - name: networking_http_ip_addr_any_hostnames
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times we see the IP address 0.0.0.0 or its IPv6
+        equivalent used as hostnames
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -18631,6 +18645,47 @@ fields:
       description: 'The time in milliseconds to initialize the NSS component in the
         parent process. This metric was generated to correspond to the Legacy Telemetry
         scalar networking.nss_initialization.
+
+        '
+    - name: navigation_bar_browser_initialize_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time that it takes to initialize navigation bar in a browser
+        tab (normal or private).
+
+        '
+    - name: navigation_bar_custom_tab_initialize_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time that it takes to initialize navigation bar in custom
+        tab.
+
+        '
+    - name: navigation_bar_home_initialize_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The time that it takes to initialize navigation bar in home screen.
 
         '
   - name: url2

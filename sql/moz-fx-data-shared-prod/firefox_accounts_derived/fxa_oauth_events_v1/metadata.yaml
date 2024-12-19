@@ -4,6 +4,7 @@ description: |-
 owners:
 - data-platform-infra-wg@mozilla.com
 labels:
+  table_type: client_level
   owner1: data-platform-infra-wg
 bigquery:
   time_partitioning:

@@ -540,7 +540,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -932,7 +933,10 @@ SELECT
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
       metrics.timespan.first_session_adjust_attribution_timespan,
       metrics.timespan.networking_loading_certs_task,
-      metrics.timespan.networking_nss_initialization
+      metrics.timespan.networking_nss_initialization,
+      metrics.timespan.navigation_bar_browser_initialize_timespan,
+      metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
+      metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -1569,7 +1573,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1961,7 +1966,10 @@ SELECT
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
       metrics.timespan.first_session_adjust_attribution_timespan,
       metrics.timespan.networking_loading_certs_task,
-      metrics.timespan.networking_nss_initialization
+      metrics.timespan.networking_nss_initialization,
+      metrics.timespan.navigation_bar_browser_initialize_timespan,
+      metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
+      metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -2616,7 +2624,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3008,7 +3017,10 @@ SELECT
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
       metrics.timespan.first_session_adjust_attribution_timespan,
       metrics.timespan.networking_loading_certs_task,
-      metrics.timespan.networking_nss_initialization
+      metrics.timespan.networking_nss_initialization,
+      metrics.timespan.navigation_bar_browser_initialize_timespan,
+      metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
+      metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -3672,7 +3684,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4064,7 +4077,10 @@ SELECT
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
       metrics.timespan.first_session_adjust_attribution_timespan,
       metrics.timespan.networking_loading_certs_task,
-      metrics.timespan.networking_nss_initialization
+      metrics.timespan.networking_nss_initialization,
+      metrics.timespan.navigation_bar_browser_initialize_timespan,
+      metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
+      metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(
@@ -4710,7 +4726,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5102,7 +5119,10 @@ SELECT
       metrics.timespan.play_store_attribution_deferred_deeplink_time,
       metrics.timespan.first_session_adjust_attribution_timespan,
       metrics.timespan.networking_loading_certs_task,
-      metrics.timespan.networking_nss_initialization
+      metrics.timespan.networking_nss_initialization,
+      metrics.timespan.navigation_bar_browser_initialize_timespan,
+      metrics.timespan.navigation_bar_custom_tab_initialize_timespan,
+      metrics.timespan.navigation_bar_home_initialize_timespan
     ) AS `timespan`,
     STRUCT(metrics.url2.search_default_engine_search_url) AS `url2`,
     STRUCT(

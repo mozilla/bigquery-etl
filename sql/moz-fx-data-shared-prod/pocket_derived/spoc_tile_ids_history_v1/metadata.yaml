@@ -5,6 +5,7 @@ owners:
 - kik@mozilla.com
 labels:
   incremental: true
+  table_type: tile_id
   dag: bqetl_pocket
   owner1: kik
 scheduling:

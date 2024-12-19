@@ -7,6 +7,7 @@ labels:
   application: addons
   schedule: daily
   incremental: true
+  table_type: aggregate
   dag: bqetl_addons
   owner1: kik
 scheduling:

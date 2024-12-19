@@ -4367,6 +4367,20 @@ fields:
         domain
 
         '
+    - name: networking_http_ip_addr_any_hostnames
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times we see the IP address 0.0.0.0 or its IPv6
+        equivalent used as hostnames
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

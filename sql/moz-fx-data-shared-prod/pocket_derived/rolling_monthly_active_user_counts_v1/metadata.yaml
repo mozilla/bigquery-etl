@@ -4,6 +4,7 @@ description: |-
 owners:
 - kik@mozilla.com
 labels:
+  table_type: aggregate
   dag: bqetl_pocket
   owner1: kik
 scheduling:

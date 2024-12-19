@@ -9,6 +9,7 @@ description: |-
 owners:
 - wlachance@mozilla.com
 labels:
+  table_type: client_level
   dag: bqetl_event_rollup
   owner1: wlachance
 scheduling:

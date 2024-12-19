@@ -4466,7 +4466,8 @@ fields:
         \ - failed to load or parse the configuration from remote\n              \
         \       settings.\nfailedLoadEngines - failed to create all the search engines\
         \ from the\n                    configuration or user installed engines.\n\
-        success - search service successfully initialized.\n"
+        failedLoadSettingsAddonManager - the addon manager ready promise was rejected.\
+        \ (from FF135)\nsuccess - search service successfully initialized.\n"
     - name: extensions_counters_browser_action_preload_result
       type: RECORD
       mode: REPEATED
@@ -7709,6 +7710,20 @@ fields:
         mode: NULLABLE
       description: 'How often do which histograms that use `Telemetry::AccumulateTimeDelta`
         have clamped samples due to underflow?
+
+        '
+    - name: networking_http_ip_addr_any_hostnames
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times we see the IP address 0.0.0.0 or its IPv6
+        equivalent used as hostnames
 
         '
   - name: memory_distribution

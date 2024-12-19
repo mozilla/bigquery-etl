@@ -12,6 +12,7 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+  table_type: client_level
   owner1: frank
 bigquery:
   time_partitioning:

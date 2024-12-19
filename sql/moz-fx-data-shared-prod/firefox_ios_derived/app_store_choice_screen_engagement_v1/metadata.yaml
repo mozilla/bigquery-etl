@@ -8,6 +8,7 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  table_type: aggregate
   dag: bqetl_firefox_ios
   owner1: kik
 scheduling:

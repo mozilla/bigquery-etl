@@ -5,6 +5,7 @@ owners:
 - vsabino@mozilla.com
 labels:
   incremental: true
+  table_type: client_level
   dag: bqetl_mobile_activation
   owner1: vsabino
 scheduling:

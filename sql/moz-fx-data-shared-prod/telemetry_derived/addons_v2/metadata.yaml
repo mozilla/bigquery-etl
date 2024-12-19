@@ -9,6 +9,7 @@ labels:
   incremental: true
   dag: bqetl_addons
   owner1: kik
+  table_type: client_level
 scheduling:
   dag_name: bqetl_addons
 bigquery:

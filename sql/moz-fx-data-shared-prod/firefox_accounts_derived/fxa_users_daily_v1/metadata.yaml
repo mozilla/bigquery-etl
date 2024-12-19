@@ -10,6 +10,7 @@ labels:
   application: fxa
   incremental: true
   schedule: daily
+  table_type: client_level
   dag: bqetl_fxa_events
   owner1: kik
 scheduling:

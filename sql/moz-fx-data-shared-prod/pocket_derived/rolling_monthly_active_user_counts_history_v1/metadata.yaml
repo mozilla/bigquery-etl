@@ -7,6 +7,7 @@ owners:
 - kik@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
   dag: bqetl_pocket
   owner1: kik
 scheduling:

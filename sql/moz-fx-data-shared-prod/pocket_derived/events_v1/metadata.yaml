@@ -6,6 +6,7 @@ owners:
 - efixler@mozilla.com
 labels:
   incremental: true
+  table_type: client_id
   owner1: jrediger
   owner2: efixler
 bigquery:

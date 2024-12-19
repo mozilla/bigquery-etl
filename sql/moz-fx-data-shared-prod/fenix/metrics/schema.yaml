@@ -4407,6 +4407,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_http_ip_addr_any_hostnames
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -13770,6 +13780,36 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: networking_nss_initialization
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: navigation_bar_browser_initialize_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: navigation_bar_custom_tab_initialize_timespan
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: navigation_bar_home_initialize_timespan
       type: RECORD
       mode: NULLABLE
       fields:

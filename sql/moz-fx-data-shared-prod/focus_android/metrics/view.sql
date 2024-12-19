@@ -384,7 +384,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1191,7 +1192,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1998,7 +2000,8 @@ SELECT
       metrics.labeled_counter.network_sso_entra_success,
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
-      metrics.labeled_counter.networking_https_http_or_local
+      metrics.labeled_counter.networking_https_http_or_local,
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

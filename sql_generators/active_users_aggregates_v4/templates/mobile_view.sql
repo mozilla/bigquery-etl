@@ -44,6 +44,11 @@ CREATE OR REPLACE VIEW
       app_version_patch_revision,
       app_version_is_major_release,
       os_grouped,
+      CASE 
+        WHEN distribution_id LIKE "%vivo%"
+          THEN "vivo"
+        ELSE "other"
+      END AS partnership,
     FROM
       `{{ project_id }}.{{ app_dataset_id }}.active_users_aggregates`
   {% endfor %}

@@ -8,7 +8,8 @@ description: |-
   otherwise.
 owners:
 - wlachance@mozilla.com
-labels: {}
+labels:
+  table_type: client_level
 scheduling:
   dag_name: bqetl_event_rollup
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']

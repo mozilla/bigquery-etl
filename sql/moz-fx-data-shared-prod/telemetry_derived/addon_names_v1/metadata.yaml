@@ -7,6 +7,8 @@ labels:
   application: addons
   schedule: daily
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_addons
   # This is an unpartitioned table that we recreate each day based on the

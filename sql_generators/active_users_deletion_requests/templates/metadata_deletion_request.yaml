@@ -10,6 +10,8 @@ owners:
   - lvargas@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_kpis_shredder
   task_name: {{ app_name }}_active_users_aggregates_for_deletion_requests

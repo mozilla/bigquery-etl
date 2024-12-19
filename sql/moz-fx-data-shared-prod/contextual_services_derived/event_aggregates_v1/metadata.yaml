@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_ctxsvc_derived
   arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']

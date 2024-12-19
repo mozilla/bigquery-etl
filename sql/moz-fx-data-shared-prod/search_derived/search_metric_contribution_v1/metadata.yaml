@@ -10,6 +10,7 @@ owners:
   - jklukas@mozilla.com
 labels:
   schedule: daily
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search
 bigquery:

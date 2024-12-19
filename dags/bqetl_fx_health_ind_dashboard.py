@@ -268,6 +268,17 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    telemetry_derived__fx_health_ind_searches_by_provider__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_searches_by_provider__v1",
+        destination_table="fx_health_ind_searches_by_provider_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__fx_health_ind_vid_plybck_by_country__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_health_ind_vid_plybck_by_country__v1",
         destination_table="fx_health_ind_vid_plybck_by_country_v1",
@@ -405,6 +416,10 @@ with DAG(
 
     telemetry_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
         wait_for_firefox_desktop_active_users_aggregates_v4
+    )
+
+    telemetry_derived__fx_health_ind_searches_by_provider__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )
 
     telemetry_derived__fx_health_ind_vid_plybck_by_country__v1.set_upstream(

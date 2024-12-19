@@ -13,6 +13,8 @@ description: |-
 owners:
 - akomar@mozilla.com
 labels:
+  shredder_mitigation: true
+  table_type: aggregate
   owner1: akomar
 bigquery:
   time_partitioning:

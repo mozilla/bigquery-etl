@@ -289,6 +289,10 @@ class GleanTable:
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
+            enable_monitoring=app_name
+            not in list(
+                set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
+            ),
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -406,8 +410,10 @@ class GleanTable:
         if not self.per_app_enabled:
             return
 
+        app_name = app_info[0]["app_name"]
+
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
-        target_dataset = app_info[0]["app_name"]
+        target_dataset = app_name
 
         datasets = [
             (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
@@ -430,7 +436,11 @@ class GleanTable:
             datasets=datasets,
             table=target_view_name,
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
-            app_name=app_info[0]["app_name"],
+            app_name=app_name,
+            enable_monitoring=app_name
+            not in list(
+                set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
+            ),
         )
         render_kwargs.update(self.custom_render_kwargs)
 

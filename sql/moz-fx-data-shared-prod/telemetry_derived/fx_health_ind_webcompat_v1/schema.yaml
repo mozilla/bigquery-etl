@@ -10,4 +10,4 @@ fields:
 - name: nbr_unique_clients_etp_disablement
   type: INTEGER
   mode: NULLABLE
-  description: Count of Unique Clients
+  description: Count of Unique Clients Setting ETP Disablement

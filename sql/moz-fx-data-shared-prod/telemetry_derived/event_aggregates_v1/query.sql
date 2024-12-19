@@ -56,7 +56,33 @@ SELECT
     event_category = 'intl.ui.browserLanguage'
     AND event_object = 'language_item'
   ) AS browser_language_language_item_cnt,
-  COUNT(1) AS nbr_events
+  COUNT(1) AS nbr_events,
+  COUNTIF(
+    event_method = 'click'
+    AND event_object = 'etp_toggle_off'
+    AND event_category = 'security.ui.protectionspopup'
+  ) AS disable_etp_cnt,
+  COUNTIF(
+    event_method = 'click'
+    AND event_object = 'etp_toggle_on'
+    AND event_category = 'security.ui.protectionspopup'
+  ) AS enable_etp_cnt,
+  COUNTIF(
+    event_method = 'click'
+    AND event_object = 'sitenotworking_link'
+    AND event_category = 'security.ui.protectionspopup'
+  ) AS click_site_not_working,
+  COUNTIF(
+    event_method = 'click'
+    AND event_object = 'send_report_link'
+    AND event_category = 'security.ui.protectionspopup'
+  ) AS click_report_cnt,
+  COUNTIF(
+    event_method = 'click'
+    AND event_object = 'send_report_submit'
+    AND event_category = 'security.ui.protectionspopup'
+  ) AS submit_report_cnt,
+  COUNTIF(event_method = 'open' AND event_category = 'security.ui.protectionspopup') AS open_panel
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE

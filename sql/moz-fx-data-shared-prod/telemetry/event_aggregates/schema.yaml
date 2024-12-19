@@ -87,3 +87,27 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of Events
+- name: disable_etp_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Disable ETP Count; i.e. etp_toggle_off clicks
+- name: enable_etp_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Enable ETP Count; i.e. etp_toggle_on clicks
+- name: click_site_not_working
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Site Not Working Link
+- name: click_report_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Send Report Link
+- name: submit_report_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Send Report Submit
+- name: open_panel
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Open Panel

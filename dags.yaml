@@ -1811,6 +1811,26 @@ bqetl_merino_newtab_extract_to_gcs:
     - repo/bigquery-etl
     - impact/tier_1
 
+bqetl_broken_reports_agg:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: gkatre@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-18'
+  description: Tables associated with broken site reports.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+
 bqetl_merino_newtab_priors_to_gcs:
   default_args:
     depends_on_past: false

@@ -280,6 +280,10 @@ class GleanTable:
                     app_name = app_dataset["app_name"]
                     break
 
+        # Some apps did briefly send a baseline ping,
+        # but do not do so actively anymore. This is why they get excluded.
+        enable_monitoring = app_name not in list(set(BIGEYE_APP_EXCLUSION_LIST))
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -289,10 +293,7 @@ class GleanTable:
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
-            enable_monitoring=app_name
-            not in list(
-                set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
-            ),
+            enable_monitoring=enable_monitoring,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -337,6 +338,19 @@ class GleanTable:
         except TemplateNotFound:
             schema = None
 
+        if enable_monitoring:
+            try:
+                bigconfig_contents = render(
+                    bigconfig_filename,
+                    format=False,
+                    template_folder=PATH / "templates",
+                    **render_kwargs,
+                )
+            except TemplateNotFound:
+                bigconfig_contents = None
+        else:
+            bigconfig_contents = None
+
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
         artifacts = [
@@ -363,19 +377,7 @@ class GleanTable:
                     if checks_sql:
                         artifacts.append(Artifact(table, "checks.sql", checks_sql))
 
-            # Some apps did briefly send a baseline ping,
-            # but do not do so actively anymore. This is why they get excluded.
-            if (
-                table.startswith("baseline")
-                and app_name not in BIGEYE_APP_EXCLUSION_LIST
-            ):
-                bigconfig_contents = render(
-                    bigconfig_filename,
-                    format=False,
-                    template_folder=PATH / "templates",
-                    **render_kwargs,
-                )
-
+            if bigconfig_contents:
                 artifacts.append(Artifact(table, "bigconfig.yml", bigconfig_contents))
 
             if schema:
@@ -428,6 +430,10 @@ class GleanTable:
             if self.per_app_id_enabled:
                 return
 
+        enable_monitoring = app_name not in list(
+            set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
+        )
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -437,10 +443,7 @@ class GleanTable:
             table=target_view_name,
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_name,
-            enable_monitoring=app_name
-            not in list(
-                set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
-            ),
+            enable_monitoring=enable_monitoring,
         )
         render_kwargs.update(self.custom_render_kwargs)
 
@@ -505,10 +508,9 @@ class GleanTable:
                     Artifact(view, "view.sql", view_sql),
                 ]
 
-                if self.target_table_id.startswith(
-                    "metrics_clients_"
-                ) and target_dataset not in list(
-                    set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
+                if (
+                    self.target_table_id.startswith("metrics_clients_")
+                    and enable_monitoring
                 ):
                     bigconfig_contents = render(
                         f"{self.target_table_id[:-3]}.bigconfig.yml",

@@ -1,0 +1,5 @@
+friendly_name: Experiment Cumulative Ad Clicks
+description: Cumulative ad click data related to experiments
+owners:
+- ascholtz@mozilla.com
+deprecated: true

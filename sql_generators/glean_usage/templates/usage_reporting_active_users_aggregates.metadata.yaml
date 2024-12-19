@@ -1,0 +1,14 @@
+{{ header_yaml }}
+friendly_name: Usage Reporting Active Users Aggregates
+description: |-
+  A daily aggregate of the usage_reporting ping representing user activity.
+
+owners:
+  - gkatre@mozilla.com
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential

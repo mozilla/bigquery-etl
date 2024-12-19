@@ -5,6 +5,8 @@ owners:
   - kik@mozilla.com
 labels:
   incremental: false
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_pocket
   date_partition_parameter: null

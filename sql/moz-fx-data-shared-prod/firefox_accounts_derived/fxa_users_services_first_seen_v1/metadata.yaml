@@ -8,6 +8,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: kik
+  table_type: client_level
 bigquery:
   time_partitioning:
     type: day

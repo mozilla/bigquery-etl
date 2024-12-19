@@ -8,6 +8,7 @@ labels:
   application: firefox_accounts
   incremental: true
   schedule: daily
+  table_type: client_level
 # TODO: Once fxa_users_first_seen_v2 backfill is completed and data confirmed to be heatlhy
 # this query should be descheduled, description and the corresponding view updated.
 scheduling:

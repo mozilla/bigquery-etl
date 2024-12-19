@@ -25,4 +25,4 @@ bigquery:
       - normalized_channel
       - sample_id
 monitoring:
-  enabled: {{% if enable_monitoring %}}true{{% else %}}false{{% endif %}}
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}

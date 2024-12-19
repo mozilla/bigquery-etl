@@ -1,13 +1,12 @@
 friendly_name: Jira Service Desk User
 description: |-
-   User data pulled from Jira API v3 (/rest/api/3/users/search)
+  User data pulled from Jira API v3 (/rest/api/3/users/search)
 owners:
 - jmoscon@mozilla.com
 labels:
   schedule: daily
-  incremental: false
-  owner1: jmoscon@mozilla.com
-
+  owner1: jmoscon
+  dag: bqetl_jira_service_desk
 scheduling:
   dag_name: bqetl_jira_service_desk
   secrets:
@@ -15,3 +14,9 @@ scheduling:
     key: bqetl_jira_service_desk__jira_username
   - deploy_target: JIRA_TOKEN
     key: bqetl_jira_service_desk__jira_token
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

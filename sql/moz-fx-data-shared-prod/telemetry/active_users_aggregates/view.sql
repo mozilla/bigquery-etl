@@ -32,7 +32,12 @@ SELECT
   app_version_minor,
   app_version_patch_revision,
   app_version_is_major_release,
-  os_grouped
+  os_grouped,
+  CASE
+    WHEN distribution_id LIKE "%vivo%"
+      THEN "vivo"
+    ELSE "other"
+  END AS partnership,
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`
 UNION ALL
@@ -68,6 +73,11 @@ SELECT
   app_version_minor,
   app_version_patch_revision,
   app_version_is_major_release,
-  os_grouped
+  os_grouped,
+  CASE
+    WHEN distribution_id LIKE "%vivo%"
+      THEN "vivo"
+    ELSE "other"
+  END AS partnership,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`

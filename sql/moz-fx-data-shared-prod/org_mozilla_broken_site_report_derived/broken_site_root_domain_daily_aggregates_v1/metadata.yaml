@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  table_type: aggregate
+  owner1: gkatre@mozilla.com
 scheduling:
   dag_name: bqetl_default
 bigquery:

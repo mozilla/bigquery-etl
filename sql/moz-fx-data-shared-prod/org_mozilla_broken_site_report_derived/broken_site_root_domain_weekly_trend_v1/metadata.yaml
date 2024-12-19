@@ -7,8 +7,10 @@ labels:
   incremental: true
   schedule: daily
   depends_on_past: true
+  owner1: gkatre@mozilla.com
 scheduling:
   dag_name: bqetl_default
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

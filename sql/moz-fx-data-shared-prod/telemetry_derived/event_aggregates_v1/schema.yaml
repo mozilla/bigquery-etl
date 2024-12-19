@@ -83,3 +83,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Browser Language Language Item Count
+- name: nbr_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Events

@@ -55,7 +55,8 @@ SELECT
   COUNTIF(
     event_category = 'intl.ui.browserLanguage'
     AND event_object = 'language_item'
-  ) AS browser_language_language_item_cnt
+  ) AS browser_language_language_item_cnt,
+  COUNT(1) AS nbr_events
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE

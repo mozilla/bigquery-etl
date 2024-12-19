@@ -227,6 +227,7 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/date_trunc.sql
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
+  - sql/moz-fx-data-shared-prod/ads_derived/kevel_metadata_v2/query_for_kevel_metadata.sql
   skip_qualifying_references:
   - sql/mozfun/**/examples/*.sql
 

@@ -1,6 +1,6 @@
 friendly_name: Firefox Health Indicator Searches By Provider
 description: |-
-  Count of searches by provider by day used in Firefox Health Indicator dashboard
+  Count of searches & users by provider/day used in Firefox Health Indicator dashboard
 owners:
 - kwindau@mozilla.com
 labels:

@@ -40,6 +40,24 @@ NO_BASELINE_PING_APPS = (
     "mozregression",
 )
 
+BIGEYE_APP_EXCLUSION_LIST = (
+    "firefox_echo_show",
+    "firefox_fire_tv",
+    "thunderbird_android",
+    "org_mozilla_social_nightly",
+)
+BIGEYE_APP_EXCLUSION_LIST_METRICS = (
+    "burnham",
+    "firefox_crashreporter",
+    "firefox_fire_tv",
+    "firefox_reality_pc",
+    "mach",
+    "monitor_cirrus",
+    "mozillavpn_backend_cirrus",
+    "mozregression",
+    "thunderbird_desktop",
+)
+
 APPS_WITH_DISTRIBUTION_ID = ("fenix",)
 
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
@@ -304,17 +322,6 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
-        # bigconfig are optional, for now!
-        try:
-            bigconfig_contents = render(
-                bigconfig_filename,
-                format=False,
-                template_folder=PATH / "templates",
-                **render_kwargs,
-            )
-        except TemplateNotFound:
-            bigconfig_contents = None
-
         # Schema files are optional
         try:
             schema = render(
@@ -342,7 +349,7 @@ class GleanTable:
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
         if output_dir:
-            if checks_sql or bigconfig_contents:
+            if checks_sql:
                 if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
                     logging.info(
                         "Skipped copying ETL check for %s as app: %s is marked as not having baseline ping"
@@ -352,10 +359,20 @@ class GleanTable:
                     if checks_sql:
                         artifacts.append(Artifact(table, "checks.sql", checks_sql))
 
-                    if bigconfig_contents:
-                        artifacts.append(
-                            Artifact(table, "bigconfig.yml", bigconfig_contents)
-                        )
+            # Some apps did briefly send a baseline ping,
+            # but do not do so actively anymore. This is why they get excluded.
+            if (
+                table.startswith("baseline")
+                and app_name not in BIGEYE_APP_EXCLUSION_LIST
+            ):
+                bigconfig_contents = render(
+                    bigconfig_filename,
+                    format=False,
+                    template_folder=PATH / "templates",
+                    **render_kwargs,
+                )
+
+                artifacts.append(Artifact(table, "bigconfig.yml", bigconfig_contents))
 
             if schema:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
@@ -478,7 +495,11 @@ class GleanTable:
                     Artifact(view, "view.sql", view_sql),
                 ]
 
-                if self.target_table_id.startswith("metrics_clients_"):
+                if self.target_table_id.startswith(
+                    "metrics_clients_"
+                ) and target_dataset not in list(
+                    set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
+                ):
                     bigconfig_contents = render(
                         f"{self.target_table_id[:-3]}.bigconfig.yml",
                         format=False,

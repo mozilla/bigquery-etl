@@ -1,7 +1,8 @@
 SELECT
   submission_date_s3 AS submission_date,
   default_search_engine,
-  SUM(search_count_all) AS searches
+  SUM(search_count_all) AS searches,
+  COUNT(DISTINCT(client_id)) AS users
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_daily`
 WHERE

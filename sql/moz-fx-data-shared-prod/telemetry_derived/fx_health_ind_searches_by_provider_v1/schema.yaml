@@ -11,3 +11,7 @@ fields:
   name: searches
   type: INTEGER
   description: Number of Searches
+- mode: NULLABLE
+  name: users
+  type: INTEGER
+  description: Number of Users

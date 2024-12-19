@@ -1,0 +1,10 @@
+friendly_name: Jira Service Desk Derived
+description: |-
+  Jira Service Desk data pulled from Fivetran.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

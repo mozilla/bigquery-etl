@@ -6,6 +6,8 @@ owners:
 labels:
   application: experiments
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_experiments_daily
 bigquery:

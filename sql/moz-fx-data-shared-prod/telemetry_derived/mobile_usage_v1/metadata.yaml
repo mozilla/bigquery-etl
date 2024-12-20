@@ -16,6 +16,8 @@ description: |-
   CDOU for that slice even on days with no active clients.
 labels:
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: true
 owners:
 - ascholtz@mozilla.com
 scheduling:

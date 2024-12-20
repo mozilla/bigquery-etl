@@ -213,11 +213,11 @@ def validate_retention_policy_based_on_table_type(metadata, path):
         else None
     )
 
-    retention_exclusion_list = set(
-        ConfigLoader.get("retention_exclusion_list", fallback=[])
-    )
+    # retention_exclusion_list = set(
+    #     ConfigLoader.get("retention_exclusion_list", fallback=[])
+    # )
 
-    normalized_path = str(Path(path).parent)
+    # normalized_path = str(Path(path).parent)
     if expiration_days is not None and table_type == "aggregate":
         click.echo(
             click.style(

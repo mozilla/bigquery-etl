@@ -90,9 +90,9 @@ class JiraAPI:
                         "active" if user.get("active", "") else "inactive"
                     ),                    
                     "name": user.get("displayName", ""),
-                    "timeZone": user.get("locale", ""),
-                    "emailAddress": user.get("emailAddress", ""),
-                    "accountType": user.get("accountType", ""),
+                    "time_zone": user.get("locale", ""),
+                    "email_address": user.get("emailAddress", ""),
+                    "account_type": user.get("accountType", ""),
                 }
                 for user in users
             ] 

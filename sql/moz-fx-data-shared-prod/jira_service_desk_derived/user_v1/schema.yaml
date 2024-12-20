@@ -8,12 +8,12 @@ fields:
 - name: name
   type: STRING
   mode: NULLABLE
-- name: timeZone
+- name: time_zone
   type: STRING
   mode: NULLABLE
-- name: emailAddress
+- name: email_address
   type: STRING
   mode: NULLABLE
-- name: accountType
+- name: account_type
   type: STRING
   mode: NULLABLE

@@ -62,76 +62,76 @@ with DAG(
 
     task_group_klar_ios = TaskGroup("klar_ios")
 
+    wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
         external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=39600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        external_dag_id="bqetl_glean_usage",
-        external_task_id="fenix.org_mozilla_firefox_derived__baseline_clients_daily__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -205,10 +205,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -218,10 +218,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -231,10 +231,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -283,10 +283,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_focus_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android.org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
+        external_task_id="focus_android.bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -296,10 +296,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_focus_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_focus_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android.org_mozilla_focus_derived__baseline_clients_daily__v1",
+        external_task_id="focus_android.bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -309,10 +309,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_focus_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_focus_nightly_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_android.org_mozilla_focus_nightly_derived__baseline_clients_daily__v1",
+        external_task_id="focus_android.bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -361,10 +361,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_ios_focus_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_focus_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="focus_ios.org_mozilla_ios_focus_derived__baseline_clients_daily__v1",
+        external_task_id="focus_ios.bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -387,10 +387,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_klar_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_klar_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="klar_android.org_mozilla_klar_derived__baseline_clients_daily__v1",
+        external_task_id="klar_android.bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -413,10 +413,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_org_mozilla_ios_klar_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
-        task_id="wait_for_org_mozilla_ios_klar_derived__baseline_clients_daily__v1",
+    wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
-        external_task_id="klar_ios.org_mozilla_ios_klar_derived__baseline_clients_daily__v1",
+        external_task_id="klar_ios.bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1",
         execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
@@ -1095,28 +1095,28 @@ with DAG(
         klar_ios_derived__retention__v1
     )
 
+    fenix_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+
     fenix_derived__attribution_clients__v1.set_upstream(wait_for_copy_deduplicate_all)
 
-    fenix_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
-    )
-
     fenix_derived__engagement__v1.set_upstream(
         bigeye__fenix_derived__attribution_clients__v1
     )
@@ -1170,7 +1170,15 @@ with DAG(
     )
 
     fenix_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
     )
 
     fenix_derived__retention__v1.set_upstream(
@@ -1178,7 +1186,15 @@ with DAG(
     )
 
     fenix_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
     )
 
     fenix_derived__retention__v1.set_upstream(
@@ -1186,45 +1202,29 @@ with DAG(
     )
 
     fenix_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    fenix_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_fenix_derived__baseline_clients_daily__v1
+    firefox_ios_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
     )
 
-    fenix_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    firefox_ios_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
-    fenix_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
-    )
-
-    fenix_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_firefox_derived__baseline_clients_daily__v1
+    firefox_ios_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
     )
 
     firefox_ios_derived__attribution_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    firefox_ios_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
-    )
-
-    firefox_ios_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    firefox_ios_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
-    )
-
     firefox_ios_derived__engagement__v1.set_upstream(
         bigeye__firefox_ios_derived__attribution_clients__v1
     )
@@ -1262,7 +1262,15 @@ with DAG(
     )
 
     firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
     )
 
     firefox_ios_derived__retention__v1.set_upstream(
@@ -1270,31 +1278,23 @@ with DAG(
     )
 
     firefox_ios_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
-    firefox_ios_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
-    )
-
-    firefox_ios_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
-    )
-
-    firefox_ios_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
+    focus_android_derived__attribution_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1
     )
 
     focus_android_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_focus_beta_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1
     )
 
     focus_android_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_focus_derived__baseline_clients_daily__v1
-    )
-
-    focus_android_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
     )
 
     focus_android_derived__engagement__v1.set_upstream(
@@ -1334,7 +1334,15 @@ with DAG(
     )
 
     focus_android_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1
+    )
+
+    focus_android_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    focus_android_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1
     )
 
     focus_android_derived__retention__v1.set_upstream(
@@ -1342,23 +1350,15 @@ with DAG(
     )
 
     focus_android_derived__retention__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
+    )
+
+    focus_android_derived__retention__v1.set_upstream(
         wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    focus_android_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_focus_beta_derived__baseline_clients_daily__v1
-    )
-
-    focus_android_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_focus_derived__baseline_clients_daily__v1
-    )
-
-    focus_android_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
     )
 
     focus_ios_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_ios_focus_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1
     )
 
     focus_ios_derived__engagement__v1.set_upstream(
@@ -1382,15 +1382,15 @@ with DAG(
     )
 
     focus_ios_derived__retention__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1
     )
 
     focus_ios_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_ios_focus_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
     klar_android_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_klar_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1
     )
 
     klar_android_derived__engagement__v1.set_upstream(
@@ -1414,15 +1414,15 @@ with DAG(
     )
 
     klar_android_derived__retention__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1
     )
 
     klar_android_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_klar_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
     klar_ios_derived__attribution_clients__v1.set_upstream(
-        wait_for_org_mozilla_ios_klar_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1
     )
 
     klar_ios_derived__engagement__v1.set_upstream(
@@ -1446,9 +1446,9 @@ with DAG(
     )
 
     klar_ios_derived__retention__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1
     )
 
     klar_ios_derived__retention__v1.set_upstream(
-        wait_for_org_mozilla_ios_klar_derived__baseline_clients_daily__v1
+        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )

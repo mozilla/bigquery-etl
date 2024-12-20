@@ -33,7 +33,7 @@ references:
   - org_mozilla_ios_firefoxvpn.metrics
   - org_mozilla_ios_firefoxvpn_network_extension.metrics
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: null
   partition_column_set: false

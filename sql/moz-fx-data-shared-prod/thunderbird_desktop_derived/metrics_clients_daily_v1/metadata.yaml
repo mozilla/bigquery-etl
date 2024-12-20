@@ -30,7 +30,7 @@ references:
   query.sql:
   - thunderbird_desktop.metrics
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: null
   partition_column_set: false

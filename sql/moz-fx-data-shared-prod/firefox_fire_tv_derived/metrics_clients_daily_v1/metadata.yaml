@@ -30,7 +30,7 @@ references:
   query.sql:
   - org_mozilla_tv_firefox.metrics
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: null
   partition_column_set: false

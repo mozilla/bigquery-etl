@@ -45,3 +45,8 @@ references:
   query.sql:
   - org_mozilla_reference_browser_derived.baseline_clients_first_seen_v1
   - org_mozilla_reference_browser_stable.baseline_v1
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false

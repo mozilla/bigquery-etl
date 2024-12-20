@@ -1811,6 +1811,26 @@ bqetl_merino_newtab_extract_to_gcs:
     - repo/bigquery-etl
     - impact/tier_1
 
+bqetl_broken_reports_agg:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: gkatre@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-18'
+  description: Tables associated with broken site reports.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+
 bqetl_merino_newtab_priors_to_gcs:
   default_args:
     depends_on_past: false
@@ -1947,18 +1967,38 @@ bqetl_firefox_installer_aggregates:
   tags:
     - impact/tier_3
 
-bqetl_newtab_engagement_hourly:
+
+bqetl_jira_service_desk:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - jmoscon@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: jmoscon@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-16'
+  description: This DAG schedules some tasks that fetch data from the Jira API for service desk tickets
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+
+bqetl_newtab_interactions_hourly:
   schedule_interval: hourly
   description: |
     This DAG aggregates Newtab engagement data - on an hourly cadence
   default_args:
     owner: cbeck@mozilla.com
     email: ["cbeck@mozilla.com"]
-    start_date: "2024-12-09"
+    start_date: "2024-12-17"
     retries: 2
     retry_delay: 5m
   tags:
-    - impact/tier_2
+    - impact/tier_1
 
 bqetl_fx_health_ind_dashboard:
   description: |
@@ -1978,3 +2018,22 @@ bqetl_fx_health_ind_dashboard:
     - impact/tier_2
   repo: bigquery-etl
   schedule_interval: 0 16 * * *
+
+bqetl_event_aggregates:
+  description: |
+    This DAG builds the event_aggregates table
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-12-19"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 40 16 * * *

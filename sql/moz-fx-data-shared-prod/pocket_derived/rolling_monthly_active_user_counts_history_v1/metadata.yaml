@@ -7,6 +7,8 @@ owners:
   - kik@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
 bigquery:
   time_partitioning:
     type: day

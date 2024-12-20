@@ -8,6 +8,8 @@ owners:
 labels:
   schedule: daily
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false

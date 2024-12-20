@@ -92,14 +92,14 @@ SELECT
   campaigns_v2.campaign_segments,
   ad_groups_v1.ad_group_name AS ad_group,
   ad_groups_v1.ad_group_segments,
-  impressions,
-  clicks,
-  new_profiles,
-  activated_profiles,
-  repeat_users,
-  week_4_retained_users,
-  spend,
-  lifetime_value,
+  COALESCE(impressions, 0) AS impressions,
+  COALESCE(clicks, 0) AS clicks,
+  COALESCE(new_profiles, 0) AS new_profiles,
+  COALESCE(activated_profiles, 0) AS activated_profiles,
+  COALESCE(repeat_users, 0) AS repeat_users,
+  COALESCE(week_4_retained_users, 0) AS week_4_retained_users,
+  COALESCE(spend, 0) AS spend,
+  COALESCE(lifetime_value, 0) AS lifetime_value,
 FROM
   by_ad_group_id
 JOIN

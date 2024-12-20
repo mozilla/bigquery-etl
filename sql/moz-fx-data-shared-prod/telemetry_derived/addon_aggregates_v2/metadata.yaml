@@ -9,6 +9,8 @@ labels:
   application: addons
   schedule: daily
   incremental: true
+  table_type: client_level
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_addons
 bigquery:

@@ -151,6 +151,16 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         events_view=f"{prefix}.events",
         events_stream_table=f"{prefix}_derived.events_stream_v1",
         events_stream_view=f"{prefix}.events_stream",
+        dau_reporting_stable_table=f"{prefix}_stable.dau_reporting_v1",
+        dau_reporting_clients_daily_table=f"{prefix}_derived.dau_reporting_clients_daily_v1",
+        dau_reporting_clients_first_seen_table=f"{prefix}_derived.dau_reporting_clients_first_seen_v1",
+        dau_reporting_clients_last_seen_table=f"{prefix}_derived.dau_reporting_clients_last_seen_v1",
+        dau_reporting_active_users_aggregates_table=f"{prefix}_derived.dau_reporting_active_users_aggregates_v1",
+        dau_reporting_clients_daily_view=f"{prefix}.dau_reporting_clients_daily",
+        dau_reporting_clients_first_seen_view=f"{prefix}.dau_reporting_clients_first_seen",
+        dau_reporting_clients_last_seen_view=f"{prefix}.dau_reporting_clients_last_seen",
+        dau_reporting_active_users_view=f"{prefix}.dau_reporting_active_users",
+        dau_reporting_active_users_aggregates_view=f"{prefix}.dau_reporting_active_users_aggregates",
     )
 
 

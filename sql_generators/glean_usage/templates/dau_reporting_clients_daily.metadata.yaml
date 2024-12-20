@@ -1,0 +1,12 @@
+{{ header_yaml }}
+friendly_name: Clients Daily Based on the DAU Reporting Ping.
+description: |-
+  A daily aggregate of dau_reporting pings per `profile_usage_id`.
+
+  Cluster by: `normalized_channel`, `locale`
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily

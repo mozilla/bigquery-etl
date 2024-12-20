@@ -1,0 +1,19 @@
+{{ header_yaml }}
+friendly_name: Clients First Seen Based on the DAU Reporting Ping.
+description: |-
+  A representation of when we saw each `profile_usage_id`
+  for the first time based on the dau_reporting ping.
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false

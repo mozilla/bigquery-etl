@@ -11,3 +11,7 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: Bookmarks Added per DAU
+- name: bookmarks_opened_per_dau
+  type: FLOAT
+  mode: NULLABLE
+  description: Bookmarks Opened per DAU

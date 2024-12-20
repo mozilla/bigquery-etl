@@ -35,6 +35,7 @@ class BigQueryAPI:
                 bigquery.SchemaField("time_zone", "STRING"),
                 bigquery.SchemaField("email_address", "STRING"),
                 bigquery.SchemaField("account_type", "STRING"),
+                bigquery.SchemaField("locale", "STRING"),
             ],
             autodetect=False,
             write_disposition=write_disposition,
@@ -45,6 +46,7 @@ class BigQueryAPI:
             users, destination_table, job_config=job_config
         )
         job.result()
+
 
 
 class JiraAPI:
@@ -90,9 +92,10 @@ class JiraAPI:
                         "active" if user.get("active", "") else "inactive"
                     ),                    
                     "name": user.get("displayName", ""),
-                    "time_zone": user.get("locale", ""),
+                    "time_zone": user.get("timeZone", ""),                    
                     "email_address": user.get("emailAddress", ""),
                     "account_type": user.get("accountType", ""),
+                    "locale": user.get("locale", ""),                    
                 }
                 for user in users
             ] 

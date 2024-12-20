@@ -17,3 +17,6 @@ fields:
 - name: account_type
   type: STRING
   mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE  

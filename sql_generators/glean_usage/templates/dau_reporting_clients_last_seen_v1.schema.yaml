@@ -1,0 +1,30 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Logical date used for processing and paritioning.
+
+- mode: NULLABLE
+  name: usage_profile_id
+  type: STRING
+  description: |
+    A UUID of the usage_profile.
+
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+  description: |
+    Bit field shows on which of the last 28 days a client sent us the dau_reporting ping.
+
+- mode: NULLABLE
+  name: days_active_bits
+  type: INTEGER
+  description: |
+    Bit field shows on which of the last 28 days a client fulfilled the active criteria.
+
+- mode: NULLABLE
+  name: days_created_profile_bits
+  type: INTEGER
+  description: |
+    bit field indicating how many days lapsed since profile creation.

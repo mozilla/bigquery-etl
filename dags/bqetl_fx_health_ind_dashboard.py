@@ -51,10 +51,10 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        external_task_id="telemetry_derived__main_remainder_1pct__v1",
         execution_delta=datetime.timedelta(seconds=50400),
         check_existence=True,
         mode="reschedule",
@@ -64,10 +64,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__main_remainder_1pct__v1",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
         execution_delta=datetime.timedelta(seconds=50400),
         check_existence=True,
         mode="reschedule",
@@ -220,6 +220,39 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    telemetry_derived__fx_health_ind_bookmarks_by_country__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_bookmarks_by_country__v1",
+        destination_table="fx_health_ind_bookmarks_by_country_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_health_ind_bookmarks_by_os__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_bookmarks_by_os__v1",
+        destination_table="fx_health_ind_bookmarks_by_os_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_health_ind_bookmarks_by_os_version__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_bookmarks_by_os_version__v1",
+        destination_table="fx_health_ind_bookmarks_by_os_version_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     telemetry_derived__fx_health_ind_clients_daily_by_country__v1 = bigquery_etl_query(
@@ -381,6 +414,18 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
+    telemetry_derived__fx_health_ind_bookmarks_by_country__v1.set_upstream(
+        wait_for_telemetry_derived__main_remainder_1pct__v1
+    )
+
+    telemetry_derived__fx_health_ind_bookmarks_by_os__v1.set_upstream(
+        wait_for_telemetry_derived__main_remainder_1pct__v1
+    )
+
+    telemetry_derived__fx_health_ind_bookmarks_by_os_version__v1.set_upstream(
+        wait_for_telemetry_derived__main_remainder_1pct__v1
     )
 
     telemetry_derived__fx_health_ind_clients_daily_by_country__v1.set_upstream(

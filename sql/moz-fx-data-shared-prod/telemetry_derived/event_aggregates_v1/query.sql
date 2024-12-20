@@ -82,7 +82,9 @@ SELECT
     AND event_object = 'send_report_submit'
     AND event_category = 'security.ui.protectionspopup'
   ) AS submit_report_cnt,
-  COUNTIF(event_method = 'open' AND event_category = 'security.ui.protectionspopup') AS open_panel
+  COUNTIF(event_method = 'open' AND event_category = 'security.ui.protectionspopup') AS open_panel,
+  COUNT(CLIENT_ID) AS nbr_non_null_client_ids,
+  COUNT(DISTINCT(CLIENT_ID)) AS nbr_distinct_client_ids
 FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE

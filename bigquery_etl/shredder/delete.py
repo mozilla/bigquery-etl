@@ -14,6 +14,7 @@ from typing import Callable, Iterable, Optional, Tuple, Union
 
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
+from google.cloud.bigquery import QueryJob
 
 from ..format_sql.formatter import reformat
 from ..util import standard_args
@@ -148,6 +149,16 @@ parser.add_argument(
 )
 
 
+@dataclass
+class DeleteJobResults:
+    """Subset of a bigquery job object retaining only fields that are needed."""
+
+    job_id: str
+    total_bytes_processed: Optional[int]
+    num_dml_affected_rows: Optional[int]
+    destination: str
+
+
 def record_state(client, task_id, job, dry_run, start_date, end_date, state_table):
     """Record the job for task_id in state_table."""
     if state_table is not None:
@@ -180,11 +191,11 @@ def wait_for_job(
     create_job,
     check_table_existence=False,
     **state_kwargs,
-):
+) -> DeleteJobResults:
     """Get a job from state or create a new job, and wait for the job to complete."""
     job = None
     if task_id in states:
-        job = client.get_job(**FULL_JOB_ID_RE.fullmatch(states[task_id]).groupdict())
+        job = client.get_job(**FULL_JOB_ID_RE.fullmatch(states[task_id]).groupdict())  # type: ignore[union-attr]
         if job.errors:
             logging.info(f"Previous attempt failed, retrying for {task_id}")
             job = None
@@ -209,7 +220,20 @@ def wait_for_job(
     if not dry_run and not job.ended:
         logging.info(f"Waiting on {full_job_id(job)} for {task_id}")
         job.result()
-    return job
+
+    try:
+        bytes_processed = job.total_bytes_processed
+    except AttributeError:
+        bytes_processed = 0
+
+    return DeleteJobResults(
+        job_id=job.job_id,
+        total_bytes_processed=bytes_processed,
+        num_dml_affected_rows=(
+            job.num_dml_affected_rows if isinstance(job, QueryJob) else None
+        ),
+        destination=job.destination,
+    )
 
 
 def get_task_id(target, partition_id):
@@ -419,13 +443,12 @@ def delete_from_partition_with_sampling(
             copy_job.total_bytes_processed = sum(
                 [r.total_bytes_processed for r in results]
             )
-            copy_job.num_dml_affected_rows = None
             return copy_job
         else:
             # copy job doesn't have dry runs so dry run base partition for byte estimate
             return client.query(
-                f"SELECT * FROM {target_table}",
-                job_config=bigquery.QueryJobConfig(dry_run=True, use_legacy_sql=True),
+                f"SELECT * FROM `{sql_table_id(target)}` WHERE {partition.condition}",
+                job_config=bigquery.QueryJobConfig(dry_run=True),
             )
 
     return partial(
@@ -789,21 +812,13 @@ def main():
         jobs_by_table[tasks[i].table].append(job)
     bytes_processed = rows_deleted = 0
     for table, jobs in jobs_by_table.items():
-        table_bytes_processed = sum(
-            job.total_bytes_processed or 0
-            for job in jobs
-            if isinstance(job, bigquery.QueryJob)
-        )
+        table_bytes_processed = sum(job.total_bytes_processed or 0 for job in jobs)
         bytes_processed += table_bytes_processed
         table_id = sql_table_id(table)
         if args.dry_run:
             logging.info(f"Would scan {table_bytes_processed} bytes from {table_id}")
         else:
-            table_rows_deleted = sum(
-                job.num_dml_affected_rows or 0
-                for job in jobs
-                if isinstance(job, bigquery.QueryJob)
-            )
+            table_rows_deleted = sum(job.num_dml_affected_rows or 0 for job in jobs)
             rows_deleted += table_rows_deleted
             logging.info(
                 f"Scanned {table_bytes_processed} bytes and "

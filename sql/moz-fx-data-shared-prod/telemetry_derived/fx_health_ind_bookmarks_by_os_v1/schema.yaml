@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- name: bookmarks_added_per_dau
+  type: FLOAT
+  mode: NULLABLE
+  description: Bookmarks Added per Daily Active User

@@ -6,6 +6,7 @@ owners:
 labels:
   application: devtools
   schedule: daily
+  table_type: aggregate
   dag: bqetl_devtools
   owner1: ascholtz
 scheduling:

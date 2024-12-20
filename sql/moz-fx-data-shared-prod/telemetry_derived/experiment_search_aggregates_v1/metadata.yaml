@@ -7,6 +7,7 @@ owners:
 labels:
   application: experiments
   schedule: daily
+  table_type: aggregate
   dag: bqetl_experiments_daily
   owner1: ascholtz
 scheduling:

@@ -5,6 +5,7 @@ description: |-
 owners:
 - ascholtz@mozilla.com
 labels:
+  table_type: aggregate
   owner1: ascholtz
 bigquery: null
 workgroup_access:

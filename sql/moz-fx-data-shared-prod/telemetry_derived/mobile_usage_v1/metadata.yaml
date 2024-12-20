@@ -18,6 +18,8 @@ owners:
 - ascholtz@mozilla.com
 labels:
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: true
   dag: bqetl_nondesktop
   owner1: ascholtz
 scheduling:

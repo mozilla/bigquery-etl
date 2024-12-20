@@ -5,6 +5,8 @@ owners:
 - ascholtz@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: true
   dag: bqetl_desktop_funnel
   owner1: ascholtz
 scheduling:

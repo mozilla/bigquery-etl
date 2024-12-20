@@ -1,0 +1,5 @@
+friendly_name: Experiment Search Aggregates Live
+description: Live search data related to experiments
+owners:
+- ascholtz@mozilla.com
+deprecated: true

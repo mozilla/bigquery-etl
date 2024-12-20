@@ -12,6 +12,8 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
   dag: bqetl_fivetran_google_ads
 scheduling:
   dag_name: bqetl_fivetran_google_ads

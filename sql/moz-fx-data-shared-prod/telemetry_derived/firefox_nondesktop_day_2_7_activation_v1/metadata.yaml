@@ -7,6 +7,8 @@ labels:
   application: nondesktop
   incremental: true
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: true
   dag: bqetl_nondesktop
   owner1: gkaberere
 scheduling:

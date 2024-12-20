@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
   dag: bqetl_desktop_installs_v1
 scheduling:
   dag_name: bqetl_desktop_installs_v1

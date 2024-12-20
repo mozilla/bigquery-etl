@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: example
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_desktop_installs_v1
 bigquery:

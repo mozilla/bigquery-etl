@@ -1,0 +1,24 @@
+{{ header_yaml }}
+friendly_name: Clients Daily Based on the DAU Reporting Ping.
+description: |-
+  A daily aggregate of usage_reporting pings per `profile_usage_id`.
+
+  Cluster by: `normalized_channel`, `locale`
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - normalized_channel
+    - normalized_country_code

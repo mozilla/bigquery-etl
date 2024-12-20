@@ -10,8 +10,8 @@ labels:
   incremental: true
   schedule: daily
   change_controlled: true
-  shredder_mitigation: true
   table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_search_dashboard
 bigquery:

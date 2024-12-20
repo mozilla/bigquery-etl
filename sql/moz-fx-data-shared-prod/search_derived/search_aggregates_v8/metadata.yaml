@@ -3,7 +3,8 @@ description: |-
   Daily search clients, aggregated across unique sets of dimensions
   and partitioned by day.
 owners:
-- akommasani@mozilla.com
+- akomar@mozilla.com
+- anicholson@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily

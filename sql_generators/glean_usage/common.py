@@ -23,39 +23,14 @@ PATH = Path(os.path.dirname(__file__))
 # these apps do not receive a baseline ping causing a very basic row_count
 # check to fail. For this reason, the checks relying on this ping
 # need to be omitted. For more info see: bug-1868848
-NO_BASELINE_PING_APPS = (
-    "mozilla_vpn",
-    "mozillavpn_backend_cirrus",
-    "accounts_backend",
-    "accounts_cirrus",
-    "burnham",
-    "firefox_crashreporter",
-    "firefox_reality_pc",
-    "lockwise_android",
-    "mach",
-    "monitor_backend",
-    "monitor_cirrus",
-    "moso_mastodon_backend",
-    "mozphab",
-    "mozregression",
+BQETL_CHECKS_SKIP_APPS = ConfigLoader.get(
+    "generate", "glean_usage", "bqetl_checks", "skip_apps", fallback=[]
 )
-
-BIGEYE_APP_EXCLUSION_LIST = (
-    "firefox_echo_show",
-    "firefox_fire_tv",
-    "thunderbird_android",
-    "org_mozilla_social_nightly",
+BIGCONFIG_SKIP_APPS = ConfigLoader.get(
+    "generate", "glean_usage", "bigconfig", "skip_apps", fallback=[]
 )
-BIGEYE_APP_EXCLUSION_LIST_METRICS = (
-    "burnham",
-    "firefox_crashreporter",
-    "firefox_fire_tv",
-    "firefox_reality_pc",
-    "mach",
-    "monitor_cirrus",
-    "mozillavpn_backend_cirrus",
-    "mozregression",
-    "thunderbird_desktop",
+BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
+    "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
 APPS_WITH_DISTRIBUTION_ID = ("fenix",)
@@ -282,7 +257,9 @@ class GleanTable:
 
         # Some apps did briefly send a baseline ping,
         # but do not do so actively anymore. This is why they get excluded.
-        enable_monitoring = app_name not in list(set(BIGEYE_APP_EXCLUSION_LIST))
+        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
+
+        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
@@ -338,6 +315,8 @@ class GleanTable:
         except TemplateNotFound:
             schema = None
 
+        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
+
         if enable_monitoring:
             try:
                 bigconfig_contents = render(
@@ -368,7 +347,7 @@ class GleanTable:
 
         if output_dir:
             if checks_sql:
-                if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
+                if "baseline" in table and app_name in BQETL_CHECKS_SKIP_APPS:
                     logging.info(
                         "Skipped copying ETL check for %s as app: %s is marked as not having baseline ping"
                         % (table, app_name)
@@ -431,7 +410,7 @@ class GleanTable:
                 return
 
         enable_monitoring = app_name not in list(
-            set(BIGEYE_APP_EXCLUSION_LIST + BIGEYE_APP_EXCLUSION_LIST_METRICS)
+            set(BIGCONFIG_SKIP_APPS + BIGCONFIG_SKIP_APPS_METRICS)
         )
 
         render_kwargs = dict(

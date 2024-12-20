@@ -16,4 +16,4 @@ fields:
   mode: NULLABLE
 - name: accountType
   type: STRING
-  mode: NULLABLE  
+  mode: NULLABLE

@@ -12,6 +12,8 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false

@@ -8204,6 +8204,102 @@ fields:
     - name: use_counter2_js_optimizegetiterator_fuse_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_mls_deriveexporter_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_deriveexporter_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_generatecredentialbasic_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_generatecredentialbasic_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_generatekeypackage_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_generatekeypackage_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_generatesignaturekeypair_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_generatesignaturekeypair_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupadd_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupadd_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupclose_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupclose_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupcreate_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupcreate_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupjoin_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupjoin_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupmembers_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupmembers_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupproposeadd_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupproposeadd_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupproposeremove_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupproposeremove_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupremove_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_groupremove_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_receive_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_receive_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_send_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_send_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_statedelete_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_statedelete_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_statedeletegroup_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mls_statedeletegroup_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16275,6 +16371,102 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_optimizegetiterator_fuse_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_deriveexporter_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_deriveexporter_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_generatecredentialbasic_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_generatecredentialbasic_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_generatekeypackage_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_generatekeypackage_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_generatesignaturekeypair_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_generatesignaturekeypair_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupadd_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupadd_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupclose_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupclose_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupcreate_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupcreate_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupjoin_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupjoin_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupmembers_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupmembers_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupproposeadd_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupproposeadd_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupproposeremove_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupproposeremove_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupremove_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_groupremove_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_receive_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_receive_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_send_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_send_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_statedelete_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_statedelete_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_statedeletegroup_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mls_statedeletegroup_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: nbr_unique_clients_etp_disablement
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Unique Clients Setting ETP Disablement

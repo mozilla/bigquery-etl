@@ -21717,6 +21717,16 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+        - name: urlbar_unifiedsearchbutton_picked
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
       - name: scalars
         type: RECORD
         mode: NULLABLE
@@ -23226,6 +23236,9 @@ fields:
           mode: NULLABLE
         - name: primary_password_enabled
           type: BOOLEAN
+          mode: NULLABLE
+        - name: urlbar_unifiedsearchbutton_opened
+          type: INTEGER
           mode: NULLABLE
     - name: socket
       type: RECORD

@@ -11109,6 +11109,134 @@ fields:
       mode: NULLABLE
       description: Whether a page has modified any builtins such that the GetIterator
         fuse is popped
+    - name: use_counter2_mls_deriveexporter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.deriveExporter
+    - name: use_counter2_mls_deriveexporter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.deriveExporter
+    - name: use_counter2_mls_generatecredentialbasic_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.generateCredentialBasic
+    - name: use_counter2_mls_generatecredentialbasic_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.generateCredentialBasic
+    - name: use_counter2_mls_generatekeypackage_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.generateKeyPackage
+    - name: use_counter2_mls_generatekeypackage_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.generateKeyPackage
+    - name: use_counter2_mls_generatesignaturekeypair_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.generateSignatureKeypair
+    - name: use_counter2_mls_generatesignaturekeypair_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.generateSignatureKeypair
+    - name: use_counter2_mls_groupadd_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupAdd
+    - name: use_counter2_mls_groupadd_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupAdd
+    - name: use_counter2_mls_groupclose_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupClose
+    - name: use_counter2_mls_groupclose_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupClose
+    - name: use_counter2_mls_groupcreate_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupCreate
+    - name: use_counter2_mls_groupcreate_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupCreate
+    - name: use_counter2_mls_groupjoin_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupJoin
+    - name: use_counter2_mls_groupjoin_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupJoin
+    - name: use_counter2_mls_groupmembers_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupMembers
+    - name: use_counter2_mls_groupmembers_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupMembers
+    - name: use_counter2_mls_groupproposeadd_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupProposeAdd
+    - name: use_counter2_mls_groupproposeadd_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupProposeAdd
+    - name: use_counter2_mls_groupproposeremove_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupProposeRemove
+    - name: use_counter2_mls_groupproposeremove_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupProposeRemove
+    - name: use_counter2_mls_groupremove_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.groupRemove
+    - name: use_counter2_mls_groupremove_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.groupRemove
+    - name: use_counter2_mls_receive_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.receive
+    - name: use_counter2_mls_receive_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.receive
+    - name: use_counter2_mls_send_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.send
+    - name: use_counter2_mls_send_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.send
+    - name: use_counter2_mls_statedelete_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.stateDelete
+    - name: use_counter2_mls_statedelete_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.stateDelete
+    - name: use_counter2_mls_statedeletegroup_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called MLS.stateDeleteGroup
+    - name: use_counter2_mls_statedeletegroup_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called MLS.stateDeleteGroup
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22070,6 +22198,134 @@ fields:
           mode: NULLABLE
           description: Whether a page has modified any builtins such that the GetIterator
             fuse is popped
+        - name: use_counter2_mls_deriveexporter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.deriveExporter
+        - name: use_counter2_mls_deriveexporter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.deriveExporter
+        - name: use_counter2_mls_generatecredentialbasic_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.generateCredentialBasic
+        - name: use_counter2_mls_generatecredentialbasic_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.generateCredentialBasic
+        - name: use_counter2_mls_generatekeypackage_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.generateKeyPackage
+        - name: use_counter2_mls_generatekeypackage_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.generateKeyPackage
+        - name: use_counter2_mls_generatesignaturekeypair_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.generateSignatureKeypair
+        - name: use_counter2_mls_generatesignaturekeypair_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.generateSignatureKeypair
+        - name: use_counter2_mls_groupadd_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupAdd
+        - name: use_counter2_mls_groupadd_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupAdd
+        - name: use_counter2_mls_groupclose_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupClose
+        - name: use_counter2_mls_groupclose_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupClose
+        - name: use_counter2_mls_groupcreate_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupCreate
+        - name: use_counter2_mls_groupcreate_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupCreate
+        - name: use_counter2_mls_groupjoin_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupJoin
+        - name: use_counter2_mls_groupjoin_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupJoin
+        - name: use_counter2_mls_groupmembers_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupMembers
+        - name: use_counter2_mls_groupmembers_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupMembers
+        - name: use_counter2_mls_groupproposeadd_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupProposeAdd
+        - name: use_counter2_mls_groupproposeadd_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupProposeAdd
+        - name: use_counter2_mls_groupproposeremove_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupProposeRemove
+        - name: use_counter2_mls_groupproposeremove_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupProposeRemove
+        - name: use_counter2_mls_groupremove_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.groupRemove
+        - name: use_counter2_mls_groupremove_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.groupRemove
+        - name: use_counter2_mls_receive_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.receive
+        - name: use_counter2_mls_receive_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.receive
+        - name: use_counter2_mls_send_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.send
+        - name: use_counter2_mls_send_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.send
+        - name: use_counter2_mls_statedelete_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.stateDelete
+        - name: use_counter2_mls_statedelete_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.stateDelete
+        - name: use_counter2_mls_statedeletegroup_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called MLS.stateDeleteGroup
+        - name: use_counter2_mls_statedeletegroup_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called MLS.stateDeleteGroup
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

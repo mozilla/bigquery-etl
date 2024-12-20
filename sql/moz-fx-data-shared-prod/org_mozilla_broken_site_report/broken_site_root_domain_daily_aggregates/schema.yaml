@@ -1,0 +1,13 @@
+fields:
+- name: report_date
+  type: DATE
+  mode: NULLABLE
+  description: Report Date
+- name: root_domain
+  type: STRING
+  mode: NULLABLE
+  description: Root Domain
+- name: daily_domain_reports
+  type: INTEGER
+  mode: NULLABLE
+  description: Daily count of root domain reports

@@ -9,7 +9,6 @@ labels:
   schedule: daily
   incremental: true
   table_type: client_level
-  shredder_mitigation: true
   dag: bqetl_addons
   owner1: kik
 scheduling:

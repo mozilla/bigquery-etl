@@ -10,6 +10,8 @@ labels:
   application: nondesktop
   incremental: true
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_nondesktop
   email: ['jklukas@mozilla.com']

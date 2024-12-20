@@ -6,3 +6,5 @@ owners:
 - ascholtz@mozilla.com
 labels:
   incremental: false
+  table_type: aggregate
+  shredder_mitigation: false

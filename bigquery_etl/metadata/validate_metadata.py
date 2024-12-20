@@ -213,11 +213,11 @@ def validate_retention_policy_based_on_table_type(metadata, path):
         else None
     )
 
-    retention_exclusion_list = set(
-        ConfigLoader.get("retention_exclusion_list", fallback=[])
-    )
+    # retention_exclusion_list = set(
+    #     ConfigLoader.get("retention_exclusion_list", fallback=[])
+    # )
 
-    normalized_path = str(Path(path).parent)
+    # normalized_path = str(Path(path).parent)
     if expiration_days is not None and table_type == "aggregate":
         click.echo(
             click.style(
@@ -226,18 +226,19 @@ def validate_retention_policy_based_on_table_type(metadata, path):
             )
         )
         is_valid = False
-    if (
-        expiration_days is None
-        and table_type == "client_level"
-        and normalized_path not in retention_exclusion_list
-    ):
-        click.echo(
-            click.style(
-                f"ERROR: Table at {path} is an client level table and needs expiration_days to be set",
-                fg="red",
-            )
-        )
-        is_valid = False
+    # The below line of code should be uncommented when the retention project is completed
+    # if (
+    #     expiration_days is None
+    #     and table_type == "client_level"
+    #     and normalized_path not in retention_exclusion_list
+    # ):
+    #     click.echo(
+    #         click.style(
+    #             f"ERROR: Table at {path} is an client level table and needs expiration_days to be set",
+    #             fg="red",
+    #         )
+    #     )
+    #     is_valid = False
     return is_valid
 
 

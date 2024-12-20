@@ -37,3 +37,5 @@ bigquery:
     fields:
     - sample_id
     - submission_date
+monitoring:
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}

@@ -19,4 +19,4 @@ fields:
   mode: NULLABLE
 - name: locale
   type: STRING
-  mode: NULLABLE  
+  mode: NULLABLE

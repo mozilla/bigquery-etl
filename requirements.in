@@ -6,7 +6,7 @@ cattrs==24.1.2
 click==8.1.7
 exceptiongroup==1.2.2 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
-gcsfs==2024.10.0
+gcsfs==2024.12.0
 gcloud==0.18.3
 gitpython==3.1.43
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.

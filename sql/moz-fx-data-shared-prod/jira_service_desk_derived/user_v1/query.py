@@ -32,6 +32,10 @@ class BigQueryAPI:
                 bigquery.SchemaField("account_id", "STRING"),
                 bigquery.SchemaField("account_status", "STRING"),                
                 bigquery.SchemaField("name", "STRING"),
+                bigquery.SchemaField("time_zone", "STRING"),
+                bigquery.SchemaField("email_address", "STRING"),
+                bigquery.SchemaField("account_type", "STRING"),
+                bigquery.SchemaField("locale", "STRING"),
             ],
             autodetect=False,
             write_disposition=write_disposition,
@@ -42,6 +46,7 @@ class BigQueryAPI:
             users, destination_table, job_config=job_config
         )
         job.result()
+
 
 
 class JiraAPI:
@@ -56,7 +61,7 @@ class JiraAPI:
         self.base_jira_url = args.base_jira_url
         self.auth = HTTPBasicAuth(self.secrets_dict.get('jira_username'), self.secrets_dict.get('jira_token'))
 
-    def get_users_paged(self, max_results=300):
+    def get_users_paged(self, max_results=500):
         startAt = 0
         headers = {"Accept": "application/json"}
 
@@ -87,6 +92,10 @@ class JiraAPI:
                         "active" if user.get("active", "") else "inactive"
                     ),                    
                     "name": user.get("displayName", ""),
+                    "time_zone": user.get("timeZone", ""),                    
+                    "email_address": user.get("emailAddress", ""),
+                    "account_type": user.get("accountType", ""),
+                    "locale": user.get("locale", ""),                    
                 }
                 for user in users
             ] 

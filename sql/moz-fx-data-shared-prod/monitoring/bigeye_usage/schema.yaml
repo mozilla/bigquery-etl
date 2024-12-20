@@ -17,6 +17,9 @@ fields:
 - name: task_duration
   type: INTERVAL
   mode: NULLABLE
+- name: task_duration_seconds
+  type: INTEGER
+  mode: NULLABLE
 - name: total_terabytes_processed
   type: FLOAT
   mode: NULLABLE

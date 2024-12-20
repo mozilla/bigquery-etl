@@ -3,7 +3,10 @@ SELECT
   normalized_os_version,
   SUM(payload.processes.parent.scalars.browser_engagement_bookmarks_toolbar_bookmark_added) / COUNT(
     DISTINCT client_id
-  ) AS bookmarks_added_per_dau
+  ) AS bookmarks_added_per_dau,
+  SUM(
+    payload.processes.parent.scalars.browser_engagement_bookmarks_toolbar_bookmark_opened
+  ) / COUNT(DISTINCT client_id) AS bookmarks_opened_per_dau
 FROM
   `moz-fx-data-shared-prod.telemetry.main_1pct`
 WHERE

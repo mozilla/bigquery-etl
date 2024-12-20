@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+  description: Normalized Country Code
+- name: bookmarks_added_per_dau
+  type: FLOAT
+  mode: NULLABLE
+  description: Bookmarks Added per DAU

@@ -7,6 +7,8 @@ owners:
 labels:
   incremental: true
   schedule: monthly
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_desktop_mobile_search_monthly
   date_partition_parameter: null

@@ -22,6 +22,8 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
+  shredder_mitigation: true
+  table_type: aggregate
 bigquery:
   time_partitioning:
     type: day

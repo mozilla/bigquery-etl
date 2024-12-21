@@ -20,3 +20,4 @@ bigquery:
     fields:
     - experiment
     - branch
+deprecated: true

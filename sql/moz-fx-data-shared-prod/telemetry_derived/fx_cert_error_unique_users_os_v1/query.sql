@@ -1,6 +1,6 @@
 SELECT
   submission_date,
-  normalized_channel,
+  os,
   COUNT(DISTINCT client_id) AS nbr_unique_users
 FROM
   `mozdata.telemetry.events`
@@ -11,4 +11,4 @@ WHERE
   AND submission_date = @submission_date
 GROUP BY
   submission_date,
-  normalized_channel
+  os

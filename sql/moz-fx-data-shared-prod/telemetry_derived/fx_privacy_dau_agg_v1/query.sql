@@ -9,6 +9,7 @@ WHERE
   event_category = 'security.ui.protectionspopup'
   AND submission_date = @submission_date
 GROUP BY
-  event_object
+  event_object,
+  submission_date
 ORDER BY
   submission_date

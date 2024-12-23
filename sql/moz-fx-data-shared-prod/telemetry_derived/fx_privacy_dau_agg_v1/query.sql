@@ -1,18 +1,14 @@
 SELECT
-  DATE(submission_timestamp) AS submission_date,
-  normalized_country_code,
-  SUM(payload.processes.parent.scalars.browser_engagement_bookmarks_toolbar_bookmark_added) / COUNT(
-    DISTINCT client_id
-  ) AS bookmarks_added_per_dau,
-  SUM(
-    payload.processes.parent.scalars.browser_engagement_bookmarks_toolbar_bookmark_opened
-  ) / COUNT(DISTINCT client_id) AS bookmarks_opened_per_dau
-FROM
-  `moz-fx-data-shared-prod.telemetry.main_1pct`
-WHERE
-  DATE(submission_timestamp) = @submission_date
-  AND SUBSTR(application.version, 0, 2) >= '84'
-  AND normalized_channel = 'release'
-GROUP BY
+  event_object,
   submission_date,
-  normalized_country_code
+  COUNT(*) AS nbr_events,
+  COUNT(DISTINCT client_id) AS nbr_distinct_users,
+FROM
+  `moz-fx-data-shared-prod.telemetry.events`
+WHERE
+  event_category = 'security.ui.protectionspopup'
+  AND submission_date = @submission_date
+GROUP BY
+  event_object
+ORDER BY
+  submission_date

@@ -9,7 +9,7 @@ labels:
   table_type: aggregate
   shredder_mitigation: true
 scheduling:
-  dag_name: bqetl_fx_cert_error_dashboard
+  dag_name: bqetl_fx_cert_error_privacy_dashboard
 bigquery:
   time_partitioning:
     type: day

@@ -4,10 +4,10 @@ fields:
   type: DATE
   description: Submission Date
 - mode: NULLABLE
-  name: normalized_channel
+  name: os
   type: STRING
-  description: Normalized Channel
+  description: OS
 - name: nbr_unique_users
   type: INTEGER
   mode: NULLABLE
-  description: Unique users (distinct client ids)
+  description: Number of Unique users (distinct client ids)

@@ -4,14 +4,14 @@ fields:
   type: DATE
   description: Submission Date
 - mode: NULLABLE
-  name: normalized_country_code
+  name: event_object
   type: STRING
-  description: Normalized Country Code
-- name: bookmarks_added_per_dau
-  type: FLOAT
+  description: Submission Date
+- mode: NULLABLE
+  name: nbr_events
+  type: INTEGER
+  description: Number of events
+- name: nbr_distinct_users
+  type: INTEGER
   mode: NULLABLE
-  description: Bookmarks Added per DAU
-- name: bookmarks_opened_per_dau
-  type: FLOAT
-  mode: NULLABLE
-  description: Bookmarks Opened per DAU
+  description: Number of distinct users

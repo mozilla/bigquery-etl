@@ -1,18 +1,14 @@
 SELECT
-  DATE(submission_timestamp) AS submission_date,
-  normalized_country_code,
-  SUM(payload.processes.parent.scalars.browser_engagement_bookmarks_toolbar_bookmark_added) / COUNT(
-    DISTINCT client_id
-  ) AS bookmarks_added_per_dau,
-  SUM(
-    payload.processes.parent.scalars.browser_engagement_bookmarks_toolbar_bookmark_opened
-  ) / COUNT(DISTINCT client_id) AS bookmarks_opened_per_dau
+  submission_date,
+  normalized_channel,
+  COUNT(DISTINCT client_id) AS nbr_unique_users
 FROM
-  `moz-fx-data-shared-prod.telemetry.main_1pct`
+  `mozdata.telemetry.events`
 WHERE
-  DATE(submission_timestamp) = @submission_date
-  AND SUBSTR(application.version, 0, 2) >= '84'
-  AND normalized_channel = 'release'
+  event_category = 'security.ui.certerror'
+  AND event_object = 'aboutcerterror'
+  AND event_method = 'load'
+  AND submission_date = @submission_date
 GROUP BY
   submission_date,
-  normalized_country_code
+  normalized_channel

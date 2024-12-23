@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- name: nbr_unique_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique users (distinct client ids)

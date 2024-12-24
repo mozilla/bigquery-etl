@@ -1,0 +1,34 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the ingestion edge server accepted this message.
+- name: major_build_version
+  type: NUMERIC
+  mode: NULLABLE
+  description: Major build version.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: normalized channel.
+- name: system_default_browser
+  type: STRING
+  mode: NULLABLE
+  description: Which browser is currently set as the system default web browser.
+- name: system_default_previous_browser
+  type: STRING
+  mode: NULLABLE
+  description: Which browser was set as the system default before it was changed to the current setting.
+- name: notification_show_success
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether a notification was shown or not. Possible value include "shown" and "error".
+- name: notification_action
+  type: STRING
+  mode: NULLABLE
+  description: The action that the user took in response to the notification.
+- name: row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The total number of rows aggregated.
+

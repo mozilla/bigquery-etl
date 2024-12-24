@@ -2042,8 +2042,8 @@ bqetl_default_browser_aggregates:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - wichan@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
     email_on_failure: true
     email_on_retry: false
     owner: wichan@mozilla.com
@@ -2055,14 +2055,14 @@ bqetl_default_browser_aggregates:
   repo: bigquery-etl
   schedule_interval: 0 22 * * *
   tags:
-  - impact/tier_3
+    - impact/tier_3
 
 bqetl_fx_desktop_background_defaultagent_aggregates:
   default_args:
     depends_on_past: false
     email:
-    - telemetry-alerts@mozilla.com
-    - wichan@mozilla.com
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
     email_on_failure: true
     email_on_retry: false
     owner: wichan@mozilla.com
@@ -2074,4 +2074,4 @@ bqetl_fx_desktop_background_defaultagent_aggregates:
   repo: bigquery-etl
   schedule_interval: 0 22 * * *
   tags:
-  - impact/tier_3
+    - impact/tier_3

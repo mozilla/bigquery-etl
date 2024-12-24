@@ -31,4 +31,3 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: The total number of rows aggregated.
-

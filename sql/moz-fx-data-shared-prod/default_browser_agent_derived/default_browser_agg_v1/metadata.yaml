@@ -19,5 +19,5 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    -  normalized_country_code
+    - normalized_country_code
 references: {}

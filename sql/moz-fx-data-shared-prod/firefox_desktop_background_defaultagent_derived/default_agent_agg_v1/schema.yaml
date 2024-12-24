@@ -3,7 +3,7 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Date when the ingestion edge server accepted this message.
-- name: major_build_version
+- name: build_version_major
   type: NUMERIC
   mode: NULLABLE
   description: Major build version.

@@ -1,0 +1,117 @@
+type: BIGCONFIG_FILE
+
+saved_metric_definitions:
+  metrics:
+    - saved_metric_id: is_not_null
+      metric_type:
+        predefined_metric: PERCENT_NULL
+      threshold:
+        type: CONSTANT
+        upper_bound: 0
+      metric_schedule:
+        named_schedule:
+          name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
+    - saved_metric_id: is_unique
+      metric_type:
+        predefined_metric: COUNT_DUPLICATES
+      threshold:
+        type: CONSTANT
+        upper_bound: 0
+      metric_schedule:
+        named_schedule:
+          name: default
+      rct_overrides:
+        - submission_date
+    - saved_metric_id: freshness_fail
+      metric_name: FRESHNESS [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: freshness
+      metric_name: FRESHNESS
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: volume_fail
+      metric_name: VOLUME [fail]
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: volume
+      metric_name: VOLUME
+      metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_schedule:
+        named_schedule:
+          name: default
+    - saved_metric_id: is_valid_channel
+      metric_type:
+        predefined_metric: PERCENT_VALUE_IN_LIST
+      parameters:
+        - key: list
+          string_value: "release,beta,nightly,aurora,esr,Other"
+      threshold:
+        type: CONSTANT
+        lower_bound: 1
+        upper_bound: 1
+      metric_schedule:
+        named_schedule:
+          name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
+    - saved_metric_id: is_2_char_len
+      metric_type:
+        predefined_metric: STRING_LENGTH_MIN
+      threshold:
+        type: CONSTANT
+        lower_bound: 2
+        upper_bound: 2
+      metric_schedule:
+        named_schedule:
+          name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
+    - saved_metric_id: is_valid_client_id
+      metric_type:
+        predefined_metric: PERCENT_UUID
+      threshold:
+        type: CONSTANT
+        lower_bound: 1
+        upper_bound: 1
+      metric_schedule:
+        named_schedule:
+          name: default
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date

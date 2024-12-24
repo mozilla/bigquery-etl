@@ -12,7 +12,6 @@ import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
-from bigeye_airflow.operators.run_metrics_operator import RunMetricsOperator
 
 docs = """
 ### bqetl_test_dag
@@ -71,7 +70,8 @@ with DAG(
         table_id="baz",
         partition_id="{{ ds_nodash }}",
         gcp_conn_id="google_cloud_shared_prod",
-        deferrable=True,
+        deferrable=False,
+        mode="reschedule",
         poke_interval=datetime.timedelta(seconds=900),
         timeout=datetime.timedelta(seconds=21600),
         retries=3,

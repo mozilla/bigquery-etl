@@ -2,45 +2,60 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: Submission Date
 - name: geo
   type: STRING
   mode: NULLABLE
+  description: Geo
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Locale
 - name: engine
   type: STRING
   mode: NULLABLE
+  description: Engine
 - name: os
   type: STRING
   mode: NULLABLE
+  description: Operating System
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: App Version
 - name: dcc
   type: INTEGER
   mode: NULLABLE
+  description: DCC
 - name: sap
   type: INTEGER
   mode: NULLABLE
+  description: SAP
 - name: tagged_sap
   type: INTEGER
   mode: NULLABLE
+  description: Tagged SAP
 - name: tagged_follow_on
   type: INTEGER
   mode: NULLABLE
+  description: Tagged Follow On
 - name: search_with_ads
   type: INTEGER
   mode: NULLABLE
+  description: Searches with Ads
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
+  description: Ad Clicks
 - name: organic
   type: INTEGER
   mode: NULLABLE
+  description: Organic Searches
 - name: ad_click_organic
   type: INTEGER
   mode: NULLABLE
+  description: Organic Ad Clicks
 - name: search_with_ads_organic
   type: INTEGER
   mode: NULLABLE
+  description: Organic Searches with Ads

@@ -1,0 +1,101 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: usage
+  type: STRING
+  description: Usage
+- mode: NULLABLE
+  name: id_bucket
+  type: INTEGER
+  description: ID Bucket
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: Operating System
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: Channel
+- mode: NULLABLE
+  name: attributed
+  type: BOOLEAN
+  description: Attributed
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  description: Metrics
+  fields:
+  - name: day_0
+    type: RECORD
+    mode: NULLABLE
+    description: Day 0
+    fields:
+    - name: dau
+      type: INTEGER
+      mode: NULLABLE
+      description: DAU - Daily Active Users
+    - name: wau
+      type: INTEGER
+      mode: NULLABLE
+      description: WAU - Weekly Active Users
+    - name: mau
+      type: INTEGER
+      mode: NULLABLE
+      description: MAU - Monthly Active Users
+    - name: active_days_in_week
+      type: INTEGER
+      mode: NULLABLE
+      description: Active Days in Week
+  - name: day_6
+    type: RECORD
+    mode: NULLABLE
+    description: Day 6
+    fields:
+    - name: new_profiles
+      type: INTEGER
+      mode: NULLABLE
+      description: New Profiles
+  - name: day_13
+    type: RECORD
+    mode: NULLABLE
+    description: Day 13
+    fields:
+    - name: new_profiles
+      type: INTEGER
+      mode: NULLABLE
+      description: New Profiles
+    - name: active_in_week_0
+      type: INTEGER
+      mode: NULLABLE
+      description: Active in Week 0
+    - name: active_in_week_1
+      type: INTEGER
+      mode: NULLABLE
+      description: Active in Week 1
+    - name: active_in_weeks_0_and_1
+      type: INTEGER
+      mode: NULLABLE
+      description: Active in Weeks 0 and 1
+    - name: new_profile_active_in_week_0
+      type: INTEGER
+      mode: NULLABLE
+      description: New Profile Active in Week 0
+    - name: new_profile_active_in_week_1
+      type: INTEGER
+      mode: NULLABLE
+      description: New Profile Active in Week 1
+    - name: new_profile_active_in_weeks_0_and_1
+      type: INTEGER
+      mode: NULLABLE
+      description: New Profile Active in Weeks 0 and 1

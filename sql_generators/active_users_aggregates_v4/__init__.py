@@ -59,12 +59,6 @@ class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
     firefox_desktop = "Firefox Desktop"
-    fenix = "Fenix"
-    focus_ios = "Focus iOS"
-    focus_android = "Focus Android"
-    firefox_ios = "Firefox iOS"
-    klar_ios = "Klar iOS"
-    klar_android = "Klar Android"
 
 
 @click.command()
@@ -99,9 +93,11 @@ def generate(target_project, output_dir, use_cloud_function):
     view_template = env.get_template("view.sql")
     # metadata template
     metadata_template = "metadata.yaml"
-    # schema template
+    # schema templates
     desktop_schema_template = "desktop_schema.yaml"
     mobile_schema_template = "mobile_schema.yaml"
+    # backfill template
+    desktop_backfill_template = "desktop_backfill.yaml"
     # checks templates
     desktop_checks_template = env.get_template("desktop_checks.sql")
     fenix_checks_template = env.get_template("fenix_checks.sql")
@@ -154,6 +150,8 @@ def generate(target_project, output_dir, use_cloud_function):
                 channels=CHECKS_TEMPLATE_CHANNELS[browser.name],
             )
 
+
+        # Write query SQL files.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -162,7 +160,7 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
-        # generate metadata file
+        # Write metadata YAML files.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -172,11 +170,13 @@ def generate(target_project, output_dir, use_cloud_function):
                     template_folder=THIS_PATH / "templates",
                     app_value=browser.value,
                     app_name=browser.name,
+                    table_name=TABLE_NAME,
                     format=False,
                 ),
             skip_existing=False,
         )
 
+        # Write schema YAML files.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -189,6 +189,21 @@ def generate(target_project, output_dir, use_cloud_function):
             skip_existing=False,
         )
 
+        # Write backfill YAML files.
+        if browser.name == "firefox_desktop":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+                basename="backfill.yaml",
+                sql=render(
+                    desktop_backfill_template,
+                    template_folder=THIS_PATH / "templates",
+                    format=False,
+                ),
+                skip_existing=False,
+            )
+
+        # Write checks sql files.
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
@@ -196,3 +211,32 @@ def generate(target_project, output_dir, use_cloud_function):
             sql=checks_sql,
             skip_existing=False,
         )
+
+        if browser.name == "focus_android":
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    focus_android_view_template.render(
+                        project_id=target_project,
+                        app_name=browser.name,
+                        table_name=TABLE_NAME,
+                    )
+                ),
+                skip_existing=False,
+            )
+        else:
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
+                basename="view.sql",
+                sql=reformat(
+                    view_template.render(
+                        project_id=target_project,
+                        app_name=browser.name,
+                        table_name=TABLE_NAME,
+                    )
+                ),
+                skip_existing=False,
+            )

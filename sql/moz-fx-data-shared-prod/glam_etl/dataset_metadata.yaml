@@ -1,20 +1,25 @@
-# NOTE: this dataset isn't user-facing and so as a special case isn't
-# syndicated to mozdata even though it's missing the _syndicate
-# suffix
 friendly_name: glam_etl
 description: glam_etl syndicate views
 dataset_base_acl: syndicate
-user_facing: false
+user_facing: true
 labels: {}
 syndication:
-  stage:
-    syndicated_project: "glam-fenix-dev"
-    syndicated_dataset: "glam_etl_dev"
   prod:
-    syndicated_project: "moz-fx-data-glam-prod-fca7"
+    syndicated_project: "moz-fx-glam-prod"
     syndicated_dataset: "glam_etl"
-  administer_views: true
+  syndicated_tables:
+    - glam_desktop_beta_aggregates
+    - glam_desktop_nightly_aggregates
+    - glam_desktop_release_aggregates
+    - glam_fenix_beta_aggregates
+    - glam_fenix_nightly_aggregates
+    - glam_fenix_release_aggregates
+    - glam_fog_beta_aggregates
+    - glam_fog_nightly_aggregates
+    - glam_fog_release_aggregates
+  administer_views: false
 workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential
+      - workgroup:dataops-managed/glam

@@ -1,12 +1,16 @@
----
 friendly_name: Smoot Usage FxA Compressed
-description: Compressed usage metrics for FxA users.
+description: |-
+  Compressed usage metrics for FxA users.
 owners:
-  - jklukas@mozilla.com
+- jklukas@mozilla.com
 labels:
   application: desktop
   incremental: true
   schedule: daily
+  shredder_mitigation: true
+  table_type: aggregate
+  dag: bqetl_gud
+  owner1: jklukas
 scheduling:
   dag_name: bqetl_gud
 bigquery:
@@ -14,7 +18,10 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
-      - usage
-      - id_bucket
+    - usage
+    - id_bucket
+references: {}

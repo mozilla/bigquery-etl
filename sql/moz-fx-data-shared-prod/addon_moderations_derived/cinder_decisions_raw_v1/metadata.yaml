@@ -7,7 +7,7 @@ labels:
   incremental: true
   owner1: example
 scheduling:
-  dag_name: bqetl_addons
+  dag_name: bqetl_addons_moderations
   arguments: ["--date", "{{ ds }}"]
   secrets:
   - deploy_target: CINDER_TOKEN
@@ -15,8 +15,5 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: 'date'
+    field: date
     require_partition_filter: false
-    expiration_days: null
-  range_partitioning: null
-references: {}

@@ -497,7 +497,7 @@ bqetl_search_dashboard:
     retries: 2
     retry_delay: 30m
     start_date: "2020-12-14"
-  schedule_interval: 30 4 * * *
+  schedule_interval: 30 5 * * *
   tags:
     - impact/tier_2
 
@@ -974,11 +974,11 @@ bqetl_fivetran_google_ads:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - frank@mozilla.com
+      - kwindau@mozilla.com
     email_on_failure: true
-    email_on_retry: true
+    email_on_retry: false
     end_date: null
-    owner: frank@mozilla.com
+    owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-01-01'
@@ -1298,10 +1298,13 @@ bqetl_ads:
     email:
       - telemetry-alerts@mozilla.com
       - cmorales@mozilla.com
+      - cbeck@mozilla.com
+      - lvargas@mozilla.com
+      - sbetancourt@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null
-    owner: cmorales@mozilla.com
+    owner: cbeck@mozilla.com
     retries: 2
     retry_delay: 30m
     start_date: '2023-10-10'
@@ -1408,7 +1411,7 @@ bqetl_mobile_feature_usage:
     retry_delay: 30m
     start_date: '2023-10-24'
   description: Schedule run for mobile feature usage tables
-  schedule_interval: 0 6 * * *
+  schedule_interval: 0 12 * * *
   tags:
     - impact/tier_3
 
@@ -1483,6 +1486,24 @@ bqetl_glam_refresh_aggregates:
   description: Refresh GLAM tables that are serving data.
   repo: bigquery-etl
   schedule_interval: 0 8 * * *
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+
+bqetl_glam_refresh_aggregates_fog_release:
+  default_args:
+    depends_on_past: false
+    email:
+      - efilho@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: efilho@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-10'
+  description: Update GLAM FOG release tables that serve aggregated data.
+  repo: bigquery-etl
+  schedule_interval: 0 18 * * 6
   tags:
     - impact/tier_2
     - repo/bigquery-etl
@@ -1790,6 +1811,26 @@ bqetl_merino_newtab_extract_to_gcs:
     - repo/bigquery-etl
     - impact/tier_1
 
+bqetl_broken_reports_agg:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - gkatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: gkatre@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-18'
+  description: Tables associated with broken site reports.
+  repo: bigquery-etl
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+
 bqetl_merino_newtab_priors_to_gcs:
   default_args:
     depends_on_past: false
@@ -1886,6 +1927,116 @@ bqetl_monitoring_weekly:
     retry_delay: 30m
   tags:
     - impact/tier_3
+
+bqetl_addons_moderations:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - mhirose@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: mhirose@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-02'
+  description: This DAG schedules queries for moderations of addons data ex. from
+    the external API Cinder.
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_firefox_installer_aggregates:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-05'
+  description: This DAG schedules the build of a new aggregate table about Firefox Installs
+  repo: bigquery-etl
+  schedule_interval: 0 15 * * *
+  tags:
+    - impact/tier_3
+
+
+bqetl_jira_service_desk:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - jmoscon@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: jmoscon@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-16'
+  description: This DAG schedules some tasks that fetch data from the Jira API for service desk tickets
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_2
+
+bqetl_newtab_interactions_hourly:
+  schedule_interval: hourly
+  description: |
+    This DAG aggregates Newtab engagement data - on an hourly cadence
+  default_args:
+    owner: cbeck@mozilla.com
+    email: ["cbeck@mozilla.com"]
+    start_date: "2024-12-17"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_1
+
+bqetl_fx_health_ind_dashboard:
+  description: |
+    This DAG builds aggregate tables used in the Firefox Health dashboard
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-12-13"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+
+bqetl_event_aggregates:
+  description: |
+    This DAG builds the event_aggregates table
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-12-19"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 40 16 * * *
 
 bqetl_default_browser_aggregates:
   default_args:

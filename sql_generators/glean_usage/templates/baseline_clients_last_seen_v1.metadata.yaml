@@ -25,6 +25,8 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+monitoring:
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
 schema:
   derived_from:
   - table: ['moz-fx-data-shared-prod', '{{ derived_dataset }}', 'baseline_clients_daily_v1']

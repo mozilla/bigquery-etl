@@ -1,0 +1,27 @@
+friendly_name: Jira Service Desk Syndicate
+description: |
+  Syndicated Service Desk Jira data from Fivetran. User-facing views into this data can be found
+  in the jira_service_desk dataset.
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-bq-fivetran"
+    syndicated_dataset: "jira"
+  syndicated_tables:
+    - issue
+    - issue_type
+    - project
+    - status
+    - resolution
+    - field
+    - issue_field_history
+    - issue_multiselect_history
+    - status_category
+    - request
+    - request_type
+  administer_views: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

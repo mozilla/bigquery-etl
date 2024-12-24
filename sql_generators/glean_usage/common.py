@@ -23,21 +23,14 @@ PATH = Path(os.path.dirname(__file__))
 # these apps do not receive a baseline ping causing a very basic row_count
 # check to fail. For this reason, the checks relying on this ping
 # need to be omitted. For more info see: bug-1868848
-NO_BASELINE_PING_APPS = (
-    "mozilla_vpn",
-    "mozillavpn_backend_cirrus",
-    "accounts_backend",
-    "accounts_cirrus",
-    "burnham",
-    "firefox_crashreporter",
-    "firefox_reality_pc",
-    "lockwise_android",
-    "mach",
-    "monitor_backend",
-    "monitor_cirrus",
-    "moso_mastodon_backend",
-    "mozphab",
-    "mozregression",
+BQETL_CHECKS_SKIP_APPS = ConfigLoader.get(
+    "generate", "glean_usage", "bqetl_checks", "skip_apps", fallback=[]
+)
+BIGCONFIG_SKIP_APPS = ConfigLoader.get(
+    "generate", "glean_usage", "bigconfig", "skip_apps", fallback=[]
+)
+BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
+    "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
 APPS_WITH_DISTRIBUTION_ID = ("fenix",)
@@ -234,7 +227,7 @@ class GleanTable:
         use_cloud_function=True,
         app_info=[],
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -244,6 +237,7 @@ class GleanTable:
 
         query_filename = f"{self.target_table_id}.query.sql"
         checks_filename = f"{self.target_table_id}.checks.sql"
+        bigconfig_filename = f"{self.target_table_id}.bigconfig.yml"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
         view_metadata_filename = f"{self.target_table_id[:-3]}.metadata.yaml"
         table_metadata_filename = f"{self.target_table_id}.metadata.yaml"
@@ -261,14 +255,22 @@ class GleanTable:
                     app_name = app_dataset["app_name"]
                     break
 
+        # Some apps did briefly send a baseline ping,
+        # but do not do so actively anymore. This is why they get excluded.
+        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
+
+        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
             project_id=project_id,
             derived_dataset=derived_dataset,
+            target_table=self.target_table_id,
             app_name=app_name,
             has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
-            has_profile_group_id= app_name in APPS_WITH_PROFILE_GROUP_ID,
+            has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
+            enable_monitoring=enable_monitoring,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -313,6 +315,21 @@ class GleanTable:
         except TemplateNotFound:
             schema = None
 
+        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
+
+        if enable_monitoring:
+            try:
+                bigconfig_contents = render(
+                    bigconfig_filename,
+                    format=False,
+                    template_folder=PATH / "templates",
+                    **render_kwargs,
+                )
+            except TemplateNotFound:
+                bigconfig_contents = None
+        else:
+            bigconfig_contents = None
+
         # generated files to update
         Artifact = namedtuple("Artifact", "table_id basename sql")
         artifacts = [
@@ -330,13 +347,17 @@ class GleanTable:
 
         if output_dir:
             if checks_sql:
-                if "baseline" in table and app_name in NO_BASELINE_PING_APPS:
+                if "baseline" in table and app_name in BQETL_CHECKS_SKIP_APPS:
                     logging.info(
                         "Skipped copying ETL check for %s as app: %s is marked as not having baseline ping"
                         % (table, app_name)
                     )
                 else:
-                    artifacts.append(Artifact(table, "checks.sql", checks_sql))
+                    if checks_sql:
+                        artifacts.append(Artifact(table, "checks.sql", checks_sql))
+
+            if bigconfig_contents:
+                artifacts.append(Artifact(table, "bigconfig.yml", bigconfig_contents))
 
             if schema:
                 artifacts.append(Artifact(table, "schema.yaml", schema))
@@ -364,14 +385,16 @@ class GleanTable:
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
-        id_token=None
+        id_token=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
 
+        app_name = app_info[0]["app_name"]
+
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
-        target_dataset = app_info[0]["app_name"]
+        target_dataset = app_name
 
         datasets = [
             (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
@@ -386,6 +409,10 @@ class GleanTable:
             if self.per_app_id_enabled:
                 return
 
+        enable_monitoring = app_name not in list(
+            set(BIGCONFIG_SKIP_APPS + BIGCONFIG_SKIP_APPS_METRICS)
+        )
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -394,7 +421,8 @@ class GleanTable:
             datasets=datasets,
             table=target_view_name,
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
-            app_name=app_info[0]["app_name"],
+            app_name=app_name,
+            enable_monitoring=enable_monitoring,
         )
         render_kwargs.update(self.custom_render_kwargs)
 
@@ -441,6 +469,7 @@ class GleanTable:
                 format=False,
                 **render_kwargs,
             )
+
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
@@ -457,6 +486,21 @@ class GleanTable:
                     Artifact(table, "metadata.yaml", metadata),
                     Artifact(view, "view.sql", view_sql),
                 ]
+
+                if (
+                    self.target_table_id.startswith("metrics_clients_")
+                    and enable_monitoring
+                ):
+                    bigconfig_contents = render(
+                        f"{self.target_table_id[:-3]}.bigconfig.yml",
+                        format=False,
+                        template_folder=PATH / "templates",
+                        **render_kwargs,
+                    )
+
+                    artifacts.append(
+                        Artifact(table, "bigconfig.yml", bigconfig_contents)
+                    )
 
                 for artifact in artifacts:
                     destination = (

@@ -8,6 +8,8 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_urlbar
 bigquery:

@@ -1,5 +1,6 @@
 import os
 import types
+from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -8,9 +9,12 @@ import yaml
 from click.testing import CliRunner
 
 from bigquery_etl.cli.query import (
+    NBR_DAYS_RETAINED,
     backfill,
     create,
+    deploy,
     info,
+    materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
 )
@@ -110,7 +114,7 @@ class TestQuery:
                 "sql/moz-fx-data-shared-prod/test/test_query_v1"
             )
             with open(
-                "sql/moz-fx-data-shared-prod/test//test_query_v1/metadata.yaml"
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml"
             ) as file:
                 exists = "dag_name: bqetl_test" in file.read()
                 assert exists
@@ -488,7 +492,9 @@ class TestQuery:
 
             table = types.SimpleNamespace()
             attach_metadata(
-                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql",
+                Path(
+                    "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql"
+                ),
                 table,
             )
 
@@ -538,6 +544,7 @@ class TestQuery:
                     "--exclude=2021-01-06",
                     "--parallelism=0",
                     "--billing-project=backfill-project",
+                    "--override-retention-range-limit",
                 ],
             )
 
@@ -600,6 +607,7 @@ class TestQuery:
                     "--end_date=2021-01-06",
                     "--parallelism=0",
                     """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                    "--override-retention-range-limit",
                 ],
             )
             assert result.exit_code == 0
@@ -664,6 +672,7 @@ class TestQuery:
                     "--start_date=2021-01-05",
                     "--end_date=2021-01-09",
                     "--parallelism=0",
+                    "--override-retention-range-limit",
                 ],
             )
 
@@ -698,3 +707,306 @@ class TestQuery:
                 ]
                 assert len(conversion_params) == 1
                 assert conversion_params[0] == "--parameter=conversion_window:INT64:30"
+
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy(
+        self, mock_deploy_table, mock_get_id_token, mock_get_credentials, runner
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(deploy, ["telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            mock_deploy_table.assert_called_with(
+                Path(
+                    "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql"
+                ),
+                destination_table=None,
+                force=False,
+                use_cloud_function=True,
+                skip_existing=False,
+                skip_external_data=False,
+                respect_dryrun_skip=True,
+                sql_dir="sql/",
+                credentials=None,
+                id_token=None,
+            )
+            mock_get_id_token.assert_called_once()
+            mock_get_credentials.assert_called_once()
+
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy_schema(
+        self, mock_deploy_table, mock_get_id_token, mock_get_credentials, runner
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write(
+                    """
+                fields:
+                - name: x
+                  type: INTEGER
+                  mode: NULLABLE
+                """
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(deploy, ["telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            mock_deploy_table.assert_called_with(
+                Path(
+                    "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml"
+                ),
+                destination_table=None,
+                force=False,
+                use_cloud_function=True,
+                skip_existing=False,
+                skip_external_data=False,
+                respect_dryrun_skip=True,
+                sql_dir="sql/",
+                credentials=None,
+                id_token=None,
+            )
+            mock_get_id_token.assert_called_once()
+            mock_get_credentials.assert_called_once()
+
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_deploy_schema_no_duplicate(
+        self, mock_deploy_table, mock_get_id_token, mock_get_credentials, runner
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write(
+                    """
+                fields:
+                - name: x
+                  type: INTEGER
+                  mode: NULLABLE
+                """
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(deploy, ["telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            mock_deploy_table.assert_called_once()
+            mock_deploy_table.assert_called_with(
+                Path(
+                    "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql"
+                ),
+                destination_table=None,
+                force=False,
+                use_cloud_function=True,
+                skip_existing=False,
+                skip_external_data=False,
+                respect_dryrun_skip=True,
+                sql_dir="sql/",
+                credentials=None,
+                id_token=None,
+            )
+            mock_get_id_token.assert_called_once()
+            mock_get_credentials.assert_called_once()
+
+    @patch("bigquery_etl.cli.query.get_credentials")
+    @patch("bigquery_etl.cli.query.get_id_token")
+    @patch("bigquery_etl.cli.query.deploy_table")
+    def test_prevent_deploy_for_views(
+        self, mock_deploy_table, mock_get_id_token, mock_get_credentials, runner
+    ):
+        mock_deploy_table.return_value = None
+        mock_get_id_token.return_value = None
+        mock_get_credentials.return_value = None
+
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/view.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml",
+                "w",
+            ) as f:
+                f.write(
+                    """
+                fields:
+                - name: x
+                  type: INTEGER
+                  mode: NULLABLE
+                """
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(deploy, ["telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            mock_deploy_table.assert_not_called()
+
+    def test_materialized_view_has_changes(self):
+        deployed_sql = " SELECT  * FROM project.dataset.table "
+
+        assert not materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE MATERIALIZED VIEW project.dataset.view AS SELECT * FROM
+            project.dataset.table
+            """,
+        )
+        assert not materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE MATERIALIZED VIEW IF NOT EXISTS project.dataset.view AS SELECT * FROM
+            project.dataset.table
+            """,
+        )
+        assert materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE MATERIALIZED VIEW IF NOT EXISTS project.dataset.view AS SELECT * FROM
+            project.dataset.table WHERE TRUE
+            """,
+        )
+        assert not materialized_view_has_changes(
+            deployed_sql,
+            """
+            CREATE OR REPLACE MATERIALIZED VIEW
+            project.dataset.view AS SELECT * FROM
+            project.dataset.table
+            """,
+        )
+
+    # Check that if you try to run a backfill for a start date < retention days and retention = False, it exits
+    def test_query_backfill_with_scheduling_overrides_outside_retention_limit(
+        self, runner
+    ):
+        with (
+            runner.isolated_filesystem(),
+            # Mock client to avoid NotFound
+            patch("google.cloud.bigquery.Client", autospec=True),
+        ):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT DATE('2021-01-01') as submission_date WHERE submission_date = @submission_date"
+                )
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {
+                    "dag_name": "bqetl_test",
+                    "date_partition_parameter": None,
+                    "parameters": [
+                        "submission_date:DATE:{{(execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')}}",
+                    ],
+                },
+                "bigquery": {"time_partitioning": {"type": "day"}},
+            }
+
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+            result = runner.invoke(
+                backfill,
+                [
+                    "telemetry_derived.query_v1",
+                    "--project_id=moz-fx-data-shared-prod",
+                    f"--start_date={str(date.today() - timedelta(days=10+NBR_DAYS_RETAINED))}",
+                    f"--end_date={str(date.today() - timedelta(days=10))}",
+                    "--parallelism=0",
+                    """--scheduling_overrides={"parameters": ["test:INT64:30"], "date_partition_parameter": "submission_date"}""",
+                ],
+            )
+            assert result.exit_code == 1

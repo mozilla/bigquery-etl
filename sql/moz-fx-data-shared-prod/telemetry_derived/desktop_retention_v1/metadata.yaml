@@ -6,6 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: example
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_desktop_retention_model
   date_partition_parameter: metric_date

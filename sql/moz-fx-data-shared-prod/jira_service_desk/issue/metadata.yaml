@@ -1,0 +1,4 @@
+---
+friendly_name: Jira Service Desk Issues
+description: |-
+  Jira issues for Service Desk synced via Fivetran.

@@ -37,20 +37,21 @@ FROM
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`
 UNION ALL
 SELECT
-  segment,
+  segment_dau AS segment,
   attribution_medium,
   attribution_source,
-  attributed,
+  attribution_medium IS NOT NULL
+  OR attribution_source IS NOT NULL AS attributed,
   CAST(NULL AS STRING) AS adjust_network,
   CAST(NULL AS STRING) AS install_source,
   city,
   country,
   distribution_id,
-  first_seen_year,
+  first_seen_year_new AS first_seen_year,
   is_default_browser,
   channel,
   os,
-  os_version,
+  os_version_build AS os_version,
   os_version_major,
   os_version_minor,
   submission_date,

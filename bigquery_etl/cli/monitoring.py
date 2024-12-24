@@ -181,7 +181,8 @@ def deploy(
             input_path=[
                 metadata_file.parent / BIGCONFIG_FILE
                 for metadata_file in list(set(metadata_files))
-            ],
+            ]
+            + [f"{sql_dir}/{BIGCONFIG_FILE}"],
             output_path=Path(sql_dir).parent if sql_dir else None,
             apply=not dry_run,
             recursive=False,
@@ -368,16 +369,16 @@ def _update_bigconfig(
     for collection in bigconfig.tag_deployments:
         for deployment in collection.deployments:
             for metric in deployment.metrics:
-                if metric.metric_type is None:
-                    err_message = f"""There appears to be an issue parsing \
-                    a metric type definition for `{project}.{dataset}.{table}` \
-                    metric: {str(metric)} \
-                    deployment: {str(deployment)}."""
-
-                    raise Exception(err_message)
-
-                if metric.metric_type.predefined_metric in default_metrics:
+                if (
+                    metric.metric_type is not None
+                    and metric.metric_type.predefined_metric in default_metrics
+                ):
                     default_metrics.remove(metric.metric_type.predefined_metric)
+                elif (
+                    metric.saved_metric_id is not None
+                    and (metric_id := metric.saved_metric_id.upper()) in default_metrics
+                ):
+                    default_metrics.remove(metric_id)
 
         if metadata.monitoring.collection and collection.collection is None:
             collection.collection = SimpleCollection(
@@ -393,7 +394,7 @@ def _update_bigconfig(
                 metrics=[
                     SimpleMetricDefinition(
                         metric_name=(
-                            f"{metric.name} [warn]"
+                            f"{metric.name}"
                             if "volume" not in metric.name.lower()
                             else f"{metric.name} [fail]"
                         ),
@@ -620,7 +621,9 @@ def set_partition_column(
                             f"Set partition column {column_id} for `{project}.{dataset}.{table}`"
                         )
                 except Exception as e:
-                    if "There was an error processing your request" in str(e):
+                    if "There was an error processing your request" in str(
+                        e
+                    ) or "Dataset already requires a partition filter" in str(e):
                         # API throws an error when partition column was already set.
                         # There is no API endpoint to check for partition columns though
                         pass

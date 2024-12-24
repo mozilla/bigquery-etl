@@ -8,11 +8,23 @@ description: |-
   model can be summed to get information for
   just that campaign on that date.
 owners:
-- frank@mozilla.com
+- kwindau@mozilla.com
 labels:
-  incremental: false
-  owner1: frank@mozilla.com
+  incremental: true
+  owner1: kwindau@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_fivetran_google_ads
   depends_on_past: false
-  date_partition_parameter: null
+  date_partition_parameter: date
+  date_partition_offset: -27
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+monitoring:
+  enabled: true

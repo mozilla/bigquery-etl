@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_mozilla_vpn_site_metrics
   depends_on:

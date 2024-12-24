@@ -46,7 +46,12 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..dependency import get_dependency_graph
-from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
+from ..deploy import (
+    FailedDeployException,
+    SkippedDeployException,
+    SkippedExternalDataException,
+    deploy_table,
+)
 from ..dryrun import DryRun, get_credentials, get_id_token
 from ..format_sql.format import skip_format
 from ..format_sql.formatter import reformat
@@ -56,12 +61,10 @@ from ..metadata.parse_metadata import (
     BigQueryMetadata,
     ClusteringMetadata,
     DatasetMetadata,
-    ExternalDataFormat,
     Metadata,
     PartitionMetadata,
     PartitionType,
 )
-from ..metadata.publish_metadata import attach_metadata
 from ..query_scheduling.dag_collection import DagCollection
 from ..query_scheduling.generate_airflow_dags import get_dags
 from ..schema import SCHEMA_FILE, Schema
@@ -79,6 +82,9 @@ DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 10
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
+VIEW_FILE = "view.sql"
+MATERIALIZED_VIEW = "materialized_view.sql"
+NBR_DAYS_RETAINED = 775
 
 
 @click.group(help="Commands for managing queries.")
@@ -656,6 +662,14 @@ def _backfill_query(
         "parameters and/or date_partition_parameter as needed."
     ),
 )
+@click.option(
+    "--override-retention-range-limit",
+    required=False,
+    type=bool,
+    is_flag=True,
+    help="True to allow running a backfill outside the retention policy limit.",
+    default=False,
+)
 @click.pass_context
 def backfill(
     ctx,
@@ -674,6 +688,7 @@ def backfill(
     checks_file_name,
     custom_query_path,
     scheduling_overrides,
+    override_retention_range_limit,
 ):
     """Run a backfill."""
     if not is_authenticated():
@@ -682,6 +697,21 @@ def backfill(
             "and check that the project is set correctly."
         )
         sys.exit(1)
+
+    # If override retention policy is False, and the start date is less than NBR_DAYS_RETAINED
+    if (
+        not override_retention_range_limit
+        and start_date.date() < date.today() - timedelta(days=NBR_DAYS_RETAINED)
+    ):
+        # Exit - cannot backfill due to risk of losing data
+        click.echo(
+            f"Cannot backfill more than {NBR_DAYS_RETAINED} days prior to current date due to retention policies"
+        )
+        sys.exit(1)
+
+    # If override retention policy is true, continue to run the backfill
+    if override_retention_range_limit:
+        click.echo("Over-riding retention limit - ensure data exists in source tables")
 
     if custom_query_path:
         query_files = paths_matching_name_pattern(
@@ -1424,8 +1454,8 @@ def _initialize_in_parallel(
 @click.option(
     "--skip-existing",
     "--skip_existing",
-    help="Skip initialization for existing artifacts. "
-    + "This ensures that artifacts, like materialized views only get initialized if they don't already exist.",
+    help="Skip initialization for existing artifacts, "
+    "otherwise initialization is run for empty tables.",
     default=False,
     is_flag=True,
 )
@@ -1457,7 +1487,7 @@ def initialize(
     else:
         file_regex = re.compile(
             r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
-            r"(?:query\.sql|init\.sql)$"
+            r"(?:query\.sql|init\.sql|materialized_view\.sql)$"
         )
         query_files = paths_matching_name_pattern(
             name, sql_dir, project_id, file_regex=file_regex
@@ -1499,7 +1529,7 @@ def initialize(
             except NotFound:
                 # continue with creating the table
                 pass
-        else:
+        elif len(materialized_views) == 0:
             return
 
         try:
@@ -1524,6 +1554,7 @@ def initialize(
                         sql_dir=sql_dir,
                         project_id=project,
                         force=True,
+                        respect_dryrun_skip=False,
                     )
 
                 arguments = [
@@ -1574,17 +1605,30 @@ def initialize(
                             default_dataset=f"{project}.{dataset}",
                         )
 
-                        if file in materialized_views:
-                            click.echo(f"Create materialized view for {file}")
-                            # existing materialized view have to be deleted before re-creation
-                            client.delete_table(full_table_id, not_found_ok=True)
-                        else:
-                            click.echo(f"Create destination table for {file}")
+                        # only deploy materialized view if it doesn't exist
+                        # TODO: https://github.com/mozilla/bigquery-etl/issues/5804
+                        try:
+                            materialized_view_table = client.get_table(full_table_id)
 
-                        job = client.query(init_sql, job_config=job_config)
+                            # Best-effort check, don't fail if there's an error
+                            try:
+                                has_changes = materialized_view_has_changes(
+                                    materialized_view_table.mview_query, init_sql
+                                )
+                            except Exception as e:
+                                change_str = f"failed to compare changes: {e}"
+                            else:
+                                change_str = (
+                                    "sql changed" if has_changes else "sql not changed"
+                                )
+                            click.echo(
+                                f"Skipping materialized view {full_table_id}, already exists, {change_str}"
+                            )
+                        except NotFound:
+                            job = client.query(init_sql, job_config=job_config)
 
-                        if not dry_run:
-                            job.result()
+                            if not dry_run:
+                                job.result()
         except Exception:
             print_exc()
             return query_file
@@ -1597,6 +1641,27 @@ def initialize(
         for failed_deploy in failed_initializations:
             click.echo(failed_deploy, err=True)
         sys.exit(1)
+
+
+def materialized_view_has_changes(deployed_sql: str, file_sql: str) -> bool:
+    """Return true if the sql in the materialized view file doesn't match the deployed sql."""
+    file_sql_formatted = sqlparse.format(
+        re.sub(
+            r"CREATE+(?:\s+OR\s+REPLACE)?\s+MATERIALIZED\s+VIEW.*?AS",
+            "",
+            file_sql,
+            flags=re.DOTALL,
+        ),
+        strip_comments=True,
+        strip_whitespace=True,
+    )
+
+    deployed_sql_formatted = sqlparse.format(
+        deployed_sql,
+        strip_comments=True,
+        strip_whitespace=True,
+    )
+    return file_sql_formatted != deployed_sql_formatted
 
 
 @query.command(
@@ -2189,7 +2254,11 @@ def deploy(
         name, sql_dir, project_id, ["query.*", "script.sql"]
     )
 
-    if not query_files:
+    metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id, ["metadata.yaml"]
+    )
+
+    if not query_files and not metadata_files:
         # run SQL generators if no matching query has been found
         ctx.invoke(
             generate_all,
@@ -2199,11 +2268,26 @@ def deploy(
         query_files = paths_matching_name_pattern(
             name, ctx.obj["TMP_DIR"], project_id, ["query.*", "script.sql"]
         )
-        if not query_files:
+        metadata_files = paths_matching_name_pattern(
+            name, ctx.obj["TMP_DIR"], project_id, ["metadata.yaml"]
+        )
+        if not query_files and not metadata_files:
             raise click.ClickException(f"No queries matching `{name}` were found.")
 
     credentials = get_credentials()
     id_token = get_id_token(credentials=credentials)
+
+    query_file_paths = [query_file.parent for query_file in query_files]
+    metadata_files_without_query_file = [
+        metadata_file
+        for metadata_file in metadata_files
+        if metadata_file.parent not in query_file_paths
+        and not any(
+            file.suffix == ".sql" or file.name == "query.py"
+            for file in metadata_file.parent.iterdir()
+            if file.is_file()
+        )
+    ]
 
     _deploy = partial(
         deploy_table,
@@ -2211,130 +2295,52 @@ def deploy(
         force=force,
         use_cloud_function=use_cloud_function,
         skip_existing=skip_existing,
+        skip_external_data=skip_external_data,
         respect_dryrun_skip=respect_dryrun_skip,
         sql_dir=sql_dir,
         credentials=credentials,
         id_token=id_token,
     )
 
-    failed_deploys, skipped_deploys = [], []
+    failed_deploys, skipped_deploys, external_deploys = [], [], []
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallelism) as executor:
         future_to_query = {
-            executor.submit(_deploy, query_file): query_file
-            for query_file in query_files
-            if str(query_file)
+            executor.submit(_deploy, artifact_file): artifact_file
+            for artifact_file in query_files + metadata_files_without_query_file
+            if str(artifact_file)
             not in ConfigLoader.get("schema", "deploy", "skip", fallback=[])
         }
         for future in futures.as_completed(future_to_query):
-            query_file = future_to_query[future]
+            artifact_file = future_to_query[future]
             try:
                 future.result()
             except SkippedDeployException as e:
-                print(f"Skipped deploy for {query_file}: ({e})")
-                skipped_deploys.append(query_file)
+                print(f"Skipped deploy for {artifact_file}: ({e})")
+                skipped_deploys.append(artifact_file)
             except FailedDeployException as e:
-                print(f"Failed deploy for {query_file}: ({e})")
-                failed_deploys.append(query_file)
+                print(f"Failed deploy for {artifact_file}: ({e})")
+                failed_deploys.append(artifact_file)
+            except SkippedExternalDataException as e:
+                print(f"Skipping deploy for external data table {artifact_file}: ({e})")
+                external_deploys.append(artifact_file)
             else:
-                print(f"{query_file} successfully deployed!")
-
-    if not skip_external_data:
-        failed_external_deploys = _deploy_external_data(
-            name, sql_dir, project_id, skip_existing, credentials=credentials
-        )
-        failed_deploys += failed_external_deploys
+                print(f"{artifact_file} successfully deployed!")
 
     if skipped_deploys:
         click.echo("The following deploys were skipped:")
         for skipped_deploy in skipped_deploys:
             click.echo(skipped_deploy)
 
+    if external_deploys:
+        click.echo("The following deploys of external data tables were skipped:")
+        for external_deploy in external_deploys:
+            click.echo(external_deploy)
+
     if failed_deploys:
         click.echo("The following tables could not be deployed:")
         for failed_deploy in failed_deploys:
             click.echo(failed_deploy)
         sys.exit(1)
-
-
-def _deploy_external_data(
-    name, sql_dir, project_id, skip_existing, credentials
-) -> list:
-    """Publish external data tables."""
-    # whether a table should be created from external data is defined in the metadata
-    metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id, ["metadata.yaml"]
-    )
-    client = bigquery.Client(credentials=credentials)
-    failed_deploys = []
-    for metadata_file_path in metadata_files:
-        metadata = Metadata.from_file(metadata_file_path)
-        if not metadata.external_data:
-            # skip all tables that are not created from external data
-            continue
-
-        existing_schema_path = metadata_file_path.parent / SCHEMA_FILE
-
-        if not existing_schema_path.is_file():
-            # tables created from external data must specify a schema
-            click.echo(f"No schema file found for {metadata_file_path}")
-            continue
-
-        try:
-            table_name = metadata_file_path.parent.name
-            dataset_name = metadata_file_path.parent.parent.name
-            project_name = metadata_file_path.parent.parent.parent.name
-            full_table_id = f"{project_name}.{dataset_name}.{table_name}"
-
-            existing_schema = Schema.from_schema_file(existing_schema_path)
-
-            try:
-                table = client.get_table(full_table_id)
-            except NotFound:
-                table = bigquery.Table(full_table_id)
-
-            bigquery_schema = existing_schema.to_bigquery_schema()
-            table.schema = bigquery_schema
-            attach_metadata(metadata_file_path, table)
-
-            if not table.created:
-                if metadata.external_data.format in (
-                    ExternalDataFormat.GOOGLE_SHEETS,
-                    ExternalDataFormat.CSV,
-                ):
-                    external_config = bigquery.ExternalConfig(
-                        metadata.external_data.format.value.upper()
-                    )
-                    external_config.source_uris = metadata.external_data.source_uris
-                    external_config.ignore_unknown_values = True
-                    external_config.autodetect = False
-
-                    for key, v in metadata.external_data.options.items():
-                        setattr(external_config.options, key, v)
-
-                    table.external_data_configuration = external_config
-                    table = client.create_table(table)
-                    click.echo(f"Destination table {full_table_id} created.")
-
-                else:
-                    click.echo(
-                        f"External data format {metadata.external_data.format} unsupported."
-                    )
-            elif not skip_existing:
-                client.update_table(
-                    table,
-                    [
-                        "schema",
-                        "friendly_name",
-                        "description",
-                        "labels",
-                    ],
-                )
-                click.echo(f"Schema (and metadata) updated for {full_table_id}.")
-        except Exception:
-            print_exc()
-            failed_deploys.append(metadata_file_path)
-
-    return failed_deploys
 
 
 def _validate_schema_from_path(

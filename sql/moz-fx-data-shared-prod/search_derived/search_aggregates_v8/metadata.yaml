@@ -3,11 +3,12 @@ description: |-
   Daily search clients, aggregated across unique sets of dimensions
   and partitioned by day.
 owners:
-- akomar@mozilla.com
+- akommasani@mozilla.com
 - cmorales@mozilla.com
 labels:
   schedule: daily
   shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search
 bigquery:

@@ -1,22 +1,18 @@
 type: BIGCONFIG_FILE
+
 tag_deployments:
-- collection:
-    name: {{ bigeye_collection }}
-  deployments:
-  - column_selectors:
-    - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
-    metrics:
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: FRESHNESS
-      metric_name: FRESHNESS [warn]
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
-    - metric_type:
-        type: PREDEFINED
-        predefined_metric: VOLUME
-      metric_name: VOLUME [fail]
-      metric_schedule:
-        named_schedule:
-          name: Default Schedule - 13:00 UTC
+  - collection:
+      name: {{ bigeye_collection }}
+      notification_channels:
+        - slack: '{{ bigeye_notification_slack_channel }}'
+    deployments:
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
+        metrics:
+          - saved_metric_id: is_unique
+          - saved_metric_id: is_not_null
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
+          - saved_metric_id: freshness
+          - saved_metric_id: volume

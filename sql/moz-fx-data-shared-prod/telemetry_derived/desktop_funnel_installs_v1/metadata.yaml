@@ -4,6 +4,8 @@ description: >
 friendly_name: Desktop Funnel Installs
 labels:
   incremental: true
+  shredder_mitigation: true
+  table_type: aggregate
 owners:
   - ascholtz@mozilla.com
 scheduling:

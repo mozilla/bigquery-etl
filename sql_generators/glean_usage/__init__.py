@@ -136,7 +136,7 @@ def generate(
         not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
     ]
 
-    id_token=get_id_token()
+    id_token = get_id_token()
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
@@ -151,7 +151,7 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 app_info=app_info,
                 parallelism=parallelism,
-                id_token=id_token
+                id_token=id_token,
             ),
             baseline_table,
         )
@@ -169,7 +169,7 @@ def generate(
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
-                id_token=id_token
+                id_token=id_token,
             ),
             info,
         )

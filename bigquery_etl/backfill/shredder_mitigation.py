@@ -11,7 +11,7 @@ from pathlib import Path
 from types import NoneType
 from typing import Any, Optional, Tuple
 
-import attr
+import attrs
 import click
 from dateutil import parser
 from gcloud.exceptions import NotFound  # type: ignore
@@ -83,44 +83,46 @@ class DataTypeGroup(Enum):
         return None
 
 
-@attr.define(eq=True)
+@attrs.define(eq=True)
 class Column:
     """Representation of a column in a query, with relevant details for shredder mitigation."""
 
     name: str
-    data_type: DataTypeGroup = attr.field(default=DataTypeGroup.UNDETERMINED)
-    column_type: ColumnType = attr.field(default=ColumnType.UNDETERMINED)
-    status: ColumnStatus = attr.field(default=ColumnStatus.UNDETERMINED)
-
-    @data_type.validator
-    def validate_data_type(self, _attribute, value):
-        """Check that the type of data_type is as expected."""
-        if not isinstance(value, DataTypeGroup):
-            raise ValueError(f"Invalid {value} with type: {type(value)}.")
-
-    @column_type.validator
-    def validate_column_type(self, _attribute, value):
-        """Check that the type of parameter column_type is as expected."""
-        if not isinstance(value, ColumnType):
-            raise ValueError(f"Invalid data type for: {value}.")
-
-    @status.validator
-    def validate_status(self, _attribute, value):
-        """Check that the type of parameter column_status is as expected."""
-        if not isinstance(value, ColumnStatus):
-            raise ValueError(f"Invalid data type for: {value}.")
+    data_type: DataTypeGroup = attrs.field(
+        default=DataTypeGroup.UNDETERMINED,
+        validator=attrs.validators.instance_of(DataTypeGroup),
+    )
+    column_type: ColumnType = attrs.field(
+        default=ColumnType.UNDETERMINED,
+        validator=attrs.validators.instance_of(ColumnType),
+    )
+    status: ColumnStatus = attrs.field(
+        default=ColumnStatus.UNDETERMINED,
+        validator=attrs.validators.instance_of(ColumnStatus),
+    )
 
 
-@attr.define(eq=True)
+@attrs.define(eq=True)
 class Subset:
     """Representation of a subset/CTEs in the query and the actions related to this subset."""
 
+    @staticmethod
+    def attr_not_null(instance, attribute, value):
+        """Raise an exception if the value is None or empty."""
+        if value is None or value == "":
+            raise click.ClickException(
+                f"{attribute.name} not given and it's required to continue."
+            )
+
     client: bigquery.Client
-    destination_table: str = attr.field(default="")
-    query_cte: str = attr.field(default="")
-    dataset: str = attr.field(default=TEMP_DATASET)
-    project_id: str = attr.field(default=DEFAULT_PROJECT_ID)
-    expiration_days: Optional[float] = attr.field(default=None)
+    destination_table: str = attrs.field(
+        default="",
+        validator=attr_not_null,
+    )
+    query_cte: str = attrs.field(default="")
+    dataset: str = attrs.field(default=TEMP_DATASET)
+    project_id: str = attrs.field(default=DEFAULT_PROJECT_ID)
+    expiration_days: Optional[float] = attrs.field(default=None)
 
     @property
     def version(self):
@@ -243,7 +245,7 @@ class Subset:
         partition_type = (
             "DATE" if self.partitioning["type"] == "DAY" else self.partitioning["type"]
         )
-        parameters = None
+        parameters = []
         if partition_field is not None:
             parameters = [
                 bigquery.ScalarQueryParameter(
@@ -546,9 +548,9 @@ def generate_query_with_shredder_mitigation(
         ) = classify_columns(
             new_table_row, previous_group_by, new_group_by, existing_schema, new_schema
         )
-    except TypeError as e:
+    except TypeError:
         raise click.ClickException(
-            f"Table {destination_table} did not return any rows for {backfill_date}.\n{e}"
+            f"Table {destination_table} did not return any rows for {backfill_date}."
         )
 
     if not common_dimensions or not added_dimensions or not metrics:
@@ -690,7 +692,8 @@ def generate_query_with_shredder_mitigation(
             if metric.data_type != DataTypeGroup.FLOAT
         ]
         + [
-            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "  # Round FLOAT to avoid exponential numbers.
+            # Round FLOAT to avoid exponential numbers.
+            f"ROUND({previous_agg.query_cte}.{metric.name}, 10) - "
             f"ROUND(COALESCE({new_agg.query_cte}.{metric.name}, 0), 10) AS {metric.name}"
             for metric in metrics
             if metric.data_type == DataTypeGroup.FLOAT

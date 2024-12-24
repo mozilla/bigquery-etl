@@ -172,6 +172,7 @@ def generate(target_project, output_dir, use_cloud_function):
                     template_folder=THIS_PATH / "templates",
                     app_value=browser.value,
                     app_name=browser.name,
+                    table_name=TABLE_NAME,
                     format=False,
                 ),
             skip_existing=False,
@@ -211,21 +212,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 ),
                 skip_existing=False,
             )
-        elif browser.name == "firefox_desktop":
-            write_sql(
-                output_dir=output_dir,
-                full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",
-                basename="view.sql",
-                sql=reformat(
-                    view_template.render(
-                        project_id=target_project,
-                        app_name=browser.name,
-                        table_name=TABLE_NAME,
-                    )
-                ),
-                skip_existing=False,
-            )
-        else:
+        elif browser.name != "firefox_desktop":
             write_sql(
                 output_dir=output_dir,
                 full_table_id=f"{target_project}.{browser.name}.{BASE_NAME}",

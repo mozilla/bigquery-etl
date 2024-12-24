@@ -1,0 +1,24 @@
+friendly_name: Firefox Installer Aggregates
+description: |-
+  Aggregated view of Firefox Install pings and their attribution info
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+  shredder_mitigation: true
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_firefox_installer_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+    - normalized_country_code
+references: {}

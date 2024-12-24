@@ -2,6 +2,8 @@ type: BIGCONFIG_FILE
 tag_deployments:
 - collection:
     name: Test
+    notification_channels:
+    - slack: '#ds-bigeye-triage'
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fenix_derived.releases_v1.*

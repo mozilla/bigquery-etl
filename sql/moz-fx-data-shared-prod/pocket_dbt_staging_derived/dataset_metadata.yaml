@@ -1,0 +1,17 @@
+friendly_name: Pocket DBT Staging Models
+description: |-
+  This dataset contains models that are the first step in processing the derived snowplow data for Pocket reporting.
+  These models are used to create the intermediate models that are then used to create the final fact models.
+  https://github.com/Pocket/pocket-dbt
+
+
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/apps
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:dataops-managed/external-dbt-prod

@@ -129,3 +129,17 @@ fields:
   name: submission_date
   type: DATE
   description: Date Airflow DAG is executed, and partition date
+
+- mode: REPEATED
+  name: labels
+  type: RECORD
+  description: Array of labels applied to the job as key-value pairs.
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+    description: Label key.
+  - mode: NULLABLE
+    name: value
+    type: STRING
+    description: Label value.

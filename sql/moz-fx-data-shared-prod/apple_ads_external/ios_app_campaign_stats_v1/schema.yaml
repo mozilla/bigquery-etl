@@ -1,61 +1,77 @@
+# apple fields definitions source: https://searchads.apple.com/help/reporting/0023-reporting-options-and-definitions
 fields:
-- description: Date
+- description: |-
+    Date
   mode: NULLABLE
   name: date
   type: DATE
-- description: Campaign Name
+- description: |-
+    Campaign Name
   mode: NULLABLE
   name: campaign
   type: STRING
-- description: Campaign ID
+- description: |-
+    Campaign ID
   mode: NULLABLE
   name: campaign_id
   type: INT64
-- description: Campaign Country Code
+- description: |-
+    Campaign country code (normalized).
   mode: NULLABLE
   name: campaign_country_code
   type: STRING
-- description: Ad Group Name
+- description: |-
+    Ad Group Name
   mode: NULLABLE
   name: ad_group_name
   type: STRING
-- description: Ad Group ID
+- description: |-
+    Ad Group ID
   mode: NULLABLE
   name: ad_group_id
   type: INT64
-- description: Number of Impressions
+- description: |-
+    The number of times your ad appeared on the App Store within the reporting time period.
   mode: NULLABLE
   name: impressions
   type: INT64
-- description: Number of Clicks
+- description: |-
+    The number of times your ad was tapped by users within the reporting time period.
   mode: NULLABLE
   name: clicks
   type: INT64
-- description: Number of Downloads
+- description: |-
+    The total number of tap-through and view-through new downloads within the reporting period.
   mode: NULLABLE
   name: downloads
   type: INT64
-- description: Number of New Profiles
+- description: |-
+    Number of New Profiles
   mode: NULLABLE
   name: new_profiles
   type: INT64
-- description: Number of Activated Profiles
+- description: |-
+    Number of Activated Profiles
   mode: NULLABLE
   name: activated_profiles
   type: INT64
-- description: Number of Repeat Users
+- description: |-
+    Number of Repeat Users
   mode: NULLABLE
   name: repeat_users
   type: INT64
-- description: Number of Week 4 Retained Users
+- description: |-
+    Number of Week 4 Retained Users
   mode: NULLABLE
   name: week_4_retained_users
   type: INT64
-- description: Marketing Spend
+- description: |-
+    The sum of the cost of each customer tap on your ad over the period of time set for your reporting.
   mode: NULLABLE
   name: spend
   type: BIGNUMERIC
-- description: Lifetime Value
+- description: |-
+    Lifetime Value of the specific client.
   mode: NULLABLE
   name: lifetime_value
   type: FLOAT

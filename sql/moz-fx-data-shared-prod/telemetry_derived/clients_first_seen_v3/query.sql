@@ -3,7 +3,17 @@
 -- ping received and respecting NULLS.
 -- Once the first_seen_date is identified after comparing all pings, attributes
 -- are retrieved for each client_id from the ping type that reported it.
-WITH new_profile_ping_agg AS (
+WITH error_check AS (
+  SELECT
+    IF(
+      DATE_ADD(MAX(first_seen_date), INTERVAL 1 day) != @submission_date,
+      ERROR("Need to run sequentially, day after max day only"),
+      0
+    ) AS result
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3`
+),
+new_profile_ping_agg AS (
   SELECT
     client_id AS client_id,
     sample_id AS sample_id,

@@ -148,7 +148,7 @@ def paths_matching_name_pattern(
                     matching_files.append(query_file)
 
     if len(matching_files) == 0:
-        print(f"No files matching: {pattern}")
+        print(f"No files matching: {pattern}, {files}")
 
     return matching_files
 

@@ -3,18 +3,23 @@ fields:
   - name: submission_date
     type: DATE
     mode: NULLABLE
+    description: Submission Date
   - name: normalized_country_code
     type: STRING
     mode: NULLABLE
+    description: Normalized Country Code
   - name: normalized_channel
     type: STRING
     mode: NULLABLE
+    description: Normalized Channel
   - name: firefox_suggest_enabled
     type: BOOLEAN
     mode: NULLABLE
+    description: Firefox Suggest Enabled
   - name: sponsored_suggestions_enabled
     type: BOOLEAN
     mode: NULLABLE
+    description: Sponsored Suggestions Enabled
   - name: product_result_type
     type: STRING
     mode: NULLABLE
@@ -22,12 +27,16 @@ fields:
   - name: urlbar_impressions
     type: INTEGER
     mode: NULLABLE
+    description: URL Bar Impressions
   - name: urlbar_clicks
     type: INTEGER
     mode: NULLABLE
+    description: URL Bar Clicks
   - name: urlbar_annoyances
     type: INTEGER
     mode: NULLABLE
+    description: URL Bar Annoyances
   - name: urlbar_sessions
     type: INTEGER
     mode: NULLABLE
+    description: URL Bar Sessions

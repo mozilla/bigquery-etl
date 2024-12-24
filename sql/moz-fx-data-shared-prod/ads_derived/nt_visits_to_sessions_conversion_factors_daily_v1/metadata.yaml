@@ -5,9 +5,13 @@ description: |-
 owners:
   - sbetancourt@mozilla.com
   - cmorales@mozilla.com
+  - cbeck@mozilla.com
+  - lvargas@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_ads
 bigquery:

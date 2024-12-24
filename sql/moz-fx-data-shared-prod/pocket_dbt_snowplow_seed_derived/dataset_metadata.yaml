@@ -1,0 +1,16 @@
+friendly_name: Pocket DBT Snowplow Seed Models
+description: |-
+  This dataset contains models that are used as seeds for the rest of the snowplow models.
+  https://github.com/Pocket/pocket-dbt
+
+
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:pocket/apps
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:dataops-managed/external-dbt-prod

@@ -1,0 +1,34 @@
+friendly_name: Apple App Store Choice Screen Engagement (pre-iOS 18.2 version)
+description: |
+  Apple App Store Choice Screen Engagement (pre-iOS 18.2 version)
+  This report includes numbers around user egagement with our browser
+  via the App Store Choice Screen.
+
+owners:
+- kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
+  arguments:
+  - --date={{ds}}
+  - --connect_app_id=989804926
+  - --partition_field=logical_date
+
+  secrets:
+  - deploy_target: CONNECT_ISSUER_ID
+    key: bqetl_firefox_ios__app_store_connect_issuer_id
+  - deploy_target: CONNECT_KEY_ID
+    key: bqetl_firefox_ios__app_store_connect_key_id
+  - deploy_target: CONNECT_KEY
+    key: bqetl_firefox_ios__app_store_connect_key
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: logical_date
+    require_partition_filter: false

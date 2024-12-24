@@ -8,6 +8,8 @@ owners:
 - ascholtz@mozilla.com
 labels:
   incremental: true
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_desktop_funnel
 bigquery:

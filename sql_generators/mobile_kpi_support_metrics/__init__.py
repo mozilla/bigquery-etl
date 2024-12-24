@@ -33,7 +33,8 @@ TEMPLATES = (
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),
 )
-BIGEYE_COLLECTION = "Browser Metrics (non-KPI)"
+BIGEYE_COLLECTION = "Operational Checks"
+BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"
 
 
 class AttributionPings(Enum):
@@ -302,10 +303,10 @@ def generate(target_project, output_dir, use_cloud_function):
         "version": VERSION,
         "project_id": target_project,
         "bigeye_collection": BIGEYE_COLLECTION,
+        "bigeye_notification_slack_channel": BIGEYE_NOTIFICATION_SLACK_CHANNEL,
     }
 
     query_support_configs = (
-        "checks.sql",
         "metadata.yaml",
         "schema.yaml",
         "bigconfig.yml",

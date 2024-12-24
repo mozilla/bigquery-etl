@@ -1,0 +1,13 @@
+friendly_name: LTV State Values Derived
+description: |
+  Dataset where the data science team has write access to write LTV state values from their models
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:data-science/developers

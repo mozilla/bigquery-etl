@@ -6,6 +6,8 @@ owners:
 labels:
   application: devtools
   schedule: daily
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_devtools
   start_date: '2019-11-25'

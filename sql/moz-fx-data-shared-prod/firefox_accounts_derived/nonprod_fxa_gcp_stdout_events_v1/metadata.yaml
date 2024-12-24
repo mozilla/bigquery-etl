@@ -9,6 +9,7 @@ labels:
   schedule: daily
   dag: bqetl_fxa_events
   owner1: kik
+  table_type: client_level
 scheduling:
   dag_name: bqetl_fxa_events
   start_date: "2023-05-26"

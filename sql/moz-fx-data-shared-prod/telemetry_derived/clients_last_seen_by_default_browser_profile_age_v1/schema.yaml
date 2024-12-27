@@ -7,14 +7,10 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Is Default Browser Indicator
-- name: new_profile
+- name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
-  description: When days_since_first_seen < 28.
-- name: old_profile
-  type: BOOLEAN
-  mode: NULLABLE
-  description: When days_since_first_seen >= 28.
+  description: Whether days_since_first_seen < 28.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE

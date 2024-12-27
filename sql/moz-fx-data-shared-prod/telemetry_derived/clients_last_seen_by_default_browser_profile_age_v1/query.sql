@@ -1,8 +1,11 @@
 SELECT
   submission_date,
   is_default_browser,
-  days_since_first_seen < 28 new_profile,
-  days_since_first_seen >= 28 old_profile,
+  CASE
+    WHEN days_since_first_seen < 28 THEN TRUE
+    ELSE FALSE
+END
+  AS is_new_profile,
   normalized_os_version,
   os,
   normalized_channel,
@@ -15,8 +18,7 @@ WHERE
 GROUP BY
   submission_date,
   is_default_browser,
-  new_profile,
-  old_profile,
+  is_new_profile,
   normalized_os_version,
   os,
   normalized_channel

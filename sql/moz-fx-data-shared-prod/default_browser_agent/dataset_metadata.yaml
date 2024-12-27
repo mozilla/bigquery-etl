@@ -1,6 +1,6 @@
-friendly_name: default-browser-agent
+friendly_name: Default Browser Agent
 description: |-
-  User-facing views related to document namespace default-browser-agent; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/default-browser-agent
+  Data related to default browser agent
 dataset_base_acl: view
 user_facing: true
 labels: {}

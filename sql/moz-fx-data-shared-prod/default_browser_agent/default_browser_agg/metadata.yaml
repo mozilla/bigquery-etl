@@ -1,0 +1,13 @@
+friendly_name: Default Browser Agg
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.default_browser_agent_derived.default_browser_agg_v1

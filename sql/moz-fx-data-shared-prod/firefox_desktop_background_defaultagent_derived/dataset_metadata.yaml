@@ -1,6 +1,6 @@
-friendly_name: firefox-desktop-background-defaultagent Derived
+friendly_name: Firefox Desktop Background Defaultagent Derived
 description: |-
-  Derived tables related to document namespace firefox-desktop-background-defaultagent, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+  Data related to firefox desktop background default agent
 dataset_base_acl: derived
 user_facing: false
 labels: {}

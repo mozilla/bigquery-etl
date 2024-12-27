@@ -2475,7 +2475,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_mls_receive,
       metrics.counter.use_counter_worker_shared_mls_send,
       metrics.counter.use_counter_worker_shared_mls_statedelete,
-      metrics.counter.use_counter_worker_shared_mls_statedeletegroup
+      metrics.counter.use_counter_worker_shared_mls_statedeletegroup,
+      metrics.counter.use_counter_doc_components_shim_resolved,
+      metrics.counter.use_counter_page_components_shim_resolved
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -4972,7 +4974,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_mls_receive,
       metrics.counter.use_counter_worker_shared_mls_send,
       metrics.counter.use_counter_worker_shared_mls_statedelete,
-      metrics.counter.use_counter_worker_shared_mls_statedeletegroup
+      metrics.counter.use_counter_worker_shared_mls_statedeletegroup,
+      metrics.counter.use_counter_doc_components_shim_resolved,
+      metrics.counter.use_counter_page_components_shim_resolved
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7469,7 +7473,9 @@ SELECT
       metrics.counter.use_counter_worker_shared_mls_receive,
       metrics.counter.use_counter_worker_shared_mls_send,
       metrics.counter.use_counter_worker_shared_mls_statedelete,
-      metrics.counter.use_counter_worker_shared_mls_statedeletegroup
+      metrics.counter.use_counter_worker_shared_mls_statedeletegroup,
+      metrics.counter.use_counter_doc_components_shim_resolved,
+      metrics.counter.use_counter_page_components_shim_resolved
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

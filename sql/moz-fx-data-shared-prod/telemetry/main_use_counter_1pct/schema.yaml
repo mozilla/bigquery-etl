@@ -8300,6 +8300,12 @@ fields:
     - name: use_counter2_mls_statedeletegroup_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_componentsshimresolved_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_componentsshimresolved_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16467,6 +16473,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_mls_statedeletegroup_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_componentsshimresolved_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_componentsshimresolved_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

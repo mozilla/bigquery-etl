@@ -2,10 +2,10 @@ SELECT
   submission_date,
   is_default_browser,
   CASE
-    WHEN days_since_first_seen < 28 THEN TRUE
+    WHEN days_since_first_seen < 28
+      THEN TRUE
     ELSE FALSE
-END
-  AS is_new_profile,
+  END AS is_new_profile,
   normalized_os_version,
   os,
   normalized_channel,

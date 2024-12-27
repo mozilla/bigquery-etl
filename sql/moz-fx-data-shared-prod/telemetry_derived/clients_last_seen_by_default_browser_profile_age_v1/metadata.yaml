@@ -1,0 +1,23 @@
+friendly_name: Clients Last Seen By Default Browser Profile Age
+description: |-
+  Aggregate table for clients last seen by default browser profile age
+owners:
+- wichan@mozilla.com
+labels:
+  incremental: true
+  owner1: wichan@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_default_browser_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_os_version
+references: {}

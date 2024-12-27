@@ -1,0 +1,32 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+- name: new_profile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: When days_since_first_seen < 28.
+- name: old_profile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: When days_since_first_seen >= 28.
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS Version
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The total number of rows aggregated.

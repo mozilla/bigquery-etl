@@ -6,6 +6,7 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Default Browser Indicator
 - name: new_profile
   type: BOOLEAN
   mode: NULLABLE

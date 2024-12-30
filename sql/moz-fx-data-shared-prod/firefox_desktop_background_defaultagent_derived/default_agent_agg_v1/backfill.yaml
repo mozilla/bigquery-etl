@@ -1,0 +1,9 @@
+2024-12-27:
+  start_date: 2023-01-01
+  end_date: 2023-12-31
+  reason: https://mozilla-hub.atlassian.net/browse/DENG-6889
+  watchers:
+  - wichan@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false

@@ -7,22 +7,26 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Is Default Browser Indicator
-- name: is_new_profile
-  type: BOOLEAN
-  mode: NULLABLE
-  description: Whether days_since_first_seen < 28.
-- name: normalized_os_version
-  type: STRING
-  mode: NULLABLE
-  description: Normalized OS Version
 - name: os
   type: STRING
   mode: NULLABLE
   description: Operating System
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS Version
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
   description: Normalized Channel
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: country
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE
+  description: Indicates the life stage of a client profile
 - name: row_count
   type: INTEGER
   mode: NULLABLE

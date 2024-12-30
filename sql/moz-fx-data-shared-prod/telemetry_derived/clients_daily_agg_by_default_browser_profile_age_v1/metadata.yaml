@@ -1,6 +1,6 @@
-friendly_name: Clients Last Seen By Default Browser Profile Age
+friendly_name: Clients Daily Aggregates By Default Browser Profile Age
 description: |-
-  Aggregate table for clients last seen by default browser profile age
+  Aggregate table for clients daily by default browser profile age
 owners:
 - wichan@mozilla.com
 labels:

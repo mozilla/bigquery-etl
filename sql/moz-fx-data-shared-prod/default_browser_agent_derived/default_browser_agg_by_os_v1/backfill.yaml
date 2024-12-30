@@ -5,5 +5,5 @@
   watchers:
   - wichan@mozilla.com
   status: Initiate
-  shredder_mitigation: false
+  shredder_mitigation: true
   override_retention_limit: false

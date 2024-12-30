@@ -1,0 +1,23 @@
+friendly_name: Default Browser Aggregates Derived By OS version
+description: |-
+  Aggregate table for default browser setting by os version
+owners:
+- wichan@mozilla.com
+labels:
+  incremental: true
+  owner1: wichan@mozilla.com
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_default_browser_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - os_version
+references: {}

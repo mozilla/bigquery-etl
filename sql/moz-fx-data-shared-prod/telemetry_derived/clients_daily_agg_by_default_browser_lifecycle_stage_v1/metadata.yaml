@@ -1,6 +1,6 @@
-friendly_name: Clients Daily Aggregates By Default Browser Profile Age
+friendly_name: Clients Daily Aggregates By Default Browser Lifecycle Stage
 description: |-
-  Aggregate table for clients daily by default browser profile age
+  Aggregate table for clients daily by default browser Lifecycle Stage
 owners:
 - wichan@mozilla.com
 labels:

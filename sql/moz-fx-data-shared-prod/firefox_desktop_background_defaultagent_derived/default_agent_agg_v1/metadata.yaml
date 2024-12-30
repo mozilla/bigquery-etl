@@ -8,9 +8,9 @@ labels:
   owner1: wichan
   table_type: aggregate
   shredder_mitigation: true
-  dag: bqetl_fx_desktop_background_defaultagent_aggregates
+  dag: bqetl_default_browser_aggregates
 scheduling:
-  dag_name: bqetl_fx_desktop_background_defaultagent_aggregates
+  dag_name: bqetl_default_browser_aggregates
 bigquery:
   time_partitioning:
     type: day

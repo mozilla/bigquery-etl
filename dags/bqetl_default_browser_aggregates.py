@@ -86,10 +86,25 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_background_defaultagent_derived__default_agent_agg__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_background_defaultagent_derived__default_agent_agg__v1",
+        destination_table="default_agent_agg_v1",
+        dataset_id="firefox_desktop_background_defaultagent_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     default_browser_agent_derived__default_browser_agg__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     default_browser_agent_derived__default_browser_agg_by_os__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_background_defaultagent_derived__default_agent_agg__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

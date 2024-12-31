@@ -2056,22 +2056,3 @@ bqetl_default_browser_aggregates:
   schedule_interval: 0 22 * * *
   tags:
     - impact/tier_3
-
-bqetl_fx_desktop_background_defaultagent_aggregates:
-  default_args:
-    depends_on_past: false
-    email:
-      - telemetry-alerts@mozilla.com
-      - wichan@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    owner: wichan@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2024-12-20'
-  description: |
-    This DAG builds daily aggregate tables for firefox desktop background default agent tables
-  repo: bigquery-etl
-  schedule_interval: 0 22 * * *
-  tags:
-    - impact/tier_3

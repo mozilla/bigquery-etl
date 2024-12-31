@@ -9,7 +9,7 @@ labels:
   table_type: aggregate
   shredder_mitigation: false
 scheduling:
-  dag_name: bqetl_fx_desktop_background_defaultagent_aggregates
+  dag_name: bqetl_default_browser_aggregates
 bigquery:
   time_partitioning:
     type: day

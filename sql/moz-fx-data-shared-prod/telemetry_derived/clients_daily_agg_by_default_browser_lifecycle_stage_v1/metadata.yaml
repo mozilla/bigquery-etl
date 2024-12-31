@@ -1,0 +1,28 @@
+friendly_name: Clients Daily Aggregates By Default Browser Lifecycle Stage
+description: |-
+  Aggregate table for clients daily by default browser lifecycle stage
+owners:
+- wichan@mozilla.com
+labels:
+  incremental: true
+  owner1: wichan
+  table_type: aggregate
+  shredder_mitigation: true
+  dag: bqetl_default_browser_aggregates
+scheduling:
+  dag_name: bqetl_default_browser_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_os_version
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

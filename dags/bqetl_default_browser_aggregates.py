@@ -64,6 +64,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(seconds=72000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     default_browser_agent_derived__default_browser_agg__v1 = bigquery_etl_query(
         task_id="default_browser_agent_derived__default_browser_agg__v1",
         destination_table="default_browser_agg_v1",
@@ -97,6 +110,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__clients_daily_agg_by_default_browser_lifecycle_stage__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__clients_daily_agg_by_default_browser_lifecycle_stage__v1",
+        destination_table="clients_daily_agg_by_default_browser_lifecycle_stage_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     default_browser_agent_derived__default_browser_agg__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -107,4 +131,8 @@ with DAG(
 
     firefox_desktop_background_defaultagent_derived__default_agent_agg__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__clients_daily_agg_by_default_browser_lifecycle_stage__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )

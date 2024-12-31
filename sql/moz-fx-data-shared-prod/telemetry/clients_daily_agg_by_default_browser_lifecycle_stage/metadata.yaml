@@ -1,0 +1,14 @@
+friendly_name: Clients Daily Agg By Default Browser Lifecycle Stage
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_agg_by_default_browser_lifecycle_stage_v1

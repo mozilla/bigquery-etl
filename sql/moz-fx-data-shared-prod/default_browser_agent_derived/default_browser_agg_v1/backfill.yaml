@@ -4,6 +4,6 @@
   reason: https://mozilla-hub.atlassian.net/browse/DENG-6889
   watchers:
   - wichan@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false

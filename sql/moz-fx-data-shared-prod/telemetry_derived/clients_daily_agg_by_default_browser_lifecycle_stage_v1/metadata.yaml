@@ -1,20 +1,23 @@
-friendly_name: Firefox Desktop Background Default Agent Derived
+friendly_name: Clients Daily Aggregates By Default Browser Lifecycle Stage
 description: |-
-  Aggregate table for firefox desktop background default agent
+  Aggregate table for clients daily by default browser lifecycle stage
 owners:
 - wichan@mozilla.com
 labels:
   incremental: true
   owner1: wichan@mozilla.com
   table_type: aggregate
-  shredder_mitigation: false
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_default_browser_aggregates
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: false
+    require_partition_filter: true
     expiration_days: null
   range_partitioning: null
+  clustering:
+    fields:
+    - normalized_os_version
 references: {}

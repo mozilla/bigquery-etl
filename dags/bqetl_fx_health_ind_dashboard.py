@@ -183,6 +183,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bq_main_events = ExternalTaskSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
@@ -330,6 +343,17 @@ with DAG(
     telemetry_derived__fx_health_ind_page_reloads__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_health_ind_page_reloads__v1",
         destination_table="fx_health_ind_page_reloads_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_health_ind_ratios_smooth__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_ratios_smooth__v1",
+        destination_table="fx_health_ind_ratios_smooth_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -513,6 +537,10 @@ with DAG(
 
     telemetry_derived__fx_health_ind_page_reloads__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    telemetry_derived__fx_health_ind_ratios_smooth__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     telemetry_derived__fx_health_ind_searches_by_provider__v1.set_upstream(

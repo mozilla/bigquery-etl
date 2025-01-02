@@ -1,4 +1,4 @@
-friendly_name: Newtab Merino BigQuery Extract to Google Cloud Storage (GCS)
+friendly_name: Newtab Merino BigQuery Extract to Google Cloud Storage (GCS) aggregated on scheduled_corpus_item_id
 description: |-
   Newtab engagements aggregated on scheduled_corpus_item_id are exported to a GCS bucket for Merino to consume.
   The table rebuilds every 20 minutes and aggregate one day of data.

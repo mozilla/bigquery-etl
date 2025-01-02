@@ -1,6 +1,6 @@
 friendly_name: Firefox Health Indicator Dashboard - Ratios Smooth
 description: |-
-  Calculates share of Firefox clients with Firefox set as default over time based on a 1% sample for Windows OS 10, release channel only; used in Firefox Health Indicator dashboard
+  Calculates % of clients with Firefox set as default based on a 1% sample for Windows OS 10, release channel only; used in Firefox Health Indicator dashboard
 owners:
 - kwindau@mozilla.com
 labels:

@@ -663,6 +663,20 @@ with DAG(
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
+    with TaskGroup(
+        "telemetry_derived__events_1pct__v1_external",
+    ) as telemetry_derived__events_1pct__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_telemetry_derived__events_1pct__v1",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_telemetry_derived__events_1pct__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=36000)).isoformat() }}",
+        )
+
+        telemetry_derived__events_1pct__v1_external.set_upstream(
+            telemetry_derived__events_1pct__v1
+        )
+
     telemetry_derived__firefox_desktop_usage__v1 = bigquery_etl_query(
         task_id="telemetry_derived__firefox_desktop_usage__v1",
         destination_table="firefox_desktop_usage_v1",

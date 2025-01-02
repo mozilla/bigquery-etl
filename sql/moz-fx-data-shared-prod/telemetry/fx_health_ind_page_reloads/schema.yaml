@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Country Code
+- name: nbr_distinct_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Distinct Clients

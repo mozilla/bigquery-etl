@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: os_version_bucket
+  type: STRING
+  mode: NULLABLE
+  description: A bucket for OS versions - for example, Win10, Win11, etc.
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of new profiles

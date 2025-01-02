@@ -59,6 +59,30 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=39600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    pocket_derived__pocket_usage__v1 = bigquery_etl_query(
+        task_id="pocket_derived__pocket_usage__v1",
+        destination_table="pocket_usage_v1",
+        dataset_id="pocket_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="gkatre@mozilla.com",
+        email=["gkatre@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     pocket_derived__rolling_monthly_active_user_counts__v1 = bigquery_etl_query(
         task_id="pocket_derived__rolling_monthly_active_user_counts__v1",
         destination_table="rolling_monthly_active_user_counts_v1",
@@ -133,6 +157,8 @@ with DAG(
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
+
+    pocket_derived__pocket_usage__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     pocket_derived__rolling_monthly_active_user_counts__v1.set_upstream(
         pocket_derived__rolling_monthly_active_user_counts_history__v1

@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: antivirus_name
+  type: STRING
+  mode: REPEATED
+  description: Antivirus Software Array - Array of Antivirus Software Installed on Client
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients

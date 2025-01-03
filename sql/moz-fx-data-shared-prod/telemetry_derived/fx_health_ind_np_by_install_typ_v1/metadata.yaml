@@ -1,0 +1,22 @@
+friendly_name: Firefox Health Indicator - New Profiles by Installer Type
+description: |-
+  Calculates new profiles per installer type for Windows clients; used in Firefox Health Indicator dashboard
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+  depends_on_past: false
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}

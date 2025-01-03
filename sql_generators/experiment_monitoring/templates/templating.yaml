@@ -13,6 +13,15 @@ queries:
   experiment_search_events_live_v1:
     per_app: true
     start_date: "2023-10-10"
+  experiment_crash_events_live_v1:
+    per_app: true
+    start_date: "2025-01-01"
+    skip_applications:
+      - monitor_cirrus
+  experiment_crash_aggregates_v1:
+    per_app: false
+    skip_applications:
+      - monitor_cirrus
 search_metrics:
   telemetry:
     ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar

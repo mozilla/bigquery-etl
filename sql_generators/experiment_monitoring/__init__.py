@@ -37,6 +37,10 @@ def generate_queries(project, path, write_dir):
         if args["per_app"]:
             # generate a separate query for each application dataset
             for dataset in template_config["applications"]:
+                if "skip_applications" in args:
+                    if dataset in args["skip_applications"]:
+                        continue
+            
                 args["dataset"] = dataset
 
                 write_sql(
@@ -54,6 +58,9 @@ def generate_queries(project, path, write_dir):
             # generate a single query that UNIONs application datasets
             # these queries are written to `telemetry`
             args["applications"] = template_config["applications"]
+
+            if "skip_applications" in args:
+                args["applications"] = [app for app in args["applications"] if app not in args["skip_applications"]]
 
             write_sql(
                 write_dir / project,

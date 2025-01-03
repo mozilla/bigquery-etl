@@ -20,9 +20,9 @@ staging AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_last_seen`
   WHERE
-    first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    first_seen_date = @fsd
     AND submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    BETWEEN @fsd
     AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
     AND sample_id = 0
 ),

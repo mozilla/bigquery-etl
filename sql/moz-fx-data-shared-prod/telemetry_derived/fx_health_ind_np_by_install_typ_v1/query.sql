@@ -43,6 +43,7 @@ final_stg AS (
   SELECT
     first_seen_date,
     installer_type,
+    COUNT(1) AS nbr_rows,
     COUNT(DISTINCT(CLIENT_ID)) AS new_profiles,
     SUM(BIT_COUNT(active_days_bits)) AS sum_active_days_bit_count_for_new_profiles
   FROM
@@ -54,6 +55,7 @@ final_stg AS (
 SELECT
   first_seen_date,
   installer_type,
+  nbr_rows,
   new_profiles,
   sum_active_days_bit_count_for_new_profiles,
   SAFE_DIVIDE(

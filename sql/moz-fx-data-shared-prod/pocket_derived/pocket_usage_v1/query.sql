@@ -44,7 +44,3 @@ LEFT JOIN
   pocket_activity AS b
   ON submission_date = events_submission_date
   AND channel = events_channel
-ORDER BY
-  1,
-  2,
-  3

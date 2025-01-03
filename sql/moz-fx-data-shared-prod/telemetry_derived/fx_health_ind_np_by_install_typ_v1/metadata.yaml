@@ -10,8 +10,6 @@ labels:
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
   depends_on_past: false
-  parameters:
-  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day

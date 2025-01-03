@@ -40,7 +40,7 @@ def generate_queries(project, path, write_dir):
                 if "skip_applications" in args:
                     if dataset in args["skip_applications"]:
                         continue
-            
+
                 args["dataset"] = dataset
 
                 write_sql(
@@ -60,16 +60,22 @@ def generate_queries(project, path, write_dir):
             args["applications"] = template_config["applications"]
 
             if "skip_applications" in args:
-                args["applications"] = [app for app in args["applications"] if app not in args["skip_applications"]]
+                args["applications"] = [
+                    app
+                    for app in args["applications"]
+                    if app not in args["skip_applications"]
+                ]
+
+            destination_dataset = args.get("destination_dataset", "telemetry_derived")
 
             write_sql(
                 write_dir / project,
-                f"{project}.telemetry_derived.{query}",
+                f"{project}.{destination_dataset}.{query}",
                 sql_template_file,
                 reformat(sql_template.render(**args)),
             )
 
-            write_path = Path(write_dir) / project / "telemetry_derived" / query
+            write_path = Path(write_dir) / project / destination_dataset / query
             (write_path / "metadata.yaml").write_text(metadata_template.render(**args))
 
 

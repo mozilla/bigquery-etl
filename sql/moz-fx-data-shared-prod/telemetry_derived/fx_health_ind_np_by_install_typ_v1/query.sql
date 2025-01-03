@@ -56,6 +56,9 @@ SELECT
   installer_type,
   new_profiles,
   sum_active_days_bit_count_for_new_profiles,
-  SAFE_DIVIDE(sum_active_days_bit_count_for_new_profiles, new_profiles) AS ratio_of_np_days_active_bits_vs_np_first_7_days
+  SAFE_DIVIDE(
+    sum_active_days_bit_count_for_new_profiles,
+    new_profiles
+  ) AS ratio_of_np_days_active_bits_vs_np_first_7_days
 FROM
   final_stg

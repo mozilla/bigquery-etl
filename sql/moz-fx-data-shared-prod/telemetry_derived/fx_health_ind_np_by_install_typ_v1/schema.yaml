@@ -13,7 +13,7 @@ fields:
   description: Number of new profiles first seen on this date with this installer type
 - mode: NULLABLE
   name: sum_active_days_bit_count_for_new_profiles
-  type: STRING
+  type: INTEGER
   description: The sum of the "days active bits" in the next 7 days for these new profiles
 - mode: NULLABLE
   name: ratio_of_np_days_active_bits_vs_np_first_7_days

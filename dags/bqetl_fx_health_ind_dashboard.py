@@ -196,10 +196,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
+    wait_for_bq_main_events = ExternalTaskSensor(
+        task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
+        external_task_id="bq_main_events",
         execution_delta=datetime.timedelta(seconds=54000),
         check_existence=True,
         mode="reschedule",
@@ -222,10 +222,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_bq_main_events = ExternalTaskSensor(
-        task_id="wait_for_bq_main_events",
+    wait_for_event_events = ExternalTaskSensor(
+        task_id="wait_for_event_events",
         external_dag_id="copy_deduplicate",
-        external_task_id="bq_main_events",
+        external_task_id="event_events",
         execution_delta=datetime.timedelta(seconds=54000),
         check_existence=True,
         mode="reschedule",
@@ -235,10 +235,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_event_events = ExternalTaskSensor(
-        task_id="wait_for_event_events",
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
-        external_task_id="event_events",
+        external_task_id="copy_deduplicate_main_ping",
         execution_delta=datetime.timedelta(seconds=54000),
         check_existence=True,
         mode="reschedule",
@@ -384,6 +384,19 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    telemetry_derived__fx_health_ind_np_by_install_type__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_health_ind_np_by_install_type__v1",
+        destination_table='fx_health_ind_np_by_install_type_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["fsd:DATE:{{macros.ds_add(ds, -7)}}"]
+        + ["submission_date:DATE:{{ds}}"],
     )
 
     telemetry_derived__fx_health_ind_page_reloads__v1 = bigquery_etl_query(
@@ -591,6 +604,18 @@ with DAG(
 
     telemetry_derived__fx_health_ind_new_profiles_by_os__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__fx_health_ind_np_by_install_type__v1.set_upstream(
+        wait_for_bq_main_events
+    )
+
+    telemetry_derived__fx_health_ind_np_by_install_type__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    telemetry_derived__fx_health_ind_np_by_install_type__v1.set_upstream(
+        wait_for_event_events
     )
 
     telemetry_derived__fx_health_ind_page_reloads__v1.set_upstream(

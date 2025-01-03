@@ -1,0 +1,30 @@
+fields:
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: installer_type
+  type: STRING
+  mode: NULLABLE
+  description: Installer Type - The first install type associated with the client
+    ID; for example, msix, full, or stub
+- name: nbr_rows
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Rows in Clients Last Seen for These New Profiles for First
+    7 Days
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of new profiles first seen on this date with this installer
+    type
+- name: sum_active_days_bit_count_for_new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: The sum of the "days active bits" in the next 7 days for these new
+    profiles
+- name: ratio_of_np_days_active_bits_vs_np_first_7_days
+  type: FLOAT
+  mode: NULLABLE
+  description: Calculated as sum_active_days_bit_count_for_new_profiles divided by
+    new_profiles

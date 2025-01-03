@@ -8,6 +8,10 @@ fields:
   type: STRING
   description: Installer Type - The first install type associated with the client ID; for example, msix, full, or stub
 - mode: NULLABLE
+  name: nbr_rows
+  type: INTEGER
+  description: Count of Rows in Clients Last Seen for These New Profiles for First 7 Days
+- mode: NULLABLE
   name: new_profiles
   type: INTEGER
   description: Number of new profiles first seen on this date with this installer type

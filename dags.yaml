@@ -1804,28 +1804,7 @@ bqetl_merino_newtab_extract_to_gcs:
     retry_delay: 5m
     start_date: '2024-08-14'
   description: |
-    Aggregates Newtab engagement data by scheduled_corpus_item_id that lands in a GCS bucket for Merino recommendations.
-  repo: bigquery-etl
-  schedule_interval: "*/20 * * * *"
-  tags:
-    - repo/bigquery-etl
-    - impact/tier_1
-
-bqetl_merino_newtab_corpus_items_to_gcs:
-  default_args:
-    depends_on_past: false
-    email:
-      - mmiermans@mozilla.com
-      - gkatre@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    end_date: null
-    owner: mmiermans@mozilla.com
-    retries: 2
-    retry_delay: 5m
-    start_date: '2024-08-14'
-  description: |
-    Aggregates Newtab engagement data by corpus_item_id that lands in a GCS bucket for Merino recommendations.
+    Aggregates Newtab engagement data that lands in a GCS bucket for Merino recommendations.
   repo: bigquery-etl
   schedule_interval: "*/20 * * * *"
   tags:

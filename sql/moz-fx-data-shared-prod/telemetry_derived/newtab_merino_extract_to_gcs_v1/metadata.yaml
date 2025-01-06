@@ -17,7 +17,6 @@ scheduling:
   - --destination-bucket=merino-airflow-data-prodpy
   - --destination-prefix=newtab-merino-exports/engagement
   - --deletion-days-old=3
-  - --required-column=scheduled_corpus_item_id
   referenced_tables:
   - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_extract_v1']
 bigquery: null

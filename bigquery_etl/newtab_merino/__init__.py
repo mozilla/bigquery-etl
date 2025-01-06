@@ -35,15 +35,13 @@ log = logging.getLogger(__name__)
     "--destination-prefix", required=True, help="Prefix of the bucket path in GCS."
 )
 @click.option(
+    "--destination-prefix", required=True, help="Prefix of the bucket path in GCS."
+)
+@click.option(
     "--deletion-days-old",
     required=True,
     type=int,
     help="Number of days after which files in GCS should be deleted.",
-)
-@click.option(
-    "--required-column",
-    required=True,
-    help="Column that must not be None in the JSON output.",
 )
 def export_newtab_merino_table_to_gcs(
     source_project: str,
@@ -52,7 +50,6 @@ def export_newtab_merino_table_to_gcs(
     destination_bucket: str,
     destination_prefix: str,
     deletion_days_old: int,
-    required_column: str,
 ):
     """Use bigquery client to export data from BigQuery to GCS."""
     client = bigquery.Client(source_project)
@@ -93,15 +90,8 @@ def export_newtab_merino_table_to_gcs(
         # Read the temporary JSON file from GCS
         temp_file_content = blob.download_as_text()
 
-        # Convert the content to a JSON array and filter rows where required_column is not None
-        json_array = []
-        for line in temp_file_content.splitlines():
-            parsed_line = json.loads(line)
-            if (
-                required_column in parsed_line
-                and parsed_line[required_column] is not None
-            ):
-                json_array.append(parsed_line)
+        # Convert the content to a JSON array
+        json_array = [json.loads(line) for line in temp_file_content.splitlines()]
         json_data = json.dumps(json_array, indent=1)
 
         # Write the JSON array to the final destination files in GCS:
@@ -115,7 +105,7 @@ def export_newtab_merino_table_to_gcs(
         # Delete the temporary file from GCS
         blob.delete()
 
-        # Delete files older than deletion_days_old
+        # Delete files older than 3 days
         delete_old_files(bucket, destination_prefix, deletion_days_old)
 
         log.info("Export successful and temporary file deleted")

@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:

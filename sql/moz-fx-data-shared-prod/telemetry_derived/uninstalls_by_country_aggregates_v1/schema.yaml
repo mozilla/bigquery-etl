@@ -11,3 +11,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of unique client IDs with uninstalls for Firefox release channel
+- name: avg_profile_creation_date
+  type: FLOAT
+  mode: NULLABLE
+  description: The average profile creation date for those uninstalling, expressed numerically

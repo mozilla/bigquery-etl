@@ -510,6 +510,39 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    telemetry_derived__uninstalls_by_channel_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_channel_aggregates__v1",
+        destination_table="uninstalls_by_channel_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_country_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_country_aggregates__v1",
+        destination_table="uninstalls_by_country_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_os_ver_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_os_ver_aggregates__v1",
+        destination_table="uninstalls_by_os_ver_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__user_cancelled_install_share__v1 = bigquery_etl_query(
         task_id="telemetry_derived__user_cancelled_install_share__v1",
         destination_table="user_cancelled_install_share_v1",
@@ -691,6 +724,18 @@ with DAG(
 
     telemetry_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
         wait_for_firefox_desktop_active_users_aggregates_v4
+    )
+
+    telemetry_derived__uninstalls_by_channel_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_country_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_os_ver_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__user_cancelled_install_share__v1.set_upstream(

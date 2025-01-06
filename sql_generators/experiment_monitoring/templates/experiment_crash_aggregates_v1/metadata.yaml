@@ -1,7 +1,7 @@
 friendly_name: Experiment Crash Aggregates
 description: |-
   Aggregates crash metrics for experiments. Used in the
-  Grafana Live Monitoring Dashboard.
+  Looker Live Monitoring Dashboard.
 owners:
 - ascholtz@mozilla.com
 labels:

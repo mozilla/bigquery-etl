@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.clients_first_seen`
+  `moz-fx-data-shared-prod.telemetry.clients_first_seen_28_days_later`
 AS
 SELECT
   cfs28.*,

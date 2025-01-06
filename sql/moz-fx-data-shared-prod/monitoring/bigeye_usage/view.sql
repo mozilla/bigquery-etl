@@ -8,6 +8,11 @@ SELECT
   reference_table_id,
   creation_date,
   task_duration,
+  EXTRACT(HOUR FROM task_duration) * 3600 + EXTRACT(MINUTE FROM task_duration) * 60 + EXTRACT(
+    SECOND
+    FROM
+      task_duration
+  ) AS task_duration_seconds,
   total_terabytes_processed,
   total_terabytes_billed,
   total_slot_ms,

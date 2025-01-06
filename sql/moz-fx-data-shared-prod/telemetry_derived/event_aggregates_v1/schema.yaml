@@ -83,3 +83,39 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Browser Language Language Item Count
+- name: nbr_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Events
+- name: disable_etp_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Disable ETP Count; i.e. etp_toggle_off clicks
+- name: enable_etp_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Enable ETP Count; i.e. etp_toggle_on clicks
+- name: click_site_not_working
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Site Not Working Link
+- name: click_report_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Send Report Link
+- name: submit_report_cnt
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Send Report Submit
+- name: open_panel
+  type: INTEGER
+  mode: NULLABLE
+  description: Clicks on Open Panel
+- name: nbr_non_null_client_ids
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Non-Null Client IDs
+- name: nbr_distinct_client_ids
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Distinct Client IDs

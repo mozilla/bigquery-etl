@@ -10,6 +10,7 @@ labels:
   application: amo
   incremental: true
   schedule: daily
+  table_table: client_level
 scheduling:
   dag_name: bqetl_amo_stats
 bigquery:

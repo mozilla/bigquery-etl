@@ -10,6 +10,9 @@ description: |-
     - partner
     - version
     - normalized_channel
+labels:
+  shredder_mitigation: true
+  table_type: aggregate
 owners:
   - akomar@mozilla.com
 bigquery:

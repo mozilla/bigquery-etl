@@ -5,8 +5,9 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   table_type: aggregate
+  dag: bqetl_event_aggregates
 scheduling:
   dag_name: bqetl_event_aggregates
 bigquery:

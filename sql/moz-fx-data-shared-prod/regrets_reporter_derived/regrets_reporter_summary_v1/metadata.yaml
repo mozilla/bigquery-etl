@@ -13,6 +13,8 @@ labels:
   public_json: false
   dag: bqetl_regrets_reporter_summary
   owner1: kik
+  table_type: aggregate
+  shredder_mitigation: false
 scheduling:
   dag_name: bqetl_regrets_reporter_summary
   task_name: regrets_reporter_summary__v1

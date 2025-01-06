@@ -35,7 +35,7 @@ repos:
   hooks:
   - id: mypy
     exclude: sql/.+/.+/.+/query\.py$
-    additional_dependencies: [types-pytz==2024.2.0.20241003,
+    additional_dependencies: [types-pytz==2024.2.0.20241221,
                               types-ujson==5.10.0.20240515,
                               types-python-dateutil==2.9.0.20241206,
                               types-requests==2.32.0.20241016,

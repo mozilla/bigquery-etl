@@ -23,7 +23,10 @@ flattened_newtab_events AS (
     submission_timestamp,
     normalized_country_code,
     unnested_events.name AS event_name,
-    mozfun.map.get_key(unnested_events.extra, 'scheduled_corpus_item_id') AS scheduled_corpus_item_id,
+    mozfun.map.get_key(
+      unnested_events.extra,
+      'scheduled_corpus_item_id'
+    ) AS scheduled_corpus_item_id,
     mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id,
     TIMESTAMP_MILLIS(
       SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
@@ -67,7 +70,7 @@ aggregated_events AS (
   SELECT
     fe.scheduled_corpus_item_id,
     -- fe.corpus_item_id can be NULL because it's only emitted by Firefox >= 134.
-    COALESCE(fe.corpus_item_id, asl.corpus_item_id) as corpus_item_id,
+    COALESCE(fe.corpus_item_id, asl.corpus_item_id) AS corpus_item_id,
     fe.normalized_country_code,
     SUM(CASE WHEN fe.event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
     SUM(CASE WHEN fe.event_name = 'click' THEN 1 ELSE 0 END) AS click_count

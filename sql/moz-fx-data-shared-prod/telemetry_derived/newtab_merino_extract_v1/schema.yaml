@@ -3,6 +3,9 @@ fields:
   name: scheduled_corpus_item_id
   type: STRING
 - mode: NULLABLE
+  name: corpus_item_id
+  type: STRING
+- mode: NULLABLE
   name: impression_count
   type: INTEGER
 - mode: NULLABLE

@@ -371,7 +371,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch_async.return_value = mock.Mock(metric_infos=[])
+            mock_client.run_metric_batch_async.return_value = []
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -414,21 +414,17 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch_async.return_value = mock.Mock(
-                metric_infos=[
-                    SimpleNamespace(
-                        latest_metric_runs=[
-                            SimpleNamespace(
-                                status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
-                            )
-                        ],
-                        metric_configuration=SimpleNamespace(
-                            id=123, name="test [fail]"
-                        ),
-                        active_issue=SimpleNamespace(display_name="error"),
-                    )
-                ]
-            )
+            mock_client.run_metric_batch_async.return_value = [
+                SimpleNamespace(
+                    latest_metric_runs=[
+                        SimpleNamespace(
+                            status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
+                        )
+                    ],
+                    metric_configuration=SimpleNamespace(id=123, name="test [fail]"),
+                    active_issue=SimpleNamespace(display_name="error"),
+                )
+            ]
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -472,21 +468,17 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch_async.return_value = mock.Mock(
-                metric_infos=[
-                    SimpleNamespace(
-                        latest_metric_runs=[
-                            SimpleNamespace(
-                                status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
-                            )
-                        ],
-                        metric_configuration=SimpleNamespace(
-                            id=123, name="test [warn]"
-                        ),
-                        active_issue=SimpleNamespace(display_name="error"),
-                    )
-                ]
-            )
+            mock_client.run_metric_batch_async.return_value = [
+                SimpleNamespace(
+                    latest_metric_runs=[
+                        SimpleNamespace(
+                            status=MetricRunStatus.METRIC_RUN_STATUS_UPPERBOUND_CRITICAL
+                        )
+                    ],
+                    metric_configuration=SimpleNamespace(id=123, name="test [warn]"),
+                    active_issue=SimpleNamespace(display_name="error"),
+                )
+            ]
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -538,7 +530,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch_async.return_value = mock.Mock(metric_infos=[])
+            mock_client.run_metric_batch_async.return_value = []
             rules_mock = mock.Mock(
                 custom_rules=[
                     mock.Mock(

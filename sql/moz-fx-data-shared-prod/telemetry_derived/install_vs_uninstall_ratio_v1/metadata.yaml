@@ -1,6 +1,6 @@
 friendly_name: Install Vs Uninstall Ratio
 description: |-
-  Calculates ratio of installs v uninstalls; query provided by rtestard
+  Calculates ratio of installs v uninstalls
 owners:
 - kwindau@mozilla.com
 labels:

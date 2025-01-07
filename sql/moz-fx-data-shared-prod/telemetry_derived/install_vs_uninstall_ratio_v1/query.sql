@@ -21,28 +21,6 @@ uninstalls AS (
     DATE(submission_timestamp) = @submission_date
     AND application.name = 'Firefox'
     AND application.channel = 'release'
-    AND normalized_country_code IN (
-      'BR',
-      'ID',
-      'DE',
-      'US',
-      'IN',
-      'FR',
-      'PL',
-      'ES',
-      'CN',
-      'IT',
-      'MX',
-      'GB',
-      'TR',
-      'JP',
-      'CO',
-      'RU',
-      'CA',
-      'TH',
-      'EG',
-      'AU'
-    )
   GROUP BY
     DATE(submission_timestamp)
 )

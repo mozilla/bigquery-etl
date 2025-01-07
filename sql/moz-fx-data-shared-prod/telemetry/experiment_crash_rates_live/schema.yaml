@@ -1,0 +1,22 @@
+fields:
+- name: experiment
+  type: STRING
+  mode: NULLABLE
+- name: branch
+  type: STRING
+  mode: NULLABLE
+- name: window_start
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: window_end
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: crash_process_type
+  type: STRING
+  mode: NULLABLE
+- name: crash_count
+  type: INTEGER
+  mode: NULLABLE
+- name: estimated_crash_rate
+  type: FLOAT
+  mode: NULLABLE

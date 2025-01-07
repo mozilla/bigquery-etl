@@ -1,14 +1,13 @@
-friendly_name: Experiment Cumulative Search With Ads Count
+friendly_name: Experiment Cumulative Search with Ads Count
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Cumulative data of searches that had ad clicks related to experiments
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:dataops-managed/taar
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiment_cumulative_search_with_ads_count_v1
+deprecated: true

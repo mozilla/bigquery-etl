@@ -1,14 +1,13 @@
 friendly_name: Experiment Cumulative Ad Clicks
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Cumulative ad click data related to experiments
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:dataops-managed/taar
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiment_cumulative_ad_clicks_v1
+deprecated: true

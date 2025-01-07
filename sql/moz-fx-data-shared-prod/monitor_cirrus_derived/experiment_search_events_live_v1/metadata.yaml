@@ -8,11 +8,8 @@ labels:
   materialized_view: true
   owner1: ascholtz
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-  - workgroup:dataops-managed/external-fides
+workgroup_access: []
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.monitor_cirrus_live.enrollment_v1
+deprecated: true

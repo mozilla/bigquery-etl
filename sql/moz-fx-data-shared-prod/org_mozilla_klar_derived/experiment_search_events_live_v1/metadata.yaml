@@ -8,10 +8,8 @@ labels:
   materialized_view: true
   owner1: ascholtz
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.org_mozilla_klar_live.metrics_v1
+deprecated: true

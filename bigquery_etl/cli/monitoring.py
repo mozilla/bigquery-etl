@@ -790,7 +790,7 @@ def run(name, project_id, sql_dir, workspace, base_url, marker):
                 click.echo(
                     f"Trigger metric runs for {project}.{dataset}.{table}: {metric_ids}"
                 )
-                response = client.run_metric_batch(metric_ids=metric_ids)
+                response = client.run_metric_batch_async(metric_ids=metric_ids)
                 for metric_info in response.metric_infos:
                     latest_metric_run = metric_info.latest_metric_runs[-1]
                     if (

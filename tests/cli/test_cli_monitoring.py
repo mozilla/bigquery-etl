@@ -371,7 +371,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(metric_infos=[])
+            mock_client.run_metric_batch_async.return_value = mock.Mock(metric_infos=[])
             mock_client.get_rules_for_source.return_value = mock.Mock(custom_rules=[])
             mock_metric_info = mock.Mock(
                 metrics=[
@@ -388,7 +388,7 @@ class TestMonitoring:
                 catch_exceptions=False,
             )
 
-        mock_client.run_metric_batch.assert_called_once_with(
+        mock_client.run_metric_batch_async.assert_called_once_with(
             metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
         )
 
@@ -414,7 +414,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(
+            mock_client.run_metric_batch_async.return_value = mock.Mock(
                 metric_infos=[
                     SimpleNamespace(
                         latest_metric_runs=[
@@ -446,7 +446,7 @@ class TestMonitoring:
             )
             assert result.exit_code == 1
 
-        mock_client.run_metric_batch.assert_called_once_with(
+        mock_client.run_metric_batch_async.assert_called_once_with(
             metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
         )
 
@@ -472,7 +472,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(
+            mock_client.run_metric_batch_async.return_value = mock.Mock(
                 metric_infos=[
                     SimpleNamespace(
                         latest_metric_runs=[
@@ -505,7 +505,7 @@ class TestMonitoring:
             )
             assert result.exit_code == 0
 
-        mock_client.run_metric_batch.assert_called_once_with(
+        mock_client.run_metric_batch_async.assert_called_once_with(
             metric_ids=[mock_metric_info.metrics[0].metric_configuration.id]
         )
 
@@ -538,7 +538,7 @@ class TestMonitoring:
             mock_metric_controller_init.return_value = None
             mock_client = mock.Mock()
             mock_client_factory.return_value = mock_client
-            mock_client.run_metric_batch.return_value = mock.Mock(metric_infos=[])
+            mock_client.run_metric_batch_async.return_value = mock.Mock(metric_infos=[])
             rules_mock = mock.Mock(
                 custom_rules=[
                     mock.Mock(

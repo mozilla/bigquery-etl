@@ -1,0 +1,45 @@
+- &base
+  submission_date: 2025-01-01
+  window_start: 2025-01-01 00:00:00 UTC
+  window_end: 2025-01-01 00:00:00 UTC
+  event_category: action
+  event_name: opened
+  event_extra_key: null
+  country: US
+  normalized_app_name: Firefox for Desktop
+  channel: release
+  version: 130.0.0
+  experiment: '*'
+  experiment_branch: '*'
+  total_events: 10
+# highest count non-null event extra
+- <<: *base
+  event_extra_key: abc
+  total_events: 5
+# lower count non-null event extra, should be ignored
+- <<: *base
+  event_extra_key: def
+  total_events: 4
+# specific experiment, should be ignored
+- <<: *base
+  experiment: exp
+  experiment_branch: a
+  total_events: 10
+# different channel, non-null extra
+- <<: *base
+  channel: beta
+  event_extra_key: abc
+  total_events: 8
+# different channel, null extra
+- <<: *base
+  channel: beta
+  event_extra_key: abc
+  total_events: 6
+# different event
+- <<: *base
+  event_name: closed
+  total_events: 2
+# different app
+- <<: *base
+  normalized_app_name: Firefox for Android
+  total_events: 12

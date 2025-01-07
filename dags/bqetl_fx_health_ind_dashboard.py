@@ -521,6 +521,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__install_vs_uninstall_ratio_by_country__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__install_vs_uninstall_ratio_by_country__v1",
+        destination_table="install_vs_uninstall_ratio_by_country_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__uninstalls_by_channel_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__uninstalls_by_channel_aggregates__v1",
         destination_table="uninstalls_by_channel_aggregates_v1",
@@ -546,6 +557,17 @@ with DAG(
     telemetry_derived__uninstalls_by_os_ver_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__uninstalls_by_os_ver_aggregates__v1",
         destination_table="uninstalls_by_os_ver_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_per_other_installs__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_per_other_installs__v1",
+        destination_table="uninstalls_per_other_installs_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -741,6 +763,10 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    telemetry_derived__install_vs_uninstall_ratio_by_country__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     telemetry_derived__uninstalls_by_channel_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -750,6 +776,10 @@ with DAG(
     )
 
     telemetry_derived__uninstalls_by_os_ver_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_per_other_installs__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

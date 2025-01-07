@@ -1,0 +1,26 @@
+friendly_name: Install Vs Uninstall Ratio By Country
+description: |-
+  Aggregate table calculating install vs uninstalls by country
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  dag: bqetl_fx_health_ind_dashboard
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_country_code
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

@@ -5,9 +5,6 @@ fields:
 - name: conversion_name
   type: STRING
   mode: NULLABLE
-- name: activity_date
-  type: INTEGER
-  mode: NULLABLE
 - name: activity_date_timestamp
-  type: TIMESTAMP
+  type: STRING
   mode: NULLABLE

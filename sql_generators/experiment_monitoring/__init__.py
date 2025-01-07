@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
+from fnmatch import fnmatchcase
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
@@ -38,7 +39,7 @@ def generate_queries(project, path, write_dir):
             # generate a separate query for each application dataset
             for dataset in template_config["applications"]:
                 if "skip_applications" in args:
-                    if dataset in args["skip_applications"]:
+                    if any(fnmatchcase(dataset, skip_app) for skip_app in args["skip_applications"]):
                         continue
 
                 args["dataset"] = dataset
@@ -63,7 +64,7 @@ def generate_queries(project, path, write_dir):
                 args["applications"] = [
                     app
                     for app in args["applications"]
-                    if app not in args["skip_applications"]
+                    if not any(fnmatchcase(app, skip_app) for skip_app in args["skip_applications"])
                 ]
 
             destination_dataset = args.get("destination_dataset", "telemetry_derived")

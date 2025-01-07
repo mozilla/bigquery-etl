@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: release_channel_stub_installs_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of release channel stub installs
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of release channel uninstalls for a specific set of countries
+- name: uninstall_to_install_ratio
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio resulting from dividing uninstalls_count by release_channel_stub_installs_count

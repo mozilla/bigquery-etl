@@ -1,8 +1,0 @@
-description: Union of legacy metrics and glean metrics
-friendly_name: unified metrics
-labels:
-  incremental: true
-owners:
-  - kik@mozilla.com
-deprecated: true
-deletion_date: 2025-01-01

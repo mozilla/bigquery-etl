@@ -1896,7 +1896,7 @@ SELECT
 </li>
 </ol>
 <h2 id="remove-a-field-from-a-table-schema">Remove a field from a table schema</h2>
-<p>Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
+<p>Deleting a field from an existing table schema should be done only when is totally necessary. If you decide to delete it:
 1. Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
 1. Follow <a href="https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition">Big Query docs</a> recommendations for deleting.
 1. If the column size exceeds the allowed limit, consider setting the field as NULL. See this <a href="https://github.com/mozilla/bigquery-etl/pull/2463">search_clients_daily_v8</a> PR for an example.</p>

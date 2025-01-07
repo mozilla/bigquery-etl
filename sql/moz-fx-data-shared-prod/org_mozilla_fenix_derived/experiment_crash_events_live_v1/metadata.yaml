@@ -1,0 +1,17 @@
+friendly_name: Experiment Crash Events Live
+description: |-
+  Materialized view of experimentation related crash events
+  coming from org_mozilla_fenix.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  materialized_view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_live.crash_v1

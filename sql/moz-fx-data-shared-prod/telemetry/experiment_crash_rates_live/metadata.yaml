@@ -1,0 +1,23 @@
+friendly_name: Experiment Crash Rates Live
+description: |
+  View for live experiment crash rates.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.org_mozilla_klar_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_crash_aggregates_v1
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_crash_events_live_v1
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_cumulative_population_estimate_v1

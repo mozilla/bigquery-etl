@@ -1,0 +1,17 @@
+friendly_name: Experiment Crash Events Live
+description: |-
+  Materialized view of experimentation related crash events
+  coming from telemetry.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  materialized_view.sql:
+  - moz-fx-data-shared-prod.telemetry_live.crash_v4

@@ -53,10 +53,10 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_bq_main_events = ExternalTaskSensor(
-        task_id="wait_for_bq_main_events",
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
-        external_task_id="bq_main_events",
+        external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -66,10 +66,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
+    wait_for_bq_main_events = ExternalTaskSensor(
+        task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
+        external_task_id="bq_main_events",
         execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
@@ -141,6 +141,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__experiment_crash_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__experiment_crash_aggregates__v1",
+        destination_table="experiment_crash_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__experiment_enrollment_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__experiment_enrollment_aggregates__v1",
         destination_table="experiment_enrollment_aggregates_v1",
@@ -176,6 +187,10 @@ with DAG(
 
     experiment_enrollment_daily_active_population.set_upstream(
         telemetry_derived__experiments_daily_active_clients__v1
+    )
+
+    telemetry_derived__experiment_crash_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(

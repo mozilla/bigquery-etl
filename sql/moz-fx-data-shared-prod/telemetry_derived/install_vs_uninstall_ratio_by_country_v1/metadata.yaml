@@ -1,6 +1,6 @@
 friendly_name: Install Vs Uninstall Ratio By Country
 description: |-
-  Please provide a description for the query
+  Aggregate table calculating install vs uninstalls by country
 owners:
 - kwindau@mozilla.com
 labels:

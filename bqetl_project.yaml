@@ -301,7 +301,6 @@ generate:
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_last_seen_v1/checks.sql
     - sql/moz-fx-data-shared-prod/net_thunderbird_android_derived/baseline_clients_last_seen_v1/checks.sql
     skip_apps:
-    - mlhackweek_search
     - moso_mastodon_android
     - moso_mastodon_web
     - moso_mastodon_backend

@@ -23,7 +23,10 @@ WITH all_clicks_from_united_states AS (
 SELECT
   a.gclid,
   a.conversion_name,
-  FORMAT_TIMESTAMP("%Y-%m-%d %X %EZ", CAST(MIN(a.activity_datetime) AS TIMESTAMP)) AS activity_date_timestamp
+  FORMAT_TIMESTAMP(
+    "%Y-%m-%d %X %EZ",
+    CAST(MIN(a.activity_datetime) AS TIMESTAMP)
+  ) AS activity_date_timestamp
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v2` a
 JOIN

@@ -56,7 +56,10 @@ def project_dirs(project_id=None, sql_dir=None) -> List[str]:
         sql_dir = ConfigLoader.get("default", "sql_dir", fallback="sql")
     if project_id is None:
         return [
-            os.path.join(sql_dir, project_dir) for project_dir in os.listdir(sql_dir)
+            os.path.join(sql_dir, project_dir)
+            for project_dir in os.listdir(sql_dir)
+            # sql/ can contain files like bigconfig.yml
+            if os.path.isdir(os.path.join(sql_dir, project_dir))
         ]
     else:
         return [os.path.join(sql_dir, project_id)]

@@ -19,7 +19,7 @@ queries:
     start_date: "2023-10-10"
   experiment_crash_events_live_v1:
     per_app: true
-    start_date: "2025-01-01"
+    start_date: "2025-01-05"
     skip_applications:
       - "*_cirrus"
       - "org_mozilla_ios_*"  # no crash data collected for ios

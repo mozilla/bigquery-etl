@@ -214,6 +214,9 @@ dry_run:
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
+deprecation:
+  retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated
+  - roles/bigquery.dataEditor  # operational access
 
 format:
   skip:

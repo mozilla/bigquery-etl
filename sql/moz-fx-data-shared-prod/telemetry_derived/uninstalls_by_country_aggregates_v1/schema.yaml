@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Country Code
+- name: nbr_unique_fx_release_channel_clients_with_uninstalls
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique client IDs with uninstalls for Firefox release channel
+- name: avg_profile_creation_date
+  type: FLOAT
+  mode: NULLABLE
+  description: The average profile creation date for those uninstalling, expressed numerically

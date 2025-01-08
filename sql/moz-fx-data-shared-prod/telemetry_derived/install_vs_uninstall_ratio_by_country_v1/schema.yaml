@@ -1,0 +1,21 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Country Code
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients Uninstalling on Firefox release channel
+- name: installs_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of stub release channel installs
+- name: uninstall_to_install_ratio
+  type: FLOAT
+  mode: NULLABLE
+  description: Result of dividing uninstalls by installs

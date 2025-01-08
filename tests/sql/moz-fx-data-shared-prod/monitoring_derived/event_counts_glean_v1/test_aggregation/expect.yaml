@@ -1,0 +1,36 @@
+# release desktop, opened event
+- submission_date: 2025-01-01
+  event_category: action
+  event_name: opened
+  country: US
+  normalized_app_name: Firefox for Desktop
+  channel: release
+  version: 130.0.0
+  total_events: 15
+# beta desktop, opened event
+- submission_date: 2025-01-01
+  event_category: action
+  event_name: opened
+  country: US
+  normalized_app_name: Firefox for Desktop
+  channel: beta
+  version: 130.0.0
+  total_events: 14
+# release desktop, closed event
+- submission_date: 2025-01-01
+  event_category: action
+  event_name: closed
+  country: US
+  normalized_app_name: Firefox for Desktop
+  channel: release
+  version: 130.0.0
+  total_events: 2
+# release android, opened event
+- submission_date: 2025-01-01
+  event_category: action
+  event_name: opened
+  country: US
+  normalized_app_name: Firefox for Android
+  channel: release
+  version: 130.0.0
+  total_events: 12

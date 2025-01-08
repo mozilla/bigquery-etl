@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: nbr_other_installs
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Other Installs
+- name: nbr_unique_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Unique Clients

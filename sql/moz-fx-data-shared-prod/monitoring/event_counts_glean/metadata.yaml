@@ -1,0 +1,5 @@
+friendly_name: Event Counts Glean
+description: |-
+  Daily event counts for all Glean apps, derived from monitoring_derived.event_monitoring_aggregates_v1
+owners:
+- bewu@mozilla.com

@@ -50,9 +50,6 @@ fields:
 - name: original_estimate
   type: FLOAT
   mode: NULLABLE
-- name: parent_id
-  type: INTEGER
-  mode: NULLABLE
 - name: priority
   type: INTEGER
   mode: NULLABLE
@@ -103,4 +100,67 @@ fields:
   mode: NULLABLE
 - name: work_ratio
   type: FLOAT
+  mode: NULLABLE
+- name: link
+  type: STRING
+  mode: NULLABLE
+- name: request_type_id
+  type: INTEGER
+  mode: NULLABLE
+- name: service_desk_id
+  type: INTEGER
+  mode: NULLABLE
+- name: help_text
+  type: STRING
+  mode: NULLABLE
+- name: issue_type_id
+  type: INTEGER
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: project_id
+  type: INTEGER
+  mode: NULLABLE
+- name: request_id
+  type: INTEGER
+  mode: NULLABLE
+- name: request_description
+  type: STRING
+  mode: NULLABLE
+- name: dimension_table
+  type: STRING
+  mode: NULLABLE
+- name: is_array
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_custom
+  type: BOOLEAN
+  mode: NULLABLE
+- name: field_name
+  type: STRING
+  mode: NULLABLE
+- name: time
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: author_id
+  type: STRING
+  mode: NULLABLE
+- name: is_active
+  type: BOOLEAN
+  mode: NULLABLE
+- name: value
+  type: STRING
+  mode: NULLABLE
+- name: field_option_id
+  type: INTEGER
+  mode: NULLABLE
+- name: field_option_name
+  type: STRING
+  mode: NULLABLE
+- name: field_id
+  type: STRING
+  mode: NULLABLE
+- name: field_description
+  type: STRING
   mode: NULLABLE

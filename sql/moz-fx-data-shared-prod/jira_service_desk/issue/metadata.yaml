@@ -10,4 +10,9 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.jira_service_desk_syndicate.field
+  - moz-fx-data-shared-prod.jira_service_desk_syndicate.field_option
   - moz-fx-data-shared-prod.jira_service_desk_syndicate.issue
+  - moz-fx-data-shared-prod.jira_service_desk_syndicate.issue_field_history
+  - moz-fx-data-shared-prod.jira_service_desk_syndicate.request
+  - moz-fx-data-shared-prod.jira_service_desk_syndicate.request_type

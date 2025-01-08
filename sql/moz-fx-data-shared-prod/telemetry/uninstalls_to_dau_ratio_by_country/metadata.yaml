@@ -1,4 +1,4 @@
-friendly_name: Clients Daily V6
+friendly_name: Uninstalls To Dau Ratio By Country
 description: |-
   Please provide a description for the query
 owners: []
@@ -11,4 +11,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_to_dau_ratio_by_country_v1

@@ -576,6 +576,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__uninstalls_to_dau_ratio_by_country__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_to_dau_ratio_by_country__v1",
+        destination_table="uninstalls_to_dau_ratio_by_country_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__user_cancelled_install_share__v1 = bigquery_etl_query(
         task_id="telemetry_derived__user_cancelled_install_share__v1",
         destination_table="user_cancelled_install_share_v1",
@@ -781,6 +792,14 @@ with DAG(
 
     telemetry_derived__uninstalls_per_other_installs__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_to_dau_ratio_by_country__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_to_dau_ratio_by_country__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )
 
     telemetry_derived__user_cancelled_install_share__v1.set_upstream(

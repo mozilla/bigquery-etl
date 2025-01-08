@@ -1,4 +1,4 @@
-friendly_name: Clients Daily V6
+friendly_name: Install Vs Uninstall By Os
 description: |-
   Please provide a description for the query
 owners: []
@@ -11,4 +11,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
+  - moz-fx-data-shared-prod.telemetry_derived.install_vs_uninstall_by_os_v1

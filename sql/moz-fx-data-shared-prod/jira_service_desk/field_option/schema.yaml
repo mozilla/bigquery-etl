@@ -1,0 +1,13 @@
+fields:
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+- name: _fivetran_synced
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: parent_id
+  type: INTEGER
+  mode: NULLABLE

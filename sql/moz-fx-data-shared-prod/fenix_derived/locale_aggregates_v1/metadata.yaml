@@ -16,7 +16,7 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-      - country
-      - channel
-      - locale
+    - country
+    - channel
+    - locale
 references: {}

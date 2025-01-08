@@ -1,0 +1,24 @@
+friendly_name: Desktop Acquisition Funnel Aggregates
+description: |-
+  Aggregate table 
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_dsktp_acqstn_fnnl
+  date_partition_offset: -29
+  date_partition_parameter: fsd
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}

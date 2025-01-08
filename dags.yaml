@@ -2056,7 +2056,7 @@ bqetl_fx_cert_error_privacy_dashboard:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 40 16 * * *
-  
+
 bqetl_default_browser_aggregates:
   default_args:
     depends_on_past: false

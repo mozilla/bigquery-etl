@@ -233,7 +233,12 @@ class TestMetadata:
 
         assert metadata["workgroup_access"] == []
         assert metadata["deprecated"]
-        assert dataset_metadata["workgroup_access"] == []
+        assert dataset_metadata["workgroup_access"] == [
+            {
+                "members": ["workgroup:mozilla-test"],
+                "role": "roles/bigquery.dataEditor",
+            }
+        ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {
                 "members": ["workgroup:mozilla-confidential"],

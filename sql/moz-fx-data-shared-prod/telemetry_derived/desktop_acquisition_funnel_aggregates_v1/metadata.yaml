@@ -1,6 +1,6 @@
 friendly_name: Desktop Acquisition Funnel Aggregates
 description: |-
-  Aggregate table 
+  Aggregate table used to track desktop installation and retention 28 days later
 owners:
 - kwindau@mozilla.com
 labels:

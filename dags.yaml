@@ -2038,6 +2038,25 @@ bqetl_event_aggregates:
   repo: bigquery-etl
   schedule_interval: 40 16 * * *
 
+bqetl_fx_cert_error_privacy_dashboard:
+  description: |
+    This DAG builds the desktop event_aggregates table for unique users count
+  default_args:
+    depends_on_past: false
+    owner: akommasani@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-12-19"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 40 16 * * *
+
 bqetl_default_browser_aggregates:
   default_args:
     depends_on_past: false

@@ -1,11 +1,12 @@
 friendly_name: Uninstalls To Dau Ratio By Country
 description: |-
-  Please provide a description for the query
+  Aggregate table used in dashboard to show ratio of uninstalls to active users by country
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
   owner1: kwindau
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:

@@ -3,7 +3,7 @@ SELECT
   os,
   COUNT(DISTINCT client_id) AS nbr_unique_users
 FROM
-  `mozdata.telemetry.events`
+  `moz-fx-data-shared-prod.telemetry.events`
 WHERE
   event_category = 'security.ui.certerror'
   AND event_object = 'aboutcerterror'

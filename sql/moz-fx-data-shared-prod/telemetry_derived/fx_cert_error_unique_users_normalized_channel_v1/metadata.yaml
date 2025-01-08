@@ -1,0 +1,26 @@
+friendly_name: Firefox Cert Error Dashboard - Unique users by normalized channel
+description: |-
+  Unique users experiencing cert error page per day per channel
+owners:
+- akommasani@mozilla.com
+labels:
+  incremental: true
+  owner1: akommasani
+  table_type: aggregate
+  shredder_mitigation: true
+  dag: bqetl_fx_cert_error_privacy_dashboard
+scheduling:
+  dag_name: bqetl_fx_cert_error_privacy_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

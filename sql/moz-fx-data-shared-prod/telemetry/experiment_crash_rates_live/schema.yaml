@@ -17,6 +17,3 @@ fields:
 - name: crash_count
   type: INTEGER
   mode: NULLABLE
-- name: estimated_crash_rate
-  type: FLOAT
-  mode: NULLABLE

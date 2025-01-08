@@ -55,4 +55,3 @@ GROUP BY
   os,
   os_version,
   is_default_browser
-

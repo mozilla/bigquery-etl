@@ -6,7 +6,9 @@ WITH metrics AS (
     ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
     ] AS normalized_channel,
-    ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[SAFE_OFFSET(0)] AS is_default_browser
+    ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_date ASC)[
+      SAFE_OFFSET(0)
+    ] AS is_default_browser
   FROM
     `moz-fx-data-shared-prod.fenix.metrics_clients_last_seen`
   WHERE

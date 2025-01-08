@@ -49,7 +49,6 @@ references:
   - moz-fx-data-shared-prod.gleanjs_docs_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mdn_yari_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.messaging_system_stable.INFORMATION_SCHEMA.PARTITIONS
-  - moz-fx-data-shared-prod.mlhackweek_search_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mobile_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.monitor_backend_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.monitor_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS

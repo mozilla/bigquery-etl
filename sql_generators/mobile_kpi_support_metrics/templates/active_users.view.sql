@@ -3,7 +3,10 @@ CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
-  * EXCEPT (isp),
+  * EXCEPT (isp) REPLACE(
+    -- Lower device_manufacturer as in some cases the same manufacturer value has different casing.
+    LOWER(device_manufacturer) AS device_manufacturer
+  ),
   CASE
     WHEN LOWER(isp) = "browserstack"
       THEN CONCAT("{{ friendly_name }}", " ", isp)

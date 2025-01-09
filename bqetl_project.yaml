@@ -378,7 +378,7 @@ generate:
       - mozphab
       - mozregression
   stable_views:
-    skip_apps:
+    skip_datasets:
     - mlhackweek_search
 
 retention_exclusion_list:

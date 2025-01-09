@@ -409,7 +409,7 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
         last
         for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
         if k
-        not in ConfigLoader.get("generate", "stable_views", "skip_apps", fallback=[])
+        not in ConfigLoader.get("generate", "stable_views", "skip_datasets", fallback=[])
     ]
 
     id_token = get_id_token()

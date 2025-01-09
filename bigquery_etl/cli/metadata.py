@@ -57,6 +57,9 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+    retained_dataset_roles = ConfigLoader.get(
+        "deprecation", "retain_dataset_roles", fallback=[]
+    )
 
     # create and populate the dataset metadata yaml file if it does not exist
     for table_metadata_file in table_metadata_files:
@@ -83,7 +86,11 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
             # this overwrites existing workgroups
             table_metadata.workgroup_access = []
             table_metadata_updated = True
-            dataset_metadata.workgroup_access = []
+            dataset_metadata.workgroup_access = [
+                workgroup
+                for workgroup in dataset_metadata.workgroup_access
+                if workgroup.get("role") in retained_dataset_roles
+            ]
             dataset_metadata_updated = True
         else:
             if table_metadata.workgroup_access is None:

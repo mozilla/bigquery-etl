@@ -722,6 +722,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup(
+        "telemetry_derived__clients_first_seen_28_days_later__v1_external",
+    ) as telemetry_derived__clients_first_seen_28_days_later__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_dsktp_acqstn_fnnl__wait_for_telemetry_derived__clients_first_seen_28_days_later__v1",
+            external_dag_id="bqetl_dsktp_acqstn_fnnl",
+            external_task_id="wait_for_telemetry_derived__clients_first_seen_28_days_later__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=52200)).isoformat() }}",
+        )
+
+        telemetry_derived__clients_first_seen_28_days_later__v1_external.set_upstream(
+            telemetry_derived__clients_first_seen_28_days_later__v1
+        )
+
     telemetry_derived__clients_first_seen_28_days_later__v3 = bigquery_etl_query(
         task_id="telemetry_derived__clients_first_seen_28_days_later__v3",
         destination_table='clients_first_seen_28_days_later_v3${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',

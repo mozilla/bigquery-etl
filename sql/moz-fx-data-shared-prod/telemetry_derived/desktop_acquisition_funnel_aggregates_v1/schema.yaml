@@ -1,0 +1,81 @@
+fields:
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country Code
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Channel
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: os_version
+  type: NUMERIC
+  mode: NULLABLE
+  description: Operating System Version
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: Attribution User Agent
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Source
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Medium
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Campaign
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Content
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Download Source
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+  description: Startup Profile Selection Reason
+- name: cohort
+  type: INTEGER
+  mode: NULLABLE
+  description: Cohort
+- name: activated
+  type: INTEGER
+  mode: NULLABLE
+  description: Activated
+- name: returned_second_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Returned Second Day
+- name: qualified_second_day
+  type: INTEGER
+  mode: NULLABLE
+  description: Qualified Second Day
+- name: retained_week4
+  type: INTEGER
+  mode: NULLABLE
+  description: Retained Week 4
+- name: qualified_week4
+  type: INTEGER
+  mode: NULLABLE
+  description: Qualified Week 4

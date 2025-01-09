@@ -48,9 +48,9 @@ SELECT
   -- This is to make sure downstream union works as intended.
   isp,
   CASE
-    WHEN STARTS_WITH(device_model, "iPad") AND normalized_os = "iOS"
+    WHEN normalized_os = "iOS" AND STARTS_WITH(device_model, "iPad")
       THEN "iPad"
-    WHEN STARTS_WITH(device_model, "iPhone") AND normalized_os = "iOS"
+    WHEN normalized_os = "iOS" AND STARTS_WITH(device_model, "iPhone")
       THEN "iPhone"
     WHEN normalized_os = "Android"
       THEN "Android"

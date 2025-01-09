@@ -1,20 +1,19 @@
-friendly_name: Default Browser Aggregates Derived
+friendly_name: Uninstalls To Dau Ratio By Country
 description: |-
-  Aggregate table for default browser setting
+  Aggregate table used in dashboard to show ratio of uninstalls to active users by country
 owners:
-- wichan@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: wichan@mozilla.com
+  owner1: kwindau
   table_type: aggregate
-  shredder_mitigation: true
 scheduling:
-  dag_name: bqetl_default_browser_aggregates
+  dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
   range_partitioning: null
   clustering:

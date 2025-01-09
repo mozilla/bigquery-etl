@@ -14,6 +14,7 @@ SELECT
   {{ field.name }},
   {% endfor %}
   COUNT(*) AS new_profiles,
+  device_type,
 FROM
   `{{ project_id }}.{{ dataset }}.new_profile_clients`
 WHERE
@@ -33,6 +34,7 @@ GROUP BY
   locale,
   os,
   os_version,
+  device_type,
   device_manufacturer,
   is_mobile
   {% for field in product_attribution_fields.values() if not field.client_only %}

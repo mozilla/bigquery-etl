@@ -14,6 +14,8 @@ SELECT
   COUNTIF(is_dau) AS dau,
   COUNTIF(is_wau) AS wau,
   COUNTIF(is_mau) AS mau,
+  device_type,
+  device_manufacturer,
 FROM
   `{{ project_id }}.{{ dataset }}.engagement_clients`
 WHERE
@@ -32,6 +34,8 @@ GROUP BY
   app_version,
   country,
   locale,
+  device_type,
+  device_manufacturer,
   is_mobile
   {% for field in product_attribution_fields.values() if not field.client_only %}
     {% if loop.first %},{% endif %}

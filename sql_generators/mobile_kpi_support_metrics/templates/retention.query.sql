@@ -18,6 +18,8 @@ SELECT
   COUNTIF(retained_week_4_new_profile) AS retained_week_4_new_profiles,
   COUNTIF(new_profile_metric_date) AS new_profiles_metric_date,
   COUNTIF(repeat_profile) AS repeat_profiles,
+  device_type,
+  device_manufacturer,
 FROM
   `{{ project_id }}.{{ dataset }}.retention_clients`
 WHERE
@@ -38,6 +40,8 @@ GROUP BY
   country,
   app_version,
   locale,
+  device_type,
+  device_manufacturer,
   is_mobile
   {% for field in product_attribution_fields.values() if not field.client_only %}
     {% if loop.first %},{% endif %}

@@ -47,5 +47,15 @@ SELECT
   -- Adding isp at the end because it's in different column index in baseline table for some products.
   -- This is to make sure downstream union works as intended.
   isp,
+  CASE
+    WHEN STARTS_WITH(device_model, "iPad") AND normalized_os = "iOS"
+      THEN "iPad"
+    WHEN STARTS_WITH(device_model, "iPhone") AND normalized_os = "iOS"
+      THEN "iPhone"
+    WHEN normalized_os = "Android"
+      THEN "Android"
+    ELSE
+      CAST(NULL AS STRING)
+  END AS device_type,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen`

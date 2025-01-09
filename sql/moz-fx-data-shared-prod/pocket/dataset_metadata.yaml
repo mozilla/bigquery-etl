@@ -1,16 +1,14 @@
-friendly_name: pocket
+friendly_name: Pocket Views
 description: |-
-  User-facing views related to document namespace pocket; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/pocket
+  Views related to Pocket data
 dataset_base_acl: view
 user_facing: true
 labels: {}
 default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-default_table_expiration_ms: null
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential
 workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-syndication: {}
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

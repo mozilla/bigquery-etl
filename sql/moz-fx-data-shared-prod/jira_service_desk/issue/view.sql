@@ -54,7 +54,7 @@ fields AS (
       FROM
         `moz-fx-data-shared-prod.jira_service_desk_syndicate.field_option`
     ) AS field_option
-    ON field.id = "customfield_" || field_option.field_option_id
+    ON field_history.value = SAFE_CAST(field_option.field_option_id AS STRING)
 )
 -- Join requests and fields data with issues
 SELECT

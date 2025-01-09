@@ -92,3 +92,6 @@ fields:
 - name: os_grouped
   type: STRING
   mode: NULLABLE
+- name: partnership
+  type: STRING
+  mode: NULLABLE

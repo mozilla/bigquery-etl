@@ -1,0 +1,20 @@
+friendly_name: Firefox Privacy Dashboard - DAU interracting with the privacy panel
+description: |-
+  DAU interracting with the privacy panel
+owners:
+- akommasani@mozilla.com
+labels:
+  incremental: true
+  owner1: akommasani
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_fx_cert_error_privacy_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}

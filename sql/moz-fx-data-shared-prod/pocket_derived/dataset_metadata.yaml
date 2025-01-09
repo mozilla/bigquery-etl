@@ -3,7 +3,7 @@ description: |-
   Derived Pocket data
 dataset_base_acl: derived
 user_facing: false
-labels: { }
+labels: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

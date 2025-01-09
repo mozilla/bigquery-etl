@@ -832,6 +832,21 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    fenix_derived__locale_aggregates__v1 = bigquery_etl_query(
+        task_id="fenix_derived__locale_aggregates__v1",
+        destination_table="locale_aggregates_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_active_users_aggregates_v3 = bigquery_etl_query(
         task_id="firefox_desktop_active_users_aggregates_v3",
         destination_table='active_users_aggregates_v3${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -884,6 +899,21 @@ with DAG(
         firefox_desktop_active_users_aggregates_v4_external.set_upstream(
             firefox_desktop_active_users_aggregates_v4
         )
+
+    firefox_desktop_derived__locale_aggregates__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__locale_aggregates__v1",
+        destination_table="locale_aggregates_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lvargas@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
 
     firefox_ios_active_users_aggregates_v3 = bigquery_etl_query(
         task_id="firefox_ios_active_users_aggregates_v3",
@@ -1133,11 +1163,39 @@ with DAG(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
 
+    fenix_derived__locale_aggregates__v1.set_upstream(
+        wait_for_bigeye__fenix_derived__metrics_clients_last_seen__v1
+    )
+
+    fenix_derived__locale_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__locale_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__locale_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__locale_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__locale_aggregates__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
     firefox_desktop_active_users_aggregates_v3.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     firefox_desktop_active_users_aggregates_v4.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    firefox_desktop_derived__locale_aggregates__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 

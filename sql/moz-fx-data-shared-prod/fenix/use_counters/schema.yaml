@@ -7590,6 +7590,24 @@ fields:
     - name: use_counter_page_components_shim_resolved
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_thenable
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_thenable_proto
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_thenable_standard_proto
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_thenable
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_thenable_proto
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_thenable_standard_proto
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

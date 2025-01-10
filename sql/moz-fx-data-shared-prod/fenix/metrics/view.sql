@@ -639,7 +639,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.webcompatreporting_reason_dropdown
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1673,7 +1674,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.webcompatreporting_reason_dropdown
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2725,7 +2727,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.webcompatreporting_reason_dropdown
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3786,7 +3789,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.webcompatreporting_reason_dropdown
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4829,7 +4833,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.webcompatreporting_reason_dropdown
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

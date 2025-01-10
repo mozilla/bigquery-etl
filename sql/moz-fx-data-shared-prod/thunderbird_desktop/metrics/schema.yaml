@@ -6030,6 +6030,19 @@ fields:
         equivalent used as hostnames
 
         '
+    - name: mail_mbox_write_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts mbox write oddities which might indicate problems.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

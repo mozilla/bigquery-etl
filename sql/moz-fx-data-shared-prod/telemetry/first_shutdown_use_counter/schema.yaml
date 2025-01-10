@@ -11245,6 +11245,34 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page resolves the components shim.
+    - name: use_counter2_js_thenable_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document resolved a promise using thenable support rather
+        than builtin methods
+    - name: use_counter2_js_thenable_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page resolved a promise using thenable support rather
+        than builtin methods
+    - name: use_counter2_js_thenable_proto_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document resolved a promise using thenable on prototype
+    - name: use_counter2_js_thenable_proto_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page resolved a promise using thenable on prototype
+    - name: use_counter2_js_thenable_standard_proto_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document resolved a promise using thenable on a standard
+        prototype
+    - name: use_counter2_js_thenable_standard_proto_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page resolved a promise using thenable on a standard
+        prototype
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22342,6 +22370,34 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page resolves the components shim.
+        - name: use_counter2_js_thenable_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document resolved a promise using thenable support
+            rather than builtin methods
+        - name: use_counter2_js_thenable_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page resolved a promise using thenable support rather
+            than builtin methods
+        - name: use_counter2_js_thenable_proto_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document resolved a promise using thenable on prototype
+        - name: use_counter2_js_thenable_proto_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page resolved a promise using thenable on prototype
+        - name: use_counter2_js_thenable_standard_proto_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document resolved a promise using thenable on a standard
+            prototype
+        - name: use_counter2_js_thenable_standard_proto_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page resolved a promise using thenable on a standard
+            prototype
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

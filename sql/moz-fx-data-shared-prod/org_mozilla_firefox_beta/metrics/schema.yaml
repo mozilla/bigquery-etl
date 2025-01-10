@@ -7851,6 +7851,12 @@ fields:
         \ of a dedicated profiles build skipped over the old default\n    profile\
         \ and created a new profile.\n  restart-claimed-default:\n    A first run\
         \ of a dedicate"
+    - name: webcompatreporting_reason_dropdown
+      type: STRING
+      mode: NULLABLE
+      description: 'Record whether the user chooses an option from the dropdown.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

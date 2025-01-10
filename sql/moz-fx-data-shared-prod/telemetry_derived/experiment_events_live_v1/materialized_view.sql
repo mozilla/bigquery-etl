@@ -14,7 +14,14 @@ IF
       event.f2_ AS event_method,
       event.f3_ AS `type`,
       event.f4_ AS experiment,
-      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch
+      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
+      IF(
+        mozfun.norm.extract_version(application.version, 'major') >= 109,
+        TRUE,
+        FALSE
+      ) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.telemetry_live.event_v4`
     CROSS JOIN
@@ -66,13 +73,17 @@ IF
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
-    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
+    -- order of operations bug means validation will always fail for clients before
+    COUNTIF(
+      event_method = 'validationFailed'
+      AND validation_errors_valid
+    ) AS validation_failed_count
   FROM
     experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2023-10-10')
+    timestamp > TIMESTAMP('2025-01-10')
   GROUP BY
     partition_date,
     submission_date,

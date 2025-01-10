@@ -11,7 +11,15 @@ IF
   WITH all_events AS (
     SELECT
       submission_timestamp,
-      events
+      events,
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
+      IF(
+        mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109
+        OR normalized_app_name != 'firefox_desktop',
+        TRUE,
+        FALSE
+      ) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.events_v1`
   ),
@@ -21,7 +29,8 @@ IF
       event.category AS `type`,
       CAST(event.extra[SAFE_OFFSET(i)].value AS STRING) AS branch,
       CAST(event.extra[SAFE_OFFSET(j)].value AS STRING) AS experiment,
-      event.name AS event_method
+      event.name AS event_method,
+      validation_errors_valid
     FROM
       all_events,
       UNNEST(events) AS event,
@@ -59,13 +68,17 @@ IF
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
-    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
+    -- order of operations bug means validation will always fail for clients before
+    COUNTIF(
+      event_method = 'validationFailed'
+      AND validation_errors_valid
+    ) AS validation_failed_count
   FROM
     experiment_events
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    timestamp > TIMESTAMP('2023-10-10')
+    timestamp > TIMESTAMP('2025-01-10')
   GROUP BY
     partition_date,
     submission_date,

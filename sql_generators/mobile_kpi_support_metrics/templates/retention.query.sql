@@ -5,7 +5,7 @@ WITH device_manufacturer_counts AS (
     device_manufacturer,
     DENSE_RANK() OVER(PARTITION BY submission_date ORDER BY COUNT(*) DESC) AS manufacturer_rank,
   FROM
-  `{{ project_id }}.{{ dataset }}.engagement_clients`
+  `{{ project_id }}.{{ dataset }}.retention_clients`
   WHERE
     {% raw %}
     {% if is_init() %}

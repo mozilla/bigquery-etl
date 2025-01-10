@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: profile_age_at_time_of_uninstall
+  type: STRING
+  mode: NULLABLE
+  description: Profile Age at Time of Uninstall
+- name: nbr_clients_uninstalling
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling on this submission date with this profile age group

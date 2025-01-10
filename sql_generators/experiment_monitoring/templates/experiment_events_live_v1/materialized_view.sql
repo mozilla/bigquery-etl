@@ -43,9 +43,9 @@ IF
     SELECT
       submission_timestamp,
       events,
-      -- Before version 109, clients evaluated schema before targeting,
-      -- so validation_errors are invalid
-      IF(mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109, TRUE, FALSE) AS validation_errors_valid
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
+      IF(mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109 OR normalized_app_name != 'firefox_desktop', TRUE, FALSE) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ dataset }}_live.events_v1`
   ),
@@ -80,8 +80,8 @@ IF
       event.f3_ AS `type`,
       event.f4_ AS experiment,
       IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
-      -- Before version 109, clients evaluated schema before targeting,
-      -- so validation_errors are invalid
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
       IF(mozfun.norm.extract_version(application.version, 'major') >= 109, TRUE, FALSE) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ dataset }}_live.event_v4`

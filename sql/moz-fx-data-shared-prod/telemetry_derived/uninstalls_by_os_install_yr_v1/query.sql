@@ -1,7 +1,7 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
-  metadata.isp.name AS isp_name,
-  COUNT(DISTINCT client_id) AS nbr_clients_uninstalling,
+  environment.system.os.install_year AS os_installation_year,
+  COUNT(DISTINCT client_id) AS nbr_unique_clients_uninstalling,
 FROM
   `moz-fx-data-shared-prod.telemetry.uninstall`
 WHERE
@@ -9,4 +9,4 @@ WHERE
   AND application.name = 'Firefox'
 GROUP BY
   submission_date,
-  isp_name
+  os_installation_year

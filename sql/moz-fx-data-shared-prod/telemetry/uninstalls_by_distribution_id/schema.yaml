@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: nbr_unique_clients_uninstalling
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling

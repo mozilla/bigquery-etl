@@ -1,0 +1,26 @@
+friendly_name: Uninstalls By Default
+description: |-
+  Number of clients uninstalling by date, broken by those having Fx as default browser vs not
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  dag: bqetl_fx_health_ind_dashboard
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - is_default_browser
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

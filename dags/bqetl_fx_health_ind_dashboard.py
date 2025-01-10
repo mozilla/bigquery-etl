@@ -554,6 +554,61 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__uninstalls_by_default__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_default__v1",
+        destination_table="uninstalls_by_default_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_default_search_engine__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_default_search_engine__v1",
+        destination_table="uninstalls_by_default_search_engine_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_distribution_id__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_distribution_id__v1",
+        destination_table="uninstalls_by_distribution_id_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_isp__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_isp__v1",
+        destination_table="uninstalls_by_isp_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_os_install_yr__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_os_install_yr__v1",
+        destination_table="uninstalls_by_os_install_yr_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__uninstalls_by_os_ver_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__uninstalls_by_os_ver_aggregates__v1",
         destination_table="uninstalls_by_os_ver_aggregates_v1",
@@ -568,6 +623,17 @@ with DAG(
     telemetry_derived__uninstalls_per_other_installs__v1 = bigquery_etl_query(
         task_id="telemetry_derived__uninstalls_per_other_installs__v1",
         destination_table="uninstalls_per_other_installs_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_relative_to_profile_creation__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_relative_to_profile_creation__v1",
+        destination_table="uninstalls_relative_to_profile_creation_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -786,11 +852,33 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    telemetry_derived__uninstalls_by_default__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_default_search_engine__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_distribution_id__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_isp__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    telemetry_derived__uninstalls_by_os_install_yr__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     telemetry_derived__uninstalls_by_os_ver_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__uninstalls_per_other_installs__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_relative_to_profile_creation__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

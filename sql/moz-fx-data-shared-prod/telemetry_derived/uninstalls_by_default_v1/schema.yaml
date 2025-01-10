@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating if Firefox is the default browser on the client
+- name: nbr_unique_clients_uninstalling
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling

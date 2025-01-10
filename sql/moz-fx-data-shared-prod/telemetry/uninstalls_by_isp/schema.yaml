@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: isp_name
+  type: STRING
+  mode: NULLABLE
+  description: ISP Name
+- name: nbr_clients_uninstalling
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling

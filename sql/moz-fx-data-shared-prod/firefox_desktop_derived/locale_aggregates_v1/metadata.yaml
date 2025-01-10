@@ -5,8 +5,10 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_analytics_aggregations
+  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day

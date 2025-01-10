@@ -18,7 +18,10 @@ WITH
         event_object AS `type`,
         event_string_value AS experiment,
         mozfun.map.get_key(event_map_values, 'branch') AS branch,
-        event_method
+        event_method,
+        -- Before version 109 (in desktop), clients evaluated schema
+        -- before targeting, so validation_errors are invalid
+        IF(mozfun.norm.extract_version(app_version, 'major') >= 109, TRUE, FALSE) AS validation_errors_valid
       FROM
         `moz-fx-data-shared-prod.telemetry_derived.events_live`
       WHERE
@@ -32,7 +35,8 @@ WITH
       event.category AS `type`,
       mozfun.map.get_key(event.extra, 'experiment') AS experiment,
       mozfun.map.get_key(event.extra, 'branch') AS branch,
-      event.name AS event_method
+      event.name AS event_method,
+      TRUE as validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ app_dataset }}.enrollment`,
       UNNEST(events) AS event
@@ -47,7 +51,10 @@ WITH
       event.category AS `type`,
       mozfun.map.get_key(event.extra, 'experiment') AS experiment,
       mozfun.map.get_key(event.extra, 'branch') AS branch,
-      event.name AS event_method
+      event.name AS event_method,
+      -- Before version 109 (in desktop), clients evaluated schema
+      -- before targeting, so validation_errors are invalid
+      IF(mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109 OR normalized_app_name != 'firefox_desktop', TRUE, FALSE) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ app_dataset }}.events`,
       UNNEST(events) AS event
@@ -90,7 +97,7 @@ SELECT
   COUNTIF(event_method = 'updateFailed') AS update_failed_count,
   COUNTIF(event_method = 'disqualification') AS disqualification_count,
   COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
-  COUNTIF(event_method = 'validationFailed') AS validation_failed_count,
+  COUNTIF(event_method = 'validationFailed' AND validation_errors_valid) AS validation_failed_count,
 FROM
   all_events
 GROUP BY

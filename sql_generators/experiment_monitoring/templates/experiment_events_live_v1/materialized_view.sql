@@ -12,7 +12,7 @@ IF
     SELECT
       submission_timestamp,
       events,
-      true as validation_errors_valid
+      TRUE as validation_errors_valid
     FROM
        `moz-fx-data-shared-prod.{{ dataset }}_live.enrollment_v1`
   ),

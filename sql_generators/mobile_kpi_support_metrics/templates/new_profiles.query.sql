@@ -3,7 +3,7 @@ WITH device_manufacturer_counts AS (
   SELECT
     first_seen_date,
     device_manufacturer,
-    COUNT(*) AS device_manufacturer_count,
+    DENSE_RANK() OVER(PARTITION BY submission_date ORDER BY COUNT(*) DESC) AS manufacturer_rank,
   FROM
   `{{ project_id }}.{{ dataset }}.new_profile_clients`
   WHERE
@@ -29,7 +29,7 @@ SELECT
   os,
   os_version,
   -- Bucket device manufacturers with low count prior to aggregation
-  IF(device_manufacturer_count <= 2000, "other", device_manufacturer) AS device_manufacturer,
+  IF(manufacturer_rank <= 150, device_manufacturer, "other") AS device_manufacturer,
   is_mobile,
   {% for field in product_attribution_fields.values() if not field.client_only %}
   {{ field.name }},

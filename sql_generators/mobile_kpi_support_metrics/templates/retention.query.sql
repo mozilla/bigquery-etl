@@ -3,7 +3,7 @@ WITH device_manufacturer_counts AS (
   SELECT
     submission_date,
     device_manufacturer,
-    COUNT(*) AS device_manufacturer_count,
+    DENSE_RANK() OVER(PARTITION BY submission_date ORDER BY COUNT(*) DESC) AS manufacturer_rank,
   FROM
   `{{ project_id }}.{{ dataset }}.engagement_clients`
   WHERE
@@ -42,7 +42,7 @@ SELECT
   COUNTIF(repeat_profile) AS repeat_profiles,
   device_type,
   -- Bucket device manufacturers with low count prior to aggregation
-  IF(device_manufacturer_count <= 2000, "other", device_manufacturer) AS device_manufacturer,
+  IF(manufacturer_rank <= 150, device_manufacturer, "other") AS device_manufacturer,
 FROM
   `{{ project_id }}.{{ dataset }}.retention_clients`
 LEFT JOIN

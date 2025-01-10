@@ -5,7 +5,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry.uninstall`
 WHERE
-  date(submission_timestamp) = @submission_date
+  DATE(submission_timestamp) = @submission_date
   AND application.name = 'Firefox'
 GROUP BY
   submission_date,

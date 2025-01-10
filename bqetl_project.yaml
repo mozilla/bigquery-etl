@@ -387,6 +387,18 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+  usage_reporting:
+    apps:
+      fenix:
+        channels:
+        - nightly
+      firefox_ios:
+        channels:
+        - nightly
+      # firefox_desktop:
+      #   # firefox_desktop is a single app containing multiple channels
+      #   channels: null
+
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

@@ -11,7 +11,8 @@ IF
   WITH all_events AS (
     SELECT
       submission_timestamp,
-      events
+      events,
+      true as validation_errors_valid
     FROM
        `moz-fx-data-shared-prod.{{ dataset }}_live.enrollment_v1`
   ),
@@ -21,7 +22,8 @@ IF
       event.category AS `type`,
       CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
-      event.name AS event_method
+      event.name AS event_method,
+      validation_errors_valid
     FROM
       all_events,
       UNNEST(events) AS event,
@@ -40,7 +42,10 @@ IF
   WITH all_events AS (
     SELECT
       submission_timestamp,
-      events
+      events,
+      -- Before version 109, clients evaluated schema before targeting,
+      -- so validation_errors are invalid
+      IF(mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109, TRUE, FALSE) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ dataset }}_live.events_v1`
   ),
@@ -50,7 +55,8 @@ IF
       event.category AS `type`,
       CAST(event.extra[safe_offset(i)].value AS STRING) AS branch,
       CAST(event.extra[safe_offset(j)].value AS STRING) AS experiment,
-      event.name AS event_method
+      event.name AS event_method,
+      validation_errors_valid
     FROM
       all_events,
       UNNEST(events) AS event,
@@ -73,7 +79,10 @@ IF
       event.f2_ AS event_method,
       event.f3_ AS `type`,
       event.f4_ AS experiment,
-      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch
+      IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
+      -- Before version 109, clients evaluated schema before targeting,
+      -- so validation_errors are invalid
+      IF(mozfun.norm.extract_version(application.version, 'major') >= 109, TRUE, FALSE) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ dataset }}_live.event_v4`
     CROSS JOIN
@@ -126,7 +135,8 @@ IF
     COUNTIF(event_method = 'updateFailed') AS update_failed_count,
     COUNTIF(event_method = 'disqualification') AS disqualification_count,
     COUNTIF(event_method = 'expose' OR event_method = 'exposure') AS exposure_count,
-    COUNTIF(event_method = 'validationFailed') AS validation_failed_count
+    -- order of operations bug means validation will always fail for clients before
+    COUNTIF(event_method = 'validationFailed' AND validation_errors_valid) AS validation_failed_count
   FROM
     experiment_events
   WHERE

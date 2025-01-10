@@ -9,9 +9,6 @@ telemetry:
 messaging_system:
   base_dataset: messaging_system_derived
   view_dataset: messaging_system
-firefox_accounts:
-  base_dataset: firefox_accounts_derived
-  view_dataset: firefox_accounts
 # Mozilla VPN
 mozilla_vpn:
   base_dataset: mozilla_vpn_derived

@@ -56,7 +56,7 @@ with DAG(
         email=["test@example.com"],
         depends_on_past=False,
         execution_timeout=datetime.timedelta(hours=1),
-        retries=0,
+        retries=1,
         task_group=task_group_test_group,
     )
 

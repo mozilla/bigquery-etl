@@ -446,7 +446,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_fenix,
     )
 
@@ -457,7 +458,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_fenix,
     )
 
@@ -468,7 +470,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_fenix,
     )
 
@@ -479,7 +482,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_fenix,
     )
 
@@ -490,7 +494,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_firefox_ios,
     )
 
@@ -501,7 +506,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_firefox_ios,
     )
 
@@ -512,7 +518,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_firefox_ios,
     )
 
@@ -523,7 +530,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_firefox_ios,
     )
 
@@ -534,7 +542,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_android,
     )
 
@@ -545,7 +554,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_android,
     )
 
@@ -556,7 +566,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_android,
     )
 
@@ -567,7 +578,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_android,
     )
 
@@ -578,7 +590,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_ios,
     )
 
@@ -589,7 +602,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_ios,
     )
 
@@ -600,7 +614,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_ios,
     )
 
@@ -611,7 +626,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_focus_ios,
     )
 
@@ -622,7 +638,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_android,
     )
 
@@ -633,7 +650,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_android,
     )
 
@@ -644,7 +662,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_android,
     )
 
@@ -655,7 +674,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_android,
     )
 
@@ -666,7 +686,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_ios,
     )
 
@@ -677,7 +698,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_ios,
     )
 
@@ -688,7 +710,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_ios,
     )
 
@@ -699,7 +722,8 @@ with DAG(
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
         task_group=task_group_klar_ios,
     )
 

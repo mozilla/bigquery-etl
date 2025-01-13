@@ -124,7 +124,8 @@ with DAG(
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     apple_ads_external__ios_app_campaign_stats__v1.set_upstream(

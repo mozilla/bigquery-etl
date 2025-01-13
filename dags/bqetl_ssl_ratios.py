@@ -70,7 +70,8 @@ with DAG(
         owner="chutten@mozilla.com",
         email=["chutten@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     checks__fail_telemetry_derived__ssl_ratios__v1 = bigquery_dq_check(

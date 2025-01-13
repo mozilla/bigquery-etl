@@ -61,7 +61,8 @@ with DAG(
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     org_mozilla_fenix_derived__releases__v1 = GKEPodOperator(

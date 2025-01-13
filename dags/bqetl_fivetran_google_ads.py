@@ -83,7 +83,8 @@ with DAG(
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     checks__fail_google_ads_derived__ad_groups__v1 = bigquery_dq_check(

@@ -1,0 +1,17 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: uninstall_same_day_as_install
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating if the uninstall was on the same date as the install
+- name: os_install_year
+  type: FLOAT
+  mode: NULLABLE
+  description: Operating System Installation Year
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique client IDs uninstalling

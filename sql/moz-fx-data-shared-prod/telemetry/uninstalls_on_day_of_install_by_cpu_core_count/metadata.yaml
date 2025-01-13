@@ -1,0 +1,14 @@
+friendly_name: Uninstalls On Day Of Install By Cpu Core Count
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.uninstalls_on_day_of_install_by_cpu_core_count_v1

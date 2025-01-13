@@ -1,0 +1,21 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- name: failures
+  type: INTEGER
+  mode: NULLABLE
+  description: SSL handshake result failure sum
+- name: success
+  type: INTEGER
+  mode: NULLABLE
+  description: SSL handshake result success sum
+- name: ratio
+  type: FLOAT64
+  mode: NULLABLE
+  description: SSL handshake success to failure ratio

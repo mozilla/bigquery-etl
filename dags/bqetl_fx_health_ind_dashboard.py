@@ -532,6 +532,28 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__uninstalls_by_addon__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_addon__v1",
+        destination_table="uninstalls_by_addon_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_attr_src__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_attr_src__v1",
+        destination_table="uninstalls_by_attr_src_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__uninstalls_by_browser_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__uninstalls_by_browser_aggregates__v1",
         destination_table="uninstalls_by_browser_aggregates_v1",
@@ -598,9 +620,31 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__uninstalls_by_dflt_srch__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_dflt_srch__v1",
+        destination_table="uninstalls_by_dflt_srch_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__uninstalls_by_distribution_id__v1 = bigquery_etl_query(
         task_id="telemetry_derived__uninstalls_by_distribution_id__v1",
         destination_table="uninstalls_by_distribution_id_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__uninstalls_by_dlsource__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__uninstalls_by_dlsource__v1",
+        destination_table="uninstalls_by_dlsource_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -982,6 +1026,14 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    telemetry_derived__uninstalls_by_addon__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_attr_src__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     telemetry_derived__uninstalls_by_browser_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -1004,7 +1056,15 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    telemetry_derived__uninstalls_by_dflt_srch__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     telemetry_derived__uninstalls_by_distribution_id__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__uninstalls_by_dlsource__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

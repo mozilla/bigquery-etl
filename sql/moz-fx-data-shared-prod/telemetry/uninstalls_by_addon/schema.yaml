@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: active_addon_name
+  type: STRING
+  mode: NULLABLE
+  description: Active Addon Name
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling

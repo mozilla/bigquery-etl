@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Download Source
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of unique clients uninstalling

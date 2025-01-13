@@ -27,4 +27,3 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Total URI count in normal mode
-

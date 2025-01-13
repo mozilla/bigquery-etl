@@ -1,6 +1,6 @@
-friendly_name: Firefox Cert Error Dashboard - SSL handshake failure rate per country
+friendly_name: Private browsing mode users dashboard - Share of private URI loads for users of private windows
 description: |-
-  SSL handshake failure rate per country
+  Share of private URI loads for users of private windows
 owners:
 - akommasani@mozilla.com
 labels:

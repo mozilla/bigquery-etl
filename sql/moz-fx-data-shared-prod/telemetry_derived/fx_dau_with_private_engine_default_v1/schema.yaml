@@ -4,18 +4,10 @@ fields:
   type: DATE
   description: Submission Date
 - mode: NULLABLE
-  name: os
+  name: default_search_engine
   type: STRING
-  description: OS
-- name: failures
+  description: Default search engine
+- name: users
   type: INTEGER
   mode: NULLABLE
-  description: SSL handshake result failure sum
-- name: success
-  type: INTEGER
-  mode: NULLABLE
-  description: SSL handshake result success sum
-- name: ratio
-  type: FLOAT64
-  mode: NULLABLE
-  description: SSL handshake success to failure ratio
+  description: Distinct users

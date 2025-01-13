@@ -1,4 +1,4 @@
-friendly_name: Firefox Cert Error Dashboard - SSL handshake failure rate per country
+friendly_name: Firefox Cert Error Dashboard - SSL handshake failure rate by country and os
 description: |-
   SSL handshake failure rate per country
 owners:

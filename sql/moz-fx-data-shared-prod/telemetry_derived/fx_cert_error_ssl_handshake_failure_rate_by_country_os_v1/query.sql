@@ -2,12 +2,7 @@ WITH base AS (
   SELECT
     SUM(ssl_handshake_result_failure_sum) AS failures,
     SUM(ssl_handshake_result_success_sum) AS success,
-    CAST(
-      SAFE_DIVIDE(
-        SUM(ssl_handshake_result_failure_sum),
-        SUM(ssl_handshake_result_success_sum)
-      ) AS FLOAT64
-    ) AS ratio,
+    os,
     country,
     submission_date
   FROM
@@ -17,10 +12,10 @@ WITH base AS (
     AND app_name = 'Firefox'
   GROUP BY
     country,
+    os,
     submission_date
 )
 SELECT
   *
 FROM
   base
-

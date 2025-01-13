@@ -8,13 +8,13 @@ SELECT
   submission_date
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_daily`
+WHERE
+  submission_date_s3 = @submission_date
+  AND app_name = 'Firefox'
+  AND total_uri_count_private_mode > 0
 GROUP BY
   sample_id,
   os,
   os_version,
   country,
   submission_date
-WHERE
-  submission_date_s3 = @submission_date
-  AND app_name = 'Firefox'
-  AND total_uri_count_private_mode > 0

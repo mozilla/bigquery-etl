@@ -19,3 +19,4 @@ fields:
 - name: nbr_unique_clients_with_uninstalls
   type: INTEGER
   mode: NULLABLE
+  description: Count of unique clients with uninstalls

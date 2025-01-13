@@ -117,41 +117,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    firefox_accounts_derived__event_types__v1 = bigquery_etl_query(
-        task_id="firefox_accounts_derived__event_types__v1",
-        destination_table="event_types_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-    )
-
-    firefox_accounts_derived__event_types_history__v1 = bigquery_etl_query(
-        task_id="firefox_accounts_derived__event_types_history__v1",
-        destination_table="event_types_history_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-    )
-
-    firefox_accounts_derived__events_daily__v1 = bigquery_etl_query(
-        task_id="firefox_accounts_derived__events_daily__v1",
-        destination_table="events_daily_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     funnel_events_source__v1 = bigquery_etl_query(
         task_id="funnel_events_source__v1",
         destination_table="funnel_events_source_v1",
@@ -233,20 +198,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    firefox_accounts_derived__event_types__v1.set_upstream(
-        firefox_accounts_derived__event_types_history__v1
-    )
-
-    firefox_accounts_derived__event_types_history__v1.set_upstream(
-        funnel_events_source__v1
-    )
-
-    firefox_accounts_derived__events_daily__v1.set_upstream(
-        firefox_accounts_derived__event_types__v1
-    )
-
-    firefox_accounts_derived__events_daily__v1.set_upstream(funnel_events_source__v1)
 
     funnel_events_source__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1

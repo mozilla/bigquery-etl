@@ -6511,6 +6511,31 @@ fields:
       description: 'HTTP3 UDP datagram size received.
 
         '
+    - name: mail_compact_space_recovered
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of bytes recovered by compaction.
+
+        '
   - name: object
     type: RECORD
     mode: NULLABLE

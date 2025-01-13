@@ -487,6 +487,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The full Firefox version string.
+    - name: nimbus_targeting_context_locale
+      type: STRING
+      mode: NULLABLE
+      description: What is the active locale of the browser?
+    - name: nimbus_targeting_context_region
+      type: STRING
+      mode: NULLABLE
+      description: What region is the browser located in?
   - name: text2
     type: RECORD
     mode: NULLABLE

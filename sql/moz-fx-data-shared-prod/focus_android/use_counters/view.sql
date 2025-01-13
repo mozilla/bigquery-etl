@@ -2483,7 +2483,9 @@ SELECT
       metrics.counter.use_counter_doc_js_thenable_standard_proto,
       metrics.counter.use_counter_page_js_thenable,
       metrics.counter.use_counter_page_js_thenable_proto,
-      metrics.counter.use_counter_page_js_thenable_standard_proto
+      metrics.counter.use_counter_page_js_thenable_standard_proto,
+      metrics.counter.use_counter_doc_js_legacy_lang_subtag,
+      metrics.counter.use_counter_page_js_legacy_lang_subtag
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -4988,7 +4990,9 @@ SELECT
       metrics.counter.use_counter_doc_js_thenable_standard_proto,
       metrics.counter.use_counter_page_js_thenable,
       metrics.counter.use_counter_page_js_thenable_proto,
-      metrics.counter.use_counter_page_js_thenable_standard_proto
+      metrics.counter.use_counter_page_js_thenable_standard_proto,
+      metrics.counter.use_counter_doc_js_legacy_lang_subtag,
+      metrics.counter.use_counter_page_js_legacy_lang_subtag
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7493,7 +7497,9 @@ SELECT
       metrics.counter.use_counter_doc_js_thenable_standard_proto,
       metrics.counter.use_counter_page_js_thenable,
       metrics.counter.use_counter_page_js_thenable_proto,
-      metrics.counter.use_counter_page_js_thenable_standard_proto
+      metrics.counter.use_counter_page_js_thenable_standard_proto,
+      metrics.counter.use_counter_doc_js_legacy_lang_subtag,
+      metrics.counter.use_counter_page_js_legacy_lang_subtag
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

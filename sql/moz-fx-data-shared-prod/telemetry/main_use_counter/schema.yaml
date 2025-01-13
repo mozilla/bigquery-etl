@@ -11273,6 +11273,16 @@ fields:
       mode: NULLABLE
       description: Whether a page resolved a promise using thenable on a standard
         prototype
+    - name: use_counter2_js_legacy_lang_subtag_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document uses a 5-to-8-character language subtag in Intl.Locale
+        constructor
+    - name: use_counter2_js_legacy_lang_subtag_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page uses a 5-to-8-character language subtag in Intl.Locale
+        constructor
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22398,6 +22408,16 @@ fields:
           mode: NULLABLE
           description: Whether a page resolved a promise using thenable on a standard
             prototype
+        - name: use_counter2_js_legacy_lang_subtag_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document uses a 5-to-8-character language subtag
+            in Intl.Locale constructor
+        - name: use_counter2_js_legacy_lang_subtag_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page uses a 5-to-8-character language subtag in Intl.Locale
+            constructor
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -51,6 +51,19 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(seconds=52800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bq_main_events = ExternalTaskSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
@@ -77,6 +90,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    telemetry_derived__fx_cert_error_ssl_handshake_failure_rate_by_country_os__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_cert_error_ssl_handshake_failure_rate_by_country_os__v1",
+        destination_table="fx_cert_error_ssl_handshake_failure_rate_by_country_os_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__fx_cert_error_unique_users_normalized_channel__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_cert_error_unique_users_normalized_channel__v1",
         destination_table="fx_cert_error_unique_users_normalized_channel_v1",
@@ -99,6 +123,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__fx_dau_with_private_engine_default__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_dau_with_private_engine_default__v1",
+        destination_table="fx_dau_with_private_engine_default_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__fx_privacy_dau_agg__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_privacy_dau_agg__v1",
         destination_table="fx_privacy_dau_agg_v1",
@@ -110,6 +145,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__fx_share_of_private_URI_loads__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_share_of_private_URI_loads__v1",
+        destination_table="fx_share_of_private_URI_loads_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="akommasani@mozilla.com",
+        email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_cert_error_ssl_handshake_failure_rate_by_country_os__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
+    )
+
     telemetry_derived__fx_cert_error_unique_users_normalized_channel__v1.set_upstream(
         wait_for_bq_main_events
     )
@@ -124,8 +174,16 @@ with DAG(
 
     telemetry_derived__fx_cert_error_unique_users_os__v1.set_upstream(
         wait_for_event_events
+    )
+
+    telemetry_derived__fx_dau_with_private_engine_default__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
     )
 
     telemetry_derived__fx_privacy_dau_agg__v1.set_upstream(wait_for_bq_main_events)
 
     telemetry_derived__fx_privacy_dau_agg__v1.set_upstream(wait_for_event_events)
+
+    telemetry_derived__fx_share_of_private_URI_loads__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily_joined__v1
+    )

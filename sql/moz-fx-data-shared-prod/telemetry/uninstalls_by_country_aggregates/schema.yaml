@@ -16,3 +16,6 @@ fields:
   mode: NULLABLE
   description: The average profile creation date for those uninstalling, expressed
     numerically
+- name: nbr_unique_clients_with_uninstalls
+  type: INTEGER
+  mode: NULLABLE

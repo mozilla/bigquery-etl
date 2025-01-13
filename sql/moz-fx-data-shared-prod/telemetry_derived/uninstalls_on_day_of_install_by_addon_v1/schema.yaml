@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: uninstall_same_day_as_install
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating if the uninstall was on the same date as the install
+- name: active_addon_name
+  type: STRING
+  mode: NULLABLE
+  description: Name of the active add on
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients Uninstalling

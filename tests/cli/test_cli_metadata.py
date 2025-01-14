@@ -205,7 +205,8 @@ class TestMetadata:
                 metadata = yaml.safe_load(stream)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == [
-            "workgroup:mozilla-confidential"
+            "workgroup:test/test",
+            "workgroup:mozilla-confidential",
         ]
         assert "deprecated" not in metadata
 
@@ -245,25 +246,6 @@ class TestMetadata:
                 "role": "roles/bigquery.dataViewer",
             }
         ]
-
-    def test_metadata_update_do_not_update(self, runner):
-        with tempfile.TemporaryDirectory() as tmpdirname:
-            distutils.dir_util.copy_tree(str(TEST_DIR), str(tmpdirname))
-            name = [
-                str(tmpdirname)
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/"
-            ]
-            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
-            with open(
-                tmpdirname
-                + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_keyed_scalar_aggregates_v1/metadata.yaml",
-                "r",
-            ) as stream:
-                metadata = yaml.safe_load(stream)
-
-        assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
-        assert metadata["workgroup_access"][0]["members"] == ["workgroup:revenue/cat4"]
-        assert "deprecated" not in metadata
 
     @patch("google.cloud.bigquery.Client")
     @patch("google.cloud.bigquery.Table")

@@ -132,9 +132,9 @@ babel==2.12.1 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.4.94 \
-    --hash=sha256:d17e50629ecf3273bc7ca8e4ff9883d8fb59e1111776a02ef9cdc07399e1306c \
-    --hash=sha256:ff230eb0fcfdfd72932ec83975ede59c7f1c2d2fed89286fb70463f3752fcef7
+bigeye-sdk==0.4.96 \
+    --hash=sha256:b2914e383b02f7cd5d91b99bb5f0b2f8151d1b990b0706fe2803206cc9ef73e6 \
+    --hash=sha256:c763554daae67022a647d6942c1580c7d28ed5b90e0aa3ccf17b4972fcbff7b0
     # via -r requirements.in
 black==24.10.0 \
     --hash=sha256:14b3502784f09ce2443830e3133dacf2c0110d45191ed470ecb04d0f5f6fcb0f \

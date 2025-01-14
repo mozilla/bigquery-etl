@@ -1,22 +1,18 @@
 SELECT
   submission_date_s3 AS submission_date,
+  IF(total_uri_count_private_mode > 0, TRUE, FALSE) AS client_used_private_mode,
+  IF(total_uri_count_private_mode < 0, TRUE, FALSE) AS client_had_negative_uri_count_private,
+  IF(total_uri_count_normal_mode < 0, TRUE, FALSE) AS client_negative_uri_count_normal,
+  COUNT(DISTINCT(client_id)) AS nbr_clients,
   SUM(total_uri_count_private_mode) AS total_uri_count_private_mode,
-  SUM(total_uri_count_normal_mode) AS total_uri_count_normal_mode,
-  --for users who used private mode that day, what was their total URI count in normal mode
-  --i.e. excluding users who never used private mode that day
-  SUM(
-    CASE
-      WHEN total_uri_count_private_mode > 0
-        THEN total_uri_count_normal_mode
-      ELSE 0
-    END
-  ) AS total_uri_count_normal_mode_for_users_using_pbm_on_date
+  SUM(total_uri_count_normal_mode) AS total_uri_count_normal_mode
 FROM
   `moz-fx-data-shared-prod.telemetry.clients_daily`
 WHERE
   submission_date_s3 = @submission_date
   AND app_name = 'Firefox'
-  AND total_uri_count_private_mode >= 0 --exclude rows with negatives, if any (bad data)
-  AND total_uri_count_normal_mode >= 0 --exclude rows with negatives, if any (bad data)
 GROUP BY
-  submission_date_s3
+  submission_date_s3,
+  client_used_private_mode,
+  client_had_negative_uri_count_private,
+  client_negative_uri_count_normal

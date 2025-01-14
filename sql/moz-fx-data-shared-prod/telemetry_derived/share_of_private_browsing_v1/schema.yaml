@@ -3,6 +3,22 @@ fields:
   name: submission_date
   type: DATE
   description: Submission Date
+- name: client_used_private_mode
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client Visited 1 or More Private URI on Submission Date
+- name: client_had_negative_uri_count_private
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client had negative private URI count on submission date (indicates bad data)
+- name: client_negative_uri_count_normal
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client had negative normal URI count on submission date (indicates bad data)
+- name: nbr_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique client IDs
 - name: total_uri_count_private_mode
   type: INTEGER
   mode: NULLABLE
@@ -11,7 +27,3 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of URIs Visited in Normal Mode
-- name: total_uri_count_normal_mode_for_users_using_pbm_on_date
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of URIs Visited in Normal Mode for Clients Visiting 1 or More Private URIs on Date

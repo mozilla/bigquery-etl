@@ -3,27 +3,39 @@ fields:
   name: submission_date
   type: DATE
   description: Submission Date
-- mode: NULLABLE
-  name: sample_id
+- name: sample_id
   type: INTEGER
-  description: Sample Id
-- mode: NULLABLE
-  name: country
+  mode: NULLABLE
+  description: Sample ID
+- name: os
   type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Operating System Version
+- name: country
+  type: STRING
+  mode: NULLABLE
   description: Country
-- mode: NULLABLE
-  name: os
-  type: STRING
-  description: os
-- mode: NULLABLE
-  name: os_version
-  type: STRING
-  description: os_version
+- name: client_used_private_mode
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating if cllient visited 1 or more private URIs
+- name: client_had_negative_uri_count_private
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client had negative private URI count on submission date (indicates bad data)
+- name: client_negative_uri_count_normal
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client had negative normal URI count on submission date (indicates bad data)
 - name: total_uri_count_private_mode
   type: INTEGER
   mode: NULLABLE
-  description: Total URI count in private mode
+  description: Count of URIs Visited in Private Mode
 - name: total_uri_count_normal_mode
   type: INTEGER
   mode: NULLABLE
-  description: Total URI count in normal mode
+  description: Count of URIs Visited in Normal Mode

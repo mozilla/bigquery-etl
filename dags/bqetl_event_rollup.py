@@ -52,45 +52,6 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_firefox_accounts_derived__fxa_stdout_events__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-        external_dag_id="bqetl_fxa_events",
-        external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
         task_id="wait_for_firefox_desktop_derived__onboarding__v2",
         external_dag_id="bqetl_messaging_system",
@@ -115,18 +76,6 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    funnel_events_source__v1 = bigquery_etl_query(
-        task_id="funnel_events_source__v1",
-        destination_table="funnel_events_source_v1",
-        dataset_id="firefox_accounts_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
-        email=["wlachance@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     messaging_system_derived__event_types__v1 = bigquery_etl_query(
@@ -197,18 +146,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-    )
-
-    funnel_events_source__v1.set_upstream(
-        wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1
-    )
-
-    funnel_events_source__v1.set_upstream(
-        wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1
-    )
-
-    funnel_events_source__v1.set_upstream(
-        wait_for_firefox_accounts_derived__fxa_stdout_events__v1
     )
 
     messaging_system_derived__event_types__v1.set_upstream(

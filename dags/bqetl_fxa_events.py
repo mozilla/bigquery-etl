@@ -148,13 +148,6 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
         )
 
-        ExternalTaskMarker(
-            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-            external_dag_id="bqetl_event_rollup",
-            external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
-        )
-
         firefox_accounts_derived__fxa_gcp_stderr_events__v1_external.set_upstream(
             firefox_accounts_derived__fxa_gcp_stderr_events__v1
         )
@@ -187,13 +180,6 @@ with DAG(
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-            external_dag_id="bqetl_event_rollup",
-            external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
         )
 
         firefox_accounts_derived__fxa_gcp_stdout_events__v1_external.set_upstream(
@@ -239,13 +225,6 @@ with DAG(
             external_dag_id="bqetl_generated_funnels",
             external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=73800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_event_rollup__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-            external_dag_id="bqetl_event_rollup",
-            external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
         )
 
         firefox_accounts_derived__fxa_stdout_events__v1_external.set_upstream(

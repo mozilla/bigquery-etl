@@ -395,12 +395,14 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
+      description: "A count of the built-in pings submitted, by ping type.\n\nThis\
+        \ metric appears in both the metrics and baseline pings.\n\n- On the metrics\
+        \ ping, the counts include the number of pings sent since\n  the last metrics\
+        \ ping (including the last metrics ping)\n- On the baseline ping, the counts\
+        \ include the number of pings send since\n  the last baseline ping (including\
+        \ the last baseline ping)\n\nNote: Previously this also recorded the number\
+        \ of submitted custom pings.\nNow it only records counts for the Glean built-in\
+        \ pings.\n"
   - name: string
     type: RECORD
     mode: NULLABLE

@@ -1,0 +1,29 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sample Id
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: os
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: os_version
+- name: total_uri_count_private_mode
+  type: INTEGER
+  mode: NULLABLE
+  description: Total URI count in private mode
+- name: total_uri_count_normal_mode
+  type: INTEGER
+  mode: NULLABLE
+  description: Total URI count in normal mode

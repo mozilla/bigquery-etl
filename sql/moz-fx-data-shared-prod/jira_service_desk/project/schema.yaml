@@ -29,3 +29,6 @@ fields:
 - name: project_type_key
   type: STRING
   mode: NULLABLE
+- name: simplified
+  type: BOOLEAN
+  mode: NULLABLE

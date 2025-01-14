@@ -2505,7 +2505,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -2518,12 +2519,14 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: "A count of the pings submitted, by ping type.\n\nThis metric appears\
-        \ in both the metrics and baseline pings.\n\n- On the metrics ping, the counts\
-        \ include the number of pings sent since\n  the last metrics ping (including\
-        \ the last metrics ping)\n- On the baseline ping, the counts include the number\
-        \ of pings send since\n  the last baseline ping (including the last baseline\
-        \ ping)\n"
+      description: "A count of the built-in pings submitted, by ping type.\n\nThis\
+        \ metric appears in both the metrics and baseline pings.\n\n- On the metrics\
+        \ ping, the counts include the number of pings sent since\n  the last metrics\
+        \ ping (including the last metrics ping)\n- On the baseline ping, the counts\
+        \ include the number of pings send since\n  the last baseline ping (including\
+        \ the last baseline ping)\n\nNote: Previously this also recorded the number\
+        \ of submitted custom pings.\nNow it only records counts for the Glean built-in\
+        \ pings.\n"
     - name: engine_tab_kills
       type: RECORD
       mode: REPEATED

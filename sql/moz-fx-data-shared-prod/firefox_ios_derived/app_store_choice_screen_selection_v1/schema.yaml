@@ -1,0 +1,92 @@
+fields:
+
+- mode: NULLABLE
+  name: date
+  type: DATETIME
+  description: |
+    Date on which the event occurred. For weekly and monthly instances,
+    this column represents the first day of the week and month, respectively.
+
+- mode: NULLABLE
+  name: territory
+  type: STRING
+  description: |
+    The user’s region code as set in Settings > General > Language & Region. \
+    This may not correspond to the user’s Apple Account or App Store storefront.
+
+- mode: NULLABLE
+  name: build
+  type: STRING
+  description: |
+    Build of device on which event occurred.
+
+- mode: NULLABLE
+  name: device
+  type: STRING
+  description: |
+    The device on which the event occurred.
+
+- mode: NULLABLE
+  name: platform
+  type: STRING
+  description: |
+    OS version on the device on which the event occurred
+
+- mode: NULLABLE
+  name: release_type
+  type: STRING
+  description: |
+    Type of software release.
+
+- mode: NULLABLE
+  name: selection_rate
+  type: FLOAT
+  description: |
+    Percentage of unique devices that set your browser app \
+    as default among all unique devices that chose a default.
+
+- mode: NULLABLE
+  name: new_install_rate
+  type: FLOAT
+  description: |
+    Percentage of unique devices that set your browser app \
+    as default without having it installed already, among \
+    all unique devices that chose your browser app as a default.
+
+- mode: NULLABLE
+  name: existing_install_rate
+  type: FLOAT
+  description: |
+    Percentage of unique devices that set your browser app \
+    as default and already had it installed, among \
+    all unique devices that chose your browser app as a default.
+
+- mode: NULLABLE
+  name: product_page_conversion_rate
+  type: FLOAT
+  description: |
+    Percentage of unique devices that set your browser app as default \
+    after viewing its product page, \
+    among all unique devices that viewed your browser app’s product page.
+
+- mode: NULLABLE
+  name: informed_selection_rate
+  type: FLOAT
+  description: |
+    Percentage of unique devices that set your browser app \
+    as default that had previously viewed its product page, \
+    among all unique devices that chose your browser app as a default.
+
+- mode: NULLABLE
+  name: direct_selection_rate
+  type: FLOAT
+  description: |
+    Percentage of unique devices that set your browser app \
+    as default without viewing its product page, \
+    among all unique devices that chose your browser app as a default.
+
+- mode: NULLABLE
+  name: logical_date
+  type: DATETIME
+  description: |
+    Logical date used by the date for processing.

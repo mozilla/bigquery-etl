@@ -46,6 +46,24 @@ firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__a
     secret="airflow-gke-secrets",
     key="bqetl_firefox_ios__app_store_connect_key",
 )
+firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_issuer_id = Secret(
+    deploy_type="env",
+    deploy_target="CONNECT_ISSUER_ID",
+    secret="airflow-gke-secrets",
+    key="bqetl_firefox_ios__app_store_connect_issuer_id",
+)
+firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_key_id = Secret(
+    deploy_type="env",
+    deploy_target="CONNECT_KEY_ID",
+    secret="airflow-gke-secrets",
+    key="bqetl_firefox_ios__app_store_connect_key_id",
+)
+firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_key = Secret(
+    deploy_type="env",
+    deploy_target="CONNECT_KEY",
+    secret="airflow-gke-secrets",
+    key="bqetl_firefox_ios__app_store_connect_key",
+)
 
 
 default_args = {
@@ -482,6 +500,27 @@ with DAG(
             firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_issuer_id,
             firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key_id,
             firefox_ios_derived__app_store_choice_screen_engagement__v1_bqetl_firefox_ios__app_store_connect_key,
+        ],
+    )
+
+    firefox_ios_derived__app_store_choice_screen_selection__v1 = GKEPodOperator(
+        task_id="firefox_ios_derived__app_store_choice_screen_selection__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_choice_screen_selection_v1/query.py",
+        ]
+        + [
+            "--date={{ds}}",
+            "--connect_app_id=989804926",
+            "--partition_field=logical_date",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="kik@mozilla.com",
+        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        secrets=[
+            firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_issuer_id,
+            firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_key_id,
+            firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_key,
         ],
     )
 

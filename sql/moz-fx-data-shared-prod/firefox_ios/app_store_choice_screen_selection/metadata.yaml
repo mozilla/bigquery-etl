@@ -1,0 +1,13 @@
+friendly_name: App Store Choice Screen Selection
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_ios_derived.app_store_choice_screen_selection_v1

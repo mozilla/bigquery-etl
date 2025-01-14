@@ -3,7 +3,7 @@ WITH device_manufacturer_counts AS (
   SELECT
     first_seen_date,
     device_manufacturer,
-    DENSE_RANK() OVER(PARTITION BY submission_date ORDER BY COUNT(*) DESC) AS manufacturer_rank,
+    RANK() OVER(PARTITION BY first_seen_date ORDER BY COUNT(*) DESC) AS manufacturer_rank,
   FROM
   `{{ project_id }}.{{ dataset }}.new_profile_clients`
   WHERE

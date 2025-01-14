@@ -1,0 +1,26 @@
+friendly_name: Uninstalls By Account Signed In Status
+description: |-
+  Aggregate table calculating # unique clients with uninstalls by account enabled status and date
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
+  dag: bqetl_fx_health_ind_dashboard
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

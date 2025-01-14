@@ -16,5 +16,7 @@ FROM
 WHERE
   submission_date_s3 = @submission_date
   AND app_name = 'Firefox'
+  AND total_uri_count_private_mode >= 0 --exclude rows with negatives, if any (bad data)
+  AND total_uri_count_normal_mode >= 0 --exclude rows with negatives, if any (bad data)
 GROUP BY
   submission_date_s3

@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: nbr_cpu_cores
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of CPU cores on device
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients Uninstalling Firefox

@@ -39,7 +39,3 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of URIs Visited in Normal Mode
-- name: nbr_clients
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of unique client IDs

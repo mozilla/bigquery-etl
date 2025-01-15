@@ -12,6 +12,7 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  table_type: client_level
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}

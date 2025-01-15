@@ -284,6 +284,41 @@ def validate_exclusion_list_expiration_days(metadata, path):
     return is_valid
 
 
+def validate_workgroup_access(metadata, path):
+    """Check if there are any specifications of table-level access that are redundant with dataset access."""
+    is_valid = True
+    dataset_metadata_path = Path(path).parent.parent / "dataset_metadata.yaml"
+    if not dataset_metadata_path.exists():
+        return is_valid
+
+    dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+    default_table_workgroup_access_dict = {
+        workgroup_access.get("role"): workgroup_access.get("members", [])
+        for workgroup_access in dataset_metadata.default_table_workgroup_access
+    }
+
+    if metadata.workgroup_access:
+        for table_workgroup_access in metadata.workgroup_access:
+            if table_workgroup_access.role in default_table_workgroup_access_dict:
+                for table_workgroup_member in table_workgroup_access.members:
+                    if (
+                        table_workgroup_member
+                        in default_table_workgroup_access_dict[
+                            table_workgroup_access.role
+                        ]
+                    ):
+                        is_valid = False
+                        click.echo(
+                            click.style(
+                                f"ERROR: Redundant table-level access specification in {path}. "
+                                + f"Table-level access for {table_workgroup_access.role}: {table_workgroup_member} defined in dataset_metadata.yaml.",
+                                fg="red",
+                            )
+                        )
+
+    return is_valid
+
+
 def validate_retention_policy_based_on_table_type(metadata, path):
     """Check if any of the retention exclusion tables have expiration_days set."""
     is_valid = True
@@ -373,6 +408,8 @@ def validate(target):
                     if not validate_col_desc_enforced(root, metadata):
                         failed = True
 
+                    if not validate_workgroup_access(metadata, path):
+                        failed = True
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
     else:

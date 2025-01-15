@@ -9,7 +9,3 @@ owners:
   - cmorales@mozilla.com
   - cbeck@mozilla.com
   - lvargas@mozilla.com
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:ads

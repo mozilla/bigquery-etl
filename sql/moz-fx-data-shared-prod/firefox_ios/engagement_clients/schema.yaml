@@ -2,47 +2,44 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-- name: normalized_channel
+- name: app_name
   type: STRING
   mode: NULLABLE
-- name: app_name
+- name: normalized_channel
   type: STRING
   mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
-- name: country
-  type: STRING
-  mode: NULLABLE
 - name: locale
   type: STRING
   mode: NULLABLE
-- name: is_mobile
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE
+- name: is_dau
   type: BOOLEAN
   mode: NULLABLE
-- name: dau
-  type: INTEGER
+- name: is_wau
+  type: BOOLEAN
   mode: NULLABLE
-- name: wau
-  type: INTEGER
+- name: is_mau
+  type: BOOLEAN
   mode: NULLABLE
-- name: mau
-  type: INTEGER
-  mode: NULLABLE
-- name: device_type
-  type: STRING
-  mode: NULLABLE
-- name: device_manufacturer
-  type: STRING
-  mode: NULLABLE
-- name: lifecycle_stage
-  type: STRING
-  mode: NULLABLE
-- name: paid_vs_organic
-  type: STRING
+- name: is_mobile
+  type: BOOLEAN
   mode: NULLABLE
 - name: is_suspicious_device_client
   type: BOOLEAN
@@ -59,24 +56,18 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-- name: play_store_attribution_campaign
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: paid_vs_organic
   type: STRING
   mode: NULLABLE
-- name: play_store_attribution_medium
+- name: lifecycle_stage
   type: STRING
   mode: NULLABLE
-- name: play_store_attribution_source
+- name: device_type
   type: STRING
   mode: NULLABLE
-- name: meta_attribution_app
-  type: STRING
-  mode: NULLABLE
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-- name: distribution_id
-  type: STRING
-  mode: NULLABLE
-- name: product_name
+- name: device_manufacturer
   type: STRING
   mode: NULLABLE

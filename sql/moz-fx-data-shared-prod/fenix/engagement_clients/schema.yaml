@@ -1,66 +1,45 @@
 fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
 - name: client_id
   type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
   mode: NULLABLE
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-- name: normalized_channel
+- name: app_name
   type: STRING
   mode: NULLABLE
-- name: app_name
+- name: normalized_channel
   type: STRING
   mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
-- name: country
+- name: locale
   type: STRING
   mode: NULLABLE
-- name: locale
+- name: country
   type: STRING
   mode: NULLABLE
 - name: isp
   type: STRING
   mode: NULLABLE
-- name: os
-  type: STRING
+- name: is_dau
+  type: BOOLEAN
   mode: NULLABLE
-- name: os_version
-  type: STRING
+- name: is_wau
+  type: BOOLEAN
   mode: NULLABLE
-- name: device_model
-  type: STRING
-  mode: NULLABLE
-- name: device_manufacturer
-  type: STRING
+- name: is_mau
+  type: BOOLEAN
   mode: NULLABLE
 - name: is_mobile
   type: BOOLEAN
-  mode: NULLABLE
-- name: paid_vs_organic
-  type: STRING
-  mode: NULLABLE
-- name: device_type
-  type: STRING
-  mode: NULLABLE
-- name: is_suspicious_device_client
-  type: BOOLEAN
-  mode: NULLABLE
-- name: adjust_ad_group
-  type: STRING
-  mode: NULLABLE
-- name: adjust_campaign
-  type: STRING
-  mode: NULLABLE
-- name: adjust_creative
-  type: STRING
-  mode: NULLABLE
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
-- name: adjust_attribution_timestamp
-  type: TIMESTAMP
   mode: NULLABLE
 - name: play_store_attribution_campaign
   type: STRING
@@ -92,9 +71,33 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-- name: product_name
+- name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+- name: device_manufacturer
   type: STRING
   mode: NULLABLE

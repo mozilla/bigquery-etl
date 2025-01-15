@@ -47,6 +47,12 @@ fields:
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
 - name: is_suspicious_device_client
   type: BOOLEAN
   mode: NULLABLE

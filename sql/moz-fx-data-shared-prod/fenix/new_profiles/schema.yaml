@@ -84,6 +84,13 @@ fields:
   type: STRING
   mode: NULLABLE
   description: A string containing the distribution identifier.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: 'On Apple devices allows us to differentiate between iPhone and iPad.
+    On Android devices the value is always "Android".
+
+    '
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE

@@ -44,6 +44,12 @@ fields:
 - name: repeat_profiles
   type: INTEGER
   mode: NULLABLE
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

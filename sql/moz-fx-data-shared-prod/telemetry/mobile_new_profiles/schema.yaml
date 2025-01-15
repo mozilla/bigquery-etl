@@ -32,6 +32,9 @@ fields:
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
+- name: device_type
+  type: STRING
+  mode: NULLABLE
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE

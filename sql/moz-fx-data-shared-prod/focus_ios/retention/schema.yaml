@@ -64,6 +64,19 @@ fields:
   mode: NULLABLE
   description: Number of new profiles on the metric date that were DAU at least twice
     in the next 28 days.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: 'On Apple devices allows us to differentiate between iPhone and iPad.
+    On Android devices the value is always "Android".
+
+    '
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+  description: 'Manufacturer of the device where the client is installed.
+
+    '
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

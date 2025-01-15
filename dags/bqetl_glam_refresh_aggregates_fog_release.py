@@ -67,12 +67,12 @@ with DAG(
         task_id="glam_etl__glam_fog_release_aggregates__v1",
         destination_table=None,
         dataset_id="glam_etl",
-        project_id="moz-fx-data-glam-prod-fca7",
+        project_id="moz-fx-glam-prod",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
-        sql_file_path="sql/moz-fx-data-glam-prod-fca7/glam_etl/glam_fog_release_aggregates_v1/script.sql",
+        sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_fog_release_aggregates_v1/script.sql",
     )
 
     glam_etl__glam_fog_release_aggregates__v1.set_upstream(wait_for_fog_release_done)

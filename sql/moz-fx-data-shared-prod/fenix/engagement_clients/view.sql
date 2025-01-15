@@ -18,6 +18,8 @@ WITH active_users AS (
     is_wau,
     is_mau,
     is_mobile,
+    device_type,
+    device_manufacturer,
   FROM
     `moz-fx-data-shared-prod.fenix.active_users`
 ),
@@ -88,6 +90,8 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  device_type,
+  device_manufacturer,
 FROM
   active_users
 LEFT JOIN

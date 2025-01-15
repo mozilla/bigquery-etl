@@ -17,6 +17,7 @@ SELECT
   device_manufacturer,
   is_mobile,
   attribution.paid_vs_organic,
+  device_type,
 FROM
   `moz-fx-data-shared-prod.focus_android.active_users` AS active_users
 LEFT JOIN

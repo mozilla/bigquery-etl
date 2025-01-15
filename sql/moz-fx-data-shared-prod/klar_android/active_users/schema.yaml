@@ -137,3 +137,6 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
+- name: device_type
+  type: STRING
+  mode: NULLABLE

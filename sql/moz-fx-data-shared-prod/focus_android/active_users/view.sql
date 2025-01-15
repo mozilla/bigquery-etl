@@ -3,7 +3,10 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.focus_android.active_users`
 AS
 SELECT
-  * EXCEPT (isp),
+  * EXCEPT (isp) REPLACE(
+    -- Lower device_manufacturer as in some cases the same manufacturer value has different casing.
+    LOWER(device_manufacturer) AS device_manufacturer
+  ),
   CASE
     WHEN LOWER(isp) = "browserstack"
       THEN CONCAT("Focus Android", " ", isp)
@@ -43,5 +46,16 @@ SELECT
   -- Adding isp at the end because it's in different column index in baseline table for some products.
   -- This is to make sure downstream union works as intended.
   isp,
+  CASE
+    WHEN normalized_os = "iOS"
+      AND STARTS_WITH(device_model, "iPad")
+      THEN "iPad"
+    WHEN normalized_os = "iOS"
+      AND STARTS_WITH(device_model, "iPhone")
+      THEN "iPhone"
+    WHEN normalized_os = "Android"
+      THEN "Android"
+    ELSE CAST(NULL AS STRING)
+  END AS device_type,
 FROM
   `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`

@@ -16,8 +16,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.usage_app_build,
+      metrics.string.usage_app_channel,
+      metrics.string.usage_app_display_version,
+      metrics.string.usage_os,
+      metrics.string.usage_os_version,
+      metrics.string.usage_reason
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
+    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -42,8 +52,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.usage_app_build,
+      metrics.string.usage_app_channel,
+      metrics.string.usage_app_display_version,
+      metrics.string.usage_os,
+      metrics.string.usage_os_version,
+      metrics.string.usage_reason
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
+    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -68,8 +88,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.usage_app_build,
+      metrics.string.usage_app_channel,
+      metrics.string.usage_app_display_version,
+      metrics.string.usage_os,
+      metrics.string.usage_os_version,
+      metrics.string.usage_reason
+    ) AS `string`,
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
+    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

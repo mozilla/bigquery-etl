@@ -14,6 +14,8 @@ WITH active_users AS (
     days_seen_bits,
     days_active_bits,
     is_mobile,
+    device_type,
+    device_manufacturer,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.active_users`
 ),
@@ -87,6 +89,8 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  active_users.device_type,
+  active_users.device_manufacturer,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily` AS clients_daily
 INNER JOIN

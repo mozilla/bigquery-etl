@@ -3,7 +3,15 @@
 from pathlib import Path
 from typing import List
 
-from ..backfill.parse import DEFAULT_REASON, DEFAULT_WATCHER, Backfill, BackfillStatus
+from ..backfill.parse import (
+    BACKFILL_FILE,
+    DEFAULT_REASON,
+    DEFAULT_WATCHER,
+    Backfill,
+    BackfillStatus,
+)
+from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 
 
 def validate_duplicate_entry_dates(
@@ -48,10 +56,22 @@ def validate_entries_are_sorted(backfills: List[Backfill]) -> None:
         raise ValueError("Backfill entries are not sorted by entry dates")
 
 
+def validate_shredder_mitigation(entry: Backfill, backfill_file: Path) -> None:
+
+    metadata_file = Path(str(backfill_file).replace(BACKFILL_FILE, METADATA_FILE))
+    metadata = Metadata.from_file(metadata_file)
+    has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+
+    if has_shredder_mitigation_label != entry.shredder_mitigation:
+        raise ValueError(
+            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+        )
+
+
 def validate_file(file: Path) -> None:
     """Validate all entries from a given backfill.yaml file."""
     backfills = Backfill.entries_from_file(file)
-    validate_entries(backfills)
+    validate_entries(backfills, file)
 
 
 def validate_duplicate_entry_with_initiate_status(
@@ -66,13 +86,14 @@ def validate_duplicate_entry_with_initiate_status(
                 )
 
 
-def validate_entries(backfills: list) -> None:
+def validate_entries(backfills: list, file: Path) -> None:
     """Validate a list of backfill entries."""
     for i, backfill_entry in enumerate(backfills):
         validate_default_watchers(backfill_entry)
         validate_default_reason(backfill_entry)
         validate_duplicate_entry_dates(backfill_entry, backfills[i + 1 :])
         validate_excluded_dates(backfill_entry)
+        validate_shredder_mitigation(backfill_entry, file)
         validate_duplicate_entry_with_initiate_status(
             backfill_entry, backfills[i + 1 :]
         )

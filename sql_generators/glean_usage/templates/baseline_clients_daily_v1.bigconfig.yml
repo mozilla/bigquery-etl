@@ -16,18 +16,12 @@ tag_deployments:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.durations
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_os
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_os_version
-          - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.locale
-          - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
         metrics:
           - saved_metric_id: is_not_null
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
         metrics:
           - saved_metric_id: is_valid_channel
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
-        metrics:
-          - saved_metric_id: is_2_char_len
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

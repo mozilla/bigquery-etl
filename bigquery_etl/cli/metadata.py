@@ -111,17 +111,9 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                         "role"
                     ):
                         role_exists = True
-                        table_metadata_members = table_workgroup_access.members
-                        table_metadata_members.extend(
-                            default_workgroup_member
-                            for default_workgroup_member in default_workgroup_access.get(
-                                "members", []
-                            )
-                            if default_workgroup_member not in table_metadata_members
-                        )
-
-                        table_metadata.workgroup_access[i].members = (
-                            table_metadata_members
+                        table_metadata.workgroup_access[i].members = sorted(
+                            set(table_workgroup_access.members)
+                            | set(default_workgroup_access.get("members", []))
                         )
                         table_metadata_updated = True
 

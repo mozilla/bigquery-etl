@@ -205,8 +205,8 @@ class TestMetadata:
                 metadata = yaml.safe_load(stream)
         assert metadata["workgroup_access"][0]["role"] == "roles/bigquery.dataViewer"
         assert metadata["workgroup_access"][0]["members"] == [
-            "workgroup:test/test",
             "workgroup:mozilla-confidential",
+            "workgroup:test/test",
         ]
         assert "deprecated" not in metadata
 

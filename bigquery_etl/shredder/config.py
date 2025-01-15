@@ -91,6 +91,7 @@ DeleteIndex = dict[DeleteTarget, DeleteSource | tuple[DeleteSource, ...]]
 
 CLIENT_ID = "client_id"
 GLEAN_CLIENT_ID = "client_info.client_id"
+USAGE_PROFILE_ID = "metrics.uuid.usage.profile_id"
 IMPRESSION_ID = "impression_id"
 USER_ID = "user_id"
 POCKET_ID = "pocket_id"
@@ -110,6 +111,9 @@ DESKTOP_SRC = DeleteSource(
 )
 DESKTOP_GLEAN_SRC = DeleteSource(
     table="firefox_desktop_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
+DESKTOP_USAGE_SRC = DeleteSource(
+    table="firefox_desktop_stable.usage_deletion_request_v1", field=USAGE_PROFILE_ID
 )
 IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
@@ -463,6 +467,11 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.ltv_states_v1"): DESKTOP_SRC,
+    # usage-reporting pings
+    DeleteTarget(
+        table="firefox_desktop_stable.usage_reporting_v1",
+        field=USAGE_PROFILE_ID,
+    ): DESKTOP_USAGE_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

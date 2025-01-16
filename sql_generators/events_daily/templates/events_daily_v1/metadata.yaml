@@ -9,6 +9,7 @@ labels:
   application: {{ dataset }}
   schedule: daily
   incremental: true
+  table_type: client_level
 scheduling:
   dag_name: {{ dag_name }}
 bigquery:
@@ -16,6 +17,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: 775
   clustering:
     fields:
       - sample_id

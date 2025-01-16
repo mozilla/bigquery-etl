@@ -14,8 +14,6 @@ tag_deployments:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.first_seen_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.first_run_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.durations
-          - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_os
-          - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_os_version
         metrics:
           - saved_metric_id: is_not_null
       - column_selectors:

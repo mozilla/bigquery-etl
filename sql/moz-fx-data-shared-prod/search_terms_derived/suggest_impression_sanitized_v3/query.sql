@@ -34,9 +34,7 @@ WITH impressions AS (
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
-
   UNION ALL
-
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
     metrics.string.quick_suggest_request_id AS request_id,

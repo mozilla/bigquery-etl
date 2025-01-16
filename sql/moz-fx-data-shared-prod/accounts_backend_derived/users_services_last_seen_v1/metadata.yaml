@@ -6,7 +6,6 @@ owners:
 labels:
   incremental: true
   owner1: akomar@mozilla.com
-  owner2: kik@mozilla.com
   table_type: client_level
 scheduling:
   dag_name: bqetl_accounts_derived

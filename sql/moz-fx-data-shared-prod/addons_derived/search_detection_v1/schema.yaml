@@ -15,7 +15,8 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description:
+  description: |
+    An ISO 3166-1 alpha-2 country code.
 
 - mode: NULLABLE
   name: app_name

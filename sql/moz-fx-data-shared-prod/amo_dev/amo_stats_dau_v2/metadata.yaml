@@ -25,8 +25,8 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:amo/nonprod
+  - workgroup:mozilla-confidential
 references:
   query.sql:
   - moz-fx-data-shared-prod.amo_prod.amo_stats_dau_v2

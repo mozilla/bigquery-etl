@@ -9,8 +9,8 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:search-terms/sanitized-writer
   - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
+  - workgroup:search-terms/sanitized-writer
 references:
   query.sql:
   - moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1

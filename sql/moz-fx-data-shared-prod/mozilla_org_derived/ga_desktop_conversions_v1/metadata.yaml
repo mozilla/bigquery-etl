@@ -5,7 +5,8 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_census_feed
 scheduling:
   dag_name: bqetl_census_feed
   date_partition_parameter: activity_date
@@ -22,11 +23,11 @@ bigquery:
   clustering:
     fields:
     - conversion_name
-references: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-census
-  - workgroup:mozilla-confidential
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential
+references: {}

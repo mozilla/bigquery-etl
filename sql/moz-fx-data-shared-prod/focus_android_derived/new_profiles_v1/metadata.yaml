@@ -37,4 +37,4 @@ monitoring:
   enabled: true
   collection: Operational Checks
   partition_column: null
-  partition_column_set: false
+  partition_column_set: true

@@ -1,9 +1,4 @@
----
 friendly_name: Sanitation Job Metadata
-owners:
-  - ctroy@mozilla.com
-labels:
-  incremental: true
 description: |-
   This table tracks the success of sanitation jobs
   and some aggregate metrics about what got
@@ -16,12 +11,21 @@ description: |-
     - April 5, 2024:
       Added contained_blank to track blank query frequency
       Added total_search_terms to track all terms inclusive of blank terms
-bigquery:
-  {}
+owners:
+- ctroy@mozilla.com
+labels:
+  incremental: true
+  owner1: ctroy
+bigquery: null
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:search-terms/sanitized
-  - role: roles/bigquery.dataEditor
-    members:
-      - workgroup:search-terms/sanitized-writer
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:search-terms/sanitized
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:search-terms/sanitized-writer
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
+  - workgroup:search-terms/sanitized-writer
+references: {}

@@ -4,9 +4,12 @@ description: |-
   send to Google Ads.
 owners:
 - frank@mozilla.com
-labels: {}
+labels:
+  owner1: frank
 bigquery: null
-references: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
-  members: [workgroup:dataops-managed/external-census]
+  members:
+  - workgroup:dataops-managed/external-census
+  - workgroup:mozilla-confidential
+references: {}

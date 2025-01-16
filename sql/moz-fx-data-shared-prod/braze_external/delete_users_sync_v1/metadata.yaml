@@ -35,8 +35,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:braze
-  - workgroup:braze/ingestion-mozilla-dev
   - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers

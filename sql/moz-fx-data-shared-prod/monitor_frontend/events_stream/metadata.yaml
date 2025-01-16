@@ -14,8 +14,8 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitor_frontend_derived.events_stream_v1

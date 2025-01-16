@@ -79,8 +79,8 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:internet-outages/external
+  - workgroup:mozilla-confidential
 references:
   checks.sql:
   - ..

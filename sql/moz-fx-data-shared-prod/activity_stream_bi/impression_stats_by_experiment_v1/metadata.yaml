@@ -16,11 +16,14 @@ bigquery:
     field: submission_timestamp
     require_partition_filter: true
     expiration_days: 180.0
+  range_partitioning: null
   clustering:
     fields:
     - experiment_id
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:mozilla-confidential
   - workgroup:pocket/external
+  - workgroup:pocket/prefect
 references: {}

@@ -7,8 +7,8 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitor_cirrus_derived.metrics_clients_daily_v1

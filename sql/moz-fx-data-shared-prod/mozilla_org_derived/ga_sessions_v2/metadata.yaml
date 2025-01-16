@@ -4,12 +4,13 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  incremental: false
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
   depends_on:
   - task_id: wait_for_wmo_events_table
     dag_name: bqetl_google_analytics_derived_ga4
@@ -19,15 +20,16 @@ bigquery:
     field: session_date
     require_partition_filter: false
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - ga_client_id
     - country
-references: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-census
-  - workgroup:mozilla-confidential
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential
+references: {}

@@ -9,15 +9,20 @@ description: |-
 owners:
 - cbeck@mozilla.com
 labels:
-  incremental: false
   owner: cbeck
+  owner1: cbeck
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+references: {}
 external_data:
   format: google_sheets
   source_uris:
   - https://docs.google.com/spreadsheets/d/1ilLz0THm5gzzqaBqfzIa_83b74Y-ElykPed_bOLoy9s
   options:
     skip_leading_rows: 1
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:braze

@@ -4,9 +4,14 @@ description: |
 
   Includes XK/XKK for Kosovo, which is not in the ISO 3166 standard, but is recognized
   by some governing bodies and is present in MaxMind's GeoIP2 database.
+owners: []
+labels: {}
+bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-census
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential
+references: {}

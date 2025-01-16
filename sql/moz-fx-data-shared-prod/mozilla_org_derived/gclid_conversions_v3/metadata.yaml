@@ -9,7 +9,8 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: submission_date
@@ -20,7 +21,11 @@ bigquery:
     field: activity_date
     require_partition_filter: false
     expiration_days: null
-references: {}
+  range_partitioning: null
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
-  members: [workgroup:dataops-managed/external-census]
+  members:
+  - workgroup:dataops-managed/external-census
+  - workgroup:mozilla-confidential
+references: {}

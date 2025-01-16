@@ -38,8 +38,8 @@ schema:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
 references:
   query.sql:
   - monitor_cirrus_derived.baseline_clients_daily_v1
@@ -48,4 +48,4 @@ monitoring:
   enabled: false
   collection: null
   partition_column: null
-  partition_column_set: false
+  partition_column_set: true

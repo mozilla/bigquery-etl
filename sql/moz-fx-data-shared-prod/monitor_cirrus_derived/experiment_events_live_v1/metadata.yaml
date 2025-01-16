@@ -11,8 +11,8 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.monitor_cirrus_live.enrollment_v1

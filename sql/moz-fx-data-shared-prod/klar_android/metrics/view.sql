@@ -53,7 +53,9 @@ SELECT
       metrics.boolean.devtools_shadowdom_reveal_link_clicked,
       metrics.boolean.devtools_shadowdom_shadow_root_displayed,
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
-      metrics.boolean.formautofill_availability
+      metrics.boolean.formautofill_availability,
+      metrics.boolean.formautofill_os_auth_enabled,
+      metrics.boolean.pwmgr_os_auth_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -385,7 +387,20 @@ SELECT
       metrics.labeled_counter.networking_captive_portal_banner_display_time,
       metrics.labeled_counter.networking_https_record_state,
       metrics.labeled_counter.networking_https_http_or_local,
-      metrics.labeled_counter.networking_http_ip_addr_any_hostnames
+      metrics.labeled_counter.networking_http_ip_addr_any_hostnames,
+      metrics.labeled_counter.javascript_gc_budget_was_increased,
+      metrics.labeled_counter.javascript_gc_is_zone_gc,
+      metrics.labeled_counter.javascript_gc_minor_reason,
+      metrics.labeled_counter.javascript_gc_minor_reason_long,
+      metrics.labeled_counter.javascript_gc_non_incremental,
+      metrics.labeled_counter.javascript_gc_non_incremental_reason,
+      metrics.labeled_counter.javascript_gc_parallel_mark_used,
+      metrics.labeled_counter.javascript_gc_reason,
+      metrics.labeled_counter.javascript_gc_reset,
+      metrics.labeled_counter.javascript_gc_reset_reason,
+      metrics.labeled_counter.javascript_gc_slice_was_long,
+      metrics.labeled_counter.javascript_gc_slow_phase,
+      metrics.labeled_counter.javascript_gc_slow_task
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -399,7 +414,8 @@ SELECT
       metrics.memory_distribution.cert_storage_memory,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
-      metrics.memory_distribution.networking_http_3_udp_datagram_size_received
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
+      metrics.memory_distribution.javascript_gc_nursery_bytes
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -534,7 +550,19 @@ SELECT
       metrics.custom_distribution.networking_http_1_download_throughput_50_100,
       metrics.custom_distribution.networking_http_2_download_throughput_100,
       metrics.custom_distribution.networking_http_2_download_throughput_10_50,
-      metrics.custom_distribution.networking_http_2_download_throughput_50_100
+      metrics.custom_distribution.networking_http_2_download_throughput_50_100,
+      metrics.custom_distribution.javascript_gc_effectiveness,
+      metrics.custom_distribution.javascript_gc_mark_rate,
+      metrics.custom_distribution.javascript_gc_mmu_50,
+      metrics.custom_distribution.javascript_gc_nursery_promotion_rate,
+      metrics.custom_distribution.javascript_gc_parallel_mark_interruptions,
+      metrics.custom_distribution.javascript_gc_parallel_mark_speedup,
+      metrics.custom_distribution.javascript_gc_parallel_mark_utilization,
+      metrics.custom_distribution.javascript_gc_pretenure_count,
+      metrics.custom_distribution.javascript_gc_slice_count,
+      metrics.custom_distribution.javascript_gc_tenured_survival_rate,
+      metrics.custom_distribution.javascript_gc_zone_count,
+      metrics.custom_distribution.javascript_gc_zones_collected
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

@@ -27,4 +27,4 @@ bigquery:
     fields:
       - normalized_channel
       - app_name
-      - os
+      - os_name

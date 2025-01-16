@@ -34,6 +34,34 @@ WITH impressions AS (
     `moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
+
+  UNION ALL
+
+  SELECT
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_timestamp,
+    metrics.string.quick_suggest_request_id AS request_id,
+    NULL AS telemetry_query,
+    metrics.string.quick_suggest_advertiser AS advertiser,
+    CAST(metrics.string.quick_suggest_block_id AS INT64) AS block_id,
+    metrics.uuid.quick_suggest_context_id AS context_id,
+    sample_id,
+    metrics.boolean.quick_suggest_is_clicked AS is_clicked,
+    client_info.locale AS locale,
+    metadata.geo.country,
+    metadata.geo.subdivision1 AS region,
+    normalized_os,
+    normalized_os_version,
+    client_info.app_channel AS normalized_channel,
+    metrics.quantity.quick_suggest_position AS position,
+    metrics.url2.quick_suggest_reporting_url AS reporting_url,
+    NULL AS scenario,
+    -- Truncate to just Firefox major version
+    SPLIT(client_info.app_display_version, '.')[SAFE_OFFSET(0)] AS version,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_stable.quick_suggest_v1`
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND metrics.string.quick_suggest_ping_type = 'quicksuggest-impression'
 ),
 sanitized_queries AS (
   SELECT

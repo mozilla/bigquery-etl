@@ -9,7 +9,6 @@ tag_deployments:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.submission_date
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.client_id
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.sample_id
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.normalized_channel
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.n_metrics_ping
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.days_sent_metrics_ping_bits
     metrics:

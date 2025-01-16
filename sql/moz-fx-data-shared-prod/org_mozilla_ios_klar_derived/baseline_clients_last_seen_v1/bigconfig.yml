@@ -20,10 +20,6 @@ tag_deployments:
     metrics:
     - saved_metric_id: is_valid_channel
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_last_seen_v1.country
-    metrics:
-    - saved_metric_id: is_2_char_len
-  - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_last_seen_v1.*
     metrics:
     - saved_metric_id: freshness

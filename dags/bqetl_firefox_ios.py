@@ -510,7 +510,7 @@ with DAG(
             "sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_choice_screen_selection_v1/query.py",
         ]
         + [
-            "--date={{ds}}",
+            "--date={{macros.ds_add(ds, -5)}}",
             "--connect_app_id=989804926",
             "--partition_field=logical_date",
         ],
@@ -522,6 +522,9 @@ with DAG(
             firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_key_id,
             firefox_ios_derived__app_store_choice_screen_selection__v1_bqetl_firefox_ios__app_store_connect_key,
         ],
+        retry_delay=datetime.timedelta(seconds=1800),
+        retries=2,
+        email_on_retry=False,
     )
 
     firefox_ios_derived__app_store_funnel__v1 = bigquery_etl_query(

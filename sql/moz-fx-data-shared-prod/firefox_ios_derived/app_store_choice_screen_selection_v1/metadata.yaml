@@ -17,7 +17,7 @@ scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: false
   arguments:
-  - --date={{ds}}
+  - --date={{macros.ds_add(ds, -5)}}
   - --connect_app_id=989804926
   - --partition_field=logical_date
   secrets:
@@ -27,6 +27,10 @@ scheduling:
     key: bqetl_firefox_ios__app_store_connect_key_id
   - deploy_target: CONNECT_KEY
     key: bqetl_firefox_ios__app_store_connect_key
+  date_partition_offset: -5
+  retry_delay: 30m
+  retries: 2
+  email_on_retry: false
 bigquery:
   time_partitioning:
     type: day

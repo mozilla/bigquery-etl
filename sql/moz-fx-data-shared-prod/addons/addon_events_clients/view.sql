@@ -5,12 +5,12 @@ SELECT
   submission_date,
   `timestamp`,
   COALESCE(
-    udf.get_key(event_map_values, 'addonId'),
-    udf.get_key(event_map_values, 'addon_id')
+    `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'addonId'),
+    `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'addon_id')
   ) AS addon_id,
   COALESCE(
-    udf.get_key(event_map_values, 'addonVersion'),
-    udf.get_key(event_map_values, 'addon_version')
+    `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'addonVersion'),
+    `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'addon_version')
   ) AS addon_version,
   -- TODO: why in some redash queries this is hashed_addon_id and in other value? What's the difference?
   event_string_value AS hashed_addon_id,
@@ -34,7 +34,4 @@ FROM
   `moz-fx-data-shared-prod.telemetry.events`
 WHERE
   submission_date >= '2021-08-09'
-  AND event_category IN (
-    "addonsManager",
-    "addonsSearchDetection"
-  )
+  AND event_category IN ("addonsManager", "addonsSearchDetection")

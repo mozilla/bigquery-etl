@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
- `moz-fx-data-shared-prod.addons_derived.search_detection_v1`
+  `moz-fx-data-shared-prod.addons_derived.search_detection_v1`

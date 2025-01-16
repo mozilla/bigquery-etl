@@ -11,8 +11,8 @@ SELECT
   method,
   `object`,
   `value`,
-  udf.get_key(event_map_values, 'from') AS from_etld,
-  udf.get_key(event_map_values, 'to') AS to_etld,
+  `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'from') AS from_etld,
+  `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'to') AS to_etld,
   COUNT(*) AS event_count,
   COUNT(DISTINCT client_id) AS unique_clients_cnt,
 FROM

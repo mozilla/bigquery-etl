@@ -8,8 +8,9 @@ description: |-
 labels:
   application: firefox
   schedule: daily
+  table_type: client_level
 owners:
-  - jklukas@mozilla.com
+  - ascholtz@mozilla.com
 scheduling:
   dag_name: bqetl_main_summary
   start_date: "2021-01-19"

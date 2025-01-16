@@ -16,7 +16,7 @@ SELECT
   COUNT(*) AS event_count,
   COUNT(DISTINCT client_id) AS unique_clients_cnt,
 FROM
-  `moz-fx-data-shared-prod.tmp.addon_events_clients`
+  `moz-fx-data-shared-prod.addons.addon_events_clients`
 WHERE
   submission_date = @submission_date
   AND event_category = "addonsSearchDetection"

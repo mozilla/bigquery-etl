@@ -11283,6 +11283,22 @@ fields:
       mode: NULLABLE
       description: Whether a page uses a 5-to-8-character language subtag in Intl.Locale
         constructor
+    - name: use_counter2_js_ic_stub_oom_document
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether a document OOMed while creating IC stub '
+    - name: use_counter2_js_ic_stub_oom_page
+      type: STRING
+      mode: NULLABLE
+      description: 'Whether a page OOMed while creating IC stub '
+    - name: use_counter2_js_ic_stub_too_large_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document tried to create an IC stub that was too large
+    - name: use_counter2_js_ic_stub_too_large_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page tried to create an IC stub that was too large
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22418,6 +22434,23 @@ fields:
           mode: NULLABLE
           description: Whether a page uses a 5-to-8-character language subtag in Intl.Locale
             constructor
+        - name: use_counter2_js_ic_stub_oom_document
+          type: STRING
+          mode: NULLABLE
+          description: 'Whether a document OOMed while creating IC stub '
+        - name: use_counter2_js_ic_stub_oom_page
+          type: STRING
+          mode: NULLABLE
+          description: 'Whether a page OOMed while creating IC stub '
+        - name: use_counter2_js_ic_stub_too_large_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document tried to create an IC stub that was too
+            large
+        - name: use_counter2_js_ic_stub_too_large_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page tried to create an IC stub that was too large
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

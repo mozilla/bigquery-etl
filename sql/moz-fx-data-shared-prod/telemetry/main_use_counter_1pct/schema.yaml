@@ -8330,6 +8330,18 @@ fields:
     - name: use_counter2_js_legacy_lang_subtag_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_ic_stub_oom_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_ic_stub_oom_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_ic_stub_too_large_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_ic_stub_too_large_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16527,6 +16539,18 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_legacy_lang_subtag_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_ic_stub_oom_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_ic_stub_oom_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_ic_stub_too_large_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_ic_stub_too_large_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

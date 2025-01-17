@@ -77,28 +77,28 @@
   normalized_channel: release
   reporting_url: "https://example.com/acme-corp"
   query: "anvils"
-  scenario: online
+  scenario: null
   submission_timestamp: 2021-01-01T13:01:00+00:00
   version: "134"
-- block_id: 201
-  context_id: cid11
-  request_id: rid11
-  session_id: sid11
-  sequence_no: 11
+- block_id: 202
+  context_id: cid12
+  request_id: rid12
+  session_id: sid12
+  sequence_no: 12
   country: US
   is_clicked: false
   locale: en-US
   browser: firefox(134)
   form_factor: desktop
   os_family: macos
-  timestamp: 2021-01-01T13:01:00+00:00
+  timestamp: 2021-01-01T13:02:00+00:00
   normalized_os: macOS
-  normalized_os_version: 15.2
-  position: 11
+  normalized_os_version: 15.0
+  position: 12
   region: CA
   normalized_channel: release
-  reporting_url: "https://example.com/acme-corp"
-  query: "anvils"
-  scenario: online
-  submission_timestamp: 2021-01-01T13:01:00+00:00
+  reporting_url: "https://example.com/dunder-mifflin"
+  query: "best paper"
+  scenario: null
+  submission_timestamp: 2021-01-01T13:02:00+00:00
   version: "134"

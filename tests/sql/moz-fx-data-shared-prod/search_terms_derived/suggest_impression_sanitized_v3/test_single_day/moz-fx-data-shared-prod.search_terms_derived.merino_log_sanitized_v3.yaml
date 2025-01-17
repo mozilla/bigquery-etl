@@ -31,3 +31,25 @@
   form_factor: desktop
   browser: firefox(96)
   os_family: macos
+- timestamp: "2021-01-01 13:01:00.000000"
+  request_id: rid11
+  session_id: sid11
+  sequence_no: 11
+  query: "anvils"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(134)
+  os_family: macos
+- timestamp: "2021-01-01 13:02:00.000000"
+  request_id: rid12
+  session_id: sid12
+  sequence_no: 12
+  query: "best paper"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(134)
+  os_family: macos

@@ -2,7 +2,7 @@
   request_id: rid1
   session_id: sid1
   sequence_no: 1
-  block_id: bid1
+  block_id: 101
   context_id: cid1
   country: US
   is_clicked: False
@@ -22,7 +22,7 @@
   submission_timestamp: 2021-01-01T12:00:00+00:00
   version: "94"
 - advertiser: awesome guitar store
-  block_id: bid2
+  block_id: 102
   context_id: cid2
   country: US
   is_clicked: true
@@ -36,7 +36,7 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:03:00+00:00
   version: "94"
-- block_id: bid7
+- block_id: 107
   context_id: cid7
   request_id: rid7
   session_id: sid7
@@ -58,3 +58,47 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:07:00+00:00
   version: "94"
+- block_id: 201
+  context_id: cid11
+  request_id: rid11
+  session_id: sid11
+  sequence_no: 11
+  country: US
+  is_clicked: false
+  locale: en-US
+  browser: firefox(134)
+  form_factor: desktop
+  os_family: macos
+  timestamp: 2021-01-01T13:01:00+00:00
+  normalized_os: macOS
+  normalized_os_version: 15.2
+  position: 11
+  region: CA
+  normalized_channel: release
+  reporting_url: "https://example.com/acme-corp"
+  query: "anvils"
+  scenario: online
+  submission_timestamp: 2021-01-01T13:01:00+00:00
+  version: "134"
+- block_id: 201
+  context_id: cid11
+  request_id: rid11
+  session_id: sid11
+  sequence_no: 11
+  country: US
+  is_clicked: false
+  locale: en-US
+  browser: firefox(134)
+  form_factor: desktop
+  os_family: macos
+  timestamp: 2021-01-01T13:01:00+00:00
+  normalized_os: macOS
+  normalized_os_version: 15.2
+  position: 11
+  region: CA
+  normalized_channel: release
+  reporting_url: "https://example.com/acme-corp"
+  query: "anvils"
+  scenario: online
+  submission_timestamp: 2021-01-01T13:01:00+00:00
+  version: "134"

@@ -1,0 +1,72 @@
+- submission_timestamp: "2021-01-01 13:01:00"
+  client_info:
+    app_display_version: "134.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: CA
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 11
+    string:
+      quick_suggest_request_id: rid11
+      quick_suggest_advertiser: acme corp
+      quick_suggest_block_id: 201
+      quick_suggest_context_id: cid11
+    url2:
+      quick_suggest_reporting_url: "https://example.com/acme-corp"
+  normalized_channel: release
+  normalized_os: macOS
+  normalized_os_version: "15.2"
+  sample_id: null
+- submission_timestamp: "2021-01-01 13:02:00"
+  client_info:
+    app_display_version: "134.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: PA
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: true
+    quantity:
+      quick_suggest_position: 12
+    string:
+      quick_suggest_request_id: rid12
+      quick_suggest_advertiser: dunder mifflin
+      quick_suggest_block_id: 202
+      quick_suggest_context_id: cid12
+    url2:
+      quick_suggest_reporting_url: "https://example.com/dunder-mifflin"
+  normalized_channel: beta
+  normalized_os: macOS
+  normalized_os_version: "15.0"
+  sample_id: null
+- submission_timestamp: "2021-01-01 13:03:00"
+  client_info:
+    app_display_version: "134.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: US
+      subdivision1: OR
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 13
+    string:
+      quick_suggest_request_id: null
+      quick_suggest_advertiser: duff beer
+      quick_suggest_block_id: 203
+      quick_suggest_context_id: cid13
+    url2:
+      quick_suggest_reporting_url: "https://example.com/duff-beer"
+  normalized_channel: nightly
+  normalized_os: Windows
+  normalized_os_version: "11.0"
+  sample_id: null

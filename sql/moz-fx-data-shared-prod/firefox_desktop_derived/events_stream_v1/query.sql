@@ -123,3 +123,13 @@ FROM
   base
 CROSS JOIN
   UNNEST(events) AS event
+    -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
+WHERE
+  NOT (
+    normalized_channel = 'release'
+    AND event.category = 'security'
+    AND event.name = 'unexpected_load'
+    AND app_version_major
+    BETWEEN 132
+    AND 135
+  )

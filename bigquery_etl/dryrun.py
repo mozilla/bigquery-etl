@@ -45,7 +45,9 @@ QUERY_PARAMETER_TYPE_VALUES = {
     "STRING": "foo",
     "BOOL": True,
     "FLOAT64": 1,
+    "FLOAT": 1,
     "INT64": 1,
+    "INTEGER": 1,
     "NUMERIC": 1,
     "BIGNUMERIC": 1,
 }

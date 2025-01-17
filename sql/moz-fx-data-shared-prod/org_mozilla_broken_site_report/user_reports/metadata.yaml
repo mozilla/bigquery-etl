@@ -11,4 +11,5 @@ workgroup_access:
   - workgroup:webcompat/dashboard-service
 references:
   view.sql:
+  - moz-fx-data-shared-prod.fenix.broken_site_report
   - moz-fx-data-shared-prod.firefox_desktop.broken_site_report

@@ -1,11 +1,13 @@
-friendly_name: Install Vs Uninstall By Windows OS
+friendly_name: Network Usage
 description: |-
-  Calculates the ratio of installs vs uninstalls for Windows 6.1, 6.2, 6.3, & 10
+  Compares private vs non private network usage
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
   owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -15,7 +17,4 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields:
-    - normalized_os_version
 references: {}

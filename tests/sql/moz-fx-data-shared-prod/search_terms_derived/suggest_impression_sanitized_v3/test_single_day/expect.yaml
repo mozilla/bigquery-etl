@@ -95,8 +95,8 @@
   normalized_os: macOS
   normalized_os_version: 15.0
   position: 12
-  region: CA
-  normalized_channel: release
+  region: PA
+  normalized_channel: beta
   reporting_url: "https://example.com/dunder-mifflin"
   query: "best paper"
   scenario: null

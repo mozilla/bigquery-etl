@@ -53,3 +53,14 @@
   form_factor: desktop
   browser: firefox(134)
   os_family: macos
+- timestamp: "2021-01-01 13:04:00.000000"
+  request_id: rid14
+  session_id: sid14
+  sequence_no: 14
+  query: "adravil"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(134)
+  os_family: windows

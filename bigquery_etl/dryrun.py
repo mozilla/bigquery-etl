@@ -38,6 +38,19 @@ except ImportError:
     from backports.cached_property import cached_property  # type: ignore
 
 
+QUERY_PARAMETER_TYPE_VALUES = {
+    "DATE": "2019-01-01",
+    "DATETIME": "2019-01-01 00:00:00",
+    "TIMESTAMP": "2019-01-01 00:00:00",
+    "STRING": "foo",
+    "BOOL": True,
+    "FLOAT64": 1,
+    "INT64": 1,
+    "NUMERIC": 1,
+    "BIGNUMERIC": 1,
+}
+
+
 def get_credentials(auth_req: Optional[GoogleAuthRequest] = None):
     """Get GCP credentials."""
     auth_req = auth_req or GoogleAuthRequest()
@@ -204,28 +217,30 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-        if self.metadata:
-            # use metadata to rewrite date-type query params as submission_date
-            date_params = [
-                query_param
-                for query_param in (
-                    self.metadata.scheduling.get("date_partition_parameter"),
-                    *(
-                        param.split(":", 1)[0]
-                        for param in self.metadata.scheduling.get("parameters", [])
-                        if re.fullmatch(r"[^:]+:DATE:{{.*ds.*}}", param)
-                    ),
+
+        query_parameters = []
+        scheduling_metadata = self.metadata.scheduling if self.metadata else {}
+        if date_partition_parameter := scheduling_metadata.get(
+            "date_partition_parameter", "submission_date"
+        ):
+            query_parameters.append(
+                bigquery.ScalarQueryParameter(
+                    date_partition_parameter,
+                    "DATE",
+                    QUERY_PARAMETER_TYPE_VALUES["DATE"],
                 )
-                if query_param and query_param != "submission_date"
-            ]
-            if date_params:
-                pattern = re.compile(
-                    "@("
-                    + "|".join(date_params)
-                    # match whole query parameter names
-                    + ")(?![a-zA-Z0-9_])"
+            )
+        for parameter in scheduling_metadata.get("parameters", []):
+            parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
+            parameter_type = parameter_type.upper() or "STRING"
+            query_parameters.append(
+                bigquery.ScalarQueryParameter(
+                    parameter_name,
+                    parameter_type,
+                    QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
                 )
-                sql = pattern.sub("@submission_date", sql)
+            )
+
         project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
@@ -234,6 +249,10 @@ class DryRun:
                     "project": self.project or project,
                     "dataset": self.dataset or dataset,
                     "query": sql,
+                    "query_parameters": [
+                        query_parameter.to_api_repr()
+                        for query_parameter in query_parameters
+                    ],
                 }
 
                 if self.table:
@@ -257,11 +276,7 @@ class DryRun:
                     dry_run=True,
                     use_query_cache=False,
                     default_dataset=f"{project}.{dataset}",
-                    query_parameters=[
-                        bigquery.ScalarQueryParameter(
-                            "submission_date", "DATE", "2019-01-01"
-                        )
-                    ],
+                    query_parameters=query_parameters,
                 )
                 job = self.client.query(sql, job_config=job_config)
                 try:

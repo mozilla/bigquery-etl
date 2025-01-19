@@ -386,6 +386,10 @@ generate:
     skip_datasets:
     - mlhackweek_search
 
+column_descriptions:
+  skip:
+  - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/review_checker_clients_v1
+
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3

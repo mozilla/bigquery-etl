@@ -4793,6 +4793,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_cache_purge_due_to_memory_limit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

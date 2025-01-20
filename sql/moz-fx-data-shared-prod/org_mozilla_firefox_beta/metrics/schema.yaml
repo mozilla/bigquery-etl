@@ -4643,7 +4643,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -7560,6 +7561,20 @@ fields:
         mode: NULLABLE
       description: 'The longest parallel task in any slice that goes over 2x the budget.
         The phase values are defined in js/src/gc/GenerateStatsPhases.py.
+
+        '
+    - name: networking_cache_purge_due_to_memory_limit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often we purge cache entries from memory due to memory
+        limits.
 
         '
   - name: quantity

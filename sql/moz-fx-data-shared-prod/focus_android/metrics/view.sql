@@ -400,7 +400,8 @@ SELECT
       metrics.labeled_counter.javascript_gc_reset_reason,
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
-      metrics.labeled_counter.javascript_gc_slow_task
+      metrics.labeled_counter.javascript_gc_slow_task,
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1237,7 +1238,8 @@ SELECT
       metrics.labeled_counter.javascript_gc_reset_reason,
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
-      metrics.labeled_counter.javascript_gc_slow_task
+      metrics.labeled_counter.javascript_gc_slow_task,
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2074,7 +2076,8 @@ SELECT
       metrics.labeled_counter.javascript_gc_reset_reason,
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
-      metrics.labeled_counter.javascript_gc_slow_task
+      metrics.labeled_counter.javascript_gc_slow_task,
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

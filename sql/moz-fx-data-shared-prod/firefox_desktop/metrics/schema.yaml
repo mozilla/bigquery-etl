@@ -7408,6 +7408,20 @@ fields:
         The phase values are defined in js/src/gc/GenerateStatsPhases.py.
 
         '
+    - name: networking_cache_purge_due_to_memory_limit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often we purge cache entries from memory due to memory
+        limits.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

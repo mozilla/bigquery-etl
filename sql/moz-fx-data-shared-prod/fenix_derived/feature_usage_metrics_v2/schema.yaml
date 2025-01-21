@@ -14,207 +14,276 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: Channel
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: Adjust Network
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Default Browser
 - name: logins_deleted_users
   type: INTEGER
   mode: NULLABLE
+  description: Logins Deleted Users
 - name: logins_deleted
   type: INTEGER
   mode: NULLABLE
+  description: Logins Deleted
 - name: logins_modified_users
   type: INTEGER
   mode: NULLABLE
+  description: Logins Modified Users
 - name: logins_modified
   type: INTEGER
   mode: NULLABLE
+  description: Logins Modified
 - name: currently_stored_logins_users
   type: INTEGER
   mode: NULLABLE
+  description: Currently Stored Logins Users
 - name: currently_stored_logins
   type: INTEGER
   mode: NULLABLE
+  description: Currently Stored Logins
 - name: credit_cards_deleted_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Cards Deleted Users
 - name: credit_cards_deleted
   type: INTEGER
   mode: NULLABLE
+  description: Credit Cards Deleted
 - name: currently_stored_credit_cards_users
   type: INTEGER
   mode: NULLABLE
+  description: Currently Stored Credit Cards Users
 - name: currently_stored_credit_cards
   type: INTEGER
   mode: NULLABLE
+  description: Currently Stored Credit Cards
 - name: addresses_deleted_users
   type: INTEGER
   mode: NULLABLE
+  description: Addresses Deleted Users
 - name: addresses_deleted
   type: INTEGER
   mode: NULLABLE
+  description: Addresses Deleted
 - name: addresses_modified_users
   type: INTEGER
   mode: NULLABLE
+  description: Addresses Modified Users
 - name: addresses_modified
   type: INTEGER
   mode: NULLABLE
+  description: Addresses Modified
 - name: currently_stored_addresses_users
   type: INTEGER
   mode: NULLABLE
+  description: Currently Stored Addresses Users
 - name: currently_stored_addresses
   type: INTEGER
   mode: NULLABLE
+  description: Currently Stored Addresses
 - name: bookmarks_add_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Add Users
 - name: bookmarks_add
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Add
 - name: bookmarks_delete_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Delete Users
 - name: bookmarks_delete
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Delete
 - name: bookmarks_edit_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Edit Users
 - name: bookmarks_edit
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Edit
 - name: bookmarks_open_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Open Users
 - name: bookmarks_open
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Open
 - name: metrics_desktop_bookmarks_count_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_desktop_bookmarks_count_users
 - name: metrics_desktop_bookmarks_count
   type: INTEGER
   mode: NULLABLE
+  description: metrics_desktop_bookmarks_count
 - name: metrics_mobile_bookmarks_count_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_mobile_bookmarks_count_users
 - name: metrics_mobile_bookmarks_count
   type: INTEGER
   mode: NULLABLE
+  description: metrics_mobile_bookmarks_count
 - name: metrics_has_desktop_bookmarks_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_has_desktop_bookmarks_users
 - name: metrics_has_desktop_bookmarks
   type: INTEGER
   mode: NULLABLE
+  description: Metric Has Desktop Bookmarks
 - name: metrics_has_mobile_bookmarks_users
   type: INTEGER
   mode: NULLABLE
+  description: Metrics Has Mobile Bookmarks Users
 - name: metrics_has_mobile_bookmarks
   type: INTEGER
   mode: NULLABLE
+  description: Metrics Has Mobile Bookmarks
 - name: etp_standard_users
   type: INTEGER
   mode: NULLABLE
+  description: ETP Standard Users
 - name: etp_standard
   type: INTEGER
   mode: NULLABLE
+  description: ETP Standard
 - name: etp_strict_users
   type: INTEGER
   mode: NULLABLE
+  description: ETP Strict Users
 - name: etp_strict
   type: INTEGER
   mode: NULLABLE
+  description: ETP Strict
 - name: etp_custom_users
   type: INTEGER
   mode: NULLABLE
+  description: ETP Custom Users
 - name: etp_custom
   type: INTEGER
   mode: NULLABLE
+  description: ETP Custom
 - name: etp_disabled_users
   type: INTEGER
   mode: NULLABLE
+  description: ETP Disabled Users
 - name: etp_disabled
   type: INTEGER
   mode: NULLABLE
+  description: ETP Disabled
 - name: metrics_private_tabs_open_count_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_private_tabs_open_count_users
 - name: metrics_private_tabs_open_count
   type: INTEGER
   mode: NULLABLE
+  description: metrics_private_tabs_open_count
 - name: metrics_tabs_open_count_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_tabs_open_count_users
 - name: metrics_tabs_open_count
   type: INTEGER
   mode: NULLABLE
+  description: metrics_tabs_open_count
 - name: metrics_default_browser_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_default_browser_users
 - name: metrics_default_browser
   type: INTEGER
   mode: NULLABLE
+  description: metrics_default_browser
 - name: awesomebar_top_users
   type: INTEGER
   mode: NULLABLE
+  description: awesomebar_top_users
 - name: awesomebar_bottom_users
   type: INTEGER
   mode: NULLABLE
+  description: awesomebar_bottom_users
 - name: awesomebar_null_users
   type: INTEGER
   mode: NULLABLE
+  description: awesomebar_null_users
 - name: metrics_notifications_allowed_users
   type: INTEGER
   mode: NULLABLE
+  description: metrics_notifications_allowed_users
 - name: metrics_notifications_allowed
   type: INTEGER
   mode: NULLABLE
+  description: metrics_notifications_allowed
 - name: events_marketing_notification_allowed_users
   type: INTEGER
   mode: NULLABLE
+  description: events_marketing_notification_allowed_users
 - name: events_marketing_notification_allowed
   type: INTEGER
   mode: NULLABLE
+  description: Events Marketing Notification Allowed
 - name: customize_home_contile_users
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_contile_users
 - name: customize_home_contile
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_contile
 - name: customize_home_jump_back_in_users
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_jump_back_in_users
 - name: customize_home_jump_back_in
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_jump_back_in
 - name: customize_home_most_visited_sites_users
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_most_visited_sites_users
 - name: customize_home_most_visited_sites
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_most_visited_sites
 - name: customize_home_pocket_users
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_pocket_users
 - name: customize_home_pocket
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_pocket
 - name: customize_home_recently_saved_users
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_recently_saved_users
 - name: customize_home_recently_saved
   type: INTEGER
   mode: NULLABLE
+  description: customize_home_recently_saved
 - name: customize_home_recently_visited_users
   type: INTEGER
   mode: NULLABLE
+  description: Customize Home Recently Visited Users
 - name: customize_home_recently_visited
   type: INTEGER
   mode: NULLABLE
+  description: Customize Home Recently Visited

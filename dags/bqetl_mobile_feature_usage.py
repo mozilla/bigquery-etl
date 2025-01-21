@@ -75,10 +75,114 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bigeye__firefox_ios_derived__attribution_clients__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
         external_task_id="firefox_ios.bigeye__firefox_ios_derived__attribution_clients__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -109,6 +213,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    fenix_derived__feature_usage_metrics__v2 = bigquery_etl_query(
+        task_id="fenix_derived__feature_usage_metrics__v2",
+        destination_table="feature_usage_metrics_v2",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rzhao@mozilla.com",
+        email=[
+            "rzhao@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_ios_derived__feature_usage_events__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__feature_usage_events__v1",
         destination_table="feature_usage_events_v1",
@@ -131,6 +250,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_ios_derived__feature_usage_metrics__v2 = bigquery_etl_query(
+        task_id="firefox_ios_derived__feature_usage_metrics__v2",
+        destination_table="feature_usage_metrics_v2",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="rzhao@mozilla.com",
+        email=[
+            "rzhao@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "vsabino@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     fenix_derived__feature_usage_events__v1.set_upstream(
         wait_for_bigeye__fenix_derived__attribution_clients__v1
     )
@@ -142,6 +276,32 @@ with DAG(
     )
 
     fenix_derived__feature_usage_metrics__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__fenix_derived__attribution_clients__v1
+    )
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1
+    )
+
+    fenix_derived__feature_usage_metrics__v2.set_upstream(wait_for_copy_deduplicate_all)
 
     firefox_ios_derived__feature_usage_events__v1.set_upstream(
         wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
@@ -156,5 +316,25 @@ with DAG(
     )
 
     firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v2.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1
+    )
+
+    firefox_ios_derived__feature_usage_metrics__v2.set_upstream(
         wait_for_copy_deduplicate_all
     )

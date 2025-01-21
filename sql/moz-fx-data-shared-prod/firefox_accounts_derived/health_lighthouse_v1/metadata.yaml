@@ -1,0 +1,20 @@
+friendly_name: Accounts Health Lighthouse
+description: |
+  Front-end health metrics for Firefox Accounts, calculated from Lighthouse reports.
+owners:
+- wclouser@mozilla.com
+labels:
+  owner1: wclouser
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/1uGHOS-cY_OUqicbBkS2Z20EK0hLq3PDw28TZcxP5RHI/edit?gid=1783447085
+  options:
+    skip_leading_rows: 1
+    range: Lighthouse

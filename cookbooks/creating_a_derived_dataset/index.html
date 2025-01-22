@@ -1931,10 +1931,15 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>&lt;project&gt;.&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--start_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--end_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;
 </code></pre></div>
 <ul>
-<li>If the backfill requires <a href="https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation">shredder_mitigation</a> to maintain metrics stable, use the <code>--shredder_mitigation</code> parameter in the backfill command:</li>
+<li>If the table's metadata has the label <code>shredder_mitigation: true</code>, use the process to run a <a href="https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation#running-a-managed-backfill-with-shredder-mitigation">backfill with shredder_mitigation</a>:<ul>
+<li>Bump the version of the query.</li>
+<li>Make the necessary updates to the new version of the query and schema.</li>
+<li>Create the managed backfill for the new version of the query, including the parameter <code>--shredder_mitigation</code>.
+  <div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>&lt;project&gt;.&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--start_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--end_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--shredder_mitigation
+</code></pre></div></li>
 </ul>
-<div class="highlight"><pre><span></span><code>bqetl<span class="w"> </span>backfill<span class="w"> </span>create<span class="w"> </span>&lt;project&gt;.&lt;dataset&gt;.&lt;table&gt;<span class="w"> </span>--start_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--end_date<span class="o">=</span>&lt;YYYY-MM-DD&gt;<span class="w"> </span>--shredder_mitigation
-</code></pre></div>
+</li>
+</ul>
 </li>
 <li>
 <p>Fill out the missing details:</p>

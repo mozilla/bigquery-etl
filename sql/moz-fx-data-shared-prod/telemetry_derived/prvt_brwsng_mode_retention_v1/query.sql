@@ -8,7 +8,7 @@ WITH cfs AS (
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 8 DAY)
 ),
---Get clients who saw onboarding between 8-10 days prior to submission date
+--Get clients who saw onboarding on or before their first seen date (i.e. 8 days prior to submission date)
 onboarding AS (
   SELECT DISTINCT
     client_id,

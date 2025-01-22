@@ -248,6 +248,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v3",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v3",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__fx_health_ind_antivirus__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_health_ind_antivirus__v1",
         destination_table="fx_health_ind_antivirus_v1",
@@ -546,6 +559,17 @@ with DAG(
     telemetry_derived__network_usage__v1 = bigquery_etl_query(
         task_id="telemetry_derived__network_usage__v1",
         destination_table="network_usage_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__prvt_brwsng_mode_retention__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__prvt_brwsng_mode_retention__v1",
+        destination_table="prvt_brwsng_mode_retention_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -1076,6 +1100,18 @@ with DAG(
 
     telemetry_derived__network_usage__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    telemetry_derived__prvt_brwsng_mode_retention__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    telemetry_derived__prvt_brwsng_mode_retention__v1.set_upstream(
+        wait_for_clients_first_seen_v3
+    )
+
+    telemetry_derived__prvt_brwsng_mode_retention__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__uninstalls_by_account_signed_in_status__v1.set_upstream(

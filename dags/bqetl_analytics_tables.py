@@ -593,6 +593,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_clients_first_seen_v3",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_clients_first_seen_v3",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=36000)).isoformat() }}",
+        )
+
         clients_first_seen_v3_external.set_upstream(clients_first_seen_v3)
 
     desktop_new_profiles_aggregates = bigquery_etl_query(

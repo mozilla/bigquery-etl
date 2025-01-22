@@ -1,22 +1,22 @@
 fields:
   - mode: NULLABLE
-    name: fetchTime
+    name: timestamp
     type: TIMESTAMP
   - mode: NULLABLE
-    name: url
+    name: server
     type: STRING
   - mode: NULLABLE
-    name: category
+    name: version
     type: STRING
   - mode: NULLABLE
-    name: audit
+    name: commit
     type: STRING
   - mode: NULLABLE
-    name: score
-    type: NUMERIC
-  - mode: NULLABLE
-    name: numVal
-    type: NUMERIC
-  - mode: NULLABLE
-    name: formfactor
+    name: l10n
     type: STRING
+  - mode: NULLABLE
+    name: tospp
+    type: STRING
+  - mode: NULLABLE
+    name: since_last_push
+    type: FLOAT

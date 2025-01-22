@@ -4,6 +4,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
+from google.cloud.exceptions import NotFound
 
 import pytest
 import yaml
@@ -415,7 +416,11 @@ class TestMetadata:
                 == f"No metadata file(s) were found for: {qualified_table_name}"
             )
 
-    def test_validate_shredder_mitigation_schema_columns(self, runner, capfd):
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_validate_shredder_mitigation_schema_columns(
+        self, mock_bigquery_table, mock_bigquery_client, runner, capfd
+    ):
         """Test that validation fails when query contains id-level columns or descriptions are missing."""
         metadata = {
             "friendly_name": "Test",
@@ -452,6 +457,8 @@ class TestMetadata:
             ]
         }
 
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"
             metadata_path = Path(self.test_path) / "metadata.yaml"
@@ -484,7 +491,11 @@ class TestMetadata:
                 " in the schema."
             ) in captured.out
 
-    def test_validate_shredder_mitigation_group_by(self, runner, capfd):
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_validate_shredder_mitigation_group_by(
+        self, mock_bigquery_table, mock_bigquery_client, runner, capfd
+    ):
         """Test that validation fails and prints a notification when group by contains numbers."""
         metadata = {
             "friendly_name": "Test",
@@ -506,6 +517,8 @@ class TestMetadata:
                 },
             ]
         }
+
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
 
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"
@@ -538,6 +551,103 @@ class TestMetadata:
                 "Shredder mitigation validation failed, GROUP BY must use an explicit list "
                 "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
             ) in captured.out
+
+    @patch("google.cloud.bigquery.Client")
+    def test_validate_shredder_mitigation_table_doesnt_exist(
+        self, mock_bigquery_client, runner, capfd
+    ):
+        """Test that validation fails when the table doesn't exist."""
+        metadata = {
+            "friendly_name": "Test",
+            "labels": {"shredder_mitigation": "true"},
+        }
+
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_1",
+                    "type": "STRING",
+                },
+            ]
+        }
+
+        mock_client_instance = mock_bigquery_client.return_value
+        mock_client_instance.get_table.side_effect = NotFound("Table not found")
+
+        expected_exc = (
+            "The shredder-mitigation label ensures the stability of existing data, "
+            "thus it can only be applied to existing and non-empty tables.\n"
+            "Please ensure that the table "
+        )
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table GROUP BY ALL")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+
+            metadata_from_file = Metadata.from_file(metadata_path)
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            captured = capfd.readouterr()
+            assert result is False
+            assert expected_exc in captured.out
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_validate_shredder_mitigation_empty_table(
+        self, mock_bigquery_table, mock_bigquery_client, runner, capfd
+    ):
+        """Test that validation fails when the table doesn't exist."""
+        metadata = {
+            "friendly_name": "Test",
+            "labels": {"shredder_mitigation": "true"},
+        }
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_1",
+                    "type": "STRING",
+                },
+            ]
+        }
+
+        mock_client_instance = mock_bigquery_client.return_value
+        mock_bigquery_table.num_rows = 0
+        mock_client_instance.get_table.return_value = mock_bigquery_table
+
+        expected_exc = (
+            "The shredder-mitigation label ensures the stability of existing data,"
+            " thus it can only be applied to existing and non-empty tables.\n"
+            "Please ensure that the table "
+        )
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table GROUP BY ALL")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+
+            metadata_from_file = Metadata.from_file(metadata_path)
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            captured = capfd.readouterr()
+            assert result is False
+            assert expected_exc in captured.out
 
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""

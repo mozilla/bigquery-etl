@@ -11,8 +11,10 @@ import yaml
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
+from google.cloud import bigquery
+from google.cloud.exceptions import NotFound
 
-from ..util import standard_args
+from ..util import standard_args, extract_from_query_path
 from ..util.common import extract_last_group_by_from_query, project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
 
@@ -116,7 +118,32 @@ def validate_shredder_mitigation(query_dir, metadata):
         query_file = Path(query_dir) / "query.sql"
         query_group_by = extract_last_group_by_from_query(sql_path=query_file)
 
-        # Validate that the query group by is as required.
+        # Validate that this label is only applied to tables in version 1 if they're not empty
+        # If the table is empty, it should be backfilled before applying the label.
+        project, dataset, table = extract_from_query_path(Path(query_dir))
+        client = bigquery.Client(project=project)
+        error_message = (
+            f"The shredder-mitigation label ensures the stability of existing data,"
+            f" thus it can only be applied to existing and non-empty tables.\n"
+            f"Please ensure that the table `{project}.{dataset}.{table}` exists and run"
+            f" a normal backfill before applying the label if this is a new or empty table."
+            f"\n\nNote that subsequent backfills will require using the process for "
+            f"[backfills with shredder mitigation](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill)."
+        )
+
+        # Check that the table exists and it's not empty.
+        table_exists = True
+        try:
+            bq_table = client.get_table(f"{project}.{dataset}.{table}")
+        except NotFound:
+            click.echo(click.style(error_message, fg="yellow"))
+            return False
+
+        if bq_table.num_rows == 0:
+            click.echo(click.style(error_message, fg="yellow"))
+            return False
+
+        # Validate that the query group by is explicit and as required.
         integers_in_group_by = False
         for e in query_group_by:
             try:

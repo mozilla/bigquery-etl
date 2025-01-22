@@ -11,7 +11,7 @@ RETURNS STRING AS (
       THEN 'default_partner_search_suggestion'
     WHEN res IN ('search_engine')
       THEN 'search_engine'
-    WHEN res IN ('rust_yelp')
+    WHEN res IN ('rust_yelp', 'ml_yelp')
       THEN 'yelp_suggestion'
     WHEN res IN ('rust_fakespot_amazon', 'rust_fakespot_bestbuy', 'rust_fakespot_walmart')
       THEN 'fakespot_suggest'

@@ -1,0 +1,19 @@
+fields:
+  - mode: NULLABLE
+    name: fetchTime
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: url
+    type: STRING
+  - mode: NULLABLE
+    name: category
+    type: STRING
+  - mode: NULLABLE
+    name: audit
+    type: STRING
+  - mode: NULLABLE
+    name: score
+    type: NUMERIC
+  - mode: NULLABLE
+    name: numVal
+    type: NUMERIC

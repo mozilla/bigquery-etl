@@ -70,3 +70,13 @@ WHERE
     AND mozfun.map.get_key(event_map_values, 'feature') IN ('nimbus-qa-1', 'nimbus-qa-2')
     AND mozfun.norm.truncate_version(app_version, 'major') <= 108
   )
+  AND
+  -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
+  NOT (
+    event_category = 'security'
+    AND event_method = 'unexpectedload'
+    AND normalized_channel = 'release'
+    AND mozfun.norm.truncate_version(app_version, 'major')
+    BETWEEN 133
+    AND 135
+  )

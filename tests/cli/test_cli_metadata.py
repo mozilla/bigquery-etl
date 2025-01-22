@@ -4,12 +4,12 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch
-from google.cloud.exceptions import NotFound
 
 import pytest
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
+from google.cloud.exceptions import NotFound
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata

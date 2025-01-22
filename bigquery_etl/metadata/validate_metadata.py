@@ -8,13 +8,13 @@ from pathlib import Path
 
 import click
 import yaml
-
-from bigquery_etl.config import ConfigLoader
-from bigquery_etl.schema import SCHEMA_FILE, Schema
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
-from ..util import standard_args, extract_from_query_path
+from bigquery_etl.config import ConfigLoader
+from bigquery_etl.schema import SCHEMA_FILE, Schema
+
+from ..util import extract_from_query_path, standard_args
 from ..util.common import extract_last_group_by_from_query, project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
 
@@ -132,7 +132,6 @@ def validate_shredder_mitigation(query_dir, metadata):
         )
 
         # Check that the table exists and it's not empty.
-        table_exists = True
         try:
             bq_table = client.get_table(f"{project}.{dataset}.{table}")
         except NotFound:

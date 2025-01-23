@@ -8342,6 +8342,30 @@ fields:
     - name: use_counter2_js_ic_stub_too_large_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_cookiestore_delete_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_delete_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_get_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_get_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_getall_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_getall_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_set_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_cookiestore_set_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16551,6 +16575,30 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_ic_stub_too_large_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_delete_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_delete_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_get_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_get_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_getall_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_getall_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_set_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_cookiestore_set_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

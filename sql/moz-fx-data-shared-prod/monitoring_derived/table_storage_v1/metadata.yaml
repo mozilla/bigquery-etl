@@ -1,13 +1,13 @@
 friendly_name: Table Storage
 description: |-
-  Runs weekly and saves the size of tables in moz-fx-data-shared-prod
+  Runs daily and saves the size of tables in moz-fx-data-shared-prod
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
   owner1: kwindau
 scheduling:
-  dag_name: bqetl_monitoring_weekly
+  dag_name: bqetl_monitoring
 bigquery:
   time_partitioning:
     type: day

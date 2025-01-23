@@ -1,6 +1,6 @@
-friendly_name: Accounts Health Lighthouse
+friendly_name: Accounts Health Tags
 description: |
-  Front-end health metrics for Firefox Accounts, calculated from Lighthouse reports.
+  Tracks push timings for Firefox Accounts.
 owners:
 - wclouser@mozilla.com
 labels:
@@ -17,4 +17,4 @@ external_data:
   - https://docs.google.com/spreadsheets/d/1uGHOS-cY_OUqicbBkS2Z20EK0hLq3PDw28TZcxP5RHI/edit
   options:
     skip_leading_rows: 1
-    range: Lighthouse
+    range: Tag Data

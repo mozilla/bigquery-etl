@@ -5,3 +5,4 @@
   watchers:
   - kik@mozilla.com
   status: Initiate
+  shredder_mitigation: false

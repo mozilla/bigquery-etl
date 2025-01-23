@@ -16,18 +16,13 @@ from bigquery_etl.backfill.validate import (
     validate_entries,
     validate_entries_are_sorted,
     validate_file,
-    validate_shredder_mitigation,
 )
-from bigquery_etl.metadata.parse_metadata import METADATA_FILE
-from bigquery_etl.metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from tests.backfill.test_parse_backfill import TEST_BACKFILL_1, TEST_BACKFILL_2
 
 TEST_DIR = Path(__file__).parent.parent
 
 VALID_REASON = "test_reason"
 VALID_WATCHER = "test@example.org"
-TEST_BACKFILL_FILE = TEST_DIR / "backfill" / "test_dir_valid" / BACKFILL_FILE
-TEST_BACKFILL_FILE_1 = TEST_DIR / "backfill" / "test_dir_valid_1" / BACKFILL_FILE
 
 
 class TestValidateBackfill(object):
@@ -94,7 +89,7 @@ class TestValidateBackfill(object):
         TEST_BACKFILL_2.reason = VALID_REASON
         backfills = [TEST_BACKFILL_2, TEST_BACKFILL_1]
         with pytest.raises(ValueError) as e:
-            validate_entries(backfills, TEST_BACKFILL_FILE)
+            validate_entries(backfills)
         assert (
             "Backfill entries cannot contain more than one entry with Initiate status"
             in str(e.value)
@@ -107,66 +102,8 @@ class TestValidateBackfill(object):
         TEST_BACKFILL_2.reason = VALID_REASON
         TEST_BACKFILL_2.status = BackfillStatus.COMPLETE.value
         backfills = [TEST_BACKFILL_2, TEST_BACKFILL_1]
-        validate_entries(backfills, TEST_BACKFILL_FILE)
+        validate_entries(backfills)
 
     def test_validate_file(self):
-        validate_file(TEST_BACKFILL_FILE)
-
-    def test_validate_backfill_with_shredder_mitigation_and_without_metadata_label_should_fail(
-        self,
-    ):
-        valid_backfill = Backfill(
-            TEST_BACKFILL_1.entry_date,
-            TEST_BACKFILL_1.start_date,
-            TEST_BACKFILL_1.end_date,
-            TEST_BACKFILL_1.excluded_dates,
-            VALID_REASON,
-            TEST_BACKFILL_1.watchers,
-            TEST_BACKFILL_1.status,
-            shredder_mitigation=True,
-        )
-
-        with pytest.raises(ValueError) as e:
-            validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE)
-
-        assert (
-            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
-            in str(e.value)
-        )
-
-    def test_validate_backfill_without_shredder_mitigation_and_with_metadata_label_should_fail(
-        self,
-    ):
-        valid_backfill = Backfill(
-            TEST_BACKFILL_1.entry_date,
-            TEST_BACKFILL_1.start_date,
-            TEST_BACKFILL_1.end_date,
-            TEST_BACKFILL_1.excluded_dates,
-            VALID_REASON,
-            TEST_BACKFILL_1.watchers,
-            TEST_BACKFILL_1.status,
-        )
-
-        with pytest.raises(ValueError) as e:
-            validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
-
-        assert (
-            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
-            in str(e.value)
-        )
-
-    def test_validate_backfill_with_shredder_mitigation_and_metadata_label_should_pass(
-        self,
-    ):
-        valid_backfill = Backfill(
-            TEST_BACKFILL_1.entry_date,
-            TEST_BACKFILL_1.start_date,
-            TEST_BACKFILL_1.end_date,
-            TEST_BACKFILL_1.excluded_dates,
-            VALID_REASON,
-            TEST_BACKFILL_1.watchers,
-            TEST_BACKFILL_1.status,
-            shredder_mitigation=True,
-        )
-
-        validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
+        backfill_file = TEST_DIR / "backfill" / "test_dir_valid" / BACKFILL_FILE
+        validate_file(backfill_file)

@@ -431,7 +431,7 @@ bqetl_monitoring:
     used for monitoring of the data platform.
   default_args:
     owner: ascholtz@mozilla.com
-    email: ["ascholtz@mozilla.com"]
+    email: ["ascholtz@mozilla.com", "kwindau@mozilla.com"]
     start_date: "2018-10-30"
     retries: 2
     retry_delay: 30m

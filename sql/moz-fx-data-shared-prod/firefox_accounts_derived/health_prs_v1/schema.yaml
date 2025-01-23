@@ -1,0 +1,46 @@
+fields:
+  - mode: NULLABLE
+    name: id
+    type: INTEGER
+  - mode: NULLABLE
+    name: number
+    type: INTEGER
+  - mode: NULLABLE
+    name: url
+    type: STRING
+  - mode: NULLABLE
+    name: title
+    type: STRING
+  - mode: NULLABLE
+    name: state
+    type: STRING
+  - mode: NULLABLE
+    name: author
+    type: STRING
+  - mode: NULLABLE
+    name: created_at
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: updated_at
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: closed_at
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: merged_at
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: draft
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: time_to_close
+    type: INTEGER
+  - mode: NULLABLE
+    name: reviewers
+    type: STRING
+  - mode: NULLABLE
+    name: has_an_issue
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: time_to_merge
+    type: INTEGER

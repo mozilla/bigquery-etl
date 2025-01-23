@@ -1,6 +1,6 @@
-friendly_name: Accounts Health Lighthouse
+friendly_name: Accounts Health PRs
 description: >
-  Front-end health metrics for Firefox Accounts, calculated from Lighthouse reports.
+  Mirrors data about Account's GitHub PRs.
 owners:
   - wclouser@mozilla.com
 external_data:
@@ -9,4 +9,4 @@ external_data:
     - https://docs.google.com/spreadsheets/d/1uGHOS-cY_OUqicbBkS2Z20EK0hLq3PDw28TZcxP5RHI/edit
   options:
     skip_leading_rows: 1
-    range: Lighthouse
+    range: Pull Request Data

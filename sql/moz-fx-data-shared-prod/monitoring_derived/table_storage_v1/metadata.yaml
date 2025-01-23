@@ -1,0 +1,22 @@
+friendly_name: Table Storage
+description: |-
+  Runs daily and saves the size of tables in moz-fx-data-shared-prod
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - table_catalog
+    - table_schema
+references: {}

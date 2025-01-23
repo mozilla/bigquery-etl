@@ -1,0 +1,61 @@
+fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: permalink
+    type: STRING
+  - mode: NULLABLE
+    name: id
+    type: INTEGER
+  - mode: NULLABLE
+    name: assignee
+    type: STRING
+  - mode: NULLABLE
+    name: created
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: found_in
+    type: STRING
+  - mode: NULLABLE
+    name: issuetype
+    type: STRING
+  - mode: NULLABLE
+    name: reporter
+    type: STRING
+  - mode: NULLABLE
+    name: resolution
+    type: STRING
+  - mode: NULLABLE
+    name: resolutiondate
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: status
+    type: STRING
+  - mode: NULLABLE
+    name: storypoints
+    type: INTEGER
+  - mode: NULLABLE
+    name: summary
+    type: STRING
+  - mode: NULLABLE
+    name: updated
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: epic
+    type: STRING
+  - mode: NULLABLE
+    name: originalstorypoints
+    type: STRING
+  - mode: NULLABLE
+    name: timetoresolve
+    type: INTEGER
+  - mode: NULLABLE
+    name: severity
+    type: STRING
+  - mode: NULLABLE
+    name: priority
+    type: STRING
+  - mode: NULLABLE
+    name: labels
+    type: STRING

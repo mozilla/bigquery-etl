@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: account_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Account Enabled
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique clients uninstalling

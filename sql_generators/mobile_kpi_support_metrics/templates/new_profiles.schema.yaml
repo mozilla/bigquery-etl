@@ -58,3 +58,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of new profiles recorded for the first seen date.
+
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |
+    On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".

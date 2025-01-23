@@ -1,0 +1,20 @@
+friendly_name: Uninstalls By Cpu Cores
+description: |-
+  Records number of unique clients uninstalling by day and CPU core count
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  shedder_mitigation: true
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}

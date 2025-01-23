@@ -18,6 +18,8 @@ WITH active_users AS (
     is_wau,
     is_mau,
     is_mobile,
+    device_type,
+    device_manufacturer,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 ),
@@ -62,6 +64,8 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  device_type,
+  device_manufacturer,
 FROM
   active_users
 LEFT JOIN

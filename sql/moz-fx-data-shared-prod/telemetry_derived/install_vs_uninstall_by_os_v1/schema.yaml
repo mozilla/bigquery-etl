@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS Version
+- name: ratio_uninstalls_to_installs
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of uninstalls to installs

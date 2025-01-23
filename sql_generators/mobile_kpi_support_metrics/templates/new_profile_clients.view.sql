@@ -20,6 +20,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  device_type,
 FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN

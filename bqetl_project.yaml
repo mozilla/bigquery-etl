@@ -15,6 +15,7 @@ default:
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
   - moz-fx-data-glam-prod-fca7
+  - moz-fx-glam-prod
   public_project: mozilla-public-data
 
 monitoring:
@@ -199,6 +200,7 @@ dry_run:
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
+  - sql/moz-fx-glam-prod/glam_etl/**/*.sql
   # Source table does not have a verifiable schema
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
@@ -214,6 +216,9 @@ dry_run:
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
+deprecation:
+  retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated
+  - roles/bigquery.dataEditor  # operational access
 
 format:
   skip:
@@ -377,6 +382,9 @@ generate:
       - moso_mastodon_backend
       - mozphab
       - mozregression
+  stable_views:
+    skip_datasets:
+    - mlhackweek_search
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

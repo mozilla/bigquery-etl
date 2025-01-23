@@ -1,0 +1,21 @@
+friendly_name: Uninstalls By ISP Name
+description: |-
+  Number of clients uninstalling by submission date and ISP
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - isp_name
+references: {}

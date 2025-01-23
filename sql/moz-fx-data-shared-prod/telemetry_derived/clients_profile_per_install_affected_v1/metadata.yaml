@@ -4,3 +4,5 @@ description: |-
   Client profiles affected by shredder. Populated by shredder.
 owners:
 - ascholtz@mozilla.com
+deprecated: true
+deletion_date: 2025-01-27

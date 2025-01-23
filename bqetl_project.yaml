@@ -386,6 +386,7 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    - firefox_accounts
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

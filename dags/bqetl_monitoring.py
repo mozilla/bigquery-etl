@@ -34,7 +34,7 @@ default_args = {
     "owner": "ascholtz@mozilla.com",
     "start_date": datetime.datetime(2018, 10, 30, 0, 0),
     "end_date": None,
-    "email": ["ascholtz@mozilla.com"],
+    "email": ["ascholtz@mozilla.com", "kwindau@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -96,7 +96,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="wstuckey@mozilla.com",
-        email=["ascholtz@mozilla.com", "wstuckey@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "wstuckey@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -111,7 +111,7 @@ with DAG(
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "wichan@mozilla.com"],
     )
 
     with TaskGroup(
@@ -137,7 +137,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "wichan@mozilla.com"],
     )
 
     monitoring_derived__bigquery_tables_inventory__v1 = GKEPodOperator(
@@ -149,7 +149,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "wichan@mozilla.com"],
     )
 
     with TaskGroup(
@@ -175,7 +175,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "wichan@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "wichan@mozilla.com"],
     )
 
     monitoring_derived__bigquery_usage__v2 = bigquery_etl_query(
@@ -184,7 +184,12 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "mhirose@mozilla.com", "wichan@mozilla.com"],
+        email=[
+            "ascholtz@mozilla.com",
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "wichan@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -198,7 +203,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
     )
 
     monitoring_derived__event_counts_glean__v1 = bigquery_etl_query(
@@ -207,7 +212,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.com",
-        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
+        email=["ascholtz@mozilla.com", "bewu@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -218,7 +223,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
+        email=["akomar@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -229,7 +234,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
+        email=["akomar@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -242,7 +247,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
+        email=["akomar@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
@@ -257,7 +262,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mhirose@mozilla.com",
-        email=["ascholtz@mozilla.com", "mhirose@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "mhirose@mozilla.com"],
     )
 
     with TaskGroup(
@@ -280,7 +285,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="amiyaguchi@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -291,7 +296,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.com",
-        email=["ascholtz@mozilla.com", "bewu@mozilla.com"],
+        email=["ascholtz@mozilla.com", "bewu@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -310,7 +315,7 @@ with DAG(
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "ascholtz@mozilla.com"],
+        email=["akomar@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
     )
 
     monitoring_derived__stable_and_derived_table_sizes__v1 = GKEPodOperator(
@@ -322,7 +327,7 @@ with DAG(
         + ["--date", "{{ macros.ds_add(ds, -1) }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
     )
 
     monitoring_derived__stable_table_column_counts__v1 = bigquery_etl_query(
@@ -331,7 +336,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -344,7 +349,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
@@ -360,7 +365,7 @@ with DAG(
         + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="amiyaguchi@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com"],
+        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
     )
 
     monitoring_derived__table_partition_expirations__v1 = bigquery_etl_query(
@@ -369,9 +374,20 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="bewu@mozilla.cam",
-        email=["ascholtz@mozilla.com", "bewu@mozilla.cam"],
+        email=["ascholtz@mozilla.com", "bewu@mozilla.cam", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
+    )
+
+    monitoring_derived__table_storage__v1 = bigquery_etl_query(
+        task_id="monitoring_derived__table_storage__v1",
+        destination_table="table_storage_v1",
+        dataset_id="monitoring_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     monitoring_derived__telemetry_missing_columns__v3 = bigquery_etl_query(
@@ -380,7 +396,7 @@ with DAG(
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com"],
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

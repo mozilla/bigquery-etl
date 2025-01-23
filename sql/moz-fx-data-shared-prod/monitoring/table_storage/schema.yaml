@@ -1,0 +1,81 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: Project ID
+- name: table_catalog
+  type: STRING
+  mode: NULLABLE
+  description: Table Catalog
+- name: table_schema
+  type: STRING
+  mode: NULLABLE
+  description: Table Schema
+- name: table_name
+  type: STRING
+  mode: NULLABLE
+  description: Table Name
+- name: creation_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Creation Time
+- name: total_rows
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Rows
+- name: total_partitions
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Partitions
+- name: total_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Logical Bytes
+- name: active_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Active Logical Bytes
+- name: long_term_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Long Term Logical Bytes
+- name: current_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Current Physical Bytes
+- name: total_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Physical Bytes
+- name: active_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Active Physical Bytes
+- name: long_term_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Long Term Physical Bytes
+- name: time_travel_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Time Travel Physical Bytes
+- name: storage_last_modified_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Storage Last Modified Time
+- name: deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Deleted
+- name: table_type
+  type: STRING
+  mode: NULLABLE
+  description: Table Type
+- name: fail_safe_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Fail Safe Physical Bytes

@@ -9,6 +9,7 @@ import pytest
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
+from google.api_core.exceptions import Forbidden
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -614,6 +615,52 @@ class TestMetadata:
             captured = capfd.readouterr()
             assert result is False
             assert expected_exc in captured.out
+
+    @patch('google.cloud.bigquery.Client')
+    def test_query_forbidden_exception(
+            self, mock_bigquery_client, runner, capfd
+    ):
+        mock_instance = mock_bigquery_client.return_value
+        mock_instance.query.side_effect = Forbidden("Access denied")
+
+        metadata = {
+            "friendly_name": "Test",
+            "labels": {"shredder_mitigation": "true"},
+        }
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "column 1.",
+                },
+            ]
+        }
+
+        expected_exc = (
+            "Access denied"
+        )
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table GROUP BY column_1")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+
+            metadata_from_file = Metadata.from_file(metadata_path)
+
+            with pytest.raises(Forbidden) as e:
+                _ = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            assert e.type == Forbidden
+            assert expected_exc in e.value.message
 
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""

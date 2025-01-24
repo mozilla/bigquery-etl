@@ -37,6 +37,7 @@ from bigquery_etl.cli.backfill import (
 )
 from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException
+from bigquery_etl.metadata.parse_metadata import METADATA_FILE
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -2797,9 +2798,7 @@ class TestBackfill:
         """Test that validate backfills fails if initiate backfill entry has shredder_mitigation set to false but metadata label is true."""
         path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
         mock_deploy_table.return_value = None
-        expected_error_output = (
-            "shredder_mitigation label in metadata.yaml and backfill.yaml should match."
-        )
+        expected_error_output = f"shredder_mitigation label in {METADATA_FILE} and {BACKFILL_FILE} entry {date(2021, 5, 3)} should match."
 
         with runner.isolated_filesystem():
             os.makedirs(path, exist_ok=True)
@@ -2857,9 +2856,7 @@ class TestBackfill:
         """Test that validate backfills fails if initiate backfill entry has shredder_mitigation set to true but without metadata label."""
         path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
         mock_deploy_table.return_value = None
-        expected_error_output = (
-            "shredder_mitigation label in metadata.yaml and backfill.yaml should match."
-        )
+        expected_error_output = f"shredder_mitigation label in {METADATA_FILE} and {BACKFILL_FILE} entry {date(2021, 5, 3)} should match."
 
         with runner.isolated_filesystem():
             os.makedirs(path, exist_ok=True)
@@ -2917,9 +2914,7 @@ class TestBackfill:
         """Test that validate backfills fails if initiate backfill entry has shredder_mitigation set to true but metadata label is false."""
         path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
         mock_deploy_table.return_value = None
-        expected_error_output = (
-            "shredder_mitigation label in metadata.yaml and backfill.yaml should match."
-        )
+        expected_error_output = f"shredder_mitigation label in {METADATA_FILE} and {BACKFILL_FILE} entry {date(2021, 5, 3)} should match"
 
         with runner.isolated_filesystem():
             os.makedirs(path, exist_ok=True)

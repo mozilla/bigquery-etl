@@ -137,7 +137,7 @@ class TestValidateBackfill(object):
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE)
 
         assert (
-            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} entry {TEST_BACKFILL_1.entry_date} should match."
             in str(e.value)
         )
 
@@ -166,7 +166,7 @@ class TestValidateBackfill(object):
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
         assert (
-            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} entry {TEST_BACKFILL_1.entry_date} should match."
             in str(e.value)
         )
 
@@ -194,7 +194,7 @@ class TestValidateBackfill(object):
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
         assert (
-            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} entry {TEST_BACKFILL_1.entry_date} should match."
             in str(e.value)
         )
 

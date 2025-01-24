@@ -65,7 +65,7 @@ def validate_shredder_mitigation(entry: Backfill, backfill_file: Path) -> None:
 
         if has_shredder_mitigation_label != entry.shredder_mitigation:
             raise ValueError(
-                f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+                f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} entry {entry.entry_date} should match."
             )
 
 

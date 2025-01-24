@@ -1,0 +1,20 @@
+friendly_name: Addon - Search Detection
+description: |
+  A view for accessing the addons search detection aggregate.
+
+  Addon event specific data documentation:
+  https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/Events.yaml#174-336
+owners:
+- kik@mozilla.com
+labels:
+  application: amo
+  owner1: kik
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/prod
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.addons_derived.search_detection_v1

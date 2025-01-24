@@ -1,0 +1,11 @@
+friendly_name: Addons Derived
+description: |-
+  Derived data used for Addons related analysis.
+dataset_base_acl: derived
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:amo/prod

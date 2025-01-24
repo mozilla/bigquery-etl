@@ -106,6 +106,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    addons_derived__search_detection__v1 = bigquery_etl_query(
+        task_id="addons_derived__search_detection__v1",
+        destination_table="search_detection_v1",
+        dataset_id="addons_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     amo_dev__amo_stats_dau__v2 = bigquery_etl_query(
         task_id="amo_dev__amo_stats_dau__v2",
         destination_table="amo_stats_dau_v2",
@@ -171,6 +182,10 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    addons_derived__search_detection__v1.set_upstream(wait_for_bq_main_events)
+
+    addons_derived__search_detection__v1.set_upstream(wait_for_event_events)
 
     amo_dev__amo_stats_dau__v2.set_upstream(amo_prod__amo_stats_dau__v2)
 

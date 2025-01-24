@@ -450,6 +450,16 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
+      `moz-fx-data-shared-prod.org_mozilla_firefox_stable.home_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
   )
 CROSS JOIN
@@ -522,6 +532,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.events_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.home_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -612,6 +632,16 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
+      `moz-fx-data-shared-prod.org_mozilla_fenix_stable.home_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
   )
 CROSS JOIN
@@ -693,6 +723,16 @@ FROM
       client_info.app_display_version AS version,
       ping_info
     FROM
+      `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.home_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.metrics_v1`
   )
 CROSS JOIN
@@ -765,6 +805,16 @@ FROM
       ping_info
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.events_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      ping_info
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.home_v1`
     UNION ALL
     SELECT
       submission_timestamp,

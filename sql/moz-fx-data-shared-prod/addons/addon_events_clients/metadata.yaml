@@ -1,0 +1,24 @@
+friendly_name: Addon Events (client) View
+description: |
+  A view on top of the events table pulling out addon relevant columns
+  to act as a central gate for downstream addon models.
+
+  See events documentation for more information about the fields:
+  https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/collection/events.html
+
+  Addon event specific data documentation:
+  https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/Events.yaml#174-336
+owners:
+- kik@mozilla.com
+labels:
+  application: amo
+  owner1: kik
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:amo/prod
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry.events

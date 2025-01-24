@@ -1,0 +1,97 @@
+-- Based on telemetry.events: https://docs.telemetry.mozilla.org/concepts/pipeline/event_pipeline
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Processing date.
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: |
+    Normalized channel name of the Firefox app (for example: releaes, beta, nightly).
+
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: |
+    An ISO 3166-1 alpha-2 country code.
+
+- mode: NULLABLE
+  name: app_name
+  type: STRING
+  description: |
+    Name of the Firefox app.
+
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: |
+    Version of the Firefox app.
+
+- mode: NULLABLE
+  name: os_name
+  type: STRING
+  description: |
+    Name of the operating system used by the client.
+
+- mode: NULLABLE
+  name: os_version
+  type: STRING
+  description: |
+    Version of the operating system used by the client.
+
+- mode: NULLABLE
+  name: addon_id
+  type: STRING
+  description:
+    The id of the addon, if available.
+
+- mode: NULLABLE
+  name: addon_version
+  type: STRING
+  description: |
+    The version of the addon.
+
+- mode: NULLABLE
+  name: method
+  type: STRING
+  description: |
+    This describes the type of event that occurred.
+
+- mode: NULLABLE
+  name: object
+  type: STRING
+  description: |
+    The object the event occurred.
+
+- mode: NULLABLE
+  name: value
+  type: STRING
+  description: |
+    This is a user defined value, providing context for the event (Optional).
+
+- mode: NULLABLE
+  name: from_etld
+  type: STRING
+  description: |
+    The original domain (eTLD+1) of the request that matched a search endpoint.
+
+- mode: NULLABLE
+  name: to_etld
+  type: STRING
+  description: |
+    The domain (eTLD+1) of the final redirect target.
+
+- mode: NULLABLE
+  name: event_count
+  type: INTEGER
+  description: |
+    Number of events in this grouping.
+
+- mode: NULLABLE
+  name: unique_clients_cnt
+  type: INTEGER
+  description: |
+    Number of unique clients in this grouping.

@@ -17,4 +17,5 @@ workgroup_access:
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.home_v1
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.metrics_v1

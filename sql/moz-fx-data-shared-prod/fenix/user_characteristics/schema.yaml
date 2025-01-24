@@ -488,6 +488,99 @@ fields:
     - name: characteristics_gl_version_software
       type: INTEGER
       mode: NULLABLE
+    - name: characteristics_wgpu_maxbindgroups
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxbindgroupsplusvertexbuffers
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxbindingsperbindgroup
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxbuffersize
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcolorattachmentbytespersample
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcolorattachments
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcomputeinvocationsperworkgroup
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcomputeworkgroupsizex
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcomputeworkgroupsizey
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcomputeworkgroupsizez
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcomputeworkgroupsperdimension
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxcomputeworkgroupstoragesize
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxdynamicstoragebuffersperpipelinelayout
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxdynamicuniformbuffersperpipelinelayout
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxinterstageshadervariables
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxsampledtexturespershaderstage
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxsamplerspershaderstage
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxstoragebufferbindingsize
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxstoragebufferspershaderstage
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxstoragetexturespershaderstage
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxtexturearraylayers
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxtexturedimension1d
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxtexturedimension2d
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxtexturedimension3d
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxuniformbufferbindingsize
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxuniformbufferspershaderstage
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxvertexattributes
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxvertexbufferarraystride
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_maxvertexbuffers
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_minstoragebufferoffsetalignment
+      type: INTEGER
+      mode: NULLABLE
+    - name: characteristics_wgpu_minuniformbufferoffsetalignment
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -757,6 +850,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: characteristics_canvas_feature_status
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_wgpu_missing_features
       type: STRING
       mode: NULLABLE
   - name: string_list

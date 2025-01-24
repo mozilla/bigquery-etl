@@ -1,0 +1,21 @@
+friendly_name: App-specific view for Glean ping "usage-deletion-request"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.usage_deletion_request, org_mozilla_firefox_beta.usage_deletion_request, org_mozilla_fenix.usage_deletion_request, org_mozilla_fenix_nightly.usage_deletion_request, org_mozilla_fennec_aurora.usage_deletion_request).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.usage_deletion_request
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.usage_deletion_request
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.usage_deletion_request
+  - moz-fx-data-shared-prod.org_mozilla_firefox.usage_deletion_request
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.usage_deletion_request

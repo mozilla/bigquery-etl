@@ -7626,6 +7626,66 @@ fields:
     - name: use_counter_page_js_ic_stub_too_large
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_dedicated_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_service_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_worker_shared_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

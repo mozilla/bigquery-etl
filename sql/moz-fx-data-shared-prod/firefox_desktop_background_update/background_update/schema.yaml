@@ -351,6 +351,19 @@ fields:
         an automatic restart.
 
         '
+    - name: update_suppress_prompts
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'When an update is available and app.update.auto is disabled, a
+        popup is opened prompting the user to download and install the update. The
+        pref app.update.suppressPrompts causes Firefox Nightly to wait up to 7 days
+        before showing the prompt, instead showing a badge and banner in the meantime.
+        It also prevents Nightly from showing update restart prompts, instead showing
+        a badge and banner immediately. This value is set for the users who set this
+        pref to true. This metric was generated to correspond to the Legacy Telemetry
+        scalar update.suppress_prompts.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -439,6 +452,44 @@ fields:
         launched by the installer. If the value is "MultiSessionInstallLockout", there
         are other browser instances running and the Multi Session Install Lockout
         timeout has not expired yet. Note that, for updates to be '
+    - name: update_bitshresult
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'If a BITS download fails on the Windows side (that is to say,
+        BITS ecounters an error rather than Firefox failing to interact with BITS),
+        it will likely give an hresult error indicating what happened. This probe
+        reports those error codes to allow us to see if BITS is commonly failing on
+        some systems. This probe is keyed on the type of update download, either "PARTIAL"
+        or "COMPLETE". This metric was generated to correspond to the Legacy Telemetry
+        scalar update.bitshresult.
+
+        '
+    - name: update_move_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Firefox keeps downloading updates in a different place from updates
+        that are ready to install. Once the download completes, the resulting file
+        has to be moved from the downloading update directory to the ready update
+        directory. This probe counts the results that we get when attempting to perform
+        this file move. Valid values for the keys for this probe are stored in the
+        MOVE_RESULT_* values in UpdateTelemetry.sys.mjs. This metric was generated
+        to correspond to the Legacy Telemetry scalar update.move_result.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -462,6 +513,16 @@ fields:
       description: 'An experimentation identifier derived and provided by the application
 
         for the purpose of experimentation enrollment.
+
+        '
+    - name: update_version_pin
+      type: STRING
+      mode: NULLABLE
+      description: 'The AppUpdatePin Enterprise Policy controls the maximum version
+        that the browser can update to. If the policy is set, this probe will report
+        the policy''s value. The possible policy values are "X." and "X.Y.", where
+        X is the pinned major version and Y is the pinned minor version. This metric
+        was generated to correspond to the Legacy Telemetry scalar update.version_pin.
 
         '
   - name: string_list
@@ -537,6 +598,20 @@ fields:
 
         This version number does not have a physical unit: it''s only useful to compare
         between versions.
+
+        '
+  - name: counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: update_no_window_auto_restarts
+      type: INTEGER
+      mode: NULLABLE
+      description: 'On macOS, all browser windows can be closed without exiting Firefox.
+        If there is an update pending in that case, and we can install it silently,
+        we restart automatically in order to do so. This probe counts the number of
+        times the browser restarts to silently install a pending update. This metric
+        was generated to correspond to the Legacy Telemetry scalar update.no_window_auto_restarts.
 
         '
 - name: normalized_app_name

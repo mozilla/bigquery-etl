@@ -849,6 +849,192 @@ fields:
       description: 'The version of OpenGL supported by the user''s system.
 
         '
+    - name: characteristics_wgpu_maxbindgroups
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxBindGroups
+
+        '
+    - name: characteristics_wgpu_maxbindgroupsplusvertexbuffers
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxBindGroupsPlusVertexBuffers
+
+        '
+    - name: characteristics_wgpu_maxbindingsperbindgroup
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxBindingsPerBindGroup
+
+        '
+    - name: characteristics_wgpu_maxbuffersize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxBufferSize
+
+        '
+    - name: characteristics_wgpu_maxcolorattachmentbytespersample
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxColorAttachmentBytesPerSample
+
+        '
+    - name: characteristics_wgpu_maxcolorattachments
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxColorAttachments
+
+        '
+    - name: characteristics_wgpu_maxcomputeinvocationsperworkgroup
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxComputeInvocationsPerWorkgroup
+
+        '
+    - name: characteristics_wgpu_maxcomputeworkgroupsizex
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupSizeX
+
+        '
+    - name: characteristics_wgpu_maxcomputeworkgroupsizey
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupSizeY
+
+        '
+    - name: characteristics_wgpu_maxcomputeworkgroupsizez
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupSizeZ
+
+        '
+    - name: characteristics_wgpu_maxcomputeworkgroupsperdimension
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupsPerDimension
+
+        '
+    - name: characteristics_wgpu_maxcomputeworkgroupstoragesize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupStorageSize
+
+        '
+    - name: characteristics_wgpu_maxdynamicstoragebuffersperpipelinelayout
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxDynamicStorageBuffersPerPipelineLayout
+
+        '
+    - name: characteristics_wgpu_maxdynamicuniformbuffersperpipelinelayout
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxDynamicUniformBuffersPerPipelineLayout
+
+        '
+    - name: characteristics_wgpu_maxinterstageshadervariables
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxInterStageShaderVariables
+
+        '
+    - name: characteristics_wgpu_maxsampledtexturespershaderstage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxSampledTexturesPerShaderStage
+
+        '
+    - name: characteristics_wgpu_maxsamplerspershaderstage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxSamplersPerShaderStage
+
+        '
+    - name: characteristics_wgpu_maxstoragebufferbindingsize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxStorageBufferBindingSize
+
+        '
+    - name: characteristics_wgpu_maxstoragebufferspershaderstage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxStorageBuffersPerShaderStage
+
+        '
+    - name: characteristics_wgpu_maxstoragetexturespershaderstage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxStorageTexturesPerShaderStage
+
+        '
+    - name: characteristics_wgpu_maxtexturearraylayers
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxTextureArrayLayers
+
+        '
+    - name: characteristics_wgpu_maxtexturedimension1d
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxTextureDimension1D
+
+        '
+    - name: characteristics_wgpu_maxtexturedimension2d
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxTextureDimension2D
+
+        '
+    - name: characteristics_wgpu_maxtexturedimension3d
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxTextureDimension3D
+
+        '
+    - name: characteristics_wgpu_maxuniformbufferbindingsize
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxUniformBufferBindingSize
+
+        '
+    - name: characteristics_wgpu_maxuniformbufferspershaderstage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxUniformBuffersPerShaderStage
+
+        '
+    - name: characteristics_wgpu_maxvertexattributes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxVertexAttributes
+
+        '
+    - name: characteristics_wgpu_maxvertexbufferarraystride
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxVertexBufferArrayStride
+
+        '
+    - name: characteristics_wgpu_maxvertexbuffers
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit maxVertexBuffers
+
+        '
+    - name: characteristics_wgpu_minstoragebufferoffsetalignment
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit minStorageBufferOffsetAlignment
+
+        '
+    - name: characteristics_wgpu_minuniformbufferoffsetalignment
+      type: INTEGER
+      mode: NULLABLE
+      description: 'WebGPU limit minUniformBufferOffsetAlignment
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -1427,6 +1613,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Status of and failure id (if failed) of ACCELERATED_CANVAS2D feature
+
+        '
+    - name: characteristics_wgpu_missing_features
+      type: STRING
+      mode: NULLABLE
+      description: 'Missing features of WebGPU as a bitset
 
         '
   - name: string_list

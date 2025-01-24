@@ -75,14 +75,19 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_bergamot_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_connect_firefox_stable.events_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_fenix_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_stable.home_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.daemonsession_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.events_v1

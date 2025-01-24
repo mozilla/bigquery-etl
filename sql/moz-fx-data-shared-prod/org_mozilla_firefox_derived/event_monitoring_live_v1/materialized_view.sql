@@ -67,6 +67,16 @@ IF
         client_info.app_display_version AS version,
         ping_info
       FROM
+        `moz-fx-data-shared-prod.org_mozilla_firefox_live.home_v1`
+      UNION ALL
+      SELECT
+        submission_timestamp,
+        events,
+        normalized_country_code,
+        client_info.app_channel AS channel,
+        client_info.app_display_version AS version,
+        ping_info
+      FROM
         `moz-fx-data-shared-prod.org_mozilla_firefox_live.metrics_v1`
     )
   CROSS JOIN
@@ -77,7 +87,7 @@ IF
   LEFT JOIN
     UNNEST(event.extra) AS event_extra
   WHERE
-    DATE(submission_timestamp) >= "2025-01-23"
+    DATE(submission_timestamp) >= "2025-01-24"
   GROUP BY
     submission_date,
     window_start,

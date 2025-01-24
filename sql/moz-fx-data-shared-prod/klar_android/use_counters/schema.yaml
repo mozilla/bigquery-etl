@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -18754,6 +18754,146 @@ fields:
       description: 'Whether a page tried to create an IC stub that was too large.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
+
+        '
+    - name: use_counter_doc_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called CookieStore.delete. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called CookieStore.get. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called CookieStore.getAll. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called called CookieStore.set. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called CookieStore.delete. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called CookieStore.get. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called CookieStore.getAll. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called called CookieStore.set. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker called called CookieStore.delete. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker called called CookieStore.get. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker called called CookieStore.getAll. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker called called CookieStore.set. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker called called CookieStore.delete. Compare
+        against `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker called called CookieStore.get. Compare
+        against `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker called called CookieStore.getAll. Compare
+        against `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker called called CookieStore.set. Compare
+        against `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_cookiestore_delete
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker called called CookieStore.delete. Compare
+        against `use.counter.shared_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_cookiestore_get
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker called called CookieStore.get. Compare
+        against `use.counter.shared_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_cookiestore_getall
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker called called CookieStore.getAll. Compare
+        against `use.counter.shared_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_cookiestore_set
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker called called CookieStore.set. Compare
+        against `use.counter.shared_workers_destroyed` to calculate the rate.
 
         '
   - name: labeled_counter

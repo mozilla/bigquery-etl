@@ -1,4 +1,4 @@
--- Based on telemetry.events: https://docs.telemetry.mozilla.org/concepts/pipeline/event_pipeline
+# Based on telemetry.events: https://docs.telemetry.mozilla.org/concepts/pipeline/event_pipeline
 fields:
 - mode: NULLABLE
   name: submission_date

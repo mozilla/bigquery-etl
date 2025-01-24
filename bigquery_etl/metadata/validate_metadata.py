@@ -132,17 +132,22 @@ def validate_shredder_mitigation(query_dir, metadata):
         )
 
         # Check that the table exists and it's not empty.
-        query_table_is_not_empty = (f"SELECT EXISTS (SELECT 1 "
-                                    f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.TABLES` "
-                                    f"WHERE table_name = '{table}' LIMIT 1) AS not_empty;")
+        query_table_is_not_empty = (
+            f"SELECT EXISTS (SELECT 1 "
+            f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.TABLES` "
+            f"WHERE table_name = '{table}' LIMIT 1) AS not_empty;"
+        )
 
         try:
             table_not_empty = client.query(query_table_is_not_empty).result()
         except NotFound:
-            click.echo(click.style(
-                f"Table {project}.{dataset}.{table} not found. Please verify that the "
-                f"table exists and the name is correct.",
-                fg="yellow"))
+            click.echo(
+                click.style(
+                    f"Table {project}.{dataset}.{table} not found. Please verify that the "
+                    f"table exists and the name is correct.",
+                    fg="yellow",
+                )
+            )
             return False
 
         if table_not_empty is None or table_not_empty is False:

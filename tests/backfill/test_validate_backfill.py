@@ -18,7 +18,7 @@ from bigquery_etl.backfill.validate import (
     validate_file,
     validate_shredder_mitigation,
 )
-from bigquery_etl.metadata.parse_metadata import METADATA_FILE
+from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 from bigquery_etl.metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from tests.backfill.test_parse_backfill import TEST_BACKFILL_1, TEST_BACKFILL_2
 
@@ -112,7 +112,7 @@ class TestValidateBackfill(object):
     def test_validate_file(self):
         validate_file(TEST_BACKFILL_FILE)
 
-    def test_validate_backfill_with_shredder_mitigation_and_without_metadata_label_should_fail(
+    def test_validate_backfill_initiate_status_with_shredder_mitigation_true_and_metadata_label_false_should_fail(
         self,
     ):
         valid_backfill = Backfill(
@@ -125,6 +125,13 @@ class TestValidateBackfill(object):
             TEST_BACKFILL_1.status,
             shredder_mitigation=True,
         )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == False
 
         with pytest.raises(ValueError) as e:
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE)
@@ -134,7 +141,36 @@ class TestValidateBackfill(object):
             in str(e.value)
         )
 
-    def test_validate_backfill_without_shredder_mitigation_and_with_metadata_label_should_fail(
+    def test_validate_backfill_initiate_shredder_mitigation_false_and_metadata_label_true_should_fail(
+        self,
+    ):
+        valid_backfill = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            TEST_BACKFILL_1.status,
+            shredder_mitigation=False,
+        )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE_1).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == True
+
+        with pytest.raises(ValueError) as e:
+            validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
+
+        assert (
+            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+            in str(e.value)
+        )
+
+    def test_validate_backfill_initiate_without_shredder_mitigation_and_metadata_label_true_should_fail(
         self,
     ):
         valid_backfill = Backfill(
@@ -147,6 +183,13 @@ class TestValidateBackfill(object):
             TEST_BACKFILL_1.status,
         )
 
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE_1).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == True
+
         with pytest.raises(ValueError) as e:
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
@@ -155,7 +198,7 @@ class TestValidateBackfill(object):
             in str(e.value)
         )
 
-    def test_validate_backfill_with_shredder_mitigation_and_metadata_label_should_pass(
+    def test_validate_backfill_intiate_status_with_shredder_mitigation_true_and_metadata_label_true_should_pass(
         self,
     ):
         valid_backfill = Backfill(
@@ -168,5 +211,103 @@ class TestValidateBackfill(object):
             TEST_BACKFILL_1.status,
             shredder_mitigation=True,
         )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE_1).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == True
+
+        validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
+
+    def test_validate_backfill_intiate_status_with_shredder_mitigation_false_and_metadata_label_false_should_pass(
+        self,
+    ):
+        valid_backfill = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            TEST_BACKFILL_1.status,
+            shredder_mitigation=False,
+        )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == False
+
+        validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE)
+
+    def test_validate_backfill_complete_with_shredder_mitigation_true_and_metadata_label_true_should_pass(
+        self,
+    ):
+        valid_backfill = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.COMPLETE,
+            shredder_mitigation=True,
+        )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE_1).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == True
+
+        validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
+
+    def test_validate_backfill_complete_with_shredder_mitigation_false_and_metadata_label_true_should_pass(
+        self,
+    ):
+        valid_backfill = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.COMPLETE,
+            shredder_mitigation=False,
+        )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE_1).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == True
+
+        validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
+
+    def test_validate_backfill_complete_without_shredder_mitigation_and_metadata_label_true_should_pass(
+        self,
+    ):
+        valid_backfill = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.COMPLETE,
+        )
+
+        metadata_file = Path(
+            str(TEST_BACKFILL_FILE_1).replace(BACKFILL_FILE, METADATA_FILE)
+        )
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+        assert has_shredder_mitigation_label == True
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)

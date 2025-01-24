@@ -8,7 +8,6 @@ from pathlib import Path
 
 import click
 import yaml
-from gcloud.exceptions import Forbidden, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
@@ -141,24 +140,16 @@ def validate_shredder_mitigation(query_dir, metadata):
 
         try:
             table_not_empty = client.query(query_table_is_not_empty).result()
-        except Forbidden:
+        except Exception:
             click.echo(
                 click.style(
-                    f"Table {project}.{dataset}.{table} is not accessible. If the table "
-                    f"is in a private repository, please ensure that it exists and has data "
-                    f"before running a backfill with shredder mitigation.",
+                    f"Table {project}.{dataset}.{table} not found or inaccessible."
+                    f" for validation. Please check that the name is correct and if the table"
+                    f" is in a private repository, ensure that it exists and has data before"
+                    f" running a backfill with shredder mitigation.",
                     fg="yellow",
                 )
             )
-        except NotFound:
-            click.echo(
-                click.style(
-                    f"Table {project}.{dataset}.{table} not found or not accessible."
-                    f"Please ensure that the table exists and the name is correct.",
-                    fg="yellow",
-                )
-            )
-            return False
 
         if table_not_empty is None or table_not_empty is False:
             click.echo(click.style(error_message, fg="yellow"))

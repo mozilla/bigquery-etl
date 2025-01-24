@@ -12,8 +12,7 @@ SELECT
     `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'addonVersion'),
     `moz-fx-data-shared-prod.udf.get_key`(event_map_values, 'addon_version')
   ) AS addon_version,
-  -- TODO: why in some redash queries this is hashed_addon_id and in other value? What's the difference?
-  event_string_value AS hashed_addon_id,
+  event_string_value,
   client_id,
   sample_id,
   normalized_channel,

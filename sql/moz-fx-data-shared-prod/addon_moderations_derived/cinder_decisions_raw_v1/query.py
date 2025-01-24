@@ -21,9 +21,9 @@ def post_response(url, headers, data):
     return response
 
 
-def get_response(url, headers):
+def get_response(url, headers, params):
     """GET response function."""
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, params=params)
     if (response.status_code == 401) or (response.status_code == 400):
         print(f"***Error: {response.status_code}***")
         print(response.text)
@@ -40,9 +40,14 @@ def read_json(filename: str) -> dict:
 def cinder_addon_decisions_download(date, bearer_token):
     """Download data from Cinder - bearer_token is called here."""
     url = "https://stage.cinder.nonprod.webservices.mozgcp.net/api/v1/decisions/"
+    query_params = {
+        "created_at__lt": f"{date}T23:59:59",
+        "created_at__gt": f"{date}T00:00:00",
+        "limit": 1000,
+        "offset": 0,
+    }
     headers = {"accept": "application/json", "authorization": f"Bearer {bearer_token}"}
-    print(url)
-    response = get_response(url, headers)
+    response = get_response(url, headers, query_params)
     return response
 
 

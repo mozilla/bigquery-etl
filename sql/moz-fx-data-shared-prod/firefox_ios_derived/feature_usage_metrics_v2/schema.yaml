@@ -14,234 +14,312 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: Channel
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: Adjust Network
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Default Browser
 - name: logins_deleted_users
   type: INTEGER
   mode: NULLABLE
+  description: Logins Deleted Users
 - name: logins_deleted
   type: INTEGER
   mode: NULLABLE
+  description: Logins Deleted
 - name: logins_modified_users
   type: INTEGER
   mode: NULLABLE
+  description: Logins Modified Users
 - name: logins_modified
   type: INTEGER
   mode: NULLABLE
+  description: Logins Modified
 - name: logins_saved_users
   type: INTEGER
   mode: NULLABLE
+  description: Logins Saved Users
 - name: logins_saved
   type: INTEGER
   mode: NULLABLE
+  description: Logins Saved
 - name: logins_saved_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Logins Saved All Users
 - name: logins_saved_all
   type: INTEGER
   mode: NULLABLE
+  description: Logins Saved All
 - name: credit_card_autofill_enabled_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Autofill Enabled Users
 - name: credit_card_autofill_enabled
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Autofill Enabled
 - name: credit_card_sync_enabled_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Sync Enabled Users
 - name: credit_card_sync_enabled
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Sync Enabled
 - name: credit_card_deleted_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Deleted Users
 - name: credit_card_deleted
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Deleted
 - name: credit_card_modified_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Modified Users
 - name: credit_card_modified
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Modified
 - name: credit_card_saved_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Saved Users
 - name: credit_card_saved
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Saved
 - name: credit_card_saved_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Saved All Users
 - name: credit_card_saved_all
   type: INTEGER
   mode: NULLABLE
+  description: Credit Card Saved All
 - name: bookmarks_add_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Add Users
 - name: bookmarks_add
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Add
 - name: bookmarks_delete_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Delete Users
 - name: bookmarks_delete
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Delete
 - name: bookmarks_edit_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Edit Users
 - name: bookmarks_edit
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Edit
 - name: has_mobile_bookmarks_users
   type: INTEGER
   mode: NULLABLE
+  description: Has Mobile Bookmarks Users
 - name: has_mobile_bookmarks
   type: INTEGER
   mode: NULLABLE
+  description: Has Mobile Bookmarks
 - name: mobile_bookmarks_count_users
   type: INTEGER
   mode: NULLABLE
+  description: Mobile Bookmarks Count Users
 - name: mobile_bookmarks_count
   type: INTEGER
   mode: NULLABLE
+  description: Mobile Bookmarks Count
 - name: bookmarks_open_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Open Users
 - name: bookmarks_open
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks Open
 - name: bookmarks_view_list_users
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks View List Users
 - name: bookmarks_view_list
   type: INTEGER
   mode: NULLABLE
+  description: Bookmarks View List
 - name: sync_create_account_pressed_users
   type: INTEGER
   mode: NULLABLE
+  description: Sync Create Account Pressed Users
 - name: sync_create_account_pressed
   type: INTEGER
   mode: NULLABLE
+  description: Sync Create Account Pressed
 - name: sync_open_tab_users
   type: INTEGER
   mode: NULLABLE
+  description: Sync Open Tab Users
 - name: sync_open_tab
   type: INTEGER
   mode: NULLABLE
+  description: Sync Open Tab
 - name: sync_sign_in_sync_pressed_users
   type: INTEGER
   mode: NULLABLE
+  description: Sync Sign In Sync Pressed Users
 - name: sync_sign_in_sync_pressed
   type: INTEGER
   mode: NULLABLE
+  description: Sync Sign In Sync Pressed
 - name: tabs_private_tabs_quantity_users
   type: INTEGER
   mode: NULLABLE
+  description: Tabs Private Tabs Quantity Users
 - name: tabs_private_tabs_quantity
   type: INTEGER
   mode: NULLABLE
+  description: Tabs Private Tabs Quantity
 - name: preferences_close_private_tabs_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Close Private Tabs Users
 - name: preferences_close_private_tabs
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Close Private Tabs
 - name: tracking_protection_enabled_users
   type: INTEGER
   mode: NULLABLE
+  description: Tracking Protection Enabled Users
 - name: tracking_protection_enabled
   type: INTEGER
   mode: NULLABLE
+  description: Tracking Protection Enabled
 - name: tracking_protection_strict_users
   type: INTEGER
   mode: NULLABLE
+  description: Tracking Protection Strict Users
 - name: tracking_protection_strict
   type: INTEGER
   mode: NULLABLE
+  description: Tracking Protection Strict
 - name: tabs_normal_tabs_quantity_users
   type: INTEGER
   mode: NULLABLE
+  description: Tabs Normal Tabs Quantity Users
 - name: tabs_normal_tabs_quantity
   type: INTEGER
   mode: NULLABLE
+  description: Tabs Normal Tabs Quantity
 - name: tabs_inactive_tabs_count_users
   type: INTEGER
   mode: NULLABLE
+  description: Tabs Inactive Tabs Count Users
 - name: tabs_inactive_tabs_count
   type: INTEGER
   mode: NULLABLE
+  description: Tabs Inactive Tabs Count
 - name: app_opened_as_default_browser_users
   type: INTEGER
   mode: NULLABLE
+  description: App Opened as Default Browser Users
 - name: app_opened_as_default_browser
   type: INTEGER
   mode: NULLABLE
+  description: App Opened as Default Browser
 - name: settings_menu_set_as_default_browser_pressed_users
   type: INTEGER
   mode: NULLABLE
+  description: Settings Menu Set as Default Browser Pressed Users
 - name: settings_menu_set_as_default_browser_pressed
   type: INTEGER
   mode: NULLABLE
+  description: Settings Menu Set as Default Browser Pressed
 - name: preferences_sync_notifs_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Sync Notifs Users
 - name: preferences_sync_notifs
   type: INTEGER
   mode: NULLABLE
+  description: preferences_sync_notifs
 - name: preferences_tips_and_features_notifs_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Tips & Features Notifs Users
 - name: preferences_tips_and_features_notifs
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Tips & Features Notifs
 - name: preferences_jump_back_in_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Jump Back in Users
 - name: preferences_jump_back_in
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Jump Back In
 - name: preferences_recently_visited_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Recently Visited Users
 - name: preferences_recently_visited
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Recently Visited
 - name: preferences_recently_saved_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Recently Saved Users
 - name: preferences_recently_saved
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Recently Saved
 - name: preferences_pocket_users
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Pocket Users
 - name: preferences_pocket
   type: INTEGER
   mode: NULLABLE
+  description: Preferences Pocket
 - name: app_menu_customize_homepage_users
   type: INTEGER
   mode: NULLABLE
+  description: App Menu Customize Homepage Users
 - name: app_menu_customize_homepage
   type: INTEGER
   mode: NULLABLE
+  description: App Menu Customize Homepage
 - name: firefox_home_page_customize_homepage_button_users
   type: INTEGER
   mode: NULLABLE
+  description: Firefox Home Page Customize Homepage Button Users
 - name: firefox_home_page_customize_homepage_button
   type: INTEGER
   mode: NULLABLE
+  description: Firefox Home Page Customize Homepage Button
 - name: addresses_saved_all_users
   type: INTEGER
   mode: NULLABLE
+  description: Addresses Saved All Users
 - name: addresses_saved_all
   type: INTEGER
   mode: NULLABLE
+  description: Addresses Saved All

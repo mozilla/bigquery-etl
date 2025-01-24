@@ -68,12 +68,6 @@ fields:
 - name: sponsored_topsite_impressed_visit_count
   type: INTEGER
   mode: NULLABLE
-- name: client_count
-  type: INTEGER
-  mode: NULLABLE
-- name: visit_count
-  type: INTEGER
-  mode: NULLABLE
 - name: sponsored_topsite_clicked_client_count
   type: INTEGER
   mode: NULLABLE

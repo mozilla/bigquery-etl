@@ -2094,3 +2094,21 @@ bqetl_dsktp_acqstn_fnnl:
     - impact/tier_2
   repo: bigquery-etl
   schedule_interval: 30 11 * * *
+
+bqetl_google_play_store:
+  description: |
+    This DAG loads Google Play Store data (like ratings and reviews)
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-01-27"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 30 11 * * *

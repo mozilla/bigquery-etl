@@ -9,7 +9,6 @@ import pytest
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
-from google.api_core.exceptions import Forbidden
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata

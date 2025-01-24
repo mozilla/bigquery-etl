@@ -8,7 +8,6 @@ from pathlib import Path
 
 import click
 import yaml
-from gcloud.exceptions import NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
@@ -141,7 +140,7 @@ def validate_shredder_mitigation(query_dir, metadata):
 
         try:
             table_not_empty = client.query(query_table_is_not_empty).result()
-        except Exception as e:
+        except Exception:
             click.echo(
                 click.style(
                     f"Table {project}.{dataset}.{table} not found or inaccessible."

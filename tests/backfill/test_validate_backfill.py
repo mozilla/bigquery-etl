@@ -131,7 +131,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == False
+        assert has_shredder_mitigation_label is False
 
         with pytest.raises(ValueError) as e:
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE)
@@ -160,7 +160,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == True
+        assert has_shredder_mitigation_label is True
 
         with pytest.raises(ValueError) as e:
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
@@ -188,7 +188,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == True
+        assert has_shredder_mitigation_label is True
 
         with pytest.raises(ValueError) as e:
             validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
@@ -217,7 +217,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == True
+        assert has_shredder_mitigation_label is True
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
@@ -240,7 +240,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == False
+        assert has_shredder_mitigation_label is False
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE)
 
@@ -263,7 +263,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == True
+        assert has_shredder_mitigation_label is True
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
@@ -286,7 +286,7 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == True
+        assert has_shredder_mitigation_label is True
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
 
@@ -308,6 +308,6 @@ class TestValidateBackfill(object):
         )
         metadata = Metadata.from_file(metadata_file)
         has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
-        assert has_shredder_mitigation_label == True
+        assert has_shredder_mitigation_label is True
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)

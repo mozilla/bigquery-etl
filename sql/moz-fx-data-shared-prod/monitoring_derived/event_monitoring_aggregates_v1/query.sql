@@ -43,7 +43,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`
     UNION ALL
@@ -53,7 +72,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`
     UNION ALL
@@ -63,7 +101,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
     UNION ALL
@@ -73,7 +130,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1`
     UNION ALL
@@ -83,7 +159,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1`
   )
@@ -154,7 +249,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_crashreporter_stable.events_v1`
   )
@@ -225,7 +339,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_background_update_stable.events_v1`
   )
@@ -296,7 +429,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_stable.events_v1`
   )
@@ -367,7 +519,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.pine_stable.events_v1`
   )
@@ -438,7 +609,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_stable.events_v1`
     UNION ALL
@@ -448,7 +638,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_stable.home_v1`
     UNION ALL
@@ -458,7 +667,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1`
   )
@@ -529,7 +757,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.events_v1`
     UNION ALL
@@ -539,7 +786,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.home_v1`
     UNION ALL
@@ -549,7 +815,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_beta_stable.metrics_v1`
   )
@@ -620,7 +905,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_stable.events_v1`
     UNION ALL
@@ -630,7 +934,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_stable.home_v1`
     UNION ALL
@@ -640,7 +963,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_stable.metrics_v1`
   )
@@ -711,7 +1053,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.events_v1`
     UNION ALL
@@ -721,7 +1082,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.home_v1`
     UNION ALL
@@ -731,7 +1111,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.metrics_v1`
   )
@@ -802,7 +1201,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.events_v1`
     UNION ALL
@@ -812,7 +1230,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.home_v1`
     UNION ALL
@@ -822,7 +1259,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.metrics_v1`
   )
@@ -893,7 +1349,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.events_v1`
     UNION ALL
@@ -903,7 +1378,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.first_session_v1`
     UNION ALL
@@ -913,7 +1407,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefox_stable.metrics_v1`
   )
@@ -984,7 +1497,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.events_v1`
     UNION ALL
@@ -994,7 +1526,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.first_session_v1`
     UNION ALL
@@ -1004,7 +1555,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1`
   )
@@ -1075,7 +1645,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.events_v1`
     UNION ALL
@@ -1085,7 +1674,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.first_session_v1`
     UNION ALL
@@ -1095,7 +1703,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_fennec_stable.metrics_v1`
   )
@@ -1166,7 +1793,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_reference_browser_stable.events_v1`
   )
@@ -1237,7 +1883,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_tv_firefox_stable.events_v1`
   )
@@ -1308,7 +1973,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_vrbrowser_stable.events_v1`
   )
@@ -1379,7 +2063,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozilla_lockbox_stable.events_v1`
   )
@@ -1450,7 +2153,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_lockbox_stable.events_v1`
   )
@@ -1521,7 +2243,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_mozregression_stable.events_v1`
   )
@@ -1592,7 +2333,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.burnham_stable.events_v1`
   )
@@ -1663,7 +2423,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozphab_stable.events_v1`
   )
@@ -1734,7 +2513,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_connect_firefox_stable.events_v1`
   )
@@ -1805,7 +2603,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.events_v1`
   )
@@ -1876,7 +2693,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozilla_mach_stable.events_v1`
   )
@@ -1947,7 +2783,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_focus_stable.events_v1`
   )
@@ -2018,7 +2873,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_klar_stable.events_v1`
   )
@@ -2089,7 +2963,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_focus_stable.events_v1`
   )
@@ -2160,7 +3053,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_focus_beta_stable.events_v1`
   )
@@ -2231,7 +3143,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_focus_nightly_stable.events_v1`
   )
@@ -2302,7 +3233,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_klar_stable.events_v1`
   )
@@ -2373,7 +3323,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_bergamot_stable.custom_v1`
     UNION ALL
@@ -2383,7 +3352,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_bergamot_stable.events_v1`
   )
@@ -2454,7 +3442,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_translations_stable.custom_v1`
     UNION ALL
@@ -2464,7 +3471,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_translations_stable.events_v1`
   )
@@ -2535,7 +3561,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.daemonsession_v1`
     UNION ALL
@@ -2545,7 +3590,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.events_v1`
     UNION ALL
@@ -2555,7 +3619,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
     UNION ALL
@@ -2565,7 +3648,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.vpnsession_v1`
   )
@@ -2636,7 +3738,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.daemonsession_v1`
     UNION ALL
@@ -2646,7 +3767,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.events_v1`
     UNION ALL
@@ -2656,7 +3796,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1`
     UNION ALL
@@ -2666,7 +3825,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.vpnsession_v1`
   )
@@ -2737,7 +3915,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.daemonsession_v1`
     UNION ALL
@@ -2747,7 +3944,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.events_v1`
     UNION ALL
@@ -2757,7 +3973,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1`
     UNION ALL
@@ -2767,7 +4002,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.vpnsession_v1`
   )
@@ -2838,7 +4092,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.daemonsession_v1`
     UNION ALL
@@ -2848,7 +4121,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.events_v1`
     UNION ALL
@@ -2858,7 +4150,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.main_v1`
     UNION ALL
@@ -2868,7 +4179,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.vpnsession_v1`
   )
@@ -2939,7 +4269,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.events_v1`
   )
@@ -3010,7 +4359,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.glean_dictionary_stable.events_v1`
   )
@@ -3081,7 +4449,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mdn_yari_stable.action_v1`
     UNION ALL
@@ -3091,7 +4478,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.mdn_yari_stable.events_v1`
   )
@@ -3162,7 +4568,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.bedrock_stable.events_v1`
     UNION ALL
@@ -3172,7 +4597,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.bedrock_stable.interaction_v1`
     UNION ALL
@@ -3182,7 +4626,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1`
   )
@@ -3253,7 +4716,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.viu_politica_stable.events_v1`
     UNION ALL
@@ -3263,7 +4745,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.viu_politica_stable.main_events_v1`
     UNION ALL
@@ -3273,7 +4774,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.viu_politica_stable.video_index_v1`
   )
@@ -3344,7 +4864,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.treeherder_stable.events_v1`
   )
@@ -3415,7 +4954,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.background_tasks_v1`
     UNION ALL
@@ -3425,7 +4983,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1`
   )
@@ -3496,7 +5073,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.accounts_frontend_stable.events_v1`
   )
@@ -3567,7 +5163,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.accounts_backend_stable.events_v1`
   )
@@ -3638,7 +5253,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.accounts_cirrus_stable.events_v1`
   )
@@ -3709,7 +5343,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.monitor_cirrus_stable.events_v1`
   )
@@ -3780,7 +5433,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.debug_ping_view_stable.events_v1`
   )
@@ -3851,7 +5523,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.monitor_frontend_stable.events_v1`
   )
@@ -3922,7 +5613,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.monitor_backend_stable.events_v1`
   )
@@ -3993,7 +5703,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.relay_backend_stable.events_v1`
   )
@@ -4064,7 +5793,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.gleanjs_docs_stable.events_v1`
   )
@@ -4135,7 +5883,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.thunderbird_desktop_stable.events_v1`
   )
@@ -4206,7 +5973,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.net_thunderbird_android_stable.events_v1`
   )
@@ -4277,7 +6063,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.net_thunderbird_android_beta_stable.events_v1`
   )
@@ -4348,7 +6153,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.net_thunderbird_android_daily_stable.events_v1`
   )
@@ -4419,7 +6243,26 @@ FROM
       normalized_country_code,
       client_info.app_channel AS channel,
       client_info.app_display_version AS version,
-      ping_info
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+            WITH OFFSET
+          ORDER BY
+            offset
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.syncstorage_stable.events_v1`
   )

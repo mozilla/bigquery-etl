@@ -5,3 +5,4 @@
   watchers:
   - kik@mozilla.com
   status: Initiate
+  override_retention_limit: true

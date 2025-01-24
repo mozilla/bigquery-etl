@@ -1,0 +1,22 @@
+SELECT
+  Package_Name,
+  App_Version_Code,
+  App_Version_Name,
+  Reviewer_Language,
+  Device,
+  Review_Submit_Date_and_Time,
+  Review_Submit_Millis_Since_Epoch,
+  Review_Last_Update_Date_and_Time,
+  Review_Last_Update_Millis_Since_Epoch,
+  Star_Rating,
+  Review_Title,
+  Review_Text,
+  Developer_Reply_Date_and_Time,
+  Developer_Reply_Millis_Since_Epoch,
+  Developer_Reply_Text,
+  Review_Link,
+  _LATEST_DATE,
+  _DATA_DATE,
+  CURRENT_TIMESTAMP() AS last_updated_ts
+FROM
+  `moz-fx-data-marketing-prod.google_play_store.Reviews_v1`

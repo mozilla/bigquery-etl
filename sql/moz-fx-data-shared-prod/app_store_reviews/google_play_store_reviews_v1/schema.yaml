@@ -1,0 +1,76 @@
+fields:
+- name: Package_Name
+  mode: NULLABLE
+  type: STRING
+  description: Package Name
+- name: App_Version_Code
+  type: INTEGER
+  mode: NULLABLE
+  description: App Version Code
+- name: App_Version_Name
+  type: STRING
+  mode: NULLABLE
+  description: App Version Name
+- name: Reviewer_Language
+  type: STRING
+  mode: NULLABLE
+  description: Reviewer Language
+- name: Device
+  type: STRING
+  mode: NULLABLE
+  description: Device
+- name: Review_Submit_Date_and_Time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Review Submit Date & Time
+- name: Review_Submit_Millis_Since_Epoch
+  type: INTEGER
+  mode: NULLABLE
+  description: Review Submit Millis Since Epoch
+- name: Review_Last_Update_Date_and_Time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Review Last Update Date and Time
+- name: Review_Last_Update_Millis_Since_Epoch
+  type: INTEGER
+  mode: NULLABLE
+  description: Review Last Update Millis Since Epoch
+- name: Star_Rating
+  type: INTEGER
+  mode: NULLABLE
+  description: Star Rating
+- name: Review_Title
+  type: STRING
+  mode: NULLABLE
+  description: Review Title
+- name: Review_Text
+  type: STRING
+  mode: NULLABLE
+  description: Review Text
+- name: Developer_Reply_Date_and_Time
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: Developer_Reply_Millis_Since_Epoch
+  type: INTEGER
+  mode: NULLABLE
+  description: Developer Reply Millis Since Epoch
+- name: Developer_Reply_Text
+  type: STRING
+  mode: NULLABLE
+  description: Developer Reply Text
+- name: Review_Link
+  type: STRING
+  mode: NULLABLE
+  description: Review Link
+- name: _LATEST_DATE
+  type: DATE
+  mode: NULLABLE
+  description: Latest Date
+- name: _DATA_DATE
+  type: DATE
+  mode: NULLABLE
+  description: Data Date
+- name: last_updated_ts
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Last Updated Timestamp - The time this data was last copied from the source

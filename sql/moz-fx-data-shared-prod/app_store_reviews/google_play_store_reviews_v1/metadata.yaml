@@ -1,0 +1,13 @@
+friendly_name: Google Play Stores Reviews
+description: |-
+  Contains star ratings and text reviews about Firefox from the Google Play Store
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_google_play_store
+  date_partition_parameter: null
+  depends_on_past: false
+references: {}

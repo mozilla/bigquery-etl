@@ -9,7 +9,6 @@ import pytest
 import yaml
 from click.testing import CliRunner
 from dateutil.relativedelta import relativedelta
-from google.cloud.exceptions import NotFound
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
@@ -553,56 +552,8 @@ class TestMetadata:
             ) in captured.out
 
     @patch("google.cloud.bigquery.Client")
-    def test_validate_shredder_mitigation_table_doesnt_exist(
-        self, mock_bigquery_client, runner, capfd
-    ):
-        """Test that validation fails when the table doesn't exist."""
-        metadata = {
-            "friendly_name": "Test",
-            "labels": {"shredder_mitigation": "true"},
-        }
-
-        schema = {
-            "fields": [
-                {
-                    "mode": "REQUIRED",
-                    "name": "column_1",
-                    "type": "STRING",
-                },
-            ]
-        }
-
-        mock_client_instance = mock_bigquery_client.return_value
-        mock_client_instance.get_table.side_effect = NotFound("Table not found")
-
-        expected_exc = (
-            "The shredder-mitigation label ensures the stability of existing data, "
-            "thus it can only be applied to existing and non-empty tables.\n"
-            "Please ensure that the table "
-        )
-
-        with runner.isolated_filesystem():
-            query_path = Path(self.test_path) / "query.sql"
-            metadata_path = Path(self.test_path) / "metadata.yaml"
-            schema_path = Path(self.test_path) / "schema.yaml"
-            os.makedirs(self.test_path, exist_ok=True)
-
-            with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table GROUP BY ALL")
-            with open(metadata_path, "w") as f:
-                f.write(yaml.safe_dump(metadata))
-            with open(schema_path, "w") as f:
-                f.write(yaml.safe_dump(schema))
-
-            metadata_from_file = Metadata.from_file(metadata_path)
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert expected_exc in captured.out
-
-    @patch("google.cloud.bigquery.Client")
     @patch("google.cloud.bigquery.Table")
-    def test_validate_shredder_mitigation_empty_table(
+    def test_validate_shredder_mitigation_table_empty_or_not_exists(
         self, mock_bigquery_table, mock_bigquery_client, runner, capfd
     ):
         """Test that validation fails when the table doesn't exist."""
@@ -616,18 +567,17 @@ class TestMetadata:
                     "mode": "REQUIRED",
                     "name": "column_1",
                     "type": "STRING",
+                    "description": "column 1.",
                 },
             ]
         }
 
-        mock_client_instance = mock_bigquery_client.return_value
-        mock_bigquery_table.num_rows = 0
-        mock_client_instance.get_table.return_value = mock_bigquery_table
+        mock_instance = mock_bigquery_client.return_value
+        mock_instance.query.return_value.result.return_value = False
 
         expected_exc = (
-            "The shredder-mitigation label ensures the stability of existing data,"
-            " thus it can only be applied to existing and non-empty tables.\n"
-            "Please ensure that the table "
+            "The shredder-mitigation label can only be applied to existing and non-empty tables.\n"
+            "Ensure that the table"
         )
 
         with runner.isolated_filesystem():
@@ -637,13 +587,29 @@ class TestMetadata:
             os.makedirs(self.test_path, exist_ok=True)
 
             with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table GROUP BY ALL")
+                f.write("SELECT column_1 FROM test_table GROUP BY column_1")
             with open(metadata_path, "w") as f:
                 f.write(yaml.safe_dump(metadata))
             with open(schema_path, "w") as f:
                 f.write(yaml.safe_dump(schema))
 
             metadata_from_file = Metadata.from_file(metadata_path)
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            captured = capfd.readouterr()
+            assert result is False
+            assert expected_exc in captured.out
+
+            mock_instance_true = mock_bigquery_client.return_value
+            mock_instance_true.query.return_value.result.return_value = True
+
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            captured = capfd.readouterr()
+            assert result is True
+            assert captured.out == ""
+
+            mock_instance_true = mock_bigquery_client.return_value
+            mock_instance_true.query.return_value.result.return_value = None
+
             result = validate_shredder_mitigation(self.test_path, metadata_from_file)
             captured = capfd.readouterr()
             assert result is False

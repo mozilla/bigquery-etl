@@ -9,7 +9,6 @@ from pathlib import Path
 import click
 import yaml
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
@@ -123,22 +122,25 @@ def validate_shredder_mitigation(query_dir, metadata):
         project, dataset, table = extract_from_query_path(Path(query_dir))
         client = bigquery.Client(project=project)
         error_message = (
-            f"The shredder-mitigation label ensures the stability of existing data,"
-            f" thus it can only be applied to existing and non-empty tables.\n"
-            f"Please ensure that the table `{project}.{dataset}.{table}` exists and run"
-            f" a normal backfill before applying the label if this is a new or empty table."
-            f"\n\nNote that subsequent backfills will require using the process for "
-            f"[backfills with shredder mitigation](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill)."
+            f"The shredder-mitigation label can only be applied to existing and "
+            f"non-empty tables.\nEnsure that the table `{project}.{dataset}.{table}` is deployed"
+            f" and run a managed backfill without mitigation before applying this label to"
+            f" a new or empty table."
+            f"\n\nSubsequent backfills then can use the [shredder mitigation process]"
+            f"(https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill)."
         )
 
         # Check that the table exists and it's not empty.
-        try:
-            bq_table = client.get_table(f"{project}.{dataset}.{table}")
-        except NotFound:
-            click.echo(click.style(error_message, fg="yellow"))
-            return False
+        query_table_is_not_empty = (
+            f"SELECT total_rows > 0 AS has_rows "
+            f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.TABLES` "
+            f"WHERE table_name = '{table}' AND total_rows > 0 "
+            f"LIMIT 1;"
+        )
 
-        if bq_table.num_rows == 0:
+        table_not_empty = client.query(query_table_is_not_empty).result()
+
+        if table_not_empty is None or table_not_empty is False:
             click.echo(click.style(error_message, fg="yellow"))
             return False
 

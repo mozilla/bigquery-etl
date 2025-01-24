@@ -10,36 +10,16 @@ SELECT
   COUNT(DISTINCT IF(channel = 'release', client_id, NULL)) AS client_count,
   COUNT(DISTINCT IF(channel = 'release', newtab_visit_id, NULL)) AS visit_count,
   COUNT(
-    DISTINCT IF(
-      channel = 'release'
-      AND newtab_homepage_category = 'enabled',
-      client_id,
-      NULL
-    )
+    DISTINCT IF(channel = 'release' AND newtab_homepage_category = 'enabled', client_id, NULL)
   ) AS homepage_category_client_count,
   COUNT(
-    DISTINCT IF(
-      channel = 'release'
-      AND newtab_homepage_category = 'enabled',
-      newtab_visit_id,
-      NULL
-    )
+    DISTINCT IF(channel = 'release' AND newtab_homepage_category = 'enabled', newtab_visit_id, NULL)
   ) AS homepage_category_visit_count,
   COUNT(
-    DISTINCT IF(
-      channel = 'release'
-      AND newtab_newtab_category = 'enabled',
-      client_id,
-      NULL
-    )
+    DISTINCT IF(channel = 'release' AND newtab_newtab_category = 'enabled', client_id, NULL)
   ) AS newtab_category_client_count,
   COUNT(
-    DISTINCT IF(
-      channel = 'release'
-      AND newtab_newtab_category = 'enabled',
-      newtab_visit_id,
-      NULL
-    )
+    DISTINCT IF(channel = 'release' AND newtab_newtab_category = 'enabled', newtab_visit_id, NULL)
   ) AS newtab_category_visit_count,
   COUNT(
     DISTINCT IF(

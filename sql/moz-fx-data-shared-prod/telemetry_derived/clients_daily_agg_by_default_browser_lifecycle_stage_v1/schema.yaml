@@ -1,0 +1,33 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is Default Browser Indicator
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS Version
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: country
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE
+  description: Indicates the life stage of a client profile
+- name: row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: The total number of rows aggregated.

@@ -23,6 +23,7 @@ class TestUtilCommon:
 
         existing_projects = project_dirs()
         assert "sql/moz-fx-data-shared-prod" in existing_projects
+        assert "sql/bigconfig.yml" not in existing_projects
 
     def test_metrics_render(self, tmp_path):
         file_path = tmp_path / "test_query.sql"

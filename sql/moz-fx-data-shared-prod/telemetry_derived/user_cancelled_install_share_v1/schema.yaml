@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: installer_type
+  type: STRING
+  mode: NULLABLE
+  description: Installer Type - Stub or Full
+- name: update_channel
+  type: STRING
+  mode: NULLABLE
+  description: The channel - for example, release, esr, beta, nightly, etc
+- name: nbr_install_attempts
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of install attempts
+- name: user_cancelled
+  type: FLOAT
+  mode: NULLABLE
+  description: Number of install attempts cancelled by the user
+- name: timeout
+  type: FLOAT
+  mode: NULLABLE
+  description: Number of install attempts failing due to timeout

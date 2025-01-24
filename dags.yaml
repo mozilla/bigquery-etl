@@ -431,7 +431,7 @@ bqetl_monitoring:
     used for monitoring of the data platform.
   default_args:
     owner: ascholtz@mozilla.com
-    email: ["ascholtz@mozilla.com"]
+    email: ["ascholtz@mozilla.com", "kwindau@mozilla.com"]
     start_date: "2018-10-30"
     retries: 2
     retry_delay: 30m
@@ -1490,7 +1490,7 @@ bqetl_glam_refresh_aggregates:
     - impact/tier_2
     - repo/bigquery-etl
 
-bqetl_glam_refresh_aggregates_fog_release:
+bqetl_glam_refresh_aggregates_release:
   default_args:
     depends_on_past: false
     email:
@@ -1501,7 +1501,7 @@ bqetl_glam_refresh_aggregates_fog_release:
     retries: 2
     retry_delay: 30m
     start_date: '2024-12-10'
-  description: Update GLAM FOG release tables that serve aggregated data.
+  description: Update GLAM FOG and Fenix release tables that serve aggregated data.
   repo: bigquery-etl
   schedule_interval: 0 18 * * 6
   tags:
@@ -2037,3 +2037,60 @@ bqetl_event_aggregates:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 40 16 * * *
+
+bqetl_fx_cert_error_privacy_dashboard:
+  description: |
+    This DAG builds the desktop event_aggregates table for unique users count
+  default_args:
+    depends_on_past: false
+    owner: akommasani@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - akommasani@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2024-12-19"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 40 16 * * *
+
+bqetl_default_browser_aggregates:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    owner: wichan@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-12-20'
+  description: |
+    This DAG builds daily aggregate tables for default browser tables
+  repo: bigquery-etl
+  schedule_interval: 0 22 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_dsktp_acqstn_fnnl:
+  description: |
+    This DAG builds the Desktop Acquisiton Funnel aggregate table
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-01-08"
+    retries: 2
+    retry_delay: 5m
+  tags:
+    - impact/tier_2
+  repo: bigquery-etl
+  schedule_interval: 30 11 * * *

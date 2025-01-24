@@ -1,0 +1,23 @@
+friendly_name: Locale Aggregates
+description: |-
+  Fenix DAU, WAU, MAU and client counts by locale and core dimensions of analysis.
+owners:
+- lvargas@mozilla.com
+labels:
+  incremental: true
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+  date_partition_offset: -1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - channel
+    - locale
+references: {}

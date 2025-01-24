@@ -126,7 +126,7 @@ The following is an example to update a new field in `telemetry_derived.clients_
 
 ## Remove a field from a table schema
 
-Deleting a field from an existing table schema should be done only when is totally neccessary. If you decide to delete it:
+Deleting a field from an existing table schema should be done only when is totally necessary. If you decide to delete it:
 1. Validate if there is data in the column and make sure data it is either backed up or it can be reprocessed.
 1. Follow [Big Query docs](https://cloud.google.com/bigquery/docs/managing-table-schemas#deleting_columns_from_a_tables_schema_definition) recommendations for deleting.
 1. If the column size exceeds the allowed limit, consider setting the field as NULL. See this [search_clients_daily_v8](https://github.com/mozilla/bigquery-etl/pull/2463) PR for an example.

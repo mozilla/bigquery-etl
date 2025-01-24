@@ -1,0 +1,21 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Country Code
+- name: total_dau
+  type: INTEGER
+  mode: NULLABLE
+  description: DAU - Daily Active Users
+- name: nbr_clients_uninstalling
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients Uninstalling
+- name: ratio_uninstalls_to_dau
+  type: FLOAT
+  mode: NULLABLE
+  description: Ratio of the number of unique clients uninstalling to daily active users

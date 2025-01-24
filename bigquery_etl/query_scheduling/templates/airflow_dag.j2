@@ -308,6 +308,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
             {#+ Avoid having concurrent tasks for ETLs that target the whole table. -#}
             task_concurrency=1,
             {%+ endif -%}
+            execution_timeout=datetime.timedelta(hours=1),
     {%+ else -%}
         {{ task.task_name }} = bigquery_etl_query(
             {% if name == "bqetl_default" -%}

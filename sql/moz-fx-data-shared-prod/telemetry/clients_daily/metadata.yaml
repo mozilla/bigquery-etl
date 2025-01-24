@@ -11,7 +11,3 @@ labels:
   application: firefox
 owners:
   - ascholtz@mozilla.com
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:cloudops-managed/telescope

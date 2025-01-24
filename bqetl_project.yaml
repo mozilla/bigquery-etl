@@ -15,6 +15,7 @@ default:
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
   - moz-fx-data-glam-prod-fca7
+  - moz-fx-glam-prod
   public_project: mozilla-public-data
 
 monitoring:
@@ -42,6 +43,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
   # uses time travel, will error on dates prior to the time travel window
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
@@ -199,6 +201,7 @@ dry_run:
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
+  - sql/moz-fx-glam-prod/glam_etl/**/*.sql
   # Source table does not have a verifiable schema
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
@@ -214,6 +217,9 @@ dry_run:
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
+deprecation:
+  retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated
+  - roles/bigquery.dataEditor  # operational access
 
 format:
   skip:
@@ -337,6 +343,49 @@ generate:
       events_tables: # overwrite event tables
         pine: # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
+    bigconfig:
+      skip_apps:
+      - firefox_echo_show
+      - firefox_fire_tv
+      - thunderbird_android
+      - org_mozilla_social_nightly
+      - mozilla_vpn
+      - mozillavpn_backend_cirrus
+      - accounts_backend
+      - accounts_cirrus
+      - burnham
+      - firefox_crashreporter
+      - firefox_reality
+      - firefox_reality_pc
+      - lockwise_android
+      - mach
+      - monitor_backend
+      - monitor_cirrus
+      - moso_mastodon_backend
+      - mozphab
+      - mozregression
+      skip_app_metrics:
+      - thunderbird_desktop
+    bqetl_checks:
+      skip_apps:
+      - mozilla_vpn
+      - mozillavpn_backend_cirrus
+      - accounts_backend
+      - accounts_cirrus
+      - burnham
+      - firefox_crashreporter
+      - firefox_reality
+      - firefox_reality_pc
+      - lockwise_android
+      - mach
+      - monitor_backend
+      - monitor_cirrus
+      - moso_mastodon_backend
+      - mozphab
+      - mozregression
+  stable_views:
+    skip_datasets:
+    - mlhackweek_search
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

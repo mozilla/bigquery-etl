@@ -111,3 +111,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Clicks on Open Panel
+- name: nbr_non_null_client_ids
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Non-Null Client IDs
+- name: nbr_distinct_client_ids
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Distinct Client IDs

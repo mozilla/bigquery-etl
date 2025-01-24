@@ -8,11 +8,12 @@ from pathlib import Path
 
 import click
 import yaml
+from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
 
-from ..util import standard_args
+from ..util import extract_from_query_path, standard_args
 from ..util.common import extract_last_group_by_from_query, project_dirs
 from .parse_metadata import DatasetMetadata, Metadata
 
@@ -106,6 +107,7 @@ def validate_change_control(
 def validate_shredder_mitigation(query_dir, metadata):
     """Check queries with shredder mitigation label comply with requirements."""
     has_shredder_mitigation = SHREDDER_MITIGATION_LABEL in metadata.labels
+    table_not_empty = True
 
     if has_shredder_mitigation:
         schema_file = Path(query_dir) / SCHEMA_FILE
@@ -116,7 +118,44 @@ def validate_shredder_mitigation(query_dir, metadata):
         query_file = Path(query_dir) / "query.sql"
         query_group_by = extract_last_group_by_from_query(sql_path=query_file)
 
-        # Validate that the query group by is as required.
+        # Validate that this label is only applied to tables in version 1 if they're not empty
+        # If the table is empty, it should be backfilled before applying the label.
+        project, dataset, table = extract_from_query_path(Path(query_dir))
+        client = bigquery.Client(project=project)
+        error_message = (
+            f"The shredder-mitigation label can only be applied to existing and "
+            f"non-empty tables.\nEnsure that the table `{project}.{dataset}.{table}` is deployed"
+            f" and run a managed backfill without mitigation before applying this label to"
+            f" a new or empty table."
+            f"\n\nSubsequent backfills then can use the [shredder mitigation process]"
+            f"(https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill)."
+        )
+
+        # Check that the table exists and it's not empty.
+        query_table_is_not_empty = (
+            f"SELECT EXISTS (SELECT 1 "
+            f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.TABLES` "
+            f"WHERE table_name = '{table}' LIMIT 1) AS not_empty;"
+        )
+
+        try:
+            table_not_empty = client.query(query_table_is_not_empty).result()
+        except Exception:
+            click.echo(
+                click.style(
+                    f"Table {project}.{dataset}.{table} not found or inaccessible."
+                    f" for validation. Please check that the name is correct and if the table"
+                    f" is in a private repository, ensure that it exists and has data before"
+                    f" running a backfill with shredder mitigation.",
+                    fg="yellow",
+                )
+            )
+
+        if table_not_empty is None or table_not_empty is False:
+            click.echo(click.style(error_message, fg="yellow"))
+            return False
+
+        # Validate that the query group by is explicit and as required.
         integers_in_group_by = False
         for e in query_group_by:
             try:
@@ -213,11 +252,11 @@ def validate_retention_policy_based_on_table_type(metadata, path):
         else None
     )
 
-    retention_exclusion_list = set(
-        ConfigLoader.get("retention_exclusion_list", fallback=[])
-    )
+    # retention_exclusion_list = set(
+    #     ConfigLoader.get("retention_exclusion_list", fallback=[])
+    # )
 
-    normalized_path = str(Path(path).parent)
+    # normalized_path = str(Path(path).parent)
     if expiration_days is not None and table_type == "aggregate":
         click.echo(
             click.style(
@@ -226,18 +265,19 @@ def validate_retention_policy_based_on_table_type(metadata, path):
             )
         )
         is_valid = False
-    if (
-        expiration_days is None
-        and table_type == "client_level"
-        and normalized_path not in retention_exclusion_list
-    ):
-        click.echo(
-            click.style(
-                f"ERROR: Table at {path} is an client level table and needs expiration_days to be set",
-                fg="red",
-            )
-        )
-        is_valid = False
+    # The below line of code should be uncommented when the retention project is completed
+    # if (
+    #     expiration_days is None
+    #     and table_type == "client_level"
+    #     and normalized_path not in retention_exclusion_list
+    # ):
+    #     click.echo(
+    #         click.style(
+    #             f"ERROR: Table at {path} is an client level table and needs expiration_days to be set",
+    #             fg="red",
+    #         )
+    #     )
+    #     is_valid = False
     return is_valid
 
 

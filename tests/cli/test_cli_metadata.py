@@ -617,9 +617,9 @@ class TestMetadata:
             assert expected_exc in captured.out
 
     @patch("google.cloud.bigquery.Client")
-    def test_query_forbidden_exception(self, mock_bigquery_client, runner, capfd):
+    def test_capture_validate_exception(self, mock_bigquery_client, runner, capfd):
         mock_instance = mock_bigquery_client.return_value
-        mock_instance.query.side_effect = Forbidden("Access denied")
+        mock_instance.query.side_effect = Exception("Test")
 
         metadata = {
             "friendly_name": "Test",
@@ -636,7 +636,11 @@ class TestMetadata:
             ]
         }
 
-        expected_exc = "Access denied"
+        expected_exc = (
+            "Please check that the name is correct and if the table is in "
+            "a private repository, ensure that it exists and has data before"
+            " running a backfill with shredder mitigation."
+        )
 
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"
@@ -653,10 +657,10 @@ class TestMetadata:
 
             metadata_from_file = Metadata.from_file(metadata_path)
 
-            with pytest.raises(Forbidden) as e:
-                _ = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            assert e.type == Forbidden
-            assert expected_exc in e.value.message
+            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+            captured = capfd.readouterr()
+            assert result is True
+            assert expected_exc in captured.out
 
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""

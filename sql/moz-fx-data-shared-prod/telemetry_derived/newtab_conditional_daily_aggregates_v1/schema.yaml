@@ -26,6 +26,18 @@ fields:
 - name: visit_count
   type: INTEGER
   mode: NULLABLE
+- name: homepage_category_client_count
+  type: INTEGER
+  mode: NULLABLE
+- name: homepage_category_visit_count
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_category_client_count
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_category_visit_count
+  type: INTEGER
+  mode: NULLABLE
 - name: home_default_client_count
   type: INTEGER
   mode: NULLABLE

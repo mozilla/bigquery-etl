@@ -12,6 +12,38 @@ SELECT
   COUNT(
     DISTINCT IF(
       channel = 'release'
+      AND newtab_homepage_category = 'enabled',
+      client_id,
+      NULL
+    )
+  ) AS homepage_category_client_count,
+  COUNT(
+    DISTINCT IF(
+      channel = 'release'
+      AND newtab_homepage_category = 'enabled',
+      newtab_visit_id,
+      NULL
+    )
+  ) AS homepage_category_visit_count,
+  COUNT(
+    DISTINCT IF(
+      channel = 'release'
+      AND newtab_newtab_category = 'enabled',
+      client_id,
+      NULL
+    )
+  ) AS newtab_category_client_count,
+  COUNT(
+    DISTINCT IF(
+      channel = 'release'
+      AND newtab_newtab_category = 'enabled',
+      newtab_visit_id,
+      NULL
+    )
+  ) AS newtab_category_visit_count,
+  COUNT(
+    DISTINCT IF(
+      channel = 'release'
       AND newtab_open_source = 'about:home'
       AND newtab_homepage_category = 'enabled',
       client_id,

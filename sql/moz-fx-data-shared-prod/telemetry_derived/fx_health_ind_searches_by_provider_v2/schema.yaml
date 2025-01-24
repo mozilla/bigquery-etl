@@ -10,6 +10,7 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: Channel
 - mode: NULLABLE
   name: searches
   type: INTEGER

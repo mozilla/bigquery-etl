@@ -15,6 +15,7 @@ FROM
 WHERE
   DATE(submission_timestamp) = @submission_date
 GROUP BY
+  -- test
   DATE(submission_timestamp),
   mozfun.norm.truncate_version(build_version, 'major'),
   mozfun.norm.get_windows_info(`os_version`).name,

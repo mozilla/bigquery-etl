@@ -1377,6 +1377,7 @@ def validate(
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dataset_dirs = set()
     for query in query_files:
+        click.echo(f"Validating: {query}")
         ctx.invoke(format, paths=[str(query)])
 
         if not no_dryrun:
@@ -1397,6 +1398,8 @@ def validate(
 
     for dataset_dir in dataset_dirs:
         validate_metadata.validate_datasets(dataset_dir)
+
+    exit(1)
 
 
 def _initialize_in_parallel(

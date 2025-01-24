@@ -1,0 +1,7 @@
+2025-01-24:
+  start_date: 2022-01-01
+  end_date: 2024-06-01
+  reason: Backfilling prior to June 2024 to populate geo_subdivision field in the derived table.
+  watchers:
+  - kik@mozilla.com
+  status: Initiate

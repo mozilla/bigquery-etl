@@ -1,4 +1,4 @@
-WITH temp_unnested AS (
+WITH temp_unnested AS ( -- dummy change
   SELECT
     submission_date,
     event_id,

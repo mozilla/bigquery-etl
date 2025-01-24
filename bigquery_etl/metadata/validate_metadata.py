@@ -109,6 +109,9 @@ def validate_shredder_mitigation(query_dir, metadata):
     has_shredder_mitigation = SHREDDER_MITIGATION_LABEL in metadata.labels
     table_not_empty = True
 
+    print(query_dir)
+
+
     if has_shredder_mitigation:
         schema_file = Path(query_dir) / SCHEMA_FILE
         schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
@@ -137,6 +140,8 @@ def validate_shredder_mitigation(query_dir, metadata):
             f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.TABLES` "
             f"WHERE table_name = '{table}' LIMIT 1) AS not_empty;"
         )
+
+        print(query_table_is_not_empty)
 
         try:
             table_not_empty = client.query(query_table_is_not_empty).result()
@@ -285,6 +290,8 @@ def validate(target):
     """Validate metadata files."""
     failed = False
 
+    print(target)
+
     if os.path.isdir(target):
         for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
@@ -306,6 +313,7 @@ def validate(target):
                         query_dir=root,
                         metadata=metadata,
                     ):
+                        print("mitigation")
                         failed = True
 
                     if not validate_deprecation(metadata, path):

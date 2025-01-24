@@ -115,19 +115,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_query_org_mozilla_fenix_glam_release__extract_probe_counts_v1 = ExternalTaskSensor(
-        task_id="wait_for_query_org_mozilla_fenix_glam_release__extract_probe_counts_v1",
-        external_dag_id="glam_fenix",
-        external_task_id="query_org_mozilla_fenix_glam_release__extract_probe_counts_v1",
-        execution_delta=datetime.timedelta(seconds=21600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_firefox_desktop_glam_beta_done = ExternalTaskSensor(
         task_id="wait_for_firefox_desktop_glam_beta_done",
         external_dag_id="glam_fog",
@@ -214,18 +201,6 @@ with DAG(
         sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_fenix_nightly_aggregates_v1/script.sql",
     )
 
-    glam_etl__glam_fenix_release_aggregates__v1 = bigquery_etl_query(
-        task_id="glam_etl__glam_fenix_release_aggregates__v1",
-        destination_table=None,
-        dataset_id="glam_etl",
-        project_id="moz-fx-glam-prod",
-        owner="efilho@mozilla.com",
-        email=["efilho@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_fenix_release_aggregates_v1/script.sql",
-    )
-
     glam_etl__glam_fog_beta_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fog_beta_aggregates__v1",
         destination_table=None,
@@ -268,10 +243,6 @@ with DAG(
 
     glam_etl__glam_fenix_nightly_aggregates__v1.set_upstream(
         wait_for_query_org_mozilla_fenix_glam_nightly__extract_probe_counts_v1
-    )
-
-    glam_etl__glam_fenix_release_aggregates__v1.set_upstream(
-        wait_for_query_org_mozilla_fenix_glam_release__extract_probe_counts_v1
     )
 
     glam_etl__glam_fog_beta_aggregates__v1.set_upstream(

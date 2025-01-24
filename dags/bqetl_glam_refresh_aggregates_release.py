@@ -10,13 +10,13 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 
 docs = """
-### bqetl_glam_refresh_aggregates_fog_release
+### bqetl_glam_refresh_aggregates_release
 
-Built from bigquery-etl repo, [`dags/bqetl_glam_refresh_aggregates_fog_release.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_glam_refresh_aggregates_fog_release.py)
+Built from bigquery-etl repo, [`dags/bqetl_glam_refresh_aggregates_release.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_glam_refresh_aggregates_release.py)
 
 #### Description
 
-Update GLAM FOG release tables that serve aggregated data.
+Update GLAM FOG and Fenix release tables that serve aggregated data.
 #### Owner
 
 efilho@mozilla.com
@@ -43,12 +43,25 @@ default_args = {
 tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_glam_refresh_aggregates_fog_release",
+    "bqetl_glam_refresh_aggregates_release",
     default_args=default_args,
     schedule_interval="0 18 * * 6",
     doc_md=docs,
     tags=tags,
 ) as dag:
+
+    wait_for_fenix_release_done = ExternalTaskSensor(
+        task_id="wait_for_fenix_release_done",
+        external_dag_id="glam_fenix_release",
+        external_task_id="fenix_release_done",
+        execution_delta=datetime.timedelta(seconds=28800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
 
     wait_for_fog_release_done = ExternalTaskSensor(
         task_id="wait_for_fog_release_done",
@@ -63,6 +76,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    glam_etl__glam_fenix_release_aggregates__v1 = bigquery_etl_query(
+        task_id="glam_etl__glam_fenix_release_aggregates__v1",
+        destination_table=None,
+        dataset_id="glam_etl",
+        project_id="moz-fx-glam-prod",
+        owner="efilho@mozilla.com",
+        email=["efilho@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_fenix_release_aggregates_v1/script.sql",
+    )
+
     glam_etl__glam_fog_release_aggregates__v1 = bigquery_etl_query(
         task_id="glam_etl__glam_fog_release_aggregates__v1",
         destination_table=None,
@@ -73,6 +98,10 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         sql_file_path="sql/moz-fx-glam-prod/glam_etl/glam_fog_release_aggregates_v1/script.sql",
+    )
+
+    glam_etl__glam_fenix_release_aggregates__v1.set_upstream(
+        wait_for_fenix_release_done
     )
 
     glam_etl__glam_fog_release_aggregates__v1.set_upstream(wait_for_fog_release_done)

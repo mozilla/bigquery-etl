@@ -2789,3 +2789,179 @@ class TestBackfill:
                 assert result.exit_code == 0
                 mock_shredder_mitigation.call_count == 2
                 mock_backfill.call_count == 2
+
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    def test_validate_backfill_initiate_with_label_true_and_entry_dont_match_should_fail(
+        self, mock_deploy_table, runner
+    ):
+        """Test that validate backfills fails if initiate backfill entry has shredder_mitigation set to false but metadata label is true."""
+        path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
+        mock_deploy_table.return_value = None
+        expected_error_output = (
+            "shredder_mitigation label in metadata.yaml and backfill.yaml should match."
+        )
+
+        with runner.isolated_filesystem():
+            os.makedirs(path, exist_ok=True)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(path / "metadata.yaml", "w") as f:
+                f.write(
+                    "friendly_name: Test\ndescription: Test\nlabels:\n  incremental: true\n  shredder_mitigation: true"
+                )
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_entry_1 = Backfill(
+                date(2021, 5, 3),
+                date(2021, 1, 3),
+                date(2021, 5, 3),
+                [date(2021, 2, 3)],
+                VALID_REASON,
+                [VALID_WATCHER],
+                BackfillStatus.INITIATE,
+                shredder_mitigation=False,
+            )
+
+            backfill_file = (
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
+            )
+            backfill_file.write_text(backfill_entry_1.to_yaml())
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            backfills = Backfill.entries_from_file(backfill_file)
+            assert backfills[0] == backfill_entry_1
+
+            result = runner.invoke(
+                validate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+
+            assert result.exit_code == 1
+            assert expected_error_output in result.output
+
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    def test_validate_backfill_initiate_with_label_false_and_entry_dont_match_should_fail(
+        self, mock_deploy_table, runner
+    ):
+        """Test that validate backfills fails if initiate backfill entry has shredder_mitigation set to true but metadata label is false."""
+        path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
+        mock_deploy_table.return_value = None
+        expected_error_output = (
+            "shredder_mitigation label in metadata.yaml and backfill.yaml should match."
+        )
+
+        with runner.isolated_filesystem():
+            os.makedirs(path, exist_ok=True)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(path / "metadata.yaml", "w") as f:
+                f.write(
+                    "friendly_name: Test\ndescription: Test\nlabels:\n  incremental: false"
+                )
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_entry_1 = Backfill(
+                date(2021, 5, 3),
+                date(2021, 1, 3),
+                date(2021, 5, 3),
+                [date(2021, 2, 3)],
+                VALID_REASON,
+                [VALID_WATCHER],
+                BackfillStatus.INITIATE,
+                shredder_mitigation=True,
+            )
+
+            backfill_file = (
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
+            )
+            backfill_file.write_text(backfill_entry_1.to_yaml())
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            backfills = Backfill.entries_from_file(backfill_file)
+            assert backfills[0] == backfill_entry_1
+
+            result = runner.invoke(
+                validate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+
+            assert result.exit_code == 1
+            assert expected_error_output in result.output
+
+    @patch("bigquery_etl.cli.backfill.deploy_table")
+    def test_validate_backfill_complete_with_label_and_entry_dont_match_should_pass(
+        self, mock_deploy_table, runner
+    ):
+        """Test that validate backfills passes if compelted backfill entry has shredder_mitigation set to false but metadata label is true."""
+        path = Path("sql/moz-fx-data-shared-prod/test/test_query_v1")
+        mock_deploy_table.return_value = None
+
+        with runner.isolated_filesystem():
+            os.makedirs(path, exist_ok=True)
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            with open(path / "metadata.yaml", "w") as f:
+                f.write(
+                    "friendly_name: Test\ndescription: Test\nlabels:\n  incremental: true\n  shredder_mitigation: true"
+                )
+
+            with open(
+                "sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w"
+            ) as f:
+                f.write(yaml.dump(DATASET_METADATA_CONF))
+
+            backfill_entry_1 = Backfill(
+                date(2021, 5, 3),
+                date(2021, 1, 3),
+                date(2021, 5, 3),
+                [date(2021, 2, 3)],
+                VALID_REASON,
+                [VALID_WATCHER],
+                BackfillStatus.COMPLETE,
+                shredder_mitigation=False,
+            )
+
+            backfill_file = (
+                Path("sql/moz-fx-data-shared-prod/test/test_query_v1") / BACKFILL_FILE
+            )
+            backfill_file.write_text(backfill_entry_1.to_yaml())
+            assert BACKFILL_FILE in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            backfills = Backfill.entries_from_file(backfill_file)
+            assert backfills[0] == backfill_entry_1
+
+            result = runner.invoke(
+                validate,
+                [
+                    "moz-fx-data-shared-prod.test.test_query_v1",
+                ],
+            )
+
+        assert result.exit_code == 0

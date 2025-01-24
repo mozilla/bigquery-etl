@@ -58,14 +58,15 @@ def validate_entries_are_sorted(backfills: List[Backfill]) -> None:
 
 def validate_shredder_mitigation(entry: Backfill, backfill_file: Path) -> None:
     """Check if shredder mitigation in backfill entry and metadata label matches."""
-    metadata_file = Path(str(backfill_file).replace(BACKFILL_FILE, METADATA_FILE))
-    metadata = Metadata.from_file(metadata_file)
-    has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
+    if entry.status == BackfillStatus.INITIATE:
+        metadata_file = Path(str(backfill_file).replace(BACKFILL_FILE, METADATA_FILE))
+        metadata = Metadata.from_file(metadata_file)
+        has_shredder_mitigation_label = SHREDDER_MITIGATION_LABEL in metadata.labels
 
-    if has_shredder_mitigation_label != entry.shredder_mitigation:
-        raise ValueError(
-            f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
-        )
+        if has_shredder_mitigation_label != entry.shredder_mitigation:
+            raise ValueError(
+                f"{SHREDDER_MITIGATION_LABEL} label in {METADATA_FILE} and {BACKFILL_FILE} should match."
+            )
 
 
 def validate_file(file: Path) -> None:

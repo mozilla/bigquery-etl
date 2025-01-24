@@ -10,3 +10,5 @@ WHERE
 GROUP BY
   CAST(submission_timestamp AS DATE),
   installer_type
+
+-- dummy change

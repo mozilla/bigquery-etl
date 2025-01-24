@@ -59,7 +59,6 @@ fields:
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-
 - name: client_count
   type: INTEGER
   mode: NULLABLE
@@ -69,7 +68,6 @@ fields:
 - name: newtab_interactions_visits
   type: INTEGER
   mode: NULLABLE
-
 - name: topsite_clicks
   type: INTEGER
   mode: NULLABLE
@@ -97,7 +95,6 @@ fields:
 - name: organic_topsite_dismissals
   type: INTEGER
   mode: NULLABLE
-
 - name: searches
   type: INTEGER
   mode: NULLABLE
@@ -119,7 +116,6 @@ fields:
 - name: tagged_follow_on_search_ad_impressions
   type: INTEGER
   mode: NULLABLE
-
 - name: pocket_impressions
   type: INTEGER
   mode: NULLABLE

@@ -1399,8 +1399,6 @@ def validate(
     for dataset_dir in dataset_dirs:
         validate_metadata.validate_datasets(dataset_dir)
 
-    exit(1)
-
 
 def _initialize_in_parallel(
     project,

@@ -140,7 +140,8 @@ def validate_shredder_mitigation(query_dir, metadata):
 
         try:
             table_not_empty = client.query(query_table_is_not_empty).result()
-        except Exception:
+        except Exception as e:
+            click.echo(e)
             click.echo(
                 click.style(
                     f"Table {project}.{dataset}.{table} not found or inaccessible."

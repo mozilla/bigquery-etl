@@ -8,7 +8,7 @@ from pathlib import Path
 
 import click
 import yaml
-from gcloud.exceptions import NotFound, Forbidden
+from gcloud.exceptions import Forbidden, NotFound
 from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader

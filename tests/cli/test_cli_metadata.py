@@ -616,10 +616,8 @@ class TestMetadata:
             assert result is False
             assert expected_exc in captured.out
 
-    @patch('google.cloud.bigquery.Client')
-    def test_query_forbidden_exception(
-            self, mock_bigquery_client, runner, capfd
-    ):
+    @patch("google.cloud.bigquery.Client")
+    def test_query_forbidden_exception(self, mock_bigquery_client, runner, capfd):
         mock_instance = mock_bigquery_client.return_value
         mock_instance.query.side_effect = Forbidden("Access denied")
 
@@ -638,9 +636,7 @@ class TestMetadata:
             ]
         }
 
-        expected_exc = (
-            "Access denied"
-        )
+        expected_exc = "Access denied"
 
         with runner.isolated_filesystem():
             query_path = Path(self.test_path) / "query.sql"

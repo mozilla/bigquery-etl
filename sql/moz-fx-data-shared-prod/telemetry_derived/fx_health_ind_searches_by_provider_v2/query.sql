@@ -1,6 +1,7 @@
 SELECT
   submission_date_s3 AS submission_date,
   default_search_engine,
+  channel,
   SUM(search_count_all) AS searches,
   COUNT(DISTINCT(client_id)) AS users
 FROM
@@ -10,4 +11,5 @@ WHERE
   AND app_name = 'Firefox'
 GROUP BY
   submission_date,
-  default_search_engine
+  default_search_engine,
+  channel

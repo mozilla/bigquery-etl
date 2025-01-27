@@ -9,7 +9,6 @@ from pathlib import Path
 import click
 import yaml
 from google.cloud import bigquery
-from google.cloud.exceptions import NotFound
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema import SCHEMA_FILE, Schema
@@ -108,6 +107,7 @@ def validate_change_control(
 def validate_shredder_mitigation(query_dir, metadata):
     """Check queries with shredder mitigation label comply with requirements."""
     has_shredder_mitigation = SHREDDER_MITIGATION_LABEL in metadata.labels
+    table_not_empty = True
 
     if has_shredder_mitigation:
         schema_file = Path(query_dir) / SCHEMA_FILE
@@ -123,22 +123,35 @@ def validate_shredder_mitigation(query_dir, metadata):
         project, dataset, table = extract_from_query_path(Path(query_dir))
         client = bigquery.Client(project=project)
         error_message = (
-            f"The shredder-mitigation label ensures the stability of existing data,"
-            f" thus it can only be applied to existing and non-empty tables.\n"
-            f"Please ensure that the table `{project}.{dataset}.{table}` exists and run"
-            f" a normal backfill before applying the label if this is a new or empty table."
-            f"\n\nNote that subsequent backfills will require using the process for "
-            f"[backfills with shredder mitigation](https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill)."
+            f"The shredder-mitigation label can only be applied to existing and "
+            f"non-empty tables.\nEnsure that the table `{project}.{dataset}.{table}` is deployed"
+            f" and run a managed backfill without mitigation before applying this label to"
+            f" a new or empty table."
+            f"\n\nSubsequent backfills then can use the [shredder mitigation process]"
+            f"(https://mozilla.github.io/bigquery-etl/cookbooks/creating_a_derived_dataset/#initiating-the-backfill)."
         )
 
         # Check that the table exists and it's not empty.
-        try:
-            bq_table = client.get_table(f"{project}.{dataset}.{table}")
-        except NotFound:
-            click.echo(click.style(error_message, fg="yellow"))
-            return False
+        query_table_is_not_empty = (
+            f"SELECT EXISTS (SELECT 1 "
+            f"FROM `{project}.{dataset}.INFORMATION_SCHEMA.TABLES` "
+            f"WHERE table_name = '{table}' LIMIT 1) AS not_empty;"
+        )
 
-        if bq_table.num_rows == 0:
+        try:
+            table_not_empty = client.query(query_table_is_not_empty).result()
+        except Exception:
+            click.echo(
+                click.style(
+                    f"Table {project}.{dataset}.{table} not found or inaccessible."
+                    f" for validation. Please check that the name is correct and if the table"
+                    f" is in a private repository, ensure that it exists and has data before"
+                    f" running a backfill with shredder mitigation.",
+                    fg="yellow",
+                )
+            )
+
+        if table_not_empty is None or table_not_empty is False:
             click.echo(click.style(error_message, fg="yellow"))
             return False
 

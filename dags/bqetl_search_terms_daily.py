@@ -162,7 +162,7 @@ with DAG(
     )
 
     search_terms_derived__adm_daily_aggregates__v1.set_upstream(
-        search_terms_derived__suggest_impression_sanitized__v2
+        search_terms_derived__suggest_impression_sanitized__v3
     )
 
     search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(

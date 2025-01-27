@@ -4,6 +4,7 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
+from datetime import datetime, timedelta
 
 import requests
 from google.cloud import bigquery
@@ -39,10 +40,15 @@ def read_json(filename: str) -> dict:
 
 def cinder_addon_decisions_download(date, bearer_token):
     """Download data from Cinder - bearer_token is called here."""
+    submission_date = datetime.strptime(date, "%Y-%m-%d")
+    start_datetime = submission_date + timedelta(days=-1)
+    start_date = start_datetime.strftime("%Y-%m-%d")
+    end_datetime = submission_date + timedelta(days=1)
+    end_date = end_datetime.strftime("%Y-%m-%d")
     url = "https://stage.cinder.nonprod.webservices.mozgcp.net/api/v1/decisions/"
     query_params = {
-        "created_at__lt": f"{date}T23:59:59",
-        "created_at__gt": f"{date}T00:00:00",
+        "created_at__lt": f"{end_date}T00:00:00.000000Z",
+        "created_at__gt": f"{start_date}T23:59:59.999999Z",
         "limit": 1000,
         "offset": 0,
     }

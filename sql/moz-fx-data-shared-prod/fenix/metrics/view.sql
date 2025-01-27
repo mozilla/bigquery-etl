@@ -342,7 +342,16 @@ SELECT
       metrics.custom_distribution.javascript_gc_slice_count,
       metrics.custom_distribution.javascript_gc_tenured_survival_rate,
       metrics.custom_distribution.javascript_gc_zone_count,
-      metrics.custom_distribution.javascript_gc_zones_collected
+      metrics.custom_distribution.javascript_gc_zones_collected,
+      metrics.custom_distribution.cycle_collector_collected,
+      metrics.custom_distribution.cycle_collector_slice_during_idle,
+      metrics.custom_distribution.cycle_collector_visited_gced,
+      metrics.custom_distribution.cycle_collector_visited_ref_counted,
+      metrics.custom_distribution.cycle_collector_worker_collected,
+      metrics.custom_distribution.cycle_collector_worker_visited_gced,
+      metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
+      metrics.custom_distribution.memory_phc_slots_allocated,
+      metrics.custom_distribution.memory_phc_slots_freed
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -569,7 +578,12 @@ SELECT
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
       metrics.labeled_counter.javascript_gc_slow_task,
-      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit,
+      metrics.labeled_counter.cycle_collector_finish_igc,
+      metrics.labeled_counter.cycle_collector_need_gc,
+      metrics.labeled_counter.cycle_collector_sync_skippable,
+      metrics.labeled_counter.cycle_collector_worker_need_gc,
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -919,7 +933,17 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between,
       metrics.timing_distribution.javascript_gc_time_between_slices,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns,
-      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2,
+      metrics.timing_distribution.cycle_collector_async_snow_white_freeing,
+      metrics.timing_distribution.cycle_collector_deferred_finalize_async,
+      metrics.timing_distribution.cycle_collector_full,
+      metrics.timing_distribution.cycle_collector_max_pause,
+      metrics.timing_distribution.cycle_collector_time,
+      metrics.timing_distribution.cycle_collector_time_between,
+      metrics.timing_distribution.cycle_collector_worker_time,
+      metrics.timing_distribution.dom_contentprocess_launch_mainthread,
+      metrics.timing_distribution.dom_contentprocess_launch_total,
+      metrics.timing_distribution.dom_contentprocess_sync_launch
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -938,7 +962,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
-      metrics.memory_distribution.javascript_gc_nursery_bytes
+      metrics.memory_distribution.javascript_gc_nursery_bytes,
+      metrics.memory_distribution.memory_phc_slop
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1406,7 +1431,16 @@ SELECT
       metrics.custom_distribution.javascript_gc_slice_count,
       metrics.custom_distribution.javascript_gc_tenured_survival_rate,
       metrics.custom_distribution.javascript_gc_zone_count,
-      metrics.custom_distribution.javascript_gc_zones_collected
+      metrics.custom_distribution.javascript_gc_zones_collected,
+      metrics.custom_distribution.cycle_collector_collected,
+      metrics.custom_distribution.cycle_collector_slice_during_idle,
+      metrics.custom_distribution.cycle_collector_visited_gced,
+      metrics.custom_distribution.cycle_collector_visited_ref_counted,
+      metrics.custom_distribution.cycle_collector_worker_collected,
+      metrics.custom_distribution.cycle_collector_worker_visited_gced,
+      metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
+      metrics.custom_distribution.memory_phc_slots_allocated,
+      metrics.custom_distribution.memory_phc_slots_freed
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1633,7 +1667,12 @@ SELECT
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
       metrics.labeled_counter.javascript_gc_slow_task,
-      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit,
+      metrics.labeled_counter.cycle_collector_finish_igc,
+      metrics.labeled_counter.cycle_collector_need_gc,
+      metrics.labeled_counter.cycle_collector_sync_skippable,
+      metrics.labeled_counter.cycle_collector_worker_need_gc,
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1983,7 +2022,17 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between,
       metrics.timing_distribution.javascript_gc_time_between_slices,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns,
-      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2,
+      metrics.timing_distribution.cycle_collector_async_snow_white_freeing,
+      metrics.timing_distribution.cycle_collector_deferred_finalize_async,
+      metrics.timing_distribution.cycle_collector_full,
+      metrics.timing_distribution.cycle_collector_max_pause,
+      metrics.timing_distribution.cycle_collector_time,
+      metrics.timing_distribution.cycle_collector_time_between,
+      metrics.timing_distribution.cycle_collector_worker_time,
+      metrics.timing_distribution.dom_contentprocess_launch_mainthread,
+      metrics.timing_distribution.dom_contentprocess_launch_total,
+      metrics.timing_distribution.dom_contentprocess_sync_launch
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2002,7 +2051,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
-      metrics.memory_distribution.javascript_gc_nursery_bytes
+      metrics.memory_distribution.javascript_gc_nursery_bytes,
+      metrics.memory_distribution.memory_phc_slop
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2488,7 +2538,16 @@ SELECT
       metrics.custom_distribution.javascript_gc_slice_count,
       metrics.custom_distribution.javascript_gc_tenured_survival_rate,
       metrics.custom_distribution.javascript_gc_zone_count,
-      metrics.custom_distribution.javascript_gc_zones_collected
+      metrics.custom_distribution.javascript_gc_zones_collected,
+      metrics.custom_distribution.cycle_collector_collected,
+      metrics.custom_distribution.cycle_collector_slice_during_idle,
+      metrics.custom_distribution.cycle_collector_visited_gced,
+      metrics.custom_distribution.cycle_collector_visited_ref_counted,
+      metrics.custom_distribution.cycle_collector_worker_collected,
+      metrics.custom_distribution.cycle_collector_worker_visited_gced,
+      metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
+      metrics.custom_distribution.memory_phc_slots_allocated,
+      metrics.custom_distribution.memory_phc_slots_freed
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2715,7 +2774,12 @@ SELECT
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
       metrics.labeled_counter.javascript_gc_slow_task,
-      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit,
+      metrics.labeled_counter.cycle_collector_finish_igc,
+      metrics.labeled_counter.cycle_collector_need_gc,
+      metrics.labeled_counter.cycle_collector_sync_skippable,
+      metrics.labeled_counter.cycle_collector_worker_need_gc,
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3065,7 +3129,17 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between,
       metrics.timing_distribution.javascript_gc_time_between_slices,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns,
-      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2,
+      metrics.timing_distribution.cycle_collector_async_snow_white_freeing,
+      metrics.timing_distribution.cycle_collector_deferred_finalize_async,
+      metrics.timing_distribution.cycle_collector_full,
+      metrics.timing_distribution.cycle_collector_max_pause,
+      metrics.timing_distribution.cycle_collector_time,
+      metrics.timing_distribution.cycle_collector_time_between,
+      metrics.timing_distribution.cycle_collector_worker_time,
+      metrics.timing_distribution.dom_contentprocess_launch_mainthread,
+      metrics.timing_distribution.dom_contentprocess_launch_total,
+      metrics.timing_distribution.dom_contentprocess_sync_launch
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3084,7 +3158,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
-      metrics.memory_distribution.javascript_gc_nursery_bytes
+      metrics.memory_distribution.javascript_gc_nursery_bytes,
+      metrics.memory_distribution.memory_phc_slop
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3579,7 +3654,16 @@ SELECT
       metrics.custom_distribution.javascript_gc_slice_count,
       metrics.custom_distribution.javascript_gc_tenured_survival_rate,
       metrics.custom_distribution.javascript_gc_zone_count,
-      metrics.custom_distribution.javascript_gc_zones_collected
+      metrics.custom_distribution.javascript_gc_zones_collected,
+      metrics.custom_distribution.cycle_collector_collected,
+      metrics.custom_distribution.cycle_collector_slice_during_idle,
+      metrics.custom_distribution.cycle_collector_visited_gced,
+      metrics.custom_distribution.cycle_collector_visited_ref_counted,
+      metrics.custom_distribution.cycle_collector_worker_collected,
+      metrics.custom_distribution.cycle_collector_worker_visited_gced,
+      metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
+      metrics.custom_distribution.memory_phc_slots_allocated,
+      metrics.custom_distribution.memory_phc_slots_freed
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3806,7 +3890,12 @@ SELECT
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
       metrics.labeled_counter.javascript_gc_slow_task,
-      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit,
+      metrics.labeled_counter.cycle_collector_finish_igc,
+      metrics.labeled_counter.cycle_collector_need_gc,
+      metrics.labeled_counter.cycle_collector_sync_skippable,
+      metrics.labeled_counter.cycle_collector_worker_need_gc,
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4156,7 +4245,17 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between,
       metrics.timing_distribution.javascript_gc_time_between_slices,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns,
-      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2,
+      metrics.timing_distribution.cycle_collector_async_snow_white_freeing,
+      metrics.timing_distribution.cycle_collector_deferred_finalize_async,
+      metrics.timing_distribution.cycle_collector_full,
+      metrics.timing_distribution.cycle_collector_max_pause,
+      metrics.timing_distribution.cycle_collector_time,
+      metrics.timing_distribution.cycle_collector_time_between,
+      metrics.timing_distribution.cycle_collector_worker_time,
+      metrics.timing_distribution.dom_contentprocess_launch_mainthread,
+      metrics.timing_distribution.dom_contentprocess_launch_total,
+      metrics.timing_distribution.dom_contentprocess_sync_launch
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4175,7 +4274,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
-      metrics.memory_distribution.javascript_gc_nursery_bytes
+      metrics.memory_distribution.javascript_gc_nursery_bytes,
+      metrics.memory_distribution.memory_phc_slop
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4652,7 +4752,16 @@ SELECT
       metrics.custom_distribution.javascript_gc_slice_count,
       metrics.custom_distribution.javascript_gc_tenured_survival_rate,
       metrics.custom_distribution.javascript_gc_zone_count,
-      metrics.custom_distribution.javascript_gc_zones_collected
+      metrics.custom_distribution.javascript_gc_zones_collected,
+      metrics.custom_distribution.cycle_collector_collected,
+      metrics.custom_distribution.cycle_collector_slice_during_idle,
+      metrics.custom_distribution.cycle_collector_visited_gced,
+      metrics.custom_distribution.cycle_collector_visited_ref_counted,
+      metrics.custom_distribution.cycle_collector_worker_collected,
+      metrics.custom_distribution.cycle_collector_worker_visited_gced,
+      metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
+      metrics.custom_distribution.memory_phc_slots_allocated,
+      metrics.custom_distribution.memory_phc_slots_freed
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4879,7 +4988,12 @@ SELECT
       metrics.labeled_counter.javascript_gc_slice_was_long,
       metrics.labeled_counter.javascript_gc_slow_phase,
       metrics.labeled_counter.javascript_gc_slow_task,
-      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit
+      metrics.labeled_counter.networking_cache_purge_due_to_memory_limit,
+      metrics.labeled_counter.cycle_collector_finish_igc,
+      metrics.labeled_counter.cycle_collector_need_gc,
+      metrics.labeled_counter.cycle_collector_sync_skippable,
+      metrics.labeled_counter.cycle_collector_worker_need_gc,
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5229,7 +5343,17 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between,
       metrics.timing_distribution.javascript_gc_time_between_slices,
       metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_ns,
-      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2
+      metrics.timing_distribution.fingerprinting_protection_canvas_noise_calculate_time_2,
+      metrics.timing_distribution.cycle_collector_async_snow_white_freeing,
+      metrics.timing_distribution.cycle_collector_deferred_finalize_async,
+      metrics.timing_distribution.cycle_collector_full,
+      metrics.timing_distribution.cycle_collector_max_pause,
+      metrics.timing_distribution.cycle_collector_time,
+      metrics.timing_distribution.cycle_collector_time_between,
+      metrics.timing_distribution.cycle_collector_worker_time,
+      metrics.timing_distribution.dom_contentprocess_launch_mainthread,
+      metrics.timing_distribution.dom_contentprocess_launch_total,
+      metrics.timing_distribution.dom_contentprocess_sync_launch
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5248,7 +5372,8 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_received,
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
-      metrics.memory_distribution.javascript_gc_nursery_bytes
+      metrics.memory_distribution.javascript_gc_nursery_bytes,
+      metrics.memory_distribution.memory_phc_slop
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

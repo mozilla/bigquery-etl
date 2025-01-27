@@ -55,7 +55,23 @@ IF
         normalized_country_code,
         client_info.app_channel AS channel,
         client_info.app_display_version AS version,
-        ping_info
+        STRUCT(
+          ping_info.end_time,
+          ARRAY(
+            SELECT AS STRUCT
+              key,
+              STRUCT(
+                value.branch,
+                STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+              ) AS value
+            FROM
+              UNNEST(ping_info.experiments)
+          ) AS experiments,
+          ping_info.ping_type,
+          ping_info.seq,
+          ping_info.start_time,
+          ping_info.reason
+        ) AS ping_info,
       FROM
         `moz-fx-data-shared-prod.org_mozilla_tv_firefox_live.events_v1`
     )

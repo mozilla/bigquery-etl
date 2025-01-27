@@ -54,9 +54,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -83,9 +80,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -112,9 +106,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -141,9 +132,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -170,9 +158,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -260,9 +245,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -350,9 +332,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -440,9 +419,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -530,9 +506,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -620,9 +593,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -649,9 +619,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -678,9 +645,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -768,9 +732,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -797,9 +758,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -826,9 +784,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -916,9 +871,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -945,9 +897,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -974,9 +923,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1064,9 +1010,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1093,9 +1036,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1122,9 +1062,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1212,9 +1149,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1241,9 +1175,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1270,9 +1201,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1360,9 +1288,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1389,9 +1314,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1418,9 +1340,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1508,9 +1427,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1537,9 +1453,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1566,9 +1479,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1656,9 +1566,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1685,9 +1592,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1714,9 +1618,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1804,9 +1705,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1894,9 +1792,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -1984,9 +1879,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2074,9 +1966,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2164,9 +2053,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2254,9 +2140,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2344,9 +2227,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2434,9 +2314,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2524,9 +2401,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2614,9 +2488,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2704,9 +2575,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2794,9 +2662,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2884,9 +2749,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -2974,9 +2836,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3064,9 +2923,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3154,9 +3010,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3244,9 +3097,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3334,9 +3184,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3363,9 +3210,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3453,9 +3297,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3482,9 +3323,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3572,9 +3410,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3601,9 +3436,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3630,9 +3462,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3659,9 +3488,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3749,9 +3575,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3778,9 +3601,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3807,9 +3627,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3836,9 +3653,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3926,9 +3740,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3955,9 +3766,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -3984,9 +3792,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4013,9 +3818,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4103,9 +3905,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4132,9 +3931,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4161,9 +3957,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4190,9 +3983,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4280,9 +4070,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4370,9 +4157,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4460,9 +4244,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4489,9 +4270,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4579,9 +4357,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4608,9 +4383,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4637,9 +4409,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4727,9 +4496,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4756,9 +4522,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4785,9 +4548,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4875,9 +4635,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4965,9 +4722,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -4994,9 +4748,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5084,9 +4835,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5174,9 +4922,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5264,9 +5009,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5354,9 +5096,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5444,9 +5183,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5534,9 +5270,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5624,9 +5357,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5714,9 +5444,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5804,9 +5531,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5894,9 +5618,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -5984,9 +5705,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -6074,9 +5792,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -6164,9 +5879,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,
@@ -6254,9 +5966,6 @@ FROM
             ) AS value
           FROM
             UNNEST(ping_info.experiments)
-            WITH OFFSET
-          ORDER BY
-            offset
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,

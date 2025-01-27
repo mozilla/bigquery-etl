@@ -2,16 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-- name: normalized_os
-  type: STRING
-  mode: NULLABLE
-- name: normalized_os_version
-  type: STRING
-  mode: NULLABLE
 - name: country_code
-  type: STRING
-  mode: NULLABLE
-- name: locale
   type: STRING
   mode: NULLABLE
 - name: channel
@@ -23,10 +14,22 @@ fields:
 - name: browser_name
   type: STRING
   mode: NULLABLE
+- name: search_engine
+  type: STRING
+  mode: NULLABLE
+- name: search_access_point
+  type: STRING
+  mode: NULLABLE
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
 - name: default_private_search_engine
+  type: STRING
+  mode: NULLABLE
+- name: pocket_story_position
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_open_source
   type: STRING
   mode: NULLABLE
 - name: pocket_is_signed_in
@@ -39,9 +42,6 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
 - name: topsites_enabled
-  type: BOOLEAN
-  mode: NULLABLE
-- name: topsites_sponsored_enabled
   type: BOOLEAN
   mode: NULLABLE
 - name: newtab_homepage_category
@@ -65,13 +65,34 @@ fields:
 - name: legacy_telemetry_client_count
   type: INTEGER
   mode: NULLABLE
-- name: newtab_visit_count
+- name: newtab_interactions_visits
   type: INTEGER
   mode: NULLABLE
-- name: visits_with_non_impression_engagement
+- name: topsite_clicks
   type: INTEGER
   mode: NULLABLE
-- name: visits_with_non_search_engagement
+- name: sponsored_topsite_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_topsite_clicks
+  type: INTEGER
+  mode: NULLABLE
+- name: topsite_impressions
+  type: INTEGER
+  mode: NULLABLE
+- name: sponsored_topsite_impressions
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_topsite_impressions
+  type: INTEGER
+  mode: NULLABLE
+- name: topsite_dismissals
+  type: INTEGER
+  mode: NULLABLE
+- name: sponsored_topsite_dismissals
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_topsite_dismissals
   type: INTEGER
   mode: NULLABLE
 - name: searches
@@ -93,33 +114,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: tagged_follow_on_search_ad_impressions
-  type: INTEGER
-  mode: NULLABLE
-- name: topsite_tile_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: sponsored_topsite_tile_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: organic_topsite_tile_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: topsite_tile_impressions
-  type: INTEGER
-  mode: NULLABLE
-- name: sponsored_topsite_tile_impressions
-  type: INTEGER
-  mode: NULLABLE
-- name: organic_topsite_tile_impressions
-  type: INTEGER
-  mode: NULLABLE
-- name: topsite_tile_dismissals
-  type: INTEGER
-  mode: NULLABLE
-- name: sponsored_topsite_tile_dismissals
-  type: INTEGER
-  mode: NULLABLE
-- name: organic_topsite_tile_dismissals
   type: INTEGER
   mode: NULLABLE
 - name: pocket_impressions
@@ -149,39 +143,12 @@ fields:
 - name: organic_pocket_saves
   type: INTEGER
   mode: NULLABLE
-- name: pocket_thumb_voting_events
-  type: INTEGER
+- name: os
+  type: STRING
   mode: NULLABLE
-- name: topic_selection_opened
-  type: INTEGER
+- name: os_version
+  type: STRING
   mode: NULLABLE
-- name: topic_selection_updates
-  type: INTEGER
-  mode: NULLABLE
-- name: weather_widget_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: weather_widget_change_display_to_detailed
-  type: INTEGER
-  mode: NULLABLE
-- name: weather_widget_change_display_to_simple
-  type: INTEGER
-  mode: NULLABLE
-- name: wallpaper_clicks
-  type: INTEGER
-  mode: NULLABLE
-- name: topic_selection_selected_topics_first_time_count
-  type: INTEGER
-  mode: NULLABLE
-- name: sponsored_pocket_dismissals
-  type: INTEGER
-  mode: NULLABLE
-- name: organic_pocket_dismissals
-  type: INTEGER
-  mode: NULLABLE
-- name: topic_selection_dismissals
-  type: INTEGER
-  mode: NULLABLE
-- name: visits_with_default_ui
-  type: INTEGER
+- name: newtab_search_enabled
+  type: BOOLEAN
   mode: NULLABLE

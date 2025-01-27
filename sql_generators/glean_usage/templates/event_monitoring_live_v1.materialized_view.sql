@@ -68,7 +68,7 @@ IF
         normalized_country_code,
         client_info.app_channel AS channel,
         client_info.app_display_version AS version,
-        STRUCT (
+        STRUCT(
           ping_info.end_time,
           ARRAY(
             SELECT AS STRUCT

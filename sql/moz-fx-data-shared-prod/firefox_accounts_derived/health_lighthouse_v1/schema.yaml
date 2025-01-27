@@ -17,3 +17,6 @@ fields:
   - mode: NULLABLE
     name: numVal
     type: NUMERIC
+  - mode: NULLABLE
+    name: formfactor
+    type: STRING

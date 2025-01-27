@@ -1,0 +1,24 @@
+friendly_name: Newtab Interactions Daily Aggregates
+description: |-
+  A daily aggregation of newtab interactions, partitioned by day.
+owners:
+  - gkatre@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+      - channel
+      - country_code
+references: {}

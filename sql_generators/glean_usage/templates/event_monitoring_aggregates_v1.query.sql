@@ -82,9 +82,7 @@
               ) AS extra
             ) AS value
           FROM
-            UNNEST(ping_info.experiments) WITH OFFSET
-          ORDER BY
-            offset
+            UNNEST(ping_info.experiments)
         ) AS experiments,
         ping_info.ping_type,
         ping_info.seq,

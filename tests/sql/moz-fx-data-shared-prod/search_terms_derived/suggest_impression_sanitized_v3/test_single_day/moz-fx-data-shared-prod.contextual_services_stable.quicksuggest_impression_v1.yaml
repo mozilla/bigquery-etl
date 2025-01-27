@@ -2,7 +2,7 @@
   request_id: rid1
   search_query: null
   advertiser: shoe store
-  block_id: bid1
+  block_id: 101
   context_id: cid1
   sample_id: null
   is_clicked: false
@@ -22,7 +22,7 @@
   request_id: null
   search_query: null
   advertiser: awesome guitar store
-  block_id: bid2
+  block_id: 102
   context_id: cid2
   sample_id: null
   is_clicked: true
@@ -42,7 +42,7 @@
   request_id: rid7
   search_query: null
   advertiser: null
-  block_id: bid7
+  block_id: 107
   context_id: cid7
   sample_id: null
   is_clicked: false

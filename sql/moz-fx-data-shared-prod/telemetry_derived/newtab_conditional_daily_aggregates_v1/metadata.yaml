@@ -1,0 +1,28 @@
+friendly_name: Newtab Conditional Daily Aggregates
+description: |-
+  Conditional computations for daily aggregation for newtab.
+owners:
+- gkatre@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country_code
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

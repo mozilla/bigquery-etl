@@ -106,6 +106,36 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__newtab_conditional_daily_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_conditional_daily_aggregates__v1",
+        destination_table="newtab_conditional_daily_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="gkatre@mozilla.com",
+        email=[
+            "gkatre@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__newtab_daily_interactions_aggregates__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_daily_interactions_aggregates__v1",
+        destination_table="newtab_daily_interactions_aggregates_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="gkatre@mozilla.com",
+        email=[
+            "gkatre@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__newtab_interactions__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions__v1",
         destination_table="newtab_interactions_v1",
@@ -142,6 +172,14 @@ with DAG(
 
     telemetry_derived__newtab_clients_daily_aggregates__v1.set_upstream(
         telemetry_derived__newtab_clients_daily__v1
+    )
+
+    telemetry_derived__newtab_conditional_daily_aggregates__v1.set_upstream(
+        telemetry_derived__newtab_interactions__v1
+    )
+
+    telemetry_derived__newtab_daily_interactions_aggregates__v1.set_upstream(
+        telemetry_derived__newtab_interactions__v1
     )
 
     telemetry_derived__newtab_interactions__v1.set_upstream(

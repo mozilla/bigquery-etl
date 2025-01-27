@@ -1,0 +1,16 @@
+friendly_name: Newtab Interactions Daily Aggregates
+description: |-
+  A daily aggregation of newtab interactions, partitioned by day.
+owners:
+- gkatre@mozilla.com
+labels:
+  owner1: gkatre
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_daily_interactions_aggregates_v1

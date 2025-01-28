@@ -4,6 +4,6 @@
   reason: New table, backfill to populate it with historical data.
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true

@@ -58,7 +58,7 @@ fields:
   - fields:
     - mode: NULLABLE
       name: id
-      type: STRING
+      type: INTEGER
       description: Attribute ID
     - mode: NULLABLE
       name: slug

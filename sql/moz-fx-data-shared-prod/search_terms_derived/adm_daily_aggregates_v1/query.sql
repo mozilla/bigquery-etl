@@ -1,6 +1,6 @@
 SELECT
   @submission_date AS submission_date,
-  sanitized_query AS query,
+  query,
   block_id,
   COUNT(*) AS impressions,
   COUNTIF(is_clicked) AS clicks,

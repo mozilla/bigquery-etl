@@ -14,7 +14,6 @@ labels:
   incremental: true
   schedule: daily
   table_type: aggregate
-  shredder_mitigation: true
   dag: bqetl_amo_stats
   owner1: kik
 scheduling:

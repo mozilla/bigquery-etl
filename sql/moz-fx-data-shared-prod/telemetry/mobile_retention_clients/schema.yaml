@@ -23,6 +23,12 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
+- name: city
+  type: STRING
+  mode: NULLABLE
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE

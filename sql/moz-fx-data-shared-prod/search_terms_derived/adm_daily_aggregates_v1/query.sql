@@ -5,7 +5,7 @@ SELECT
   COUNT(*) AS impressions,
   COUNTIF(is_clicked) AS clicks,
 FROM
-  `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v2`
+  `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND LENGTH(sanitized_query) > 0

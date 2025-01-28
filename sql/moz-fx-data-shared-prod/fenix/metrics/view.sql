@@ -351,7 +351,10 @@ SELECT
       metrics.custom_distribution.cycle_collector_worker_visited_gced,
       metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
       metrics.custom_distribution.memory_phc_slots_allocated,
-      metrics.custom_distribution.memory_phc_slots_freed
+      metrics.custom_distribution.memory_phc_slots_freed,
+      metrics.custom_distribution.application_reputation_local,
+      metrics.custom_distribution.application_reputation_server,
+      metrics.custom_distribution.application_reputation_server_verdict
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -583,7 +586,13 @@ SELECT
       metrics.labeled_counter.cycle_collector_need_gc,
       metrics.labeled_counter.cycle_collector_sync_skippable,
       metrics.labeled_counter.cycle_collector_worker_need_gc,
-      metrics.labeled_counter.dom_contentprocess_launch_is_sync
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync,
+      metrics.labeled_counter.application_reputation_binary_archive,
+      metrics.labeled_counter.application_reputation_binary_type,
+      metrics.labeled_counter.application_reputation_reason,
+      metrics.labeled_counter.application_reputation_remote_lookup_timeout,
+      metrics.labeled_counter.application_reputation_server_2,
+      metrics.labeled_counter.application_reputation_should_block
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -943,7 +952,8 @@ SELECT
       metrics.timing_distribution.cycle_collector_worker_time,
       metrics.timing_distribution.dom_contentprocess_launch_mainthread,
       metrics.timing_distribution.dom_contentprocess_launch_total,
-      metrics.timing_distribution.dom_contentprocess_sync_launch
+      metrics.timing_distribution.dom_contentprocess_sync_launch,
+      metrics.timing_distribution.application_reputation_remote_lookup_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1440,7 +1450,10 @@ SELECT
       metrics.custom_distribution.cycle_collector_worker_visited_gced,
       metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
       metrics.custom_distribution.memory_phc_slots_allocated,
-      metrics.custom_distribution.memory_phc_slots_freed
+      metrics.custom_distribution.memory_phc_slots_freed,
+      metrics.custom_distribution.application_reputation_local,
+      metrics.custom_distribution.application_reputation_server,
+      metrics.custom_distribution.application_reputation_server_verdict
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1672,7 +1685,13 @@ SELECT
       metrics.labeled_counter.cycle_collector_need_gc,
       metrics.labeled_counter.cycle_collector_sync_skippable,
       metrics.labeled_counter.cycle_collector_worker_need_gc,
-      metrics.labeled_counter.dom_contentprocess_launch_is_sync
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync,
+      metrics.labeled_counter.application_reputation_binary_archive,
+      metrics.labeled_counter.application_reputation_binary_type,
+      metrics.labeled_counter.application_reputation_reason,
+      metrics.labeled_counter.application_reputation_remote_lookup_timeout,
+      metrics.labeled_counter.application_reputation_server_2,
+      metrics.labeled_counter.application_reputation_should_block
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2032,7 +2051,8 @@ SELECT
       metrics.timing_distribution.cycle_collector_worker_time,
       metrics.timing_distribution.dom_contentprocess_launch_mainthread,
       metrics.timing_distribution.dom_contentprocess_launch_total,
-      metrics.timing_distribution.dom_contentprocess_sync_launch
+      metrics.timing_distribution.dom_contentprocess_sync_launch,
+      metrics.timing_distribution.application_reputation_remote_lookup_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2547,7 +2567,10 @@ SELECT
       metrics.custom_distribution.cycle_collector_worker_visited_gced,
       metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
       metrics.custom_distribution.memory_phc_slots_allocated,
-      metrics.custom_distribution.memory_phc_slots_freed
+      metrics.custom_distribution.memory_phc_slots_freed,
+      metrics.custom_distribution.application_reputation_local,
+      metrics.custom_distribution.application_reputation_server,
+      metrics.custom_distribution.application_reputation_server_verdict
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2779,7 +2802,13 @@ SELECT
       metrics.labeled_counter.cycle_collector_need_gc,
       metrics.labeled_counter.cycle_collector_sync_skippable,
       metrics.labeled_counter.cycle_collector_worker_need_gc,
-      metrics.labeled_counter.dom_contentprocess_launch_is_sync
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync,
+      metrics.labeled_counter.application_reputation_binary_archive,
+      metrics.labeled_counter.application_reputation_binary_type,
+      metrics.labeled_counter.application_reputation_reason,
+      metrics.labeled_counter.application_reputation_remote_lookup_timeout,
+      metrics.labeled_counter.application_reputation_server_2,
+      metrics.labeled_counter.application_reputation_should_block
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3139,7 +3168,8 @@ SELECT
       metrics.timing_distribution.cycle_collector_worker_time,
       metrics.timing_distribution.dom_contentprocess_launch_mainthread,
       metrics.timing_distribution.dom_contentprocess_launch_total,
-      metrics.timing_distribution.dom_contentprocess_sync_launch
+      metrics.timing_distribution.dom_contentprocess_sync_launch,
+      metrics.timing_distribution.application_reputation_remote_lookup_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3663,7 +3693,10 @@ SELECT
       metrics.custom_distribution.cycle_collector_worker_visited_gced,
       metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
       metrics.custom_distribution.memory_phc_slots_allocated,
-      metrics.custom_distribution.memory_phc_slots_freed
+      metrics.custom_distribution.memory_phc_slots_freed,
+      metrics.custom_distribution.application_reputation_local,
+      metrics.custom_distribution.application_reputation_server,
+      metrics.custom_distribution.application_reputation_server_verdict
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3895,7 +3928,13 @@ SELECT
       metrics.labeled_counter.cycle_collector_need_gc,
       metrics.labeled_counter.cycle_collector_sync_skippable,
       metrics.labeled_counter.cycle_collector_worker_need_gc,
-      metrics.labeled_counter.dom_contentprocess_launch_is_sync
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync,
+      metrics.labeled_counter.application_reputation_binary_archive,
+      metrics.labeled_counter.application_reputation_binary_type,
+      metrics.labeled_counter.application_reputation_reason,
+      metrics.labeled_counter.application_reputation_remote_lookup_timeout,
+      metrics.labeled_counter.application_reputation_server_2,
+      metrics.labeled_counter.application_reputation_should_block
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4255,7 +4294,8 @@ SELECT
       metrics.timing_distribution.cycle_collector_worker_time,
       metrics.timing_distribution.dom_contentprocess_launch_mainthread,
       metrics.timing_distribution.dom_contentprocess_launch_total,
-      metrics.timing_distribution.dom_contentprocess_sync_launch
+      metrics.timing_distribution.dom_contentprocess_sync_launch,
+      metrics.timing_distribution.application_reputation_remote_lookup_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4761,7 +4801,10 @@ SELECT
       metrics.custom_distribution.cycle_collector_worker_visited_gced,
       metrics.custom_distribution.cycle_collector_worker_visited_ref_counted,
       metrics.custom_distribution.memory_phc_slots_allocated,
-      metrics.custom_distribution.memory_phc_slots_freed
+      metrics.custom_distribution.memory_phc_slots_freed,
+      metrics.custom_distribution.application_reputation_local,
+      metrics.custom_distribution.application_reputation_server,
+      metrics.custom_distribution.application_reputation_server_verdict
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4993,7 +5036,13 @@ SELECT
       metrics.labeled_counter.cycle_collector_need_gc,
       metrics.labeled_counter.cycle_collector_sync_skippable,
       metrics.labeled_counter.cycle_collector_worker_need_gc,
-      metrics.labeled_counter.dom_contentprocess_launch_is_sync
+      metrics.labeled_counter.dom_contentprocess_launch_is_sync,
+      metrics.labeled_counter.application_reputation_binary_archive,
+      metrics.labeled_counter.application_reputation_binary_type,
+      metrics.labeled_counter.application_reputation_reason,
+      metrics.labeled_counter.application_reputation_remote_lookup_timeout,
+      metrics.labeled_counter.application_reputation_server_2,
+      metrics.labeled_counter.application_reputation_should_block
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5353,7 +5402,8 @@ SELECT
       metrics.timing_distribution.cycle_collector_worker_time,
       metrics.timing_distribution.dom_contentprocess_launch_mainthread,
       metrics.timing_distribution.dom_contentprocess_launch_total,
-      metrics.timing_distribution.dom_contentprocess_sync_launch
+      metrics.timing_distribution.dom_contentprocess_sync_launch,
+      metrics.timing_distribution.application_reputation_remote_lookup_response_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

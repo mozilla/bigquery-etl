@@ -9,6 +9,8 @@ SELECT
   app_name,
   app_display_version AS app_version,
   country,
+  city,
+  geo_subdivision,
   locale,
   isp,
   normalized_os AS os,

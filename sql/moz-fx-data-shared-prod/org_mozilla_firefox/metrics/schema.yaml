@@ -4524,6 +4524,92 @@ fields:
         histogram MEMORY_PHC_SLOTS_FREED.
 
         '
+    - name: application_reputation_local
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Application reputation local results (0=ALLOW, 1=BLOCK, 2=NONE)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram APPLICATION_REPUTATION_LOCAL.
+
+        '
+    - name: application_reputation_server
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Status of the application reputation remote lookup (0=OK, 1=failed,
+        2=invalid protobuf response)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram APPLICATION_REPUTATION_SERVER.
+
+        '
+    - name: application_reputation_server_verdict
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Application reputation remote verdict (0=SAFE, 1=DANGEROUS, 2=UNCOMMON,
+        3=POTENTIALLY_UNWANTED, 4=DANGEROUS_HOST, 5=UNKNOWN)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram APPLICATION_REPUTATION_SERVER_VERDICT.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -7909,6 +7995,107 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         CONTENT_PROCESS_LAUNCH_IS_SYNC.
+
+        '
+    - name: application_reputation_binary_archive
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a binary file examined by download protection is one of
+        the common archive formats.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram APPLICATION_REPUTATION_BINARY_ARCHIVE.
+
+        '
+    - name: application_reputation_binary_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether or not the file examined by download protection is a binary
+        type (or it''s not possible to tell because the filename is missing).
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram APPLICATION_REPUTATION_BINARY_TYPE.
+
+        '
+    - name: application_reputation_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The reason application reputation service blocks or allows the
+        download.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram APPLICATION_REPUTATION_REASON.
+
+        '
+    - name: application_reputation_remote_lookup_timeout
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Recorded when application reputation remote lookup is performed,
+        `true` is recorded if the lookup times out.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        APPLICATION_REPUTATION_REMOTE_LOOKUP_TIMEOUT.
+
+        '
+    - name: application_reputation_server_2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Network status of the application reputation remote lookup
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram APPLICATION_REPUTATION_SERVER_2.
+
+        '
+    - name: application_reputation_should_block
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Overall (local or remote) application reputation verdict (shouldBlock=false
+        is OK).
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        APPLICATION_REPUTATION_SHOULD_BLOCK.
 
         '
   - name: quantity
@@ -19330,6 +19517,52 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram CONTENT_PROCESS_SYNC_LAUNCH_MS.
+
+        '
+    - name: application_reputation_remote_lookup_response_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Server response time to remote lookup request (ms).
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        APPLICATION_REPUTATION_REMOTE_LOOKUP_RESPONSE_TIME.
 
         '
   - name: memory_distribution

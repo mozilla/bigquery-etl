@@ -123,7 +123,7 @@ fields:
 
 - mode: NULLABLE
   name: entity_id
-  type: STRING
+  type: INTEGER
   description: Entity ID
 
 - mode: NULLABLE

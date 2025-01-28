@@ -17,7 +17,7 @@ fields:
 
 - mode: NULLABLE
   name: created_at
-  type: STRING
+  type: TIMESTAMP
   description: Date decision made
 
 - mode: NULLABLE

@@ -13,5 +13,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-  - workgroup:amo/prod
+  # Removed for now to allow compatibility with managed backfills.
+  # - workgroup:amo/prod
 syndication: {}

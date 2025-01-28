@@ -6,3 +6,4 @@
   - kik@mozilla.com
   status: Initiate
   shredder_mitigation: false
+  override_retention_limit: true

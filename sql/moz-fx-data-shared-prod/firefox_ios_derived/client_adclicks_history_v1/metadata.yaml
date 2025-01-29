@@ -12,15 +12,18 @@ description: |-
   are available as a MAP, keyed by date,
   where the value is the number of ad clicks.
 owners:
-- frank@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: kwindau
+  table_type: client_level
 scheduling:
   dag_name: bqetl_firefox_ios
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
+  time_partitioning:
+    expiration_days: 775
   clustering:
     fields: [sample_id]
 references: {}

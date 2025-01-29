@@ -59,14 +59,34 @@ metric_ping_clients_feature_usage AS (
     SUM(COALESCE(metrics.counter.addresses_updated, 0)) AS addresses_modified,
     MAX(COALESCE(metrics.quantity.addresses_saved_all, 0)) AS currently_stored_addresses,
     --Bookmark
-    SUM(COALESCE(metrics_bookmarks_add_table.value, 0)) AS bookmarks_add,
-    SUM(COALESCE(metrics_bookmarks_delete_table.value, 0)) AS bookmarks_delete,
-    SUM(COALESCE(metrics_bookmarks_edit_table.value, 0)) AS bookmarks_edit,
-    SUM(COALESCE(metrics_bookmarks_open_table.value, 0)) AS bookmarks_open,
-    MAX(
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_add),
+        0
+      )
+    ) AS bookmarks_add,
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_delete),
+        0
+      )
+    ) AS bookmarks_delete,
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_edit),
+        0
+      )
+    ) AS bookmarks_edit,
+    SUM(
+      COALESCE(
+        mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.metrics_bookmarks_open),
+        0
+      )
+    ) AS bookmarks_open,
+    SUM(
       COALESCE(metrics.counter.metrics_desktop_bookmarks_count, 0)
     ) AS metrics_desktop_bookmarks_count,
-    MAX(
+    SUM(
       COALESCE(metrics.counter.metrics_mobile_bookmarks_count, 0)
     ) AS metrics_mobile_bookmarks_count,
     CAST(
@@ -161,14 +181,6 @@ metric_ping_clients_feature_usage AS (
     ) AS customize_home_recently_visited
   FROM
     metrics_dau
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_add) AS metrics_bookmarks_add_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_delete) AS metrics_bookmarks_delete_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_edit) AS metrics_bookmarks_edit_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.metrics_bookmarks_open) AS metrics_bookmarks_open_table
   GROUP BY
     dau_date,
     client_id

@@ -63,15 +63,25 @@ metric_ping_clients_feature_usage AS (
     SUM(COALESCE(metrics.counter.credit_card_saved, 0)) AS credit_card_saved,
     MAX(COALESCE(metrics.quantity.credit_card_saved_all, 0)) AS credit_card_saved_all,
     --Bookmark
-    SUM(COALESCE(bookmarks_add_table.value, 0)) AS bookmarks_add,
-    SUM(COALESCE(bookmarks_delete_table.value, 0)) AS bookmarks_delete,
-    SUM(COALESCE(bookmarks_edit_table.value, 0)) AS bookmarks_edit,
+    SUM(
+      COALESCE(mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.bookmarks_add), 0)
+    ) AS bookmarks_add,
+    SUM(
+      COALESCE(mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.bookmarks_delete), 0)
+    ) AS bookmarks_delete,
+    SUM(
+      COALESCE(mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.bookmarks_edit), 0)
+    ) AS bookmarks_edit,
+    SUM(
+      COALESCE(mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.bookmarks_open), 0)
+    ) AS bookmarks_open,
+    SUM(
+      COALESCE(mozfun.map.extract_keyed_scalar_sum(metrics.labeled_counter.bookmarks_view_list), 0)
+    ) AS bookmarks_view_list,
     CAST(
       MAX(COALESCE(metrics.boolean.bookmarks_has_mobile_bookmarks, FALSE)) AS INT64
     ) AS has_mobile_bookmarks,
     MAX(COALESCE(metrics.quantity.bookmarks_mobile_bookmarks_count, 0)) AS mobile_bookmarks_count,
-    SUM(COALESCE(bookmarks_open_table.value, 0)) AS bookmarks_open,
-    SUM(COALESCE(bookmarks_view_list_table.value, 0)) AS bookmarks_view_list,
     --FxA
     SUM(COALESCE(metrics.counter.sync_create_account_pressed, 0)) AS sync_create_account_pressed,
     SUM(COALESCE(metrics.counter.sync_open_tab, 0)) AS sync_open_tab,
@@ -123,16 +133,6 @@ metric_ping_clients_feature_usage AS (
     MAX(COALESCE(metrics.quantity.addresses_saved_all, 0)) AS addresses_saved_all
   FROM
     metrics_dau
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.bookmarks_add) AS bookmarks_add_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.bookmarks_delete) AS bookmarks_delete_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.bookmarks_edit) AS bookmarks_edit_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.bookmarks_open) AS bookmarks_open_table
-  LEFT JOIN
-    UNNEST(metrics.labeled_counter.bookmarks_view_list) AS bookmarks_view_list_table
   GROUP BY
     dau_date,
     client_id

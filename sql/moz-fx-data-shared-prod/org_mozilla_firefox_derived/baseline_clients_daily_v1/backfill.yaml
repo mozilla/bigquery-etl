@@ -4,5 +4,5 @@
   reason: Backfilling prior to June 2024 to populate geo_subdivision field in the derived table.
   watchers:
   - kik@mozilla.com
-  status: Complete
+  status: Initiate
   override_retention_limit: true

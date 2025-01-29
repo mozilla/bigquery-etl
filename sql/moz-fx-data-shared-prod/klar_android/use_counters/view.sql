@@ -2509,7 +2509,17 @@ SELECT
       metrics.counter.use_counter_worker_shared_cookiestore_delete,
       metrics.counter.use_counter_worker_shared_cookiestore_get,
       metrics.counter.use_counter_worker_shared_cookiestore_getall,
-      metrics.counter.use_counter_worker_shared_cookiestore_set
+      metrics.counter.use_counter_worker_shared_cookiestore_set,
+      metrics.counter.use_counter_doc_js_errorstack_getter,
+      metrics.counter.use_counter_doc_js_errorstack_getter_no_errordata,
+      metrics.counter.use_counter_doc_js_errorstack_setter,
+      metrics.counter.use_counter_doc_js_errorstack_setter_no_errordata,
+      metrics.counter.use_counter_doc_js_errorstack_setter_nonstring,
+      metrics.counter.use_counter_page_js_errorstack_getter,
+      metrics.counter.use_counter_page_js_errorstack_getter_no_errordata,
+      metrics.counter.use_counter_page_js_errorstack_setter,
+      metrics.counter.use_counter_page_js_errorstack_setter_no_errordata,
+      metrics.counter.use_counter_page_js_errorstack_setter_nonstring
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

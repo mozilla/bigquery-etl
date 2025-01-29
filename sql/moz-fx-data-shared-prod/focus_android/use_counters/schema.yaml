@@ -7686,6 +7686,36 @@ fields:
     - name: use_counter_worker_shared_cookiestore_set
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_errorstack_getter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_errorstack_getter_no_errordata
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_errorstack_setter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_errorstack_setter_no_errordata
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_errorstack_setter_nonstring
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_errorstack_getter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_errorstack_getter_no_errordata
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_errorstack_setter
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_errorstack_setter_no_errordata
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_errorstack_setter_nonstring
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

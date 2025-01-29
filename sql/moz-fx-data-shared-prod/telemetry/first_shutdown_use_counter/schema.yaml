@@ -11331,6 +11331,50 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page called CookieStore.set
+    - name: use_counter2_js_errorstack_getter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called error.stack getter
+    - name: use_counter2_js_errorstack_getter_no_errordata_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called error.stack getter on object without
+        ErrorData internal slot
+    - name: use_counter2_js_errorstack_getter_no_errordata_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called error.stack getter on object without ErrorData
+        internal slot
+    - name: use_counter2_js_errorstack_getter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called error.stack getter
+    - name: use_counter2_js_errorstack_setter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called error.stack setter
+    - name: use_counter2_js_errorstack_setter_no_errordata_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called error.stack setter on object without
+        ErrorData internal slot
+    - name: use_counter2_js_errorstack_setter_no_errordata_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called error.stack setter on object without ErrorData
+        internal slot
+    - name: use_counter2_js_errorstack_setter_nonstring_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called error.stack setter with non-string input
+    - name: use_counter2_js_errorstack_setter_nonstring_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called error.stack setter with non-string input
+    - name: use_counter2_js_errorstack_setter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called error.stack setter
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22515,6 +22559,51 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page called CookieStore.set
+        - name: use_counter2_js_errorstack_getter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called error.stack getter
+        - name: use_counter2_js_errorstack_getter_no_errordata_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called error.stack getter on object without
+            ErrorData internal slot
+        - name: use_counter2_js_errorstack_getter_no_errordata_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called error.stack getter on object without
+            ErrorData internal slot
+        - name: use_counter2_js_errorstack_getter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called error.stack getter
+        - name: use_counter2_js_errorstack_setter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called error.stack setter
+        - name: use_counter2_js_errorstack_setter_no_errordata_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called error.stack setter on object without
+            ErrorData internal slot
+        - name: use_counter2_js_errorstack_setter_no_errordata_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called error.stack setter on object without
+            ErrorData internal slot
+        - name: use_counter2_js_errorstack_setter_nonstring_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called error.stack setter with non-string
+            input
+        - name: use_counter2_js_errorstack_setter_nonstring_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called error.stack setter with non-string input
+        - name: use_counter2_js_errorstack_setter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called error.stack setter
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

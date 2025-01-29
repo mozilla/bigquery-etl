@@ -27,7 +27,8 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`
+    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -63,7 +64,8 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`
+    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -99,7 +101,8 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`
+    STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

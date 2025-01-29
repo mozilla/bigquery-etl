@@ -350,6 +350,23 @@ fields:
       description: 'The duration of the last foreground session.
 
         '
+  - name: timespan
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: usage_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The duration of the last foreground session.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

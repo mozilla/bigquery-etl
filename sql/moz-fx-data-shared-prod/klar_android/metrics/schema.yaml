@@ -1496,6 +1496,12 @@ fields:
         Legacy Telemetry scalar script.preloader.mainthread_recompile.
 
         '
+    - name: security_ui_protectionspopup_smartblockembeds_shown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How many times the SmartBlock placeholders are shown on the page
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -4773,6 +4779,324 @@ fields:
         APPLICATION_REPUTATION_SHOULD_BLOCK.
 
         '
+    - name: bfcache_combo
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The common combinations of BFCacheStatus when we determine whether
+        the page can be BFCached or not; If it''s BFCached, we record BFCache_Success;
+        Success_Not_Toplevel represents the number of not the only top level document
+        in BrowsingContextGroup''s documents that are BFCached, and BFCache_Success
+        includes Success_Not_Toplevel; If it''s not and it falls under common failure
+        reasons combinations, we record the corresponding combination; Otherwise,
+        we record Other to indicate this is not a common failure
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram BFCACHE_COMBO.
+
+        '
+    - name: bfcache_page_restored
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether bfcache is used when loading a page from session history
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BFCACHE_PAGE_RESTORED.
+
+        '
+    - name: contentblocking_cryptominers_blocked_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of the status of cryptominer blocking per top level page
+        load. (''pageLoad'' = There was a page load, ''blocked'' = at least one cryptominer
+        was blocked, ''allowed'' = at least one cryptominer was detected and allowed.)
+        Note, pageLoad is used as a baseline measurement.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram CRYPTOMINERS_BLOCKED_COUNT.
+
+        '
+    - name: contentblocking_email_tracker_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of the classified email trackers. (''base_normal'' = The
+        classified email tracker is in base category and loaded under a normal site,
+        ''content_normal'' = The classified email tracker is in content category and
+        loaded under a normal site, ''base_email_webapp'' = The classified email tracker
+        is in base category and loaded under a known email webapp, ''content_email_webapp''
+        = The classified email tracker is in content category and loaded under a known
+        email webapp.)
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram EMAIL_TRACKER_COUNT.
+
+        '
+    - name: contentblocking_fingerprinters_blocked_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of the status of fingerprinter blocking per top level
+        page load. (''pageLoad'' = There was a page load, ''blocked'' = at least one
+        fingerprinter was blocked, ''allowed'' = at least one fingerprinter was detected
+        and allowed.) Note, pageLoad is used as a baseline measurement.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram FINGERPRINTERS_BLOCKED_COUNT.
+
+        '
+    - name: contentblocking_font_fingerprinting_per_tab
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a probable font fingerprinting attempt was detected
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        FONT_FINGERPRINTING_PER_TAB.
+
+        '
+    - name: contentblocking_query_stripping_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of the query stripping. (''Navigation'' = There was a
+        top-level loading via navigation, ''Redirect'' = There was a top-level loading
+        via redirect, ''StripForNavigation'' = There was a stripping happened for
+        a top-level navigation, ''StripForRedirect'' = There was a stripping happened
+        for a top-level redirect.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram QUERY_STRIPPING_COUNT.
+
+        '
+    - name: contentblocking_query_stripping_count_by_param
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often specific query parameters are stripped.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram QUERY_STRIPPING_COUNT_BY_PARAM.
+
+        '
+    - name: contentblocking_storage_access_granted_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of the granted storage access. (''StorageGranted'' = There
+        was a storage access granted, ''StorageAccessAPI'' = the storage access was
+        granted by the storage access API, ''OpenerAfterUserInteraction'' = the storage
+        access was granted due to the heuristic ''OpenerAfterUserInteraction'', ''Opener''
+        = the storage access was granted due to the heuristic ''Opener'', ''Redirect''
+        = the storage access was granted due to the heuristic ''Redirect'', ''RedirectTracker''
+        = the storage access was granted due to the heuristic ''RedirectTracker''.)
+        Note, StorageGranted is used as a baseline measurement, which should be the
+        sum of all other measurements.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram STORAGE_ACCESS_GRANTED_COUNT.
+
+        '
+    - name: contentblocking_tracking_protection_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True if tracking protection is enabled globally at startup.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        TRACKING_PROTECTION_ENABLED.
+
+        '
+    - name: contentblocking_tracking_protection_pbm_disabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True if tracking protection in Private Browsing mode is disabled
+        at startup.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        TRACKING_PROTECTION_PBM_DISABLED.
+
+        '
+    - name: fontlist_bad_fallback_font
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'system fallback font can''t be used
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BAD_FALLBACK_FONT.
+
+        '
+    - name: fontlist_font_cache_hit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'font cache hit
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        FONT_CACHE_HIT.
+
+        '
+    - name: network_alpn_mismatch_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times we encountered a mismatched ALPN token
+        and needed to reset the connection. Keyed by the negotiated NPN.
+
+        '
+    - name: orb_block_initiator
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The initiator of this ORB blocked request.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram ORB_BLOCK_INITIATOR.
+
+        '
+    - name: orb_block_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The reason of why this request was blocked by ORB
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram ORB_BLOCK_REASON.
+
+        '
+    - name: orb_did_ever_block_response
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'If any opaque response was blocked for a given top-level window
+        context.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        ORB_DID_EVER_BLOCK_RESPONSE.
+
+        '
+    - name: predictor_prefetch_use_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'If and why prefetches are used/unused.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram PREDICTOR_PREFETCH_USE_STATUS.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -7975,6 +8299,666 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram APPLICATION_REPUTATION_SERVER_VERDICT.
+
+        '
+    - name: a11y_consumers
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A list of known accessibility clients that inject into Firefox
+        process space (see https://searchfox.org/mozilla-central/source/accessible/windows/msaa/Compatibility.h).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram A11Y_CONSUMERS.
+
+        '
+    - name: contentblocking_cookie_behavior
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Records the cookie behavior pref at startup.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram COOKIE_BEHAVIOR.
+
+        '
+    - name: contentblocking_query_stripping_param_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'If query params get stripped, how many per navigation/redirect.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram QUERY_STRIPPING_PARAM_COUNT.
+
+        '
+    - name: contentblocking_storage_access_remaining_days
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time remaining until expiration per storage access permissions,
+        in days (one record per permission, not averaged).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram STORAGE_ACCESS_REMAINING_DAYS.
+
+        '
+    - name: contentblocking_strip_on_share_length_decrease
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The decrease in the length of the URL when strip on share is used,
+        only if at least one parameter is stripped
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram STRIP_ON_SHARE_LENGTH_DECREASE.
+
+        '
+    - name: contentblocking_strip_on_share_params_removed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of query parameters removed, if any, when strip on
+        share is used
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        STRIP_ON_SHARE_PARAMS_REMOVED.
+
+        '
+    - name: contentblocking_tracking_protection_shield
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Status of the shield icon for each top-level pageload (outside
+        of Private Browsing mode) when tracking protection is enabled (0 = there was
+        a page load, this is used as a baseline, 1 = shield crossed out because CB
+        was disabled on this page by the user, 2 = shield shown because some content
+        was blocked)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRACKING_PROTECTION_SHIELD.
+
+        '
+    - name: cookie_purging_origins_purged
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of origins that were purged during one run of cookie
+        purging.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram COOKIE_PURGING_ORIGINS_PURGED.
+
+        '
+    - name: cookie_purging_trackers_with_user_interaction
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of trackers that had user interaction at the time of
+        purging.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram COOKIE_PURGING_TRACKERS_WITH_USER_INTERACTION.
+
+        '
+    - name: fontlist_dwritefont_delayedinit_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'gfxDWriteFontList::DelayedInitFontList Font Family Count
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DWRITEFONT_DELAYEDINITFONTLIST_COUNT.
+
+        '
+    - name: fontlist_dwritefont_init_problem
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DirectWrite system fontlist initialization problem (1=GDI interop,
+        2=system font collection, 3=no fonts)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DWRITEFONT_INIT_PROBLEM.
+
+        '
+    - name: predictor_base_confidence
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The base confidence calculated for a subresource
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        PREDICTOR_BASE_CONFIDENCE.
+
+        '
+    - name: predictor_confidence
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The final confidence calculated for a subresource
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        PREDICTOR_CONFIDENCE.
+
+        '
+    - name: predictor_global_degradation
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The global degradation calculated
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        PREDICTOR_GLOBAL_DEGRADATION.
+
+        '
+    - name: predictor_learn_attempts
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of times nsINetworkPredictor::Learn is called and attempts
+        to learn
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_LEARN_ATTEMPTS.
+
+        '
+    - name: predictor_predictions_calculated
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many prediction calculations are performed
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_PREDICTIONS_CALCULATED.
+
+        '
+    - name: predictor_prefetch_decision_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Why the predictor determined a particular resource was eligible
+        for future prefetch (or not). See PrefetchDecisionReason in Predictor.cpp
+        for value meanings
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PREDICTOR_PREFETCH_DECISION_REASON.
+
+        '
+    - name: predictor_prefetch_ignore_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Why the predictor determined a particular resource that was marked
+        eligible for prefetch should not be prefetched. See PrefetchIgnoreReason in
+        Predictor.cpp for value meanings
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PREDICTOR_PREFETCH_IGNORE_REASON.
+
+        '
+    - name: predictor_subresource_degradation
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The degradation calculated for a subresource
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        PREDICTOR_SUBRESOURCE_DEGRADATION.
+
+        '
+    - name: predictor_total_preconnects
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many actual preconnects happen
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_TOTAL_PRECONNECTS.
+
+        '
+    - name: predictor_total_predictions
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many actual predictions (preresolves, preconnects, ...) happen
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_TOTAL_PREDICTIONS.
+
+        '
+    - name: predictor_total_prefetches
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many actual prefetches happen
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_TOTAL_PREFETCHES.
+
+        '
+    - name: predictor_total_preresolves
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many actual preresolves happen
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_TOTAL_PRERESOLVES.
 
         '
   - name: timespan
@@ -16270,6 +17254,1212 @@ fields:
         APPLICATION_REPUTATION_REMOTE_LOOKUP_RESPONSE_TIME.
 
         '
+    - name: a11y_tree_update_timing
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The amount of time taken to update the accessibility tree (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram A11Y_TREE_UPDATE_TIMING_MS.
+
+        '
+    - name: cookie_purging_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent per daily cookie purging activity, in milliseconds.
+        This measures the time for all batch iterations of that day.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram COOKIE_PURGING_DURATION_MS.
+
+        '
+    - name: cookie_purging_interval_hours
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How much time (in hours) passed between the current cookie purging
+        activity and the one before that (cookie purging is run on ''daily idle'')
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        COOKIE_PURGING_INTERVAL_HOURS.
+
+        '
+    - name: cookie_purging_trackers_user_interaction_remaining_days
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time remaining until expiration per user interaction permissions
+        of trackers at the time of purging, in days (one record per tracker, not averaged).
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        COOKIE_PURGING_TRACKERS_USER_INTERACTION_REMAINING_DAYS.
+
+        '
+    - name: fontlist_bundledfonts_activate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time(ms) spent activating additional fonts bundled with the product
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FONTLIST_BUNDLEDFONTS_ACTIVATE.
+
+        '
+    - name: fontlist_dwritefont_delayedinit_collect
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'gfxDWriteFontList::DelayedInitFontList GetSystemFontCollection
+        (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DWRITEFONT_DELAYEDINITFONTLIST_COLLECT.
+
+        '
+    - name: fontlist_dwritefont_delayedinit_total
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'gfxDWriteFontList::DelayedInitFontList Total (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DWRITEFONT_DELAYEDINITFONTLIST_TOTAL.
+
+        '
+    - name: fontlist_gdi_init_total
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'gfxGDIFontList::InitFontList Total (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram GDI_INITFONTLIST_TOTAL.
+
+        '
+    - name: fontlist_initfacenamelists
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time(ms) spent on reading family names from all fonts
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FONTLIST_INITFACENAMELISTS.
+
+        '
+    - name: fontlist_initotherfamilynames
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time(ms) spent on reading other family names from all fonts
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FONTLIST_INITOTHERFAMILYNAMES.
+
+        '
+    - name: fontlist_initotherfamilynames_no_deferring
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time(ms) spent on reading other family names from all fonts for
+        no timeout case
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FONTLIST_INITOTHERFAMILYNAMES_NO_DEFERRING.
+
+        '
+    - name: fontlist_mac_init_total
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'gfxMacPlatformFontList::InitFontList Total (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram MAC_INITFONTLIST_TOTAL.
+
+        '
+    - name: fontlist_system_font_fallback
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'System font fallback (us)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SYSTEM_FONT_FALLBACK.
+
+        '
+    - name: fontlist_system_font_fallback_first
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'System font fallback, first call (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SYSTEM_FONT_FALLBACK_FIRST.
+
+        '
+    - name: gpu_process_initialization_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'GPU process initialization (excluding XPCOM and fork time) time
+        in milliseconds
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram GPU_PROCESS_INITIALIZATION_TIME_MS.
+
+        '
+    - name: gpu_process_launch_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'GPU process launch time in milliseconds
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram GPU_PROCESS_LAUNCH_TIME_MS_2.
+
+        '
+    - name: predictor_learn_work_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of time spent doing the work for learn (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_LEARN_WORK_TIME.
+
+        '
+    - name: predictor_predict_time_to_action
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How long it takes from the time Predict() is called to the time
+        we take action
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_PREDICT_TIME_TO_ACTION.
+
+        '
+    - name: predictor_predict_time_to_inaction
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How long it takes from the time Predict() is called to the time
+        we figure out there''s nothing to do
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_PREDICT_TIME_TO_INACTION.
+
+        '
+    - name: predictor_predict_work_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of time spent doing the work for predict (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_PREDICT_WORK_TIME.
+
+        '
+    - name: predictor_prefetch_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How long it takes from OnStartRequest to OnStopRequest for a prefetch
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_PREFETCH_TIME.
+
+        '
+    - name: predictor_wait_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of time a predictor event waits in the queue (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PREDICTOR_WAIT_TIME.
+
+        '
+    - name: sts_poll_and_event_the_last_cycle
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duraion of the socketThread cycle during shutdown, including
+        polls and pending events. (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram STS_POLL_AND_EVENT_THE_LAST_CYCLE.
+
+        '
+    - name: sts_poll_and_events_cycle
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duraion of a socketThread cycle, including polls and pending
+        events. (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram STS_POLL_AND_EVENTS_CYCLE.
+
+        '
+    - name: sts_poll_block_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent blocked on poll (ms).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram STS_POLL_BLOCK_TIME.
+
+        '
+    - name: sts_poll_cycle
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The duration of poll. (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram STS_POLL_CYCLE.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -17926,6 +20116,114 @@ fields:
         header
 
         '
+    - name: orb_javascript_validation
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in ms) that it takes for a ORB JavaScript validator to complete
+        a validation, including IPC to the validator actor.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram ORB_JAVASCRIPT_VALIDATION_MS.
+
+        '
+    - name: orb_receive_data_for_validation
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in ms) that it takes to receive data for ORB JavaScript
+        validation, including IPC to the validator actor.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram ORB_RECEIVE_DATA_FOR_VALIDATION_MS.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -18034,6 +20332,120 @@ fields:
       description: 'Hit rate for a specific cache size in file count. The hit rate
         is split into 20 buckets. The key is the cacheSize (20 buckets) and the value
         is between 0 and 100.
+
+        '
+    - name: contentblocking_canvas_fingerprinting_per_tab
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Type of canvas fingerprinter detected (keyed by known_fingerprinting_text
+        or unknown), 0 = none
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CANVAS_FINGERPRINTING_PER_TAB.
+
+        '
+    - name: contentblocking_email_tracker_embedded_per_tab
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'A count of the embedded third-party email trackers for known email
+        web apps. (''base_normal'' = The count of loaded base email trackers under
+        normal sites, ''content_normal'' = The count of loaded content email trackers
+        under normal sites, ''all_normal'' = The count of all loaded email trackers
+        under normal sites, ''base_emailapp'' = The count of loaded base email trackers
+        under email webapps, ''content_emailapp'' = The count of loaded content email
+        trackers under email webapps, ''all_emailapp'' = The count of all loaded email
+        trackers under email webapps.)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram EMAIL_TRACKER_EMBEDDED_PER_TAB.
+
+        '
+    - name: downloads_user_action_on_blocked_download
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Users action on blocked download, keyed by verdict type (0=Number
+        of blocked downloads, 1=Confirm block, 2=Confirm unblock)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DOWNLOADS_USER_ACTION_ON_BLOCKED_DOWNLOAD.
 
         '
   - name: labeled_quantity

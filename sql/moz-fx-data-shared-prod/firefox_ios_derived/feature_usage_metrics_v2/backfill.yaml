@@ -7,4 +7,4 @@
   - kwindau@mozilla.com
   status: Initiate
   shredder_mitigation: false
-  override_retention_limit: false
+  override_retention_limit: true

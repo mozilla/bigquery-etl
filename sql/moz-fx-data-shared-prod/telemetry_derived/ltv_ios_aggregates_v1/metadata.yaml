@@ -1,17 +1,21 @@
-friendly_name: Ltv Ios Aggregates
+friendly_name: LTV iOS Aggregates
 description: |-
-  Please provide a description for the query
+  Aggregated historical data for LTV estimates beyond a 2-year horizon.
 owners:
-- example@mozilla.com
+  - mbowerman@mozilla.com
 labels:
+  application: firefox
   incremental: true
-  owner1: example
+  schedule: daily
+  dag: bqetl_mobile_search
+  owner1: mbowerman@mozilla.com
+  table_type: aggregate
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_mobile_search
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null

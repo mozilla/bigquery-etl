@@ -1,13 +1,14 @@
 friendly_name: New profiles - Klar iOS (Aggregated)
 description: |-
   New profiles (Klar iOS) aggregated metrics
+
+  device_type and device_manufacturer fields were added on 2025-01-18.
 owners:
 - mozilla/kpi_table_reviewers
 - kik@mozilla.com
 labels:
   schedule: daily
   incremental: true
-  shredder_mitigation: true
   table_type: aggregate
   dag: bqetl_mobile_kpi_metrics
   owner1: kik

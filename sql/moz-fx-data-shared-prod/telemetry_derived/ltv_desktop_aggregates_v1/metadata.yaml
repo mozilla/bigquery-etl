@@ -8,7 +8,8 @@ labels:
   incremental: true
   schedule: daily
   dag: bqetl_newtab
-  owner1: mbowerman
+  owner1: mbowerman@mozilla.com
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_newtab
 bigquery:

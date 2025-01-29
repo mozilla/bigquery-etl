@@ -3,6 +3,9 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Submission Date
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE

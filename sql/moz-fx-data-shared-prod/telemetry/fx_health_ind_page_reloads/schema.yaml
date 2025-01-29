@@ -10,6 +10,7 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: Normalized Channel
 - name: nbr_distinct_clients
   type: INTEGER
   mode: NULLABLE

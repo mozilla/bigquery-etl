@@ -8,7 +8,6 @@ WITH searches_per_user_by_os_version_and_date_staging AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
     AND search_count_all < 10000
     AND os = 'Windows_NT'
@@ -35,7 +34,6 @@ subsession_hours_per_user_staging AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
     AND subsession_hours_sum < 24
     AND os = 'Windows_NT'
@@ -62,7 +60,6 @@ active_hours_per_user_staging AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND sample_id = 42
     AND os = 'Windows_NT'
     AND os_version IN ('6.1', '6.2', '6.3', '10.0')
@@ -102,7 +99,6 @@ default_percent_by_os_version AS (
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   WHERE
     submission_date_s3 = @submission_date
-    AND app_name = 'Firefox'
     AND os = 'Windows_NT'
     AND sample_id = 42
     AND os_version IN ('6.1', '6.2', '6.3', '10.0')

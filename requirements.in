@@ -1,5 +1,5 @@
 attrs==25.1.0
-authlib==1.4.0
+authlib==1.4.1
 bigeye-sdk==0.4.97
 black==25.1.0
 cattrs==24.1.2

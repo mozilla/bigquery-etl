@@ -20,7 +20,7 @@ WITH ios_metrics AS (
       )
     ) AS homepage_visits
   FROM
-    `mozdata.firefox_ios.metrics` AS metrics
+    `moz-fx-data-shared-prod.firefox_ios.metrics` AS metrics
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY

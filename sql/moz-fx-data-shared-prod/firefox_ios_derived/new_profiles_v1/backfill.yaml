@@ -6,11 +6,3 @@
   - kik@mozilla.com
   status: Initiate
   shredder_mitigation: false
-
-2024-05-31:
-  start_date: 2021-01-01
-  end_date: 2024-05-31
-  reason: The table is created, this is to populate it with data.
-  watchers:
-  - kik@mozilla.com
-  status: Complete

@@ -2,7 +2,6 @@
 
 import logging
 import os
-import sys
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -111,6 +110,14 @@ def validate_shredder_mitigation(query_dir, metadata):
 
     if has_shredder_mitigation:
         schema_file = Path(query_dir) / SCHEMA_FILE
+        if not schema_file.exists():
+            click.echo(
+                click.style(
+                    f"Table {query_dir} does not have schema.yaml required for shredder mitigation.",
+                    fg="yellow",
+                )
+            )
+            return False
         schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
 
         # This label requires that the query doesn't have id-level columns,
@@ -281,6 +288,10 @@ def validate_retention_policy_based_on_table_type(metadata, path):
     return is_valid
 
 
+class MetadataValidationError(Exception):
+    """Metadata validation failed."""
+
+
 def validate(target):
     """Validate metadata files."""
     failed = False
@@ -322,11 +333,11 @@ def validate(target):
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
     else:
-        logging.error(f"Invalid target: {target}, target must be a directory.")
-        sys.exit(1)
+        raise ValueError(f"Invalid target: {target}, target must be a directory.")
 
     if failed:
-        sys.exit(1)
+        # TODO: add failed checks to message
+        raise MetadataValidationError(f"Metadata validation failed for {target}")
 
 
 def validate_datasets(target):
@@ -340,11 +351,12 @@ def validate_datasets(target):
                     path = os.path.join(root, file)
                     _ = DatasetMetadata.from_file(path)
     else:
-        logging.error(f"Invalid target: {target}, target must be a directory.")
-        sys.exit(1)
+        raise ValueError(f"Invalid target: {target}, target must be a directory.")
 
     if failed:
-        sys.exit(1)
+        raise MetadataValidationError(
+            f"Dataset metadata validation failed for {target}"
+        )
 
 
 def main():

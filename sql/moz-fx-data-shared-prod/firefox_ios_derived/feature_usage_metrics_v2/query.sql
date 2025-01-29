@@ -1,11 +1,12 @@
 WITH baseline_clients AS (
   SELECT
     submission_date AS dau_date,
-    client_id
+    client_id,
+    LEAD(submission_date) OVER (PARTITION BY client_id ORDER BY submission_date) AS next_dau
   FROM
     `moz-fx-data-shared-prod.firefox_ios.baseline_clients_daily`
   WHERE
-    submission_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
+    submission_date >= DATE_SUB(@submission_date, INTERVAL 4 DAY)
     AND durations > 0
     AND LOWER(COALESCE(isp, "")) <> "browserstack"
 ),
@@ -26,10 +27,12 @@ metrics_dau AS (
   JOIN
     baseline_clients
     ON client_info.client_id = client_id
-     -- offset by at least one to reflect metrics ping design considerations
+    -- offset by at least one to reflect metrics ping design considerations
     AND DATE_DIFF(DATE(submission_timestamp), dau_date, DAY)
     BETWEEN 1
     AND 4
+    -- exclude metrics pings that should be matched to next DAU date
+    AND DATE(submission_timestamp) <= DATE_ADD(next_dau, INTERVAL 1 DAY)
   WHERE
     DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
@@ -307,6 +310,8 @@ FROM
 LEFT JOIN
   client_attribution
   USING (client_id)
+WHERE
+  dau_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
 GROUP BY
   submission_date,
   metric_date,

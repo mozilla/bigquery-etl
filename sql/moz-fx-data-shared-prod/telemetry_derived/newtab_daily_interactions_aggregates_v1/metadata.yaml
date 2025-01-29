@@ -2,7 +2,7 @@ friendly_name: Newtab Interactions Daily Aggregates
 description: |-
   A daily aggregation of newtab interactions, partitioned by day.
 owners:
-  - gkatre@mozilla.com
+- gkatre@mozilla.com
 labels:
   application: firefox
   incremental: true
@@ -17,8 +17,9 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
-      - channel
-      - country_code
+    - channel
+    - country_code
 references: {}

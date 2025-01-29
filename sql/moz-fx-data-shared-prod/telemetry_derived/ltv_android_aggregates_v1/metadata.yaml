@@ -1,0 +1,24 @@
+friendly_name: LTV Android Aggregates
+description: |-
+  Aggregated historical data for LTV estimates beyond a 2-year horizon.
+owners:
+  - mbowerman@mozilla.com
+labels:
+  application: firefox_android
+  incremental: true
+  schedule: daily
+  dag: bqetl_mobile_search
+  owner1: mbowerman@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_mobile_search
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}

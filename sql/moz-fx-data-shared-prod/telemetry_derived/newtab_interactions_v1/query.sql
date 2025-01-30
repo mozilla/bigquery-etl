@@ -243,14 +243,12 @@ aggregated_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    LOGICAL_OR(first_seen_date = @submission_date) AS is_new_profile,
-    ANY_VALUE(activity_segment) AS activity_segment
+    first_seen_date = @submission_date AS is_new_profile,
+    activity_segment
   FROM
     `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    client_id
 ),
 -- Newtab interactions may arrive in different pings so we attach the open details for a visit to all interactions.
 side_filled AS (

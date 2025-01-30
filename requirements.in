@@ -14,7 +14,7 @@ google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to uni
 google-cloud-bigquery==3.29.0
 google-cloud-bigquery-storage[fastavro]==2.27.0
 google-cloud-datacatalog-lineage==0.3.11
-google-cloud-storage==2.19.0
+google-cloud-storage==3.0.0
 Jinja2==3.1.5
 jsonschema==4.23.0
 PyJWT==2.10.1

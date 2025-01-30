@@ -7,18 +7,16 @@ labels:
   application: firefox_android
   incremental: true
   schedule: daily
-  dag: bqetl_mobile_search
   owner1: mbowerman@mozilla.com
   table_type: aggregate
 scheduling:
-  dag_name: bqetl_mobile_search
+  dag_name: bqetl_ltv
+  date_partition_parameter: null
+  parameters:
+    - "submission_date:DATE:{{ds}}"
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering:
-    fields: []
-references: {}

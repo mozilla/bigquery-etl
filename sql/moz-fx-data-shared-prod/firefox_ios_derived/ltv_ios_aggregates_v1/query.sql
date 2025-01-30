@@ -61,7 +61,7 @@ ios_search AS (
     ANY_VALUE(os) AS os,
     ANY_VALUE(channel) AS channel,
     ANY_VALUE(locale) AS locale,
-    MAX(mozfun.norm.extract_version(app_version, "major")) AS app_version,
+    CAST(MAX(mozfun.norm.extract_version(app_version, "major")) AS INT64) AS app_version,
     ANY_VALUE(
       `moz-fx-data-shared-prod`.udf.normalize_search_engine(default_search_engine)
     ) AS default_search_engine,

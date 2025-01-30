@@ -463,3 +463,4 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v2
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1

@@ -50,11 +50,11 @@ with DAG(
     tags=tags,
 ) as dag:
 
-    wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
-        external_dag_id="bqetl_unified",
-        external_task_id="checks__fail_telemetry_derived__unified_metrics__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=75600),
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -183,7 +183,7 @@ with DAG(
     )
 
     telemetry_derived__newtab_interactions__v1.set_upstream(
-        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     telemetry_derived__newtab_interactions__v1.set_upstream(
@@ -191,7 +191,7 @@ with DAG(
     )
 
     telemetry_derived__newtab_visits__v1.set_upstream(
-        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     telemetry_derived__newtab_visits__v1.set_upstream(wait_for_copy_deduplicate_all)

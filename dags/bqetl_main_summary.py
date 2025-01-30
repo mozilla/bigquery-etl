@@ -202,6 +202,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_newtab__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_newtab",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_gud__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             external_dag_id="bqetl_gud",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",

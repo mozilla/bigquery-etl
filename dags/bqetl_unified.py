@@ -188,13 +188,6 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
-        ExternalTaskMarker(
-            task_id="bqetl_newtab__wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
-            external_dag_id="bqetl_newtab",
-            external_task_id="wait_for_checks__fail_telemetry_derived__unified_metrics__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
-        )
-
         checks__fail_telemetry_derived__unified_metrics__v1_external.set_upstream(
             checks__fail_telemetry_derived__unified_metrics__v1
         )

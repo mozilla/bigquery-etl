@@ -15,14 +15,17 @@ import glob
 import json
 import re
 import sys
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
-from typing import Optional, Set
+from typing import Any, Iterable, Optional, Set
 from urllib.request import Request, urlopen
 
 import click
 import google.auth
+import sqlglot
+import sqlglot.optimizer.scope
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
 from google.oauth2.id_token import fetch_id_token
@@ -38,10 +41,15 @@ except ImportError:
     from backports.cached_property import cached_property  # type: ignore
 
 
-QUERY_PARAMETER_TYPE_VALUES = {
-    "DATE": "2019-01-01",
-    "DATETIME": "2019-01-01 00:00:00",
-    "TIMESTAMP": "2019-01-01 00:00:00",
+TMP_DATASET = "bigquery-etl-integration-test.tmp"
+
+YESTERDAY = datetime.now(timezone.utc).date() - timedelta(days=1)
+
+QUERY_PARAMETER_TYPE_VALUES: dict[str, str | bool | int] = {
+    # Use yesterday's date in case the date/time parameters are used in time travel queries.
+    "DATE": YESTERDAY.isoformat(),
+    "DATETIME": YESTERDAY.isoformat() + " 00:00:00",
+    "TIMESTAMP": YESTERDAY.isoformat() + " 00:00:00",
     "STRING": "foo",
     "BOOL": True,
     "FLOAT64": 1,
@@ -212,14 +220,8 @@ class DryRun:
 
         return sql
 
-    @cached_property
-    def dry_run_result(self):
-        """Dry run the provided SQL file."""
-        if self.content:
-            sql = self.content
-        else:
-            sql = self.get_sql()
-
+    def get_query_parameters(self) -> list[bigquery.ScalarQueryParameter]:
+        """Get query parameters to use for the dry run."""
         query_parameters = []
         scheduling_metadata = self.metadata.scheduling if self.metadata else {}
         if date_partition_parameter := scheduling_metadata.get(
@@ -242,69 +244,90 @@ class DryRun:
                     QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
                 )
             )
+        return query_parameters
+
+    def _dry_run_query(
+        self,
+        sql: str,
+        query_parameters: Iterable[bigquery.ScalarQueryParameter],
+        target_project: str,
+        target_dataset: str,
+    ) -> dict[str, Any]:
+        """Dry run the provided query."""
+        if self.use_cloud_function:
+            json_data = {
+                "project": self.project or target_project,
+                "dataset": self.dataset or target_dataset,
+                "query": sql,
+                "query_parameters": [
+                    query_parameter.to_api_repr()
+                    for query_parameter in query_parameters
+                ],
+            }
+
+            if self.table:
+                json_data["table"] = self.table
+
+            r = urlopen(
+                Request(
+                    self.dry_run_url,
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {self.id_token}",
+                    },
+                    data=json.dumps(json_data).encode("utf8"),
+                    method="POST",
+                )
+            )
+            return json.load(r)
+        else:
+            self.client.project = target_project
+            job_config = bigquery.QueryJobConfig(
+                dry_run=True,
+                use_query_cache=False,
+                default_dataset=f"{target_project}.{target_dataset}",
+                query_parameters=list(query_parameters),
+            )
+            job = self.client.query(sql, job_config=job_config)
+            return {
+                "valid": True,
+                "referencedTables": [
+                    ref.to_api_repr() for ref in job.referenced_tables
+                ],
+                "schema": {"fields": [field.to_api_repr() for field in job.schema]},
+            }
+
+    @cached_property
+    def dry_run_result(self):
+        """Dry run the provided SQL file."""
+        if self.content:
+            sql = self.content
+        else:
+            sql = self.get_sql()
+
+        query_parameters = self.get_query_parameters()
 
         project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
+
         try:
-            if self.use_cloud_function:
-                json_data = {
-                    "project": self.project or project,
-                    "dataset": self.dataset or dataset,
-                    "query": sql,
-                    "query_parameters": [
-                        query_parameter.to_api_repr()
-                        for query_parameter in query_parameters
-                    ],
-                }
+            result = self._dry_run_query(sql, query_parameters, project, dataset)
 
-                if self.table:
-                    json_data["table"] = self.table
-
-                r = urlopen(
-                    Request(
-                        self.dry_run_url,
-                        headers={
-                            "Content-Type": "application/json",
-                            "Authorization": f"Bearer {self.id_token}",
-                        },
-                        data=json.dumps(json_data).encode("utf8"),
-                        method="POST",
-                    )
-                )
-                return json.load(r)
-            else:
-                self.client.project = project
-                job_config = bigquery.QueryJobConfig(
-                    dry_run=True,
-                    use_query_cache=False,
-                    default_dataset=f"{project}.{dataset}",
-                    query_parameters=query_parameters,
-                )
-                job = self.client.query(sql, job_config=job_config)
+            if not self.use_cloud_function:
                 try:
-                    dataset_labels = self.client.get_dataset(job.default_dataset).labels
+                    result["datasetLabels"] = self.client.get_dataset(
+                        f"{project}.{dataset}"
+                    ).labels
                 except Exception as e:
                     # Most users do not have bigquery.datasets.get permission in
                     # moz-fx-data-shared-prod
                     # This should not prevent the dry run from running since the dataset
                     # labels are usually not required
                     if "Permission bigquery.datasets.get denied on dataset" in str(e):
-                        dataset_labels = []
+                        result["datasetLabels"] = []
                     else:
-                        raise e
+                        raise
 
-                result = {
-                    "valid": True,
-                    "referencedTables": [
-                        ref.to_api_repr() for ref in job.referenced_tables
-                    ],
-                    "schema": (
-                        job._properties.get("statistics", {})
-                        .get("query", {})
-                        .get("schema", {})
-                    ),
-                    "datasetLabels": dataset_labels,
-                }
                 if (
                     self.project is not None
                     and self.table is not None
@@ -321,7 +344,7 @@ class DryRun:
                         },
                     }
 
-                return result
+            return result
 
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)
@@ -596,6 +619,210 @@ class DryRun:
 
         click.echo(f"Schemas for {query_file_path} are valid.")
         return True
+
+    def validate_union_schemas(self) -> bool:
+        """Check whether subqueries being unioned have exactly matching schemas."""
+        # Delay import to prevent circular imports in `bigquery_etl.schema`.
+        from .schema import Schema, SchemaAssertError
+
+        result = True
+
+        target_project = basename(dirname(dirname(dirname(self.sqlfile))))
+        target_dataset = basename(dirname(dirname(self.sqlfile)))
+
+        query_parameters_by_name = {
+            param.name: param for param in self.get_query_parameters()
+        }
+
+        def _replace_parameters(node: sqlglot.exp.Expression) -> sqlglot.exp.Expression:
+            if (
+                isinstance(node, sqlglot.exp.Parameter)
+                and node.name in query_parameters_by_name
+            ):
+                query_parameter = query_parameters_by_name[node.name]
+                value_literal = sqlglot.exp.Literal(
+                    this=query_parameter.value,
+                    is_string=isinstance(query_parameter.value, str),
+                )
+                if query_parameter.type_ in ("STRING", "BOOL", "INT64", "INTEGER"):
+                    return value_literal
+                return sqlglot.cast(
+                    value_literal, query_parameter.type_, dialect="bigquery"
+                )
+            return node
+
+        function_defs_by_name: dict[str, sqlglot.exp.Create] = {}
+
+        def _inline_functions(node: sqlglot.exp.Expression) -> sqlglot.exp.Expression:
+            if (
+                isinstance(node, sqlglot.exp.Anonymous)
+                and node.name in function_defs_by_name
+                and not (
+                    isinstance(node.parent, sqlglot.exp.Dot)
+                    and node == node.parent.right
+                )
+            ):
+                function_def = function_defs_by_name[node.name]
+                function_params: list[sqlglot.exp.ColumnDef] = (
+                    function_def.this.expressions
+                )
+                function_args: list[sqlglot.exp.Expression] = node.expressions
+                function_body: sqlglot.exp.Expression = function_def.expression
+
+                # If we know the return type, replace the function call with null cast as the return type.
+                for function_property in function_def.args["properties"].expressions:
+                    if isinstance(function_property, sqlglot.exp.ReturnsProperty):
+                        return sqlglot.cast(sqlglot.exp.Null(), function_property.this)
+
+                # If the function has no arguments, replace the function call with the function body as is.
+                if not function_args:
+                    return function_body
+
+                # Replace the function call with the function body modified to inline the function arguments.
+                function_args_by_name = {}
+                for function_arg_index, function_arg in enumerate(function_args):
+                    if isinstance(function_arg, sqlglot.exp.Kwarg):
+                        function_args_by_name[function_arg.name] = (
+                            function_arg.expression
+                        )
+                    elif function_arg_index < len(function_params):
+                        function_args_by_name[
+                            function_params[function_arg_index].name
+                        ] = function_arg
+
+                def _inline_function_args(
+                    node: sqlglot.exp.Expression,
+                ) -> sqlglot.exp.Expression:
+                    if (
+                        isinstance(node, sqlglot.exp.Column)
+                        and node.parts[0].name in function_args_by_name
+                    ):
+                        function_arg_name = node.parts[0].name
+                        function_arg = function_args_by_name[function_arg_name]
+                        if isinstance(
+                            function_arg,
+                            (
+                                sqlglot.exp.Column,
+                                sqlglot.exp.Dot,
+                                sqlglot.exp.Literal,
+                                sqlglot.exp.Paren,
+                            ),
+                        ):
+                            inline_function_arg = function_arg
+                        else:
+                            inline_function_arg = sqlglot.exp.paren(function_arg)
+                        if len(node.parts) == 1:
+                            if isinstance(
+                                node.parent, (sqlglot.exp.Select, sqlglot.exp.Struct)
+                            ):
+                                return sqlglot.alias(
+                                    inline_function_arg, function_arg_name
+                                )
+                            return inline_function_arg
+                        # Recursively transform the final column expression part in case it's a
+                        # `* REPLACE (...)` with embedded function parameter references.
+                        return sqlglot.exp.Dot.build(
+                            [
+                                inline_function_arg,
+                                *node.parts[1:-1],
+                                node.parts[-1].transform(_inline_function_args),
+                            ]
+                        )
+                    return node
+
+                return function_body.transform(_inline_function_args)
+            return node
+
+        for sql_expression in sqlglot.parse(self.get_sql(), dialect="bigquery"):
+            if not sql_expression:
+                continue
+            if (
+                isinstance(sql_expression, sqlglot.exp.Create)
+                and sql_expression.kind == "FUNCTION"
+            ):
+                function_defs_by_name[sql_expression.this.name] = sql_expression
+                continue
+
+            sql_scope = sqlglot.optimizer.scope.build_scope(sql_expression)
+            if not sql_scope:
+                continue
+
+            union_expression_scopes: list[sqlglot.optimizer.scope.Scope] = [
+                scope
+                for scope in sql_scope.traverse()
+                if isinstance(scope.expression, sqlglot.exp.Union)
+            ]
+            for union_number, union_scope in enumerate(
+                union_expression_scopes, start=1
+            ):
+                union: sqlglot.exp.Union = union_scope.expression
+                left_select = union.left.copy()
+                # Always use the very first `SELECT` statement in the union as the basis for comparison.
+                while isinstance(left_select, sqlglot.exp.Union):
+                    left_select = left_select.left
+                right_select = union.right.copy()
+                if union_scope.cte_sources:
+                    for cte_name, cte_scope in union_scope.cte_sources.items():
+                        left_select.with_(cte_name, cte_scope.expression, copy=False)
+                        right_select.with_(cte_name, cte_scope.expression, copy=False)
+
+                if query_parameters_by_name:
+                    left_select.transform(_replace_parameters, copy=False)
+                    right_select.transform(_replace_parameters, copy=False)
+
+                if function_defs_by_name:
+                    left_select.transform(_inline_functions, copy=False)
+                    right_select.transform(_inline_functions, copy=False)
+
+                left_select_sql = left_select.sql(dialect="bigquery", pretty=True)
+                right_select_sql = right_select.sql(dialect="bigquery", pretty=True)
+
+                # Use `CREATE VIEW` statements to avoid having to add `WHERE` clauses for tables' partition columns.
+                left_dryrun_sql = f"CREATE OR REPLACE VIEW `{TMP_DATASET}.union_left` AS\n{left_select_sql}"
+                right_dryrun_sql = f"CREATE OR REPLACE VIEW `{TMP_DATASET}.union_right` AS\n{right_select_sql}"
+
+                try:
+                    left_dryrun_result = self._dry_run_query(
+                        left_dryrun_sql, [], target_project, target_dataset
+                    )
+                except Exception as e:
+                    raise Exception(
+                        f"Dryrun error for left side of union #{union_number}."
+                    ) from e
+                if not left_dryrun_result["valid"]:
+                    raise Exception(
+                        f"Dryrun error for left side of union #{union_number}: {left_dryrun_result['errors']}"
+                    )
+
+                try:
+                    right_dryrun_result = self._dry_run_query(
+                        right_dryrun_sql, [], target_project, target_dataset
+                    )
+                except Exception as e:
+                    raise Exception(
+                        f"Dryrun error for right side of union #{union_number}."
+                    ) from e
+                if not right_dryrun_result["valid"]:
+                    raise Exception(
+                        f"Dryrun error for right side of union #{union_number}: {right_dryrun_result['errors']}"
+                    )
+
+                left_select_schema = Schema.from_json(left_dryrun_result["schema"])
+                right_select_schema = Schema.from_json(right_dryrun_result["schema"])
+                try:
+                    left_select_schema.assert_exactly_unionable_with(
+                        right_select_schema
+                    )
+                except SchemaAssertError as e:
+                    click.echo(
+                        click.style(
+                            f"ERROR: Schema mismatch in union #{union_number} in {self.sqlfile}: {e}",
+                            fg="red",
+                        ),
+                        err=True,
+                    )
+                    result = False
+        return result
 
 
 def sql_file_valid(sqlfile):

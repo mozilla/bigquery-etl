@@ -1,0 +1,33 @@
+friendly_name: LTV Desktop Aggregates
+description: |-
+  Aggregated historical data for LTV estimates beyond a 2-year horizon.
+owners:
+- mbowerman@mozilla.com
+labels:
+  application: firefox
+  incremental: true
+  schedule: daily
+  owner1: mbowerman
+  table_type: aggregate
+  dag: bqetl_ltv
+scheduling:
+  dag_name: bqetl_ltv
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_clients_daily_v1

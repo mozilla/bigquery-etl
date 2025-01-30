@@ -194,6 +194,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_ltv__wait_for_search_derived__search_clients_daily__v8",
+            external_dag_id="bqetl_ltv",
+            external_task_id="wait_for_search_derived__search_clients_daily__v8",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="jetstream__wait_for_search_clients_daily",
             external_dag_id="jetstream",
             external_task_id="wait_for_search_clients_daily",

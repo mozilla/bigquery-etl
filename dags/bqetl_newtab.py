@@ -91,6 +91,19 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "telemetry_derived__newtab_clients_daily__v1_external",
+    ) as telemetry_derived__newtab_clients_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_ltv__wait_for_telemetry_derived__newtab_clients_daily__v1",
+            external_dag_id="bqetl_ltv",
+            external_task_id="wait_for_telemetry_derived__newtab_clients_daily__v1",
+        )
+
+        telemetry_derived__newtab_clients_daily__v1_external.set_upstream(
+            telemetry_derived__newtab_clients_daily__v1
+        )
+
     telemetry_derived__newtab_clients_daily_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_clients_daily_aggregates__v1",
         destination_table="newtab_clients_daily_aggregates_v1",

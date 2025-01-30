@@ -8,3 +8,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:data-science/developers

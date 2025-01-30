@@ -1,6 +1,6 @@
 friendly_name: Firefox Health Indicator - Antivirus Trends
 description: |-
-  Aggregate table based on 1% user sample showing antivirus software usage on Windows
+  Aggregate table based on 1% user sample showing antivirus software usage by OS
 owners:
 - kwindau@mozilla.com
 labels:

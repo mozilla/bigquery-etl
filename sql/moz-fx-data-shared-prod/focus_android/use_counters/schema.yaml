@@ -7716,6 +7716,12 @@ fields:
     - name: use_counter_page_js_errorstack_setter_nonstring
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_sectioning_h1_with_no_font_size_or_margins
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_sectioning_h1_with_no_font_size_or_margins
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

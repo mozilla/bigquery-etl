@@ -431,7 +431,19 @@ SELECT
       metrics.labeled_counter.orb_block_initiator,
       metrics.labeled_counter.orb_block_reason,
       metrics.labeled_counter.orb_did_ever_block_response,
-      metrics.labeled_counter.predictor_prefetch_use_status
+      metrics.labeled_counter.predictor_prefetch_use_status,
+      metrics.labeled_counter.canvas_used_2d,
+      metrics.labeled_counter.canvas_webgl2_success,
+      metrics.labeled_counter.canvas_webgl_accl_failure_id,
+      metrics.labeled_counter.canvas_webgl_failure_id,
+      metrics.labeled_counter.canvas_webgl_success,
+      metrics.labeled_counter.canvas_webgl_used,
+      metrics.labeled_counter.urlclassifier_vlps_metadata_corrupt,
+      metrics.labeled_counter.webcrypto_extractable_enc,
+      metrics.labeled_counter.webcrypto_extractable_generate,
+      metrics.labeled_counter.webcrypto_extractable_import,
+      metrics.labeled_counter.webcrypto_extractable_sig,
+      metrics.labeled_counter.webcrypto_resolved
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -629,7 +641,15 @@ SELECT
       metrics.custom_distribution.predictor_total_preconnects,
       metrics.custom_distribution.predictor_total_predictions,
       metrics.custom_distribution.predictor_total_prefetches,
-      metrics.custom_distribution.predictor_total_preresolves
+      metrics.custom_distribution.predictor_total_preresolves,
+      metrics.custom_distribution.thumbnails_capture_done_reason_2,
+      metrics.custom_distribution.thumbnails_queue_size_on_capture,
+      metrics.custom_distribution.urlclassifier_completion_error,
+      metrics.custom_distribution.urlclassifier_threathit_network_error,
+      metrics.custom_distribution.urlclassifier_threathit_remote_status,
+      metrics.custom_distribution.urlclassifier_ui_events,
+      metrics.custom_distribution.webcrypto_alg,
+      metrics.custom_distribution.webcrypto_method
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -848,7 +868,19 @@ SELECT
       metrics.timing_distribution.sts_poll_and_event_the_last_cycle,
       metrics.timing_distribution.sts_poll_and_events_cycle,
       metrics.timing_distribution.sts_poll_block_time,
-      metrics.timing_distribution.sts_poll_cycle
+      metrics.timing_distribution.sts_poll_cycle,
+      metrics.timing_distribution.thumbnails_capture_canvas_draw_time,
+      metrics.timing_distribution.thumbnails_capture_page_load_time,
+      metrics.timing_distribution.thumbnails_capture_queue_time,
+      metrics.timing_distribution.thumbnails_capture_time,
+      metrics.timing_distribution.thumbnails_store_time,
+      metrics.timing_distribution.urlclassifier_async_classifylocal_time,
+      metrics.timing_distribution.urlclassifier_cl_check_time,
+      metrics.timing_distribution.urlclassifier_lookup_time_2,
+      metrics.timing_distribution.urlclassifier_shutdown_time,
+      metrics.timing_distribution.urlclassifier_vlps_construct_time,
+      metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
+      metrics.timing_distribution.urlclassifier_vlps_fileload_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -923,7 +955,10 @@ SELECT
       metrics.labeled_timing_distribution.networking_trr_tls_handshake,
       metrics.labeled_timing_distribution.network_http_fetch_duration,
       metrics.labeled_timing_distribution.orb_javascript_validation,
-      metrics.labeled_timing_distribution.orb_receive_data_for_validation
+      metrics.labeled_timing_distribution.orb_receive_data_for_validation,
+      metrics.labeled_timing_distribution.urlclassifier_cl_keyed_update_time,
+      metrics.labeled_timing_distribution.urlclassifier_complete_server_response_time,
+      metrics.labeled_timing_distribution.urlclassifier_update_server_response_time
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -931,7 +966,12 @@ SELECT
       metrics.labeled_custom_distribution.network_cache_hit_rate_per_cache_size,
       metrics.labeled_custom_distribution.contentblocking_canvas_fingerprinting_per_tab,
       metrics.labeled_custom_distribution.contentblocking_email_tracker_embedded_per_tab,
-      metrics.labeled_custom_distribution.downloads_user_action_on_blocked_download
+      metrics.labeled_custom_distribution.downloads_user_action_on_blocked_download,
+      metrics.labeled_custom_distribution.urlclassifier_complete_remote_status2,
+      metrics.labeled_custom_distribution.urlclassifier_update_error,
+      metrics.labeled_custom_distribution.urlclassifier_update_remote_network_error,
+      metrics.labeled_custom_distribution.urlclassifier_update_remote_status2,
+      metrics.labeled_custom_distribution.urlclassifier_update_timeout
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`
   ) AS `metrics`,

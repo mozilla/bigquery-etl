@@ -385,6 +385,12 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: usage_distribution_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The distribution id associated with the install of Firefox.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -449,6 +455,16 @@ fields:
         loaded.
 
         Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: usage_is_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether Firefox is set as the default browser.
 
         '
 - name: normalized_app_name

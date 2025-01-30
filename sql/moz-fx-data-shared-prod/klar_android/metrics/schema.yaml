@@ -5097,6 +5097,205 @@ fields:
         histogram PREDICTOR_PREFETCH_USE_STATUS.
 
         '
+    - name: canvas_used_2d
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: '2D canvas used
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CANVAS_2D_USED.
+
+        '
+    - name: canvas_webgl2_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'WebGL2 creation success
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CANVAS_WEBGL2_SUCCESS.
+
+        '
+    - name: canvas_webgl_accl_failure_id
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Track the failure IDs that lead us to reject attempting to create
+        an accelerated context. CANVAS_WEBGL_FAILURE_ID reports the overall WebGL
+        status with the attempt to fallback.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        CANVAS_WEBGL_ACCL_FAILURE_ID.
+
+        '
+    - name: canvas_webgl_failure_id
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'WebGL runtime and dynamic failure IDs. This will record a count
+        for each context creation success or failure. Each failure id is a unique
+        identifier that can be traced back to a particular failure branch or blocklist
+        rule.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        CANVAS_WEBGL_FAILURE_ID.
+
+        '
+    - name: canvas_webgl_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'WebGL1 creation success
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CANVAS_WEBGL_SUCCESS.
+
+        '
+    - name: canvas_webgl_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'WebGL canvas used
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CANVAS_WEBGL_USED.
+
+        '
+    - name: urlclassifier_vlps_metadata_corrupt
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether or not the metadata for a variable-length prefix set loaded
+        from disk is corrupted (true = file corrupted).
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        URLCLASSIFIER_VLPS_METADATA_CORRUPT.
+
+        '
+    - name: webcrypto_extractable_enc
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a key used in an encrypt/decrypt operation was marked
+        as extractable
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBCRYPTO_EXTRACTABLE_ENC.
+
+        '
+    - name: webcrypto_extractable_generate
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a generated key was marked as extractable
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBCRYPTO_EXTRACTABLE_GENERATE.
+
+        '
+    - name: webcrypto_extractable_import
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether an imported key was marked as extractable
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBCRYPTO_EXTRACTABLE_IMPORT.
+
+        '
+    - name: webcrypto_extractable_sig
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a key used in a sign/verify operation was marked as extractable
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBCRYPTO_EXTRACTABLE_SIG.
+
+        '
+    - name: webcrypto_resolved
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a promise created by WebCrypto was resolved (vs rejected)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBCRYPTO_RESOLVED.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -8959,6 +9158,243 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram PREDICTOR_TOTAL_PRERESOLVES.
+
+        '
+    - name: thumbnails_capture_done_reason_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'BACKGROUND THUMBNAILS: Reason the capture completed (see TEL_CAPTURE_DONE_*
+        constants in BackgroundPageThumbs.sys.mjs)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram FX_THUMBNAILS_BG_CAPTURE_DONE_REASON_2.
+
+        '
+    - name: thumbnails_queue_size_on_capture
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'BACKGROUND THUMBNAILS: Size of capture queue when a capture request
+        is received
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_THUMBNAILS_BG_QUEUE_SIZE_ON_CAPTURE.
+
+        '
+    - name: urlclassifier_completion_error
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SafeBrowsing v4 hash completion error (0 = success, 1 = parsing
+        failure, 2 = unknown threat type)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_COMPLETION_ERROR.
+
+        '
+    - name: urlclassifier_threathit_network_error
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Whether or not an error was encountered while sending a Safe Browsing
+        ThreatHit report. (0=sucess, 1=unknown error, 2=already connected, 3=not connected,
+        4=connection refused,5=net timeout, 6=offline, 7=port access not allowed,
+        8=net reset, 9=net interrupt, 10=proxy connection refused, 11=partial transfer,
+        12=inadequate security, 13=unknown host, 14=dns lookup queue full, 15=unknown
+        proxy host)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_THREATHIT_NETWORK_ERROR.
+
+        '
+    - name: urlclassifier_threathit_remote_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Server HTTP status code from Safe Browsing ThreatHit report. (0=1xx,
+        1=200, 2=2xx, 3=204, 4=3xx, 5=400, 6=4xx, 7=403, 8=404, 9=408, 10=413, 11=5xx,
+        12=502|504|511, 13=503, 14=505, 15=Other)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_THREATHIT_REMOTE_STATUS.
+
+        '
+    - name: urlclassifier_ui_events
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'URL CLassifier-related (aka Safe Browsing) UI events. See nsIUrlClassifierUITelemetry.idl
+        for the specific values.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_UI_EVENTS.
+
+        '
+    - name: webcrypto_alg
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Algorithms used with WebCrypto (see table in WebCryptoTask.cpp)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBCRYPTO_ALG.
+
+        '
+    - name: webcrypto_method
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Methods invoked under window.crypto.subtle (0=encrypt, 1=decrypt,
+        2=sign, 3=verify, 4=digest, 5=generateKey, 6=deriveKey, 7=deriveBits, 8=importKey,
+        9=exportKey, 10=wrapKey, 11=unwrapKey)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBCRYPTO_METHOD.
 
         '
   - name: timespan
@@ -18460,6 +18896,560 @@ fields:
         histogram STS_POLL_CYCLE.
 
         '
+    - name: thumbnails_capture_canvas_draw_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'BACKGROUND THUMBNAILS: Time it took to draw the capture''s window
+        to canvas (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_THUMBNAILS_BG_CAPTURE_CANVAS_DRAW_TIME_MS.
+
+        '
+    - name: thumbnails_capture_page_load_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'BACKGROUND THUMBNAILS: Time the capture''s page load took (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_THUMBNAILS_BG_CAPTURE_PAGE_LOAD_TIME_MS.
+
+        '
+    - name: thumbnails_capture_queue_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'BACKGROUND THUMBNAILS: Time the capture request spent in the queue
+        before being serviced (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_THUMBNAILS_BG_CAPTURE_QUEUE_TIME_MS.
+
+        '
+    - name: thumbnails_capture_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'THUMBNAILS: Time (ms) it takes to capture a thumbnail
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_THUMBNAILS_CAPTURE_TIME_MS.
+
+        '
+    - name: thumbnails_store_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'THUMBNAILS: Time (ms) it takes to store a thumbnail in the cache
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_THUMBNAILS_STORE_TIME_MS.
+
+        '
+    - name: urlclassifier_async_classifylocal_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent per AsyncClassifyLocalWithTables (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_ASYNC_CLASSIFYLOCAL_TIME.
+
+        '
+    - name: urlclassifier_cl_check_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent per classifier lookup (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_CL_CHECK_TIME.
+
+        '
+    - name: urlclassifier_lookup_time_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent per dbservice lookup (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_LOOKUP_TIME_2.
+
+        '
+    - name: urlclassifier_shutdown_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent per dbservice shutdown (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_SHUTDOWN_TIME.
+
+        '
+    - name: urlclassifier_vlps_construct_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent constructing Variable-Length PrefixSet from file (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_VLPS_CONSTRUCT_TIME.
+
+        '
+    - name: urlclassifier_vlps_fallocate_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent fallocating Variable-Length PrefixSet (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_VLPS_FALLOCATE_TIME.
+
+        '
+    - name: urlclassifier_vlps_fileload_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent loading Variable-Length PrefixSet from file (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_VLPS_FILELOAD_TIME.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -20224,6 +21214,166 @@ fields:
         histogram ORB_RECEIVE_DATA_FOR_VALIDATION_MS.
 
         '
+    - name: urlclassifier_cl_keyed_update_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time spent per classifier update (ms), keyed by the name of the
+        provider.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_CL_KEYED_UPDATE_TIME.
+
+        '
+    - name: urlclassifier_complete_server_response_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Server response time to getHash request (ms). Keyed by provider
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_COMPLETE_SERVER_RESPONSE_TIME.
+
+        '
+    - name: urlclassifier_update_server_response_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Server response time to update request (ms). Keyed by provider
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram URLCLASSIFIER_UPDATE_SERVER_RESPONSE_TIME.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -20446,6 +21596,195 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram DOWNLOADS_USER_ACTION_ON_BLOCKED_DOWNLOAD.
+
+        '
+    - name: urlclassifier_complete_remote_status2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Server HTTP status code from remote SafeBrowsing gethash lookups.
+        (0=1xx, 1=200, 2=2xx, 3=204, 4=3xx, 5=400, 6=4xx, 7=403, 8=404, 9=408, 10=413,
+        11=5xx, 12=502|504|511, 13=503, 14=505, 15=Other). Keyed by provider
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_COMPLETE_REMOTE_STATUS2.
+
+        '
+    - name: urlclassifier_update_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Whether or not an error was encountered while processing a Safe
+        Browsing update (0 = success, 1 = unspecified error, 2 = addition of an already
+        existing prefix, 3 = parser got into an infinite loop, 4 = removal index out
+        of bounds, 5 = checksum mismatch, 6 = missing checksum, 7 = update while shutdown,
+        8 = cannot find table, 9 = build prefix failure, 10 = write disk failure,
+        11 = protocol parser error). Keyed by provider
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_UPDATE_ERROR.
+
+        '
+    - name: urlclassifier_update_remote_network_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Network error from SafeBrowsing database updates. (0=sucess, 1=unknown
+        error, 2=already connected, 3=not connected, 4=connection refused,5=net timeout,
+        6=offline, 7=port access not allowed, 8=net reset, 9=net interrupt, 10=proxy
+        connection refused,11=partial transfer,12=inadequate security,13=unknown host,14=dns
+        lookup queue full,15=unknown proxy host
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_UPDATE_REMOTE_NETWORK_ERROR.
+
+        '
+    - name: urlclassifier_update_remote_status2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Server HTTP status code from SafeBrowsing database updates. (0=1xx,
+        1=200, 2=2xx, 3=204, 4=3xx, 5=400, 6=4xx, 7=403, 8=404, 9=408, 10=413, 11=5xx,
+        12=502|504|511, 13=503, 14=505, 15=Other). Keyed by provider
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram URLCLASSIFIER_UPDATE_REMOTE_STATUS2.
+
+        '
+    - name: urlclassifier_update_timeout
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: ' Whether or not an update timed out (0 = no timeout, 1 = server
+        respond
+
+        timeout, 2 = overall timeout). Keyed by provider This metric was generated
+        to correspond to the Legacy Telemetry enumerated histogram URLCLASSIFIER_UPDATE_TIMEOUT.
 
         '
   - name: labeled_quantity

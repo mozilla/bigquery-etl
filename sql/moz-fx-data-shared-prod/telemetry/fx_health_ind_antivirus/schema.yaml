@@ -3,6 +3,10 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Submission Date
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System
 - name: antivirus
   type: STRING
   mode: REPEATED

@@ -2519,7 +2519,9 @@ SELECT
       metrics.counter.use_counter_page_js_errorstack_getter_no_errordata,
       metrics.counter.use_counter_page_js_errorstack_setter,
       metrics.counter.use_counter_page_js_errorstack_setter_no_errordata,
-      metrics.counter.use_counter_page_js_errorstack_setter_nonstring
+      metrics.counter.use_counter_page_js_errorstack_setter_nonstring,
+      metrics.counter.use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+      metrics.counter.use_counter_page_sectioning_h1_with_no_font_size_or_margins
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5060,7 +5062,9 @@ SELECT
       metrics.counter.use_counter_page_js_errorstack_getter_no_errordata,
       metrics.counter.use_counter_page_js_errorstack_setter,
       metrics.counter.use_counter_page_js_errorstack_setter_no_errordata,
-      metrics.counter.use_counter_page_js_errorstack_setter_nonstring
+      metrics.counter.use_counter_page_js_errorstack_setter_nonstring,
+      metrics.counter.use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+      metrics.counter.use_counter_page_sectioning_h1_with_no_font_size_or_margins
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7601,7 +7605,9 @@ SELECT
       metrics.counter.use_counter_page_js_errorstack_getter_no_errordata,
       metrics.counter.use_counter_page_js_errorstack_setter,
       metrics.counter.use_counter_page_js_errorstack_setter_no_errordata,
-      metrics.counter.use_counter_page_js_errorstack_setter_nonstring
+      metrics.counter.use_counter_page_js_errorstack_setter_nonstring,
+      metrics.counter.use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+      metrics.counter.use_counter_page_sectioning_h1_with_no_font_size_or_margins
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

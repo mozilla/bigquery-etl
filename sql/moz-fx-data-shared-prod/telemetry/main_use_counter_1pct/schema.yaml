@@ -8396,6 +8396,12 @@ fields:
     - name: use_counter2_js_errorstack_setter_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_sectioningh1withnofontsizeormargins_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_sectioningh1withnofontsizeormargins_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16659,6 +16665,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_errorstack_setter_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_sectioningh1withnofontsizeormargins_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_sectioningh1withnofontsizeormargins_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

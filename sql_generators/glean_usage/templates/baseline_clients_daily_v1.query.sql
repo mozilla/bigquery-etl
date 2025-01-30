@@ -24,15 +24,18 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    {% if has_distribution_id %}
+    {% if app_name == "fenix" %}
     metrics.string.metrics_distribution_id AS distribution_id,
+    metrics.string.first_session_install_source AS install_source,
+    CAST(NULL AS BOOLEAN) AS is_default_browser,
+    {% elif app_name == "firefox_desktop" %}
+    metrics.string.usage_distribution_id AS distribution_id,
+    CAST(NULL AS STRING) AS install_source,
+    metrics.boolean.usage_is_default_browser AS is_default_browser,
     {% else %}
     CAST(NULL AS STRING) AS distribution_id,
-    {% endif %}
-    {% if app_name == "fenix" %}
-    metrics.string.first_session_install_source AS install_source,
-    {% else %}
     CAST(NULL AS STRING) AS install_source,
+    CAST(NULL AS BOOLEAN) AS is_default_browser,
     {% endif %}
     metadata.geo.subdivision1 AS geo_subdivision,
     {% if has_profile_group_id %}
@@ -137,6 +140,7 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(install_source) OVER w1) AS install_source,
     udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
     udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
+    udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
   FROM
     with_date_offsets
   LEFT JOIN

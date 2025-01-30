@@ -66,3 +66,6 @@ fields:
 - mode: NULLABLE
   name: install_source
   type: STRING
+- mode: NULLABLE
+  name: is_default_browser
+  type: BOOLEAN

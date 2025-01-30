@@ -24,30 +24,36 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    {% if has_distribution_id %}
-    metrics.string.metrics_distribution_id AS distribution_id,
-    {% else %}
-    CAST(NULL AS STRING) AS distribution_id,
-    {% endif %}
-    {% if app_name == "fenix" %}
-    metrics.string.first_session_install_source AS install_source,
-    {% else %}
-    CAST(NULL AS STRING) AS install_source,
-    {% endif %}
     metadata.geo.subdivision1 AS geo_subdivision,
     {% if has_profile_group_id %}
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     {% else %}
     CAST(NULL AS STRING) AS profile_group_id,
     {% endif %}
-    {% if "_desktop" in app_name %}
+    {% if app_name == "firefox_desktop" %}
     client_info.windows_build_number as windows_build_number,
     metrics.counter.browser_engagement_uri_count as browser_engagement_uri_count,
     metrics.counter.browser_engagement_active_ticks as browser_engagement_active_ticks,
+    metrics.uuid.legacy_telemetry_client_id as legacy_telemetry_client_id,
+    metrics.string.usage_distribution_id AS distribution_id,
+    metrics.boolean.usage_is_default_browser AS is_default_browser,
+    CAST(NULL AS STRING) AS install_source,
+    {% elif app_name == "fenix" %}
+    CAST(NULL AS STRING) AS windows_build_number,
+    CAST(NULL AS STRING) AS browser_engagement_uri_count,
+    CAST(NULL AS STRING) AS browser_engagement_active_ticks,
+    CAST(NULL AS STRING) AS legacy_telemetry_client_id,
+    metrics.string.metrics_distribution_id AS distribution_id,
+    CAST(NULL AS BOOLEAN) AS is_default_browser,
+    metrics.string.first_session_install_source AS install_source,
     {% else %}
     CAST(NULL AS STRING) AS windows_build_number,
     CAST(NULL AS STRING) AS browser_engagement_uri_count,
     CAST(NULL AS STRING) AS browser_engagement_active_ticks,
+    CAST(NULL AS STRING) AS legacy_telemetry_client_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    CAST(NULL AS BOOLEAN) AS is_default_browser,
+    CAST(NULL AS STRING) AS install_source,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -148,7 +154,9 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
     udf.mode_last(ARRAY_AGG(windows_build_number ignore nulls) OVER w1) AS windows_build_number,
     SUM(COALESCE(browser_engagement_uri_count,0)) OVER w1 AS browser_engagement_uri_count,
-    SUM(COALESCE(browser_engagement_active_ticks,0)) OVER w1 AS browser_engagement_active_ticks
+    SUM(COALESCE(browser_engagement_active_ticks,0)) OVER w1 AS browser_engagement_active_ticks,
+    udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id ignore nulls) OVER w1) AS legacy_telemetry_client_id,
+    udf.mode_last(ARRAY_AGG(is_default_browser ignore nulls) OVER w1) AS is_default_browser,
   FROM
     with_date_offsets
   LEFT JOIN

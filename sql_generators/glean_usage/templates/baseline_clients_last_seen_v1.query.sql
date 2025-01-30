@@ -37,11 +37,12 @@ WITH _current AS (
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
-    {% if "_desktop" in app_name %}
-    windows_build_number,
+    {% if app_name == "firefox_desktop" %}
     CAST(TRUE AS INT64) &
     CAST(browser_engagement_uri_count > 0 AS INT64) &
     CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_active_dau_bits,
+    {% else %}
+    CAST(NULL AS INT64) AS days_active_dau_bits,
     {% endif %}
     * EXCEPT(submission_date)
   FROM

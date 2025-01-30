@@ -2,6 +2,7 @@
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
 # Active Users
 /sql_generators/active_users_aggregates_v3/templates/ @mozilla/kpi_table_reviewers
+/sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v3 @mozilla/kpi_table_reviewers
 /sql_generators/active_users_aggregates_v4/templates/ @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/firefox_desktop_derived/active_users_aggregates_v4/ @mozilla/kpi_table_reviewers
 /sql/moz-fx-data-shared-prod/fenix_derived/active_users_aggregates_v3/ @mozilla/kpi_table_reviewers

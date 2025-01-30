@@ -108,7 +108,7 @@ def dryrun(
 
     if not sql_files:
         click.echo("Skipping dry run because no queries matched")
-        sys.exit(0)
+        return
 
     if not use_cloud_function and not is_authenticated():
         click.echo(

@@ -5,3 +5,5 @@ SELECT
   *
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.fx_health_ind_antivirus_v1`
+WHERE
+  normalized_os = 'Windows'

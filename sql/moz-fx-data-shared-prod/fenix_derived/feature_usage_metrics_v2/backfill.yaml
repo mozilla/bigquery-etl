@@ -5,6 +5,6 @@
   watchers:
   - vsabino@mozilla.com
   - kwindau@mozilla.com
-  status: Complete
+  status: Initiate
   shredder_mitigation: false
   override_retention_limit: true

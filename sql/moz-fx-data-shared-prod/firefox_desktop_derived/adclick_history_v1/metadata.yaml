@@ -13,8 +13,6 @@ scheduling:
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
-  time_partitioning:
-    expiration_days: 775
   clustering:
     fields:
     - client_id

@@ -7,18 +7,16 @@ labels:
   application: firefox
   incremental: true
   schedule: daily
-  dag: bqetl_newtab
   owner1: mbowerman@mozilla.com
   table_type: aggregate
 scheduling:
-  dag_name: bqetl_newtab
+  dag_name: bqetl_ltv
+  date_partition_parameter: null
+  parameters:
+    - "submission_date:DATE:{{ds}}"
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
-  clustering:
-    fields: []
-references: {}

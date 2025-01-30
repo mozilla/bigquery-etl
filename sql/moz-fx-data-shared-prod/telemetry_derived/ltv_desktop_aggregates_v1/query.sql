@@ -6,7 +6,7 @@ WITH search_clients_daily AS (
     ANY_VALUE(mozfun.norm.os(os)) AS os,
     ANY_VALUE(channel) AS channel,
     ANY_VALUE(locale) AS locale,
-    MAX(mozfun.norm.extract_version(app_version, "major")) AS app_version,
+    CAST(MAX(mozfun.norm.extract_version(app_version, "major")) AS INT64) AS app_version,
     ANY_VALUE(
       `moz-fx-data-shared-prod`.udf.normalize_search_engine(default_search_engine)
     ) AS default_search_engine,
@@ -45,7 +45,7 @@ newtab_clients_daily AS (
     ANY_VALUE(normalized_os) AS normalized_os,
     ANY_VALUE(channel) AS channel,
     ANY_VALUE(locale) AS locale,
-    MAX(mozfun.norm.extract_version(browser_version, "major")) AS browser_version,
+    CAST(MAX(mozfun.norm.extract_version(browser_version, "major")) AS INT64) AS browser_version,
     LOGICAL_OR(pocket_enabled) AS stories_enabled,
     LOGICAL_OR(pocket_sponsored_stories_enabled) AS sponsored_stories_enabled,
     LOGICAL_OR(topsites_enabled) AS topsites_enabled,

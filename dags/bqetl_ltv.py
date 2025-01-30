@@ -50,6 +50,32 @@ with DAG(
     tags=tags,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(days=-1, seconds=82800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_search_derived__search_clients_daily__v8 = ExternalTaskSensor(
         task_id="wait_for_search_derived__search_clients_daily__v8",
         external_dag_id="bqetl_search",
@@ -75,6 +101,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    firefox_ios_derived__ltv_ios_aggregates__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__ltv_ios_aggregates__v1",
+        destination_table="ltv_ios_aggregates_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mbowerman@mozilla.com",
+        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__ltv_desktop_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__ltv_desktop_aggregates__v1",
         destination_table="ltv_desktop_aggregates_v1",
@@ -86,6 +125,14 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    firefox_ios_derived__ltv_ios_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__ltv_ios_aggregates__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     telemetry_derived__ltv_desktop_aggregates__v1.set_upstream(

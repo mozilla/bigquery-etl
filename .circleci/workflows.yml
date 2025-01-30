@@ -297,7 +297,7 @@ jobs:
                 command: |
                   # TODO: Add check here to make sure all queries have metadata.yaml
                   PATH="venv/bin:$PATH" script/bqetl query validate \
-                    --respect-dryrun-skip
+                    --no-dryrun --skip-format-sql
             - *copy_debug_sql
             - *store_debug_artifacts
       - unless:

@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: mhirose@mozilla.com
+  table_type: client_level
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on:
@@ -16,7 +17,7 @@ bigquery:
     type: day
     field: date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - country

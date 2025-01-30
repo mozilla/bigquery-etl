@@ -3,6 +3,10 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Submission Date
+- name: update_channel
+  type: STRING
+  mode: NULLABLE
+  description: Update Channel
 - name: installer_type
   type: STRING
   mode: NULLABLE

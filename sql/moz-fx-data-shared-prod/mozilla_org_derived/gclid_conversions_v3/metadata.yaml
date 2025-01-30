@@ -10,6 +10,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  table_type: client_level
   dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
@@ -20,7 +21,7 @@ bigquery:
     type: day
     field: activity_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering: null
 workgroup_access:

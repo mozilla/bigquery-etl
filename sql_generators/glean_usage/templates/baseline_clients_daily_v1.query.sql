@@ -40,6 +40,15 @@ WITH base AS (
     {% else %}
     CAST(NULL AS STRING) AS profile_group_id,
     {% endif %}
+    {% if "_desktop" in app_name %}
+    client_info.windows_build_number as windows_build_number,
+    metrics.counter.browser_engagement_uri_count as browser_engagement_uri_count,
+    metrics.counter.browser_engagement_active_ticks as browser_engagement_active_ticks,
+    {% else %}
+    CAST(NULL AS STRING) AS windows_build_number,
+    CAST(NULL AS STRING) AS browser_engagement_uri_count,
+    CAST(NULL AS STRING) AS browser_engagement_active_ticks,
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -137,6 +146,9 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(install_source) OVER w1) AS install_source,
     udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
     udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
+    udf.mode_last(ARRAY_AGG(windows_build_number ignore nulls) OVER w1) AS windows_build_number,
+    SUM(COALESCE(browser_engagement_uri_count,0)) OVER w1 AS browser_engagement_uri_count,
+    SUM(COALESCE(browser_engagement_active_ticks,0)) OVER w1 AS browser_engagement_active_ticks
   FROM
     with_date_offsets
   LEFT JOIN

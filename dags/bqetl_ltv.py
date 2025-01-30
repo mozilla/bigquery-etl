@@ -101,6 +101,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    fenix_derived__ltv_android_aggregates__v1 = bigquery_etl_query(
+        task_id="fenix_derived__ltv_android_aggregates__v1",
+        destination_table="ltv_android_aggregates_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mbowerman@mozilla.com",
+        email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_ios_derived__ltv_ios_aggregates__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__ltv_ios_aggregates__v1",
         destination_table="ltv_ios_aggregates_v1",
@@ -125,6 +138,14 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    fenix_derived__ltv_android_aggregates__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    fenix_derived__ltv_android_aggregates__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
     )
 
     firefox_ios_derived__ltv_ios_aggregates__v1.set_upstream(

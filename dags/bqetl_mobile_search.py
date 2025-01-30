@@ -126,6 +126,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_ltv__wait_for_search_derived__mobile_search_clients_daily__v2",
+            external_dag_id="bqetl_ltv",
+            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_mobile_activation__wait_for_search_derived__mobile_search_clients_daily__v2",
             external_dag_id="bqetl_mobile_activation",
             external_task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
@@ -137,13 +144,6 @@ with DAG(
             external_dag_id="bqetl_firefox_ios",
             external_task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_ltv__wait_for_search_derived__mobile_search_clients_daily__v2",
-            external_dag_id="bqetl_ltv",
-            external_task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         ExternalTaskMarker(

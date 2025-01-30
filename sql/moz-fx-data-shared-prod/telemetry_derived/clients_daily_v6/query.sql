@@ -362,14 +362,24 @@ clients_summary AS (
     ) AS places_pages_count,
     ARRAY(
       SELECT AS STRUCT
-        SUBSTR(_key, 0, pos - 2) AS engine,
-        SUBSTR(_key, pos) AS source,
-        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(value) AS `count`
+        CASE
+          WHEN REGEXP_CONTAINS(_key, r'\.')
+            THEN
+      -- Capture everything (greedily) until the last '.'
+      -- but do NOT include the '.' or anything after it in the capture
+              REGEXP_EXTRACT(_key, r'^(.*)\.[^.]+$')
+          ELSE _key
+        END AS engine,
+        CASE
+        -- Everything after the last period
+          WHEN REGEXP_CONTAINS(_key, r'\.')
+            THEN REGEXP_EXTRACT(_key, r'\.([^.]+)$')
+          ELSE NULL
+        END AS source,
+        `moz-fx-data-shared-prod.udf.extract_histogram_sum`(value) AS count
       FROM
-        UNNEST(payload.keyed_histograms.search_counts),
-        -- Bug 1481671 - probe was briefly implemented with '.' rather than ':'
-        UNNEST([REPLACE(key, 'in-content.', 'in-content:')]) AS _key,
-        UNNEST([LENGTH(REGEXP_EXTRACT(_key, '.+?[.].'))]) AS pos
+        UNNEST(payload.keyed_histograms.search_counts) AS hist,
+        UNNEST([REPLACE(hist.key, 'in-content.', 'in-content:')]) AS _key
     ) AS search_counts,
     -- A fixed list of fields is selected to maintain compatibility with the udf as fields are added
     `moz-fx-data-shared-prod.udf_js.main_summary_active_addons`(

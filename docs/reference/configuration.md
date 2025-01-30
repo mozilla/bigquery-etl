@@ -16,7 +16,6 @@ dry_run:
 views:
   skip_validation:
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
-  - sql/moz-fx-data-shared-prod/mlhackweek_search/events/view.sql
   - sql/moz-fx-data-shared-prod/**/client_deduplication/view.sql
   # - ...
   skip_publishing:

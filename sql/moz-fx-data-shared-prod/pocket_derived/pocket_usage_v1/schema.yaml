@@ -1,0 +1,25 @@
+fields:
+- description: Submission Date
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
+- description: Channel
+  mode: NULLABLE
+  name: channel
+  type: STRING
+- description: Pocket Events
+  mode: NULLABLE
+  name: event_name
+  type: STRING
+- description: User Count for Pocket Events
+  mode: NULLABLE
+  name: event_client_count
+  type: INTEGER
+- description: Count of Total Users
+  mode: NULLABLE
+  name: total_client_count
+  type: INTEGER
+- description: Percentage of Pocket Event Users
+  mode: NULLABLE
+  name: incidence_percentage
+  type: FLOAT

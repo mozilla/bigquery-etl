@@ -1,0 +1,10 @@
+2025-01-29:
+  start_date: 2021-01-01
+  end_date: 2025-01-28
+  reason: Fix join logic for mobile feature metrics (DENG-7535)
+  watchers:
+  - vsabino@mozilla.com
+  - kwindau@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true

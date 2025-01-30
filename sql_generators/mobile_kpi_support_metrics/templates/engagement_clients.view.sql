@@ -12,12 +12,16 @@ WITH active_users AS (
     normalized_channel,
     locale,
     country,
+    city,
+    geo_subdivision,
     isp,
     app_display_version,
     is_dau,
     is_wau,
     is_mau,
     is_mobile,
+    device_type,
+    device_manufacturer,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 ),
@@ -42,6 +46,8 @@ SELECT
   app_display_version AS app_version,
   locale,
   country,
+  city,
+  geo_subdivision,
   isp,
   is_dau,
   is_wau,
@@ -62,6 +68,8 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  device_type,
+  device_manufacturer,
 FROM
   active_users
 LEFT JOIN

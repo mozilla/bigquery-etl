@@ -595,10 +595,10 @@ combined_newtab_activity AS (
 client_profile_info AS (
   SELECT
     client_id AS legacy_telemetry_client_id,
-    ANY_VALUE(is_new_profile) AS is_new_profile,
+    LOGICAL_OR(first_seen_date = @submission_date) AS is_new_profile,
     ANY_VALUE(activity_segment) AS activity_segment
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.unified_metrics_v1`
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
   WHERE
     submission_date = @submission_date
   GROUP BY

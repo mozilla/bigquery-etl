@@ -9,9 +9,6 @@ labels:
   owner1: rzhao
   table_type: aggregate
   shredder_mitigation: true
-  dag: bqetl_mobile_feature_usage
-scheduling:
-  dag_name: bqetl_mobile_feature_usage
 bigquery:
   time_partitioning:
     type: day
@@ -20,12 +17,10 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.fenix.attribution_clients
   - moz-fx-data-shared-prod.fenix.baseline
   - moz-fx-data-shared-prod.fenix.metrics
+deprecated: true

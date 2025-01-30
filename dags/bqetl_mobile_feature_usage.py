@@ -202,17 +202,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    fenix_derived__feature_usage_metrics__v1 = bigquery_etl_query(
-        task_id="fenix_derived__feature_usage_metrics__v1",
-        destination_table="feature_usage_metrics_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="rzhao@mozilla.com",
-        email=["rzhao@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     fenix_derived__feature_usage_metrics__v2 = bigquery_etl_query(
         task_id="fenix_derived__feature_usage_metrics__v2",
         destination_table="feature_usage_metrics_v2",
@@ -231,17 +220,6 @@ with DAG(
     firefox_ios_derived__feature_usage_events__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__feature_usage_events__v1",
         destination_table="feature_usage_events_v1",
-        dataset_id="firefox_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="rzhao@mozilla.com",
-        email=["rzhao@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_ios_derived__feature_usage_metrics__v1 = bigquery_etl_query(
-        task_id="firefox_ios_derived__feature_usage_metrics__v1",
-        destination_table="feature_usage_metrics_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
         owner="rzhao@mozilla.com",
@@ -270,12 +248,6 @@ with DAG(
     )
 
     fenix_derived__feature_usage_events__v1.set_upstream(wait_for_copy_deduplicate_all)
-
-    fenix_derived__feature_usage_metrics__v1.set_upstream(
-        wait_for_bigeye__fenix_derived__attribution_clients__v1
-    )
-
-    fenix_derived__feature_usage_metrics__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     fenix_derived__feature_usage_metrics__v2.set_upstream(
         wait_for_bigeye__fenix_derived__attribution_clients__v1
@@ -308,14 +280,6 @@ with DAG(
     )
 
     firefox_ios_derived__feature_usage_events__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
-        wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
-    )
-
-    firefox_ios_derived__feature_usage_metrics__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

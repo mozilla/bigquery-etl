@@ -108,30 +108,6 @@ fields:
   name: homepage_visits_stddev
   type: FLOAT
 - mode: NULLABLE
-  name: pocket_section_impressions_avg
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_section_impressions_stddev
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_spoc_impressions_avg
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_spoc_impressions_stddev
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_spoc_clicks_avg
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_spoc_clicks_stddev
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_recs_clicks_avg
-  type: FLOAT
-- mode: NULLABLE
-  name: pocket_recs_clicks_stddev
-  type: FLOAT
-- mode: NULLABLE
   name: sponsored_tile_impressions_avg
   type: FLOAT
 - mode: NULLABLE
@@ -142,10 +118,4 @@ fields:
   type: FLOAT
 - mode: NULLABLE
   name: sponsored_tile_clicks_stddev
-  type: FLOAT
-- mode: NULLABLE
-  name: organic_tile_clicks_avg
-  type: FLOAT
-- mode: NULLABLE
-  name: organic_tile_clicks_stddev
   type: FLOAT

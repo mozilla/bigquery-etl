@@ -31,7 +31,7 @@ WITH base AS (
     CAST(NULL AS STRING) AS profile_group_id,
     {% endif %}
     {% if app_name == "firefox_desktop" %}
-    client_info.windows_build_number as windows_build_number,
+    client_info.windows_build_number AS windows_build_number,
     metrics.counter.browser_engagement_uri_count as browser_engagement_uri_count,
     metrics.counter.browser_engagement_active_ticks as browser_engagement_active_ticks,
     metrics.uuid.legacy_telemetry_client_id as legacy_telemetry_client_id,

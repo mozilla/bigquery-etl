@@ -20,8 +20,6 @@ SCHEMA_FILE = "schema.yaml"
 class SchemaAssertError(Exception):
     """Schema assert error."""
 
-    pass
-
 
 @attr.s(auto_attribs=True)
 class Schema:

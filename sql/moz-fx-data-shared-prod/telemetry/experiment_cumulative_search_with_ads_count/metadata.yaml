@@ -2,4 +2,3 @@ friendly_name: Experiment Cumulative Search with Ads Count
 description: Cumulative data of searches that had ad clicks related to experiments
 owners:
 - ascholtz@mozilla.com
-deprecated: true

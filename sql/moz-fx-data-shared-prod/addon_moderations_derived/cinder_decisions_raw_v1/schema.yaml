@@ -33,7 +33,7 @@ fields:
 - mode: NULLABLE
   name: uuid
   type: STRING
-  description: ID of UU
+  description: Presumably the id of the decision record
 
 - mode: NULLABLE
   name: entity_slug

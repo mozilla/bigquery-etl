@@ -12,14 +12,14 @@ labels:
   dag: bqetl_ltv
 scheduling:
   dag_name: bqetl_ltv
-  date_partition_parameter: null
+  date_partition_parameter: submission_date
   parameters:
   - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: false
+    require_partition_filter: true
     expiration_days: null
   range_partitioning: null
   clustering: null

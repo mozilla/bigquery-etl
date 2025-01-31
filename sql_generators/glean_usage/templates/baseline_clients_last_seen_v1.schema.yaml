@@ -1,12 +1,16 @@
 fields:
+- name: submission_date
+  type: DATE
 - name: days_seen_bits
   type: INTEGER
 - name: days_active_bits
   type: INTEGER
 - name: days_created_profile_bits
   type: INTEGER
-- name: submission_date
-  type: DATE
+- mode: NULLABLE
+  name: days_active_dau_bits
+  type: INTEGER
+  description: This represents the official definition used for desktop active user
 - name: client_id
   type: STRING
 - name: sample_id
@@ -67,5 +71,17 @@ fields:
   name: install_source
   type: STRING
 - mode: NULLABLE
-  name: days_active_dau_bits
+  name: windows_build_number
   type: INTEGER
+- mode: NULLABLE
+  name: browser_engagement_uri_count
+  type: INTEGER
+- mode: NULLABLE
+  name: browser_engagement_active_ticks
+  type: INTEGER
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+- mode: NULLABLE
+  name: is_default_browser
+  type: BOOLEAN

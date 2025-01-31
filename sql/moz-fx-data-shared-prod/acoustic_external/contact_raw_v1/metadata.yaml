@@ -14,6 +14,7 @@ description: >
   Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 labels:
   incremental: true
+  table_type: client_level
 
 owners:
   - cbeck@mozilla.com
@@ -31,6 +32,7 @@ bigquery:
     type: day
     field: last_modified_date
     require_partition_filter: false
+    expiration_days: 775
   clustering:
     fields:
       - has_opted_out_of_email

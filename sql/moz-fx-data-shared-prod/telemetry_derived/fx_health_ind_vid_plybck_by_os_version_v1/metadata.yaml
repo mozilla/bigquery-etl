@@ -18,5 +18,6 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
+    - normalized_os
     - normalized_os_version
 references: {}

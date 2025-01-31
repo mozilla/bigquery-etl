@@ -32,6 +32,10 @@ TEMPLATES = (
     ("CLIENT", "new_profile_clients.view.sql"),
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),
+    ("CLIENT", "new_profile_activation_clients.view.sql"),
+    ("CLIENT", "new_profile_activation_clients.query.sql"),
+    ("AGGREGATE", "new_profile_activations.view.sql"),
+    ("AGGREGATE", "new_profile_activations.query.sql"),
 )
 BIGEYE_COLLECTION = "Operational Checks"
 BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"

@@ -15,6 +15,7 @@ default:
   - moz-fx-data-pioneer-nonprod
   - moz-fx-data-pioneer-prod
   - moz-fx-data-glam-prod-fca7
+  - moz-fx-glam-prod
   public_project: mozilla-public-data
 
 monitoring:
@@ -42,6 +43,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
+  - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
   # uses time travel, will error on dates prior to the time travel window
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
@@ -199,6 +201,7 @@ dry_run:
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
+  - sql/moz-fx-glam-prod/glam_etl/**/*.sql
   # Source table does not have a verifiable schema
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_run_v1/view.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_cost_per_flow_v1/view.sql
@@ -388,5 +391,78 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v1
+- sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v3
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/ltv_states_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/firefox_android_clients_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/ltv_derived/fenix_client_ltv_v1
+- sql/moz-fx-data-shared-prod/monitor_cirrus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/moso_mastodon_backend_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/mozilla_lockbox_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/mozilla_mach_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/mozillavpn_backend_cirrus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/mozillavpn_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/mozphab_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/net_thunderbird_android_beta_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/net_thunderbird_android_daily_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/net_thunderbird_android_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_connect_firefox_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_fennec_aurora_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_beta_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/fennec_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefox_vpn_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_firefoxreality_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_focus_beta_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_focus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_focus_nightly_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_fennec_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefox_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxbeta_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxvpn_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_firefoxvpn_network_extension_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_klar_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_lockbox_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_klar_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_tiktokreporter_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/pine_derived/baseline_clients_first_seen_v11
+- sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2
+- sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/thunderbird_desktop_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/focus_android_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/focus_ios_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/klar_android_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/klar_ios_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/adclick_history_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/client_adclicks_history_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/clients_yearly_v1
+- sql/moz-fx-data-shared-prod/accounts_backend_derived/users_services_first_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_first_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_first_seen_v2
+- sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_devices_first_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v2
+- sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
+- sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1

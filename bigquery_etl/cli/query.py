@@ -1359,6 +1359,7 @@ def _run_part(
 )
 @respect_dryrun_skip_option(default=False)
 @no_dryrun_option(default=False)
+@click.option("--skip_format_sql", "--skip-format-sql", is_flag=True, default=False)
 @click.pass_context
 def validate(
     ctx,
@@ -1369,6 +1370,7 @@ def validate(
     validate_schemas,
     respect_dryrun_skip,
     no_dryrun,
+    skip_format_sql,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     if name is None:
@@ -1376,8 +1378,11 @@ def validate(
 
     query_files = paths_matching_name_pattern(name, sql_dir, project_id)
     dataset_dirs = set()
+    errors = []
     for query in query_files:
-        ctx.invoke(format, paths=[str(query)])
+        click.echo(f"Validating metadata for {query}")
+        if not skip_format_sql:
+            ctx.invoke(format, paths=[str(query)])
 
         if not no_dryrun:
             ctx.invoke(
@@ -1389,14 +1394,27 @@ def validate(
                 respect_skip=respect_dryrun_skip,
             )
 
-        validate_metadata.validate(query.parent)
+        try:
+            validate_metadata.validate(query.parent)
+        except validate_metadata.MetadataValidationError as e:
+            errors.append(str(e))
         dataset_dirs.add(query.parent.parent)
 
     if no_dryrun:
         click.echo("Dry run skipped for query files.")
 
     for dataset_dir in dataset_dirs:
-        validate_metadata.validate_datasets(dataset_dir)
+        try:
+            validate_metadata.validate_datasets(dataset_dir)
+        except validate_metadata.MetadataValidationError as e:
+            errors.append(str(e))
+
+    if len(errors) > 0:
+        click.echo(
+            f"Failed to validate {len(errors)} metadata files (see above for error messages):"
+        )
+        click.echo("\n".join(errors))
+        sys.exit(1)
 
 
 def _initialize_in_parallel(

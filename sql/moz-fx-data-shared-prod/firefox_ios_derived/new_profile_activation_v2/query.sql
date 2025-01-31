@@ -27,8 +27,7 @@ client_search AS (
     `moz-fx-data-shared-prod.search.mobile_search_clients_daily`
   WHERE
     (submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date)
-    AND os = 'iOS'
-    AND normalized_app_name = 'Fennec'
+    AND normalized_app_name_os = 'Firefox iOS'
   GROUP BY
     client_id
 ),

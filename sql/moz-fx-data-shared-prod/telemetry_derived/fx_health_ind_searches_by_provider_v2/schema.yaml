@@ -1,0 +1,21 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: default_search_engine
+  type: STRING
+  description: Default Search Engine
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Channel
+- mode: NULLABLE
+  name: searches
+  type: INTEGER
+  description: Number of Searches
+- mode: NULLABLE
+  name: users
+  type: INTEGER
+  description: Number of Users

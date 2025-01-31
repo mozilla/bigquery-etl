@@ -1,5 +1,6 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
+  normalized_os,
   normalized_os_version,
   SUM(
     `moz-fx-data-shared-prod.udf.histogram_max_key_with_nonzero_value`(
@@ -10,7 +11,7 @@ FROM
   `moz-fx-data-shared-prod.telemetry.main_1pct`
 WHERE
   DATE(submission_timestamp) = @submission_date
-  AND normalized_os = 'Windows'
 GROUP BY
   DATE(submission_timestamp),
+  normalized_os,
   normalized_os_version

@@ -76,6 +76,25 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__fail_search_terms_derived__adm_daily_aggregates__v1 = bigquery_dq_check(
+        task_id="checks__fail_search_terms_derived__adm_daily_aggregates__v1",
+        source_table="adm_daily_aggregates_v1",
+        dataset_id="search_terms_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="ctroy@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     search_terms_derived__adm_daily_aggregates__v1 = bigquery_etl_query(
         task_id="search_terms_derived__adm_daily_aggregates__v1",
         destination_table="adm_daily_aggregates_v1",
@@ -159,6 +178,10 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
+    checks__fail_search_terms_derived__adm_daily_aggregates__v1.set_upstream(
+        search_terms_derived__adm_daily_aggregates__v1
     )
 
     search_terms_derived__adm_daily_aggregates__v1.set_upstream(

@@ -113,7 +113,7 @@ def main():
 
     project = args.project
     dataset = args.dataset
-    table_name = "mh_cinder_decisions_raw_20250113e"
+    table_name = "cinder_decisions_raw_v1"
 
     date = args.date
     bearer_token = cinder_bearer_token

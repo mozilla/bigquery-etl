@@ -6,8 +6,10 @@ owners:
 labels:
   owner1: ascholtz
 bigquery: null
-workgroup_access: []
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_live_v1
-deprecated: true

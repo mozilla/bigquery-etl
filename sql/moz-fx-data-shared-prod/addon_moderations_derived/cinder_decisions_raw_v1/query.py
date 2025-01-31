@@ -64,16 +64,16 @@ def add_date_to_json(query_export_contents, date):
             "date": date,
             "decision_type": str(item["decision_type"]),
             "user": str(item["user"]),
-            "created_at": str(item["created_at"]),
+            "created_at": (item["created_at"]),
             "entity_id": str(item["entity_id"]),
-            "entity": str(item["entity"]),
+            "entity": (item["entity"]),
             "uuid": str(item["uuid"]),
             "entity_slug": str(item["entity_slug"]),
             "job_id": str(item["job_id"]),
-            "job_assigned_at": str(item["job_assigned_at"]),
+            "job_assigned_at": (item["job_assigned_at"]),
             "queue_slug": str(item["queue_slug"]),
-            "typed_metadata": str(item["typed_metadata"]),
-            "applied_policies": str(item["applied_policies"]),
+            "typed_metadata": (item["typed_metadata"]),
+            "applied_policies": (item["applied_policies"]),
         }
         fields_list.append(field_dict)
     return fields_list
@@ -95,16 +95,42 @@ def upload_to_bigquery(data, project, dataset, table_name, date):
             bigquery.SchemaField("date", "DATE"),
             bigquery.SchemaField("decision_type", "STRING", mode="NULLABLE"),
             bigquery.SchemaField("user", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("created_at", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("created_at", "TIMESTAMP", mode="NULLABLE"),
             bigquery.SchemaField("entity_id", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("entity", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("entity", "JSON", mode="NULLABLE"),
             bigquery.SchemaField("uuid", "STRING", mode="NULLABLE"),
             bigquery.SchemaField("entity_slug", "STRING", mode="NULLABLE"),
             bigquery.SchemaField("job_id", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("job_assigned_at", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField("job_assigned_at", "TIMESTAMP", mode="NULLABLE"),
             bigquery.SchemaField("queue_slug", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("typed_metadata", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("applied_policies", "STRING", mode="NULLABLE"),
+            bigquery.SchemaField(
+                "typed_metadata",
+                "RECORD",
+                mode="REPEATED",
+                fields=[
+                    bigquery.SchemaField(
+                        "legacy_decision_labels", "STRING", mode="NULLABLE"
+                    ),
+                    bigquery.SchemaField("policy_map", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField(
+                        "escalation_details", "STRING", mode="NULLABLE"
+                    ),
+                ],
+            ),
+            bigquery.SchemaField(
+                "applied_policies",
+                "RECORD",
+                mode="REPEATED",
+                fields=[
+                    bigquery.SchemaField("uuid", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField("name", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField("is_illegal", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField("parent_uuid", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField(
+                        "enforcement_actions", "STRING", mode="REPEATED"
+                    ),
+                ],
+            ),
         ],
     )
     destination = f"{project}.{dataset}.{table_name}${partition}"

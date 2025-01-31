@@ -17,7 +17,7 @@ fields:
 
 - mode: NULLABLE
   name: created_at
-  type: STRING
+  type: TIMESTAMP
   description: Date decision made
 
 - mode: NULLABLE
@@ -27,7 +27,7 @@ fields:
 
 - mode: NULLABLE
   name: entity
-  type: STRING
+  type: JSON
   description: Entity includes classifier_scores, attributes(RECORD), entity_type
 
 - mode: NULLABLE
@@ -47,7 +47,7 @@ fields:
 
 - mode: NULLABLE
   name: job_assigned_at
-  type: STRING
+  type: TIMESTAMP
   description: Date addon report was assigned to a moderator
 
 - mode: NULLABLE
@@ -55,12 +55,45 @@ fields:
   type: STRING
   description: Queue slug
 
-- mode: NULLABLE
+- fields:
+  - mode: NULLABLE
+    name: legacy_decisions_labels
+    type: STRING
+    description: Legacy decision label
+  - mode: NULLABLE
+    name: policy_map
+    type: STRING
+    description: Policy Map
+  - mode: NULLABLE
+    name: escalation_details
+    type: STRING
+    description: Details about the escalation
+  mode: NULLABLE
   name: typed_metadata
-  type: STRING
+  type: RECORD
   description: Typed Metadata includes escalation_details, policy_map, legacy_decision_labels
 
-- mode: NULLABLE
+- fields:
+  - mode: NULLABLE
+    name: uuid
+    type: STRING
+  - mode: NULLABLE
+    name: name
+    type: STRING
+    description: The name of the policy applied
+  - mode: NULLABLE
+    name: is_illegal
+    type: BOOLEAN
+    description: Signifies if the addon illegal or not
+  - mode: NULLABLE
+    name: parent_uuid
+    type: STRING
+    description: Top level UUID
+  - mode: REPEATED
+    name: enforcement_actions
+    type: STRING
+    description: List of enforcement actions
+  mode: REPEATED
   name: applied_policies
-  type: STRING
+  type: RECORD
   description: Applied policies includes parent_uuid, is_illegal field, name, enforcement_actions, uuid

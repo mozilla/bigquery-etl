@@ -8,7 +8,7 @@ FROM
   `moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3`
 WHERE
   DATE(submission_timestamp) = @submission_date
-  AND LENGTH(sanitized_query) > 0
+  AND LENGTH(query) > 0
   AND normalized_channel = 'release'
 GROUP BY
   query,

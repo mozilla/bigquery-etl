@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.fenix_derived.feature_usage_metrics_v1`
+  `moz-fx-data-shared-prod.fenix_derived.feature_usage_metrics_v2`

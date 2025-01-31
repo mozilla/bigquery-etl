@@ -57,7 +57,7 @@ fields:
 
 - fields:
   - mode: NULLABLE
-    name: legacy_decisions_labels
+    name: legacy_decision_labels
     type: STRING
     description: Legacy decision label
   - mode: NULLABLE

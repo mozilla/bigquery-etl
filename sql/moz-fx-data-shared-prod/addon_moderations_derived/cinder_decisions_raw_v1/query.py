@@ -4,9 +4,12 @@ import json
 import os
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import requests
 from google.cloud import bigquery
+
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 """Get the bearer token for Cinder from the environment"""
 cinder_bearer_token = os.environ.get("CINDER_TOKEN")
@@ -83,6 +86,7 @@ def upload_to_bigquery(data, project, dataset, table_name, date):
     """Upload the data to bigquery."""
     date = date
     partition = f"{date}".replace("-", "")
+    schema_file_path = Path(__file__).parent / SCHEMA_FILE
     client = bigquery.Client(project)
     job_config = bigquery.LoadJobConfig(
         create_disposition="CREATE_IF_NEEDED",
@@ -91,47 +95,7 @@ def upload_to_bigquery(data, project, dataset, table_name, date):
             type_=bigquery.TimePartitioningType.DAY,
             field="date",
         ),
-        schema=[
-            bigquery.SchemaField("date", "DATE"),
-            bigquery.SchemaField("decision_type", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("user", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("created_at", "TIMESTAMP", mode="NULLABLE"),
-            bigquery.SchemaField("entity_id", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("entity", "JSON", mode="NULLABLE"),
-            bigquery.SchemaField("uuid", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("entity_slug", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("job_id", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField("job_assigned_at", "TIMESTAMP", mode="NULLABLE"),
-            bigquery.SchemaField("queue_slug", "STRING", mode="NULLABLE"),
-            bigquery.SchemaField(
-                "typed_metadata",
-                "RECORD",
-                mode="REPEATED",
-                fields=[
-                    bigquery.SchemaField(
-                        "legacy_decision_labels", "STRING", mode="NULLABLE"
-                    ),
-                    bigquery.SchemaField("policy_map", "STRING", mode="NULLABLE"),
-                    bigquery.SchemaField(
-                        "escalation_details", "STRING", mode="NULLABLE"
-                    ),
-                ],
-            ),
-            bigquery.SchemaField(
-                "applied_policies",
-                "RECORD",
-                mode="REPEATED",
-                fields=[
-                    bigquery.SchemaField("uuid", "STRING", mode="NULLABLE"),
-                    bigquery.SchemaField("name", "STRING", mode="NULLABLE"),
-                    bigquery.SchemaField("is_illegal", "STRING", mode="NULLABLE"),
-                    bigquery.SchemaField("parent_uuid", "STRING", mode="NULLABLE"),
-                    bigquery.SchemaField(
-                        "enforcement_actions", "STRING", mode="REPEATED"
-                    ),
-                ],
-            ),
-        ],
+        schema=Schema.from_schema_file(schema_file_path).to_bigquery_schema(),
     )
     destination = f"{project}.{dataset}.{table_name}${partition}"
     job = client.load_table_from_json(data, destination, job_config=job_config)
@@ -143,13 +107,13 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--dataset", default="addon_moderations_derived")
+    parser.add_argument("--dataset", default="analysis")
 
     args = parser.parse_args()
 
     project = args.project
     dataset = args.dataset
-    table_name = "cinder_decisions_raw_v1"
+    table_name = "mh_cinder_decisions_raw_20250113e"
 
     date = args.date
     bearer_token = cinder_bearer_token
@@ -157,11 +121,11 @@ def main():
     cinder_data = []
 
     query_export = cinder_addon_decisions_download(date, bearer_token)
-    """Data returns as a dictionary with a key called 'items' and the value being a list of data"""
+    # Data returns as a dictionary with a key called 'items' and the value being a list of data"""
     query_export_contents = query_export["items"]
-    """Add date to each element in query_export for partitioning"""
+    # Add date to each element in query_export for partitioning"""
     cinder_data = add_date_to_json(query_export_contents, date)
-    """Pull out[ the list from query_export["items"] and put that data into the cinder_data list"""
+    # Pull out[ the list from query_export["items"] and put that data into the cinder_data list"""
     upload_to_bigquery(cinder_data, project, dataset, table_name, date)
 
 

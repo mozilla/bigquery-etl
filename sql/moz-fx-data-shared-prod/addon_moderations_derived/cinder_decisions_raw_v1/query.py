@@ -107,7 +107,7 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--dataset", default="analysis")
+    parser.add_argument("--dataset", default="addon_moderations_derived")
 
     args = parser.parse_args()
 

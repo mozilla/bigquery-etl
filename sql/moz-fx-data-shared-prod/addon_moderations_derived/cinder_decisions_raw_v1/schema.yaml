@@ -47,7 +47,7 @@ fields:
 
 - mode: NULLABLE
   name: job_assigned_at
-  type: TIMESTAMP
+  type: STRING
   description: Date addon report was assigned to a moderator
 
 - mode: NULLABLE
@@ -57,10 +57,10 @@ fields:
 
 - mode: NULLABLE
   name: typed_metadata
-  type: RECORD
+  type: STRING
   description: Typed Metadata includes escalation_details, policy_map, legacy_decision_labels
 
 - mode: NULLABLE
   name: applied_policies
-  type: RECORD
+  type: STRING
   description: Applied policies includes parent_uuid, is_illegal field, name, enforcement_actions, uuid

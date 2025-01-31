@@ -19,7 +19,7 @@ Built from bigquery-etl repo, [`dags/bqetl_mobile_activation.py`](https://github
 Queries related to the mobile activation metric used by Marketing
 #### Owner
 
-vsabino@mozilla.com
+kik@mozilla.com
 
 #### Tags
 
@@ -29,10 +29,10 @@ vsabino@mozilla.com
 
 
 default_args = {
-    "owner": "vsabino@mozilla.com",
+    "owner": "kik@mozilla.com",
     "start_date": datetime.datetime(2021, 1, 1, 0, 0),
     "end_date": None,
-    "email": ["telemetry-alerts@mozilla.com", "vsabino@mozilla.com"],
+    "email": ["telemetry-alerts@mozilla.com", "kik@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -289,8 +289,8 @@ with DAG(
         destination_table="new_profile_activation_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="vsabino@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "vsabino@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -321,8 +321,8 @@ with DAG(
         destination_table="new_profile_activation_v1",
         dataset_id="firefox_ios_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="vsabino@mozilla.com",
-        email=["telemetry-alerts@mozilla.com", "vsabino@mozilla.com"],
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

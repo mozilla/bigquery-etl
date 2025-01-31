@@ -2,12 +2,12 @@ friendly_name: Firefox iOS New Profile Activation
 description: |-
   Mobile activation metric used for Marketing campaign performance
 owners:
-- vsabino@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
   table_type: client_level
   dag: bqetl_mobile_activation
-  owner1: vsabino
+  owner1: kik
 scheduling:
   dag_name: bqetl_mobile_activation
   date_partition_parameter: submission_date

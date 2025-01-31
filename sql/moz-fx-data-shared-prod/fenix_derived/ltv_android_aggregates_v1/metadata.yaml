@@ -12,8 +12,6 @@ labels:
 scheduling:
   dag_name: bqetl_ltv
   date_partition_parameter: submission_date
-  parameters:
-    - "submission_date:DATE:{{ds}}"
 bigquery:
   time_partitioning:
     type: day

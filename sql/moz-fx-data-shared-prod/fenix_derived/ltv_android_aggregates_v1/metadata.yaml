@@ -11,12 +11,10 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_ltv
-  date_partition_parameter: null
-  parameters:
-    - "submission_date:DATE:{{ds}}"
+  date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: false
+    require_partition_filter: true
     expiration_days: null

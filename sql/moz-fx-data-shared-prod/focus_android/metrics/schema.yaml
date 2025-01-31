@@ -3225,6 +3225,26 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: media_mp4_parse_sample_description_entries_have_multiple_codecs
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: media_mp4_parse_sample_description_entries_have_multiple_crypto
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -3490,6 +3510,106 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: memory_phc_slop
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_speed_avif
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_speed_gif
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_speed_jpeg
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_speed_png
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_speed_webp
       type: RECORD
       mode: NULLABLE
       fields:
@@ -6094,6 +6214,66 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: webcrypto_method
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_chunks
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: media_mp4_parse_num_sample_description_entries
       type: RECORD
       mode: NULLABLE
       fields:
@@ -14570,6 +14750,82 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: urlclassifier_vlps_fileload_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_on_draw_latency
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: image_decode_time
       type: RECORD
       mode: NULLABLE
       fields:

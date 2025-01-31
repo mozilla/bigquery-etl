@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -18985,6 +18985,52 @@ fields:
       mode: NULLABLE
       description: 'Whether a page found sectioned h1 element with no font-size or
         no margins. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_css_doc_css_hyphenate_limit_chars
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used the CSS property hyphenate-limit-chars.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_css_page_css_hyphenate_limit_chars
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property hyphenate-limit-chars. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_js_dateparse
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called Date.parse. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_dateparse_impl_def
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document call to Date.parse used implementation defined
+        behaviour. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_page_js_dateparse
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called Date.parse. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_dateparse_impl_def
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page call to Date.parse used implementation defined
+        behaviour. Compare against `use.counter.top_level_content_documents_destroyed`
         to calculate the rate.
 
         '

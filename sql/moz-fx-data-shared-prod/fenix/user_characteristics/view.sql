@@ -292,7 +292,8 @@ SELECT
       metrics.text2.characteristics_gl_params_v1_software,
       metrics.text2.characteristics_gl_params_v2_software,
       metrics.text2.characteristics_gl_precision_fragment_software,
-      metrics.text2.characteristics_gl_precision_vertex_software
+      metrics.text2.characteristics_gl_precision_vertex_software,
+      metrics.text2.characteristics_user_agent
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -595,7 +596,8 @@ SELECT
       metrics.text2.characteristics_gl_params_v1_software,
       metrics.text2.characteristics_gl_params_v2_software,
       metrics.text2.characteristics_gl_precision_fragment_software,
-      metrics.text2.characteristics_gl_precision_vertex_software
+      metrics.text2.characteristics_gl_precision_vertex_software,
+      metrics.text2.characteristics_user_agent
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -898,7 +900,8 @@ SELECT
       metrics.text2.characteristics_gl_params_v1_software,
       metrics.text2.characteristics_gl_params_v2_software,
       metrics.text2.characteristics_gl_precision_fragment_software,
-      metrics.text2.characteristics_gl_precision_vertex_software
+      metrics.text2.characteristics_gl_precision_vertex_software,
+      metrics.text2.characteristics_user_agent
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -1201,7 +1204,8 @@ SELECT
       metrics.text2.characteristics_gl_params_v1_software,
       metrics.text2.characteristics_gl_params_v2_software,
       metrics.text2.characteristics_gl_precision_fragment_software,
-      metrics.text2.characteristics_gl_precision_vertex_software
+      metrics.text2.characteristics_gl_precision_vertex_software,
+      metrics.text2.characteristics_user_agent
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -1504,7 +1508,8 @@ SELECT
       metrics.text2.characteristics_gl_params_v1_software,
       metrics.text2.characteristics_gl_params_v2_software,
       metrics.text2.characteristics_gl_precision_fragment_software,
-      metrics.text2.characteristics_gl_precision_vertex_software
+      metrics.text2.characteristics_gl_precision_vertex_software,
+      metrics.text2.characteristics_user_agent
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,

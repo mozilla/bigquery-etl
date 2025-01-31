@@ -328,6 +328,12 @@ fields:
     - name: captcha_detection_hcaptcha_ps_pbm
       type: INTEGER
       mode: NULLABLE
+    - name: captcha_detection_pages_visited
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_pages_visited_pbm
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

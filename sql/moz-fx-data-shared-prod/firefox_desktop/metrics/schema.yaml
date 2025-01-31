@@ -8228,6 +8228,41 @@ fields:
         WEBCRYPTO_RESOLVED.
 
         '
+    - name: media_mp4_parse_sample_description_entries_have_multiple_codecs
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records if multiple codecs are present in a track''s sample description
+        entries. Recorded each time we process a track''s metadata while parsing mp4s.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        MEDIA_MP4_PARSE_SAMPLE_DESCRIPTION_ENTRIES_HAVE_MULTIPLE_CODECS.
+
+        '
+    - name: media_mp4_parse_sample_description_entries_have_multiple_crypto
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records if multiple sets of crypto info are present in a track''s
+        sample description entries. Recorded each time we process a track''s metadata
+        while parsing mp4s.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        MEDIA_MP4_PARSE_SAMPLE_DESCRIPTION_ENTRIES_HAVE_MULTIPLE_CRYPTO.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -8640,6 +8675,146 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_PHC_SLOP.
+
+        '
+    - name: image_decode_speed_avif
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'AVIF image decode speed (Kbytes/sec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_SPEED_AVIF.
+
+        '
+    - name: image_decode_speed_gif
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'GIF image decode speed (Kbytes/sec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_SPEED_GIF.
+
+        '
+    - name: image_decode_speed_jpeg
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'JPEG image decode speed (Kbytes/sec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_SPEED_JPEG.
+
+        '
+    - name: image_decode_speed_png
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'PNG image decode speed (Kbytes/sec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_SPEED_PNG.
+
+        '
+    - name: image_decode_speed_webp
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'WebP image decode speed (Kbytes/sec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_SPEED_WEBP.
 
         '
   - name: string
@@ -19463,6 +19638,98 @@ fields:
         histogram URLCLASSIFIER_VLPS_FILELOAD_TIME.
 
         '
+    - name: image_decode_on_draw_latency
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from starting a decode to it showing up on the screen (us)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_ON_DRAW_LATENCY.
+
+        '
+    - name: image_decode_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent decoding an image (us)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_TIME.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -23637,6 +23904,92 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram WEBCRYPTO_METHOD.
+
+        '
+    - name: image_decode_chunks
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of chunks per decode attempt
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_CHUNKS.
+
+        '
+    - name: image_decode_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Decode count
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram IMAGE_DECODE_COUNT.
+
+        '
+    - name: media_mp4_parse_num_sample_description_entries
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Counts the number of entries in the sample description box (stsd)
+        for a track in an mp4. Recorded each time we process a track''s metadata while
+        parsing mp4s.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram MEDIA_MP4_PARSE_NUM_SAMPLE_DESCRIPTION_ENTRIES.
 
         '
   - name: url2

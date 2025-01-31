@@ -386,7 +386,10 @@ SELECT
       metrics.custom_distribution.urlclassifier_threathit_remote_status,
       metrics.custom_distribution.urlclassifier_ui_events,
       metrics.custom_distribution.webcrypto_alg,
-      metrics.custom_distribution.webcrypto_method
+      metrics.custom_distribution.webcrypto_method,
+      metrics.custom_distribution.image_decode_chunks,
+      metrics.custom_distribution.image_decode_count,
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -654,7 +657,9 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_generate,
       metrics.labeled_counter.webcrypto_extractable_import,
       metrics.labeled_counter.webcrypto_extractable_sig,
-      metrics.labeled_counter.webcrypto_resolved
+      metrics.labeled_counter.webcrypto_resolved,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1053,7 +1058,9 @@ SELECT
       metrics.timing_distribution.urlclassifier_shutdown_time,
       metrics.timing_distribution.urlclassifier_vlps_construct_time,
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
-      metrics.timing_distribution.urlclassifier_vlps_fileload_time
+      metrics.timing_distribution.urlclassifier_vlps_fileload_time,
+      metrics.timing_distribution.image_decode_on_draw_latency,
+      metrics.timing_distribution.image_decode_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1073,7 +1080,12 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
       metrics.memory_distribution.javascript_gc_nursery_bytes,
-      metrics.memory_distribution.memory_phc_slop
+      metrics.memory_distribution.memory_phc_slop,
+      metrics.memory_distribution.image_decode_speed_avif,
+      metrics.memory_distribution.image_decode_speed_gif,
+      metrics.memory_distribution.image_decode_speed_jpeg,
+      metrics.memory_distribution.image_decode_speed_png,
+      metrics.memory_distribution.image_decode_speed_webp
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1598,7 +1610,10 @@ SELECT
       metrics.custom_distribution.urlclassifier_threathit_remote_status,
       metrics.custom_distribution.urlclassifier_ui_events,
       metrics.custom_distribution.webcrypto_alg,
-      metrics.custom_distribution.webcrypto_method
+      metrics.custom_distribution.webcrypto_method,
+      metrics.custom_distribution.image_decode_chunks,
+      metrics.custom_distribution.image_decode_count,
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1866,7 +1881,9 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_generate,
       metrics.labeled_counter.webcrypto_extractable_import,
       metrics.labeled_counter.webcrypto_extractable_sig,
-      metrics.labeled_counter.webcrypto_resolved
+      metrics.labeled_counter.webcrypto_resolved,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2265,7 +2282,9 @@ SELECT
       metrics.timing_distribution.urlclassifier_shutdown_time,
       metrics.timing_distribution.urlclassifier_vlps_construct_time,
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
-      metrics.timing_distribution.urlclassifier_vlps_fileload_time
+      metrics.timing_distribution.urlclassifier_vlps_fileload_time,
+      metrics.timing_distribution.image_decode_on_draw_latency,
+      metrics.timing_distribution.image_decode_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2285,7 +2304,12 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
       metrics.memory_distribution.javascript_gc_nursery_bytes,
-      metrics.memory_distribution.memory_phc_slop
+      metrics.memory_distribution.memory_phc_slop,
+      metrics.memory_distribution.image_decode_speed_avif,
+      metrics.memory_distribution.image_decode_speed_gif,
+      metrics.memory_distribution.image_decode_speed_jpeg,
+      metrics.memory_distribution.image_decode_speed_png,
+      metrics.memory_distribution.image_decode_speed_webp
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2828,7 +2852,10 @@ SELECT
       metrics.custom_distribution.urlclassifier_threathit_remote_status,
       metrics.custom_distribution.urlclassifier_ui_events,
       metrics.custom_distribution.webcrypto_alg,
-      metrics.custom_distribution.webcrypto_method
+      metrics.custom_distribution.webcrypto_method,
+      metrics.custom_distribution.image_decode_chunks,
+      metrics.custom_distribution.image_decode_count,
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3096,7 +3123,9 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_generate,
       metrics.labeled_counter.webcrypto_extractable_import,
       metrics.labeled_counter.webcrypto_extractable_sig,
-      metrics.labeled_counter.webcrypto_resolved
+      metrics.labeled_counter.webcrypto_resolved,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3495,7 +3524,9 @@ SELECT
       metrics.timing_distribution.urlclassifier_shutdown_time,
       metrics.timing_distribution.urlclassifier_vlps_construct_time,
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
-      metrics.timing_distribution.urlclassifier_vlps_fileload_time
+      metrics.timing_distribution.urlclassifier_vlps_fileload_time,
+      metrics.timing_distribution.image_decode_on_draw_latency,
+      metrics.timing_distribution.image_decode_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3515,7 +3546,12 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
       metrics.memory_distribution.javascript_gc_nursery_bytes,
-      metrics.memory_distribution.memory_phc_slop
+      metrics.memory_distribution.memory_phc_slop,
+      metrics.memory_distribution.image_decode_speed_avif,
+      metrics.memory_distribution.image_decode_speed_gif,
+      metrics.memory_distribution.image_decode_speed_jpeg,
+      metrics.memory_distribution.image_decode_speed_png,
+      metrics.memory_distribution.image_decode_speed_webp
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4067,7 +4103,10 @@ SELECT
       metrics.custom_distribution.urlclassifier_threathit_remote_status,
       metrics.custom_distribution.urlclassifier_ui_events,
       metrics.custom_distribution.webcrypto_alg,
-      metrics.custom_distribution.webcrypto_method
+      metrics.custom_distribution.webcrypto_method,
+      metrics.custom_distribution.image_decode_chunks,
+      metrics.custom_distribution.image_decode_count,
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4335,7 +4374,9 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_generate,
       metrics.labeled_counter.webcrypto_extractable_import,
       metrics.labeled_counter.webcrypto_extractable_sig,
-      metrics.labeled_counter.webcrypto_resolved
+      metrics.labeled_counter.webcrypto_resolved,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4734,7 +4775,9 @@ SELECT
       metrics.timing_distribution.urlclassifier_shutdown_time,
       metrics.timing_distribution.urlclassifier_vlps_construct_time,
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
-      metrics.timing_distribution.urlclassifier_vlps_fileload_time
+      metrics.timing_distribution.urlclassifier_vlps_fileload_time,
+      metrics.timing_distribution.image_decode_on_draw_latency,
+      metrics.timing_distribution.image_decode_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4754,7 +4797,12 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
       metrics.memory_distribution.javascript_gc_nursery_bytes,
-      metrics.memory_distribution.memory_phc_slop
+      metrics.memory_distribution.memory_phc_slop,
+      metrics.memory_distribution.image_decode_speed_avif,
+      metrics.memory_distribution.image_decode_speed_gif,
+      metrics.memory_distribution.image_decode_speed_jpeg,
+      metrics.memory_distribution.image_decode_speed_png,
+      metrics.memory_distribution.image_decode_speed_webp
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -5288,7 +5336,10 @@ SELECT
       metrics.custom_distribution.urlclassifier_threathit_remote_status,
       metrics.custom_distribution.urlclassifier_ui_events,
       metrics.custom_distribution.webcrypto_alg,
-      metrics.custom_distribution.webcrypto_method
+      metrics.custom_distribution.webcrypto_method,
+      metrics.custom_distribution.image_decode_chunks,
+      metrics.custom_distribution.image_decode_count,
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5556,7 +5607,9 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_generate,
       metrics.labeled_counter.webcrypto_extractable_import,
       metrics.labeled_counter.webcrypto_extractable_sig,
-      metrics.labeled_counter.webcrypto_resolved
+      metrics.labeled_counter.webcrypto_resolved,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5955,7 +6008,9 @@ SELECT
       metrics.timing_distribution.urlclassifier_shutdown_time,
       metrics.timing_distribution.urlclassifier_vlps_construct_time,
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
-      metrics.timing_distribution.urlclassifier_vlps_fileload_time
+      metrics.timing_distribution.urlclassifier_vlps_fileload_time,
+      metrics.timing_distribution.image_decode_on_draw_latency,
+      metrics.timing_distribution.image_decode_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5975,7 +6030,12 @@ SELECT
       metrics.memory_distribution.networking_http_3_udp_datagram_segment_size_sent,
       metrics.memory_distribution.networking_http_3_udp_datagram_size_received,
       metrics.memory_distribution.javascript_gc_nursery_bytes,
-      metrics.memory_distribution.memory_phc_slop
+      metrics.memory_distribution.memory_phc_slop,
+      metrics.memory_distribution.image_decode_speed_avif,
+      metrics.memory_distribution.image_decode_speed_gif,
+      metrics.memory_distribution.image_decode_speed_jpeg,
+      metrics.memory_distribution.image_decode_speed_png,
+      metrics.memory_distribution.image_decode_speed_webp
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

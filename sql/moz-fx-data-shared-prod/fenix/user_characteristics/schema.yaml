@@ -1001,6 +1001,9 @@ fields:
     - name: characteristics_gl_precision_vertex_software
       type: STRING
       mode: NULLABLE
+    - name: characteristics_user_agent
+      type: STRING
+      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

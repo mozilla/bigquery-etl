@@ -528,6 +528,18 @@ fields:
       description: 'Number of times the hCaptcha puzzle was shown.
 
         '
+    - name: captcha_detection_pages_visited
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of pages visited since the last ping submission.
+
+        '
+    - name: captcha_detection_pages_visited_pbm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of pages visited since the last ping submission.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

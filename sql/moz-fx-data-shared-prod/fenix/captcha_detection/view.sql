@@ -60,7 +60,9 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_pc,
       metrics.counter.captcha_detection_hcaptcha_pc_pbm,
       metrics.counter.captcha_detection_hcaptcha_ps,
-      metrics.counter.captcha_detection_hcaptcha_ps_pbm
+      metrics.counter.captcha_detection_hcaptcha_ps_pbm,
+      metrics.counter.captcha_detection_pages_visited,
+      metrics.counter.captcha_detection_pages_visited_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -150,7 +152,9 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_pc,
       metrics.counter.captcha_detection_hcaptcha_pc_pbm,
       metrics.counter.captcha_detection_hcaptcha_ps,
-      metrics.counter.captcha_detection_hcaptcha_ps_pbm
+      metrics.counter.captcha_detection_hcaptcha_ps_pbm,
+      metrics.counter.captcha_detection_pages_visited,
+      metrics.counter.captcha_detection_pages_visited_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -240,7 +244,9 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_pc,
       metrics.counter.captcha_detection_hcaptcha_pc_pbm,
       metrics.counter.captcha_detection_hcaptcha_ps,
-      metrics.counter.captcha_detection_hcaptcha_ps_pbm
+      metrics.counter.captcha_detection_hcaptcha_ps_pbm,
+      metrics.counter.captcha_detection_pages_visited,
+      metrics.counter.captcha_detection_pages_visited_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -330,7 +336,9 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_pc,
       metrics.counter.captcha_detection_hcaptcha_pc_pbm,
       metrics.counter.captcha_detection_hcaptcha_ps,
-      metrics.counter.captcha_detection_hcaptcha_ps_pbm
+      metrics.counter.captcha_detection_hcaptcha_ps_pbm,
+      metrics.counter.captcha_detection_pages_visited,
+      metrics.counter.captcha_detection_pages_visited_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
@@ -420,7 +428,9 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_pc,
       metrics.counter.captcha_detection_hcaptcha_pc_pbm,
       metrics.counter.captcha_detection_hcaptcha_ps,
-      metrics.counter.captcha_detection_hcaptcha_ps_pbm
+      metrics.counter.captcha_detection_hcaptcha_ps_pbm,
+      metrics.counter.captcha_detection_pages_visited,
+      metrics.counter.captcha_detection_pages_visited_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,

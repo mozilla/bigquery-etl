@@ -1922,6 +1922,12 @@ fields:
       description: 'Precisions of the vertex shader.
 
         '
+    - name: characteristics_user_agent
+      type: STRING
+      mode: NULLABLE
+      description: 'User agent string
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

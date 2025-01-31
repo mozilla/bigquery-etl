@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -7720,6 +7720,24 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: use_counter_page_sectioning_h1_with_no_font_size_or_margins
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_doc_css_hyphenate_limit_chars
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_hyphenate_limit_chars
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_dateparse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_dateparse_impl_def
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_dateparse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_dateparse_impl_def
       type: INTEGER
       mode: NULLABLE
   - name: labeled_counter

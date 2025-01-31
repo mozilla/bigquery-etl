@@ -1,0 +1,19 @@
+friendly_name: Mobile New Profile Activations
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/taar
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix.new_profile_activations
+  - moz-fx-data-shared-prod.firefox_ios.new_profile_activations
+  - moz-fx-data-shared-prod.focus_android.new_profile_activations
+  - moz-fx-data-shared-prod.focus_ios.new_profile_activations
+  - moz-fx-data-shared-prod.klar_android.new_profile_activations
+  - moz-fx-data-shared-prod.klar_ios.new_profile_activations

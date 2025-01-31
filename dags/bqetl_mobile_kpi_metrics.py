@@ -205,6 +205,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(
+        task_id="wait_for_search_derived__mobile_search_clients_daily__v2",
+        external_dag_id="bqetl_mobile_search",
+        external_task_id="search_derived__mobile_search_clients_daily__v2",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
@@ -463,6 +476,30 @@ with DAG(
         task_group=task_group_fenix,
     )
 
+    bigeye__fenix_derived__new_profile_activation_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__fenix_derived__new_profile_activation_clients__v1",
+        table_id="moz-fx-data-shared-prod.fenix_derived.new_profile_activation_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__fenix_derived__new_profile_activations__v1 = bigquery_bigeye_check(
+        task_id="bigeye__fenix_derived__new_profile_activations__v1",
+        table_id="moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
     bigeye__fenix_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__new_profiles__v1",
         table_id="moz-fx-data-shared-prod.fenix_derived.new_profiles_v1",
@@ -502,6 +539,30 @@ with DAG(
     bigeye__firefox_ios_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__engagement__v1",
         table_id="moz-fx-data-shared-prod.firefox_ios_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__firefox_ios_derived__new_profile_activation_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_ios_derived__new_profile_activation_clients__v1",
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activation_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__firefox_ios_derived__new_profile_activations__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_ios_derived__new_profile_activations__v1",
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.new_profile_activations_v1",
         warehouse_id="1939",
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -559,6 +620,30 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
+    bigeye__focus_android_derived__new_profile_activation_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__focus_android_derived__new_profile_activation_clients__v1",
+        table_id="moz-fx-data-shared-prod.focus_android_derived.new_profile_activation_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__focus_android_derived__new_profile_activations__v1 = bigquery_bigeye_check(
+        task_id="bigeye__focus_android_derived__new_profile_activations__v1",
+        table_id="moz-fx-data-shared-prod.focus_android_derived.new_profile_activations_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
     bigeye__focus_android_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_android_derived__new_profiles__v1",
         table_id="moz-fx-data-shared-prod.focus_android_derived.new_profiles_v1",
@@ -598,6 +683,30 @@ with DAG(
     bigeye__focus_ios_derived__engagement__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_ios_derived__engagement__v1",
         table_id="moz-fx-data-shared-prod.focus_ios_derived.engagement_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_ios,
+    )
+
+    bigeye__focus_ios_derived__new_profile_activation_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__focus_ios_derived__new_profile_activation_clients__v1",
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.new_profile_activation_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_ios,
+    )
+
+    bigeye__focus_ios_derived__new_profile_activations__v1 = bigquery_bigeye_check(
+        task_id="bigeye__focus_ios_derived__new_profile_activations__v1",
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.new_profile_activations_v1",
         warehouse_id="1939",
         owner="mozilla/kpi_table_reviewers",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -655,6 +764,30 @@ with DAG(
         task_group=task_group_klar_android,
     )
 
+    bigeye__klar_android_derived__new_profile_activation_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__klar_android_derived__new_profile_activation_clients__v1",
+        table_id="moz-fx-data-shared-prod.klar_android_derived.new_profile_activation_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_klar_android,
+    )
+
+    bigeye__klar_android_derived__new_profile_activations__v1 = bigquery_bigeye_check(
+        task_id="bigeye__klar_android_derived__new_profile_activations__v1",
+        table_id="moz-fx-data-shared-prod.klar_android_derived.new_profile_activations_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_klar_android,
+    )
+
     bigeye__klar_android_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_android_derived__new_profiles__v1",
         table_id="moz-fx-data-shared-prod.klar_android_derived.new_profiles_v1",
@@ -703,6 +836,30 @@ with DAG(
         task_group=task_group_klar_ios,
     )
 
+    bigeye__klar_ios_derived__new_profile_activation_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__klar_ios_derived__new_profile_activation_clients__v1",
+        table_id="moz-fx-data-shared-prod.klar_ios_derived.new_profile_activation_clients_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_klar_ios,
+    )
+
+    bigeye__klar_ios_derived__new_profile_activations__v1 = bigquery_bigeye_check(
+        task_id="bigeye__klar_ios_derived__new_profile_activations__v1",
+        table_id="moz-fx-data-shared-prod.klar_ios_derived.new_profile_activations_v1",
+        warehouse_id="1939",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_klar_ios,
+    )
+
     bigeye__klar_ios_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__klar_ios_derived__new_profiles__v1",
         table_id="moz-fx-data-shared-prod.klar_ios_derived.new_profiles_v1",
@@ -742,6 +899,30 @@ with DAG(
     fenix_derived__engagement__v1 = bigquery_etl_query(
         task_id="fenix_derived__engagement__v1",
         destination_table="engagement_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_fenix,
+    )
+
+    fenix_derived__new_profile_activation_clients__v1 = bigquery_etl_query(
+        task_id="fenix_derived__new_profile_activation_clients__v1",
+        destination_table="new_profile_activation_clients_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_fenix,
+    )
+
+    fenix_derived__new_profile_activations__v1 = bigquery_etl_query(
+        task_id="fenix_derived__new_profile_activations__v1",
+        destination_table="new_profile_activations_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mozilla/kpi_table_reviewers",
@@ -801,6 +982,30 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
+    firefox_ios_derived__new_profile_activation_clients__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__new_profile_activation_clients__v1",
+        destination_table="new_profile_activation_clients_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_firefox_ios,
+    )
+
+    firefox_ios_derived__new_profile_activations__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__new_profile_activations__v1",
+        destination_table="new_profile_activations_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_firefox_ios,
+    )
+
     firefox_ios_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__new_profiles__v1",
         destination_table="new_profiles_v1",
@@ -842,6 +1047,30 @@ with DAG(
     focus_android_derived__engagement__v1 = bigquery_etl_query(
         task_id="focus_android_derived__engagement__v1",
         destination_table="engagement_v1",
+        dataset_id="focus_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_focus_android,
+    )
+
+    focus_android_derived__new_profile_activation_clients__v1 = bigquery_etl_query(
+        task_id="focus_android_derived__new_profile_activation_clients__v1",
+        destination_table="new_profile_activation_clients_v1",
+        dataset_id="focus_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_focus_android,
+    )
+
+    focus_android_derived__new_profile_activations__v1 = bigquery_etl_query(
+        task_id="focus_android_derived__new_profile_activations__v1",
+        destination_table="new_profile_activations_v1",
         dataset_id="focus_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mozilla/kpi_table_reviewers",
@@ -901,6 +1130,30 @@ with DAG(
         task_group=task_group_focus_ios,
     )
 
+    focus_ios_derived__new_profile_activation_clients__v1 = bigquery_etl_query(
+        task_id="focus_ios_derived__new_profile_activation_clients__v1",
+        destination_table="new_profile_activation_clients_v1",
+        dataset_id="focus_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_focus_ios,
+    )
+
+    focus_ios_derived__new_profile_activations__v1 = bigquery_etl_query(
+        task_id="focus_ios_derived__new_profile_activations__v1",
+        destination_table="new_profile_activations_v1",
+        dataset_id="focus_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_focus_ios,
+    )
+
     focus_ios_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="focus_ios_derived__new_profiles__v1",
         destination_table="new_profiles_v1",
@@ -942,6 +1195,30 @@ with DAG(
     klar_android_derived__engagement__v1 = bigquery_etl_query(
         task_id="klar_android_derived__engagement__v1",
         destination_table="engagement_v1",
+        dataset_id="klar_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_klar_android,
+    )
+
+    klar_android_derived__new_profile_activation_clients__v1 = bigquery_etl_query(
+        task_id="klar_android_derived__new_profile_activation_clients__v1",
+        destination_table="new_profile_activation_clients_v1",
+        dataset_id="klar_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_klar_android,
+    )
+
+    klar_android_derived__new_profile_activations__v1 = bigquery_etl_query(
+        task_id="klar_android_derived__new_profile_activations__v1",
+        destination_table="new_profile_activations_v1",
         dataset_id="klar_android_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mozilla/kpi_table_reviewers",
@@ -1001,6 +1278,30 @@ with DAG(
         task_group=task_group_klar_ios,
     )
 
+    klar_ios_derived__new_profile_activation_clients__v1 = bigquery_etl_query(
+        task_id="klar_ios_derived__new_profile_activation_clients__v1",
+        destination_table="new_profile_activation_clients_v1",
+        dataset_id="klar_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_klar_ios,
+    )
+
+    klar_ios_derived__new_profile_activations__v1 = bigquery_etl_query(
+        task_id="klar_ios_derived__new_profile_activations__v1",
+        destination_table="new_profile_activations_v1",
+        dataset_id="klar_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mozilla/kpi_table_reviewers",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_klar_ios,
+    )
+
     klar_ios_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="klar_ios_derived__new_profiles__v1",
         destination_table="new_profiles_v1",
@@ -1033,6 +1334,14 @@ with DAG(
 
     bigeye__fenix_derived__engagement__v1.set_upstream(fenix_derived__engagement__v1)
 
+    bigeye__fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        fenix_derived__new_profile_activation_clients__v1
+    )
+
+    bigeye__fenix_derived__new_profile_activations__v1.set_upstream(
+        fenix_derived__new_profile_activations__v1
+    )
+
     bigeye__fenix_derived__new_profiles__v1.set_upstream(
         fenix_derived__new_profiles__v1
     )
@@ -1045,6 +1354,14 @@ with DAG(
 
     bigeye__firefox_ios_derived__engagement__v1.set_upstream(
         firefox_ios_derived__engagement__v1
+    )
+
+    bigeye__firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        firefox_ios_derived__new_profile_activation_clients__v1
+    )
+
+    bigeye__firefox_ios_derived__new_profile_activations__v1.set_upstream(
+        firefox_ios_derived__new_profile_activations__v1
     )
 
     bigeye__firefox_ios_derived__new_profiles__v1.set_upstream(
@@ -1063,6 +1380,14 @@ with DAG(
         focus_android_derived__engagement__v1
     )
 
+    bigeye__focus_android_derived__new_profile_activation_clients__v1.set_upstream(
+        focus_android_derived__new_profile_activation_clients__v1
+    )
+
+    bigeye__focus_android_derived__new_profile_activations__v1.set_upstream(
+        focus_android_derived__new_profile_activations__v1
+    )
+
     bigeye__focus_android_derived__new_profiles__v1.set_upstream(
         focus_android_derived__new_profiles__v1
     )
@@ -1077,6 +1402,14 @@ with DAG(
 
     bigeye__focus_ios_derived__engagement__v1.set_upstream(
         focus_ios_derived__engagement__v1
+    )
+
+    bigeye__focus_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        focus_ios_derived__new_profile_activation_clients__v1
+    )
+
+    bigeye__focus_ios_derived__new_profile_activations__v1.set_upstream(
+        focus_ios_derived__new_profile_activations__v1
     )
 
     bigeye__focus_ios_derived__new_profiles__v1.set_upstream(
@@ -1095,6 +1428,14 @@ with DAG(
         klar_android_derived__engagement__v1
     )
 
+    bigeye__klar_android_derived__new_profile_activation_clients__v1.set_upstream(
+        klar_android_derived__new_profile_activation_clients__v1
+    )
+
+    bigeye__klar_android_derived__new_profile_activations__v1.set_upstream(
+        klar_android_derived__new_profile_activations__v1
+    )
+
     bigeye__klar_android_derived__new_profiles__v1.set_upstream(
         klar_android_derived__new_profiles__v1
     )
@@ -1109,6 +1450,14 @@ with DAG(
 
     bigeye__klar_ios_derived__engagement__v1.set_upstream(
         klar_ios_derived__engagement__v1
+    )
+
+    bigeye__klar_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        klar_ios_derived__new_profile_activation_clients__v1
+    )
+
+    bigeye__klar_ios_derived__new_profile_activations__v1.set_upstream(
+        klar_ios_derived__new_profile_activations__v1
     )
 
     bigeye__klar_ios_derived__new_profiles__v1.set_upstream(
@@ -1163,6 +1512,38 @@ with DAG(
 
     fenix_derived__engagement__v1.set_upstream(
         wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        bigeye__fenix_derived__attribution_clients__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
+    fenix_derived__new_profile_activations__v1.set_upstream(
+        bigeye__fenix_derived__new_profile_activation_clients__v1
     )
 
     fenix_derived__new_profiles__v1.set_upstream(
@@ -1265,6 +1646,30 @@ with DAG(
         wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
+    firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        bigeye__firefox_ios_derived__attribution_clients__v1
+    )
+
+    firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
+    firefox_ios_derived__new_profile_activations__v1.set_upstream(
+        bigeye__firefox_ios_derived__new_profile_activation_clients__v1
+    )
+
     firefox_ios_derived__new_profiles__v1.set_upstream(
         bigeye__firefox_ios_derived__attribution_clients__v1
     )
@@ -1337,6 +1742,30 @@ with DAG(
         wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
     )
 
+    focus_android_derived__new_profile_activation_clients__v1.set_upstream(
+        bigeye__focus_android_derived__attribution_clients__v1
+    )
+
+    focus_android_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    focus_android_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    focus_android_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    focus_android_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
+    focus_android_derived__new_profile_activations__v1.set_upstream(
+        bigeye__focus_android_derived__new_profile_activation_clients__v1
+    )
+
     focus_android_derived__new_profiles__v1.set_upstream(
         bigeye__focus_android_derived__attribution_clients__v1
     )
@@ -1393,6 +1822,22 @@ with DAG(
         wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
+    focus_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        bigeye__focus_ios_derived__attribution_clients__v1
+    )
+
+    focus_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    focus_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
+    focus_ios_derived__new_profile_activations__v1.set_upstream(
+        bigeye__focus_ios_derived__new_profile_activation_clients__v1
+    )
+
     focus_ios_derived__new_profiles__v1.set_upstream(
         bigeye__focus_ios_derived__attribution_clients__v1
     )
@@ -1425,6 +1870,22 @@ with DAG(
         wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
+    klar_android_derived__new_profile_activation_clients__v1.set_upstream(
+        bigeye__klar_android_derived__attribution_clients__v1
+    )
+
+    klar_android_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_android_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
+    klar_android_derived__new_profile_activations__v1.set_upstream(
+        bigeye__klar_android_derived__new_profile_activation_clients__v1
+    )
+
     klar_android_derived__new_profiles__v1.set_upstream(
         bigeye__klar_android_derived__attribution_clients__v1
     )
@@ -1455,6 +1916,22 @@ with DAG(
 
     klar_ios_derived__engagement__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        bigeye__klar_ios_derived__attribution_clients__v1
+    )
+
+    klar_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    klar_ios_derived__new_profile_activation_clients__v1.set_upstream(
+        wait_for_search_derived__mobile_search_clients_daily__v2
+    )
+
+    klar_ios_derived__new_profile_activations__v1.set_upstream(
+        bigeye__klar_ios_derived__new_profile_activation_clients__v1
     )
 
     klar_ios_derived__new_profiles__v1.set_upstream(

@@ -1,0 +1,30 @@
+friendly_name: Rolling Cohorts
+description: |-
+  Rolling Cohorts consists of one row per client per date (each date
+  representing a new cohort) i.e. all the clients that had their first
+  ping sent that day. This can be left joined with various activity
+  tables to calculate activity metrics for particular cohorts.
+
+  Note that client-attributes such as os versions, is default browser,
+  etc. are based on the values at the time the cohort is created.
+  This might not be the same as when activity happens. For example
+  if a client changes whether Firefox is the default browser.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_daily_retention
+bigquery:
+  time_partitioning:
+    type: day
+    field: cohort_date
+    require_partition_filter: true
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+references: {}

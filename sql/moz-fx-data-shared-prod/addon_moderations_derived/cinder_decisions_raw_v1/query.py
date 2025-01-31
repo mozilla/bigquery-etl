@@ -65,18 +65,18 @@ def add_date_to_json(query_export_contents, date):
     for item in query_export_contents:
         field_dict = {
             "date": date,
-            "decision_type": str(item["decision_type"]),
-            "user": str(item["user"]),
-            "created_at": (item["created_at"]),
-            "entity_id": str(item["entity_id"]),
-            "entity": (item["entity"]),
-            "uuid": str(item["uuid"]),
-            "entity_slug": str(item["entity_slug"]),
-            "job_id": str(item["job_id"]),
-            "job_assigned_at": (item["job_assigned_at"]),
-            "queue_slug": str(item["queue_slug"]),
-            "typed_metadata": (item["typed_metadata"]),
-            "applied_policies": (item["applied_policies"]),
+            "decision_type": item["decision_type"],
+            "user": item["user"],
+            "created_at": item["created_at"],
+            "entity_id": item["entity_id"],
+            "entity": item["entity"],
+            "uuid": item["uuid"],
+            "entity_slug": item["entity_slug"],
+            "job_id": item["job_id"],
+            "job_assigned_at": item["job_assigned_at"],
+            "queue_slug": item["queue_slug"],
+            "typed_metadata": item["typed_metadata"],
+            "applied_policies": item["applied_policies"],
         }
         fields_list.append(field_dict)
     return fields_list

@@ -1,0 +1,96 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date corresponding to processing date.
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: Date we first received a baseline ping from the profile.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Release channel of the app the profile is using.
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name the profile is using.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's app version on the first seen date.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Client's country on the first seen date.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Client's locale on the first seen date.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Client's os on the first seen date.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's os version on the first seen date.
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+  description: Client's device manufacturer on the first seen date.
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if this specific entry is used towards calculating mobile
+    DAU.
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: 'On Apple devices allows us to differentiate between iPhone and iPad.
+    On Android devices the value is always "Android".
+
+    '
+- name: num_days_seen_day_2_7
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Number of days we saw the client in between 2nd and 7th days since
+    first_seen_date.
+
+    '
+- name: num_days_active_day_2_7
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Number of days the client was active between day 2 and 7 since first_seen_date.
+
+    '
+- name: search_count
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Number of searches performed by the client in the last 3 days.
+
+    '
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: city
+  type: STRING
+  mode: NULLABLE
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+- name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE
+- name: is_activated
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_early_engagement
+  type: BOOLEAN
+  mode: NULLABLE

@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: false
   owner1: kwindau@mozilla.com
+  table_type: client_level
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   date_partition_parameter: null
@@ -18,7 +19,7 @@ bigquery:
     type: day
     field: session_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - ga_client_id

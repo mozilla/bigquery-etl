@@ -110,7 +110,6 @@ with DAG(
         email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     firefox_ios_derived__ltv_ios_aggregates__v1 = bigquery_etl_query(
@@ -122,7 +121,6 @@ with DAG(
         email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     telemetry_derived__ltv_desktop_aggregates__v1 = bigquery_etl_query(
@@ -134,7 +132,6 @@ with DAG(
         email=["mbowerman@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
     )
 
     fenix_derived__ltv_android_aggregates__v1.set_upstream(

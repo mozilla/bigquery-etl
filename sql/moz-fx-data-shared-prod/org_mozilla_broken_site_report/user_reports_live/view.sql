@@ -4,11 +4,21 @@ AS
 WITH live_reports AS (
   SELECT
     *,
+    "Firefox" AS app_name,
     ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ASC) AS rn
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.broken_site_report_v1`
   WHERE
     DATE(submission_timestamp) > "2023-11-01"
+  UNION ALL
+  SELECT
+    *,
+    "Fenix" AS app_name,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ASC) AS rn
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_live.broken_site_report_v1`
+  WHERE
+    DATE(submission_timestamp) > "2025-01-01"
 )
 SELECT
   document_id AS uuid,
@@ -16,7 +26,7 @@ SELECT
   metrics.text2.broken_site_report_description AS comments,
   metrics.url2.broken_site_report_url AS url,
   metrics.string.broken_site_report_breakage_category AS breakage_category,
-  "Firefox" AS app_name,
+  app_name,
   client_info.app_display_version AS app_version,
   normalized_channel AS app_channel,
   normalized_os AS os,

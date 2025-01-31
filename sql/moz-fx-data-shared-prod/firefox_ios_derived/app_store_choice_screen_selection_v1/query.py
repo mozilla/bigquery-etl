@@ -8,6 +8,7 @@ import tempfile
 import time
 from argparse import ArgumentParser
 from pathlib import Path
+from sys import exit
 
 import jwt
 import pandas as pd
@@ -142,11 +143,19 @@ def fetch_report_data(app_id, date, jwt_token, target_file_path):
     daily_report_instances = list(
         filter(lambda x: x["attributes"]["granularity"] == "DAILY", report_instances)
     )
-    specific_date_report_instance = list(
-        filter(
-            lambda x: x["attributes"]["processingDate"] == date, daily_report_instances
+
+    try:
+        specific_date_report_instance = list(
+            filter(
+                lambda x: x["attributes"]["processingDate"] == date,
+                daily_report_instances,
+            )
+        )[0]
+    except IndexError:
+        logging.error(
+            f"It appears that report: `{REPORT_TITLE}` for date: `{date}` does not exist, potentially it has not yet been made available."
         )
-    )[0]
+        exit(1)
 
     analytics_report_segments = api_call(
         specific_date_report_instance["relationships"]["segments"]["links"]["related"],

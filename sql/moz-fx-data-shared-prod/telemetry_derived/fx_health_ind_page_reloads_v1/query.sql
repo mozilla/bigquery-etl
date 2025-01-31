@@ -1,6 +1,7 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
   normalized_country_code,
+  normalized_channel,
   COUNT(DISTINCT client_id) AS nbr_distinct_clients
 FROM
   `moz-fx-data-shared-prod.telemetry.main`
@@ -9,7 +10,7 @@ CROSS JOIN
 WHERE
   DATE(submission_timestamp) = @submission_date
   AND a.key LIKE('%reload%')
-  AND normalized_channel = 'release'
 GROUP BY
   DATE(submission_timestamp),
-  normalized_country_code
+  normalized_country_code,
+  normalized_channel

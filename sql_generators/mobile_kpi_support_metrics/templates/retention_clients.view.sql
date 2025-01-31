@@ -39,6 +39,8 @@ SELECT
   active_users.app_name,
   clients_daily.normalized_channel,
   clients_daily.country,
+  clients_daily.city,
+  clients_daily.geo_subdivision,
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,

@@ -5,6 +5,7 @@ description: |
 owners:
 - cbeck@mozilla.com
 labels:
+  table_type: client_level
   dag: bqetl_acoustic_contact_export
   owner1: cbeck
 scheduling:
@@ -15,7 +16,7 @@ bigquery:
     type: day
     field: last_modified_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

@@ -152,11 +152,11 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(install_source) OVER w1) AS install_source,
     udf.mode_last(ARRAY_AGG(geo_subdivision) OVER w1) AS geo_subdivision,
     udf.mode_last(ARRAY_AGG(profile_group_id) OVER w1) AS profile_group_id,
-    udf.mode_last(ARRAY_AGG(windows_build_number ignore nulls) OVER w1) AS windows_build_number,
+    udf.mode_last(ARRAY_AGG(windows_build_number) OVER w1) AS windows_build_number,
     SUM(COALESCE(browser_engagement_uri_count,0)) OVER w1 AS browser_engagement_uri_count,
     SUM(COALESCE(browser_engagement_active_ticks,0)) OVER w1 AS browser_engagement_active_ticks,
-    udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id ignore nulls) OVER w1) AS legacy_telemetry_client_id,
-    udf.mode_last(ARRAY_AGG(is_default_browser ignore nulls) OVER w1) AS is_default_browser,
+    udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id) OVER w1) AS legacy_telemetry_client_id,
+    udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
   FROM
     with_date_offsets
   LEFT JOIN

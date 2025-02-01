@@ -8,7 +8,7 @@ SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_active_bits,
   CAST(NULL AS INT64) AS days_created_profile_bits,
-  CAST(NULL AS INT64) AS days_active_dau_bits,
+  CAST(NULL AS INT64) AS days_desktop_active_bits,
   -- We make sure to delay * until the end so that as new columns are added
   -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
@@ -31,7 +31,7 @@ WITH _current AS (
     -- rightmost bit in 'days_since_seen' represents whether the user sent a
     -- baseline ping in the submission_date and similarly, the rightmost bit in
     -- days_active_bits represents whether the user counts as active on that date.
-    -- days_active_dau_bits represents the official definition of used for desktop active user
+    -- days_desktop_active_bits represents the official definition of used for desktop active user
     CAST(TRUE AS INT64) AS days_seen_bits,
     CAST(TRUE AS INT64) & CAST(durations > 0  AS INT64) AS days_active_bits,
     udf.days_since_created_profile_as_28_bits(
@@ -40,9 +40,9 @@ WITH _current AS (
     {% if app_name == "firefox_desktop" %}
     CAST(TRUE AS INT64) &
     CAST(browser_engagement_uri_count > 0 AS INT64) &
-    CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_active_dau_bits,
+    CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
     {% else %}
-    CAST(NULL AS INT64) AS days_active_dau_bits,
+    CAST(NULL AS INT64) AS days_desktop_active_bits,
     {% endif %}
     * EXCEPT(submission_date)
   FROM
@@ -54,8 +54,8 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    days_seen_bits, days_active_bits, days_created_profile_bits, days_active_dau_bits,
-    * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits, days_active_dau_bits),
+    days_seen_bits, days_active_bits, days_created_profile_bits, days_desktop_active_bits,
+    * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits, days_desktop_active_bits),
   FROM
     `{{ last_seen_table }}`
   WHERE

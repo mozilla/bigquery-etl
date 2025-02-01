@@ -8,7 +8,7 @@ fields:
 - name: days_created_profile_bits
   type: INTEGER
 - mode: NULLABLE
-  name: days_active_dau_bits
+  name: days_desktop_active_bits
   type: INTEGER
   description: This represents the official definition used for desktop active user
 - name: client_id

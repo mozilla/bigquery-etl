@@ -8,6 +8,7 @@ USAGE_TYPES = (
     "seen",
     "active",
     "created_profile",
+    "active_dau",
     "seen_session_start",
     "seen_session_end",
 )

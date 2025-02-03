@@ -488,16 +488,16 @@ frozenlist==1.3.3 \
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2024.12.0 \
-    --hash=sha256:670700c977ed2fb51e0d9f9253177ed20cbde4a3e5c0283cc5385b5870c8533f \
-    --hash=sha256:b520aed47ad9804237ff878b504267a3b0b441e97508bd6d2d8774e3db85cee2
+fsspec==2025.2.0 \
+    --hash=sha256:1c24b16eaa0a1798afa0337aa0db9b256718ab2a89c425371f5628d22c3b6afd \
+    --hash=sha256:9de2ad9ce1f85e1931858535bc882543171d197001a0a5eb2ddc04f1781ab95b
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2024.12.0 \
-    --hash=sha256:e672413922108300ebc1fe78b8f99f3c7c1b94e7e088f5a6dc88de6d5a93d156 \
-    --hash=sha256:ec88e48f77e466723705458af85dda238e43aa69fac071efd98829d06e9f095a
+gcsfs==2025.2.0 \
+    --hash=sha256:1013b3f1213d867fffc732dbf1d963127dfa6e5e863f8077696b892696b3e3d9 \
+    --hash=sha256:293fc0bd40402f954b2f3edc7289116ece3995525abc04473834fcdd3f220bd9
     # via -r requirements.in
 ghp-import==2.1.0 \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \
@@ -562,9 +562,9 @@ google-cloud-datacatalog-lineage==0.3.11 \
     --hash=sha256:294b18c147c7b16f79b564306516a46ddf1f5ef18702de1c839d66039564f1a2 \
     --hash=sha256:3862cf67643e1acf33bf2354f23b1d2360574206e0895a13bcf8a688ec011796
     # via -r requirements.in
-google-cloud-storage==2.19.0 \
-    --hash=sha256:aeb971b5c29cf8ab98445082cbfe7b161a1f48ed275822f59ed3f1524ea54fba \
-    --hash=sha256:cd05e9e7191ba6cb68934d8eb76054d9be4562aa89dbc4236feee4d7d51342b2
+google-cloud-storage==3.0.0 \
+    --hash=sha256:2accb3e828e584888beff1165e5f3ac61aa9088965eb0165794a82d8c7f95297 \
+    --hash=sha256:f85fd059650d2dbb0ac158a9a6b304b66143b35ed2419afec2905ca522eb2c6a
     # via
     #   -r requirements.in
     #   gcsfs
@@ -930,9 +930,9 @@ mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \
     --hash=sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134
     # via mkdocs
-mkdocs-material==9.5.50 \
-    --hash=sha256:ae5fe16f3d7c9ccd05bb6916a7da7420cf99a9ce5e33debd9d40403a090d5825 \
-    --hash=sha256:f24100f234741f4d423a9d672a909d859668a4f404796be3cf035f10d6050385
+mkdocs-material==9.6.1 \
+    --hash=sha256:c1742d410be29811a9b7e863cb25a578b9e255fe6f04c69f8c6838863a58e141 \
+    --hash=sha256:da37dba220d9fbfc5f1fc567fafc4028e3c3d7d828f2779ed09ab726ceca77dc
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \

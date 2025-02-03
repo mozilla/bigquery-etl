@@ -39,7 +39,7 @@ WITH base AS (
     metrics.boolean.usage_is_default_browser AS is_default_browser,
     CAST(NULL AS STRING) AS install_source,
     {% elif app_name == "fenix" %}
-    CAST(NULL AS STRING) AS windows_build_number,
+    CAST(NULL AS INT64) AS windows_build_number,
     CAST(NULL AS INT64) AS browser_engagement_uri_count,
     CAST(NULL AS INT64) AS browser_engagement_active_ticks,
     CAST(NULL AS STRING) AS legacy_telemetry_client_id,
@@ -47,7 +47,7 @@ WITH base AS (
     CAST(NULL AS BOOLEAN) AS is_default_browser,
     metrics.string.first_session_install_source AS install_source,
     {% else %}
-    CAST(NULL AS STRING) AS windows_build_number,
+    CAST(NULL AS INT64) AS windows_build_number,
     CAST(NULL AS INT64) AS browser_engagement_uri_count,
     CAST(NULL AS INT64) AS browser_engagement_active_ticks,
     CAST(NULL AS STRING) AS legacy_telemetry_client_id,

@@ -2153,6 +2153,16 @@ fields:
       description: 'How many times the SmartBlock placeholders are shown on the page
 
         '
+    - name: webrtc_call_count_3
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of successfully connected calls made during a session
+        (discounting re-negotiations).
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        WEBRTC_CALL_COUNT_3.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -6193,6 +6203,102 @@ fields:
         MEDIA_MP4_PARSE_SAMPLE_DESCRIPTION_ENTRIES_HAVE_MULTIPLE_CRYPTO.
 
         '
+    - name: webrtc_datachannel_negotiated
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Was DataChannels negotiated
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBRTC_DATACHANNEL_NEGOTIATED.
+
+        '
+    - name: webrtc_gmp_init_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts of GMP codec initialization success and failure
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBRTC_GMP_INIT_SUCCESS.
+
+        '
+    - name: webrtc_h264_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether any kind of H264 is enabled
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBRTC_H264_ENABLED.
+
+        '
+    - name: webrtc_hardware_h264_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether software H264 is enabled
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBRTC_HARDWARE_H264_ENABLED.
+
+        '
+    - name: webrtc_has_h264_hardware
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the user has H264 hardware
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBRTC_HAS_H264_HARDWARE.
+
+        '
+    - name: webrtc_software_h264_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether hardware H264 is enabled
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBRTC_SOFTWARE_H264_ENABLED.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -10194,6 +10300,634 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram MEDIA_MP4_PARSE_NUM_SAMPLE_DESCRIPTION_ENTRIES.
+
+        '
+    - name: webrtc_audio_quality_inbound_bandwidth_kbits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Locally measured data rate on inbound audio (kbit/s). Computed
+        every second of a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AUDIO_QUALITY_INBOUND_BANDWIDTH_KBITS.
+
+        '
+    - name: webrtc_audio_quality_inbound_packetloss_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Locally measured packet loss on inbound audio (permille). Sampled
+        every second of a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AUDIO_QUALITY_INBOUND_PACKETLOSS_RATE.
+
+        '
+    - name: webrtc_audio_quality_outbound_packetloss_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'RTCP-reported packet loss by remote recipient of outbound audio
+        (permille). Sampled every second of a call (for easy comparison).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AUDIO_QUALITY_OUTBOUND_PACKETLOSS_RATE.
+
+        '
+    - name: webrtc_call_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Type of call: (Bitmask) Audio = 1, Video = 2, DataChannels = 4
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBRTC_CALL_TYPE.
+
+        '
+    - name: webrtc_get_user_media_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Type for media in getUserMedia calls (0=Camera, 1=Screen, 2=Application,
+        3=Window, 4=Browser, 5=Microphone, 6=AudioCapture, 7=Other)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBRTC_GET_USER_MEDIA_TYPE.
+
+        '
+    - name: webrtc_max_audio_receive_track
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Audio tracks received simultaneously
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        WEBRTC_MAX_AUDIO_RECEIVE_TRACK.
+
+        '
+    - name: webrtc_max_audio_send_track
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Audio tracks sent simultaneously
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        WEBRTC_MAX_AUDIO_SEND_TRACK.
+
+        '
+    - name: webrtc_max_video_receive_track
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Video tracks received simultaneously
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        WEBRTC_MAX_VIDEO_RECEIVE_TRACK.
+
+        '
+    - name: webrtc_max_video_send_track
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Video tracks sent simultaneously
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        WEBRTC_MAX_VIDEO_SEND_TRACK.
+
+        '
+    - name: webrtc_renegotiations
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Renegotiations during each call
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        WEBRTC_RENEGOTIATIONS.
+
+        '
+    - name: webrtc_video_decoder_bitrate_avg_per_call_kbps
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Video decoder''s average bitrate (in kbits/s) over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_DECODER_BITRATE_AVG_PER_CALL_KBPS.
+
+        '
+    - name: webrtc_video_decoder_bitrate_std_dev_per_call_kbps
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Standard deviation from video decoder''s average bitrate (in kbits/s)
+        over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_DECODER_BITRATE_STD_DEV_PER_CALL_KBPS.
+
+        '
+    - name: webrtc_video_decoder_discarded_packets_per_call_ppm
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Video decoder''s number of discarded packets (in packets/min)
+        over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_DECODER_DISCARDED_PACKETS_PER_CALL_PPM.
+
+        '
+    - name: webrtc_video_decoder_framerate_10x_std_dev_per_call
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Standard deviation from video decoder''s average framerate (in
+        1/10 fps) over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_DECODER_FRAMERATE_10X_STD_DEV_PER_CALL.
+
+        '
+    - name: webrtc_video_decoder_framerate_avg_per_call
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Video decoder''s average framerate (in fps) over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_DECODER_FRAMERATE_AVG_PER_CALL.
+
+        '
+    - name: webrtc_video_encoder_bitrate_avg_per_call_kbps
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Video encoder''s average bitrate (in kbits/s) over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_ENCODER_BITRATE_AVG_PER_CALL_KBPS.
+
+        '
+    - name: webrtc_video_encoder_bitrate_std_dev_per_call_kbps
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Standard deviation from video encoder''s average bitrate (in kbits/s)
+        over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_ENCODER_BITRATE_STD_DEV_PER_CALL_KBPS.
+
+        '
+    - name: webrtc_video_encoder_framerate_10x_std_dev_per_call
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Standard deviation from video encoder''s average framerate (in
+        1/10 fps) over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_ENCODER_FRAMERATE_10X_STD_DEV_PER_CALL.
+
+        '
+    - name: webrtc_video_encoder_framerate_avg_per_call
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Video encoder''s average framerate (in fps) over an entire call
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_ENCODER_FRAMERATE_AVG_PER_CALL.
+
+        '
+    - name: webrtc_video_quality_inbound_bandwidth_kbits
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Locally measured data rate of inbound video (kbit/s). Computed
+        every second of a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_QUALITY_INBOUND_BANDWIDTH_KBITS.
+
+        '
+    - name: webrtc_video_quality_inbound_packetloss_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Locally measured packet loss on inbound video (permille). Sampled
+        every second of a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_QUALITY_INBOUND_PACKETLOSS_RATE.
+
+        '
+    - name: webrtc_video_quality_outbound_packetloss_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'RTCP-reported packet loss by remote recipient of outbound video
+        (permille). Sampled every second of a call (for easy comparison).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_QUALITY_OUTBOUND_PACKETLOSS_RATE.
 
         '
   - name: quantity
@@ -22956,6 +23690,381 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram IMAGE_DECODE_TIME.
+
+        '
+    - name: webrtc_audio_quality_inbound_jitter
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Locally measured jitter on inbound audio (ms). Sampled every second
+        of a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AUDIO_QUALITY_INBOUND_JITTER.
+
+        '
+    - name: webrtc_audio_quality_outbound_jitter
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'RTCP-reported jitter by remote recipient of outbound audio (ms).
+        Sampled every second of a call (for easy comparison).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AUDIO_QUALITY_OUTBOUND_JITTER.
+
+        '
+    - name: webrtc_audio_quality_outbound_rtt
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Roundtrip time of outbound audio (ms). Sampled every second of
+        a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AUDIO_QUALITY_OUTBOUND_RTT.
+
+        '
+    - name: webrtc_av_call_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The length of time (in seconds) that a call with audio or video
+        in it lasted.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_AV_CALL_DURATION.
+
+        '
+    - name: webrtc_call_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The length of time (in seconds) that a call lasted.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_CALL_DURATION.
+
+        '
+    - name: webrtc_video_quality_inbound_jitter
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Locally measured jitter on inbound video (ms). Sampled every second
+        of a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_QUALITY_INBOUND_JITTER.
+
+        '
+    - name: webrtc_video_quality_outbound_jitter
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'RTCP-reported jitter by remote recipient of outbound video (ms).
+        Sampled every second of a call (for easy comparison).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_QUALITY_OUTBOUND_JITTER.
+
+        '
+    - name: webrtc_video_quality_outbound_rtt
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Roundtrip time of outbound video (ms). Sampled every second of
+        a call.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBRTC_VIDEO_QUALITY_OUTBOUND_RTT.
 
         '
   - name: memory_distribution

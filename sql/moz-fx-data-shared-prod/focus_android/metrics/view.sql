@@ -178,7 +178,8 @@ SELECT
       metrics.counter.network_sso_total_entra_uses,
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
-      metrics.counter.security_ui_protectionspopup_smartblockembeds_shown
+      metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
+      metrics.counter.webrtc_call_count_3
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -445,7 +446,13 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_sig,
       metrics.labeled_counter.webcrypto_resolved,
       metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
-      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto,
+      metrics.labeled_counter.webrtc_datachannel_negotiated,
+      metrics.labeled_counter.webrtc_gmp_init_success,
+      metrics.labeled_counter.webrtc_h264_enabled,
+      metrics.labeled_counter.webrtc_hardware_h264_enabled,
+      metrics.labeled_counter.webrtc_has_h264_hardware,
+      metrics.labeled_counter.webrtc_software_h264_enabled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -659,7 +666,29 @@ SELECT
       metrics.custom_distribution.webcrypto_method,
       metrics.custom_distribution.image_decode_chunks,
       metrics.custom_distribution.image_decode_count,
-      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries,
+      metrics.custom_distribution.webrtc_audio_quality_inbound_bandwidth_kbits,
+      metrics.custom_distribution.webrtc_audio_quality_inbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_audio_quality_outbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_call_type,
+      metrics.custom_distribution.webrtc_get_user_media_type,
+      metrics.custom_distribution.webrtc_max_audio_receive_track,
+      metrics.custom_distribution.webrtc_max_audio_send_track,
+      metrics.custom_distribution.webrtc_max_video_receive_track,
+      metrics.custom_distribution.webrtc_max_video_send_track,
+      metrics.custom_distribution.webrtc_renegotiations,
+      metrics.custom_distribution.webrtc_video_decoder_bitrate_avg_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_decoder_bitrate_std_dev_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_decoder_discarded_packets_per_call_ppm,
+      metrics.custom_distribution.webrtc_video_decoder_framerate_10x_std_dev_per_call,
+      metrics.custom_distribution.webrtc_video_decoder_framerate_avg_per_call,
+      metrics.custom_distribution.webrtc_video_encoder_bitrate_avg_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_encoder_bitrate_std_dev_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_encoder_framerate_10x_std_dev_per_call,
+      metrics.custom_distribution.webrtc_video_encoder_framerate_avg_per_call,
+      metrics.custom_distribution.webrtc_video_quality_inbound_bandwidth_kbits,
+      metrics.custom_distribution.webrtc_video_quality_inbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -892,7 +921,15 @@ SELECT
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
       metrics.timing_distribution.urlclassifier_vlps_fileload_time,
       metrics.timing_distribution.image_decode_on_draw_latency,
-      metrics.timing_distribution.image_decode_time
+      metrics.timing_distribution.image_decode_time,
+      metrics.timing_distribution.webrtc_audio_quality_inbound_jitter,
+      metrics.timing_distribution.webrtc_audio_quality_outbound_jitter,
+      metrics.timing_distribution.webrtc_audio_quality_outbound_rtt,
+      metrics.timing_distribution.webrtc_av_call_duration,
+      metrics.timing_distribution.webrtc_call_duration,
+      metrics.timing_distribution.webrtc_video_quality_inbound_jitter,
+      metrics.timing_distribution.webrtc_video_quality_outbound_jitter,
+      metrics.timing_distribution.webrtc_video_quality_outbound_rtt
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1176,7 +1213,8 @@ SELECT
       metrics.counter.network_sso_total_entra_uses,
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
-      metrics.counter.security_ui_protectionspopup_smartblockembeds_shown
+      metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
+      metrics.counter.webrtc_call_count_3
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1443,7 +1481,13 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_sig,
       metrics.labeled_counter.webcrypto_resolved,
       metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
-      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto,
+      metrics.labeled_counter.webrtc_datachannel_negotiated,
+      metrics.labeled_counter.webrtc_gmp_init_success,
+      metrics.labeled_counter.webrtc_h264_enabled,
+      metrics.labeled_counter.webrtc_hardware_h264_enabled,
+      metrics.labeled_counter.webrtc_has_h264_hardware,
+      metrics.labeled_counter.webrtc_software_h264_enabled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1657,7 +1701,29 @@ SELECT
       metrics.custom_distribution.webcrypto_method,
       metrics.custom_distribution.image_decode_chunks,
       metrics.custom_distribution.image_decode_count,
-      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries,
+      metrics.custom_distribution.webrtc_audio_quality_inbound_bandwidth_kbits,
+      metrics.custom_distribution.webrtc_audio_quality_inbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_audio_quality_outbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_call_type,
+      metrics.custom_distribution.webrtc_get_user_media_type,
+      metrics.custom_distribution.webrtc_max_audio_receive_track,
+      metrics.custom_distribution.webrtc_max_audio_send_track,
+      metrics.custom_distribution.webrtc_max_video_receive_track,
+      metrics.custom_distribution.webrtc_max_video_send_track,
+      metrics.custom_distribution.webrtc_renegotiations,
+      metrics.custom_distribution.webrtc_video_decoder_bitrate_avg_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_decoder_bitrate_std_dev_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_decoder_discarded_packets_per_call_ppm,
+      metrics.custom_distribution.webrtc_video_decoder_framerate_10x_std_dev_per_call,
+      metrics.custom_distribution.webrtc_video_decoder_framerate_avg_per_call,
+      metrics.custom_distribution.webrtc_video_encoder_bitrate_avg_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_encoder_bitrate_std_dev_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_encoder_framerate_10x_std_dev_per_call,
+      metrics.custom_distribution.webrtc_video_encoder_framerate_avg_per_call,
+      metrics.custom_distribution.webrtc_video_quality_inbound_bandwidth_kbits,
+      metrics.custom_distribution.webrtc_video_quality_inbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1890,7 +1956,15 @@ SELECT
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
       metrics.timing_distribution.urlclassifier_vlps_fileload_time,
       metrics.timing_distribution.image_decode_on_draw_latency,
-      metrics.timing_distribution.image_decode_time
+      metrics.timing_distribution.image_decode_time,
+      metrics.timing_distribution.webrtc_audio_quality_inbound_jitter,
+      metrics.timing_distribution.webrtc_audio_quality_outbound_jitter,
+      metrics.timing_distribution.webrtc_audio_quality_outbound_rtt,
+      metrics.timing_distribution.webrtc_av_call_duration,
+      metrics.timing_distribution.webrtc_call_duration,
+      metrics.timing_distribution.webrtc_video_quality_inbound_jitter,
+      metrics.timing_distribution.webrtc_video_quality_outbound_jitter,
+      metrics.timing_distribution.webrtc_video_quality_outbound_rtt
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -2174,7 +2248,8 @@ SELECT
       metrics.counter.network_sso_total_entra_uses,
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
-      metrics.counter.security_ui_protectionspopup_smartblockembeds_shown
+      metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
+      metrics.counter.webrtc_call_count_3
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2441,7 +2516,13 @@ SELECT
       metrics.labeled_counter.webcrypto_extractable_sig,
       metrics.labeled_counter.webcrypto_resolved,
       metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_codecs,
-      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto
+      metrics.labeled_counter.media_mp4_parse_sample_description_entries_have_multiple_crypto,
+      metrics.labeled_counter.webrtc_datachannel_negotiated,
+      metrics.labeled_counter.webrtc_gmp_init_success,
+      metrics.labeled_counter.webrtc_h264_enabled,
+      metrics.labeled_counter.webrtc_hardware_h264_enabled,
+      metrics.labeled_counter.webrtc_has_h264_hardware,
+      metrics.labeled_counter.webrtc_software_h264_enabled
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2655,7 +2736,29 @@ SELECT
       metrics.custom_distribution.webcrypto_method,
       metrics.custom_distribution.image_decode_chunks,
       metrics.custom_distribution.image_decode_count,
-      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries
+      metrics.custom_distribution.media_mp4_parse_num_sample_description_entries,
+      metrics.custom_distribution.webrtc_audio_quality_inbound_bandwidth_kbits,
+      metrics.custom_distribution.webrtc_audio_quality_inbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_audio_quality_outbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_call_type,
+      metrics.custom_distribution.webrtc_get_user_media_type,
+      metrics.custom_distribution.webrtc_max_audio_receive_track,
+      metrics.custom_distribution.webrtc_max_audio_send_track,
+      metrics.custom_distribution.webrtc_max_video_receive_track,
+      metrics.custom_distribution.webrtc_max_video_send_track,
+      metrics.custom_distribution.webrtc_renegotiations,
+      metrics.custom_distribution.webrtc_video_decoder_bitrate_avg_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_decoder_bitrate_std_dev_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_decoder_discarded_packets_per_call_ppm,
+      metrics.custom_distribution.webrtc_video_decoder_framerate_10x_std_dev_per_call,
+      metrics.custom_distribution.webrtc_video_decoder_framerate_avg_per_call,
+      metrics.custom_distribution.webrtc_video_encoder_bitrate_avg_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_encoder_bitrate_std_dev_per_call_kbps,
+      metrics.custom_distribution.webrtc_video_encoder_framerate_10x_std_dev_per_call,
+      metrics.custom_distribution.webrtc_video_encoder_framerate_avg_per_call,
+      metrics.custom_distribution.webrtc_video_quality_inbound_bandwidth_kbits,
+      metrics.custom_distribution.webrtc_video_quality_inbound_packetloss_rate,
+      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -2888,7 +2991,15 @@ SELECT
       metrics.timing_distribution.urlclassifier_vlps_fallocate_time,
       metrics.timing_distribution.urlclassifier_vlps_fileload_time,
       metrics.timing_distribution.image_decode_on_draw_latency,
-      metrics.timing_distribution.image_decode_time
+      metrics.timing_distribution.image_decode_time,
+      metrics.timing_distribution.webrtc_audio_quality_inbound_jitter,
+      metrics.timing_distribution.webrtc_audio_quality_outbound_jitter,
+      metrics.timing_distribution.webrtc_audio_quality_outbound_rtt,
+      metrics.timing_distribution.webrtc_av_call_duration,
+      metrics.timing_distribution.webrtc_call_duration,
+      metrics.timing_distribution.webrtc_video_quality_inbound_jitter,
+      metrics.timing_distribution.webrtc_video_quality_outbound_jitter,
+      metrics.timing_distribution.webrtc_video_quality_outbound_rtt
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

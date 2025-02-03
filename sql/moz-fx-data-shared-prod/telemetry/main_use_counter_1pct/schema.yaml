@@ -8402,6 +8402,18 @@ fields:
     - name: use_counter2_sectioningh1withnofontsizeormargins_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_dateparse_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_dateparse_impl_def_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_dateparse_impl_def_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_dateparse_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16671,6 +16683,18 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_sectioningh1withnofontsizeormargins_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_dateparse_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_dateparse_impl_def_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_dateparse_impl_def_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_dateparse_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

@@ -1027,6 +1027,12 @@ fields:
       description: 'WebGPU limit minUniformBufferOffsetAlignment
 
         '
+    - name: characteristics_gl2_version_software
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The version of OpenGL supported by the user''s system.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -1613,6 +1619,168 @@ fields:
       description: 'Missing features of WebGPU as a bitset
 
         '
+    - name: characteristics_cpu_arch
+      type: STRING
+      mode: NULLABLE
+      description: 'Arch of the user''s device
+
+        '
+    - name: characteristics_gl2_context_type
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
+    - name: characteristics_gl2_context_type_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
+    - name: characteristics_gl2_fragment_shader
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
+    - name: characteristics_gl2_fragment_shader_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
+    - name: characteristics_gl2_renderer
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
+    - name: characteristics_gl2_renderer_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
+    - name: characteristics_gl2_renderer_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
+    - name: characteristics_gl2_renderer_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
+    - name: characteristics_gl2_vendor
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
+    - name: characteristics_gl2_vendor_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
+    - name: characteristics_gl2_vendor_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
+    - name: characteristics_gl2_vendor_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
+    - name: characteristics_gl2_version_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
+    - name: characteristics_gl2_version_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
+    - name: characteristics_gl2_vertex_shader
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
+    - name: characteristics_gl2_vertex_shader_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
+    - name: characteristics_mathml1
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml10
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml2
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml3
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml4
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml5
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml6
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml7
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml8
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
+    - name: characteristics_mathml9
+      type: STRING
+      mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -1918,6 +2086,108 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'User agent string
+
+        '
+    - name: characteristics_gl2_extensions
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl2_extensions_raw
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl2_extensions_raw_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl2_extensions_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
+    - name: characteristics_gl2_minimal_source
+      type: STRING
+      mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
+    - name: characteristics_gl2_minimal_source_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
+    - name: characteristics_gl2_params
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
+    - name: characteristics_gl2_params_extensions
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
+    - name: characteristics_gl2_params_extensions_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
+    - name: characteristics_gl2_params_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
+    - name: characteristics_gl2_precision_fragment
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
+    - name: characteristics_gl2_precision_fragment_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
+    - name: characteristics_gl2_precision_vertex
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
+    - name: characteristics_gl2_precision_vertex_software
+      type: STRING
+      mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
+    - name: characteristics_gl_params
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
+    - name: characteristics_gl_params_software
+      type: STRING
+      mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
+    - name: characteristics_math_ops_fdlibm
+      type: STRING
+      mode: NULLABLE
+      description: 'Windows only fdlibm math operation results
 
         '
   - name: uuid

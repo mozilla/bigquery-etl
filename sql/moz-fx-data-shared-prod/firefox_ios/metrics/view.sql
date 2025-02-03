@@ -259,7 +259,8 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.tabs_tab_switch,
       metrics.timing_distribution.webview_page_load,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.share_deeplink_open_url_startup_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -550,7 +551,8 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.tabs_tab_switch,
       metrics.timing_distribution.webview_page_load,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.share_deeplink_open_url_startup_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -841,7 +843,8 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.tabs_tab_switch,
       metrics.timing_distribution.webview_page_load,
-      metrics.timing_distribution.glean_database_write_time
+      metrics.timing_distribution.glean_database_write_time,
+      metrics.timing_distribution.share_deeplink_open_url_startup_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,

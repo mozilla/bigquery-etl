@@ -245,7 +245,7 @@ class MobileProducts(Enum):
     """Enumeration with browser names and equivalent dataset names."""
 
     fenix = Product(
-        friendly_name="Fenix",
+        friendly_name="Firefox Android",
         is_mobile_kpi=True,
         attribution_groups=[
             AttributionFields.play_store,

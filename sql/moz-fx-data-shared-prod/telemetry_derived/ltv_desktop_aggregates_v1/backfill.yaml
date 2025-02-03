@@ -5,5 +5,5 @@
   watchers:
   - mbowerman@mozilla.com
   - akommasani@mozilla.com
-  status: Initiate
+  status: Complete
   override_retention_limit: true

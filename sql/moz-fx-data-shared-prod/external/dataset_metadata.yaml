@@ -1,6 +1,6 @@
-friendly_name: External
+friendly_name: External Data
 description: |-
-  Please provide a description for the dataset
+  Data from external sources, such as calendar data, inflation data, GDP data, etc.
 dataset_base_acl: view
 user_facing: true
 labels: {}

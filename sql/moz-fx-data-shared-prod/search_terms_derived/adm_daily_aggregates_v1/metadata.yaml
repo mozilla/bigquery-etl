@@ -31,7 +31,5 @@ workgroup_access:
   - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
   - workgroup:search-terms/sanitized-writer
 references:
-  checks.sql:
-  - ..
   query.sql:
   - moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3

@@ -15,7 +15,7 @@ labels:
   schedule: daily
   incremental: true
   shredder_mitigation: false
-  table_type: aggregate
+  table_type: client_level
 scheduling:
   dag_name: bqetl_mobile_kpi_metrics
   depends_on_past: false

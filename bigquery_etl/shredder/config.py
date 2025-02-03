@@ -632,10 +632,27 @@ def find_glean_targets(
     usage_reporting_sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
     for table in glean_min_stable_tables:
         if table.table_id == "usage_deletion_request_v1":
-            source = DeleteSource(
-                qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
-            )
-            usage_reporting_sources[table.dataset_id] += (source,)
+            # usage_deletion_request ping is defined in application code,
+            # so we need to confirm that it has `usage_profile_id` metric
+            table = client.get_table(table)
+            if any(
+                field.name == "metrics"
+                and any(
+                    metric_type_field.name == "uuid"
+                    and any(
+                        [
+                            metric_field.name == "usage_profile_id"
+                            for metric_field in metric_type_field.fields
+                        ]
+                    )
+                    for metric_type_field in field.fields
+                )
+                for field in table.schema
+            ):
+                source = DeleteSource(
+                    qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
+                )
+                usage_reporting_sources[table.dataset_id] += (source,)
 
     return {
         **{

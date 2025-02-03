@@ -1,4 +1,4 @@
---Unable to do normal data check since "adm_daily_aggregates_v1" passes in parameter ALLOW_FIELD_EDITION, 
+--Unable to do normal data check since "adm_daily_aggregates_v1" passes in parameter ALLOW_FIELD_EDITION,
 --so this is a separate task to check each day has at least 100 rows and to fail the Airflow task if not
 SELECT
   submission_date,

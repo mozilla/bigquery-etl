@@ -29,30 +29,30 @@ fields:
   mode: NULLABLE
   description: Client's app version on the first seen date.
 
-- name: city
-  type: STRING
-  mode: NULLABLE
-  description: Client's city on the first seen date.
-
 - name: country
   type: STRING
   mode: NULLABLE
   description: Client's country on the first seen date.
+
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: Client's city on the first seen date.
 
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
   description: Client's geo subdivision on the first seen date.
 
-- name: isp
-  type: STRING
-  mode: NULLABLE
-  description: Client's isp subdivision on the first seen date.
-
 - name: locale
   type: STRING
   mode: NULLABLE
   description: Client's locale on the first seen date.
+
+- name: isp
+  type: STRING
+  mode: NULLABLE
+  description: Client's isp subdivision on the first seen date.
 
 - name: os
   type: STRING

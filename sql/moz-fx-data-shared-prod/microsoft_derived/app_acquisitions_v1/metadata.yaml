@@ -9,8 +9,6 @@ labels:
   owner1: mhirose@mozilla.com
   table_type: aggregate
 scheduling:
-  dag_name: microsoft_store
-  date_partition_parameter: date
   arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:

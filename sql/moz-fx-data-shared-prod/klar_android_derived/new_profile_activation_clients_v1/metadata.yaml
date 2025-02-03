@@ -9,7 +9,7 @@ owners:
 labels:
   schedule: daily
   incremental: true
-  table_type: aggregate
+  table_type: client_level
   dag: bqetl_mobile_kpi_metrics
   owner1: kik
 scheduling:

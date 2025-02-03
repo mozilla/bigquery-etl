@@ -1,6 +1,6 @@
-friendly_name: Profile / Client Retention - Fenix (Aggregated)
+friendly_name: Profile / Client Retention - Firefox Android (Aggregated)
 description: |-
-  Profile / Client Retention (Fenix) aggregated metrics
+  Profile / Client Retention (Firefox Android) aggregated metrics
 
   For all profiles that sent us a ping on the metric date.
   Client's attribute values as observed on the metric date.

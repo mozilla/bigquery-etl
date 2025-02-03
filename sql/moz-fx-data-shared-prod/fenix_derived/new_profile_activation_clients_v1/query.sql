@@ -63,7 +63,7 @@ client_search AS (
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY)
     AND @submission_date
-    AND normalized_app_name_os = "Fenix"
+    AND normalized_app_name_os = "Firefox Android"
   GROUP BY
     client_id
 )

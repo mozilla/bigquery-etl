@@ -10,6 +10,11 @@ fields:
   description: Date we first received a baseline ping from the profile.
 
 - mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+
+- mode: NULLABLE
   name: normalized_channel
   type: STRING
   description: Release channel of the app the profile is using.
@@ -29,10 +34,25 @@ fields:
   mode: NULLABLE
   description: Client's country on the first seen date.
 
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: Client's city on the first seen date.
+
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+  description: Client's geo subdivision on the first seen date.
+
 - name: locale
   type: STRING
   mode: NULLABLE
   description: Client's locale on the first seen date.
+
+- name: isp
+  type: STRING
+  mode: NULLABLE
+  description: Client's isp subdivision on the first seen date.
 
 - name: os
   type: STRING
@@ -43,6 +63,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Client's os version on the first seen date.
+
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+  description: Client's device model on the first seen date.
 
 - name: device_manufacturer
   type: STRING

@@ -10,6 +10,11 @@ fields:
   description: Date we first received a baseline ping from the profile.
 
 - mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+
+- mode: NULLABLE
   name: normalized_channel
   type: STRING
   description: Release channel of the app the profile is using.
@@ -29,10 +34,25 @@ fields:
   mode: NULLABLE
   description: Client's country on the first seen date.
 
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: Client's city on the first seen date.
+
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+  description: Client's geo subdivision on the first seen date.
+
 - name: locale
   type: STRING
   mode: NULLABLE
   description: Client's locale on the first seen date.
+
+- name: isp
+  type: STRING
+  mode: NULLABLE
+  description: Client's isp subdivision on the first seen date.
 
 - name: os
   type: STRING
@@ -43,6 +63,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Client's os version on the first seen date.
+
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+  description: Client's device model on the first seen date.
 
 - name: device_manufacturer
   type: STRING
@@ -69,10 +94,35 @@ fields:
   mode: NULLABLE
   description: Play store source the profile is attributed to.
 
+- name: play_store_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp corresponding to the ping that contained the play_store attribution.
+
+- name: play_store_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: 
+
+- name: play_store_attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: 
+
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: Play store source the profile is attributed to.
+
 - name: meta_attribution_app
   type: STRING
   mode: NULLABLE
   description: Facebook app linked to paid marketing.
+
+- name: meta_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp corresponding to the ping that contained the meta attribution.
 
 - name: install_source
   type: STRING
@@ -98,6 +148,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Adjust Network the profile is attributed to.
+
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Timestamp corresponding to the ping that contained the adjust attribution.
 
 - name: distribution_id
   type: STRING

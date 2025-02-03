@@ -73,18 +73,23 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: Client ID
 - name: city
   type: STRING
   mode: NULLABLE
+  description: Client's city on the first seen date.
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: Client's geo subdivision on the first seen date.
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: Client's isp subdivision on the first seen date.
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: Client's device model on the first seen date.
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE

@@ -1,6 +1,6 @@
-friendly_name: Profile / Client Attribution - Fenix
+friendly_name: Profile / Client Attribution - Firefox Android
 description: |-
-  Profile attribution (Fenix)
+  Profile attribution (Firefox Android)
 owners:
 - mozilla/kpi_table_reviewers
 - kik@mozilla.com

@@ -1,6 +1,6 @@
-friendly_name: Activation Clients - Fenix
+friendly_name: Activation Clients - Firefox Android
 description: |-
-  Activation Clients (Fenix).
+  Activation Clients (Firefox Android).
 
   device_type and device_manufacturer fields were added in 2024-03-05.
 owners:
@@ -9,7 +9,7 @@ owners:
 labels:
   schedule: daily
   incremental: true
-  table_type: aggregate
+  table_type: client_level
   dag: bqetl_mobile_kpi_metrics
   owner1: kik
 scheduling:

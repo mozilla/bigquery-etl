@@ -8,7 +8,6 @@ USAGE_TYPES = (
     "seen",
     "active",
     "created_profile",
-    "desktop_active",
     "seen_session_start",
     "seen_session_end",
 )

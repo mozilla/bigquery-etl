@@ -5,12 +5,14 @@ fields:
   type: INTEGER
 - name: days_active_bits
   type: INTEGER
-- name: days_created_profile_bits
-  type: INTEGER
+{% if app_name == "firefox_desktop" %}
 - mode: NULLABLE
   name: days_desktop_active_bits
   type: INTEGER
   description: This represents the official definition of "active user" for desktop
+{% endif %}
+- name: days_created_profile_bits
+  type: INTEGER
 - name: client_id
   type: STRING
 - name: sample_id

@@ -7,6 +7,7 @@ labels:
   incremental: true
   dag: bqetl_messaging_system
   owner1: najiang
+  table_type: client_level
 scheduling:
   dag_name: bqetl_messaging_system
   depends_on_past: true
@@ -15,7 +16,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

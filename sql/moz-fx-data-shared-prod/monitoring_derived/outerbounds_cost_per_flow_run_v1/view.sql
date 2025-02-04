@@ -30,7 +30,7 @@ SELECT
 FROM
   cost_per_flow_run
 LEFT JOIN
-  `moz-fx-data-shared-prod.monitoring_derived.outerbounds_flow_description_v1` as descriptions
+  `moz-fx-data-shared-prod.monitoring_derived.outerbounds_flow_description_v1` AS descriptions
   ON LOWER(cost_per_flow_run.flow_name) LIKE CONCAT('%', LOWER(descriptions.flow_name), '%')
 ORDER BY
   flow_name DESC

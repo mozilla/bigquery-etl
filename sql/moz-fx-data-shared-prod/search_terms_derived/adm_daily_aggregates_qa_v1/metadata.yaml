@@ -1,0 +1,18 @@
+friendly_name: Adm Daily Aggregates QA
+description: |-
+  This is a table that is used to alert if there are less than 100 rows produced on a given date
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_search_terms_daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}

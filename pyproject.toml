@@ -11,7 +11,7 @@ description = "Tooling for building derived datasets in BigQuery"
 readme = "README.md"
 requires-python = ">=3.11"
 dynamic = ["dependencies"]
-version = "2024.5.1"
+version = "2025.1.1"
 
 [project.urls]
 Homepage = "https://github.com/mozilla/bigquery-etl"

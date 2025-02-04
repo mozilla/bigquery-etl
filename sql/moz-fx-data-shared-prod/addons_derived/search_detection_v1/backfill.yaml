@@ -1,0 +1,9 @@
+2025-01-24:
+  start_date: 2021-08-06
+  end_date: 2025-01-24
+  reason: New table, backfill to populate it with historical data.
+  watchers:
+  - kik@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true

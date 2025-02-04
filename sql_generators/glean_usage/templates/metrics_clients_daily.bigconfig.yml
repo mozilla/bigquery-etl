@@ -11,7 +11,6 @@ tag_deployments:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.submission_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.sample_id
-          - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.n_metrics_ping
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.days_sent_metrics_ping_bits
         metrics:

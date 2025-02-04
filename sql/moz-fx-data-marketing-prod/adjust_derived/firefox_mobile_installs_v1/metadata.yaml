@@ -4,7 +4,6 @@ description: |-
 owners:
 - rbaffourawuah@mozilla.com
 labels:
-  schedule: daily
   owner1: rbaffourawuah
 bigquery:
   time_partitioning:

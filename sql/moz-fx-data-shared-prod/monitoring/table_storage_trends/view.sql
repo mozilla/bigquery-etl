@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod`.fenix.attributable_clients
+AS
 WITH dates_table AS (
   SELECT
     submission_date,

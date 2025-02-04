@@ -196,6 +196,50 @@ SELECT
   IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS christmas_day,
+  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS boxing_day,
+  CASE
+    WHEN submission_date
+      BETWEEN '2020-12-10'
+      AND '2020-12-18'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2021-11-28'
+      AND '2021-12-06'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2022-12-18'
+      AND '2022-12-26'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2023-12-07'
+      AND '2023-12-15'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2024-12-25'
+      AND '2025-01-02'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2025-12-14'
+      AND '2025-12-22'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2026-12-04'
+      AND '2026-12-12'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2027-12-24'
+      AND '2028-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2028-12-12'
+      AND '2028-12-20'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2029-12-01'
+      AND '2029-12-09'
+      THEN 1
+    ELSE 0
+  END AS hanukkah,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS new_years_eve,
 FROM
   `moz-fx-data-shared-prod.external_derived.calendar_v1`

@@ -1,20 +1,13 @@
 friendly_name: Inflation
 description: |-
-  Please provide a description for the query
+  Contains monthly inflation rate data by country
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_external_data #Still need to add new dag to dags.yaml
 bigquery:
-  time_partitioning:
-    type: day
-    field: ''
-    require_partition_filter: true
-    expiration_days: null
   range_partitioning: null
-  clustering:
-    fields: []
 references: {}

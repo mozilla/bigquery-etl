@@ -11,6 +11,7 @@ owners:
 - akommasani@mozilla.com
 - mbowerman@mozilla.com
 labels:
+  table_type: client_level
   owner1: akommasani
   owner2: mbowerman
 bigquery:
@@ -18,7 +19,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering: null
 workgroup_access:

@@ -7,6 +7,7 @@ owners:
 labels:
   incremental: true
   schedule: monthly
+  table_type: client_level
   dag: bqetl_desktop_mobile_search_monthly
   owner1: akommasani
 scheduling:
@@ -22,7 +23,7 @@ bigquery:
     type: month
     field: submission_month
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering: null
 workgroup_access:

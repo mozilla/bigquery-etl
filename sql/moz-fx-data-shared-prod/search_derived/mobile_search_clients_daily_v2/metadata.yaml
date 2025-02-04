@@ -11,6 +11,7 @@ owners:
 - akommasani@mozilla.com
 labels:
   schedule: daily
+  table_type: client_level
   dag: bqetl_mobile_search
   owner1: cmorales
   owner2: akommasani
@@ -21,7 +22,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

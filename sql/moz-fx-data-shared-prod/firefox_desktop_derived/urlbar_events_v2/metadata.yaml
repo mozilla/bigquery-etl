@@ -11,6 +11,7 @@ owners:
 labels:
   incremental: true
   schedule: daily
+  table_type: client_level
   dag: bqetl_urlbar
   owner1: akommasani
   owner2: rburwei
@@ -23,7 +24,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

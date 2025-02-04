@@ -8,20 +8,23 @@ WITH active_users AS (
     client_id,
     sample_id,
     first_seen_date,
-    app_name,
     normalized_channel,
-    locale,
+    app_name,
+    app_display_version,
     country,
     city,
     geo_subdivision,
+    locale,
     isp,
-    app_display_version,
+    normalized_os,
+    normalized_os_version,
+    device_model,
+    device_manufacturer,
+    device_type,
     is_dau,
     is_wau,
     is_mau,
     is_mobile,
-    device_type,
-    device_manufacturer,
   FROM
     `moz-fx-data-shared-prod.klar_android.active_users`
 ),
@@ -64,6 +67,9 @@ SELECT
   END AS lifecycle_stage,
   device_type,
   device_manufacturer,
+  normalized_os AS os,
+  normalized_os_version AS os_version,
+  device_model,
 FROM
   active_users
 LEFT JOIN

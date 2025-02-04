@@ -59,3 +59,12 @@ fields:
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+- name: device_model
+  type: STRING
+  mode: NULLABLE

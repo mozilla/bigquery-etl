@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   submission_date,
-  IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, TRUE, FALSE) AS new_years_day,
+  IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS new_years_day,
   IF(
     submission_date IN (
       '2020-01-25',
@@ -20,7 +20,7 @@ SELECT
     TRUE,
     FALSE
   ) AS lunar_new_year,
-  IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, TRUE, FALSE) AS valentines_day,
+  IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS valentines_day,
   IF(
     submission_date IN (
       '2020-04-12',
@@ -34,8 +34,8 @@ SELECT
       '2028-04-16',
       '2029-04-01'
     ),
-    TRUE,
-    FALSE
+    1,
+    0
   ) AS easter_day,
   IF(
     submission_date IN (
@@ -50,16 +50,11 @@ SELECT
       '2028-05-29',
       '2029-05-28'
     ),
-    TRUE,
-    FALSE
+    1,
+    0
   ) AS us_memorial_day,
-  IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, TRUE, FALSE) AS us_juneteenth,
-  IF(
-    calendar_month = 7
-    AND EXTRACT(day FROM submission_date) = 4,
-    TRUE,
-    FALSE
-  ) AS us_independence_day,
+  IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
+  IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
   IF(
     submission_date IN (
       '2020-09-07',
@@ -73,27 +68,73 @@ SELECT
       '2028-09-04',
       '2029-09-03'
     ),
-    TRUE,
-    FALSE
+    1,
+    0
   ) AS us_labor_day,
-    /*
-  CASE
-  WHEN submission_date IN () THEN TRUE 
-  ELSE FALSE 
-  END AS us_thanksgiving,
-  CASE
-  WHEN submission_date IN () THEN TRUE 
-  ELSE FALSE 
-  END AS us_blackfriday,
-  CASE
-  WHEN submission_date IN () THEN TRUE 
-  ELSE FALSE 
-  END AS us_cybermonday,
-  CASE 
-  WHEN submission_date IN () THEN TRUE 
-  ELSE FALSE 
-  END AS ca_thanksgiving,
-  */
+  IF(
+    submission_date IN (
+      '2020-11-26',
+      '2021-11-25',
+      '2022-11-24',
+      '2023-11-23',
+      '2024-11-28',
+      '2025-11-27',
+      '2026-11-26',
+      '2027-11-25',
+      '2028-11-23',
+      '2029-11-22'
+    ),
+    1,
+    0
+  ) AS us_thanksgiving,
+  IF(
+    submission_date IN (
+      '2020-11-27',
+      '2021-11-26',
+      '2022-11-25',
+      '2023-11-24',
+      '2024-11-29',
+      '2025-11-28',
+      '2026-11-27',
+      '2027-11-26',
+      '2028-11-24',
+      '2029-11-23'
+    ),
+    1,
+    0
+  ) AS us_blackfriday,
+  IF(
+    submission_date IN (
+      '2020-11-30',
+      '2021-11-29',
+      '2022-11-28',
+      '2023-11-27',
+      '2024-12-02',
+      '2025-12-01',
+      '2026-11-30',
+      '2027-11-29',
+      '2028-11-27',
+      '2029-11-26'
+    ),
+    1,
+    0
+  ) AS us_cybermonday,
+  IF(
+    submission_date IN (
+      '2020-10-12',
+      '2021-10-11',
+      '2022-10-10',
+      '2023-10-09',
+      '2024-10-14',
+      '2025-10-13',
+      '2026-10-12',
+      '2027-10-11',
+      '2028-10-09',
+      '2029-10-08'
+    ),
+    1,
+    0
+  ) AS ca_thanksgiving,
 --future dates unknown currently, will add as they are announced
   IF(
     submission_date IN (

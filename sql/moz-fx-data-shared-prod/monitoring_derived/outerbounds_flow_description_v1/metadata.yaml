@@ -1,0 +1,23 @@
+friendly_name: Outerbounds Flow description spreadsheet
+description: |
+  The description of Outerbounds Flows
+owners:
+- ctroy@mozilla.com
+- aplacitelli@mozilla.com
+- aaggarwal@mozilla.com
+labels:
+  owner1: ctroy
+  owner2: aplacitelli
+  owner3: aaggarwal
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/1E0kDpHwwtDnkMxAXbeEIzMTajckSHWJ2swF39JdRR1g
+  options:
+    skip_leading_rows: 1

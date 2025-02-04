@@ -240,6 +240,49 @@ SELECT
       THEN 1
     ELSE 0
   END AS hanukkah,
+  CASE
+    WHEN submission_date
+      BETWEEN '2020-12-26'
+      AND '2021-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2021-12-26'
+      AND '2022-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2022-12-26'
+      AND '2023-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2023-12-26'
+      AND '2024-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2024-12-26'
+      AND '2025-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2025-12-26'
+      AND '2026-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2026-12-26'
+      AND '2027-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2027-12-26'
+      AND '2028-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2028-12-26'
+      AND '2029-01-01'
+      THEN 1
+    WHEN submission_date
+      BETWEEN '2029-12-26'
+      AND '2030-01-01'
+      THEN 1
+    ELSE 0
+  END AS kwanzaa,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS new_years_eve,
 FROM
   `moz-fx-data-shared-prod.external_derived.calendar_v1`

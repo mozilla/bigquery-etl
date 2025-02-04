@@ -131,6 +131,7 @@ SELECT
     1,
     0
   ) AS us_labor_day,
+  IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
   IF(
     submission_date IN (
       '2020-11-26',

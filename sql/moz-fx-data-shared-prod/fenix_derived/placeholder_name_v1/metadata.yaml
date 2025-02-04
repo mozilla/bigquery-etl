@@ -1,0 +1,19 @@
+friendly_name: TODO
+description: |-
+  TODO
+owners:
+- kik@mozilla.com
+- shong@mozilla.com
+labels:
+  application: fenix
+  incremental: true
+  table_type: aggregate
+  shredder_mitigation: false
+scheduling:
+  dag_name: TODO
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null

@@ -20,6 +20,23 @@ SELECT
     1,
     0
   ) AS lunar_new_year,
+  IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS in_republic_day,
+  IF(
+    submission_date IN (
+      '2020-02-02',
+      '2021-02-07',
+      '2022-02-13',
+      '2023-02-12',
+      '2024-02-11',
+      '2025-02-09',
+      '2026-02-08',
+      '2027-02-14',
+      '2028-02-13',
+      '2029-02-11'
+    ),
+    1,
+    0
+  ) AS us_superbowl,
   IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS valentines_day,
   IF(
     submission_date IN (
@@ -79,6 +96,8 @@ SELECT
     1,
     0
   ) AS easter_day,
+  IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
+  IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 8, 1, 0) AS fr_victory_day,
   IF(
     submission_date IN (
       '2020-05-25',
@@ -113,6 +132,7 @@ SELECT
     1,
     0
   ) AS us_labor_day,
+  IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
   IF(
     submission_date IN (
       '2020-11-26',
@@ -219,6 +239,7 @@ SELECT
     1,
     0
   ) AS in_diwali,
+  IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
   IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS christmas_day,

@@ -58,3 +58,15 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: MAU - Monthly Active Users
+
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |
+    On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".
+
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Manufacturer of the device where the client is installed.

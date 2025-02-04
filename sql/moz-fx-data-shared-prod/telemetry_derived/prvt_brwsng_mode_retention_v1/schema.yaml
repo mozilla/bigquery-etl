@@ -1,0 +1,25 @@
+fields:
+- description: Submission Date - Date of the DAG run - always 8 days after first seen date
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date - Date client was first seen
+- name: saw_onboarding
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Saw Onboarding - Flag indicating if the client saw "'about:welcome" on or before first seen date
+- name: used_pbm_on_first_seen_date
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Used Private Browsing Mode on First Seen Date
+- name: active_in_next_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Active in Next 7 Days - Indicates if the client was a daily active user on 1 or more days
+- name: nbr_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Clients

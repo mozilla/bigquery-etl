@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: uninstall_same_day_as_install
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating if the uninstall was on the same date as the install
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: Default Search Engine
+- name: uninstalls_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique client IDs uninstalling

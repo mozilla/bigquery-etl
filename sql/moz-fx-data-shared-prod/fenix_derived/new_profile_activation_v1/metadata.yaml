@@ -2,7 +2,7 @@ friendly_name: Fenix New Profile Activation
 description: |-
   Mobile activation metric used for Marketing campaign performance
 owners:
-- vsabino@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
   table_type: client_level

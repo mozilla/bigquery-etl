@@ -1,0 +1,65 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when ping is received on the server side.
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: Browser name.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Browser version installed on the client.
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Browser installation channel installed on the client.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country reported by the client.
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: City reported by the client.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale reported by the client, which is a combination of language and regional settings.
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Operating System reported by the client.
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: OS version with windows_build_number as reported by the client.
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the browser is set as the default browser on the client side.
+- name: daily_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who report a ping in a day.
+- name: weekly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 7 days.
+- name: monthly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 28 days.
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who reported a ping on the submission_date that qualify as active.
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 7 days and qualify as active.
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of users who have reported a ping over the last 28 days and qualify as active.

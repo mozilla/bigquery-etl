@@ -1,0 +1,22 @@
+fields:
+  - mode: NULLABLE
+    name: timestamp
+    type: TIMESTAMP
+  - mode: NULLABLE
+    name: server
+    type: STRING
+  - mode: NULLABLE
+    name: version
+    type: STRING
+  - mode: NULLABLE
+    name: commit
+    type: STRING
+  - mode: NULLABLE
+    name: l10n
+    type: STRING
+  - mode: NULLABLE
+    name: tospp
+    type: STRING
+  - mode: NULLABLE
+    name: since_last_push
+    type: FLOAT

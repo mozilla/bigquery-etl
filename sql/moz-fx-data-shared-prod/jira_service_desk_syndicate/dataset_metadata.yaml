@@ -15,6 +15,7 @@ syndication:
     - status
     - resolution
     - field
+    - field_option
     - issue_field_history
     - issue_multiselect_history
     - status_category

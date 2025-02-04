@@ -20,6 +20,7 @@ from pathos.multiprocessing import ProcessingPool
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
 from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.config import ConfigLoader
 
 VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
@@ -36,7 +37,7 @@ FROM
   `{target}`
 """
 
-VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO =  """\
+VIEW_QUERY_TEMPLATE_NO_CLIENT_INFO = """\
 -- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
   `{full_view_id}`
@@ -137,7 +138,9 @@ def write_dataset_metadata_if_not_exists(
         ).write(target)
 
 
-def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, schema: SchemaFile = None):
+def write_view_if_not_exists(
+    target_project: str, sql_dir: Path, id_token=None, schema: SchemaFile = None
+):
     """If a view.sql does not already exist, write one to the target directory."""
     # add imports here to run in multiple processes via pathos
     import re
@@ -297,7 +300,7 @@ def write_view_if_not_exists(target_project: str, sql_dir: Path, id_token=None, 
             ),
             trailing_newline=True,
         )
-    #If it's a glean stable view, include the app version parsing columns
+    # If it's a glean stable view, include the app version parsing columns
     elif schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
         full_sql = reformat(
             VIEW_QUERY_TEMPLATE.format(
@@ -403,7 +406,10 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
 
     schemas = get_stable_table_schemas()
     one_schema_per_dataset = [
-        last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
+        last
+        for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
+        if k
+        not in ConfigLoader.get("generate", "stable_views", "skip_datasets", fallback=[])
     ]
 
     id_token = get_id_token()
@@ -411,10 +417,7 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
     with ProcessingPool(parallelism) as pool:
         pool.map(
             partial(
-                write_view_if_not_exists,
-                target_project,
-                Path(output_dir),
-                id_token
+                write_view_if_not_exists, target_project, Path(output_dir), id_token
             ),
             schemas,
         )

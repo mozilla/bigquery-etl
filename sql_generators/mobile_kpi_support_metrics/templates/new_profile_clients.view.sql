@@ -9,6 +9,8 @@ SELECT
   app_name,
   app_display_version AS app_version,
   country,
+  city,
+  geo_subdivision,
   locale,
   isp,
   normalized_os AS os,
@@ -20,6 +22,7 @@ SELECT
   attribution.{{ attribution_field }},
   {% endfor %}
   attribution.paid_vs_organic,
+  device_type,
 FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN

@@ -242,6 +242,10 @@ SELECT
   END AS hanukkah,
   CASE
     WHEN submission_date
+      BETWEEN '2019-12-26'
+      AND '2020-01-01'
+      THEN 1
+    WHEN submission_date
       BETWEEN '2020-12-26'
       AND '2021-01-01'
       THEN 1
@@ -282,7 +286,7 @@ SELECT
       AND '2030-01-01'
       THEN 1
     ELSE 0
-  END AS kwanzaa,
+  END AS us_kwanzaa,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS new_years_eve,
 FROM
   `moz-fx-data-shared-prod.external_derived.calendar_v1`

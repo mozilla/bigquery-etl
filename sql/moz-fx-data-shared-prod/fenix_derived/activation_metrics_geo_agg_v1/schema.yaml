@@ -1,8 +1,4 @@
 fields:
-- mode: NULLABLE
-  name: submission_date
-  type: DATE
-  description: Date corresponding to processing date.
 
 - mode: NULLABLE
   name: first_seen_date
@@ -176,5 +172,3 @@ fields:
   mode: NULLABLE
   description: |
     Count of clients with early engagement
-
-

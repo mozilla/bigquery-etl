@@ -1,19 +1,36 @@
 WITH new_profiles AS (
-  SELECT * FROM fenix.new_profile_clients WHERE first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.fenix.new_profile_clients`
+  WHERE
+    first_seen_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
-
 profile_activation AS (
-  SELECT * FROM fenix.new_profile_activation_clients WHERE submission_date = @submission_date
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.fenix.new_profile_activation_clients`
+  WHERE
+    submission_date = @submission_date
 ),
-
 profile_retention AS (
-  SELECT * FROM fenix.retention_clients WHERE submission_date = @submission_date AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.fenix.retention_clients`
+  WHERE
+    submission_date = @submission_date
+    AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
 ),
-
 profile_engagement AS (
-  SELECT * FROM fenix.engagement_clients WHERE submission_date = @submission_date
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.fenix.engagement_clients`
+  WHERE
+    submission_date = @submission_date
 )
-
 SELECT
   first_seen_date,
   client_id,
@@ -54,43 +71,9 @@ SELECT
   -- COUNTIF(is_mau) AS mau,
 FROM
   new_profiles
-LEFT JOIN profile_activation
-USING(
-  first_seen_date,
-  client_id,
-  normalized_channel,
-  app_name,
-  app_version,
-  country,
-  city,
-  geo_subdivision,
-  locale,
-  isp,
-  os,
-  os_version,
-  device_model,
-  device_manufacturer,
-  is_mobile,
-  play_store_attribution_campaign,
-  play_store_attribution_medium,
-  play_store_attribution_source,
-  play_store_attribution_timestamp,
-  play_store_attribution_content,
-  play_store_attribution_term,
-  play_store_attribution_install_referrer_response,
-  meta_attribution_app,
-  meta_attribution_timestamp,
-  install_source,
-  adjust_ad_group,
-  adjust_campaign,
-  adjust_creative,
-  adjust_network,
-  adjust_attribution_timestamp,
-  distribution_id,
-  device_type
-)
-LEFT JOIN profile_retention
-  USING(
+LEFT JOIN
+  profile_activation
+  USING (
     first_seen_date,
     client_id,
     normalized_channel,
@@ -124,8 +107,9 @@ LEFT JOIN profile_retention
     distribution_id,
     device_type
   )
-LEFT JOIN profile_engagement
-  USING(
+LEFT JOIN
+  profile_retention
+  USING (
     first_seen_date,
     client_id,
     normalized_channel,
@@ -158,7 +142,43 @@ LEFT JOIN profile_engagement
     adjust_attribution_timestamp,
     distribution_id,
     device_type
-)
+  )
+LEFT JOIN
+  profile_engagement
+  USING (
+    first_seen_date,
+    client_id,
+    normalized_channel,
+    app_name,
+    app_version,
+    country,
+    city,
+    geo_subdivision,
+    locale,
+    isp,
+    os,
+    os_version,
+    device_model,
+    device_manufacturer,
+    is_mobile,
+    play_store_attribution_campaign,
+    play_store_attribution_medium,
+    play_store_attribution_source,
+    play_store_attribution_timestamp,
+    play_store_attribution_content,
+    play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
+    meta_attribution_app,
+    meta_attribution_timestamp,
+    install_source,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative,
+    adjust_network,
+    adjust_attribution_timestamp,
+    distribution_id,
+    device_type
+  )
 GROUP BY
   first_seen_date,
   client_id,

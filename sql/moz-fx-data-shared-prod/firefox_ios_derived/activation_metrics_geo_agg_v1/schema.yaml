@@ -1,10 +1,5 @@
 fields:
 - mode: NULLABLE
-  name: submission_date
-  type: DATE
-  description: Date corresponding to processing date.
-
-- mode: NULLABLE
   name: first_seen_date
   type: DATE
   description: Date we first received a baseline ping from the profile.
@@ -79,56 +74,6 @@ fields:
   mode: NULLABLE
   description: Indicates if this specific entry is used towards calculating mobile DAU.
 
-- name: play_store_attribution_campaign
-  type: STRING
-  mode: NULLABLE
-  description: Play store campaign the profile is attributed to.
-
-- name: play_store_attribution_medium
-  type: STRING
-  mode: NULLABLE
-  description: Play store Medium the profile is attributed to.
-
-- name: play_store_attribution_source
-  type: STRING
-  mode: NULLABLE
-  description: Play store source the profile is attributed to.
-
-- name: play_store_attribution_timestamp
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: Timestamp corresponding to the ping that contained the play_store attribution.
-
-- name: play_store_attribution_content
-  type: STRING
-  mode: NULLABLE
-  description:
-
-- name: play_store_attribution_term
-  type: STRING
-  mode: NULLABLE
-  description:
-
-- name: play_store_attribution_install_referrer_response
-  type: STRING
-  mode: NULLABLE
-  description: Play store source the profile is attributed to.
-
-- name: meta_attribution_app
-  type: STRING
-  mode: NULLABLE
-  description: Facebook app linked to paid marketing.
-
-- name: meta_attribution_timestamp
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: Timestamp corresponding to the ping that contained the meta attribution.
-
-- name: install_source
-  type: STRING
-  mode: NULLABLE
-  description: The source of a profile installation.
-
 - name: adjust_ad_group
   type: STRING
   mode: NULLABLE
@@ -154,27 +99,8 @@ fields:
   mode: NULLABLE
   description: Timestamp corresponding to the ping that contained the adjust attribution.
 
-- name: distribution_id
-  type: STRING
-  mode: NULLABLE
-  description: A string containing the distribution identifier.
-
 - name: device_type
   type: STRING
   mode: NULLABLE
   description: |
     On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".
-
-- name: is_activated
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    Count of client who are activated
-
-- name: is_early_engagement
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    Count of clients with early engagement
-
-

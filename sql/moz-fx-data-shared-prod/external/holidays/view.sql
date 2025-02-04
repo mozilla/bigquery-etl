@@ -17,8 +17,8 @@ SELECT
       '2028-01-26',
       '2029-02-13'
     ),
-    TRUE,
-    FALSE
+    1,
+    0
   ) AS lunar_new_year,
   IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS valentines_day,
   IF(
@@ -157,14 +157,14 @@ SELECT
       '2024-10-08',
       '2024-10-09'
     ),
-    TRUE,
-    FALSE
+    1,
+    0
   ) AS amazon_prime_days_summer,
-  IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 3, TRUE, FALSE) AS de_unity_day,
-  IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, TRUE, FALSE) AS halloween,
-  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, TRUE, FALSE) AS christmas_eve,
-  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 25, TRUE, FALSE) AS christmas_day,
-  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 31, TRUE, FALSE) AS new_years_eve,
+  IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 3, 1, 0) AS de_unity_day,
+  IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
+  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,
+  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS christmas_day,
+  IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS new_years_eve,
 FROM
   `moz-fx-data-shared-prod.external_derived.calendar_v1`
 WHERE

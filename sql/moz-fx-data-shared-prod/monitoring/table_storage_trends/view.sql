@@ -83,17 +83,14 @@ SELECT
   l.total_partitions,
   l.active_physical_bytes,
   l.long_term_physical_bytes,
---w1
   w1.total_rows_7_days_ago,
   w1.total_partitions_7_days_ago,
   w1.active_physical_bytes_7_days_ago,
   w1.long_term_physical_bytes_7_days_ago,
---w2
   w2.total_rows_14_days_ago,
   w2.total_partitions_14_days_ago,
   w2.active_physical_bytes_14_days_ago,
   w2.long_term_physical_bytes_14_days_ago,
---w3
   w3.total_rows_21_days_ago,
   w3.total_partitions_21_days_ago,
   w3.active_physical_bytes_21_days_ago,

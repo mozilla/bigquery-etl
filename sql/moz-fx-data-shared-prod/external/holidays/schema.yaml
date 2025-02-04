@@ -9,6 +9,12 @@ fields:
 - name: lunar_new_year
   type: INTEGER
   mode: NULLABLE
+- name: in_republic_day
+  type: INTEGER
+  mode: NULLABLE
+- name: us_superbowl
+  type: INTEGER
+  mode: NULLABLE
 - name: valentines_day
   type: INTEGER
   mode: NULLABLE
@@ -21,6 +27,12 @@ fields:
 - name: easter_day
   type: INTEGER
   mode: NULLABLE
+- name: fr_may_day
+  type: INTEGER
+  mode: NULLABLE
+- name: fr_victory_day
+  type: INTEGER
+  mode: NULLABLE
 - name: us_memorial_day
   type: INTEGER
   mode: NULLABLE
@@ -31,6 +43,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: us_labor_day
+  type: INTEGER
+  mode: NULLABLE
+- name: mx_independence_day
   type: INTEGER
   mode: NULLABLE
 - name: us_thanksgiving
@@ -52,6 +67,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: in_diwali
+  type: INTEGER
+  mode: NULLABLE
+- name: mx_revolution_day
   type: INTEGER
   mode: NULLABLE
 - name: halloween

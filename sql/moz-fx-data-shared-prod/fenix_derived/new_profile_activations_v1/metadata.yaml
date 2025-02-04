@@ -1,6 +1,6 @@
-friendly_name: Activations - Firefox Android (Aggregated)
+friendly_name: Activations - Fenix (Aggregated)
 description: |-
-  Activations (Firefox Android) aggregated metrics
+  Activations (Fenix) aggregated metrics
 
   device_type and device_manufacturer fields were added in 2024-03-05.
 owners:

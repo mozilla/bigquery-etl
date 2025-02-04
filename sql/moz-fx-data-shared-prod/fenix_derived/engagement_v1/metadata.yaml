@@ -1,6 +1,6 @@
-friendly_name: Profile / Client Engagement - Firefox Android (Aggregated)
+friendly_name: Profile / Client Engagement - Fenix (Aggregated)
 description: |-
-  Profile / Client Engagement (Firefox Android) aggregated metrics
+  Profile / Client Engagement (Fenix) aggregated metrics
 
   device_type and device_manufacturer fields were added in 2024-03-05.
 owners:

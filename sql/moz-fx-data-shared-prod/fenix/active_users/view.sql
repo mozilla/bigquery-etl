@@ -9,10 +9,10 @@ SELECT
   ),
   CASE
     WHEN LOWER(isp) = "browserstack"
-      THEN CONCAT("Firefox Android", " ", isp)
+      THEN CONCAT("Fenix", " ", isp)
     WHEN LOWER(distribution_id) = "mozillaonline"
-      THEN CONCAT("Firefox Android", " ", distribution_id)
-    ELSE "Firefox Android"
+      THEN CONCAT("Fenix", " ", distribution_id)
+    ELSE "Fenix"
   END AS app_name,
   -- Activity fields to support metrics built on top of activity
   CASE

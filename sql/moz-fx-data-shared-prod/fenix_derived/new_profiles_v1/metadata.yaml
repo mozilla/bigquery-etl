@@ -1,6 +1,6 @@
-friendly_name: New profiles - Firefox Android (Aggregated)
+friendly_name: New profiles - Fenix (Aggregated)
 description: |-
-  New profiles (Firefox Android) aggregated metrics
+  New profiles (Fenix) aggregated metrics
 
   device_type and device_manufacturer fields were added in 2024-03-05.
 owners:

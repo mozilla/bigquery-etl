@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod`.fenix.attributable_clients
+  `moz-fx-data-shared-prod.monitoring.table_storage_trends`
 AS
 WITH dates_table AS (
   SELECT

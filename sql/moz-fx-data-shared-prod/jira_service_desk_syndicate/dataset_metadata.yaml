@@ -22,11 +22,6 @@ syndication:
     - request
     - request_type
   administer_views: true
-default_table_workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:service-desk/data-viewers
-      - workgroup:service-desk/data-developers
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

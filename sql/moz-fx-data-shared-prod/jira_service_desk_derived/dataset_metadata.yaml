@@ -1,14 +1,9 @@
 friendly_name: Jira Service Desk Derived
 description: |-
   Jira Service Desk data pulled from Fivetran.
-dataset_base_acl: derived
+dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:service-desk/data-viewers
-  - workgroup:service-desk/data-developers
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

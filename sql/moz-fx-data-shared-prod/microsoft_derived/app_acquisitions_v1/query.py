@@ -5,6 +5,7 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
+from datetime import timedelta
 from time import sleep
 
 import requests
@@ -91,8 +92,9 @@ def microsoft_authorization(tenant_id, client_id, client_secret, resource_url):
 
 def download_microsoft_store_data(date, application_id, bearer_token):
     """Download data from Microsoft - application_id, bearer_token are called here."""
-    start_date = date  #
-    end_date = date
+    # Need to delay the running of the job to ensure data is present.
+    start_date = date - timedelta(days=3)
+    end_date = date - timedelta(days=3)
     token = bearer_token
     app_id = application_id
     groupBy = [

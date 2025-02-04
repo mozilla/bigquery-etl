@@ -43,8 +43,6 @@ WITH _current AS (
     CAST(TRUE AS INT64) &
     CAST(browser_engagement_uri_count > 0 AS INT64) &
     CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
---     {% else %}
---     CAST(NULL AS INT64) AS days_desktop_active_bits,
     {% endif %}
     * EXCEPT(submission_date)
   FROM

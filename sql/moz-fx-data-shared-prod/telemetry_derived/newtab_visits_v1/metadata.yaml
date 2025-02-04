@@ -11,7 +11,6 @@ labels:
   schedule: daily
   owner1: mbowerman
   dag: bqetl_newtab
-  table_type: client_level
 scheduling:
   dag_name: bqetl_newtab
 bigquery:
@@ -19,7 +18,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: null
   range_partitioning: null
   clustering:
     fields:

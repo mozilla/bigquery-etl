@@ -20,6 +20,23 @@ SELECT
     1,
     0
   ) AS lunar_new_year,
+  IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS in_republic_day,
+  IF(
+    submission_date IN (
+      '2020-02-02',
+      '2021-02-07',
+      '2022-02-13',
+      '2023-02-12',
+      '2024-02-11',
+      '2025-02-09',
+      '2026-02-08',
+      '2027-02-14',
+      '2028-02-13',
+      '2029-02-11'
+    ),
+    1,
+    0
+  ) AS us_superbowl,
   IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS valentines_day,
   IF(
     submission_date IN (
@@ -79,6 +96,7 @@ SELECT
     1,
     0
   ) AS easter_day,
+  IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
   IF(
     submission_date IN (
       '2020-05-25',

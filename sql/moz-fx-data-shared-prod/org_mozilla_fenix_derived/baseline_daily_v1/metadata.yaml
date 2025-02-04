@@ -1,0 +1,16 @@
+friendly_name: Fenix derived baseline daily
+description: |-
+  fenix derived baseline daily
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: false
+  table_type: client_level
+  shredder_mitigation: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+

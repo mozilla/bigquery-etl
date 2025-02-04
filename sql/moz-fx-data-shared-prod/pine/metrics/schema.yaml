@@ -5552,6 +5552,93 @@ fields:
         histogram WEBRTC_VIDEO_QUALITY_OUTBOUND_PACKETLOSS_RATE.
 
         '
+    - name: mixed_content_hsts
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How often would blocked mixed content be allowed if HSTS upgrades
+        were allowed? 0=display/no-HSTS, 1=display/HSTS, 2=active/no-HSTS, 3=active/HSTS
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram MIXED_CONTENT_HSTS.
+
+        '
+    - name: mixed_content_page_load
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Accumulates type of content per page load (0=no mixed or non-secure
+        page, 1=mixed passive, 2=mixed active, 3=mixed passive and mixed active)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram MIXED_CONTENT_PAGE_LOAD.
+
+        '
+    - name: mixed_content_unblock_counter
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'A simple counter of daily mixed-content unblock operations and
+        top documents loaded
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram MIXED_CONTENT_UNBLOCK_COUNTER.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -11027,6 +11114,54 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         WEBRTC_SOFTWARE_H264_ENABLED.
+
+        '
+    - name: mixed_content_audio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often audio loads fail in regular mode and in upgrading mode?
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram MIXED_CONTENT_AUDIO.
+
+        '
+    - name: mixed_content_images
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often image loads fail in regular mode and in upgrading mode?
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram MIXED_CONTENT_IMAGES.
+
+        '
+    - name: mixed_content_video
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How often video loads fail in regular mode and in upgrading mode?
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram MIXED_CONTENT_VIDEO.
 
         '
   - name: memory_distribution

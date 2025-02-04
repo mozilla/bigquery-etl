@@ -452,7 +452,10 @@ SELECT
       metrics.labeled_counter.webrtc_h264_enabled,
       metrics.labeled_counter.webrtc_hardware_h264_enabled,
       metrics.labeled_counter.webrtc_has_h264_hardware,
-      metrics.labeled_counter.webrtc_software_h264_enabled
+      metrics.labeled_counter.webrtc_software_h264_enabled,
+      metrics.labeled_counter.mixed_content_audio,
+      metrics.labeled_counter.mixed_content_images,
+      metrics.labeled_counter.mixed_content_video
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -688,7 +691,10 @@ SELECT
       metrics.custom_distribution.webrtc_video_encoder_framerate_avg_per_call,
       metrics.custom_distribution.webrtc_video_quality_inbound_bandwidth_kbits,
       metrics.custom_distribution.webrtc_video_quality_inbound_packetloss_rate,
-      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate
+      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate,
+      metrics.custom_distribution.mixed_content_hsts,
+      metrics.custom_distribution.mixed_content_page_load,
+      metrics.custom_distribution.mixed_content_unblock_counter
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1487,7 +1493,10 @@ SELECT
       metrics.labeled_counter.webrtc_h264_enabled,
       metrics.labeled_counter.webrtc_hardware_h264_enabled,
       metrics.labeled_counter.webrtc_has_h264_hardware,
-      metrics.labeled_counter.webrtc_software_h264_enabled
+      metrics.labeled_counter.webrtc_software_h264_enabled,
+      metrics.labeled_counter.mixed_content_audio,
+      metrics.labeled_counter.mixed_content_images,
+      metrics.labeled_counter.mixed_content_video
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1723,7 +1732,10 @@ SELECT
       metrics.custom_distribution.webrtc_video_encoder_framerate_avg_per_call,
       metrics.custom_distribution.webrtc_video_quality_inbound_bandwidth_kbits,
       metrics.custom_distribution.webrtc_video_quality_inbound_packetloss_rate,
-      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate
+      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate,
+      metrics.custom_distribution.mixed_content_hsts,
+      metrics.custom_distribution.mixed_content_page_load,
+      metrics.custom_distribution.mixed_content_unblock_counter
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -2522,7 +2534,10 @@ SELECT
       metrics.labeled_counter.webrtc_h264_enabled,
       metrics.labeled_counter.webrtc_hardware_h264_enabled,
       metrics.labeled_counter.webrtc_has_h264_hardware,
-      metrics.labeled_counter.webrtc_software_h264_enabled
+      metrics.labeled_counter.webrtc_software_h264_enabled,
+      metrics.labeled_counter.mixed_content_audio,
+      metrics.labeled_counter.mixed_content_images,
+      metrics.labeled_counter.mixed_content_video
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2758,7 +2773,10 @@ SELECT
       metrics.custom_distribution.webrtc_video_encoder_framerate_avg_per_call,
       metrics.custom_distribution.webrtc_video_quality_inbound_bandwidth_kbits,
       metrics.custom_distribution.webrtc_video_quality_inbound_packetloss_rate,
-      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate
+      metrics.custom_distribution.webrtc_video_quality_outbound_packetloss_rate,
+      metrics.custom_distribution.mixed_content_hsts,
+      metrics.custom_distribution.mixed_content_page_load,
+      metrics.custom_distribution.mixed_content_unblock_counter
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: calendar_year
+  type: INTEGER
+  mode: NULLABLE
+  description: Calendar Year
+- name: calendar_month
+  type: INTEGER
+  mode: NULLABLE
+  description: Calendar Month
+- name: calendar_quarter
+  type: INTEGER
+  mode: NULLABLE
+  description: Calendar Quarter
+- name: first_date_of_month
+  type: DATE
+  mode: NULLABLE
+  description: First Date of Month
+- name: first_date_of_quarter
+  type: DATE
+  mode: NULLABLE
+  description: First Date of Quarter

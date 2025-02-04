@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -3299,6 +3299,36 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: webrtc_software_h264_enabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: mixed_content_audio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: mixed_content_images
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: mixed_content_video
       type: RECORD
       mode: REPEATED
       fields:
@@ -6777,6 +6807,66 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: webrtc_video_quality_outbound_packetloss_rate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: mixed_content_hsts
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: mixed_content_page_load
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: mixed_content_unblock_counter
       type: RECORD
       mode: NULLABLE
       fields:

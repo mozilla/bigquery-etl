@@ -391,6 +391,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v1
+- sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v3
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/ltv_states_v1
@@ -464,3 +465,4 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
+- sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1

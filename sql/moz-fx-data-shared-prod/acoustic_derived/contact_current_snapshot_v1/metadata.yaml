@@ -12,7 +12,7 @@ owners:
 
 labels:
   incremental: false
-
+  table_type: client_level
 scheduling:
   dag_name: bqetl_acoustic_contact_export
   date_partition_parameter: null
@@ -22,6 +22,7 @@ bigquery:
     type: day
     field: last_modified_date
     require_partition_filter: false
+    expiration_days: 775
   clustering:
     fields:
       - has_opted_out_of_email

@@ -1,0 +1,34 @@
+friendly_name: Activation Clients - {{ friendly_name }}
+description: |-
+  Activation Clients ({{ friendly_name }}).
+
+  {% if app_name in ['fenix', 'firefox_ios'] -%}
+  device_type and device_manufacturer fields were added in 2024-03-05.
+  {%- else -%}
+  device_type and device_manufacturer fields were added on 2025-01-18.
+  {%- endif %}
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  shredder_mitigation: false
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - normalized_channel
+      - country
+monitoring:
+  enabled: true
+  collection: {{ bigeye_collection }}

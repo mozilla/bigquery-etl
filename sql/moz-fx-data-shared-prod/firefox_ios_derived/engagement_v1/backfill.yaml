@@ -4,5 +4,5 @@
   reason: Recompute partitions since DMA came into effect to include additional fields (DENG-6890).
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false

@@ -1,15 +1,13 @@
-friendly_name: Uninstalls By Default Search Engine
+friendly_name: Adm Daily Aggregates QA
 description: |-
-  Number of unique clients uninstalling by date and default search engine
+  This is a table that is used to alert if there are less than 100 rows produced on a given date
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
   owner1: kwindau
-  table_type: aggregate
-  shredder_mitigation: true
 scheduling:
-  dag_name: bqetl_fx_health_ind_dashboard
+  dag_name: bqetl_search_terms_daily
 bigquery:
   time_partitioning:
     type: day
@@ -17,7 +15,4 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields:
-    - default_search_engine
 references: {}

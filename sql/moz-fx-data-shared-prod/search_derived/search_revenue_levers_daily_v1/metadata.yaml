@@ -12,6 +12,7 @@ labels:
   change_controlled: true
   dag: bqetl_search_dashboard
   shredder_mitigation: true
+  table_type: aggregate
 scheduling:
   dag_name: bqetl_search_dashboard
 bigquery:

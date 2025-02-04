@@ -10,7 +10,7 @@ fields:
 - mode: NULLABLE
   name: days_desktop_active_bits
   type: INTEGER
-  description: This represents the official definition used for desktop active user
+  description: This represents the official definition of "active user" for desktop
 - name: client_id
   type: STRING
 - name: sample_id

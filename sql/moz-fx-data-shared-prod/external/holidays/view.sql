@@ -23,6 +23,22 @@ SELECT
   IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS valentines_day,
   IF(
     submission_date IN (
+      '2020-03-10',
+      '2021-03-29',
+      '2022-03-18',
+      '2023-03-08',
+      '2024-03-25',
+      '2025-03-14',
+      '2026-03-04',
+      '2027-03-22',
+      '2028-03-11',
+      '2029-03-01'
+    ),
+    1,
+    0
+  ) AS in_holi,
+  IF(
+    submission_date IN (
       '2020-04-12',
       '2021-04-04',
       '2022-04-17',
@@ -161,6 +177,22 @@ SELECT
     0
   ) AS amazon_prime_days_summer,
   IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 3, 1, 0) AS de_unity_day,
+  IF(
+    submission_date IN (
+      '2020-11-14',
+      '2021-11-04',
+      '2022-10-24',
+      '2023-11-12',
+      '2024-10-31',
+      '2025-10-20',
+      '2026-11-08',
+      '2027-10-29',
+      '2028-10-17',
+      '2029-11-05'
+    ),
+    1,
+    0
+  ) AS in_diwali,
   IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS christmas_day,

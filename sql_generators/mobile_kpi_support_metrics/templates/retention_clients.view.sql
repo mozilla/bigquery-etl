@@ -86,7 +86,10 @@ SELECT
     ELSE 'Unknown'
   END AS lifecycle_stage,
   active_users.device_type,
-  active_users.device_manufacturer,
+  clients_daily.device_manufacturer,
+  clients_daily.device_model,
+  clients_daily.normalized_os AS os,
+  clients_daily.normalized_os_version AS os_version,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_daily` AS clients_daily
 INNER JOIN

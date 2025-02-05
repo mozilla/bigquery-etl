@@ -548,9 +548,9 @@ google-cloud-bigquery==3.29.0 \
     --hash=sha256:5453a4eabe50118254eda9778f3d7dad413490de5f7046b5e66c98f5a1580308 \
     --hash=sha256:fafc2b455ffce3bcc6ce0e884184ef50b6a11350a83b91e327fadda4d5566e72
     # via -r requirements.in
-google-cloud-bigquery-storage[fastavro]==2.27.0 \
-    --hash=sha256:3bfa8f74a61ceaffd3bfe90be5bbef440ad81c1c19ac9075188cccab34bffc2b \
-    --hash=sha256:522faba9a68bea7e9857071c33fafce5ee520b7b175da00489017242ade8ec27
+google-cloud-bigquery-storage[fastavro]==2.28.0 \
+    --hash=sha256:310c2dcc7d0a03b8e3b30ee90f34daf0bdefdb198c51a7f38db45904704f131c \
+    --hash=sha256:7f4a42e614b6173f6d7da75eda3913aa03f74854d3e5e9b1ab462c8468d4deed
     # via -r requirements.in
 google-cloud-core==2.4.1 \
     --hash=sha256:9b7749272a812bde58fff28868d0c5e2f585b82f37e09a1f6ed2d4d10f134073 \
@@ -2230,9 +2230,9 @@ types-python-dateutil==2.9.0.20241206 \
     --hash=sha256:18f493414c26ffba692a72369fea7a154c502646301ebfe3d56a04b3767284cb \
     --hash=sha256:e248a4bc70a486d3e3ec84d0dc30eec3a5f979d6e7ee4123ae043eedbb987f53
     # via -r requirements.in
-types-pytz==2024.2.0.20241221 \
-    --hash=sha256:06d7cde9613e9f7504766a0554a270c369434b50e00975b3a4a0f6eed0f2c1a9 \
-    --hash=sha256:8fc03195329c43637ed4f593663df721fef919b60a969066e22606edf0b53ad5
+types-pytz==2025.1.0.20250204 \
+    --hash=sha256:00f750132769f1c65a4f7240bc84f13985b4da774bd17dfbe5d9cd442746bd49 \
+    --hash=sha256:32ca4a35430e8b94f6603b35beb7f56c32260ddddd4f4bb305fdf8f92358b87e
     # via -r requirements.in
 types-pyyaml==6.0.12.20241230 \
     --hash=sha256:7f07622dbd34bb9c8b264fe860a17e0efcad00d50b5f27e93984909d9363498c \

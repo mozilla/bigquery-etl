@@ -7,6 +7,7 @@ labels:
   application: firefox
   incremental: true
   schedule: daily
+  table_type: client_level
 scheduling:
   dag_name: bqetl_urlbar
 bigquery:
@@ -14,6 +15,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: 775
   clustering:
     fields:
     - normalized_channel

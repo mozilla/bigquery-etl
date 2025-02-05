@@ -10,12 +10,13 @@ labels:
   incremental: true
   owner1: wlachance
   owner2: akomar
+  table_type: client_level
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - sample_id

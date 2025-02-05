@@ -1,0 +1,81 @@
+fields:
+- name: meeting_id
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The meeting's ID (also known as the meeting number) in integer format.
+- name: participant_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Participant ID.
+    This is a unique ID assigned to the participant joining a meeting and is valid for that meeting only.
+- name: participant_user_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The participant's universally unique ID (UUID).
+    * If the participant joins the meeting by logging into Zoom, this is their user ID.
+    * If the participant joins the meeting without logging into Zoom, this is an empty string.
+- name: bo_mtg_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The breakout room ID.
+    Each breakout room is assigned a unique ID.
+- name: customer_key
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The participant's SDK identifier.
+    This value can be alphanumeric, up to a maximum length of 35 characters.
+- name: duration
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Participant duration, in seconds, calculated by subtracting the `leave_time` from the `join_time` for the `user_id`.
+    If the participant leaves and rejoins the same meeting, they are assigned a different `user_id` and Zoom displays their new duration in a separate object.
+    Because of this, the duration may not reflect the total time the user was in the meeting.
+- name: failover
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Indicates if failover happened during the meeting.
+- name: join_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    Participant join time in UTC.
+- name: leave_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    Participant leave time in UTC.
+- name: name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Participant display name.
+- name: registrant_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Unique identifier of the registrant.
+- name: status
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The participant's status.
+    * `in_meeting` - In a meeting.
+    * `in_waiting_room` - In a waiting room.
+- name: user_email
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Participant email.
+    If the participant is not part of the host's account, this is an empty string, with some exceptions.
+- name: is_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the meeting participant record is deleted.

@@ -1,0 +1,87 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: table_catalog
+  type: STRING
+  mode: NULLABLE
+  description: Table Catalog
+- name: table_schema
+  type: STRING
+  mode: NULLABLE
+  description: Table Schema
+- name: table_name
+  type: STRING
+  mode: NULLABLE
+  description: Table Name
+- name: total_rows
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Rows
+- name: total_partitions
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Partitions
+- name: active_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Active Physical Bytes
+- name: long_term_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Long Term Physical Bytes
+- name: total_rows_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_partitions_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: active_physical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_physical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_rows_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_partitions_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: active_physical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_physical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_rows_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_partitions_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: active_physical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_physical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: partition_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: partition_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: partition_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: rows_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: rows_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: rows_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE

@@ -1,0 +1,15 @@
+friendly_name: Zoom meeting participants
+description: |-
+  Mozilla's Zoom meeting participants as synced by Fivetran starting in January 2025.
+owners: []
+labels:
+  authorized: true
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:zoom/data-developers
+  - workgroup:zoom/data-viewers
+references:
+  view.sql:
+  - moz-fx-data-bq-fivetran.zoom.meeting_participant

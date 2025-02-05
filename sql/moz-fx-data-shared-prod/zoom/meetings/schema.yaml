@@ -1,0 +1,51 @@
+fields:
+- name: uuid
+  type: STRING
+  mode: NULLABLE
+  description: 'Unique meeting ID.
+
+    Each meeting instance will generate its own meeting UUID.'
+- name: id
+  type: INTEGER
+  mode: NULLABLE
+  description: Meeting ID (also known as the meeting number) in integer format.
+- name: host_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the user who is set as the meeting's host.
+- name: created_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Time of creation in UTC.
+- name: duration
+  type: INTEGER
+  mode: NULLABLE
+  description: Meeting duration in minutes.
+- name: start_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: Meeting start time in UTC.
+- name: timezone
+  type: STRING
+  mode: NULLABLE
+  description: Timezone the meeting was scheduled in.
+- name: type
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Meeting type.
+
+    * `1` - Instant meeting.
+
+    * `2` - Scheduled meeting.
+
+    * `3` - Recurring meeting with no fixed time.
+
+    * `4` - Meeting created via PMI (Personal Meeting ID).
+
+    * `7` - Personal Audio Conference (PAC).
+
+    * `8` - Recurring meeting with fixed time.'
+- name: is_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the meeting is deleted.

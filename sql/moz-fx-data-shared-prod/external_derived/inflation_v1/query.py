@@ -21,9 +21,10 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
   Output:
   JSON with data for this country for the months between start month and end month
   """
-  base_url = "http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/M.{country_code}.PCPI_IX.?startPeriod={start_month}&endPeriod={end_month}"
+  api_url = f"http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/M.{country_code}.PCPI_IX.?startPeriod={start_month}&endPeriod={end_month}"
 
-
+  response = requests.get(api_url)
+  data = response.json()
 
 
   #TEMP ABOVE 

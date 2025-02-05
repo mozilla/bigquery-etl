@@ -7,8 +7,13 @@ from google.cloud import bigquery
 import time
 import pandas_gbq
 
-# Define countries to pull data for
-countries = ["GB", "FR"]
+# Set variables
+countries = ["GB", "FR", "US", "DE"]
+START_LOOKBACK_DAYS = 1825
+END_LOOKBACK_DAYS = 15
+WAIT_TIME_SECONDS = 10
+TARGET_PROJECT = "moz-fx-data-shared-prod"
+TARGET_TABLE = "external_derived.inflation_v1"
 
 
 # Define function to pull CPI data
@@ -32,8 +37,6 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
     )
 
     observations = series.get("Obs", [])
-
-    # Now, convert the observations into a data frame
     observations_df = pd.DataFrame(observations)
     observations_df["country"] = country_code
 
@@ -47,7 +50,6 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
     observations_df = observations_df[
         ["report_period", "consumer_price_index", "country"]
     ]
-
     return observations_df
 
 
@@ -59,12 +61,12 @@ def main():
     print(curr_date)
 
     # Calculate start month = month 13 months ago
-    start_month_stg = today - timedelta(days=1825)
+    start_month_stg = today - timedelta(days=START_LOOKBACK_DAYS)
     start_month = start_month_stg.replace(day=1).strftime("%Y-%m")
     print("start_month: ", start_month)
 
     # Calculate end month = month 1 month ago
-    end_month_stg = today.replace(day=1) - timedelta(days=15)
+    end_month_stg = today.replace(day=1) - timedelta(days=END_LOOKBACK_DAYS)
     end_month = end_month_stg.strftime("%Y-%m")
     print("end_month: ", end_month)
 
@@ -83,18 +85,19 @@ def main():
         # Append it to the results dataframe
         results_df = pd.concat([results_df, curr_country_infl_df])
 
-        # Sleep for 10 seconds between each call since the API is rate limited
-        time.sleep(10)
+        # Sleep between each call since the API is rate limited
+        time.sleep(WAIT_TIME_SECONDS)
 
     # Add a column with the current date
     results_df["last_updated"] = curr_date
 
     # Write the final results_df to BQ external_derived.inflation_v1 table
+    # This will always over-write with the latest data
     pandas_gbq.to_gbq(
         results_df,
-        "external_derived.inflation_v1",
-        project_id="moz-fx-data-shared-prod",
-        if_exists="append",
+        TARGET_TABLE,
+        project_id=TARGET_PROJECT,
+        if_exists="replace",
     )
 
 

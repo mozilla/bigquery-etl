@@ -5,9 +5,11 @@ import requests
 from argparse import ArgumentParser
 from google.cloud import bigquery
 import time
+import pandas_gbq
 
 # Define countries to pull data for
 countries = ["GB", "FR"]
+
 
 # Define function to pull CPI data
 def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
@@ -28,56 +30,48 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
     series = (
         inflation_data.get("CompactData", {}).get("DataSet", {}).get("Series", None)
     )
-    if series is None:
-        raise KeyError("Expected 'Series' key not found in the API response.")
 
     observations = series.get("Obs", [])
-    if not observations:
-        raise ValueError("No observations found for the specified parameters.")
 
     # Now, convert the observations into a data frame
     observations_df = pd.DataFrame(observations)
-    observations_df['country'] = country_code
+    observations_df["country"] = country_code
 
-    #Rename to friendlier names
-    observations_df.rename(columns={'@TIME_PERIOD': 'report_period',
-                                    '@OBS_VALUE': 'consumer_price_index'}, inplace=True)
-    
-    #Reorder cols to match schema order
-    observations_df = observations_df[['report_period', 
-                                       'consumer_price_index', 
-                                       'country']]
-    
+    # Rename to friendlier names
+    observations_df.rename(
+        columns={"@TIME_PERIOD": "report_period", "@OBS_VALUE": "consumer_price_index"},
+        inplace=True,
+    )
+
+    # Reorder cols to match schema order
+    observations_df = observations_df[
+        ["report_period", "consumer_price_index", "country"]
+    ]
+
     return observations_df
 
 
 def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
     today = datetime.today()
-    curr_date = today.strftime('%Y-%m-%d')
-    print('curr_date')
+    curr_date = today.strftime("%Y-%m-%d")
+    print("curr_date")
     print(curr_date)
 
-    #Calculate start month = month 13 months ago
+    # Calculate start month = month 13 months ago
     start_month_stg = today - timedelta(days=1825)
-    start_month = start_month_stg.replace(day=1).strftime('%Y-%m')
-    print('start_month')
-    print(start_month)
+    start_month = start_month_stg.replace(day=1).strftime("%Y-%m")
+    print("start_month: ", start_month)
 
-    #Calculate end month = month 1 month ago
+    # Calculate end month = month 1 month ago
     end_month_stg = today.replace(day=1) - timedelta(days=15)
-    end_month = end_month_stg.strftime('%Y-%m')
-    print('end_month')
-    print(end_month)
-    # Calculate start / end period based on submission date
-    #Temporarily hardcoding, will fix later to calculate based on submission date
-    #start_month = "2023-10"
-    #end_month = "2023-12"
+    end_month = end_month_stg.strftime("%Y-%m")
+    print("end_month: ", end_month)
 
-    #Initialize a results dataframe
-    results_df = pd.DataFrame({'report_period': [],
-                               'consumer_price_index': [],
-                               'country': []})
+    # Initialize a results dataframe
+    results_df = pd.DataFrame(
+        {"report_period": [], "consumer_price_index": [], "country": []}
+    )
 
     # For each country
     for country in countries:
@@ -86,21 +80,23 @@ def main():
             country, start_month, end_month
         )
 
-        #Append it to the results dataframe
+        # Append it to the results dataframe
         results_df = pd.concat([results_df, curr_country_infl_df])
 
-        # Sleep for 5 seconds between each call since the API is rate limited
-        time.sleep(5)
-    
+        # Sleep for 10 seconds between each call since the API is rate limited
+        time.sleep(10)
 
-    #Get the current timestamp
-    results_df['last_updated'] = curr_date
-    
-    print('results_df')
-    print(results_df)
+    # Add a column with the current date
+    results_df["last_updated"] = curr_date
 
-    #Write the final results_df to BQ external_derived.inflation_v1 table
-    results_df.
+    # Write the final results_df to BQ external_derived.inflation_v1 table
+    pandas_gbq.to_gbq(
+        results_df,
+        "external_derived.inflation_v1",
+        project_id="moz-fx-data-shared-prod",
+        if_exists="append",
+    )
+
 
 if __name__ == "__main__":
     main()

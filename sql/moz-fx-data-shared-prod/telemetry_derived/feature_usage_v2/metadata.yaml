@@ -12,6 +12,7 @@ labels:
   incremental: true
   application: firefox
   schedule: daily
+  table_type: client_level
   dag: bqetl_feature_usage
   owner1: loines
   owner2: shong
@@ -23,7 +24,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering: null
 workgroup_access:

@@ -62,7 +62,7 @@ data_3_days_ago AS (
 ),
 latest AS (
   SELECT
-    submission_date,
+    ts.submission_date,
     table_catalog,
     table_schema,
     table_name,

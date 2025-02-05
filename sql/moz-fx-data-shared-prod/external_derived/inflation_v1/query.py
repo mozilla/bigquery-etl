@@ -110,12 +110,11 @@ def main():
         job_config=bigquery.LoadJobConfig(
             create_disposition="CREATE_NEVER",
             write_disposition="WRITE_TRUNCATE",
-            schema=[{"name": "report_period", 'type': "STRING", "mode" "NULLABLE"},
-                    {"name": "consumer_price_index", 'type': "NUMERIC", "mode" "NULLABLE"}
-                    {"name": "country", 'type': "STRING", "mode" "NULLABLE"}
-                    {"name": "base_year", 'type': "STRING", "mode" "NULLABLE"}
-                    {"name": "last_updated", 'type': "DATE", "mode" "NULLABLE"}
-                    ],
+            schema=[{"name": "report_period", 'type': "STRING", "mode": "NULLABLE"},
+                    {"name": "consumer_price_index", 'type': "NUMERIC", "mode": "NULLABLE"},
+                    {"name": "country", 'type': "STRING", "mode": "NULLABLE"},
+                    {"name": "base_year", 'type': "STRING", "mode": "NULLABLE"},
+                    {"name": "last_updated", 'type': "DATE", "mode": "NULLABLE"}],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
         ),

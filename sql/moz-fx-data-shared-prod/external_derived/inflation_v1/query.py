@@ -8,7 +8,7 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 # Set variables
-countries = ["CA",  'US'] #, "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"] #AU
+countries = ["CA", "US"]  # , "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"] #AU
 START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
 WAIT_TIME_SECONDS = 10
@@ -17,6 +17,7 @@ TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.inflation_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_CPI/imf_cpi_data_%s.csv"
+
 
 # Define function to pull CPI data
 def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
@@ -38,7 +39,7 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
         inflation_data.get("CompactData", {}).get("DataSet", {}).get("Series", None)
     )
 
-    base_year = series.get('@BASE_YEAR', "Unknown Base Year")
+    base_year = series.get("@BASE_YEAR", "Unknown Base Year")
 
     observations = series.get("Obs", [])
     observations_df = pd.DataFrame(observations)
@@ -82,7 +83,7 @@ def main():
 
     # For each country
     for country in countries:
-        print('pulling data for current country: ', country)
+        print("pulling data for current country: ", country)
         # Pull the CPI data
         curr_country_infl_df = pull_monthly_cpi_data_from_imf(
             country, start_month, end_month
@@ -99,10 +100,10 @@ def main():
 
     # Write the final results_df to GCS bucket
     final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (curr_date)
-    print('final_results_fpath: ', final_results_fpath)
+    print("final_results_fpath: ", final_results_fpath)
     results_df.to_csv(final_results_fpath, index=False)
 
-    # Load the data from GCS into the table - do a full 
+    # Load the data from GCS into the table - do a full
     client = bigquery.Client(TARGET_PROJECT)
     load_csv_to_inflation_v1_job = client.load_table_from_uri(
         final_results_fpath,
@@ -110,16 +111,20 @@ def main():
         job_config=bigquery.LoadJobConfig(
             create_disposition="CREATE_NEVER",
             write_disposition="WRITE_TRUNCATE",
-            schema=[{"name": "report_period", 'type': "STRING", "mode": "NULLABLE"},
-                    {"name": "consumer_price_index", 'type': "NUMERIC", "mode": "NULLABLE"},
-                    {"name": "country", 'type': "STRING", "mode": "NULLABLE"},
-                    {"name": "base_year", 'type': "STRING", "mode": "NULLABLE"},
-                    {"name": "last_updated", 'type': "DATE", "mode": "NULLABLE"}],
+            schema=[
+                {"name": "report_period", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "consumer_price_index", "type": "NUMERIC", "mode": "NULLABLE"},
+                {"name": "country", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "base_year", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "last_updated", "type": "DATE", "mode": "NULLABLE"},
+            ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,
         ),
-
     )
+
+    load_csv_to_inflation_v1_job.result()
+
 
 if __name__ == "__main__":
     main()

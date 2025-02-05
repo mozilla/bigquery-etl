@@ -41,7 +41,7 @@ fields:
   description: |-
     The sum of meeting minutes from all meeting participants in the meeting.
 - name: type
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
   description: |-
     Meeting type.

@@ -10,7 +10,7 @@ SELECT
   participants_count,
   start_time,
   total_minutes,
-  type,
+  SAFE_CAST(type AS INTEGER) AS type,
   user_email,
   user_name,
   _fivetran_deleted AS is_deleted,

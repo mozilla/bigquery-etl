@@ -1,0 +1,5 @@
+friendly_name: Zoom meeting reports
+description: |-
+  Mozilla's Zoom meeting reports as synced by Fivetran starting in January 2025.
+labels:
+  authorized: true

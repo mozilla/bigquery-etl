@@ -2115,7 +2115,7 @@ bqetl_ltv:
 
 bqetl_external_data:
   description: |
-    This DAG pulls data from external APIs and loads to BQ
+    This DAG runs monthly & pulls data from external APIs and loads to BQ
   default_args:
     depends_on_past: false
     owner: kwindau@mozilla.com
@@ -2130,4 +2130,4 @@ bqetl_external_data:
   tags:
     - impact/tier_3
   repo: bigquery-etl
-  schedule_interval: 10 21 * * *
+  schedule_interval: 23 0 15 * *

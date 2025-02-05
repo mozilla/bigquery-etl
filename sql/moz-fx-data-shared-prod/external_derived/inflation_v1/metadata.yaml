@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
 scheduling:
   dag_name: bqetl_external_data
+  arguments: ["--date", "{{ds}}"]
 bigquery:
   range_partitioning: null
   clustering:

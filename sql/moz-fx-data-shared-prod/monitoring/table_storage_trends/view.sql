@@ -71,7 +71,10 @@ latest AS (
     active_physical_bytes,
     long_term_physical_bytes
   FROM
-    `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1`
+    `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1` ts
+  JOIN
+    dates_table d
+    ON ts.submission_date = d.submission_date
 )
 SELECT
   l.submission_date,

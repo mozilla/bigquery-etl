@@ -8,10 +8,10 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 # Set variables
-countries = ["CA", "US"]  # , "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"] #AU
+countries = ["CA", "US", "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL", "AU"]
 START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
-WAIT_TIME_SECONDS = 10
+WAIT_TIME_SECONDS = 500
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.inflation_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"

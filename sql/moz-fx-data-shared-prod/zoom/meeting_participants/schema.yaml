@@ -14,9 +14,8 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    The participant's universally unique ID (UUID).
-    * If the participant joins the meeting by logging into Zoom, this is their user ID.
-    * If the participant joins the meeting without logging into Zoom, this is an empty string.
+    The participant's user ID.
+    If the participant joins the meeting without logging into Zoom, this is an empty string.
 - name: bo_mtg_id
   type: STRING
   mode: NULLABLE

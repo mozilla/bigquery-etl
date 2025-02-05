@@ -22,6 +22,7 @@ WITH new_profiles AS (
       IFNULL(adjust_campaign, "null") AS adjust_campaign,
       IFNULL(adjust_creative, "null") AS adjust_creative,
       IFNULL(adjust_network, "null") AS adjust_network,
+      IFNULL(distribution_id, "null") AS distribution_id,
       IFNULL(device_type, "null") AS device_type
     )
   FROM
@@ -53,6 +54,7 @@ profile_activation AS (
       IFNULL(adjust_campaign, "null") AS adjust_campaign,
       IFNULL(adjust_creative, "null") AS adjust_creative,
       IFNULL(adjust_network, "null") AS adjust_network,
+      IFNULL(distribution_id, "null") AS distribution_id,
       IFNULL(device_type, "null") AS device_type
     ),
   FROM
@@ -85,6 +87,7 @@ profile_retention AS (
       IFNULL(adjust_campaign, "null") AS adjust_campaign,
       IFNULL(adjust_creative, "null") AS adjust_creative,
       IFNULL(adjust_network, "null") AS adjust_network,
+      IFNULL(distribution_id, "null") AS distribution_id,
       IFNULL(device_type, "null") AS device_type
     ),
   FROM
@@ -118,6 +121,7 @@ profile_engagement AS (
       IFNULL(adjust_campaign, "null") AS adjust_campaign,
       IFNULL(adjust_creative, "null") AS adjust_creative,
       IFNULL(adjust_network, "null") AS adjust_network,
+      IFNULL(distribution_id, "null") AS distribution_id,
       IFNULL(device_type, "null") AS device_type
     ),
   FROM
@@ -152,6 +156,7 @@ SELECT
   NULLIF(adjust_campaign, "null") AS adjust_campaign,
   NULLIF(adjust_creative, "null") AS adjust_creative,
   NULLIF(adjust_network, "null") AS adjust_network,
+  NULLIF(distribution_id, "null") AS distribution_id,
   NULLIF(device_type, "null") AS device_type,
   COUNT(new_profiles.client_id) AS new_profiles,
   COUNTIF(is_activated) AS activations,
@@ -189,6 +194,7 @@ LEFT JOIN
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    distribution_id,
     device_type
   )
 LEFT JOIN
@@ -219,6 +225,7 @@ LEFT JOIN
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    distribution_id,
     device_type
   )
 LEFT JOIN
@@ -249,6 +256,7 @@ LEFT JOIN
     adjust_campaign,
     adjust_creative,
     adjust_network,
+    distribution_id,
     device_type
   )
 GROUP BY
@@ -276,4 +284,5 @@ GROUP BY
   adjust_campaign,
   adjust_creative,
   adjust_network,
+  distribution_id,
   device_type

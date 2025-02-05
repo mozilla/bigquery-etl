@@ -7,6 +7,7 @@ owners:
 - dpalmeiro@mozilla.com
 labels:
   incremental: true
+  table_type: client_level
   dag: bqetl_pageload_v1
   owner1: wichan
   owner2: acreskey
@@ -21,7 +22,7 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 780.0
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

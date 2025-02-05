@@ -6,12 +6,13 @@ description: |-
   We join main ping and event data together in clients_daily_joined_v1,
   which then becomes the source for the user-facing view.
 owners:
-- jklukas@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
   schedule: daily
+  table_type: client_level
   dag: bqetl_main_summary
-  owner1: jklukas
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2021-01-19'
@@ -21,7 +22,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

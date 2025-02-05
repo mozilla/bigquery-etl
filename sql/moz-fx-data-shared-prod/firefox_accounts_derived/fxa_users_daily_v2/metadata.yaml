@@ -28,6 +28,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: 775
   clustering:
     fields:
       - registered

@@ -24,6 +24,7 @@ bigquery:
     type: day
     field: timestamp
     require_partition_filter: false
+    expiration_days: 775
   clustering:
     fields:
       - command

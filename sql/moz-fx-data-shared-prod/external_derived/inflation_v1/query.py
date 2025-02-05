@@ -8,7 +8,7 @@ import time
 import pandas_gbq
 
 # Set variables
-countries = ["GB", "FR", "US", "DE"]
+countries = ["AU", "CA", "CH", "GB", "FR", "ES", "US", "DE", "IT", "JP", "PL"]
 START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
 WAIT_TIME_SECONDS = 10

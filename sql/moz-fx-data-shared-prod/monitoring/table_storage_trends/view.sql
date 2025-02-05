@@ -43,7 +43,7 @@ data_7_days_ago AS (
     `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1` ts
   JOIN
     dates_table d
-    ON ts.submission_date = d.date_14_days_ago
+    ON ts.submission_date = d.date_7_days_ago
 ),
 data_3_days_ago AS (
   SELECT

@@ -8,6 +8,7 @@ labels:
   application: mozilla_vpn
   schedule: daily
   incremental: true
+  table_type: client_level
   dag: bqetl_event_rollup
   owner1: wlachance
   owner2: akomar
@@ -18,7 +19,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

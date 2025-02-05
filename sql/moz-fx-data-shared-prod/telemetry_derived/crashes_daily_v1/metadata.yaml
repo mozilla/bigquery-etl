@@ -7,11 +7,11 @@ description: |-
   Clustered on channel and os, since these are common
   query dimensions.
 owners:
-- frank@mozilla.com
+- ascholtz@mozilla.com
 labels:
   incremental: true
   dag: bqetl_main_summary
-  owner1: frank
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_main_summary
   task_name: crashes_daily_v1
@@ -21,7 +21,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

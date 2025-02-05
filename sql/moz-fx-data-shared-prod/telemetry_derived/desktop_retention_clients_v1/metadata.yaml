@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: mhirose
+  table_type: client_level
   dag: bqetl_desktop_retention_model
 scheduling:
   dag_name: bqetl_desktop_retention_model
@@ -14,7 +15,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

@@ -107,6 +107,21 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: browser_engagement_uri_count
+  type: INTEGER
+  mode: NULLABLE
+- name: browser_engagement_active_ticks
+  type: INTEGER
+  mode: NULLABLE
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

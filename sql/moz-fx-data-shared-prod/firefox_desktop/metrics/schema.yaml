@@ -8417,6 +8417,273 @@ fields:
         histogram MIXED_CONTENT_VIDEO.
 
         '
+    - name: cert_pinning_results
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Certificate pinning results (0 = failure, 1 = success)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CERT_PINNING_RESULTS.
+
+        '
+    - name: cert_pinning_test_results
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Certificate pinning test results (0 = failure, 1 = success)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CERT_PINNING_TEST_RESULTS.
+
+        '
+    - name: dns_lookup_algorithm
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'DNS: lookup algorithm
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram DNS_LOOKUP_ALGORITHM.
+
+        '
+    - name: http_altsvc_mapping_changed_target
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether or not a new alt-svc mapping would change the target hostname
+        of the existing mapping
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP_ALTSVC_MAPPING_CHANGED_TARGET.
+
+        '
+    - name: http_channel_onstart_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Successfully started HTTP channels
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP_CHANNEL_ONSTART_SUCCESS.
+
+        '
+    - name: http_connection_entry_cache_hit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Fraction of sockets that used a nsConnectionEntry with history
+        - size 300.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP_CONNECTION_ENTRY_CACHE_HIT_1.
+
+        '
+    - name: http_pageload_is_ssl
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a HTTP page load was over SSL or not. Recorded during
+        response processing for all first-party page loads.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP_PAGELOAD_IS_SSL.
+
+        '
+    - name: http_transaction_is_ssl
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether an HTTP request occurred over TLS/SSL or not. Recorded
+        during response processing for all requests.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP_TRANSACTION_IS_SSL.
+
+        '
+    - name: http_transaction_use_altsvc
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether a HTTP transaction was routed via Alt-Svc or not.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP_TRANSACTION_USE_ALTSVC.
+
+        '
+    - name: localdomstorage_preload_pending_on_first_access
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True when we had to wait for a pending preload on first access
+        to localStorage data, false otherwise
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        LOCALDOMSTORAGE_PRELOAD_PENDING_ON_FIRST_ACCESS.
+
+        '
+    - name: media_codec_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of use of audio/video codecs in HTMLMediaElements and WebAudio.
+        Those with ''resource'' prefix are approximate; report based on HTTP ContentType
+        or sniffing. Those with ''webaudio'' prefix are for WebAudio.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        MEDIA_CODEC_USED.
+
+        '
+    - name: media_mse_source_buffer_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the actual or possible (because we don''t support some of
+        them for now) usage amount for each media mime type used in MSE. We collect
+        this data in MediaSource''s `AddSourceBuffer()` and `IsTypeSupported()`.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram MSE_SOURCE_BUFFER_TYPE.
+
+        '
+    - name: network_back_pressure_suspension_rate
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Collect whether the resource is suspended by back pressure. And
+        split by local-ness.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram NETWORK_BACK_PRESSURE_SUSPENSION_RATE_V2.
+
+        '
+    - name: network_race_cache_validation
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Stats for validation requests when cache won the race.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram NETWORK_RACE_CACHE_VALIDATION.
+
+        '
+    - name: network_race_cache_with_network_usage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether we raced network with the cache.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram NETWORK_RACE_CACHE_WITH_NETWORK_USAGE_2.
+
+        '
+    - name: ssl_resumed_session
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'complete TLS connect that used TLS Session Resumption (collected
+        at same time as SSL_TIME_UNTIL_HANDSHAKE_FINISHED)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        SSL_RESUMED_SESSION.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -8969,6 +9236,431 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram IMAGE_DECODE_SPEED_WEBP.
+
+        '
+    - name: hpack_bytes_evicted_compressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: Number of bytes removed from dynamic table to make room
+        for 1 new item
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_BYTES_EVICTED_COMPRESSOR.
+
+        '
+    - name: hpack_bytes_evicted_decompressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: Number of bytes removed from dynamic table to make room
+        for 1 new item
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_BYTES_EVICTED_DECOMPRESSOR.
+
+        '
+    - name: hpack_peak_size_compressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: peak size in bytes of the table
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_PEAK_SIZE_COMPRESSOR.
+
+        '
+    - name: hpack_peak_size_decompressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: peak size in bytes of the table
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_PEAK_SIZE_DECOMPRESSOR.
+
+        '
+    - name: http_kbread_per_conn2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP: KB read per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_KBREAD_PER_CONN2.
+
+        '
+    - name: network_race_cache_bandwidth_not_race
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of bytes received when we decide not to race cache with
+        network.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_RACE_CACHE_BANDWIDTH_NOT_RACE.
+
+        '
+    - name: network_race_cache_bandwidth_race_cache_win
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of bytes received when we decide to race cache with network
+        and cache wins.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_RACE_CACHE_BANDWIDTH_RACE_CACHE_WIN.
+
+        '
+    - name: network_race_cache_bandwidth_race_network_win
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Amount of bytes received when we decide to race cache with network
+        and network wins.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_RACE_CACHE_BANDWIDTH_RACE_NETWORK_WIN.
+
+        '
+    - name: spdy_chunk_recvd
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: Recvd Chunk Size (rounded to KB)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_CHUNK_RECVD.
+
+        '
+    - name: spdy_continued_headers
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Size of continued H2 headers in bytes.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_CONTINUED_HEADERS.
+
+        '
+    - name: spdy_kbread_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: KB read per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_KBREAD_PER_CONN2.
+
+        '
+    - name: spdy_settings_iw
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'H2: Settings Initial Window (rounded to KB)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_SETTINGS_IW.
+
+        '
+    - name: spdy_syn_reply_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: SYN Reply Header Size
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_SYN_REPLY_SIZE.
+
+        '
+    - name: spdy_syn_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: SYN Frame Header Size
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_SYN_SIZE.
+
+        '
+    - name: ssl_bytes_before_cert_callback
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'plaintext bytes read before a server certificate authenticated
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_BYTES_BEFORE_CERT_CALLBACK.
 
         '
   - name: string
@@ -20259,6 +20951,1582 @@ fields:
         histogram WEBRTC_VIDEO_QUALITY_OUTBOUND_RTT.
 
         '
+    - name: dns_by_type_cleanup_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS Cache Entry Age for by-type queries at Removal Time (minutes)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_BY_TYPE_CLEANUP_AGE.
+
+        '
+    - name: dns_by_type_failed_lookup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time for a completed by-type resolution that has a negative answer
+        (msec).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_BY_TYPE_FAILED_LOOKUP_TIME.
+
+        '
+    - name: dns_by_type_premature_eviction
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS Cache Entry Age for by-type queries at Removal Time of non-expired
+        entries (minutes)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_BY_TYPE_PREMATURE_EVICTION.
+
+        '
+    - name: dns_by_type_succeeded_lookup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time for a completed by-type resolution that succeeded (msec).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_BY_TYPE_SUCCEEDED_LOOKUP_TIME.
+
+        '
+    - name: dns_cleanup_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS Cache Entry Age at Removal Time (minutes)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_CLEANUP_AGE.
+
+        '
+    - name: dns_native_lookup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time for a completed native name resolution (msec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_NATIVE_LOOKUP_TIME.
+
+        '
+    - name: dns_native_queuing
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in resolve queue waiting to getaddrinfo (msec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_NATIVE_QUEUING.
+
+        '
+    - name: dns_premature_eviction
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS Cache Entry Age at Removal Time of non-expired entries (minutes)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_PREMATURE_EVICTION.
+
+        '
+    - name: dns_trr_processing_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from the last received byte of the response until we have
+        notified the consumer with a DNS record (msec)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_TRR_PROCESSING_TIME.
+
+        '
+    - name: http_subitem_first_byte_latency_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP subitem channel: Page start -> first byte received for subitem
+        reply (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_SUBITEM_FIRST_BYTE_LATENCY_TIME.
+
+        '
+    - name: http_subitem_open_latency_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP subitem channel: Page start -> subitem open() (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_SUBITEM_OPEN_LATENCY_TIME.
+
+        '
+    - name: http_transaction_wait_time_http
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from submission to dispatch of HTTP transaction (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_WAIT_TIME_HTTP.
+
+        '
+    - name: http_transaction_wait_time_http2_sup_http3
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from submission to dispatch of HTTP2 transaction that has
+        received a respone from a server that addretizes HTTP3 support (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_WAIT_TIME_HTTP2_SUP_HTTP3.
+
+        '
+    - name: http_transaction_wait_time_http3
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from submission to dispatch of HTTP/3 transaction (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_WAIT_TIME_HTTP3.
+
+        '
+    - name: http_transaction_wait_time_spdy
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from submission to dispatch of SPDY transaction (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_WAIT_TIME_SPDY.
+
+        '
+    - name: localdomstorage_shutdown_database
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time to flush and close the localStorage database (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram LOCALDOMSTORAGE_SHUTDOWN_DATABASE_MS.
+
+        '
+    - name: media_video_clearkey_play_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent playing Clearkey encrypted video in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_CLEARKEY_PLAY_TIME_MS.
+
+        '
+    - name: media_video_encrypted_play_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent playing encrypted video in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_ENCRYPTED_PLAY_TIME_MS.
+
+        '
+    - name: media_video_hdr_play_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent playing HDR video in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_HDR_PLAY_TIME_MS.
+
+        '
+    - name: media_video_hidden_play_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent playing video while element is hidden, in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_HIDDEN_PLAY_TIME_MS.
+
+        '
+    - name: media_video_play_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent playing video in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_PLAY_TIME_MS.
+
+        '
+    - name: media_video_widevine_play_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent playing Widevine encrypted video in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_WIDEVINE_PLAY_TIME_MS.
+
+        '
+    - name: network_back_pressure_suspension_delay_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The delay caused by the e10s back pressure suspension(ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_BACK_PRESSURE_SUSPENSION_DELAY_TIME_MS.
+
+        '
+    - name: network_disk_cache2_shutdown_clear_private
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent (ms) during shutdown deleting disk cache v2 for ''clear
+        private data'' option
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_DISK_CACHE2_SHUTDOWN_CLEAR_PRIVATE.
+
+        '
+    - name: network_disk_cache_shutdown_v2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total Time spent (ms) during disk cache shutdown [cache2]
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_DISK_CACHE_SHUTDOWN_V2.
+
+        '
+    - name: network_http_cache_entry_alive_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time for which an HTTP cache entry is kept warmed in memory
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_CACHE_ENTRY_ALIVE_TIME.
+
+        '
+    - name: network_http_cache_entry_reload_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time before we reload an HTTP cache entry again to memory
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_CACHE_ENTRY_RELOAD_TIME.
+
+        '
+    - name: network_race_cache_with_network_ocec_on_start_diff
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in milliseconds between onStartRequest from the cache and
+        onCacheEntryCheck. Report only when net wins and OCEC is before onStartRequest
+        from net.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        NETWORK_RACE_CACHE_WITH_NETWORK_OCEC_ON_START_DIFF.
+
+        '
+    - name: network_race_cache_with_network_saved_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in milliseconds that we saved when we race cache with network.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_RACE_CACHE_WITH_NETWORK_SAVED_TIME.
+
+        '
+    - name: ssl_time_until_ready
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ms of SSL wait time including TCP and proxy tunneling
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_TIME_UNTIL_READY.
+
+        '
+    - name: ssl_time_until_ready_conservative
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ms of SSL wait time including TCP and proxy tunneling for conservative-mode
+        connections
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_TIME_UNTIL_READY_CONSERVATIVE.
+
+        '
+    - name: ssl_time_until_ready_ech
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ms of SSL wait time including TCP and proxy tunneling for connections
+        using ECH ''Real''
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_TIME_UNTIL_READY_ECH.
+
+        '
+    - name: ssl_time_until_ready_ech_grease
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ms of SSL wait time including TCP and proxy tunneling for connections
+        using ECH GREASE
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_TIME_UNTIL_READY_ECH_GREASE.
+
+        '
+    - name: ssl_time_until_ready_first_try
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ms of SSL wait time including TCP and proxy tunneling for first-try
+        connections
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_TIME_UNTIL_READY_FIRST_TRY.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -25236,6 +27504,2394 @@ fields:
         histogram MIXED_CONTENT_UNBLOCK_COUNTER.
 
         '
+    - name: cert_chain_key_size_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Does enforcing a larger minimum RSA key size cause verification
+        failures? 1 = no, 2 = yes, 3 = another error prevented finding a verified
+        chain
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_CHAIN_KEY_SIZE_STATUS.
+
+        '
+    - name: cert_ev_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'EV status of a certificate, recorded on each TLS connection. 0=invalid,
+        1=DV, 2=EV
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_EV_STATUS.
+
+        '
+    - name: cert_pinning_failures_by_ca
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Pinning failures by CA (see RootHashes.inc for names of CAs)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_PINNING_FAILURES_BY_CA_2.
+
+        '
+    - name: cert_pinning_moz_results_by_host
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Certificate pinning results by host for Mozilla operational sites
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_PINNING_MOZ_RESULTS_BY_HOST.
+
+        '
+    - name: cert_pinning_moz_test_results_by_host
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Certificate pinning test results by host for Mozilla operational
+        sites
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_PINNING_MOZ_TEST_RESULTS_BY_HOST.
+
+        '
+    - name: cert_validation_http_request_result
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP result of OCSP, etc.. (0=canceled, 1=OK, 2=FAILED, 3=internal-error)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_VALIDATION_HTTP_REQUEST_RESULT.
+
+        '
+    - name: cert_validation_success_by_ca
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Successful SSL server cert validations by CA (see RootHashes.inc
+        for names of CAs)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CERT_VALIDATION_SUCCESS_BY_CA_2.
+
+        '
+    - name: dns_blocklist_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of unusable addresses reported for each record
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        DNS_BLACKLIST_COUNT.
+
+        '
+    - name: dns_lookup_method
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS Lookup Type (hit, renewal, negative-hit, literal, overflow,
+        network-first, network-shared)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DNS_LOOKUP_METHOD2.
+
+        '
+    - name: hpack_bytes_evicted_ratio_compressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: Ratio of bytes evicted to bytes added (* 100)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_BYTES_EVICTED_RATIO_COMPRESSOR.
+
+        '
+    - name: hpack_bytes_evicted_ratio_decompressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: Ratio of bytes evicted to bytes added (* 100)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_BYTES_EVICTED_RATIO_DECOMPRESSOR.
+
+        '
+    - name: hpack_elements_evicted_compressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: Number of items removed from dynamic table to make room
+        for 1 new item
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_ELEMENTS_EVICTED_COMPRESSOR.
+
+        '
+    - name: hpack_elements_evicted_decompressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: Number of items removed from dynamic table to make room
+        for 1 new item
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_ELEMENTS_EVICTED_DECOMPRESSOR.
+
+        '
+    - name: hpack_peak_count_compressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: peak number of items in the dynamic table
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_PEAK_COUNT_COMPRESSOR.
+
+        '
+    - name: hpack_peak_count_decompressor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HPACK: peak number of items in the dynamic table
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HPACK_PEAK_COUNT_DECOMPRESSOR.
+
+        '
+    - name: http_altsvc_entries_per_header
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many alt-svc productions were seen in a single Alt-Svc header
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_ALTSVC_ENTRIES_PER_HEADER.
+
+        '
+    - name: http_channel_disposition
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Channel Disposition: 0=Cancel, 1=Disk, 2=NetOK, 3=NetEarlyFail,
+        4=NetlateFail, +8 for HTTPS
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_CHANNEL_DISPOSITION.
+
+        '
+    - name: http_content_encoding
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'encoding removed: 0=unknown, 1=gzip, 2=deflate, 3=brotli, 4=zstd
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_CONTENT_ENCODING.
+
+        '
+    - name: http_proxy_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP Proxy Type (none, http, socks)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_PROXY_TYPE.
+
+        '
+    - name: http_request_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP: requests per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_REQUEST_PER_CONN.
+
+        '
+    - name: http_request_per_page
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP: Requests per page (count)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_REQUEST_PER_PAGE.
+
+        '
+    - name: http_request_per_page_from_cache
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP: Requests serviced from cache (%)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_REQUEST_PER_PAGE_FROM_CACHE.
+
+        '
+    - name: http_response_version
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP: Protocol Version Used on Response from nsHttp.h
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_RESPONSE_VERSION.
+
+        '
+    - name: http_saw_quic_alt_protocol
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Does a response has a h3(1), other quic(2) or non(0) alt-protocol
+        advertisement.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_SAW_QUIC_ALT_PROTOCOL_2.
+
+        '
+    - name: http_transaction_ech_retry_ech_failed_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'When echConfig is enabled, number of times a transaction is retried
+        because of SSL_ERROR_ECH_FAILED
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_ECH_RETRY_ECH_FAILED_COUNT.
+
+        '
+    - name: http_transaction_ech_retry_others_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'When echConfig is enabled, number of times a transaction is retried
+        because of other error
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_ECH_RETRY_OTHERS_COUNT.
+
+        '
+    - name: http_transaction_ech_retry_with_ech_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'When echConfig is enabled, number of times a transaction is retried
+        because of SSL_ERROR_ECH_RETRY_WITH_ECH
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_ECH_RETRY_WITH_ECH_COUNT.
+
+        '
+    - name: http_transaction_ech_retry_without_ech_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'When echConfig is enabled, number of times a transaction is retried
+        because of SSL_ERROR_ECH_RETRY_WITHOUT_ECH
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TRANSACTION_ECH_RETRY_WITHOUT_ECH_COUNT.
+
+        '
+    - name: http_transaction_restart_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The reason why a HTTP transaction is restarted.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_TRANSACTION_RESTART_REASON.
+
+        '
+    - name: media_decoder_backend_used
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Media decoder backend (0=WMF Software, 1=DXVA2D3D9, 2=DXVA2D3D11)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram MEDIA_DECODER_BACKEND_USED.
+
+        '
+    - name: media_video_dropped_compositor_frames_proportion_exponential
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Ratio of compositor dropped frames per total decoded frames scaled
+        by 10,000 between starting and stopping a video
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_DROPPED_COMPOSITOR_FRAMES_PROPORTION_EXPONENTIAL.
+
+        '
+    - name: media_video_dropped_decoded_frames_proportion_exponential
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Ratio of decoder dropped frames per total decoded frames scaled
+        by 10,000 between starting and stopping a video
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_DROPPED_DECODED_FRAMES_PROPORTION_EXPONENTIAL.
+
+        '
+    - name: media_video_dropped_frames_proportion
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percentage of frames decoded frames dropped between starting and
+        stopping a video
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        VIDEO_DROPPED_FRAMES_PROPORTION.
+
+        '
+    - name: media_video_dropped_frames_proportion_exponential
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Ratio of dropped frames per total decoded frames scaled by 10,000
+        between starting and stopping a video
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_DROPPED_FRAMES_PROPORTION_EXPONENTIAL.
+
+        '
+    - name: media_video_dropped_sink_frames_proportion_exponential
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Ratio of sink dropped frames per total decoded frames scaled by
+        10,000 between starting and stopping a video
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_DROPPED_SINK_FRAMES_PROPORTION_EXPONENTIAL.
+
+        '
+    - name: network_back_pressure_suspension_cp_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Collect the content policy when the resource is non-local and
+        suspended by back pressure (0-44 from nsContentPolicyType in nsIContentPolicy.idl).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NETWORK_BACK_PRESSURE_SUSPENSION_CP_TYPE.
+
+        '
+    - name: network_cache_v2_input_stream_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Final status of the CacheFileInputStream (0=ok, 1=other error,
+        2=out of memory, 3=disk full, 4=file corrupted, 5=file not found, 6=binding
+        aborted)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NETWORK_CACHE_V2_INPUT_STREAM_STATUS.
+
+        '
+    - name: network_cache_v2_output_stream_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Final status of the CacheFileOutputStream (0=ok, 1=other error,
+        2=out of memory, 3=disk full, 4=file corrupted, 5=file not found, 6=binding
+        aborted)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NETWORK_CACHE_V2_OUTPUT_STREAM_STATUS.
+
+        '
+    - name: network_http_cache_entry_reuse_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Reuse count of an HTTP cache entry warmed in memory
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        HTTP_CACHE_ENTRY_REUSE_COUNT.
+
+        '
+    - name: spdy_goaway_local
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'H2: goaway reason client sent from rfc 7540. 31 is none sent.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SPDY_GOAWAY_LOCAL.
+
+        '
+    - name: spdy_goaway_peer
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'H2: goaway reason from peer from rfc 7540. 31 is none received.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SPDY_GOAWAY_PEER.
+
+        '
+    - name: spdy_parallel_streams
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: Streams concurrent active per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_PARALLEL_STREAMS.
+
+        '
+    - name: spdy_request_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: Streams created per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_REQUEST_PER_CONN_3.
+
+        '
+    - name: spdy_server_initiated_streams
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: Streams received per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_SERVER_INITIATED_STREAMS.
+
+        '
+    - name: spdy_settings_max_streams
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'H2: Settings Max Streams parameter
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SPDY_SETTINGS_MAX_STREAMS.
+
+        '
+    - name: spdy_syn_ratio
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: SYN Frame Header Ratio (lower better)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        SPDY_SYN_RATIO.
+
+        '
+    - name: spdy_syn_reply_ratio
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SPDY: SYN Reply Header Ratio (lower better)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        SPDY_SYN_REPLY_RATIO.
+
+        '
+    - name: ssl_auth_algorithm_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL Authentication Algorithm (null=0, rsa(KEA)=1, ecdsa=4, rsa(sign)=7)
+        in full handshake
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_AUTH_ALGORITHM_FULL.
+
+        '
+    - name: ssl_auth_ecdsa_curve_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ECDSA signature curve for TLS_*_ECDSA_* in full handshake (23=P-256,
+        24=P-384, 25=P-521)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_AUTH_ECDSA_CURVE_FULL.
+
+        '
+    - name: ssl_auth_rsa_key_size_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'RSA signature key size for TLS_*_RSA_* in full handshake
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_AUTH_RSA_KEY_SIZE_FULL.
+
+        '
+    - name: ssl_cert_error_overrides
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Was a certificate error overridden on this handshake? What was
+        it? (0=unknown error (indicating bug), 1=no, >1=a specific error)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_CERT_ERROR_OVERRIDES.
+
+        '
+    - name: ssl_cert_verification_errors
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'If certificate verification failed in a TLS handshake, what was
+        the error? (see MapCertErrorToProbeValue in security/manager/ssl/SSLServerCertVerification.cpp
+        and the values in security/pkix/include/pkix/Result.h)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_CERT_VERIFICATION_ERRORS.
+
+        '
+    - name: ssl_ct_policy_non_compliant_connections_by_ca
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of successfully established TLS connections NOT compliant
+        with the Certificate Transparency Policy, by CA. See https://searchfox.org/mozilla-central/source/security/manager/ssl/RootHashes.inc
+        for names of CAs. Bucket zero holds CAs not present in the list.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_CT_POLICY_NON_COMPLIANT_CONNECTIONS_BY_CA_2.
+
+        '
+    - name: ssl_handshake_completed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Type of handshake (1=resumption, 2=false started, 3=chose not
+        to false start, 4=not allowed to false start)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_TYPE.
+
+        '
+    - name: ssl_handshake_privacy
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: '0th bit - TLS13 used? 1th bit - Revocation Privacy, 2nd bit -
+        DNS Privacy, 3rd bit - ECH Privacy
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_PRIVACY.
+
+        '
+    - name: ssl_handshake_result
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL handshake result, 0=success, 1-255=NSS error offset, 256-511=SEC
+        error offset + 256, 512-639=NSPR error offset + 512, 640-670=PKIX error, 671=unknown
+        err
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_RESULT.
+
+        '
+    - name: ssl_handshake_result_conservative
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL handshake result for conservative mode connections, 0=success,
+        1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+        offset + 512, 640-670=PKIX error, 671=unknown err
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_RESULT_CONSERVATIVE.
+
+        '
+    - name: ssl_handshake_result_ech
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL handshake result for connections which used ECH ''Real'',
+        0=success, 1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR
+        error offset + 512, 640-670=PKIX error, 671=unknown err
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_RESULT_ECH.
+
+        '
+    - name: ssl_handshake_result_ech_grease
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL handshake result for connections which used ECH GREASE, 0=success,
+        1-255=NSS error offset, 256-511=SEC error offset + 256, 512-639=NSPR error
+        offset + 512, 640-670=PKIX error, 671=unknown err
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_RESULT_ECH_GREASE.
+
+        '
+    - name: ssl_handshake_result_first_try
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL handshake result for first-try connections, 0=success, 1-255=NSS
+        error offset, 256-511=SEC error offset + 256, 512-639=NSPR error offset +
+        512, 640-670=PKIX error, 671=unknown err
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_RESULT_FIRST_TRY.
+
+        '
+    - name: ssl_handshake_version
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Negotiated SSL Version (1=tls1, 2=tls1.1, 3=tls1.2, 4=tls1.3)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_HANDSHAKE_VERSION.
+
+        '
+    - name: ssl_kea_dhe_key_size_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DHE KEA (TLS_DHE_*) key size in full handshake
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_KEA_DHE_KEY_SIZE_FULL.
+
+        '
+    - name: ssl_kea_ecdhe_curve_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'ECDHE KEA (TLS_ECDHE_*) curve (23=P-256, 24=P-384, 25=P-521, 29=Curve25519)
+        in full handshake
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_KEA_ECDHE_CURVE_FULL.
+
+        '
+    - name: ssl_kea_rsa_key_size_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'RSA KEA (TLS_RSA_*) key size in full handshake
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_KEA_RSA_KEY_SIZE_FULL.
+
+        '
+    - name: ssl_key_exchange_algorithm_full
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL Handshake Key Exchange Algorithm for full handshake (null=0,
+        rsa=1, dh=2, fortezza=3, ecdh=4)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_KEY_EXCHANGE_ALGORITHM_FULL.
+
+        '
+    - name: ssl_key_exchange_algorithm_resumed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL Handshake Key Exchange Algorithm for resumed handshake (null=0,
+        rsa=1, dh=2, fortezza=3, ecdh=4)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_KEY_EXCHANGE_ALGORITHM_RESUMED.
+
+        '
+    - name: ssl_npn_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'NPN Results (0=none, 1=negotiated, 2=no-overlap, 3=selected(alpn))
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_NPN_TYPE.
+
+        '
+    - name: ssl_ocsp_stapling
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Status of OCSP stapling on this handshake (1=present, good; 2=none;
+        3=present, expired; 4=present, other error)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_OCSP_STAPLING.
+
+        '
+    - name: ssl_permanent_cert_error_overrides
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How many permanent certificate overrides a user has stored.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_PERMANENT_CERT_ERROR_OVERRIDES.
+
+        '
+    - name: ssl_reasons_for_not_false_starting
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Bitmask of reasons we did not false start when libssl would have
+        let us (see key in nsNSSCallbacks.cpp)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_REASONS_FOR_NOT_FALSE_STARTING.
+
+        '
+    - name: ssl_scts_origin
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Origin of Signed Certificate Timestamps received (1=Embedded,
+        2=TLS handshake extension, 3=Stapled OCSP response)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_SCTS_ORIGIN.
+
+        '
+    - name: ssl_scts_per_connection
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Histogram of Signed Certificate Timestamps per SSL connection,
+        from all sources (embedded / OCSP Stapling / TLS handshake). Bucket 0 counts
+        the cases when no SCTs were received, or none were extracted due to parsing
+        errors.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_SCTS_PER_CONNECTION.
+
+        '
+    - name: ssl_scts_verification_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Verification status of Signed Certificate Timestamps received
+        (0=Decoding error, 1=Valid SCT, 2=SCT from unknown log, 3=Invalid SCT signature,
+        4=SCT timestamp is in the future, 5=Valid SCT from a disqualified log)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_SCTS_VERIFICATION_STATUS.
+
+        '
+    - name: ssl_tls10_intolerance_reason_post
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.0 intolerance, after considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS10_INTOLERANCE_REASON_POST.
+
+        '
+    - name: ssl_tls10_intolerance_reason_pre
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.0 intolerance, before considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS10_INTOLERANCE_REASON_PRE.
+
+        '
+    - name: ssl_tls11_intolerance_reason_post
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.1 intolerance, after considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS11_INTOLERANCE_REASON_POST.
+
+        '
+    - name: ssl_tls11_intolerance_reason_pre
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.1 intolerance, before considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS11_INTOLERANCE_REASON_PRE.
+
+        '
+    - name: ssl_tls12_intolerance_reason_post
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.2 intolerance, after considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS12_INTOLERANCE_REASON_POST.
+
+        '
+    - name: ssl_tls12_intolerance_reason_pre
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.2 intolerance, before considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS12_INTOLERANCE_REASON_PRE.
+
+        '
+    - name: ssl_tls13_intolerance_reason_post
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.3 intolerance, after considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS13_INTOLERANCE_REASON_POST.
+
+        '
+    - name: ssl_tls13_intolerance_reason_pre
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Potential TLS 1.3 intolerance, before considering historical info
+        (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_TLS13_INTOLERANCE_REASON_PRE.
+
+        '
+    - name: ssl_version_fallback_inappropriate
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'TLS/SSL version intolerance was falsely detected, server rejected
+        handshake (see tlsIntoleranceTelemetryBucket() in nsNSSIOLayer.cpp).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SSL_VERSION_FALLBACK_INAPPROPRIATE.
+
+        '
+    - name: tls_cipher_suite
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Negotiated cipher suite in TLS handshake (see key in AccumulateCipherSuite
+        in nsNSSCallbacks.cpp)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TLS_CIPHER_SUITE.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -27187,6 +31843,440 @@ fields:
         histogram URLCLASSIFIER_UPDATE_SERVER_RESPONSE_TIME.
 
         '
+    - name: dns_trr_lookup_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time for a completed TRR resolution (msec); Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_TRR_LOOKUP_TIME3.
+
+        '
+    - name: media_media_play_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Total time spent playing media in milliseconds, keyed by its content
+        (Audio and video, audio only, video only, audio and video but audio inaudible,
+        audio and video but audio muted).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram MEDIA_PLAY_TIME_MS.
+
+        '
+    - name: media_video_visible_play_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Total time spent playing visible video in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram VIDEO_VISIBLE_PLAY_TIME_MS.
+
+        '
+    - name: network_async_open_child_to_transaction_pending_exp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time spent from HttpChannelChild::AsyncOpen to adding the
+        transactionto the nsHttpConnectionMgr, in milliseconds, keyed by the classOfService
+        flags
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_ASYNC_OPEN_CHILD_TO_TRANSACTION_PENDING_EXP_MS.
+
+        '
+    - name: network_dns_end_to_connect_start_exp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time spent from dns resolution to connect start, in milliseconds,
+        keyed by protocol version and the classOfService flags
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_DNS_END_TO_CONNECT_START_EXP_MS.
+
+        '
+    - name: network_response_end_parent_to_content
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time spent relaying response completion from the socket thread
+        of the parent process to the content process, in milliseconds, keyed by the
+        classOfService flags
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_RESPONSE_END_PARENT_TO_CONTENT_MS.
+
+        '
+    - name: network_response_start_parent_to_content_exp
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time spent relaying response start from the socket thread
+        of the parent process to the content process, in milliseconds, keyed by the
+        classOfService flags
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_RESPONSE_START_PARENT_TO_CONTENT_EXP_MS.
+
+        '
+    - name: ssl_time_until_handshake_finished_keyed_by_ka
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'ms of SSL wait time for full handshake including TCP and proxy
+        tunneling, keyed by the key exchange algorithm used
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SSL_TIME_UNTIL_HANDSHAKE_FINISHED_KEYED_BY_KA.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -27853,6 +32943,772 @@ fields:
         to correspond to the Legacy Telemetry enumerated histogram URLCLASSIFIER_UPDATE_TIMEOUT.
 
         '
+    - name: dns_trr_attempt_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Number of times we attempted TRR for a successful lookup in TRR-first
+        mode. Keyed by provider.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_ATTEMPT_COUNT.
+
+        '
+    - name: dns_trr_relevant_skip_reason_native_failed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, if TRR was skipped and native failed,
+        it lists the reason we may have skipped TRR, keyed by the provider. Does not
+        include requests that intentionally skip TRR.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_RELEVANT_SKIP_REASON_NATIVE_FAILED.
+
+        '
+    - name: dns_trr_relevant_skip_reason_native_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, if TRR was skipped and native succeeded,
+        it lists the reason we may have skipped TRR, keyed by the provider. Does not
+        include requests that intentionally skip TRR.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_RELEVANT_SKIP_REASON_NATIVE_SUCCESS.
+
+        '
+    - name: dns_trr_relevant_skip_reason_trr_first
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, it lists the reason we may have skipped
+        TRR, keyed by the provider. Does not include requests that intentionally skip
+        TRR.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_RELEVANT_SKIP_REASON_TRR_FIRST.
+
+        '
+    - name: dns_trr_relevant_skip_reason_trr_first_type_rec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, it lists the reason we may have skipped
+        TRR for HTTPS RR, keyed by the provider. Does not include requests that intentionally
+        skip TRR.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_RELEVANT_SKIP_REASON_TRR_FIRST_TYPE_REC.
+
+        '
+    - name: dns_trr_skip_reason_native_failed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, if TRR was skipped and native failed,
+        it lists the reason we may have skipped TRR, keyed by the provider.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_SKIP_REASON_NATIVE_FAILED.
+
+        '
+    - name: dns_trr_skip_reason_native_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, if TRR was skipped and native succeeded,
+        it lists the reason we may have skipped TRR, keyed by the provider.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_SKIP_REASON_NATIVE_SUCCESS.
+
+        '
+    - name: dns_trr_skip_reason_retry_failed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, if TRR failed once and retried unsuccessfully,
+        it lists the reason for the first failure, keyed by the provider.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_SKIP_REASON_RETRY_FAILED.
+
+        '
+    - name: dns_trr_skip_reason_retry_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, if TRR failed once and was successfully
+        retried, it lists the reason for the first failure, keyed by the provider.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_SKIP_REASON_RETRY_SUCCESS.
+
+        '
+    - name: dns_trr_skip_reason_strict_mode
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, it lists the reason we may have skipped
+        TRR. The key is like `<provider>|<skip reason of first attempt>` or just `<provider>`
+        used when there was no second attempt.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_SKIP_REASON_STRICT_MODE.
+
+        '
+    - name: dns_trr_skip_reason_trr_first
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'When in TRR-first mode, it lists the reason we may have skipped
+        TRR, keyed by the provider.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TRR_SKIP_REASON_TRR_FIRST2.
+
+        '
+    - name: http_channel_page_onstart_success_trr
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Successfully started HTTP channels for page loading when TRR is
+        enabled; Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_CHANNEL_PAGE_ONSTART_SUCCESS_TRR3.
+
+        '
+    - name: http_channel_sub_onstart_success_trr
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Successfully started HTTP channels for resource loading when TRR
+        is enabled; Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_CHANNEL_SUB_ONSTART_SUCCESS_TRR3.
+
+        '
+    - name: http_connection_close_reason
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Reason for HTTP connection closure, keyed by properties like HTTP
+        version and connection state.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP_CONNECTION_CLOSE_REASON.
+
+        '
+    - name: http_upload_bandwidth_mbps
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The upload bandwidth for requests larger than 10MB. Measured in
+        megabits per second, Mbps. Keyed by HTTP protocol version.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP_UPLOAD_BANDWIDTH_MBPS.
+
+        '
+    - name: media_audible_play_time_percent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentage of time spent playing media with an audible audio track,
+        regardless of the volume. Keyed by audio-only or video presence.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        AUDIBLE_PLAY_TIME_PERCENT.
+
+        '
+    - name: media_muted_play_time_percent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentage of time spent playing media that has an audio track,
+        with the audio muted. Keyed by audio-only or video presence.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        MUTED_PLAY_TIME_PERCENT.
+
+        '
+    - name: media_video_hidden_play_time_percentage
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentage of total time spent playing video while element is
+        hidden. Keyed by audio presence and by height ranges (boundaries: 240. 480,
+        576, 720, 1080, 2160), e.g.: ''V,0<h<=240'', ''AV,h>2160''; and ''All'' will
+        accumulate all percentages. This is reported whenever the decoder stops. (eg.
+        pausing media, encountering an error, changing to a new resource, page goes
+        to the bf-cached or page gets discarded)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        VIDEO_HIDDEN_PLAY_TIME_PERCENTAGE.
+
+        '
+    - name: network_cache_entry_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Number of entries in the cache keyed by cache capacity calculation
+        type. Numbers are sampled periodically, every time 2GB of data is written
+        to the cache.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram NETWORK_CACHE_ENTRY_COUNT.
+
+        '
+    - name: network_cache_entry_count_share
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentage of the entries with the given content type. Numbers
+        are sampled periodically, every time 2GB of data is written to the cache.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NETWORK_CACHE_ENTRY_COUNT_SHARE.
+
+        '
+    - name: network_cache_size_share
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentage of the cache size occupied by given content type. Numbers
+        are sampled periodically, every time 2GB of data is written to the cache.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NETWORK_CACHE_SIZE_SHARE.
+
+        '
   - name: labeled_quantity
     type: RECORD
     mode: NULLABLE
@@ -27887,6 +33743,47 @@ fields:
         mode: NULLABLE
       description: 'For each recipe ID seen by the Normandy client, its last_modified.
         This metric was generated to correspond to the Legacy Telemetry scalar normandy.recipe_freshness.
+
+        '
+  - name: labeled_memory_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: network_cache_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Cache size in megabytes keyed by cache capacity calculation type.
+        Numbers are sampled periodically, every time 2GB of data is written to the
+        cache.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        NETWORK_CACHE_SIZE.
 
         '
   - name: url

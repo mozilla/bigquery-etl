@@ -1789,6 +1789,12 @@ fields:
       description: 'Width of the drawn MathML element
 
         '
+    - name: characteristics_canvas_dpr
+      type: STRING
+      mode: NULLABLE
+      description: 'The device pixel ratio of the canvas rendering context
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

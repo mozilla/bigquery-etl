@@ -939,6 +939,9 @@ fields:
     - name: characteristics_mathml9
       type: STRING
       mode: NULLABLE
+    - name: characteristics_canvas_dpr
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

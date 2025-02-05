@@ -2,7 +2,7 @@
   request_id: rid1
   session_id: sid1
   sequence_no: 1
-  block_id: bid1
+  block_id: 101
   context_id: cid1
   country: US
   is_clicked: False
@@ -22,7 +22,7 @@
   submission_timestamp: 2021-01-01T12:00:00+00:00
   version: "94"
 - advertiser: awesome guitar store
-  block_id: bid2
+  block_id: 102
   context_id: cid2
   country: US
   is_clicked: true
@@ -36,7 +36,7 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:03:00+00:00
   version: "94"
-- block_id: bid7
+- block_id: 107
   context_id: cid7
   request_id: rid7
   session_id: sid7
@@ -58,3 +58,61 @@
   scenario: online
   submission_timestamp: 2021-01-01T12:07:00+00:00
   version: "94"
+- advertiser: acme corp
+  block_id: 201
+  browser: firefox(134)
+  context_id: cid11
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  locale: en-US
+  normalized_channel: release
+  normalized_os: macOS
+  normalized_os_version: 15.2
+  os_family: macos
+  position: 11
+  query: anvils
+  region: CA
+  reporting_url: https://example.com/acme-corp
+  request_id: rid11
+  sequence_no: 11
+  session_id: sid11
+  submission_timestamp: "2021-01-01T13:01:00+00:00"
+  timestamp: "2021-01-01T13:01:00+00:00"
+  version: "134"
+- advertiser: dunder mifflin
+  block_id: 202
+  browser: firefox(134)
+  context_id: cid12
+  country: US
+  form_factor: desktop
+  is_clicked: true
+  locale: en-US
+  normalized_channel: beta
+  normalized_os: macOS
+  normalized_os_version: 15.0
+  os_family: macos
+  position: 12
+  query: "best paper"
+  region: PA
+  reporting_url: https://example.com/dunder-mifflin
+  request_id: rid12
+  sequence_no: 12
+  session_id: sid12
+  submission_timestamp: "2021-01-01T13:02:00+00:00"
+  timestamp: "2021-01-01T13:02:00+00:00"
+  version: "134"
+- advertiser: duff beer
+  block_id: 203
+  context_id: cid13
+  country: US
+  is_clicked: false
+  locale: en-US
+  normalized_channel: nightly
+  normalized_os: Windows
+  normalized_os_version: 11.0
+  position: 13
+  region: OR
+  reporting_url: https://example.com/duff-beer
+  submission_timestamp: "2021-01-01T13:03:00+00:00"
+  version: "134"

@@ -8,10 +8,11 @@ description: |-
   ga_client_id - Available in Stub Attribution Service and GA
   stub_session_id - Available in Stub Attribution Service and GA
 owners:
-- frank@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: kwindau@mozilla.com
+  table_type: client_level
 scheduling:
   dag_name: bqetl_mozilla_org_derived
   date_partition_parameter: null

@@ -2,11 +2,14 @@
 
 import json
 import os
-import tempfile
 from argparse import ArgumentParser
+from datetime import datetime, timedelta
+from pathlib import Path
 
 import requests
 from google.cloud import bigquery
+
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 
 """Get the bearer token for Cinder from the environment"""
 cinder_bearer_token = os.environ.get("CINDER_TOKEN")
@@ -21,13 +24,13 @@ def post_response(url, headers, data):
     return response
 
 
-def get_response(url, headers):
+def get_response(url, headers, params):
     """GET response function."""
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, params=params)
     if (response.status_code == 401) or (response.status_code == 400):
         print(f"***Error: {response.status_code}***")
         print(response.text)
-    return response
+    return response.json()
 
 
 def read_json(filename: str) -> dict:
@@ -39,25 +42,21 @@ def read_json(filename: str) -> dict:
 
 def cinder_addon_decisions_download(date, bearer_token):
     """Download data from Cinder - bearer_token is called here."""
+    submission_date = datetime.strptime(date, "%Y-%m-%d")
+    start_datetime = submission_date + timedelta(days=-1)
+    start_date = start_datetime.strftime("%Y-%m-%d")
+    end_datetime = submission_date + timedelta(days=1)
+    end_date = end_datetime.strftime("%Y-%m-%d")
     url = "https://stage.cinder.nonprod.webservices.mozgcp.net/api/v1/decisions/"
+    query_params = {
+        "created_at__lt": f"{end_date}T00:00:00.000000Z",
+        "created_at__gt": f"{start_date}T23:59:59.999999Z",
+        "limit": 1000,
+        "offset": 0,
+    }
     headers = {"accept": "application/json", "authorization": f"Bearer {bearer_token}"}
-    print(url)
-    response = get_response(url, headers)
+    response = get_response(url, headers, query_params)
     return response
-
-
-def check_json(cinder_addon_decisions_response_text):
-    """Script will return an empty dictionary for apps on days when there is no data. Check for that here."""
-    with tempfile.NamedTemporaryFile() as tmp_json:
-        with open(tmp_json.name, "w") as f_json:
-            f_json.write(cinder_addon_decisions_response_text)
-            try:
-                query_export = read_json(f_json.name)
-            except (
-                ValueError
-            ):  # ex. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-                return None
-    return query_export
 
 
 def add_date_to_json(query_export_contents, date):
@@ -75,6 +74,7 @@ def add_date_to_json(query_export_contents, date):
             "entity_slug": item["entity_slug"],
             "job_id": item["job_id"],
             "job_assigned_at": item["job_assigned_at"],
+            "queue_slug": item["queue_slug"],
             "typed_metadata": item["typed_metadata"],
             "applied_policies": item["applied_policies"],
         }
@@ -86,6 +86,7 @@ def upload_to_bigquery(data, project, dataset, table_name, date):
     """Upload the data to bigquery."""
     date = date
     partition = f"{date}".replace("-", "")
+    schema_file_path = Path(__file__).parent / SCHEMA_FILE
     client = bigquery.Client(project)
     job_config = bigquery.LoadJobConfig(
         create_disposition="CREATE_IF_NEEDED",
@@ -94,6 +95,7 @@ def upload_to_bigquery(data, project, dataset, table_name, date):
             type_=bigquery.TimePartitioningType.DAY,
             field="date",
         ),
+        schema=Schema.from_schema_file(schema_file_path).to_bigquery_schema(),
     )
     destination = f"{project}.{dataset}.{table_name}${partition}"
     job = client.load_table_from_json(data, destination, job_config=job_config)
@@ -118,14 +120,12 @@ def main():
 
     cinder_data = []
 
-    json_file = cinder_addon_decisions_download(date, bearer_token)
-    """Data returns as a dictionary with a key called 'items' and the value being a list of data"""
-    query_export = check_json(json_file.text)
-    """Add date to each element in query_export for partitioning"""
+    query_export = cinder_addon_decisions_download(date, bearer_token)
+    # Data returns as a dictionary with a key called 'items' and the value being a list of data"""
     query_export_contents = query_export["items"]
+    # Add date to each element in query_export for partitioning"""
     cinder_data = add_date_to_json(query_export_contents, date)
-    """Pull out the list from query_export["items"] and put that data into the cinder_data list"""
-
+    # Pull out[ the list from query_export["items"] and put that data into the cinder_data list"""
     upload_to_bigquery(cinder_data, project, dataset, table_name, date)
 
 

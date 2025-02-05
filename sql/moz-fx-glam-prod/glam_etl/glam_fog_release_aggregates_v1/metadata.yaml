@@ -7,7 +7,7 @@ labels:
   incremental: false
   owner1: efilho@mozilla.com
 scheduling:
-  dag_name: bqetl_glam_refresh_aggregates_fog_release
+  dag_name: bqetl_glam_refresh_aggregates_release
   date_partition_parameter: null
   depends_on:
   - task_id: fog_release_done

@@ -32,6 +32,10 @@ TEMPLATES = (
     ("CLIENT", "new_profile_clients.view.sql"),
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),
+    ("CLIENT", "new_profile_activation_clients.view.sql"),
+    ("CLIENT", "new_profile_activation_clients.query.sql"),
+    ("AGGREGATE", "new_profile_activations.view.sql"),
+    ("AGGREGATE", "new_profile_activations.query.sql"),
 )
 BIGEYE_COLLECTION = "Operational Checks"
 BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"
@@ -200,6 +204,7 @@ class Product:
     """Encapsulation of what we expect a 'Product' to look like in this generator."""
 
     friendly_name: str
+    search_join_key: str
     is_mobile_kpi: bool = False
     attribution_groups: list[AttributionFieldGroup] = field(
         default_factory=list[AttributionFields.empty]  # type: ignore[valid-type]
@@ -242,6 +247,7 @@ class MobileProducts(Enum):
 
     fenix = Product(
         friendly_name="Fenix",
+        search_join_key="Firefox Android",
         is_mobile_kpi=True,
         attribution_groups=[
             AttributionFields.play_store,
@@ -253,13 +259,16 @@ class MobileProducts(Enum):
     )
     focus_android = Product(
         friendly_name="Focus Android",
+        search_join_key="Focus Android",
         is_mobile_kpi=True,
     )
     klar_android = Product(
         friendly_name="Klar Android",
+        search_join_key="Klar Android",
     )
     firefox_ios = Product(
         friendly_name="Firefox iOS",
+        search_join_key="Firefox iOS",
         is_mobile_kpi=True,
         attribution_groups=[
             AttributionFields.is_suspicious_device_client,
@@ -268,10 +277,12 @@ class MobileProducts(Enum):
     )
     focus_ios = Product(
         friendly_name="Focus iOS",
+        search_join_key="Focus iOS",
         is_mobile_kpi=True,
     )
     klar_ios = Product(
         friendly_name="Klar iOS",
+        search_join_key="Klar iOS",
     )
 
 

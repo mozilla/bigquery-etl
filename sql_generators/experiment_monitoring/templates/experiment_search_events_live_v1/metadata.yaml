@@ -6,4 +6,3 @@ owners:
 - ascholtz@mozilla.com
 labels:
   materialized_view: true
-deprecated: true

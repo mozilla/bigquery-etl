@@ -18,7 +18,7 @@ description: >
 
 labels:
   incremental: true
-
+  table_type: client_level
 owners:
   - cbeck@mozilla.com
 
@@ -35,6 +35,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+    expiration_days: 775
   clustering:
     fields:
       - event_type

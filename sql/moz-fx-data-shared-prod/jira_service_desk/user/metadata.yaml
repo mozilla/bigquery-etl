@@ -7,7 +7,8 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:service-desk/data-developers
+  - workgroup:service-desk/data-viewers
 references:
   view.sql:
   - moz-fx-data-shared-prod.jira_service_desk_derived.user_v1

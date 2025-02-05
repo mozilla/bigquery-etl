@@ -40,7 +40,7 @@ pytest==7.4.3
 PyYAML==6.0.2
 rich-click==1.8.5
 smart_open==6.4.0
-sqlglot==25.28.0
+sqlglot==26.4.1
 sqlparse==0.5.3
 stripe==6.4.0
 symbolic==12.13.3

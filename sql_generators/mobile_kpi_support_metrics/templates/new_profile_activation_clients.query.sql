@@ -48,7 +48,7 @@ client_search AS (
     `{{ project_id }}.search.mobile_search_clients_daily`
   WHERE
     submission_date BETWEEN DATE_SUB(@submission_date, INTERVAL 3 DAY) AND @submission_date
-    AND normalized_app_name_os = "{{ friendly_name }}"
+    AND normalized_app_name_os = "{{ search_join_key }}"
   GROUP BY
     client_id
 )

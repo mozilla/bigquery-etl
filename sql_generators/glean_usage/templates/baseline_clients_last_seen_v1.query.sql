@@ -8,6 +8,9 @@ SELECT
   CAST(NULL AS INT64) AS days_seen_bits,
   CAST(NULL AS INT64) AS days_active_bits,
   CAST(NULL AS INT64) AS days_created_profile_bits,
+  {% if app_name == "firefox_desktop" %}
+  CAST(NULL AS INT64) AS days_desktop_active_bits,
+  {% endif %}
   -- We make sure to delay * until the end so that as new columns are added
   -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
@@ -30,11 +33,17 @@ WITH _current AS (
     -- rightmost bit in 'days_since_seen' represents whether the user sent a
     -- baseline ping in the submission_date and similarly, the rightmost bit in
     -- days_active_bits represents whether the user counts as active on that date.
+    -- days_desktop_active_bits represents the official definition of "active user" for desktop
     CAST(TRUE AS INT64) AS days_seen_bits,
     CAST(TRUE AS INT64) & CAST(durations > 0  AS INT64) AS days_active_bits,
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
+    {% if app_name == "firefox_desktop" %}
+    CAST(TRUE AS INT64) &
+    CAST(browser_engagement_uri_count > 0 AS INT64) &
+    CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
+    {% endif %}
     * EXCEPT(submission_date)
   FROM
     `{{ daily_table }}`
@@ -45,8 +54,21 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
-    days_seen_bits, days_active_bits, days_created_profile_bits,
-    * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits),
+    days_seen_bits,
+    days_active_bits,
+    {% if app_name == "firefox_desktop" %}
+    days_desktop_active_bits,
+    {% endif %}
+    days_created_profile_bits,
+    * EXCEPT (
+        submission_date,
+        days_seen_bits,
+        days_active_bits,
+        {% if app_name == "firefox_desktop" %}
+        days_desktop_active_bits,
+        {% endif %}
+        days_created_profile_bits
+      ),
   FROM
     `{{ last_seen_table }}`
   WHERE
@@ -59,6 +81,12 @@ _previous AS (
 SELECT
   @submission_date AS submission_date,
   IF(_current.client_id IS NOT NULL, _current, _previous).* REPLACE (
+    {% if app_name == "firefox_desktop" %}
+      udf.combine_adjacent_days_28_bits(
+        _previous.days_desktop_active_bits,
+        _current.days_desktop_active_bits
+      ) AS days_desktop_active_bits,
+    {% endif %}
     {% for ut in usage_types %}
       udf.combine_adjacent_days_28_bits(
         _previous.days_{{ ut }}_bits,

@@ -6,7 +6,7 @@ fields:
 - name: report_period_date
   type: DATE
   mode: NULLABLE
-  description: Report Period Date
+  description: Report Period Date - First date of report period
 - name: country
   type: STRING
   mode: NULLABLE

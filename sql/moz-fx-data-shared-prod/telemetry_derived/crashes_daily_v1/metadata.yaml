@@ -7,7 +7,7 @@ description: |-
   Clustered on channel and os, since these are common
   query dimensions.
 owners:
-- frank@mozilla.com
+- ascholtz@mozilla.com
 labels:
   incremental: true
 scheduling:
@@ -19,7 +19,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - channel

@@ -1,0 +1,17 @@
+fields:
+- name: report_period
+  type: STRING
+  mode: NULLABLE
+  description: Report Period - A string in YYYY-MM format representing the month related to the CPI data
+- name: consumer_price_index
+  type: NUMERIC
+  mode: NULLABLE
+  description: Consumer Price Index
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: last_updated
+  type: DATE
+  mode: NULLABLE
+  description: Last Updated Date

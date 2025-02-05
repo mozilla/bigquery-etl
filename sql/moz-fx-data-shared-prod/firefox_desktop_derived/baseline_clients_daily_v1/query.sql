@@ -25,10 +25,15 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    CAST(NULL AS STRING) AS distribution_id,
-    CAST(NULL AS STRING) AS install_source,
     metadata.geo.subdivision1 AS geo_subdivision,
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
+    client_info.windows_build_number AS windows_build_number,
+    metrics.counter.browser_engagement_uri_count AS browser_engagement_uri_count,
+    metrics.counter.browser_engagement_active_ticks AS browser_engagement_active_ticks,
+    metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
+    metrics.string.usage_distribution_id AS distribution_id,
+    metrics.boolean.usage_is_default_browser AS is_default_browser,
+    CAST(NULL AS STRING) AS install_source,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -134,6 +139,17 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(profile_group_id) OVER w1
     ) AS profile_group_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(windows_build_number) OVER w1
+    ) AS windows_build_number,
+    SUM(COALESCE(browser_engagement_uri_count, 0)) OVER w1 AS browser_engagement_uri_count,
+    SUM(COALESCE(browser_engagement_active_ticks, 0)) OVER w1 AS browser_engagement_active_ticks,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(legacy_telemetry_client_id) OVER w1
+    ) AS legacy_telemetry_client_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(is_default_browser) OVER w1
+    ) AS is_default_browser,
   FROM
     with_date_offsets
   LEFT JOIN

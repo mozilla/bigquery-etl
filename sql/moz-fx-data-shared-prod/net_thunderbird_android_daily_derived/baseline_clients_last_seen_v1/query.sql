@@ -22,6 +22,7 @@
     -- rightmost bit in 'days_since_seen' represents whether the user sent a
     -- baseline ping in the submission_date and similarly, the rightmost bit in
     -- days_active_bits represents whether the user counts as active on that date.
+    -- days_desktop_active_bits represents the official definition of "active user" for desktop
       CAST(TRUE AS INT64) AS days_seen_bits,
       CAST(TRUE AS INT64) & CAST(durations > 0 AS INT64) AS days_active_bits,
       `moz-fx-data-shared-prod.udf.days_since_created_profile_as_28_bits`(

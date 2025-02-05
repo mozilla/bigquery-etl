@@ -25,10 +25,15 @@ WITH base AS (
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    CAST(NULL AS STRING) AS distribution_id,
-    CAST(NULL AS STRING) AS install_source,
     metadata.geo.subdivision1 AS geo_subdivision,
     CAST(NULL AS STRING) AS profile_group_id,
+    CAST(NULL AS INT64) AS windows_build_number,
+    CAST(NULL AS INT64) AS browser_engagement_uri_count,
+    CAST(NULL AS INT64) AS browser_engagement_active_ticks,
+    CAST(NULL AS STRING) AS legacy_telemetry_client_id,
+    CAST(NULL AS STRING) AS distribution_id,
+    CAST(NULL AS BOOLEAN) AS is_default_browser,
+    CAST(NULL AS STRING) AS install_source,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_klar_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -134,6 +139,17 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(profile_group_id) OVER w1
     ) AS profile_group_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(windows_build_number) OVER w1
+    ) AS windows_build_number,
+    SUM(COALESCE(browser_engagement_uri_count, 0)) OVER w1 AS browser_engagement_uri_count,
+    SUM(COALESCE(browser_engagement_active_ticks, 0)) OVER w1 AS browser_engagement_active_ticks,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(legacy_telemetry_client_id) OVER w1
+    ) AS legacy_telemetry_client_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(is_default_browser) OVER w1
+    ) AS is_default_browser,
   FROM
     with_date_offsets
   LEFT JOIN

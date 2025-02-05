@@ -1,11 +1,6 @@
 fields:
 
 - mode: NULLABLE
-  name: submission_date
-  type: DATE
-  description: TODO
-
-- mode: NULLABLE
   name: first_seen_date
   type: DATE
   description: Date we first received a baseline ping from the profile.
@@ -39,16 +34,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Client's geo subdivision on the first seen date.
-
-- name: locale
-  type: STRING
-  mode: NULLABLE
-  description: Client's locale on the first seen date.
-
-# - name: isp
-#   type: STRING
-#   mode: NULLABLE
-#   description: Client's isp subdivision on the first seen date.
 
 - name: os
   type: STRING
@@ -140,34 +125,16 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: |
-    TODO
+    Number of new profiles.
 
 - name: activations
   type: INTEGER
   mode: NULLABLE
   description: |
-    Count of client who are activated
-
-- name: early_engagements
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    Count of clients with early engagement
+    Count of new profiles that activated.
 
 - name: retained_week_4
   type: INTEGER
   mode: NULLABLE
   description: |
-    TODO
-
-- name: repeat_profile
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    TODO
-
-- name: dau
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    TODO
+    The number of new profiles retained after week 4.

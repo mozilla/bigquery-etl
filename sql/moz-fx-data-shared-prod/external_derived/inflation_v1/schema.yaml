@@ -11,6 +11,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Country
+- name: base_year
+  type: STRING
+  mode: NULLABLE
+  description: Base Year
 - name: last_updated
   type: DATE
   mode: NULLABLE

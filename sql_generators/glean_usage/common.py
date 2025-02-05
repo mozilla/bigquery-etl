@@ -33,8 +33,6 @@ BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
     "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
-APPS_WITH_DISTRIBUTION_ID = ("fenix",)
-
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
 
 
@@ -268,7 +266,6 @@ class GleanTable:
             derived_dataset=derived_dataset,
             target_table=self.target_table_id,
             app_name=app_name,
-            has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
             enable_monitoring=enable_monitoring,
         )

@@ -2112,3 +2112,22 @@ bqetl_ltv:
   schedule_interval: daily
   tags:
     - impact/tier_1
+
+bqetl_external_data:
+  description: |
+    This DAG pulls data from external APIs and loads to BQ
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-02-07"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 10 21 * * *

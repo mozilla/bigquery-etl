@@ -1,13 +1,16 @@
 friendly_name: Inflation
 description: |-
-  Contains monthly inflation rate data by country
+  Contains monthly inflation rate data by country from IMF
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
   owner1: kwindau
 scheduling:
-  dag_name: bqetl_external_data #Still need to add new dag to dags.yaml
+  dag_name: bqetl_external_data
 bigquery:
   range_partitioning: null
+  clustering:
+    fields:
+    - country
 references: {}

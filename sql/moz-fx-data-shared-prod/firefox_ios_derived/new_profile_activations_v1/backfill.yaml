@@ -4,6 +4,6 @@
   reason: Initial backfill for the table
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true

@@ -2112,3 +2112,21 @@ bqetl_ltv:
   schedule_interval: daily
   tags:
     - impact/tier_1
+
+bqetl_imf_cpi_data:
+  description: |
+    This DAG pulls inflation data from the International Monetary Fund CPI API
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-01-01"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 23 0 15 * *

@@ -4,9 +4,9 @@ AS
 SELECT
   *,
   CASE
-    WHEN isp = 'BrowserStack'
+    WHEN LOWER(IFNULL(isp, '')) = 'browserstack'
       THEN CONCAT('Firefox Desktop', ' ', isp)
-    WHEN distribution_id = 'MozillaOnline'
+    WHEN LOWER(IFNULL(distribution_id, '')) = 'mozillaonline'
       THEN CONCAT('Firefox Desktop', ' ', distribution_id)
     ELSE 'Firefox Desktop'
   END AS app_name,

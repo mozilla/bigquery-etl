@@ -8,7 +8,7 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 # Set variables
-countries = ["CA", "US", "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL", "AU"]
+countries = ["CA", "US", "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"]
 START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
 WAIT_TIME_SECONDS = 30

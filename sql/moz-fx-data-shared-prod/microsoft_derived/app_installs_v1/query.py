@@ -87,9 +87,8 @@ def microsoft_authorization(tenant_id, client_id, client_secret, resource_url):
 def download_microsoft_store_data(date, application_id, bearer_token):
     """Download data from Microsoft - application_id, bearer_token are called here."""
     # Need to delay the running of the job to ensure data is present.
-    input_date = datetime.strptime(date, "%Y-%m-%d").date()
-    start_date = input_date - timedelta(days=3)
-    end_date = input_date - timedelta(days=3)
+    start_date = date
+    end_date = date
     token = bearer_token
     app_id = application_id
     groupBy = [
@@ -193,7 +192,8 @@ def main():
     dataset = args.dataset
     table_name = "app_installs_v1"
 
-    date = args.date
+    args_date = args.date
+    date = datetime.strptime(args_date, "%Y-%m-%d").date() - timedelta(days=3)
     client_id = MS_CLIENT_ID
     client_secret = MS_CLIENT_SECRET
     app_list = MS_APP_LIST

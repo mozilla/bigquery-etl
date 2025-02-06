@@ -160,6 +160,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_partition_expirations_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
   - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
+  - sql/moz-fx-data-shared-prod/zoom/**/*.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF

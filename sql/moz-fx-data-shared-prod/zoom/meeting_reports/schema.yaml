@@ -1,0 +1,68 @@
+fields:
+- name: uuid
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The meeting's universally unique identifier (UUID).
+    Each meeting instance generates a meeting UUID.
+- name: meeting_id
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The meeting's ID (also known as the meeting number) in integer format.
+- name: dept
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The host's department.
+- name: duration
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The meeting's duration in minutes.
+- name: end_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    The meeting's end date and time in UTC.
+- name: participants_count
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The number of meeting participants.
+- name: start_time
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    The meeting's start date and time in UTC.
+- name: total_minutes
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The sum of meeting minutes from all meeting participants in the meeting.
+- name: type
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    Meeting type.
+    * `1` - Instant meeting.
+    * `2` - Scheduled meeting.
+    * `3` - Recurring meeting with no fixed time.
+    * `4` - Meeting created via PMI (Personal Meeting ID).
+    * `7` - Personal Audio Conference (PAC).
+    * `8` - Recurring meeting with fixed time.
+- name: user_email
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The host's email address.
+- name: user_name
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The host's display name.
+- name: is_deleted
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the meeting report is deleted.

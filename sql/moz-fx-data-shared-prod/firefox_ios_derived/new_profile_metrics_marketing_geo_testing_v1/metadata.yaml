@@ -1,0 +1,40 @@
+friendly_name: New profile metrics with geo information for marketing testing.
+description: |-
+  New profile metrics with geo information for marketing testing. This table is updated with a 28 day lag
+  as we need to wait until week 4 after first_seen_date for retention calculation.
+owners:
+- kik@mozilla.com
+- shong@mozilla.com
+labels:
+  application: firefox_ios
+  incremental: true
+  table_type: aggregate
+  dag: bqetl_marketing_analysis
+  owner1: kik
+  owner2: shong
+scheduling:
+  dag_name: bqetl_marketing_analysis
+  date_partition_offset: -27
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.new_profile_activation_clients
+  - moz-fx-data-shared-prod.firefox_ios.new_profile_clients
+  - moz-fx-data-shared-prod.firefox_ios.retention_clients

@@ -1,0 +1,105 @@
+fields:
+
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: Date we first received a baseline ping from the profile.
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Release channel of the app the profile is using.
+
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name the profile is using.
+
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's app version on the first seen date.
+
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Client's country on the first seen date.
+
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: Client's city on the first seen date.
+
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+  description: Client's geo subdivision on the first seen date.
+
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: Client's os on the first seen date.
+
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: Client's os version on the first seen date.
+
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+  description: Client's device manufacturer on the first seen date.
+
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if this specific entry is used towards calculating mobile DAU.
+
+- name: is_suspicious_device_client
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag to identify suspicious device users, see bug-1846554 for more info.
+
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Ad Group the profile is attributed to.
+
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Campaign the profile is attributed to.
+
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Creative the profile is attributed to.
+
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network the profile is attributed to.
+
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: |
+    On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".
+
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Number of new profiles.
+
+- name: activations
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Count of new profiles that activated.
+
+- name: retained_week_4
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    The number of new profiles retained after week 4.

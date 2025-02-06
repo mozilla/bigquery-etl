@@ -1,0 +1,13 @@
+friendly_name: New Profile Metrics Marketing Geo Testing
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fenix_derived.new_profile_metrics_marketing_geo_testing_v1

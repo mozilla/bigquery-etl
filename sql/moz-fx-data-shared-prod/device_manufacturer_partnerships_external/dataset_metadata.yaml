@@ -1,0 +1,10 @@
+friendly_name: Device Manufacturer Partnerships (External)
+description: |-
+  Device Manufacturer Partnerships (External) namespace used to set up connection to Google Sheets.
+dataset_base_acl: restricted
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential

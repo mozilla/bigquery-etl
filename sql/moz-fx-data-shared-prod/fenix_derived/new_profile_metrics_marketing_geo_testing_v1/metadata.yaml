@@ -1,6 +1,6 @@
-friendly_name: Activation metrics with geo information
+friendly_name: New profile metrics with geo information for marketing testing.
 description: |-
-  Activation metrics with geo information. This table is updated with a 28 day lag
+  New profile metrics with geo information for marketing testing. This table is updated with a 28 day lag
   as we need to wait until week 4 after first_seen_date for retention calculation.
 owners:
 - kik@mozilla.com

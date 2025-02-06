@@ -8,7 +8,8 @@ WITH events AS (
     moz - fx - data - shared - prod.accounts_frontend.events_stream AS e
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND event = 'glean.element_click'
+    AND event_category = 'glean'
+    AND event_name = 'element_click'
   GROUP BY
     submission_date,
     event,

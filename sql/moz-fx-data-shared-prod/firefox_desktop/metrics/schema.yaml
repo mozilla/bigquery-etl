@@ -1985,6 +1985,36 @@ fields:
         WEBRTC_CALL_COUNT_3.
 
         '
+    - name: workers_dedicated_worker_spawn_gets_queued
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Tracking whether a DedicatedWorker spawn gets queued due to hitting
+        max workers per domain limit.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        DEDICATED_WORKER_SPAWN_GETS_QUEUED.
+
+        '
+    - name: workers_service_worker_spawn_gets_queued
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Tracking whether a ServiceWorker spawn gets queued due to hitting
+        max workers per domain limit.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SERVICE_WORKER_SPAWN_GETS_QUEUED.
+
+        '
+    - name: workers_shared_worker_spawn_gets_queued
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Tracking whether a SharedWorker spawn gets queued due to hitting
+        max workers per domain limit.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SHARED_WORKER_SPAWN_GETS_QUEUED.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -8682,6 +8712,22 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         SSL_RESUMED_SESSION.
+
+        '
+    - name: media_sniffer_mp4_brand_pattern
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'ISOBMFF brand pattern used to identify MP4 in media sniffer
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram MEDIA_SNIFFER_MP4_BRAND_PATTERN.
 
         '
   - name: memory_distribution
@@ -22527,6 +22573,147 @@ fields:
         histogram SSL_TIME_UNTIL_READY_FIRST_TRY.
 
         '
+    - name: service_worker_isolated_launch_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) for spawning a service worker in an isolated content
+        process.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_ISOLATED_LAUNCH_TIME.
+
+        '
+    - name: service_worker_launch_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) for spawning a service worker in the remote content
+        process.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_LAUNCH_TIME_2.
+
+        '
+    - name: service_worker_registration_loading
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Tracking how ServiceWorkerRegistrar loads data before the first
+        content is shown.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_REGISTRATION_LOADING.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -32277,6 +32464,276 @@ fields:
         histogram SSL_TIME_UNTIL_HANDSHAKE_FINISHED_KEYED_BY_KA.
 
         '
+    - name: service_worker_fetch_event_channel_reset
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in ms) measured between when the fetch handler finished
+        executing and when we reset the network channel.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_FETCH_EVENT_CHANNEL_RESET_MS_2.
+
+        '
+    - name: service_worker_fetch_event_dispatch
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in ms) measured between when the fetch event is dispatched
+        by the Service Worker and before we execute the event listeners.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_FETCH_EVENT_DISPATCH_MS_2.
+
+        '
+    - name: service_worker_fetch_event_finish_synthesized_response
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in ms) measured between when the respondWith promise resolves
+        and when we provide the response through the intercepted channel.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_FETCH_EVENT_FINISH_SYNTHESIZED_RESPONSE_MS_2.
+
+        '
+    - name: service_worker_fetch_interception_duration
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time delta (ms) between when a network request is intercepted
+        in the parent process and the service worker provides a response.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SERVICE_WORKER_FETCH_INTERCEPTION_DURATION_MS_2.
+
+        '
+    - name: workers_sync_worker_operation
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Tracking how long a Worker thread is blocked when a sync operation
+        is executed on the main-thread.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SYNC_WORKER_OPERATION.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -33707,6 +34164,42 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram NETWORK_CACHE_SIZE_SHARE.
+
+        '
+    - name: service_worker_running
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The sampled number of simultaneous running ServiceWorkers in a
+        session, sampled once each 10 seconds (lazily on state change)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        SERVICE_WORKER_RUNNING.
 
         '
   - name: labeled_quantity

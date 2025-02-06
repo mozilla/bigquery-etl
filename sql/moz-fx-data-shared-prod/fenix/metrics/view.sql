@@ -261,7 +261,10 @@ SELECT
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
       metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
-      metrics.counter.webrtc_call_count_3
+      metrics.counter.webrtc_call_count_3,
+      metrics.counter.workers_dedicated_worker_spawn_gets_queued,
+      metrics.counter.workers_service_worker_spawn_gets_queued,
+      metrics.counter.workers_shared_worker_spawn_gets_queued
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -792,7 +795,8 @@ SELECT
       metrics.labeled_counter.network_back_pressure_suspension_rate,
       metrics.labeled_counter.network_race_cache_validation,
       metrics.labeled_counter.network_race_cache_with_network_usage,
-      metrics.labeled_counter.ssl_resumed_session
+      metrics.labeled_counter.ssl_resumed_session,
+      metrics.labeled_counter.media_sniffer_mp4_brand_pattern
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1235,7 +1239,10 @@ SELECT
       metrics.timing_distribution.ssl_time_until_ready_conservative,
       metrics.timing_distribution.ssl_time_until_ready_ech,
       metrics.timing_distribution.ssl_time_until_ready_ech_grease,
-      metrics.timing_distribution.ssl_time_until_ready_first_try
+      metrics.timing_distribution.ssl_time_until_ready_first_try,
+      metrics.timing_distribution.service_worker_isolated_launch_time,
+      metrics.timing_distribution.service_worker_launch_time,
+      metrics.timing_distribution.service_worker_registration_loading
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1393,7 +1400,12 @@ SELECT
       metrics.labeled_timing_distribution.network_dns_end_to_connect_start_exp,
       metrics.labeled_timing_distribution.network_response_end_parent_to_content,
       metrics.labeled_timing_distribution.network_response_start_parent_to_content_exp,
-      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka
+      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_channel_reset,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_dispatch,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_finish_synthesized_response,
+      metrics.labeled_timing_distribution.service_worker_fetch_interception_duration,
+      metrics.labeled_timing_distribution.workers_sync_worker_operation
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -1427,7 +1439,8 @@ SELECT
       metrics.labeled_custom_distribution.media_video_hidden_play_time_percentage,
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
-      metrics.labeled_custom_distribution.network_cache_size_share
+      metrics.labeled_custom_distribution.network_cache_size_share,
+      metrics.labeled_custom_distribution.service_worker_running
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -1705,7 +1718,10 @@ SELECT
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
       metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
-      metrics.counter.webrtc_call_count_3
+      metrics.counter.webrtc_call_count_3,
+      metrics.counter.workers_dedicated_worker_spawn_gets_queued,
+      metrics.counter.workers_service_worker_spawn_gets_queued,
+      metrics.counter.workers_shared_worker_spawn_gets_queued
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2236,7 +2252,8 @@ SELECT
       metrics.labeled_counter.network_back_pressure_suspension_rate,
       metrics.labeled_counter.network_race_cache_validation,
       metrics.labeled_counter.network_race_cache_with_network_usage,
-      metrics.labeled_counter.ssl_resumed_session
+      metrics.labeled_counter.ssl_resumed_session,
+      metrics.labeled_counter.media_sniffer_mp4_brand_pattern
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2679,7 +2696,10 @@ SELECT
       metrics.timing_distribution.ssl_time_until_ready_conservative,
       metrics.timing_distribution.ssl_time_until_ready_ech,
       metrics.timing_distribution.ssl_time_until_ready_ech_grease,
-      metrics.timing_distribution.ssl_time_until_ready_first_try
+      metrics.timing_distribution.ssl_time_until_ready_first_try,
+      metrics.timing_distribution.service_worker_isolated_launch_time,
+      metrics.timing_distribution.service_worker_launch_time,
+      metrics.timing_distribution.service_worker_registration_loading
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2837,7 +2857,12 @@ SELECT
       metrics.labeled_timing_distribution.network_dns_end_to_connect_start_exp,
       metrics.labeled_timing_distribution.network_response_end_parent_to_content,
       metrics.labeled_timing_distribution.network_response_start_parent_to_content_exp,
-      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka
+      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_channel_reset,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_dispatch,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_finish_synthesized_response,
+      metrics.labeled_timing_distribution.service_worker_fetch_interception_duration,
+      metrics.labeled_timing_distribution.workers_sync_worker_operation
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -2871,7 +2896,8 @@ SELECT
       metrics.labeled_custom_distribution.media_video_hidden_play_time_percentage,
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
-      metrics.labeled_custom_distribution.network_cache_size_share
+      metrics.labeled_custom_distribution.network_cache_size_share,
+      metrics.labeled_custom_distribution.service_worker_running
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -3167,7 +3193,10 @@ SELECT
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
       metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
-      metrics.counter.webrtc_call_count_3
+      metrics.counter.webrtc_call_count_3,
+      metrics.counter.workers_dedicated_worker_spawn_gets_queued,
+      metrics.counter.workers_service_worker_spawn_gets_queued,
+      metrics.counter.workers_shared_worker_spawn_gets_queued
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3698,7 +3727,8 @@ SELECT
       metrics.labeled_counter.network_back_pressure_suspension_rate,
       metrics.labeled_counter.network_race_cache_validation,
       metrics.labeled_counter.network_race_cache_with_network_usage,
-      metrics.labeled_counter.ssl_resumed_session
+      metrics.labeled_counter.ssl_resumed_session,
+      metrics.labeled_counter.media_sniffer_mp4_brand_pattern
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4141,7 +4171,10 @@ SELECT
       metrics.timing_distribution.ssl_time_until_ready_conservative,
       metrics.timing_distribution.ssl_time_until_ready_ech,
       metrics.timing_distribution.ssl_time_until_ready_ech_grease,
-      metrics.timing_distribution.ssl_time_until_ready_first_try
+      metrics.timing_distribution.ssl_time_until_ready_first_try,
+      metrics.timing_distribution.service_worker_isolated_launch_time,
+      metrics.timing_distribution.service_worker_launch_time,
+      metrics.timing_distribution.service_worker_registration_loading
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4299,7 +4332,12 @@ SELECT
       metrics.labeled_timing_distribution.network_dns_end_to_connect_start_exp,
       metrics.labeled_timing_distribution.network_response_end_parent_to_content,
       metrics.labeled_timing_distribution.network_response_start_parent_to_content_exp,
-      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka
+      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_channel_reset,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_dispatch,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_finish_synthesized_response,
+      metrics.labeled_timing_distribution.service_worker_fetch_interception_duration,
+      metrics.labeled_timing_distribution.workers_sync_worker_operation
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4333,7 +4371,8 @@ SELECT
       metrics.labeled_custom_distribution.media_video_hidden_play_time_percentage,
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
-      metrics.labeled_custom_distribution.network_cache_size_share
+      metrics.labeled_custom_distribution.network_cache_size_share,
+      metrics.labeled_custom_distribution.service_worker_running
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -4638,7 +4677,10 @@ SELECT
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
       metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
-      metrics.counter.webrtc_call_count_3
+      metrics.counter.webrtc_call_count_3,
+      metrics.counter.workers_dedicated_worker_spawn_gets_queued,
+      metrics.counter.workers_service_worker_spawn_gets_queued,
+      metrics.counter.workers_shared_worker_spawn_gets_queued
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5169,7 +5211,8 @@ SELECT
       metrics.labeled_counter.network_back_pressure_suspension_rate,
       metrics.labeled_counter.network_race_cache_validation,
       metrics.labeled_counter.network_race_cache_with_network_usage,
-      metrics.labeled_counter.ssl_resumed_session
+      metrics.labeled_counter.ssl_resumed_session,
+      metrics.labeled_counter.media_sniffer_mp4_brand_pattern
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5612,7 +5655,10 @@ SELECT
       metrics.timing_distribution.ssl_time_until_ready_conservative,
       metrics.timing_distribution.ssl_time_until_ready_ech,
       metrics.timing_distribution.ssl_time_until_ready_ech_grease,
-      metrics.timing_distribution.ssl_time_until_ready_first_try
+      metrics.timing_distribution.ssl_time_until_ready_first_try,
+      metrics.timing_distribution.service_worker_isolated_launch_time,
+      metrics.timing_distribution.service_worker_launch_time,
+      metrics.timing_distribution.service_worker_registration_loading
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5770,7 +5816,12 @@ SELECT
       metrics.labeled_timing_distribution.network_dns_end_to_connect_start_exp,
       metrics.labeled_timing_distribution.network_response_end_parent_to_content,
       metrics.labeled_timing_distribution.network_response_start_parent_to_content_exp,
-      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka
+      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_channel_reset,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_dispatch,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_finish_synthesized_response,
+      metrics.labeled_timing_distribution.service_worker_fetch_interception_duration,
+      metrics.labeled_timing_distribution.workers_sync_worker_operation
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -5804,7 +5855,8 @@ SELECT
       metrics.labeled_custom_distribution.media_video_hidden_play_time_percentage,
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
-      metrics.labeled_custom_distribution.network_cache_size_share
+      metrics.labeled_custom_distribution.network_cache_size_share,
+      metrics.labeled_custom_distribution.service_worker_running
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -6091,7 +6143,10 @@ SELECT
       metrics.counter.networking_captive_portal_banner_displayed,
       metrics.counter.script_preloader_mainthread_recompile,
       metrics.counter.security_ui_protectionspopup_smartblockembeds_shown,
-      metrics.counter.webrtc_call_count_3
+      metrics.counter.webrtc_call_count_3,
+      metrics.counter.workers_dedicated_worker_spawn_gets_queued,
+      metrics.counter.workers_service_worker_spawn_gets_queued,
+      metrics.counter.workers_shared_worker_spawn_gets_queued
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -6622,7 +6677,8 @@ SELECT
       metrics.labeled_counter.network_back_pressure_suspension_rate,
       metrics.labeled_counter.network_race_cache_validation,
       metrics.labeled_counter.network_race_cache_with_network_usage,
-      metrics.labeled_counter.ssl_resumed_session
+      metrics.labeled_counter.ssl_resumed_session,
+      metrics.labeled_counter.media_sniffer_mp4_brand_pattern
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -7065,7 +7121,10 @@ SELECT
       metrics.timing_distribution.ssl_time_until_ready_conservative,
       metrics.timing_distribution.ssl_time_until_ready_ech,
       metrics.timing_distribution.ssl_time_until_ready_ech_grease,
-      metrics.timing_distribution.ssl_time_until_ready_first_try
+      metrics.timing_distribution.ssl_time_until_ready_first_try,
+      metrics.timing_distribution.service_worker_isolated_launch_time,
+      metrics.timing_distribution.service_worker_launch_time,
+      metrics.timing_distribution.service_worker_registration_loading
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -7223,7 +7282,12 @@ SELECT
       metrics.labeled_timing_distribution.network_dns_end_to_connect_start_exp,
       metrics.labeled_timing_distribution.network_response_end_parent_to_content,
       metrics.labeled_timing_distribution.network_response_start_parent_to_content_exp,
-      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka
+      metrics.labeled_timing_distribution.ssl_time_until_handshake_finished_keyed_by_ka,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_channel_reset,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_dispatch,
+      metrics.labeled_timing_distribution.service_worker_fetch_event_finish_synthesized_response,
+      metrics.labeled_timing_distribution.service_worker_fetch_interception_duration,
+      metrics.labeled_timing_distribution.workers_sync_worker_operation
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -7257,7 +7321,8 @@ SELECT
       metrics.labeled_custom_distribution.media_video_hidden_play_time_percentage,
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
-      metrics.labeled_custom_distribution.network_cache_size_share
+      metrics.labeled_custom_distribution.network_cache_size_share,
+      metrics.labeled_custom_distribution.service_worker_running
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,

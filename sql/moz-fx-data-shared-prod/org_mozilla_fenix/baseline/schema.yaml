@@ -549,6 +549,16 @@ fields:
     - name: raw_glean_validation_first_run_hour
       type: STRING
       mode: NULLABLE
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: metrics_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Is Fenix the default browser?
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -42,7 +42,8 @@ SELECT
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -97,7 +98,8 @@ SELECT
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -170,7 +172,8 @@ SELECT
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -252,7 +255,8 @@ SELECT
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -316,7 +320,8 @@ SELECT
     STRUCT(
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

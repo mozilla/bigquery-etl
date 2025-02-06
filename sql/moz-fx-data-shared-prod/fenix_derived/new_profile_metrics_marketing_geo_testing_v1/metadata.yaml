@@ -11,7 +11,7 @@ labels:
   table_type: aggregate
   shredder_mitigation: false
 scheduling:
-  dag_name: bqetl_mobile_kpi_metrics
+  dag_name: bqetl_marketing_analysis
   date_partition_offset: -27
   date_partition_parameter: null
   parameters:

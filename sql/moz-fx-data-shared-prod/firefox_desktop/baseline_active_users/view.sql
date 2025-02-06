@@ -44,12 +44,12 @@ SELECT
       THEN 'core_user'
     ELSE 'other'
   END AS segment_dau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,
-  IFNULL(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_desktop_dau,
-  IFNULL(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_desktop_wau,
-  IFNULL(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_desktop_mau,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau_duration,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau_duration,
+  IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau_duration,
+  IFNULL(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_dau,
+  IFNULL(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
+  IFNULL(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
@@ -58,6 +58,6 @@ SELECT
     AND LOWER(IFNULL(distribution_id, '')) <> "mozillaonline",
     TRUE,
     FALSE
-  ) AS is_desktop
+  ) AS is_included_kpi
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`

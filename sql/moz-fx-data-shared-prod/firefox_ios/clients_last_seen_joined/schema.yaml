@@ -137,6 +137,3 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-- name: is_default_browser_1
-  type: BOOLEAN
-  mode: NULLABLE

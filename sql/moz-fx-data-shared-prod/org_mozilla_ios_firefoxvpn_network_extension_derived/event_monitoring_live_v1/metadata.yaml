@@ -18,5 +18,6 @@ references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.daemonsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.extensionsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.main_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.vpnsession_v1

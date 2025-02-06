@@ -3469,6 +3469,32 @@ FROM
         ping_info.reason
       ) AS ping_info,
     FROM
+      `moz-fx-data-shared-prod.mozillavpn_stable.extensionsession_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
+    FROM
       `moz-fx-data-shared-prod.mozillavpn_stable.main_v1`
     UNION ALL
     SELECT
@@ -3609,6 +3635,32 @@ FROM
       ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.events_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.extensionsession_v1`
     UNION ALL
     SELECT
       submission_timestamp,
@@ -3799,6 +3851,32 @@ FROM
         ping_info.reason
       ) AS ping_info,
     FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.extensionsession_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
+    FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1`
     UNION ALL
     SELECT
@@ -3939,6 +4017,32 @@ FROM
       ) AS ping_info,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.events_v1`
+    UNION ALL
+    SELECT
+      submission_timestamp,
+      events,
+      normalized_country_code,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+      STRUCT(
+        ping_info.end_time,
+        ARRAY(
+          SELECT AS STRUCT
+            key,
+            STRUCT(
+              value.branch,
+              STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
+            ) AS value
+          FROM
+            UNNEST(ping_info.experiments)
+        ) AS experiments,
+        ping_info.ping_type,
+        ping_info.seq,
+        ping_info.start_time,
+        ping_info.reason
+      ) AS ping_info,
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.extensionsession_v1`
     UNION ALL
     SELECT
       submission_timestamp,

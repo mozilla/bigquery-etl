@@ -65,6 +65,7 @@ references:
   - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.mozillavpn_stable.daemonsession_v1
   - moz-fx-data-shared-prod.mozillavpn_stable.events_v1
+  - moz-fx-data-shared-prod.mozillavpn_stable.extensionsession_v1
   - moz-fx-data-shared-prod.mozillavpn_stable.main_v1
   - moz-fx-data-shared-prod.mozillavpn_stable.vpnsession_v1
   - moz-fx-data-shared-prod.mozphab_stable.events_v1
@@ -91,6 +92,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.daemonsession_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.extensionsession_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.vpnsession_v1
   - moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.events_v1
@@ -108,10 +110,12 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.daemonsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.extensionsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.main_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_stable.vpnsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.daemonsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.events_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.extensionsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.main_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_stable.vpnsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_focus_stable.events_v1

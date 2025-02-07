@@ -1,0 +1,33 @@
+fields:
+- name: gdp_type
+  type: STRING
+  mode: NULLABLE
+  description: GDP Type - Indicator indicating type of GDP being recorded
+- name: gdp_unit_of_measurement
+  type: STRING
+  mode: NULLABLE
+  description: GDP Unit of Measurement - i.e., US $
+- name: gdp_country_code
+  type: STRING
+  mode: NULLABLE
+  description: GDP Country Code - 2 letter code
+- name: gdp_country_name
+  type: STRING
+  mode: NULLABLE
+  description: GDP Country Name - the full name of the country
+- name: gdp_country_code_iso3
+  type: STRING
+  mode: NULLABLE
+  description: GDP Country Code - The ISO3 country code for this country
+- name: gdp_year
+  type: INTEGER
+  mode: NULLABLE
+  description: GDP Year
+- name: gdp_value
+  type: BIGNUMERIC
+  mode: NULLABLE
+  description: GDP Value
+- name: last_updated
+  type: DATE
+  mode: NULLABLE
+  description: Last Updated Date

@@ -1,0 +1,23 @@
+friendly_name: GDP - Gross Domestic Product
+description: |-
+  Pulls GDP data by country and year from the IMF API
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  dag: bqetl_imf_cpi_data
+scheduling:
+  dag_name: bqetl_imf_cpi_data
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - gdp_country_code
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

@@ -1,11 +1,9 @@
 # Load libraries
 from datetime import datetime, timedelta
+import time
 import pandas as pd
 import requests
-import time
-from argparse import ArgumentParser
 from google.cloud import bigquery
-from google.cloud import storage
 
 # Set variables
 countries = ["CA", "US", "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"]

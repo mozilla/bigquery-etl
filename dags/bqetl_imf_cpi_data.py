@@ -64,6 +64,18 @@ with DAG(
         retries=0,
     )
 
+    external_derived__gdp__v1 = GKEPodOperator(
+        task_id="external_derived__gdp__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/external_derived/gdp_v1/query.py",
+        ]
+        + [],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+    )
+
     external_derived__inflation__v1 = GKEPodOperator(
         task_id="external_derived__inflation__v1",
         arguments=[

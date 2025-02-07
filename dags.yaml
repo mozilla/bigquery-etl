@@ -2130,3 +2130,22 @@ bqetl_imf_cpi_data:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 23 0 15 * *
+
+bqetl_marketing_analysis:
+  description: |
+    DAG for scheduling marketing queries used for marketing campaign analysis.
+  default_args:
+    depends_on_past: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+      - shong@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-02-01"
+    retries: 1
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *

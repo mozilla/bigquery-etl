@@ -5,7 +5,6 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
-from datetime import datetime, timedelta
 from time import sleep
 
 import requests
@@ -192,8 +191,7 @@ def main():
     dataset = args.dataset
     table_name = "app_installs_v1"
 
-    args_date = args.date
-    date = datetime.strptime(args_date, "%Y-%m-%d").date() - timedelta(days=3)
+    date = args.date
     client_id = MS_CLIENT_ID
     client_secret = MS_CLIENT_SECRET
     app_list = MS_APP_LIST
@@ -210,7 +208,7 @@ def main():
 
     # Cycle through the apps to get the relevant data
     for app in ms_app_list:
-        print(f'This is data for {app["app_name"]} - {app["app_id"]} ')
+        print(f'This is data for {app["app_name"]} - {app["app_id"]} for ', date)
         # Ping the microsoft_store URL and get a response
         json_file = download_microsoft_store_data(date, app["app_id"], bearer_token)
         query_export = check_json(json_file.text)
@@ -219,7 +217,7 @@ def main():
             microsoft_store_data = clean_json(query_export, date)
             data.extend(microsoft_store_data)
         else:
-            print("no data for today")
+            print("no data for ", date)
         sleep(5)
     upload_to_bigquery(data, project, dataset, table_name, date)
 

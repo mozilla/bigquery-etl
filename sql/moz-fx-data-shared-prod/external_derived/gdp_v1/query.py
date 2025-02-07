@@ -49,6 +49,7 @@ def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
                               'gdp_country_code_iso3': [],
                               'gdp_year': [],
                               'gdp_value': []})
+
     #Put the data into a dataframe
     for entry in gdp_data:
         gdp_type = entry['indicator']['id']

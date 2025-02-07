@@ -96,6 +96,22 @@ SELECT
     1,
     0
   ) AS easter_day,
+  IF(
+    submission_date IN (
+      '2020-04-13',
+      '2021-04-05',
+      '2022-04-18',
+      '2023-04-10',
+      '2024-04-01',
+      '2025-04-21',
+      '2026-04-06',
+      '2027-03-29',
+      '2028-04-17',
+      '2029-04-02'
+    ),
+    1,
+    0
+  ) AS easter_monday,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 8, 1, 0) AS fr_victory_day,
   IF(

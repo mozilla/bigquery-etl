@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import pandas as pd
 import requests
 from google.cloud import bigquery
-from google.cloud import storage
 
 # Set variables
 countries = [

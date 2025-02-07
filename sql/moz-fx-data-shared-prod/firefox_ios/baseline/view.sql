@@ -33,6 +33,8 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
+      metrics.datetime.app_last_opened_as_default_browser,
+      metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`
@@ -81,6 +83,8 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
+      metrics.datetime.app_last_opened_as_default_browser,
+      metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`
@@ -129,6 +133,8 @@ SELECT
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(
+      metrics.datetime.app_last_opened_as_default_browser,
+      metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`

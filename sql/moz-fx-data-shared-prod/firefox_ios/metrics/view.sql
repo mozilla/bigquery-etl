@@ -239,6 +239,8 @@ SELECT
       metrics.memory_distribution.glean_database_size
     ) AS `memory_distribution`,
     STRUCT(
+      metrics.datetime.app_last_opened_as_default_browser,
+      metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
@@ -531,6 +533,8 @@ SELECT
       metrics.memory_distribution.glean_database_size
     ) AS `memory_distribution`,
     STRUCT(
+      metrics.datetime.app_last_opened_as_default_browser,
+      metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
@@ -823,6 +827,8 @@ SELECT
       metrics.memory_distribution.glean_database_size
     ) AS `memory_distribution`,
     STRUCT(
+      metrics.datetime.app_last_opened_as_default_browser,
+      metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,

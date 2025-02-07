@@ -323,6 +323,12 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: app_last_opened_as_default_browser
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_app_last_opened_as_default_browser
+      type: STRING
+      mode: NULLABLE
     - name: glean_validation_first_run_hour
       type: TIMESTAMP
       mode: NULLABLE

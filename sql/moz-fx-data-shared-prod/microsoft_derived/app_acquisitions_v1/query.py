@@ -5,7 +5,6 @@ import json
 import os
 import tempfile
 from argparse import ArgumentParser
-from datetime import datetime, timedelta
 from time import sleep
 
 import requests
@@ -215,9 +214,7 @@ def main():
     dataset = args.dataset
     table_name = "app_acquisitions_v1"
 
-    args_date = args.date
-    # Data for Microsoft isn't always available on the next day. Use a 3 day delay.
-    date = datetime.strptime(args_date, "%Y-%m-%d").date() - timedelta(days=3)
+    date = args.date
     client_id = MS_CLIENT_ID
     client_secret = MS_CLIENT_SECRET
     app_list = MS_APP_LIST

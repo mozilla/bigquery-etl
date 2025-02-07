@@ -27,6 +27,9 @@ fields:
 - name: easter_day
   type: INTEGER
   mode: NULLABLE
+- name: easter_monday
+  type: INTEGER
+  mode: NULLABLE
 - name: fr_may_day
   type: INTEGER
   mode: NULLABLE

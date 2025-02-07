@@ -3,18 +3,21 @@ fields:
   type: DATE
   mode: NULLABLE
   description: Submission Date
-- name: calendar_year
+- name: day_of_week
+  type: STRING
+  mode: NULLABLE
+- name: year
   type: INTEGER
   mode: NULLABLE
-  description: Calendar Year
-- name: calendar_month
+- name: month
   type: INTEGER
   mode: NULLABLE
-  description: Calendar Month
-- name: calendar_quarter
+- name: quarter
   type: INTEGER
   mode: NULLABLE
-  description: Calendar Quarter
+- name: week_number
+  type: INTEGER
+  mode: NULLABLE
 - name: first_date_of_month
   type: DATE
   mode: NULLABLE
@@ -23,3 +26,6 @@ fields:
   type: DATE
   mode: NULLABLE
   description: First Date of Quarter
+- name: day_of_year
+  type: INTEGER
+  mode: NULLABLE

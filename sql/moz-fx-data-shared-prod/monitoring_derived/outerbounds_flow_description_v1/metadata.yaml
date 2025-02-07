@@ -6,18 +6,16 @@ owners:
 - aplacitelli@mozilla.com
 - aaggarwal@mozilla.com
 labels:
+  dag: bqetl_monitoring
   owner1: ctroy
   owner2: aplacitelli
   owner3: aaggarwal
+scheduling:
+  dag_name: bqetl_monitoring
+  date_partition_parameter: null
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 references: {}
-external_data:
-  format: google_sheets
-  source_uris:
-  - https://docs.google.com/spreadsheets/d/1E0kDpHwwtDnkMxAXbeEIzMTajckSHWJ2swF39JdRR1g
-  options:
-    skip_leading_rows: 1

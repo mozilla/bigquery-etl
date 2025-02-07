@@ -239,6 +239,35 @@ fields:
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: extension_has_completed_onboarding
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: extension_used_feature_disable_firefox_protection
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: extension_used_feature_page_action_revoke_exclude
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: extension_used_feature_page_action_revoke_geopref
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: extension_used_feature_settings_page
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: extension_count_excluded
+      type: INTEGER
+      mode: NULLABLE
+    - name: extension_count_geoprefed
+      type: INTEGER
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

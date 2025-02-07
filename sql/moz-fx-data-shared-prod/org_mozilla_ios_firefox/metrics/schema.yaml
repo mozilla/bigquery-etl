@@ -1548,6 +1548,8 @@ fields:
 
         * Share Menu
 
+        * Activity stream
+
         '
     - name: bookmarks_delete
       type: RECORD
@@ -2399,6 +2401,15 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: app_last_opened_as_default_browser
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The date of when the app was last opened as default browser.
+
+        '
+    - name: raw_app_last_opened_as_default_browser
+      type: STRING
+      mode: NULLABLE
     - name: glean_validation_first_run_hour
       type: TIMESTAMP
       mode: NULLABLE

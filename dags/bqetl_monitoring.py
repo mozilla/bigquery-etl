@@ -279,6 +279,24 @@ with DAG(
             monitoring_derived__jobs_by_organization__v1
         )
 
+    monitoring_derived__outerbounds_flow_description__v1 = GKEPodOperator(
+        task_id="monitoring_derived__outerbounds_flow_description__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/outerbounds_flow_description_v1/query.py",
+        ]
+        + [],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="ctroy@mozilla.com",
+        email=[
+            "aaggarwal@mozilla.com",
+            "aplacitelli@mozilla.com",
+            "ascholtz@mozilla.com",
+            "ctroy@mozilla.com",
+            "kwindau@mozilla.com",
+        ],
+    )
+
     monitoring_derived__schema_error_counts__v2 = bigquery_etl_query(
         task_id="monitoring_derived__schema_error_counts__v2",
         destination_table="schema_error_counts_v2",

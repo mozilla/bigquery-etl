@@ -17,7 +17,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.boolean.extension_has_completed_onboarding,
+      metrics.boolean.extension_used_feature_disable_firefox_protection,
+      metrics.boolean.extension_used_feature_page_action_revoke_exclude,
+      metrics.boolean.extension_used_feature_page_action_revoke_geopref,
+      metrics.boolean.extension_used_feature_settings_page
+    ) AS `boolean`,
+    STRUCT(
+      metrics.quantity.extension_count_excluded,
+      metrics.quantity.extension_count_geoprefed
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -47,7 +58,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.boolean.extension_has_completed_onboarding,
+      metrics.boolean.extension_used_feature_disable_firefox_protection,
+      metrics.boolean.extension_used_feature_page_action_revoke_exclude,
+      metrics.boolean.extension_used_feature_page_action_revoke_geopref,
+      metrics.boolean.extension_used_feature_settings_page
+    ) AS `boolean`,
+    STRUCT(
+      metrics.quantity.extension_count_excluded,
+      metrics.quantity.extension_count_geoprefed
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -77,7 +99,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.boolean.extension_has_completed_onboarding,
+      metrics.boolean.extension_used_feature_disable_firefox_protection,
+      metrics.boolean.extension_used_feature_page_action_revoke_exclude,
+      metrics.boolean.extension_used_feature_page_action_revoke_geopref,
+      metrics.boolean.extension_used_feature_settings_page
+    ) AS `boolean`,
+    STRUCT(
+      metrics.quantity.extension_count_excluded,
+      metrics.quantity.extension_count_geoprefed
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -107,7 +140,18 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(
+      metrics.boolean.extension_has_completed_onboarding,
+      metrics.boolean.extension_used_feature_disable_firefox_protection,
+      metrics.boolean.extension_used_feature_page_action_revoke_exclude,
+      metrics.boolean.extension_used_feature_page_action_revoke_geopref,
+      metrics.boolean.extension_used_feature_settings_page
+    ) AS `boolean`,
+    STRUCT(
+      metrics.quantity.extension_count_excluded,
+      metrics.quantity.extension_count_geoprefed
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

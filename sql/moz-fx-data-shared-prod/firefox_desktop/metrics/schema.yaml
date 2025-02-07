@@ -10028,7 +10028,8 @@ fields:
     - name: sidebar_display_settings
       type: STRING
       mode: NULLABLE
-      description: 'Setting for sidebar display (either "always" or "hide").
+      description: 'Setting for sidebar display (either "always", "expand-on-hover",
+        or "hide").
 
         '
     - name: sidebar_position_settings

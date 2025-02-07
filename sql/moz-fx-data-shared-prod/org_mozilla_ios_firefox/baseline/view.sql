@@ -12,6 +12,10 @@ SELECT
         metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
           STRUCT(
             mozfun.glean.parse_datetime(
+              metrics.datetime.app_last_opened_as_default_browser
+            ) AS app_last_opened_as_default_browser,
+            metrics.datetime.app_last_opened_as_default_browser AS raw_app_last_opened_as_default_browser,
+            mozfun.glean.parse_datetime(
               metrics.datetime.glean_validation_first_run_hour
             ) AS glean_validation_first_run_hour,
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour

@@ -110,7 +110,6 @@ fields:
 - name: days_desktop_active_bits
   type: INTEGER
   mode: NULLABLE
-  description: This represents the official definition of "active user" for desktop
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE

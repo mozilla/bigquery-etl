@@ -5,9 +5,6 @@ owners:
   - ctroy@mozilla.com
   - aplacitelli@mozilla.com
   - aaggarwal@mozilla.com
-external_data:
-  format: google_sheets
-  source_uris:
-    - https://docs.google.com/spreadsheets/d/1E0kDpHwwtDnkMxAXbeEIzMTajckSHWJ2swF39JdRR1g # URL to the spreadsheet
-  options:
-    skip_leading_rows: 1 # number of rows that should be skipped, e.g if there are header rows
+scheduling:
+  dag_name: bqetl_monitoring
+  date_partition_parameter: null

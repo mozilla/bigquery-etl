@@ -1,0 +1,10 @@
+friendly_name: Device Manufacturer Partnerships
+description: |-
+  Device manufacturer partnerships tracking.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

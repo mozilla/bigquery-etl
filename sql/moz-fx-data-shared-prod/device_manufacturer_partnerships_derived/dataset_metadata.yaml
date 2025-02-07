@@ -1,0 +1,10 @@
+friendly_name: Device Manufacturer Partnerships
+description: |-
+  Device Manufacturer Partnerships namespace used to materialize Google Sheet connections.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:accounts-confidential

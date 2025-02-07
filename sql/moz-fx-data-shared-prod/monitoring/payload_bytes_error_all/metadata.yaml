@@ -7,7 +7,8 @@ description: |-
 
   Clustering fields: `submission_timestamp`
 owners: []
-labels: {}
+labels:
+  authorized: true
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
@@ -15,6 +16,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
+  - moz-fx-data-shared-prod.payload_bytes_error.structured
   - moz-fx-data-shared-prod.payload_bytes_error.stub_installer
   - moz-fx-data-shared-prod.payload_bytes_error.telemetry

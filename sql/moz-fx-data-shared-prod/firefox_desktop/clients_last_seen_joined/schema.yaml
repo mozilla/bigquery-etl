@@ -134,3 +134,6 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+- name: days_since_desktop_active
+  type: INTEGER
+  mode: NULLABLE

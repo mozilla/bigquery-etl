@@ -1,4 +1,7 @@
 fields:
+- name: days_since_desktop_active
+  type: INTEGER
+  mode: NULLABLE
 - name: days_since_seen
   type: INTEGER
   mode: NULLABLE
@@ -110,6 +113,7 @@ fields:
 - name: days_desktop_active_bits
   type: INTEGER
   mode: NULLABLE
+  description: This represents the official definition of "active user" for desktop
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE

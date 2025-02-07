@@ -18,16 +18,25 @@ fields:
 - name: valentines_day
   type: INTEGER
   mode: NULLABLE
+- name: us_presidents_day
+  type: INTEGER
+  mode: NULLABLE
 - name: in_holi
   type: INTEGER
   mode: NULLABLE
 - name: eid_al_fitr
   type: INTEGER
   mode: NULLABLE
+- name: good_friday
+  type: INTEGER
+  mode: NULLABLE
 - name: easter_day
   type: INTEGER
   mode: NULLABLE
 - name: easter_monday
+  type: INTEGER
+  mode: NULLABLE
+- name: au_anzac_day
   type: INTEGER
   mode: NULLABLE
 - name: fr_may_day

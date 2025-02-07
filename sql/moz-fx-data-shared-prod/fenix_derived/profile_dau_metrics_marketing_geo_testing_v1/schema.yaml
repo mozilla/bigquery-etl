@@ -46,6 +46,12 @@ fields:
   description: |
     On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".
 
+- name: is_mobile
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |
+    Indicates if this specific entry is used towards calculating mobile DAU.
+
 - name: install_source
   type: STRING
   mode: NULLABLE

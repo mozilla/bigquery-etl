@@ -35,6 +35,11 @@ fields:
   mode: NULLABLE
   description: Client's geo subdivision on the submission_date.
 
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Client's locale on the submission_date.
+
 - name: os
   type: STRING
   mode: NULLABLE
@@ -57,8 +62,8 @@ fields:
     On Apple devices allows us to differentiate between iPhone and iPad. On Android devices the value is always "Android".
 
 - name: is_mobile
-  type: STRING
-  mode: BOOLEAN
+  type: BOOLEAN
+  mode: NULLABLE
   description: |
     Indicates if this specific entry is used towards calculating mobile DAU.
 

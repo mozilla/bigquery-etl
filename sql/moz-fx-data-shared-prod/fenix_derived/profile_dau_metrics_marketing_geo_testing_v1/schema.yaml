@@ -35,6 +35,11 @@ fields:
   mode: NULLABLE
   description: Client's geo subdivision on the submission_date.
 
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Client's locale on the submission_date.
+
 - name: os
   type: STRING
   mode: NULLABLE

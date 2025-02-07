@@ -9,8 +9,7 @@ from google.cloud import storage
 
 # Set variables
 countries = ['AUS', 'CAN', 'CHE', 'DEU', 'ESP', 'FRA', 'GBR', 'ITA', 'JPN', 'POL', 'USA']
-LOOKBACK_YEARS = 7
-WAIT_TIME_SECONDS = 30
+LOOKBACK_YEARS = 5
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.gdp_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
@@ -18,7 +17,7 @@ GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_GDP/imf_gdp_data_%s.csv"
 
 # Define function to pull CPI data
-def pull_yearly_gdp_data_from_imf(country, start_year, end_year):
+def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
     """
     Inputs:
       A country code - ISO 3 letter
@@ -29,13 +28,14 @@ def pull_yearly_gdp_data_from_imf(country, start_year, end_year):
     """
 
     base_url = "http://api.worldbank.org/v2/country"
+    end_url = f"/{country_query}/indicator/NY.GDP.MKTP.CD?format=json&date={start_year}:{end_year}&per_page=10000"
 
-    api_url = base_url + f"??{country_query}"
+    api_url = base_url + end_url
 
     response = requests.get(api_url, timeout=10)
     gdp_data = response.json()
 
-    #TEMP - preview data
+
     print('gdp_data')
     print(gdp_data)
     #TEMP - preview data
@@ -43,8 +43,27 @@ def pull_yearly_gdp_data_from_imf(country, start_year, end_year):
 
 
 if __name__ == "__main__":
-    for country in countries: 
-        pull_yearly_gdp_data_from_imf(country, start_yr,end_yr)
+    #Create the country query
+    country_query = ";".join(countries)
+
+    #Get current date
+    today = datetime.today()
+    curr_date = today.strftime("%Y-%m-%d")
+    print("curr_date")
+    print(curr_date)
+
+    #Calculate start year
+    start_year_stg = today - timedelta(days=LOOKBACK_YEARS * 365)
+    start_year = start_year_stg.replace(day=1).strftime("%Y-%m")
+    print("start_year: ", start_year)
+
+    #Calculate end year as the prior year
+    end_year = int(today.strftime("%Y")) - 1
+    print('end_year')
+    print(end_year)
+
+    #Pull the data
+    pull_yearly_gdp_data_from_imf(country_query,  start_year, end_year)
 
 
 

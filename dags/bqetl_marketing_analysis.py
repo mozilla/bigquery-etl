@@ -320,6 +320,17 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1 = bigquery_etl_query(
+        task_id="fenix_derived__profile_dau_metrics_marketing_geo_testing__v1",
+        destination_table="profile_dau_metrics_marketing_geo_testing_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "shong@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1",
         destination_table='new_profile_metrics_marketing_geo_testing_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -331,6 +342,17 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1",
+        destination_table="profile_dau_metrics_marketing_geo_testing_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "shong@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     fenix_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
@@ -381,6 +403,30 @@ with DAG(
         wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__fenix_derived__attribution_clients__v1
+    )
+
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    fenix_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
     firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
         wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
     )
@@ -410,5 +456,21 @@ with DAG(
     )
 
     firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
+    )
+
+    firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__profile_dau_metrics_marketing_geo_testing__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )

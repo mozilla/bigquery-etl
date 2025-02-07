@@ -64,8 +64,8 @@ def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
                               'gdp_country_code': [gdp_country_code_2_letter],
                               'gdp_country_name': [gdp_country_name],
                               'gdp_country_code_iso3': [gdp_country_code_3_letter],
-                              'Year': [gdp_year],
-                              'Value': [gdp_value]})
+                              'gdp_year': [gdp_year],
+                              'gdp_value': [gdp_value]})
 
 
         results_df = pd.concat([results_df, entry_df])

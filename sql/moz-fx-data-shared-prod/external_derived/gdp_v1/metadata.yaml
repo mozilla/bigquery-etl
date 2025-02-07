@@ -13,5 +13,5 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    - country
+    - gdp_country_code
 references: {}

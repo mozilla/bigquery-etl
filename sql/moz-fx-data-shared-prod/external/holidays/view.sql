@@ -128,6 +128,7 @@ SELECT
     1,
     0
   ) AS easter_monday,
+  IF(calendar_month = 4 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS au_anzac_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 8, 1, 0) AS fr_victory_day,
   IF(

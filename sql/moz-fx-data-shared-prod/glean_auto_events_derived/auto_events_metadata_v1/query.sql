@@ -5,7 +5,7 @@ WITH events AS (
     JSON_VALUE(event_extra.id) AS element_id,
     COUNT(*) AS count
   FROM
-    moz - fx - data - shared - prod.accounts_frontend.events_stream AS e
+    `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS e
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND event_category = 'glean'

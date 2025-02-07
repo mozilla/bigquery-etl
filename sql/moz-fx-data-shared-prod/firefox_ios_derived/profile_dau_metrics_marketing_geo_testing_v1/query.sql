@@ -17,7 +17,7 @@ SELECT
   profile_attribution.adjust_campaign,
   profile_attribution.adjust_creative,
   profile_attribution.adjust_network,
-  COUNTIF(is_dau) AS dau,
+  COUNT(*) AS dau,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.active_users` AS active_users
 LEFT JOIN
@@ -25,6 +25,7 @@ LEFT JOIN
   USING (client_id)
 WHERE
   active_users.submission_date = @submission_date
+  AND is_dau
 GROUP BY
   submission_date,
   normalized_channel,

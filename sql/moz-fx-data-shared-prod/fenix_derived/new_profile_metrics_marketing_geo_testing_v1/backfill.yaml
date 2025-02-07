@@ -1,6 +1,6 @@
-2025-02-06:
+2025-02-05:
   start_date: 2021-01-01
-  end_date: 2025-02-06
+  end_date: 2025-02-05
   reason: Initial backfill for the table
   watchers:
   - kik@mozilla.com

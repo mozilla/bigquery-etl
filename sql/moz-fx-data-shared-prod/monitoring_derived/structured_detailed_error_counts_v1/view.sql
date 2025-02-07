@@ -15,9 +15,10 @@ WITH error_examples AS (
     CAST(NULL AS STRING) AS sample_payload,
     COUNT(*) AS error_count
   FROM
-    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
     submission_timestamp >= TIMESTAMP_SUB(current_timestamp, INTERVAL(28 * 24) HOUR)
+    AND pipeline_family = 'structured'
   GROUP BY
     hour,
     document_namespace,

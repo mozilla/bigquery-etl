@@ -58,9 +58,10 @@ WITH errors AS (
     error_type,
     COUNT(*) AS error_count
   FROM
-    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured`
+    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
   WHERE
     DATE(submission_timestamp) = @submission_date
+    AND pipeline_family = 'structured'
   GROUP BY
     submission_date,
     document_namespace,

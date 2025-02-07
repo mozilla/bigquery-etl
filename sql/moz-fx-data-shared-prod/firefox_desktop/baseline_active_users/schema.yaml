@@ -1,7 +1,4 @@
 fields:
-- name: days_since_desktop_active
-  type: INTEGER
-  mode: NULLABLE
 - name: days_since_seen
   type: INTEGER
   mode: NULLABLE
@@ -127,5 +124,44 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+- name: activity_segment
+  type: STRING
+  mode: NULLABLE
+- name: segment_dau
+  type: STRING
+  mode: NULLABLE
+- name: is_dau_duration
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_wau_duration
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mau_duration
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_daily_user
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_weekly_user
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_monthly_user
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_included_kpi
   type: BOOLEAN
   mode: NULLABLE

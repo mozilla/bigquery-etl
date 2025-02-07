@@ -3,6 +3,9 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`
 AS
 SELECT
+  `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(
+    days_desktop_active_bits
+  ) AS days_since_desktop_active,
   `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(days_seen_bits) AS days_since_seen,
   `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(days_active_bits) AS days_since_active,
   `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(

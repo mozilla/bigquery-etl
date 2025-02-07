@@ -6,7 +6,7 @@ from google.cloud import bigquery
 from google.cloud import storage
 
 # Set variables
-countries = ['AUS', 'CAN'] # , 'CHE', 'DEU', 'ESP', 'FRA', 'GBR', 'ITA', 'JPN', 'POL', 'USA']
+countries = ['AUS', 'CAN', 'CHE', 'DEU', 'ESP', 'FRA', 'GBR', 'ITA', 'JPN', 'POL', 'USA']
 LOOKBACK_YEARS = 5
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.gdp_v1"
@@ -97,13 +97,16 @@ if __name__ == "__main__":
     #Pull the data
     gdp=pull_yearly_gdp_data_from_imf(country_query,  start_year, end_year)
 
+    # Add a column with the current date
+    gdp["last_updated"] = curr_date
+    
     print('gdp')
     print(gdp)
 
-    # Add a column with the current date
-    gdp["last_updated"] = curr_date
 
-    ##Load to GCS
-
+    # Write the final results_df to GCS bucket
+    final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (curr_date)
+    print("final_results_fpath: ", final_results_fpath)
+    gdp.to_csv(final_results_fpath, index=False)
 
     #Load to BQ  - write/truncate

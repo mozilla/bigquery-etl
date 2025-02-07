@@ -40,6 +40,22 @@ SELECT
   IF(calendar_month = 2 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS valentines_day,
   IF(
     submission_date IN (
+      '2020-02-17',
+      '2021-02-15',
+      '2022-02-21',
+      '2023-02-20',
+      '2024-02-19',
+      '2025-02-17',
+      '2026-02-16',
+      '2027-02-15',
+      '2028-02-21',
+      '2029-02-19'
+    ),
+    1,
+    0
+  ) AS us_presidents_day,
+  IF(
+    submission_date IN (
       '2020-03-10',
       '2021-03-29',
       '2022-03-18',

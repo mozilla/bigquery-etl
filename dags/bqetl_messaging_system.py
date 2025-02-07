@@ -70,9 +70,9 @@ with DAG(
         destination_table="onboarding_v2",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
+        owner="kwindau@mozilla.com",
         email=[
-            "gleonard@mozilla.com",
+            "kwindau@mozilla.com",
             "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
@@ -99,9 +99,9 @@ with DAG(
         destination_table="snippets_v2",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="gleonard@mozilla.com",
+        owner="kwindau@mozilla.com",
         email=[
-            "gleonard@mozilla.com",
+            "kwindau@mozilla.com",
             "najiang@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

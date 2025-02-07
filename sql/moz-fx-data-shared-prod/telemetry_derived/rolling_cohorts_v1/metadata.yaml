@@ -13,6 +13,7 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
+  table_type: client_level
   dag: bqetl_unified
   owner1: mhirose
 scheduling:
@@ -23,7 +24,7 @@ bigquery:
     type: day
     field: cohort_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

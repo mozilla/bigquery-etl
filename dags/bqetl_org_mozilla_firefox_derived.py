@@ -363,8 +363,12 @@ with DAG(
         destination_table="clients_yearly_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="frank@mozilla.com",
-        email=["frank@mozilla.com", "telemetry-alerts@mozilla.com"],
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
         date_partition_parameter="submission_date",
         depends_on_past=True,
     )

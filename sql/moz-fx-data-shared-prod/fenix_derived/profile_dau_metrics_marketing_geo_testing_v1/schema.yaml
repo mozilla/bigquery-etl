@@ -40,21 +40,6 @@ fields:
   mode: NULLABLE
   description: Client's locale on the submission_date.
 
-- name: os
-  type: STRING
-  mode: NULLABLE
-  description: Client's os used on the submission_date.
-
-- name: os_version
-  type: STRING
-  mode: NULLABLE
-  description: Client's os version used on the submission_date.
-
-- name: device_manufacturer
-  type: STRING
-  mode: NULLABLE
-  description: Client's device manufacturer used on the submission_date.
-
 - name: device_type
   type: STRING
   mode: NULLABLE

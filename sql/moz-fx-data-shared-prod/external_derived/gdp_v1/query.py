@@ -110,4 +110,28 @@ if __name__ == "__main__":
     print("final_results_fpath: ", final_results_fpath)
     gdp.to_csv(final_results_fpath, index=False)
 
+
     #Load to BQ  - write/truncate
+    client = bigquery.Client(TARGET_PROJECT)
+    load_csv_to_inflation_v1_job = client.load_table_from_uri(
+        final_results_fpath,
+        TARGET_TABLE,
+        job_config=bigquery.LoadJobConfig(
+            create_disposition="CREATE_NEVER",
+            write_disposition="WRITE_TRUNCATE",
+            schema=[
+                {"name": "gdp_type", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "gdp_unit_of_measurement", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "gdp_country_code", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "gdp_country_name", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "gdp_country_code_iso3", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "gdp_year", "type": "INTEGER", "mode": "NULLABLE"},
+                {"name": "gdp_value", "type": "BIGNUMERIC", "mode": "NULLABLE"},
+                {"name": "last_updated", "type": "DATE", "mode": "NULLABLE"}
+            ],
+            skip_leading_rows=1,
+            source_format=bigquery.SourceFormat.CSV,
+        ),
+    )
+
+    load_csv_to_inflation_v1_job.result()

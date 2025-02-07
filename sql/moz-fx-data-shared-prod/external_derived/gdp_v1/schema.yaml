@@ -24,7 +24,7 @@ fields:
   mode: NULLABLE
   description: GDP Year
 - name: gdp_value
-  type: INTEGER
+  type: BIGNUMERIC
   mode: NULLABLE
   description: GDP Value
 - name: last_updated

@@ -1,0 +1,21 @@
+friendly_name: Population Data
+description: |-
+  Population data pulled from United Nations API
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_un_population_data
+bigquery:
+  time_partitioning:
+    type: day
+    field: ''
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}

@@ -1,1 +1,17 @@
 fields:
+- name: report_period
+  type: STRING
+  mode: NULLABLE
+  description: Report Period
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: population
+  type: BIGNUMERIC
+  mode: NULLABLE
+  description: Population
+- name: last_updated
+  type: DATE
+  mode: NULLABLE
+  description: Last Updated Date

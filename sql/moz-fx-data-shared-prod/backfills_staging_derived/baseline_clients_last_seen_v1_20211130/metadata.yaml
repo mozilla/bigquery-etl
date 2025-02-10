@@ -1,0 +1,50 @@
+friendly_name: Baseline Clients Last Seen
+description: |-
+  Captures activity history of each client in 28-day
+  windows for each submission date based on baseline pings.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+
+  See also: `baseline_clients_daily`
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner1: ascholtz
+scheduling:
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+schema:
+  derived_from:
+  - table:
+    - moz-fx-data-shared-prod
+    - firefox_desktop_derived
+    - baseline_clients_daily_v1
+    exclude: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataops-managed/backfill
+references:
+  query.sql:
+  - firefox_desktop_derived.baseline_clients_daily_v1
+  - firefox_desktop_derived.baseline_clients_last_seen_v1
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: true

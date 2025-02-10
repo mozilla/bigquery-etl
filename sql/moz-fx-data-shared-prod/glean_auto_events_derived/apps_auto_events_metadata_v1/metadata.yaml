@@ -12,11 +12,10 @@ scheduling:
   dag_name: bqetl_glean_dictionary
   depends_on_past: false
   depends_on:
-    - task_id: daily_auto_events_metadata_v1
-      dag_name: bqetl_glean_dictionary
+  - task_id: daily_auto_events_metadata_v1
+    dag_name: bqetl_glean_dictionary
 bigquery:
   clustering:
     fields:
     - app
     - name
-

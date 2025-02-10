@@ -4,12 +4,12 @@ SELECT
   au.first_seen_date AS cohort_date,
   au.activity_segment,
   au.app_version,
-  CAST(NULL AS string) AS attribution_campaign, --FIX
-  CAST(NULL AS string) AS attribution_content, --FIX
-  CAST(NULL AS string) AS attribution_experiment, --FIX
+  cls.attribution.campaign AS attribution_campaign,
+  cls.attribution.content AS attribution_content,
+  cls.attribution.experiment AS attribution_experiment,
   au.attribution_medium,
   au.attribution_source,
-  CAST(NULL AS string) AS attribution_variation, --FIX
+  cls.attribution.variation AS attribution_variation,
   au.city,
   au.country,
   ccls.device AS device_model,
@@ -34,6 +34,10 @@ LEFT JOIN
   `moz-fx-data-shared-prod.telemetry.core_clients_last_seen` ccls
   ON au.client_id = ccls.client_id
   AND au.submission_date = ccls.submission_date
+LEFT JOIN
+  `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
+  ON au.client_id = cls.client_id
+  AND au.submission_date = cls.submission_date
 WHERE
   au.first_seen_date = @submission_date
   AND au.submission_date = @submission_date

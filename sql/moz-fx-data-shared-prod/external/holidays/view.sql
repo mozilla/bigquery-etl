@@ -165,6 +165,7 @@ SELECT
   ) AS us_memorial_day,
   IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
   IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
+  IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,
   IF(
     submission_date IN (
       '2020-09-07',
@@ -181,6 +182,7 @@ SELECT
     1,
     0
   ) AS us_labor_day,
+  IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS br_independence_day,
   IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
   IF(
     submission_date IN (

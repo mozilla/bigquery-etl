@@ -23,10 +23,10 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
-    - normalized_channel
-    - sample_id
+      - normalized_channel
+      - sample_id
 monitoring:
   enabled: true
 schema:
   derived_from:
-  - table: ['moz-fx-data-shared-prod', 'firefox_desktop_derived', 'baseline_clients_daily_v1']
+    - table: [ 'moz-fx-data-shared-prod', 'firefox_desktop_derived', 'baseline_clients_daily_v1' ]

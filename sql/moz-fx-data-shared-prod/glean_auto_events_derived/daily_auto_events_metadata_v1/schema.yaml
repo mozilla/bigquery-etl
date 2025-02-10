@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: app
+  type: STRING
+  mode: NULLABLE
+- name: name
+  type: STRING
+  mode: NULLABLE
+- name: count
+  type: INTEGER
+  mode: NULLABLE

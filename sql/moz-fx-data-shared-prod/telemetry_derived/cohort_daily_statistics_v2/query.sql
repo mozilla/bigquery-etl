@@ -5,7 +5,7 @@ WITH submission_date_activity AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users`
   WHERE
-    submission_date = @activity_date
+    submission_date = @submission_date
     AND is_dau IS TRUE
   GROUP BY
     client_id,
@@ -16,7 +16,7 @@ cohorts_in_range AS (
   SELECT
     client_id,
     cohort_date,
-    DATE(@activity_date) AS activity_date,
+    DATE(@submission_date) AS activity_date,
     activity_segment,
     app_version,
     attribution_campaign,
@@ -50,8 +50,8 @@ cohorts_in_range AS (
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
     cohort_date
-    BETWEEN DATE_SUB(@activity_date, INTERVAL 180 DAY)
-    AND DATE_SUB(@activity_date, INTERVAL 1 DAY)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 180 DAY)
+    AND DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- (1) No need to get activity for the cohort created on activity_date - everyone will be retained
     -- (2) Note this is a pretty big scan... Look here for problems
 ),
@@ -127,7 +127,7 @@ GROUP BY
   os_version_minor,
   adjust_ad_group,
   adjust_campaign,
-  mnpc.adjust_creative,
+  adjust_creative,
   adjust_network,
   play_store_attribution_campaign,
   play_store_attribution_medium,

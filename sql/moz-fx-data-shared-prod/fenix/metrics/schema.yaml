@@ -8568,6 +8568,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: web_notification_icon_url_encoding
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

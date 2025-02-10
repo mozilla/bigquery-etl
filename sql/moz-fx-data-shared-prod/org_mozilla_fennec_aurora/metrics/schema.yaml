@@ -9086,7 +9086,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -13178,6 +13179,19 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram MEDIA_SNIFFER_MP4_BRAND_PATTERN.
+
+        '
+    - name: web_notification_icon_url_encoding
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The encoding of the notification icon URL
 
         '
   - name: quantity

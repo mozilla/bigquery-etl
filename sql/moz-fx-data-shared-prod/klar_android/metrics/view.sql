@@ -475,7 +475,8 @@ SELECT
       metrics.labeled_counter.network_race_cache_validation,
       metrics.labeled_counter.network_race_cache_with_network_usage,
       metrics.labeled_counter.ssl_resumed_session,
-      metrics.labeled_counter.media_sniffer_mp4_brand_pattern
+      metrics.labeled_counter.media_sniffer_mp4_brand_pattern,
+      metrics.labeled_counter.web_notification_icon_url_encoding
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

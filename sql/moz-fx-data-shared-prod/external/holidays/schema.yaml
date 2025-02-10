@@ -27,13 +27,25 @@ fields:
 - name: eid_al_fitr
   type: INTEGER
   mode: NULLABLE
-- name: good_friday
+- name: good_friday_eastern
   type: INTEGER
   mode: NULLABLE
-- name: easter_day
+- name: easter_day_eastern
   type: INTEGER
   mode: NULLABLE
-- name: easter_monday
+- name: easter_monday_eastern
+  type: INTEGER
+  mode: NULLABLE
+- name: good_friday_western
+  type: INTEGER
+  mode: NULLABLE
+- name: easter_day_western
+  type: INTEGER
+  mode: NULLABLE
+- name: easter_monday_western
+  type: INTEGER
+  mode: NULLABLE
+- name: br_tiradentes_day
   type: INTEGER
   mode: NULLABLE
 - name: au_anzac_day
@@ -48,13 +60,25 @@ fields:
 - name: us_memorial_day
   type: INTEGER
   mode: NULLABLE
+- name: whit_monday
+  type: INTEGER
+  mode: NULLABLE
+- name: eid_al_adha
+  type: INTEGER
+  mode: NULLABLE
 - name: us_juneteenth
   type: INTEGER
   mode: NULLABLE
 - name: us_independence_day
   type: INTEGER
   mode: NULLABLE
+- name: fr_national_day
+  type: INTEGER
+  mode: NULLABLE
 - name: us_labor_day
+  type: INTEGER
+  mode: NULLABLE
+- name: br_independence_day
   type: INTEGER
   mode: NULLABLE
 - name: mx_independence_day
@@ -79,6 +103,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: in_diwali
+  type: INTEGER
+  mode: NULLABLE
+- name: us_veterans_day
   type: INTEGER
   mode: NULLABLE
 - name: mx_revolution_day

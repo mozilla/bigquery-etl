@@ -12154,6 +12154,19 @@ fields:
         histogram MEDIA_SNIFFER_MP4_BRAND_PATTERN.
 
         '
+    - name: web_notification_icon_url_encoding
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The encoding of the notification icon URL
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

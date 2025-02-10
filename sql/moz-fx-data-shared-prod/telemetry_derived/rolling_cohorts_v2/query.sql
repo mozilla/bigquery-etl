@@ -54,9 +54,9 @@ SELECT
   au.country,
   au.device_model,
   au.distribution_id,
-  CAST(NULL AS BOOLEAN) AS is_default_browser,
+  dflt_brwsr.is_default_browser,
   au.locale,
-  CAST(NULL AS STRING) AS normalized_app_name,--FIX
+  app_name AS normalized_app_name, --do I need to do anything to "normalize" ?
   au.normalized_channel,
   au.normalized_os,
   au.normalized_os_version,
@@ -70,6 +70,74 @@ SELECT
   ) AS os_version_minor,
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_active_users` au
+LEFT OUTER JOIN
+--need to check this below still, not correct yet
+  (
+    SELECT
+      submission_date,
+      client_id,
+      is_default_browser,
+      'Focus iOS' AS normalized_app_name
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.baseline_clients_last_seen_v1`
+    WHERE
+      submission_date = @submission_date
+    UNION ALL
+    SELECT
+      submission_date,
+      client_id,
+      is_default_browser,
+      'Fenix' AS normalized_app_name
+    FROM
+      `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
+    WHERE
+      submission_date = @submission_date
+    UNION ALL
+    SELECT
+      submission_date,
+      client_id,
+      is_default_browser,
+      'Firefox iOS' AS normalized_app_name
+    FROM
+      `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
+    WHERE
+      submission_date = @submission_date
+    UNION ALL
+    SELECT
+      submission_date,
+      client_id,
+      is_default_browser,
+      'Focus Android Glean' AS normalized_app_name
+    FROM
+      `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
+    WHERE
+      submission_date = @submission_date
+    UNION ALL
+    SELECT
+      submission_date,
+      client_id,
+      default_browser AS is_default_browser,
+      'Focus Android' AS normalized_app_name
+    FROM
+      `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
+    WHERE
+      submission_date = @submission_date
+      AND app_name = 'Focus'
+      AND os = 'Android'
+    UNION ALL
+    SELECT
+      submission_date,
+      client_id,
+      is_default_browser,
+      'Klar iOS' AS normalized_app_name
+    FROM
+      `moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined`
+    WHERE
+      submission_date = @submission_date
+  ) dflt_brwsr
+  ON au.client_id = dflt_brwsr.client_id
+  AND au.submission_date = dflt_brwsr.submission_date
+  AND au.app_name = dflt_brwsr.normalized_app_name --need to check this still
 WHERE
   au.first_seen_date = @submission_date
   AND au.submission_date = @submission_date

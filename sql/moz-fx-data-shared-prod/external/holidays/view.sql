@@ -290,6 +290,7 @@ SELECT
     1,
     0
   ) AS in_diwali,
+  IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 11, 1, 0) AS us_veterans_day,
   IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
   IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,

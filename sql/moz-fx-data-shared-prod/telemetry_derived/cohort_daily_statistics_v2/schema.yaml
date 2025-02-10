@@ -87,6 +87,42 @@ fields:
   name: os_version_minor
   type: INTEGER
   description: Operating System Minor Version
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Ad Group - Available for Mobile Only
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Campaign - Available for Mobile Only
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Creative - Available for Mobile Only
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network - Available for Mobile Only
+- name: play_store_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Campaign - Available for Mobile Only
+- name: play_store_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Medium - Available for Mobile Only
+- name: play_store_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Source - Available for Mobile Only
+- name: play_store_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Content - Available for Mobile Only
+- name: play_store_attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Term - Available for Mobile Only
 - mode: NULLABLE
   name: num_clients_in_cohort
   type: INTEGER

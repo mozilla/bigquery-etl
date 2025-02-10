@@ -98,6 +98,54 @@ SELECT
   ) AS eid_al_fitr,
   IF(
     submission_date IN (
+      '2020-04-17',
+      '2021-04-30',
+      '2022-04-22',
+      '2023-04-14',
+      '2024-05-03',
+      '2025-04-18',
+      '2026-04-10',
+      '2027-04-30',
+      '2028-04-14',
+      '2029-04-06'
+    ),
+    1,
+    0
+  ) AS good_friday_eastern,
+  IF(
+    submission_date IN (
+      '2020-04-19',
+      '2021-05-02',
+      '2022-04-24',
+      '2023-04-16',
+      '2024-05-05',
+      '2025-04-20',
+      '2026-04-12',
+      '2027-05-02',
+      '2028-04-16',
+      '2029-04-08'
+    ),
+    1,
+    0
+  ) AS easter_day_eastern,
+  IF(
+    submission_date IN (
+      '2020-04-20',
+      '2021-05-03',
+      '2022-04-25',
+      '2023-04-17',
+      '2024-05-06',
+      '2025-04-21',
+      '2026-04-13',
+      '2027-05-03',
+      '2028-04-17',
+      '2029-04-09'
+    ),
+    1,
+    0
+  ) AS easter_monday_eastern,
+  IF(
+    submission_date IN (
       '2020-04-10',
       '2021-04-02',
       '2022-04-15',
@@ -111,7 +159,7 @@ SELECT
     ),
     1,
     0
-  ) AS good_friday,
+  ) AS good_friday_western,
   IF(
     submission_date IN (
       '2020-04-12',
@@ -127,7 +175,7 @@ SELECT
     ),
     1,
     0
-  ) AS easter_day,
+  ) AS easter_day_western,
   IF(
     submission_date IN (
       '2020-04-13',
@@ -143,7 +191,8 @@ SELECT
     ),
     1,
     0
-  ) AS easter_monday,
+  ) AS easter_monday_western,
+  IF(calendar_month = 4 AND EXTRACT(day FROM submission_date) = 21, 1, 0) AS br_tiradentes_day,
   IF(calendar_month = 4 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS au_anzac_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 8, 1, 0) AS fr_victory_day,
@@ -163,8 +212,51 @@ SELECT
     1,
     0
   ) AS us_memorial_day,
+  IF(
+    submission_date IN (
+      '2020-06-01',
+      '2021-05-24',
+      '2022-06-06',
+      '2023-05-29',
+      '2024-05-20',
+      '2025-06-09',
+      '2026-05-25',
+      '2027-05-17',
+      '2028-06-05',
+      '2029-05-21'
+    ),
+    1,
+    0
+  ) AS whit_monday,
+  IF(
+    submission_date IN (
+      '2020-07-30',
+      '2020-07-31',
+      '2021-07-19',
+      '2021-07-20',
+      '2022-07-08',
+      '2022-07-09',
+      '2023-06-27',
+      '2023-06-28',
+      '2024-07-16',
+      '2024-07-17',
+      '2025-06-06',
+      '2025-06-07',
+      '2026-05-26',
+      '2026-05-27',
+      '2027-05-16',
+      '2027-05-17',
+      '2028-05-04',
+      '2028-05-05',
+      '2029-04-23',
+      '2029-04-24'
+    ),
+    1,
+    0
+  ) AS eid_al_adha,
   IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
   IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
+  IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,
   IF(
     submission_date IN (
       '2020-09-07',
@@ -181,6 +273,7 @@ SELECT
     1,
     0
   ) AS us_labor_day,
+  IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS br_independence_day,
   IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
   IF(
     submission_date IN (
@@ -288,6 +381,7 @@ SELECT
     1,
     0
   ) AS in_diwali,
+  IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 11, 1, 0) AS us_veterans_day,
   IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
   IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
   IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,

@@ -35,7 +35,10 @@ extracted AS (
     payload_bytes_error_all
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND exception_class = 'org.everit.json.schema.ValidationException'
+    AND exception_class IN (
+      'org.everit.json.schema.ValidationException',
+      'com.mozilla.telemetry.decoder.ParseUri$UnexpectedPathElementsException'  -- stub_installer error
+    )
 ),
 count_errors AS (
   SELECT
@@ -48,11 +51,17 @@ count_errors AS (
     CASE
       pipeline_family
       WHEN 'structured'
-        -- this only works for glean-schema pings but glean makes up nearly all structured telemetry
-        THEN JSON_VALUE(
-            `moz-fx-data-shared-prod.udf_js.gunzip`(payload),
-            '$.client_info.app_channel'
+        THEN COALESCE(
+            -- glean pings
+            JSON_VALUE(
+              `moz-fx-data-shared-prod.udf_js.gunzip`(payload),
+              '$.client_info.app_channel'
+            ),
+            -- firefox-installer
+            JSON_VALUE(`moz-fx-data-shared-prod.udf_js.gunzip`(payload), '$.update_channel')
           )
+      WHEN 'stub_installer'
+        THEN SPLIT(uri, "/")[SAFE_OFFSET(3)]
       ELSE `moz-fx-data-shared-prod.udf.parse_desktop_telemetry_uri`(uri).app_update_channel
     END AS channel,
     COUNT(*) AS error_count,
@@ -60,16 +69,29 @@ count_errors AS (
     -- removing path and exception_class for better readability
     SUBSTR(
       STRING_AGG(
-        DISTINCT REPLACE(
-          REPLACE(error_message, "org.everit.json.schema.ValidationException: ", ""),
-          CONCAT(`moz-fx-data-shared-prod.udf.extract_schema_validation_path`(error_message), ": "),
-          ""
-        ),
+        DISTINCT
+        CASE
+          pipeline_family
+          WHEN 'stub_installer'
+            THEN REPLACE(
+                error_message,
+                "com.mozilla.telemetry.decoder.ParseUri$UnexpectedPathElementsException: ",
+                ""
+              )
+          ELSE REPLACE(
+              REPLACE(error_message, "org.everit.json.schema.ValidationException: ", ""),
+              CONCAT(
+                `moz-fx-data-shared-prod.udf.extract_schema_validation_path`(error_message),
+                ": "
+              ),
+              ""
+            )
+        END,
         "; "
       ),
       0,
       300
-    ) AS sample_error_messages
+    ) AS sample_error_messages,
   FROM
     extracted
   GROUP BY

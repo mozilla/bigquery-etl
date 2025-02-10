@@ -1,4 +1,26 @@
-WITH extracted AS (
+WITH payload_bytes_error_all AS (
+  -- Direct access to payload_bytes_error is restricted to airflow
+  -- Use the tables in the errors dataset for testing
+  -- e.g. moz-fx-data-shared-prod.errors.structured_firefox_desktop__metrics_v1
+  SELECT
+    'structured' AS pipeline_family,
+    *
+  FROM
+    `moz-fx-data-shared-prod.payload_bytes_error.structured`
+  UNION ALL
+  SELECT
+    'stub_installer' AS pipeline_family,
+    * REPLACE (NULL AS payload)
+  FROM
+    `moz-fx-data-shared-prod.payload_bytes_error.stub_installer`
+  UNION ALL
+  SELECT
+    'telemetry' AS pipeline_family,
+    * REPLACE (NULL AS payload)
+  FROM
+    `moz-fx-data-shared-prod.payload_bytes_error.telemetry`
+),
+extracted AS (
   SELECT
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS hour,
     job_name,
@@ -6,9 +28,11 @@ WITH extracted AS (
     document_type,
     document_version,
     error_message,
-    uri
+    uri,
+    pipeline_family,
+    payload,
   FROM
-    `moz-fx-data-shared-prod.monitoring.payload_bytes_error_all`
+    payload_bytes_error_all
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND exception_class = 'org.everit.json.schema.ValidationException'
@@ -21,7 +45,16 @@ count_errors AS (
     hour,
     job_name,
     `moz-fx-data-shared-prod.udf.extract_schema_validation_path`(error_message) AS path,
-    `moz-fx-data-shared-prod.udf.parse_desktop_telemetry_uri`(uri).app_update_channel AS channel,
+    CASE
+      pipeline_family
+      WHEN 'structured'
+        -- this only works for glean-schema pings but glean makes up nearly all structured telemetry
+        THEN JSON_VALUE(
+            `moz-fx-data-shared-prod.udf_js.gunzip`(payload),
+            '$.client_info.app_channel'
+          )
+      ELSE `moz-fx-data-shared-prod.udf.parse_desktop_telemetry_uri`(uri).app_update_channel
+    END AS channel,
     COUNT(*) AS error_count,
     -- aggregating distinct error messages to show sample_error messages
     -- removing path and exception_class for better readability

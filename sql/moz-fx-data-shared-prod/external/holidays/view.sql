@@ -228,6 +228,32 @@ SELECT
     1,
     0
   ) AS whit_monday,
+  IF(
+    submission_date IN (
+      '2020-07-30',
+      '2020-07-31',
+      '2021-07-19',
+      '2021-07-20',
+      '2022-07-08',
+      '2022-07-09',
+      '2023-06-27',
+      '2023-06-28',
+      '2024-07-16',
+      '2024-07-17',
+      '2025-06-06',
+      '2025-06-07',
+      '2026-05-26',
+      '2026-05-27',
+      '2027-05-16',
+      '2027-05-17',
+      '2028-05-04',
+      '2028-05-05',
+      '2029-04-23',
+      '2029-04-24'
+    ),
+    1,
+    0
+  ) AS eid_al_adha,
   IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
   IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
   IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,

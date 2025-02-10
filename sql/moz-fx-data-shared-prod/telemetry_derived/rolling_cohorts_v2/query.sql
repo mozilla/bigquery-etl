@@ -58,8 +58,8 @@ SELECT
   au.locale,
   CAST(NULL AS STRING) AS normalized_app_name,--FIX
   au.normalized_channel,
-  CAST(NULL AS STRING) AS normalized_os, --FIX
-  CAST(NULL AS STRING) AS normalized_os_version, --FIX
+  au.normalized_os,
+  au.normalized_os_version,
   COALESCE(
     SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
     0

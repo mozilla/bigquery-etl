@@ -37,6 +37,15 @@ cohorts_in_range AS (
     normalized_os_version,
     os_version_major,
     os_version_minor,
+    adjust_ad_group,
+    adjust_campaign,
+    adjust_creative,
+    adjust_network,
+    play_store_attribution_campaign,
+    play_store_attribution_medium,
+    play_store_attribution_source,
+    play_store_attribution_content,
+    play_store_attribution_term,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE

@@ -20,8 +20,14 @@ SELECT
   au.normalized_channel,
   au.os AS normalized_os, --old one had it as normalized_os, do I need to add a transform of some kind to normalize?
   au.normalized_os_version,
-  CAST(NULL AS INTEGER) AS os_version_major, --FIX
-  CAST(NULL AS INTEGER) AS os_version_minor, --FIX
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+    0
+  ) AS os_version_major,
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+    0
+  ) AS os_version_minor,
 FROM
   `moz-fx-data-shared-prod.telemetry.desktop_active_users` au
 LEFT JOIN
@@ -54,8 +60,14 @@ SELECT
   au.normalized_channel,
   CAST(NULL AS STRING) AS normalized_os, --FIX
   CAST(NULL AS STRING) AS normalized_os_version, --FIX
-  CAST(NULL AS INTEGER) AS os_version_major, --FIX
-  CAST(NULL AS INTEGER) AS os_version_minor, --FIX
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
+    0
+  ) AS os_version_major,
+  COALESCE(
+    SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(1)], "") AS INTEGER),
+    0
+  ) AS os_version_minor,
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_active_users` au
 WHERE

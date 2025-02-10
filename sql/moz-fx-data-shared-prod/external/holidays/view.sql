@@ -212,6 +212,22 @@ SELECT
     1,
     0
   ) AS us_memorial_day,
+  IF(
+    submission_date IN (
+      '2020-06-01',
+      '2021-05-24',
+      '2022-06-06',
+      '2023-05-29',
+      '2024-05-20',
+      '2025-06-09',
+      '2026-05-25',
+      '2027-05-17',
+      '2028-06-05',
+      '2029-05-21'
+    ),
+    1,
+    0
+  ) AS whit_monday,
   IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
   IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
   IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,

@@ -111,7 +111,7 @@ SELECT
     ),
     1,
     0
-  ) AS good_friday,
+  ) AS good_friday_western,
   IF(
     submission_date IN (
       '2020-04-12',
@@ -127,7 +127,7 @@ SELECT
     ),
     1,
     0
-  ) AS easter_day,
+  ) AS easter_day_western,
   IF(
     submission_date IN (
       '2020-04-13',
@@ -143,7 +143,7 @@ SELECT
     ),
     1,
     0
-  ) AS easter_monday,
+  ) AS easter_monday_western,
   IF(calendar_month = 4 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS au_anzac_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
   IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 8, 1, 0) AS fr_victory_day,

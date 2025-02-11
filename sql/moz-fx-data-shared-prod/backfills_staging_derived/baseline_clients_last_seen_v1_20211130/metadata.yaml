@@ -41,8 +41,8 @@ workgroup_access:
   - workgroup:dataops-managed/backfill
 references:
   query.sql:
-  - firefox_desktop_derived.baseline_clients_daily_v1
-  - firefox_desktop_derived.baseline_clients_last_seen_v1
+  - moz-fx-data-shared-prod.backfills_staging_derived.baseline_clients_last_seen_v1_20211130
+  - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1
 monitoring:
   enabled: true
   collection: null

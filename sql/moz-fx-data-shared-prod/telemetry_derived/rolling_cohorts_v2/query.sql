@@ -4,7 +4,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      is_default_browser,
+      COALESCE(is_default_browser, FALSE) AS is_default_browser,
       'Focus iOS' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.focus_ios_derived.metrics_clients_last_seen_v1`
@@ -14,7 +14,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       a.submission_date,
       a.client_id,
-      a.is_default_browser,
+      COALESCE(a.is_default_browser, FALSE) AS is_default_browser,
       IF(b.isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.fenix.metrics_clients_last_seen` a
@@ -29,7 +29,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      is_default_browser,
+      COALESCE(is_default_browser, FALSE) AS is_default_browser,
       'Firefox iOS' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.firefox_ios.metrics_clients_last_seen`
@@ -39,7 +39,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      is_default_browser,
+      COALESCE(is_default_browser, FALSE) AS is_default_browser,
       'Focus Android Glean' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
@@ -49,7 +49,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      default_browser AS is_default_browser,
+      COALESCE(is_default_browser, FALSE) AS is_default_browser,
       'Focus Android' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
@@ -61,10 +61,10 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      is_default_browser,
+      COALESCE(is_default_browser, FALSE) AS is_default_browser,
       'Klar iOS' AS normalized_app_name
     FROM
-      `moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined`
+      `moz-fx-data-shared-prod.klar_ios.metrics_clients_last_seen`
     WHERE
       submission_date = @submission_date
   )

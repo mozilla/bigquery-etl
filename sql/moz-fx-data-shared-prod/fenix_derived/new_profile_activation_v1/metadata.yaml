@@ -11,7 +11,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields: [sample_id, country, adjust_network]
 scheduling:

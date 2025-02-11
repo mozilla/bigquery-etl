@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
+  table_type: client_level
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history
   depends_on_past: true

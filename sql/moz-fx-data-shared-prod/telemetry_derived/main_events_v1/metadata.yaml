@@ -5,12 +5,13 @@ owners:
 - data-platform-infra-wg@mozilla.com
 labels:
   owner1: data-platform-infra-wg
+  table_type: client_level
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   clustering:
     fields:
     - event_category

@@ -6,7 +6,6 @@ import os
 import re
 import tempfile
 from argparse import ArgumentParser
-from datetime import timedelta
 from time import sleep
 
 import requests
@@ -98,8 +97,8 @@ def microsoft_authorization(tenant_id, client_id, client_secret, resource_url):
 def download_microsoft_store_data(date, application_id, bearer_token):
     """Download data from Microsoft - application_id, bearer_token are called here."""
     # Need to delay the running of the job to ensure data is present.
-    start_date = date - timedelta(days=3)
-    end_date = date - timedelta(days=3)
+    start_date = date
+    end_date = date
     token = bearer_token
     app_id = application_id
     # getting overview metrics for different kpis / Deliverables
@@ -208,7 +207,7 @@ def main():
 
     # Cycle through the apps to get the relevant data
     for app in ms_app_list:
-        print(f'This is data for {app["app_name"]} - {app["app_id"]} ')
+        print(f'This is data for {app["app_name"]} - {app["app_id"]} for ', date)
         # Ping the microsoft_store URL and get a response
         json_file = download_microsoft_store_data(date, app["app_id"], bearer_token)
         # For some reason, the date returned from https://manage.devcenter.microsoft.com/v1.0/my/analytics/appchannelconversions? returns the date as null.
@@ -221,7 +220,7 @@ def main():
             microsoft_store_data = clean_json(query_export, date)
             data.extend(microsoft_store_data)
         else:
-            print("no data for today")
+            print("no data for ", date)
         sleep(5)
     upload_to_bigquery(data, project, dataset, table_name, date)
 

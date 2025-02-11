@@ -1,0 +1,10 @@
+friendly_name: Outerbounds Flow description spreadsheet
+description: >
+  The description of Outerbounds Flows
+owners:
+  - ctroy@mozilla.com
+  - aplacitelli@mozilla.com
+  - aaggarwal@mozilla.com
+scheduling:
+  dag_name: bqetl_monitoring
+  date_partition_parameter: null

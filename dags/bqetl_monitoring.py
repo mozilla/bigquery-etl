@@ -302,8 +302,8 @@ with DAG(
         destination_table="schema_error_counts_v2",
         dataset_id="monitoring_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="amiyaguchi@mozilla.com",
-        email=["amiyaguchi@mozilla.com", "ascholtz@mozilla.com", "kwindau@mozilla.com"],
+        owner="bewu@mozilla.com",
+        email=["ascholtz@mozilla.com", "bewu@mozilla.com", "kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

@@ -7,3 +7,5 @@ description: |-
   This view is useful for overall monitoring of pipeline errors.
 
   Clustering fields: `submission_timestamp`
+labels:
+  authorized: true

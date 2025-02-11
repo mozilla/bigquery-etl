@@ -2,47 +2,34 @@
 
 """Import VAT rates from Google Sheets."""
 
-import google.auth
-from google.cloud import bigquery
+from pathlib import Path
 
-# Use job config with external table definition
-external_config = bigquery.ExternalConfig("GOOGLE_SHEETS")
-external_config.source_uris = [
-    "https://docs.google.com/spreadsheets/d/1-eUbaYIuppfwoCyawKEfNVHRx_HJfn_VBOc7c2YYS48"
-]
-external_config.schema = [
-    bigquery.SchemaField("country_code", "STRING"),
-    bigquery.SchemaField("country", "STRING"),
-    bigquery.SchemaField("vat", "STRING"),
-    bigquery.SchemaField("effective_date", "DATE"),
-]
-external_config.options.skip_leading_rows = 2
-job_config = bigquery.QueryJobConfig(
-    table_definitions={"vat_rates_sheet": external_config}
+from bigquery_etl.schema import SCHEMA_FILE, Schema
+from bigquery_etl.util import extract_from_query_path
+from bigquery_etl.util.google_sheets import (
+    GoogleSheetColumnTransform,
+    import_google_sheet,
 )
 
-# Use credentials that include a google drive scope
-credentials, project = google.auth.default(
-    scopes=[
-        "https://www.googleapis.com/auth/drive",
-        "https://www.googleapis.com/auth/bigquery",
-    ]
-)
-client = bigquery.Client(credentials=credentials, project=project)
+query_path = Path(__file__)
+table_id = ".".join(extract_from_query_path(query_path))
+table_schema = Schema.from_schema_file(query_path.parent / SCHEMA_FILE)
 
-query = client.query(
-    """CREATE OR REPLACE TABLE
-  `moz-fx-data-shared-prod`.mozilla_vpn_derived.vat_rates_v1
-AS
-SELECT
-  * REPLACE (
-    COALESCE(
-      CAST(REGEXP_EXTRACT(vat, r"(.*)%") AS NUMERIC) / 100,
-      CAST(vat AS NUMERIC)
-    ) AS vat
-  )
-FROM
-  vat_rates_sheet""",
-    job_config=job_config,
+import_google_sheet(
+    table_id,
+    table_schema,
+    "https://docs.google.com/spreadsheets/d/1-eUbaYIuppfwoCyawKEfNVHRx_HJfn_VBOc7c2YYS48",
+    skip_leading_rows=2,
+    column_transforms=[
+        GoogleSheetColumnTransform(
+            "vat",
+            """
+            COALESCE(
+              CAST(REGEXP_EXTRACT(vat, r"(.*)%") AS NUMERIC) / 100,
+              CAST(vat AS NUMERIC)
+            )
+            """,
+            sheet_column_type="STRING",
+        )
+    ],
 )
-query.result()

@@ -52,11 +52,9 @@ WITH get_default_browser_for_mobile AS (
       COALESCE(is_default_browser, FALSE) AS is_default_browser,
       'Focus Android' AS normalized_app_name
     FROM
-      `moz-fx-data-shared-prod.telemetry.core_clients_last_seen`
+      `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
     WHERE
       submission_date = @submission_date
-      AND app_name = 'Focus'
-      AND os = 'Android'
     UNION ALL
     SELECT
       submission_date,

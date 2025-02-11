@@ -15,5 +15,5 @@ fields:
   type: INT64
   mode: NULLABLE
 - name: csat_prop
-  type: FLOAT
+  type: FLOAT64
   mode: NULLABLE

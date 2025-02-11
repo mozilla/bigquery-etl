@@ -54,7 +54,7 @@
         days_created_profile_bits
       ),
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_last_seen_v1`
+      `moz-fx-data-shared-prod.backfills_staging_derived.baseline_clients_last_seen_v1_20211130`
     WHERE
       submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

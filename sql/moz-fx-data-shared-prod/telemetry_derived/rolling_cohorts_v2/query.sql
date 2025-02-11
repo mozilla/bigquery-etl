@@ -15,7 +15,7 @@ WITH get_default_browser_for_mobile AS (
       submission_date,
       client_id,
       is_default_browser,
-      'Fenix' AS normalized_app_name
+      IF(isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
     WHERE

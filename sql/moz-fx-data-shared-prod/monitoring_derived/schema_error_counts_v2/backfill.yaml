@@ -1,0 +1,9 @@
+2025-02-11:
+  start_date: 2024-11-01
+  end_date: 2025-02-10
+  reason: Added channel to to non-telemetry errors https://mozilla-hub.atlassian.net/browse/DENG-7209
+  watchers:
+  - bewu@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false

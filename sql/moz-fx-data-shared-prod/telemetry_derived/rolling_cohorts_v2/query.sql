@@ -7,19 +7,24 @@ WITH get_default_browser_for_mobile AS (
       is_default_browser,
       'Focus iOS' AS normalized_app_name
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.baseline_clients_last_seen_v1`
+      `moz-fx-data-shared-prod.focus_ios_derived.metrics_clients_last_seen_v1`
     WHERE
       submission_date = @submission_date
     UNION ALL
     SELECT
-      submission_date,
-      client_id,
-      is_default_browser,
-      IF(isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS normalized_app_name
+      a.submission_date,
+      a.client_id,
+      a.is_default_browser,
+      IF(b.isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS normalized_app_name
     FROM
-      `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen`
+      `moz-fx-data-shared-prod.fenix.metrics_clients_last_seen` a
+    JOIN
+      `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen` b
+      ON a.client_id = b.client_id
+      AND a.submission_date = b.submission_date
     WHERE
-      submission_date = @submission_date
+      a.submission_date = @submission_date
+      AND b.submission_date = @submission_date
     UNION ALL
     SELECT
       submission_date,
@@ -27,7 +32,7 @@ WITH get_default_browser_for_mobile AS (
       is_default_browser,
       'Firefox iOS' AS normalized_app_name
     FROM
-      `moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen`
+      `moz-fx-data-shared-prod.firefox_ios.metrics_clients_last_seen`
     WHERE
       submission_date = @submission_date
     UNION ALL

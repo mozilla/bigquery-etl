@@ -4,6 +4,6 @@
   reason: Added channel to to non-telemetry errors https://mozilla-hub.atlassian.net/browse/DENG-7209
   watchers:
   - bewu@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false

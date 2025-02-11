@@ -2149,3 +2149,21 @@ bqetl_marketing_analysis:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
+
+bqetl_fivetran_alchemy:
+  description: |
+    DAG for scheduling queries pulling survey data from Alchemy.
+  default_args:
+    depends_on_past: false
+    owner: oanaekwe@mozilla.com
+    email:
+      - oanaekwe@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-03-01"
+    retries: 1
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *

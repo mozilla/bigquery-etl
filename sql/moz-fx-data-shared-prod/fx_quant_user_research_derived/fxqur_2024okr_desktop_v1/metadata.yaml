@@ -1,0 +1,20 @@
+friendly_name: Fxqur 2024okr Desktop
+description: |-
+  Survey Results from Alchemy for Desktop
+owners:
+- oanaekwe@mozilla.com
+labels:
+  incremental: true
+  owner1: ogzillla
+scheduling:
+  dag_name: bqetl_fivetran_alchemy
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}

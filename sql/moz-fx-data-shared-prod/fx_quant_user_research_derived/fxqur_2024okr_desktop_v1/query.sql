@@ -1,0 +1,9 @@
+SELECT
+  month_year,
+  okr_groups,
+  csat_high,
+  csat_low,
+  month_tot,
+  csat_prop
+FROM
+  `mozdata.analysis.fxqur_2024okr_desktop`

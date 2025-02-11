@@ -1,0 +1,19 @@
+fields:
+- name: month_year
+  type: DATE
+  mode: NULLABLE
+- name: okr_groups
+  type: STRING
+  mode: NULLABLE
+- name: csat_high
+  type: FLOAT64
+  mode: NULLABLE
+- name: csat_low
+  type: FLOAT64
+  mode: NULLABLE
+- name: month_tot
+  type: INT64
+  mode: NULLABLE
+- name: csat_prop
+  type: FLOAT
+  mode: NULLABLE

@@ -2,7 +2,7 @@ fields:
 - name: app
   type: STRING
   mode: NULLABLE
-- name: name
+- name: event_name
   type: STRING
   mode: NULLABLE
 - name: count

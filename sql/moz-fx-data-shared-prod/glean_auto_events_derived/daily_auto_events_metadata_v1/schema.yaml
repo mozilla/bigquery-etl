@@ -5,7 +5,8 @@ fields:
 - name: app
   type: STRING
   mode: NULLABLE
-- name: name
+- name: event_name
+  description: Full event name with suffix from `extra`.
   type: STRING
   mode: NULLABLE
 - name: count

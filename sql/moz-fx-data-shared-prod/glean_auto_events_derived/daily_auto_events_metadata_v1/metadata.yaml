@@ -17,4 +17,4 @@ bigquery:
   clustering:
     fields:
     - app
-    - name
+    - event_name

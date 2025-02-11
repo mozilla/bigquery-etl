@@ -18,7 +18,7 @@ WITH events AS (
 SELECT
   submission_date,
   "accounts_frontend" AS app,
-  CONCAT(event, '.', events.element_id) name,
+  CONCAT(event, '.', events.element_id) AS event_name,
   count
 FROM
   events

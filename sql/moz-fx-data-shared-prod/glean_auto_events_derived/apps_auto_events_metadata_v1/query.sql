@@ -1,6 +1,6 @@
 SELECT
   app,
-  name,
+  event_name,
   SUM(count) count
 FROM
   `moz-fx-data-shared-prod.glean_auto_events_derived.daily_auto_events_metadata_v1`

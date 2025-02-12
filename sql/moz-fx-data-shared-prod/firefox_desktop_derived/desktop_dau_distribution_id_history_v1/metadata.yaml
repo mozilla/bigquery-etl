@@ -7,8 +7,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_glean_usage
-  task_group: firefox_desktop
+  dag_name: bqetl_analytics_aggregations
 bigquery:
   time_partitioning:
     type: day

@@ -1,0 +1,125 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID
+- mode: NULLABLE
+  name: cohort_date
+  type: DATE
+  description: Cohort Date - First Seen Date
+- mode: NULLABLE
+  name: activity_segment
+  type: STRING
+  description: Activity Segment
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+  description: Attribution Campaign
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+  description: Attribution Content
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+  description: Attribution Medium
+- mode: NULLABLE
+  name: attribution_source
+  type: STRING
+  description: Attribution Source
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation
+- mode: NULLABLE
+  name: city
+  type: STRING
+  description: City
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: device_model
+  type: STRING
+  description: Device Model
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID
+- mode: NULLABLE
+  name: is_default_browser
+  type: BOOLEAN
+  description: Is Default Browser
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: normalized_app_name
+  type: STRING
+  description: Normalized app Name
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: Normalized Operating System Version
+- mode: NULLABLE
+  name: os_version_major
+  type: INTEGER
+  description: Operating System - Major Version
+- mode: NULLABLE
+  name: os_version_minor
+  type: INTEGER
+  description: Operating System - Minor Version
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Ad Group - Available for Mobile Only
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Campaign - Available for Mobile Only
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Creative - Available for Mobile Only
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network - Available for Mobile Only
+- name: play_store_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Campaign - Available for Mobile Only
+- name: play_store_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Medium - Available for Mobile Only
+- name: play_store_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Source - Available for Mobile Only
+- name: play_store_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Content - Available for Mobile Only
+- name: play_store_attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Term - Available for Mobile Only

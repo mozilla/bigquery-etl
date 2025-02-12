@@ -1,0 +1,18 @@
+friendly_name: Desktop MozillaOnline for Baseline Clients Daily
+description: |-
+  Time series mapping table of distribution_ids from legacy (main) pings for desktop DAU based on the baseline ping
+owners:
+  - gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: firefox_desktop
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+monitoring:
+  enabled: true

@@ -1,9 +1,0 @@
--- -- Query for fx_quant_user_research_derived.fxqur_2024okr_desktop_v1
---             -- For more information on writing queries see:
---             -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
--- SELECT
---   *
--- FROM
---   table
--- WHERE
---   submission_date = @submission_date

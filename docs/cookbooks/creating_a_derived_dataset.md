@@ -287,6 +287,7 @@ For our example:
 ### Completing the backfill:
 
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
+   - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
 
 2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
 

@@ -118,6 +118,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_telemetry_derived__core_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_gud__wait_for_telemetry_derived__core_clients_last_seen__v1",
             external_dag_id="bqetl_gud",
             external_task_id="wait_for_telemetry_derived__core_clients_last_seen__v1",

@@ -1,72 +1,3 @@
---Since is_default_browser is not available on active_users, create a CTE with this information for mobile clients
-WITH get_default_browser_for_mobile AS (
-  (
-    SELECT
-      submission_date,
-      client_id,
-      is_default_browser,
-      'Focus iOS' AS normalized_app_name
-    FROM
-      `moz-fx-data-shared-prod.focus_ios_derived.metrics_clients_last_seen_v1`
-    WHERE
-      submission_date = @submission_date
-    UNION ALL
-    SELECT
-      a.submission_date,
-      a.client_id,
-      a.is_default_browser,
-      IF(b.isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS normalized_app_name
-    FROM
-      `moz-fx-data-shared-prod.fenix.metrics_clients_last_seen` a
-    JOIN
-      `moz-fx-data-shared-prod.fenix.baseline_clients_last_seen` b
-      ON a.client_id = b.client_id
-      AND a.submission_date = b.submission_date
-    WHERE
-      a.submission_date = @submission_date
-      AND b.submission_date = @submission_date
-    UNION ALL
-    SELECT
-      submission_date,
-      client_id,
-      is_default_browser,
-      'Firefox iOS' AS normalized_app_name
-    FROM
-      `moz-fx-data-shared-prod.firefox_ios.metrics_clients_last_seen`
-    WHERE
-      submission_date = @submission_date
-    UNION ALL
-    SELECT
-      submission_date,
-      client_id,
-      is_default_browser,
-      'Focus Android Glean' AS normalized_app_name
-    FROM
-      `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
-    WHERE
-      submission_date = @submission_date
-    UNION ALL
-    SELECT
-      submission_date,
-      client_id,
-      is_default_browser,
-      'Focus Android' AS normalized_app_name
-    FROM
-      `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
-    WHERE
-      submission_date = @submission_date
-    UNION ALL
-    SELECT
-      submission_date,
-      client_id,
-      is_default_browser,
-      'Klar iOS' AS normalized_app_name
-    FROM
-      `moz-fx-data-shared-prod.klar_ios.metrics_clients_last_seen`
-    WHERE
-      submission_date = @submission_date
-  )
-)
 --Desktop
 SELECT
   au.client_id,
@@ -134,9 +65,9 @@ SELECT
   au.country,
   au.device_model,
   au.distribution_id,
-  dflt_brwsr.is_default_browser,
+  CAST(NULL AS BOOLEAN) AS is_default_browser,
   au.locale,
-  au.app_name AS normalized_app_name, --do I need to do anything to "normalize" ?
+  au.app_name AS normalized_app_name,
   au.normalized_channel,
   au.normalized_os,
   au.normalized_os_version,

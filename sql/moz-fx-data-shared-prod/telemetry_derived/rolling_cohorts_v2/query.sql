@@ -1,4 +1,8 @@
 --Since is_default_browser is not available on active_users, create a CTE with this information for mobile clients
+--QUESTION: what is the best way to get is_default_browser for Mobile?
+--I was going to use baseline_clients_last_seen like the V1 version but then realized it's always null
+--then I tried to switch to metrics clients last seen but I think I would need to update date logic?
+--This logic is not good yet
 WITH get_default_browser_for_mobile AS (
   (
     SELECT

@@ -14,7 +14,7 @@ labels:
   owner1: kwindau
   table_type: aggregate
 scheduling:
-  dag_name: bqetl_daily_retention
+  dag_name: bqetl_cohort_retention
 bigquery:
   time_partitioning:
     type: day

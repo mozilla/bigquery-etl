@@ -2150,7 +2150,7 @@ bqetl_marketing_analysis:
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
 
-bqetl_daily_retention:
+bqetl_cohort_retention:
   default_args:
     depends_on_past: false
     email:

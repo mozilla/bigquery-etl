@@ -1,0 +1,16 @@
+friendly_name: Fx Quant User Research
+description: |-
+  Contains views for Fx Quant User Research (from Alchemy)
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

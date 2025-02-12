@@ -1,0 +1,253 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy Telemetry Client ID
+- name: android_sdk_version
+  type: STRING
+  mode: NULLABLE
+  description: Android SDK Version
+- name: app_build
+  type: STRING
+  mode: NULLABLE
+- name: app_channel
+  type: STRING
+  mode: NULLABLE
+- name: app_display_version
+  type: STRING
+  mode: NULLABLE
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+- name: build_date
+  type: STRING
+  mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: device_manufacturer
+  type: STRING
+  mode: NULLABLE
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+- name: first_run_date
+  type: STRING
+  mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+- name: session_count
+  type: INTEGER
+  mode: NULLABLE
+- name: session_id
+  type: STRING
+  mode: NULLABLE
+- name: telemetry_sdk_build
+  type: STRING
+  mode: NULLABLE
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: geo
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: city
+    type: STRING
+    mode: NULLABLE
+  - name: country
+    type: STRING
+    mode: NULLABLE
+  - name: db_version
+    type: STRING
+    mode: NULLABLE
+  - name: subdivision1
+    type: STRING
+    mode: NULLABLE
+  - name: subdivision2
+    type: STRING
+    mode: NULLABLE
+- name: header
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: date
+    type: STRING
+    mode: NULLABLE
+  - name: dnt
+    type: STRING
+    mode: NULLABLE
+  - name: x_debug_id
+    type: STRING
+    mode: NULLABLE
+  - name: x_foxsec_ip_reputation
+    type: STRING
+    mode: NULLABLE
+  - name: x_lb_tags
+    type: STRING
+    mode: NULLABLE
+  - name: x_pingsender_version
+    type: STRING
+    mode: NULLABLE
+  - name: x_source_tags
+    type: STRING
+    mode: NULLABLE
+  - name: x_telemetry_agent
+    type: STRING
+    mode: NULLABLE
+  - name: parsed_date
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: parsed_x_source_tags
+    type: STRING
+    mode: REPEATED
+  - name: parsed_x_lb_tags
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: tls_version
+      type: STRING
+      mode: NULLABLE
+    - name: tls_cipher_hex
+      type: STRING
+      mode: NULLABLE
+- name: isp
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: db_version
+    type: STRING
+    mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: organization
+    type: STRING
+    mode: NULLABLE
+- name: user_agent
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: browser
+    type: STRING
+    mode: NULLABLE
+  - name: os
+    type: STRING
+    mode: NULLABLE
+  - name: version
+    type: STRING
+    mode: NULLABLE
+- name: glean_error_invalid_label
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: glean_error_invalid_overflow
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: glean_error_invalid_state
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: glean_error_invalid_value
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
+- name: glean_client_annotation_experimentation_id
+  type: STRING
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+      - name: type
+        type: STRING
+        mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch
+  type: NUMERIC
+  mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE

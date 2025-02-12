@@ -257,9 +257,18 @@ DELETE_TARGETS: DeleteIndex = {
     ),
     DeleteTarget(
         table="telemetry_derived.rolling_cohorts_v2",
-        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID, CLIENT_ID, CLIENT_ID, CLIENT_ID),
+        field=(
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+        ),
     ): (
         DESKTOP_SRC,
+        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),

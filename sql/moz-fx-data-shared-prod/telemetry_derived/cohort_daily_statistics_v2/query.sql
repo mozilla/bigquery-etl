@@ -1,5 +1,5 @@
 WITH submission_date_activity AS (
-  SELECT
+  SELECT DISTINCT
     client_id,
     submission_date AS activity_date
   FROM
@@ -7,9 +7,6 @@ WITH submission_date_activity AS (
   WHERE
     submission_date = @submission_date
     AND is_dau IS TRUE
-  GROUP BY
-    client_id,
-    submission_date
 ),
 -- Get all the cohorts that are still in range of the current day of activity (180 days)
 cohorts_in_range AS (

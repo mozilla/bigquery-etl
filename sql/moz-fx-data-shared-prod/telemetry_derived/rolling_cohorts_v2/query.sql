@@ -110,12 +110,10 @@ FROM
   `moz-fx-data-shared-prod.telemetry.desktop_active_users` au
 LEFT JOIN
   `moz-fx-data-shared-prod.telemetry.core_clients_last_seen` ccls
-  ON au.client_id = ccls.client_id
-  AND au.submission_date = ccls.submission_date
+  USING (client_id, submission_date)
 LEFT JOIN
   `moz-fx-data-shared-prod.telemetry.clients_last_seen` cls
-  ON au.client_id = cls.client_id
-  AND au.submission_date = cls.submission_date
+  USING (client_id, submission_date)
 WHERE
   au.first_seen_date = @submission_date
   AND au.submission_date = @submission_date

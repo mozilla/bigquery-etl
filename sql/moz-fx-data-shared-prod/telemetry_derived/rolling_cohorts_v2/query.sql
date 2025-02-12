@@ -1,14 +1,10 @@
 --Since is_default_browser is not available on active_users, create a CTE with this information for mobile clients
---QUESTION: what is the best way to get is_default_browser for Mobile?
---I was going to use baseline_clients_last_seen like the V1 version but then realized it's always null
---then I tried to switch to metrics clients last seen but I think I would need to update date logic?
---This logic is not good yet
 WITH get_default_browser_for_mobile AS (
   (
     SELECT
       submission_date,
       client_id,
-      COALESCE(is_default_browser, FALSE) AS is_default_browser,
+      is_default_browser,
       'Focus iOS' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.focus_ios_derived.metrics_clients_last_seen_v1`
@@ -18,7 +14,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       a.submission_date,
       a.client_id,
-      COALESCE(a.is_default_browser, FALSE) AS is_default_browser,
+      a.is_default_browser,
       IF(b.isp = 'BrowserStack', CONCAT('Fenix', ' BrowserStack'), 'Fenix') AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.fenix.metrics_clients_last_seen` a
@@ -33,7 +29,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      COALESCE(is_default_browser, FALSE) AS is_default_browser,
+      is_default_browser,
       'Firefox iOS' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.firefox_ios.metrics_clients_last_seen`
@@ -43,7 +39,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      COALESCE(is_default_browser, FALSE) AS is_default_browser,
+      is_default_browser,
       'Focus Android Glean' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.focus_android.baseline_clients_last_seen`
@@ -53,7 +49,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      COALESCE(is_default_browser, FALSE) AS is_default_browser,
+      is_default_browser,
       'Focus Android' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.focus_android.metrics_clients_last_seen`
@@ -63,7 +59,7 @@ WITH get_default_browser_for_mobile AS (
     SELECT
       submission_date,
       client_id,
-      COALESCE(is_default_browser, FALSE) AS is_default_browser,
+      is_default_browser,
       'Klar iOS' AS normalized_app_name
     FROM
       `moz-fx-data-shared-prod.klar_ios.metrics_clients_last_seen`

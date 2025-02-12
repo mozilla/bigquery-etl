@@ -5,6 +5,7 @@ import logging
 import subprocess
 import sys
 import tempfile
+from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
@@ -29,6 +30,7 @@ from ..backfill.shredder_mitigation import (
     generate_query_with_shredder_mitigation,
 )
 from ..backfill.utils import (
+    MAX_BACKFILL_ENTRY_AGE_DAYS,
     get_backfill_backup_table_name,
     get_backfill_file_from_qualified_table_name,
     get_backfill_staging_qualified_table_name,
@@ -59,6 +61,14 @@ from ..schema import SCHEMA_FILE, Schema
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+
+ignore_missing_metadata_option = click.option(
+    "--ignore-missing-metadata",
+    is_flag=True,
+    default=False,
+    help="Ignore backfills for tables missing metadata.yaml. "
+    "This can be used to run on checked-in queries without running sql generation.",
+)
 
 
 @click.group(help="Commands for managing backfills.")
@@ -224,12 +234,14 @@ def create(
 @click.argument("qualified_table_name", required=False)
 @sql_dir_option
 @project_id_option()
+@ignore_missing_metadata_option
 @click.pass_context
 def validate(
     ctx,
     qualified_table_name,
     sql_dir,
     project_id,
+    ignore_missing_metadata,
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
@@ -243,25 +255,41 @@ def validate(
             sql_dir, project_id
         )
 
+    errors = defaultdict(list)
+
     for table_name in backfills_dict:
-        if errors := validate_table_metadata(sql_dir, table_name):
-            click.echo("\n".join(errors))
-            sys.exit(1)
-
         try:
-            backfill_file = get_backfill_file_from_qualified_table_name(
-                sql_dir, table_name
-            )
-            validate_file(backfill_file)
-        except (yaml.YAMLError, ValueError) as e:
-            click.echo(
-                f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
-            )
-            sys.exit(1)
+            if errors := validate_table_metadata(sql_dir, table_name):
+                click.echo("\n".join(errors))
+                sys.exit(1)
 
-        click.echo(f"{BACKFILL_FILE} has been validated for {table_name}.")
-
-    if backfills_dict:
+                try:
+                    backfill_file = get_backfill_file_from_qualified_table_name(
+                        sql_dir, table_name
+                    )
+                    validate_file(backfill_file)
+                except (yaml.YAMLError, ValueError) as e:
+                    errors[table_name].append(
+                        f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
+                    )
+                if table_name in errors:
+                    click.echo(f"{BACKFILL_FILE} validation failed for {table_name}")
+                else:
+                    click.echo(f"{BACKFILL_FILE} has been validated for {table_name}.")
+        except FileNotFoundError:
+            if ignore_missing_metadata:
+                click.echo(f"Skipping {table_name} due to --ignore-missing-metadata")
+            else:
+                raise
+    if len(errors) > 0:
+        click.echo("Failed to validate the following backfill entries:")
+        for table_name, error_list in errors.items():
+            if len(error_list) == 0:
+                continue
+            click.echo(f"{table_name}:")
+            click.echo("\n".join(error_list))
+        sys.exit(1)
+    elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
         )
@@ -352,11 +380,33 @@ def info(ctx, qualified_table_name, sql_dir, project_id, status):
     help="Whether to get backfills to process or to complete.",
 )
 @click.option("--json_path", type=click.Path())
+@click.option(
+    "--ignore-old-entries",
+    is_flag=True,
+    default=False,
+    help=f"If set, entries older than {MAX_BACKFILL_ENTRY_AGE_DAYS} days will be ignored due "
+    "to BigQuery retention settings.",
+)
+@ignore_missing_metadata_option
 @click.pass_context
-def scheduled(ctx, qualified_table_name, sql_dir, project_id, status, json_path=None):
+def scheduled(
+    ctx,
+    qualified_table_name,
+    sql_dir,
+    project_id,
+    status,
+    json_path,
+    ignore_old_entries,
+    ignore_missing_metadata,
+):
     """Return list of backfill(s) that require processing."""
     backfills = get_scheduled_backfills(
-        sql_dir, project_id, qualified_table_name, status=status
+        sql_dir,
+        project_id,
+        qualified_table_name,
+        status=status,
+        ignore_old_entries=ignore_old_entries,
+        ignore_missing_metadata=ignore_missing_metadata,
     )
 
     for qualified_table_name, entry in backfills.items():

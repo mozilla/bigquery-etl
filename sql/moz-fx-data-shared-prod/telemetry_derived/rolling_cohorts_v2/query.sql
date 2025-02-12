@@ -90,12 +90,6 @@ SELECT
   mnpc.play_store_attribution_term,
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_active_users` au
-LEFT OUTER JOIN
---need to check this below still, not correct yet
-  get_default_browser_for_mobile dflt_brwsr
-  ON au.client_id = dflt_brwsr.client_id
-  AND au.submission_date = dflt_brwsr.submission_date
-  AND au.app_name = dflt_brwsr.normalized_app_name --need to check this still
 LEFT JOIN
   `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients` mnpc
   ON au.client_id = mnpc.client_id

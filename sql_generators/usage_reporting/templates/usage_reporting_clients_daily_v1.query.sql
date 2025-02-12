@@ -17,7 +17,10 @@ WITH usage_reporting_base AS (
     -- fields only currently available in fenix.
     {% if app_name == "fenix" %}
     metrics.string.metrics_distribution_id AS distribution_id,
-    COALESCE(metrics.boolean.metrics_default_browser, FALSE) AS is_default_browser, -- this should eventually also be added to ios and desktop.
+    COALESCE(metrics.boolean.metrics_default_browser, FALSE) AS is_default_browser, -- this should eventually also be added to ios
+    {% elif app_name == "firefox_desktop" %}
+    metrics.string.usage_distribution_id AS distribution_id,
+    COALESCE(metrics.boolean.usage_is_default_browser, FALSE) AS is_default_browser, -- this should eventually also be added to ios
     {% else %}
     CAST(NULL AS STRING) AS distribution_id,
     CAST(NULL AS BOOLEAN) AS is_default_browser,

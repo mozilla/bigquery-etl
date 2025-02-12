@@ -5,7 +5,7 @@ WITH
       usage_profile_id,
       {% raw %}
       {% if is_init() %}
-      DATE(MIN(submission_timestamp)) AS first_seen_date,
+      MIN(submission_date) AS first_seen_date,
       {% else %}
       @submission_date AS first_seen_date,
       {% endif %}
@@ -16,9 +16,9 @@ WITH
       usage_profile_id IS NOT NULL
       {% raw %}
       {% if is_init() %}
-      AND DATE(submission_timestamp) > "2014-10-10"
+      AND submission_date > "2014-10-10"
       {% else %}
-      AND DATE(submission_timestamp) = @submission_date
+      AND submission_date = @submission_date
       {% endif %}
       {% endraw %}
     GROUP BY

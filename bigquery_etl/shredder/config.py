@@ -199,7 +199,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"
     ): DESKTOP_SRC,
-    client_id_target(table="telemetry_derived.rolling_cohorts_v2"): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_last_seen_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_v6"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_joined_v1"): DESKTOP_SRC,
@@ -255,6 +254,17 @@ DELETE_TARGETS: DeleteIndex = {
     ): (
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="telemetry_derived.rolling_cohorts_v2",
+        field=(CLIENT_ID, CLIENT_ID, CLIENT_ID, CLIENT_ID, CLIENT_ID, CLIENT_ID),
+    ): (
+        DESKTOP_SRC,
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
     ),
     # activity stream
     DeleteTarget(

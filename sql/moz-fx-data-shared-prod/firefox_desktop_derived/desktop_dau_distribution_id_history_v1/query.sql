@@ -38,6 +38,6 @@ SELECT
   distribution_id
 FROM
   legacy_active_users
-JOIN
+INNER JOIN
   baseline_users
   USING (submission_date, legacy_telemetry_client_id)

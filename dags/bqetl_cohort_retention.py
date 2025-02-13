@@ -336,6 +336,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__fail_telemetry_derived__rolling_cohorts__v2 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__rolling_cohorts__v2",
+        source_table="rolling_cohorts_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     telemetry_derived__cohort_daily_statistics__v2 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_daily_statistics__v2",
         destination_table="cohort_daily_statistics_v2",
@@ -356,6 +369,10 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    checks__fail_telemetry_derived__rolling_cohorts__v2.set_upstream(
+        telemetry_derived__rolling_cohorts__v2
     )
 
     telemetry_derived__cohort_daily_statistics__v2.set_upstream(
@@ -419,7 +436,7 @@ with DAG(
     )
 
     telemetry_derived__cohort_daily_statistics__v2.set_upstream(
-        telemetry_derived__rolling_cohorts__v2
+        checks__fail_telemetry_derived__rolling_cohorts__v2
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(

@@ -43,6 +43,7 @@ cohorts_in_range AS (
     play_store_attribution_source,
     play_store_attribution_content,
     play_store_attribution_term,
+    row_source,
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
@@ -93,6 +94,7 @@ SELECT
   play_store_attribution_source,
   play_store_attribution_content,
   play_store_attribution_term,
+  row_source,
   COUNT(cohort_client_id) AS num_clients_in_cohort,
   COUNT(active_client_id) AS num_clients_active_on_day,
 FROM
@@ -128,4 +130,5 @@ GROUP BY
   play_store_attribution_medium,
   play_store_attribution_source,
   play_store_attribution_content,
-  play_store_attribution_term
+  play_store_attribution_term,
+  row_source

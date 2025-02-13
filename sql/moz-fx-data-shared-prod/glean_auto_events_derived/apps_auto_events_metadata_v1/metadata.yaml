@@ -15,6 +15,7 @@ scheduling:
   depends_on_past: false
   depends_on:
   - task_id: daily_auto_events_metadata
+    dag_name: bqetl_glean_dictionary
 bigquery:
   clustering:
     fields:

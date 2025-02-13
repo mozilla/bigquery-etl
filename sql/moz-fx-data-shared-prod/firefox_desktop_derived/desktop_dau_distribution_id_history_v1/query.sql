@@ -37,10 +37,7 @@ legacy_active_users AS (
 )
 SELECT
   submission_date,
-  legacy_telemetry_client_id,
   client_id,
-  is_dau_baseline,
-  is_dau_legacy,
   distribution_id
 FROM
   legacy_active_users

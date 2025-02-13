@@ -9,8 +9,6 @@ WITH baseline_users AS (
     submission_date,
     client_id,
     legacy_telemetry_client_id,
-    (browser_engagement_uri_count > 0)
-    AND (browser_engagement_active_ticks > 0) AS is_dau_baseline,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1`
   WHERE

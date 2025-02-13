@@ -160,6 +160,23 @@ LEGACY_MOBILE_SOURCES = tuple(
         "mozilla_lockbox",
     )
 )
+MOBILE_SEARCH_SOURCES = (
+    tuple(
+        DeleteSource(
+            table=f"{app_name}.deletion_request",
+            field=GLEAN_CLIENT_ID,
+        )
+        for app_name in (
+            "fenix",
+            "firefox_ios",
+            "focus_android",
+            "focus_ios",
+            "klar_android",
+            "klar_ios",
+        )
+    )
+    + LEGACY_MOBILE_SOURCES
+)
 USER_CHARACTERISTICS_SRC = DeleteSource(
     table="firefox_desktop_stable.deletion_request_v1",
     field=USER_CHARACTERISTICS_ID,
@@ -177,7 +194,7 @@ SOURCES = (
 )
 
 LEGACY_MOBILE_IDS = tuple(CLIENT_ID for _ in LEGACY_MOBILE_SOURCES)
-
+MOBILE_SEARCH_IDS = tuple(CLIENT_ID for _ in MOBILE_SEARCH_SOURCES)
 
 client_id_target = partial(DeleteTarget, field=CLIENT_ID)
 glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
@@ -191,10 +208,11 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="search_derived.acer_cohort_v1"): DESKTOP_SRC,
     client_id_target(
         table="search_derived.mobile_search_clients_daily_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="search_derived.mobile_search_clients_daily_v2"
-    ): DESKTOP_SRC,
+    ): DESKTOP_SRC,  # incorrectly set: https://mozilla-hub.atlassian.net/browse/DENG-4255
+    DeleteTarget(
+        table="search_derived.mobile_search_clients_daily_v2",
+        field=MOBILE_SEARCH_IDS,
+    ): MOBILE_SEARCH_SOURCES,
     client_id_target(table="search_derived.search_clients_daily_v8"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.desktop_engagement_clients_v1"

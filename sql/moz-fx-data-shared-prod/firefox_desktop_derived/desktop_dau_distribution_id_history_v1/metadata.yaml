@@ -1,4 +1,4 @@
-friendly_name: Desktop MozillaOnline for Baseline Clients Daily
+friendly_name: Legacy to GLEAN distribution ID mapping
 description: |-
   Time series mapping of legacy telemetry client's distribution_id to a GLEAN client as historically GLEAN did not collect this information and is required for DAU analysis based off GLEAN telemetry.
 owners:

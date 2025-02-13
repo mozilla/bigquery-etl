@@ -7,6 +7,9 @@ import sys
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
+from typing import Tuple
+
+from sqlglot.errors import ParseError
 
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat  # noqa E402
@@ -33,7 +36,15 @@ def skip_qualifying_references():
     ]
 
 
-def _format_path(check, path):
+def _format_path(check: bool, path: str) -> Tuple[int, int]:
+    """
+    Format SQL file or if `check` flag set validate it is correct format.
+
+    :param check:   Flag which indicates whether we should only check if query needs reformatted.
+    :param path:    String path of the SQL file to perform the operations on.
+    :return:        a tuple with two elements. Element one represents if formamtting was applied,
+                    element two if the query's format is invalid.
+    """
     query = Path(path).read_text()
 
     try:
@@ -43,8 +54,12 @@ def _format_path(check, path):
             fully_referenced_query = query
     except NotImplementedError:
         fully_referenced_query = query  # not implemented for scripts
+    except ParseError:
+        print(f"Invalid syntax found for: {path}")
+        return 0, 1
 
     formatted = reformat(fully_referenced_query, trailing_newline=True)
+
     if query != formatted:
         if check:
             print(f"Needs reformatting: bqetl format {path}")
@@ -52,9 +67,9 @@ def _format_path(check, path):
             with open(path, "w") as fp:
                 fp.write(formatted)
             print(f"Reformatted: {path}")
-        return 1
+        return 1, 0
     else:
-        return 0
+        return 0, 0
 
 
 def format(paths, check=False, parallelism=8):
@@ -88,10 +103,12 @@ def format(paths, check=False, parallelism=8):
             sys.exit(255)
 
         with Pool(parallelism) as pool:
-            result = pool.map(partial(_format_path, check), sql_files)
+            results = pool.map(partial(_format_path, check), sql_files)
 
-        reformatted = sum(result)
+        reformatted = sum([x[0] for x in results])
         unchanged = len(sql_files) - reformatted
+        invalid = sum([x[1] for x in results])
+
         print(
             ", ".join(
                 f"{number} file{'s' if number > 1 else ''}"
@@ -99,10 +116,11 @@ def format(paths, check=False, parallelism=8):
                 for number, msg in [
                     (reformatted, "reformatted"),
                     (unchanged, "left unchanged"),
+                    (invalid, "invalid"),
                 ]
                 if number > 0
             )
             + "."
         )
-        if check and reformatted:
+        if check and (reformatted or invalid):
             sys.exit(1)

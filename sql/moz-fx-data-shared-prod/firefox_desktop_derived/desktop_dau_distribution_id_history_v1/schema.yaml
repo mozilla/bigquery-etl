@@ -3,10 +3,6 @@ fields:
     type: DATE
   - name: client_id
     type: STRING
-  - name: is_dau_baseline
-    type: BOOLEAN
-  - name: is_dau_legacy
-    type: BOOLEAN
   - name: distribution_id
     mode: NULLABLE
     type: STRING

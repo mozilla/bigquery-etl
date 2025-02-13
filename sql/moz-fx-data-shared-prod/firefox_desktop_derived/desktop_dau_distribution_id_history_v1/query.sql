@@ -21,7 +21,6 @@ legacy_active_users AS (
   SELECT
     submission_date,
     client_id AS legacy_telemetry_client_id,
-    is_dau AS is_dau_legacy,
     distribution_id
   FROM
     `moz-fx-data-shared-prod.telemetry.desktop_active_users`

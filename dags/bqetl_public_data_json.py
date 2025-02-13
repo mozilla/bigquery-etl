@@ -120,6 +120,20 @@ with DAG(
         image=docker_image,
     )
 
+    export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1 = GKEPodOperator(
+        task_id="export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1",
+        name="export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1",
+        arguments=["script/publish_public_data_json"]
+        + [
+            "--query_file=sql/moz-fx-data-shared-prod/glean_auto_events_derived/apps_auto_events_metadata_v1/query.sql"
+        ]
+        + ["--destination_table=apps_auto_events_metadata${{ds_nodash}}"]
+        + ["--dataset_id=glean_auto_events_derived"]
+        + ["--project_id=moz-fx-data-shared-prod"]
+        + ["--parameter=submission_date:DATE:{{ds}}"],
+        image=docker_image,
+    )
+
     export_public_data_json_mozregression_aggregates__v1 = GKEPodOperator(
         task_id="export_public_data_json_mozregression_aggregates__v1",
         name="export_public_data_json_mozregression_aggregates__v1",
@@ -169,6 +183,23 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    wait_for_glean_auto_events_derived__daily_auto_events_metadata__v1 = ExternalTaskSensor(
+        task_id="wait_for_glean_auto_events_derived__daily_auto_events_metadata__v1",
+        external_dag_id="bqetl_glean_dictionary",
+        external_task_id="glean_auto_events_derived__daily_auto_events_metadata__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1.set_upstream(
+        wait_for_glean_auto_events_derived__daily_auto_events_metadata__v1
+    )
+
     export_public_data_json_mozregression_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -203,6 +234,7 @@ with DAG(
             export_public_data_json_firefox_desktop_derived__firefox_desktop_use_counters__v2,
             export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_beta__v1,
             export_public_data_json_glam_derived__client_probe_counts_firefox_desktop_nightly__v1,
+            export_public_data_json_glean_auto_events_derived__apps_auto_events_metadata__v1,
             export_public_data_json_mozregression_aggregates__v1,
             export_public_data_json_telemetry_derived__ssl_ratios__v1,
         ]

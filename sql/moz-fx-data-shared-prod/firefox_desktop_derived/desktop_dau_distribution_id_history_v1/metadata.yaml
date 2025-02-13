@@ -7,7 +7,7 @@ labels:
   incremental: true
   schedule: daily
 scheduling:
-  dag_name: bqetl_analytics_aggregations
+  dag_name: bqetl_analytics_tables
 bigquery:
   time_partitioning:
     type: day

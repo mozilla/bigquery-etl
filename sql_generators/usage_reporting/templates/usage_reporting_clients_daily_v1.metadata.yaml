@@ -1,7 +1,7 @@
 # {{ header }}
 friendly_name: Clients Daily Based on the DAU Reporting Ping.
 description: |-
-  A daily aggregate of usage_reporting pings per `profile_usage_id`.
+  A daily aggregate of usage_reporting pings per `usage_profile_id`.
 
   Cluster by: `normalized_channel`, `normalized_country_code`
 

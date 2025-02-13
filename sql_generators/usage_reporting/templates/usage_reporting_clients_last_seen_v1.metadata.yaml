@@ -1,7 +1,7 @@
 # {{ header }}
 friendly_name: Clients Last Seen Based on the DAU Reporting Ping.
 description: |-
-  A daily aggregate of the usage_reporting ping for each `profile_usage_id`
+  A daily aggregate of the usage_reporting ping for each `usage_profile_id`
   representing their activity.
 
 owners:

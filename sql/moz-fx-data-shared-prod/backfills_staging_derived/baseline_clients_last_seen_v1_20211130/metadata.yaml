@@ -44,7 +44,7 @@ references:
   - moz-fx-data-shared-prod.backfills_staging_derived.baseline_clients_last_seen_v1_20211130
   - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: null
   partition_column_set: true

@@ -18,7 +18,7 @@ SELECT
   au.locale,
   au.app_name AS normalized_app_name,
   au.normalized_channel,
-  au.os AS normalized_os, --old one had it as normalized_os, do I need to add a transform of some kind to normalize?
+  au.os AS normalized_os,
   au.normalized_os_version,
   COALESCE(
     SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),

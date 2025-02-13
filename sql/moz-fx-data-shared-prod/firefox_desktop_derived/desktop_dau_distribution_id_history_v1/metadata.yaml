@@ -1,6 +1,6 @@
 friendly_name: Desktop MozillaOnline for Baseline Clients Daily
 description: |-
-  Time series mapping table of distribution_ids from legacy (main) pings for desktop DAU based on the baseline ping
+  Time series mapping of legacy telemetry client's distribution_id to a GLEAN client as historically GLEAN did not collect this information and is required for DAU analysis based off GLEAN telemetry.
 owners:
   - gkatre@mozilla.com
 labels:

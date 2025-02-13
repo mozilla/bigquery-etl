@@ -265,6 +265,11 @@ DELETE_TARGETS: DeleteIndex = {
             CLIENT_ID,
             CLIENT_ID,
             CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
+            CLIENT_ID,
         ),
     ): (
         DESKTOP_SRC,
@@ -274,6 +279,26 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(
+            table="org_mozilla_ios_fennec_stable.deletion_request_v1",
+            field="metrics.uuid.legacy_ids_client_id",
+        ),
+        DeleteSource(
+            table="org_mozilla_ios_firefox_stable.deletion_request_v1",
+            field="metrics.uuid.legacy_ids_client_id",
+        ),
+        DeleteSource(
+            table="org_mozilla_ios_firefoxbeta_stable.deletion_request_v1",
+            field="metrics.uuid.legacy_ids_client_id",
+        ),
+        DeleteSource(
+            table="org_mozilla_tv_firefox_stable.deletion_request_v1",
+            field="metrics.uuid.legacy_ids_client_id",
+        ),
+        DeleteSource(
+            table="mozilla_lockbox_stable.deletion_request_v1",
+            field="metrics.uuid.legacy_ids_client_id",
+        ),
     ),
     # activity stream
     DeleteTarget(

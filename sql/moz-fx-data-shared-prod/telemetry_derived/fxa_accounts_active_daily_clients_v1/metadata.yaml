@@ -2,19 +2,21 @@ friendly_name: Fxa Accounts Active Daily Clients
 description: |-
   Please provide a description for the query
 owners:
-- example@mozilla.com
+- kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: kwindau
+  table_type: client_level
 scheduling:
   dag_name: bqetl_default
 bigquery:
   time_partitioning:
     type: day
-    field: ''
+    field: submission_date
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null
   clustering:
-    fields: []
+    fields:
+    - normalized_channel
 references: {}

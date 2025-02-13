@@ -1,0 +1,14 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: app
+  type: STRING
+  mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+  description: Full event name with suffix from `extra`.
+- name: count
+  type: INTEGER
+  mode: NULLABLE

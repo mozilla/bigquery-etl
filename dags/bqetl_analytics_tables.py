@@ -345,6 +345,34 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1",
+        warehouse_id="1939",
+        owner="gkatre@mozilla.com",
+        email=[
+            "gkaberere@mozilla.com",
+            "gkatre@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
     checks__fail_fenix_derived__firefox_android_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
         source_table="firefox_android_clients_v1",
@@ -711,6 +739,24 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = (
+        bigquery_etl_query(
+            task_id="firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+            destination_table="desktop_dau_distribution_id_history_v1",
+            dataset_id="firefox_desktop_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="gkatre@mozilla.com",
+            email=[
+                "gkaberere@mozilla.com",
+                "gkatre@mozilla.com",
+                "lvargas@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
     telemetry_derived__clients_first_seen_28_days_later__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_first_seen_28_days_later__v1",
         destination_table='clients_first_seen_28_days_later_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -759,6 +805,10 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1.set_upstream(
+        firefox_desktop_derived__desktop_dau_distribution_id_history__v1
     )
 
     checks__fail_fenix_derived__firefox_android_clients__v1.set_upstream(
@@ -935,6 +985,14 @@ with DAG(
 
     firefox_android_clients.set_upstream(
         wait_for_fenix_derived__new_profile_activation__v1
+    )
+
+    firefox_desktop_derived__desktop_dau_distribution_id_history__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1
+    )
+
+    firefox_desktop_derived__desktop_dau_distribution_id_history__v1.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
     telemetry_derived__clients_first_seen_28_days_later__v1.set_upstream(

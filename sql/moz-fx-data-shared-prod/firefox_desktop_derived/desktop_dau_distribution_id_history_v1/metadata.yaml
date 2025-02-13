@@ -1,0 +1,35 @@
+friendly_name: Legacy to GLEAN distribution ID mapping
+description: |-
+  Time series mapping of legacy telemetry client's distribution_id to a GLEAN client,
+  as historically GLEAN did not collect this information.
+  This information is required for DAU analysis based off GLEAN telemetry.
+owners:
+- gkatre@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_analytics_tables
+  owner1: gkatre
+scheduling:
+  dag_name: bqetl_analytics_tables
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1
+  - moz-fx-data-shared-prod.telemetry.desktop_active_users
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: true

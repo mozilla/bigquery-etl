@@ -123,3 +123,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play Store Attribution Term - Available for Mobile Only
+- name: row_source
+  type: STRING
+  mode: NULLABLE
+  description: Flag indicating source - i.e. Desktop or Mobile

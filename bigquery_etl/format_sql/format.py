@@ -113,5 +113,5 @@ def format(paths, check=False, parallelism=8):
             )
             + "."
         )
-        if (check and reformatted) or (check and invalid):
+        if check and (reformatted or invalid):
             sys.exit(1)

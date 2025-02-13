@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.fxa_accounts_active_daily_clients_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.fx_accounts_active_daily_clients_v1`

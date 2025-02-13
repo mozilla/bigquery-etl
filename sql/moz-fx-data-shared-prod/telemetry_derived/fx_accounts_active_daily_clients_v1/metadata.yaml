@@ -1,6 +1,7 @@
-friendly_name: Fxa Accounts Active Daily Clients
+friendly_name: Firefox Accounts Active Daily Clients
 description: |-
-  Please provide a description for the query
+  Table with 1 row per date and legacy telemetry client ID sending a Firefox Accounts ping, joined with telemetry data
+  Intentionally does not contain Firefox Account ID
 owners:
 - kwindau@mozilla.com
 labels:

@@ -395,9 +395,9 @@ generate:
       firefox_ios:
         channels:
         - nightly
-      # firefox_desktop:
-      #   # firefox_desktop is a single app containing multiple channels
-      #   channels: null
+      firefox_desktop:
+        # firefox_desktop is a single app containing multiple channels hence why set to null.
+        channels: null
 
 
 retention_exclusion_list:

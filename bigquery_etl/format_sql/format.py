@@ -7,6 +7,7 @@ import sys
 from functools import partial
 from multiprocessing.pool import Pool
 from pathlib import Path
+from typing import Tuple
 
 from sqlglot.errors import ParseError
 
@@ -35,7 +36,15 @@ def skip_qualifying_references():
     ]
 
 
-def _format_path(check, path):
+def _format_path(check: bool, path: str) -> Tuple[int, int]:
+    """
+    Format SQL file or if `check` flag set validate it is correct format.
+
+    :param check:   Flag which indicates whether we should only check if query needs reformatted.
+    :param path:    String path of the SQL file to perform the operations on.
+    :return:        a tuple with two elements. Element one represents if formamtting was applied,
+                    element two if the query's format is invalid.
+    """
     query = Path(path).read_text()
 
     try:

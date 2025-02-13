@@ -123,6 +123,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play Store Attribution Term - Available for Mobile Only
+- name: row_source
+  type: STRING
+  mode: NULLABLE
+  description: Row Source - Indicates if Desktop or Mobile
 - mode: NULLABLE
   name: num_clients_in_cohort
   type: INTEGER

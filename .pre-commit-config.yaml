@@ -41,3 +41,11 @@ repos:
     - types-python-dateutil==2.9.0.20241206,
     - types-requests==2.32.0.20241016,
     - types-PyYAML==6.0.12.20241230
+- repo: local
+  hooks:
+  - id: bqetl_format
+    name: bqetl_format
+    language: script
+    entry: ./bqetl
+    args: [format, --check]
+    types: [sql]

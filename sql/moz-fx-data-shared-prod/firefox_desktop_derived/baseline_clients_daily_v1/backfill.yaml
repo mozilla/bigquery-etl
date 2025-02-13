@@ -4,6 +4,6 @@
   reason: DAU computations based on baseline ping [DENG-7838]
   watchers:
   - gkatre@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true

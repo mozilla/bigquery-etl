@@ -18,7 +18,7 @@ SELECT
   au.locale,
   au.app_name AS normalized_app_name,
   au.normalized_channel,
-  au.os AS normalized_os, --old one had it as normalized_os, do I need to add a transform of some kind to normalize?
+  au.os AS normalized_os,
   au.normalized_os_version,
   COALESCE(
     SAFE_CAST(NULLIF(SPLIT(au.normalized_os_version, ".")[SAFE_OFFSET(0)], "") AS INTEGER),
@@ -37,6 +37,7 @@ SELECT
   CAST(NULL AS STRING) AS play_store_attribution_source,
   CAST(NULL AS STRING) AS play_store_attribution_content,
   CAST(NULL AS STRING) AS play_store_attribution_term,
+  'Desktop' AS row_source,
 FROM
   `moz-fx-data-shared-prod.telemetry.desktop_active_users` au
 LEFT JOIN
@@ -88,12 +89,53 @@ SELECT
   mnpc.play_store_attribution_source,
   mnpc.play_store_attribution_content,
   mnpc.play_store_attribution_term,
+  'Mobile' AS row_source
 FROM
-  `moz-fx-data-shared-prod.telemetry.mobile_active_users` au
+  (
+--in case of multiple rows per client ID / first seen date (rare), pick 1
+    SELECT
+      client_id,
+      submission_date,
+      first_seen_date,
+      activity_segment,
+      app_display_version,
+      city,
+      country,
+      device_model,
+      distribution_id,
+      locale,
+      app_name,
+      normalized_channel,
+      normalized_os,
+      normalized_os_version
+    FROM
+      `moz-fx-data-shared-prod.telemetry.mobile_active_users`
+    WHERE
+      first_seen_date = @submission_date
+      AND submission_date = @submission_date
+    QUALIFY
+      ROW_NUMBER() OVER (PARTITION BY client_id) = 1
+  ) au
 LEFT JOIN
-  `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients` mnpc
+  (
+--in case of multiple rows per client ID /first seen date (rare), pick 1
+    SELECT
+      first_seen_date,
+      client_id,
+      adjust_ad_group,
+      adjust_campaign,
+      adjust_creative,
+      adjust_network,
+      play_store_attribution_campaign,
+      play_store_attribution_medium,
+      play_store_attribution_source,
+      play_store_attribution_content,
+      play_store_attribution_term,
+    FROM
+      `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients`
+    WHERE
+      first_seen_date = @submission_date
+    QUALIFY
+      ROW_NUMBER() OVER (PARTITION BY client_id) = 1
+  ) mnpc
   ON au.client_id = mnpc.client_id
-  AND au.submission_date = mnpc.first_seen_date
-WHERE
-  au.first_seen_date = @submission_date
-  AND au.submission_date = @submission_date

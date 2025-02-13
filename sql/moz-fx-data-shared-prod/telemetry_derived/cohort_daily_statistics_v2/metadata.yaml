@@ -1,8 +1,7 @@
 friendly_name: Cohort Daily Statistics V2
 description: |-
-  Cohort Daily Statistics consists of one row per cohort date
-  per activity date (up to 180 days after the cohort start date)
-  It's a summary of the cohort's activity in that day.
+  Cohort Daily Statistics tracks retention for a cohort with
+  the same first seen date and same set of attributes over the next 180 days
 
   Note that the values for client attributes are based on the
   attributes at the time the cohort started (rather than the

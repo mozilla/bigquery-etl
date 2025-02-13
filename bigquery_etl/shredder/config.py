@@ -160,6 +160,17 @@ LEGACY_MOBILE_SOURCES = tuple(
         "mozilla_lockbox",
     )
 )
+FOCUS_ADDITIONAL_DELETIONS = tuple(
+    DeleteSource(
+        table=f"{product}_derived.additional_deletion_requests_v1",
+        field="client_id",
+    )
+    for product in (
+        "org_mozilla_focus",
+        "org_mozilla_focus_beta",
+        "org_mozilla_focus_nightly",
+    )
+)
 USER_CHARACTERISTICS_SRC = DeleteSource(
     table="firefox_desktop_stable.deletion_request_v1",
     field=USER_CHARACTERISTICS_ID,
@@ -257,7 +268,7 @@ DELETE_TARGETS: DeleteIndex = {
     ),
     DeleteTarget(
         table="telemetry_derived.rolling_cohorts_v2",
-        field=(CLIENT_ID,) * 12,
+        field=(CLIENT_ID,) * 15,
     ): (
         DESKTOP_SRC,
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
@@ -266,6 +277,7 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
+        *FOCUS_ADDITIONAL_DELETIONS,
         *LEGACY_MOBILE_SOURCES,
     ),
     # activity stream

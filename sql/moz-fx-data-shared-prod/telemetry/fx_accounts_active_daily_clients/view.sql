@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.fxa_accounts_active_daily_clients`
+  `moz-fx-data-shared-prod.telemetry.fx_accounts_active_daily_clients`
 AS
 SELECT
   *

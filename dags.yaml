@@ -2185,4 +2185,3 @@ bqetl_client_attributes:
   schedule_interval: 40 19 * * *
   tags:
     - impact/tier_2
-  

@@ -9,7 +9,7 @@ labels:
   owner1: kwindau
   table_type: client_level
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_client_attributes
 bigquery:
   time_partitioning:
     type: day

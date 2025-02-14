@@ -23,11 +23,13 @@ WITH
       {% endif %}
       {% endraw %}
     GROUP BY
-      usage_profile_id
+      usage_profile_id,
+      app_channel
   ),
 _previous AS (
   SELECT
     usage_profile_id,
+    app_channel,
   FROM
     `{{ project_id }}.{{ channel_dataset }}.{{ view_name }}`
   WHERE
@@ -48,7 +50,7 @@ FROM
   _current
 LEFT JOIN
   _previous
-  USING (usage_profile_id)
+  USING (usage_profile_id, app_channel)
 WHERE
   _previous.usage_profile_id IS NULL
 QUALIFY

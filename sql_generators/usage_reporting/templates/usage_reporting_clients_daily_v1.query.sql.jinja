@@ -13,7 +13,6 @@ WITH usage_reporting_base AS (
     metrics.string.usage_app_build AS app_build,
     metrics.string.usage_reason AS reason,
     CAST(NULL AS BOOLEAN) AS is_active,  -- Eventually is_active value will come from the client.
-    COALESCE(metrics.timespan.usage_duration.value, 0) AS duration,
     -- fields only currently available in fenix.
     {% if app_name == "fenix" %}
     metrics.string.metrics_distribution_id AS distribution_id,
@@ -29,6 +28,8 @@ WITH usage_reporting_base AS (
     {% if app_name == "firefox_desktop" %}
     COALESCE(metrics.counter.browser_engagement_uri_count, 0) AS browser_engagement_uri_count,
     COALESCE(metrics.counter.browser_engagement_active_ticks, 0) AS browser_engagement_active_ticks,
+    {% else %}
+    COALESCE(metrics.timespan.usage_duration.value, 0) AS duration,
     {% endif %}
 
   FROM

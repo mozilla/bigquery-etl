@@ -19,16 +19,16 @@ VERSION = "v1"
 
 TEMPLATES_LOCATION = "templates"
 CHANNEL_TEMPLATES = (
-    "usage_reporting_clients_daily_v1.query.sql",
-    "usage_reporting_clients_first_seen_v1.query.sql",
-    "usage_reporting_clients_last_seen_v1.query.sql",
+    "usage_reporting_clients_daily_v1.query.sql.jinja",
+    "usage_reporting_clients_first_seen_v1.query.sql.jinja",
+    "usage_reporting_clients_last_seen_v1.query.sql.jinja",
 )
-CHANNEL_VIEW_TEMPLATE = "channel.view.sql"
+CHANNEL_VIEW_TEMPLATE = "channel.view.sql.jinja"
 ARTIFACT_TEMPLATES = (
-    "metadata.yaml",
-    "schema.yaml",
+    "metadata.yaml.jinja",
+    "schema.yaml.jinja",
 )
-APP_UNION_VIEW_TEMPLATE = "app_union.view.sql"
+APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
 
 
 @click.command()
@@ -156,7 +156,9 @@ def generate(
                     write_sql(
                         output_dir=output_dir,
                         full_table_id=channel_table_id,
-                        basename=channel_query_artifact_template,
+                        basename=".".join(
+                            channel_query_artifact_template.split(".")[:-1]
+                        ),
                         sql=rendered_artifact,
                         skip_existing=False,
                     )

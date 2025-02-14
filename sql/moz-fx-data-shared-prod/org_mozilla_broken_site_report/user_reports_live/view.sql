@@ -30,7 +30,7 @@ SELECT
   client_info.app_display_version AS app_version,
   normalized_channel AS app_channel,
   normalized_os AS os,
-  metrics as details
+  metrics AS details
 FROM
   live_reports
 WHERE

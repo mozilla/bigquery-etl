@@ -265,7 +265,7 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID
+  description: Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE

@@ -307,6 +307,7 @@ def validate_query_parameters(metadata: Metadata, path: str) -> bool:
     )
     time_partition_set = metadata.bigquery and metadata.bigquery.time_partitioning
 
+    # submission_date is assumed if date_partition_parameter is null
     if partition_param_set and not time_partition_set:
         click.echo(
             f"ERROR: {path} has partitioning parameter but is not a partitioned table."

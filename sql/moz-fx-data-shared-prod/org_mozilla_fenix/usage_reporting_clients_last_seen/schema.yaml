@@ -1,0 +1,39 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Logical date used for processing and paritioning.
+
+    '
+- name: usage_profile_id
+  type: STRING
+  mode: NULLABLE
+  description: 'A UUID of the usage_profile.
+
+    '
+- name: app_channel
+  type: STRING
+  mode: NULLABLE
+  description: 'The channel the application is being distributed on.
+
+    '
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Bit field shows on which of the last 28 days a client sent us the
+    usage_reporting ping.
+
+    '
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Bit field shows on which of the last 28 days a client fulfilled the
+    active criteria.
+
+    '
+- name: days_created_profile_bits
+  type: INTEGER
+  mode: NULLABLE
+  description: 'bit field indicating how many days lapsed since profile creation.
+
+    '

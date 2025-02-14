@@ -4,6 +4,7 @@ from airflow import DAG
 from airflow.sensors.external_task import ExternalTaskMarker
 from airflow.sensors.external_task import ExternalTaskSensor
 from airflow.utils.task_group import TaskGroup
+from airflow.providers.cncf.kubernetes.secret import Secret
 import datetime
 from operators.gcp_container_operator import GKEPodOperator
 from utils.constants import ALLOWED_STATES, FAILED_STATES
@@ -28,6 +29,19 @@ ascholtz@mozilla.com
 * impact/tier_1
 * repo/bigquery-etl
 """
+
+monitoring_derived__looker_dashboard_load_times__v1_probe_scraper_secret__looker_api_client_id_prod = Secret(
+    deploy_type="env",
+    deploy_target="LOOKER_API_CLIENT_ID",
+    secret="airflow-gke-secrets",
+    key="probe_scraper_secret__looker_api_client_id_prod",
+)
+monitoring_derived__looker_dashboard_load_times__v1_probe_scraper_secret__looker_api_client_secret_prod = Secret(
+    deploy_type="env",
+    deploy_target="LOOKER_API_CLIENT_SECRET",
+    secret="airflow-gke-secrets",
+    key="probe_scraper_secret__looker_api_client_secret_prod",
+)
 
 
 default_args = {
@@ -278,6 +292,22 @@ with DAG(
         monitoring_derived__jobs_by_organization__v1_external.set_upstream(
             monitoring_derived__jobs_by_organization__v1
         )
+
+    monitoring_derived__looker_dashboard_load_times__v1 = GKEPodOperator(
+        task_id="monitoring_derived__looker_dashboard_load_times__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/monitoring_derived/looker_dashboard_load_times_v1/query.py",
+        ]
+        + ["--date '{{ ds }}'"],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],
+        secrets=[
+            monitoring_derived__looker_dashboard_load_times__v1_probe_scraper_secret__looker_api_client_id_prod,
+            monitoring_derived__looker_dashboard_load_times__v1_probe_scraper_secret__looker_api_client_secret_prod,
+        ],
+    )
 
     monitoring_derived__outerbounds_flow_description__v1 = GKEPodOperator(
         task_id="monitoring_derived__outerbounds_flow_description__v1",

@@ -1,0 +1,13 @@
+friendly_name: Looker Dashboard Load Times
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring_derived.looker_dashboard_load_times_v1

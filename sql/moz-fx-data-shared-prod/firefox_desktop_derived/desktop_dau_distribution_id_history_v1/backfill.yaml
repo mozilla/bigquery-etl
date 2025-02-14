@@ -4,6 +4,6 @@
   reason: Backfill Legacy to GLEAN distribution ID mapping for KPI reporting
   watchers:
   - gkatre@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true

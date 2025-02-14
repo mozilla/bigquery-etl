@@ -23,6 +23,26 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Total Partitions
+- name: total_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Logical Bytes
+- name: active_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Active Logical Bytes
+- name: long_term_logical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Long Term Logical Bytes
+- name: total_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Physical Bytes
+- name: time_travel_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Time Travel Physical Bytes
 - name: active_physical_bytes
   type: INTEGER
   mode: NULLABLE
@@ -31,10 +51,29 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Long Term Physical Bytes
+- name: current_physical_bytes
+  type: INTEGER
+  mode: NULLABLE
+  description: Current Physical Bytes
 - name: total_rows_3_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: total_partitions_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_logical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: active_logical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_logical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_physical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: time_travel_physical_bytes_3_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: active_physical_bytes_3_days_ago
@@ -43,10 +82,28 @@ fields:
 - name: long_term_physical_bytes_3_days_ago
   type: INTEGER
   mode: NULLABLE
+- name: current_physical_bytes_3_days_ago
+  type: INTEGER
+  mode: NULLABLE
 - name: total_rows_7_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: total_partitions_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_logical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: active_logical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_logical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_physical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: time_travel_physical_bytes_7_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: active_physical_bytes_7_days_ago
@@ -55,16 +112,37 @@ fields:
 - name: long_term_physical_bytes_7_days_ago
   type: INTEGER
   mode: NULLABLE
+- name: current_physical_bytes_7_days_ago
+  type: INTEGER
+  mode: NULLABLE
 - name: total_rows_14_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: total_partitions_14_days_ago
   type: INTEGER
   mode: NULLABLE
+- name: total_logical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: active_logical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_logical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: total_physical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: time_travel_physical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
 - name: active_physical_bytes_14_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: long_term_physical_bytes_14_days_ago
+  type: INTEGER
+  mode: NULLABLE
+- name: current_physical_bytes_14_days_ago
   type: INTEGER
   mode: NULLABLE
 - name: partition_change_last_3_days
@@ -83,5 +161,59 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: rows_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: current_physical_bytes_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: current_physical_bytes_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: current_physical_bytes_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: total_logical_bytes_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: total_logical_bytes_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: total_logical_bytes_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: active_logical_bytes_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: active_logical_bytes_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: active_logical_bytes_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_logical_bytes_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_logical_bytes_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: long_term_logical_bytes_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: total_physical_bytes_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: total_physical_bytes_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: total_physical_bytes_change_last_14_days
+  type: INTEGER
+  mode: NULLABLE
+- name: time_travel_physical_bytes_change_last_3_days
+  type: INTEGER
+  mode: NULLABLE
+- name: time_travel_physical_bytes_change_last_7_days
+  type: INTEGER
+  mode: NULLABLE
+- name: time_travel_physical_bytes_change_last_14_days
   type: INTEGER
   mode: NULLABLE

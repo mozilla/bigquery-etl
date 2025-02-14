@@ -118,6 +118,7 @@ attrs==25.1.0 \
     #   cattrs
     #   glom
     #   jsonschema
+    #   looker-sdk
     #   mozilla-metric-config-parser
     #   pytest-mypy
     #   referencing
@@ -197,6 +198,7 @@ cattrs==24.1.2 \
     --hash=sha256:8028cfe1ff5382df59dd36474a86e02d817b06eaf8af84555441bac915d2ef85
     # via
     #   -r requirements.in
+    #   looker-sdk
     #   mozilla-metric-config-parser
 certifi==2024.7.4 \
     --hash=sha256:5a1e7645bc0ec61a09e26c36f6106dd4cf40c6db3a1fb6352b0244e7fb057c7b \
@@ -796,6 +798,10 @@ keyring==24.3.1 \
     --hash=sha256:c3327b6ffafc0e8befbdb597cacdb4928ffe5c1212f7645f186e6d9957a898db \
     --hash=sha256:df38a4d7419a6a60fea5cef1e45a948a3e8430dd12ad88b0f423c5c143906218
     # via bigeye-sdk
+looker-sdk==25.2.0 \
+    --hash=sha256:08fa5a181ac12c192f52f3637c751f09165935713eeb21c52b7a62b61fc8abca \
+    --hash=sha256:a71bf1ce23ca5edb282d6d214d83995573a22882c2ca4c63e5f5fdf67f6b04e9
+    # via -r requirements.in
 lz4==4.3.3 \
     --hash=sha256:01fe674ef2889dbb9899d8a67361e0c4a2c833af5aeb37dd505727cf5d2a131e \
     --hash=sha256:054b4631a355606e99a42396f5db4d22046a3397ffc3269a348ec41eaebd69d2 \
@@ -1933,6 +1939,7 @@ requests==2.32.3 \
     #   google-api-core
     #   google-cloud-bigquery
     #   google-cloud-storage
+    #   looker-sdk
     #   mkdocs-material
     #   mozilla-metric-config-parser
     #   mozilla-schema-generator
@@ -2260,6 +2267,7 @@ typing-extensions==4.12.2 \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
     --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
     # via
+    #   looker-sdk
     #   mypy
     #   polyfactory
     #   pydantic

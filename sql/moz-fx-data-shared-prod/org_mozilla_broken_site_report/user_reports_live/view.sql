@@ -30,59 +30,7 @@ SELECT
   client_info.app_display_version AS app_version,
   normalized_channel AS app_channel,
   normalized_os AS os,
-  TO_JSON_STRING(
-    STRUCT(
-      STRUCT(
-        STRUCT(
-          metrics.text2.broken_site_report_browser_info_app_default_useragent_string AS default_useragent_string,
-          metrics.boolean.broken_site_report_browser_info_app_fission_enabled AS fission_enabled,
-          metrics.string_list.broken_site_report_browser_info_app_default_locales AS app_default_locales
-        ) AS app,
-        STRUCT(
-          metrics.text2.broken_site_report_browser_info_graphics_devices_json AS devices_json,
-          metrics.text2.broken_site_report_browser_info_graphics_drivers_json AS drivers_json,
-          metrics.text2.broken_site_report_browser_info_graphics_features_json AS features_json,
-          metrics.text2.broken_site_report_browser_info_graphics_monitors_json AS monitors_json,
-          metrics.boolean.broken_site_report_browser_info_graphics_has_touch_screen AS has_touch_screen,
-          metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio AS device_pixel_ratio
-        ) AS graphics,
-        STRUCT(
-          metrics.boolean.broken_site_report_browser_info_prefs_software_webrender AS software_webrender,
-          metrics.boolean.broken_site_report_browser_info_prefs_global_privacy_control_enabled AS global_privacy_control_enabled,
-          metrics.boolean.broken_site_report_browser_info_prefs_installtrigger_enabled AS installtrigger_enabled,
-          metrics.boolean.broken_site_report_browser_info_prefs_forced_accelerated_layers AS forced_accelerated_layers,
-          metrics.boolean.broken_site_report_browser_info_prefs_opaque_response_blocking AS opaque_response_blocking,
-          metrics.boolean.broken_site_report_browser_info_prefs_resist_fingerprinting_enabled AS resist_fingerprinting_enabled,
-          metrics.quantity.broken_site_report_browser_info_prefs_cookie_behavior AS cookie_behavior
-        ) AS prefs,
-        STRUCT(
-          metrics.boolean.broken_site_report_browser_info_system_is_tablet AS is_tablet,
-          metrics.quantity.broken_site_report_browser_info_system_memory AS memory
-        ) AS system,
-        STRUCT(
-          metrics.string_list.broken_site_report_browser_info_security_antispyware AS antispyware,
-          metrics.string_list.broken_site_report_browser_info_security_antivirus AS antivirus,
-          metrics.string_list.broken_site_report_browser_info_security_firewall AS firewall
-        ) AS security
-      ) AS browser_info,
-      STRUCT(
-        metrics.text2.broken_site_report_tab_info_useragent_string AS useragent_string,
-        metrics.string_list.broken_site_report_tab_info_languages AS languages,
-        STRUCT(
-          metrics.boolean.broken_site_report_tab_info_frameworks_mobify AS mobify,
-          metrics.boolean.broken_site_report_tab_info_frameworks_fastclick AS fastclick,
-          metrics.boolean.broken_site_report_tab_info_frameworks_marfeel AS marfeel
-        ) AS frameworks,
-        STRUCT(
-          metrics.boolean.broken_site_report_tab_info_antitracking_has_mixed_display_content_blocked AS has_mixed_display_content_blocked,
-          metrics.boolean.broken_site_report_tab_info_antitracking_is_private_browsing AS is_private_browsing,
-          metrics.boolean.broken_site_report_tab_info_antitracking_has_mixed_active_content_blocked AS has_mixed_active_content_blocked,
-          metrics.boolean.broken_site_report_tab_info_antitracking_has_tracking_content_blocked AS has_tracking_content_blocked,
-          metrics.string.broken_site_report_tab_info_antitracking_block_list AS block_list
-        ) AS antitracking
-      ) AS tab_info
-    )
-  ) AS details
+  metrics AS details
 FROM
   live_reports
 WHERE

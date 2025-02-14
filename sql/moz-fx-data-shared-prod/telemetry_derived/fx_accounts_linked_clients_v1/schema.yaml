@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Older profile of the pair based on first seen date; if a tie, the smaller client ID string
+- mode: NULLABLE
+  name: linked_client_id
+  type: STRING
+  description: Younger profile of the pair based on first seen date; if a tie, the larger client ID string
+- mode: NULLABLE
+  name: linkage_first_seen_date
+  type: DATE
+  description: Date when linkage first detected
+- mode: NULLABLE
+  name: linkage_last_seen_date
+  type: STRING
+  description: Date when linkage last detected

@@ -297,20 +297,29 @@ def validate_query_parameters(metadata: Metadata, path: str) -> bool:
         for param in metadata.scheduling.get("parameters", []):
             param_name = param.split(":")[0]
             if param_name in parameters:
-                click.echo(f"ERROR: {path} has duplicate query parameters: {param_name}.")
+                click.echo(
+                    f"ERROR: {path} has duplicate query parameters: {param_name}."
+                )
                 return False
             parameters.add(param_name)
 
     partition_param_set = (
-        metadata.scheduling
-        and metadata.scheduling.get("date_partition_parameter")
+        metadata.scheduling and "date_partition_parameter" in metadata.scheduling
+    )
+    partition_param_non_null = metadata.scheduling and metadata.scheduling.get(
+        "date_partition_parameter"
     )
     time_partition_set = metadata.bigquery and metadata.bigquery.time_partitioning
 
-    # submission_date is assumed if date_partition_parameter is null
-    if partition_param_set and not time_partition_set:
+    # submission_date is assumed if date_partition_parameter is not set
+    if partition_param_non_null and not time_partition_set:
         click.echo(
             f"ERROR: {path} has partitioning parameter but is not a partitioned table."
+        )
+        return False
+    if partition_param_set and not partition_param_non_null and time_partition_set:
+        click.echo(
+            f"ERROR: {path} is a partitioned table but partitioning parameter is set to null."
         )
         return False
 

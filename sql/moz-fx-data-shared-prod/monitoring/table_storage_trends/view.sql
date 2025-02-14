@@ -23,7 +23,8 @@ data_14_days_ago AS (
     total_rows AS total_rows_14_days_ago,
     total_partitions AS total_partitions_14_days_ago,
     active_physical_bytes AS active_physical_bytes_14_days_ago,
-    long_term_physical_bytes AS long_term_physical_bytes_14_days_ago
+    long_term_physical_bytes AS long_term_physical_bytes_14_days_ago,
+    current_physical_bytes AS current_physical_bytes_14_days_ago,
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1` ts
   JOIN
@@ -38,7 +39,8 @@ data_7_days_ago AS (
     total_rows AS total_rows_7_days_ago,
     total_partitions AS total_partitions_7_days_ago,
     active_physical_bytes AS active_physical_bytes_7_days_ago,
-    long_term_physical_bytes AS long_term_physical_bytes_7_days_ago
+    long_term_physical_bytes AS long_term_physical_bytes_7_days_ago,
+    current_physical_bytes AS current_physical_bytes_7_days_ago
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1` ts
   JOIN
@@ -53,7 +55,8 @@ data_3_days_ago AS (
     total_rows AS total_rows_3_days_ago,
     total_partitions AS total_partitions_3_days_ago,
     active_physical_bytes AS active_physical_bytes_3_days_ago,
-    long_term_physical_bytes AS long_term_physical_bytes_3_days_ago
+    long_term_physical_bytes AS long_term_physical_bytes_3_days_ago,
+    current_physical_bytes AS current_physical_bytes_3_days_ago
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1` ts
   JOIN
@@ -69,7 +72,8 @@ latest AS (
     total_rows,
     total_partitions,
     active_physical_bytes,
-    long_term_physical_bytes
+    long_term_physical_bytes,
+    current_physical_bytes
   FROM
     `moz-fx-data-shared-prod.monitoring_derived.table_storage_v1` ts
   JOIN
@@ -85,24 +89,31 @@ SELECT
   l.total_partitions,
   l.active_physical_bytes,
   l.long_term_physical_bytes,
+  l.current_physical_bytes,
   d3.total_rows_3_days_ago,
   d3.total_partitions_3_days_ago,
   d3.active_physical_bytes_3_days_ago,
   d3.long_term_physical_bytes_3_days_ago,
+  d3.current_physical_bytes_3_days_ago,
   w1.total_rows_7_days_ago,
   w1.total_partitions_7_days_ago,
   w1.active_physical_bytes_7_days_ago,
   w1.long_term_physical_bytes_7_days_ago,
+  w1.current_physical_bytes_7_days_ago,
   w2.total_rows_14_days_ago,
   w2.total_partitions_14_days_ago,
   w2.active_physical_bytes_14_days_ago,
   w2.long_term_physical_bytes_14_days_ago,
+  w2.current_physical_bytes_14_days_ago,
   l.total_partitions - d3.total_partitions_3_days_ago AS partition_change_last_3_days,
   l.total_partitions - w1.total_partitions_7_days_ago AS partition_change_last_7_days,
   l.total_partitions - w2.total_partitions_14_days_ago AS partition_change_last_14_days,
   l.total_rows - d3.total_rows_3_days_ago AS rows_change_last_3_days,
   l.total_rows - w1.total_rows_7_days_ago AS rows_change_last_7_days,
-  l.total_rows - w2.total_rows_14_days_ago AS rows_change_last_14_days
+  l.total_rows - w2.total_rows_14_days_ago AS rows_change_last_14_days,
+  l.current_physical_bytes - d3.current_physical_bytes_3_days_ago AS current_physical_bytes_change_last_3_days,
+  l.current_physical_bytes - w1.current_physical_bytes_7_days_ago AS current_physical_bytes_change_last_7_days,
+  l.current_physical_bytes - w2.current_physical_bytes_14_days_ago AS current_physical_bytes_change_last_14_days
 FROM
   latest AS l
 LEFT JOIN

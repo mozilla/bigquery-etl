@@ -1,0 +1,15 @@
+friendly_name: Usage Reporting Clients First Seen
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.usage_reporting_clients_first_seen
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.usage_reporting_clients_first_seen
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.usage_reporting_clients_first_seen

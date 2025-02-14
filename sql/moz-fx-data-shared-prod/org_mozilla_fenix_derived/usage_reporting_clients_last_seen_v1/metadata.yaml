@@ -1,0 +1,30 @@
+friendly_name: Clients Last Seen Based on the DAU Reporting Ping.
+description: |-
+  A daily aggregate of the usage_reporting ping for each `usage_profile_id`
+  representing their activity.
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: kik
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: fenix
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.usage_reporting_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_fenix.usage_reporting_clients_last_seen

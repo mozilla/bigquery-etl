@@ -291,26 +291,33 @@ def validate_retention_policy_based_on_table_type(metadata, path):
 def validate_query_parameters(metadata: Metadata, path: str) -> bool:
     """Check if there are duplicate query parameters or incompatible partitioning settings."""
     parameters = set()
-    if metadata.scheduling:
-        if partition_param := metadata.scheduling.get("date_partition_parameter"):
-            parameters.add(partition_param)
-        for param in metadata.scheduling.get("parameters", []):
-            param_name = param.split(":")[0]
-            if param_name in parameters:
-                click.echo(f"ERROR: {path} has duplicate query parameters: {param_name}.")
-                return False
-            parameters.add(param_name)
+    # submission_date is assumed if date_partition_parameter is not set
+    if not metadata.scheduling:
+        return True
 
-    partition_param_set = (
-        metadata.scheduling
-        and metadata.scheduling.get("date_partition_parameter")
-    )
-    time_partition_set = metadata.bigquery and metadata.bigquery.time_partitioning
+    if partition_param := metadata.scheduling.get("date_partition_parameter"):
+        parameters.add(partition_param)
+    for param in metadata.scheduling.get("parameters", []):
+        param_name = param.split(":")[0]
+        if param_name in parameters:
+            click.echo(f"ERROR: {path} has duplicate query parameters: {param_name}.")
+            return False
+        parameters.add(param_name)
 
-    # submission_date is assumed if date_partition_parameter is null
-    if partition_param_set and not time_partition_set:
+    # no validation needed if date_partition_parameter is not set
+    if "date_partition_parameter" not in metadata.scheduling:
+        return True
+
+    partition_param_null = metadata.scheduling["date_partition_parameter"] is None
+    table_partitioned = metadata.bigquery and metadata.bigquery.time_partitioning
+
+    if partition_param_null and table_partitioned:
+        click.echo(f"ERROR: {path} is partitioned but has null partitioning parameter.")
+        return False
+
+    if not partition_param_null and not table_partitioned:
         click.echo(
-            f"ERROR: {path} has partitioning parameter but is not a partitioned table."
+            f"ERROR: {path} is not partitioned table but has a non-null partitioning parameter."
         )
         return False
 

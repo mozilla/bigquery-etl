@@ -13,6 +13,7 @@ from dateutil.relativedelta import relativedelta
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
+    MetadataValidationError,
     validate,
     validate_change_control,
     validate_shredder_mitigation,
@@ -32,31 +33,36 @@ class TestMetadata:
     def runner(self):
         return CliRunner()
 
+    @pytest.fixture(autouse=True)
+    def temp_test_dir(self, runner):
+        """Enable isolated filesystem for all test and create the test directory."""
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path)
+            yield
+
     def check_metadata(
         self, runner, metadata_conf, codeowners_conf=None, expected_result=None
     ):
         codeowners_file = os.path.join(self.test_path, self.codeowners_filename)
-        with runner.isolated_filesystem():
-            os.makedirs(self.test_path)
-            with open(
-                f"{self.test_path}/metadata.yaml",
-                "w",
-            ) as f:
-                f.write(yaml.dump(metadata_conf))
+        with open(
+            f"{self.test_path}/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(metadata_conf))
 
-            metadata = Metadata.from_file(f"{self.test_path}/metadata.yaml")
-            with open(codeowners_file, "w") as codeowners:
-                codeowners.write(codeowners_conf or "")
+        metadata = Metadata.from_file(f"{self.test_path}/metadata.yaml")
+        with open(codeowners_file, "w") as codeowners:
+            codeowners.write(codeowners_conf or "")
 
-            assert self.codeowners_filename in os.listdir(self.test_path)
-            assert (
-                validate_change_control(
-                    file_path=self.test_path,
-                    metadata=metadata,
-                    codeowners_file=codeowners_file,
-                )
-                is expected_result
+        assert self.codeowners_filename in os.listdir(self.test_path)
+        assert (
+            validate_change_control(
+                file_path=self.test_path,
+                metadata=metadata,
+                codeowners_file=codeowners_file,
             )
+            is expected_result
+        )
 
     def test_validate_change_control_no_owners_in_codeowners(self, runner):
         metadata = {
@@ -93,7 +99,7 @@ class TestMetadata:
             expected_result=True,
         )
 
-    def test_validate_change_control_at_lest_one_owner(self, runner):
+    def test_validate_change_control_at_least_one_owner(self, runner):
         metadata = {
             "friendly_name": "test",
             "owners": [
@@ -458,37 +464,35 @@ class TestMetadata:
 
         mock_bigquery_client().get_table.return_value = mock_bigquery_table()
 
-        with runner.isolated_filesystem():
-            query_path = Path(self.test_path) / "query.sql"
-            metadata_path = Path(self.test_path) / "metadata.yaml"
-            schema_path = Path(self.test_path) / "schema.yaml"
-            os.makedirs(self.test_path, exist_ok=True)
+        query_path = Path(self.test_path) / "query.sql"
+        metadata_path = Path(self.test_path) / "metadata.yaml"
+        schema_path = Path(self.test_path) / "schema.yaml"
 
-            with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table group by column_1")
-            with open(metadata_path, "w") as f:
-                f.write(yaml.safe_dump(metadata))
-            with open(schema_path, "w") as f:
-                f.write(yaml.safe_dump(schema_1))
-            metadata_from_file = Metadata.from_file(metadata_path)
+        with open(query_path, "w") as f:
+            f.write("SELECT column_1 FROM test_table group by column_1")
+        with open(metadata_path, "w") as f:
+            f.write(yaml.safe_dump(metadata))
+        with open(schema_path, "w") as f:
+            f.write(yaml.safe_dump(schema_1))
+        metadata_from_file = Metadata.from_file(metadata_path)
 
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert (
-                "Shredder mitigation validation failed, profile_id is an id-level column "
-                "that is not allowed for this type of backfill."
-            ) in captured.out
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is False
+        assert (
+            "Shredder mitigation validation failed, profile_id is an id-level column "
+            "that is not allowed for this type of backfill."
+        ) in captured.out
 
-            with open(schema_path, "w") as f:
-                f.write(yaml.safe_dump(schema_2))
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert (
-                "Shredder mitigation validation failed, column_1 does not have a description"
-                " in the schema."
-            ) in captured.out
+        with open(schema_path, "w") as f:
+            f.write(yaml.safe_dump(schema_2))
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is False
+        assert (
+            "Shredder mitigation validation failed, column_1 does not have a description"
+            " in the schema."
+        ) in captured.out
 
     @patch("google.cloud.bigquery.Client")
     @patch("google.cloud.bigquery.Table")
@@ -519,37 +523,35 @@ class TestMetadata:
 
         mock_bigquery_client().get_table.return_value = mock_bigquery_table()
 
-        with runner.isolated_filesystem():
-            query_path = Path(self.test_path) / "query.sql"
-            metadata_path = Path(self.test_path) / "metadata.yaml"
-            schema_path = Path(self.test_path) / "schema.yaml"
-            os.makedirs(self.test_path, exist_ok=True)
+        query_path = Path(self.test_path) / "query.sql"
+        metadata_path = Path(self.test_path) / "metadata.yaml"
+        schema_path = Path(self.test_path) / "schema.yaml"
 
-            with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table GROUP BY ALL")
-            with open(metadata_path, "w") as f:
-                f.write(yaml.safe_dump(metadata))
-            with open(schema_path, "w") as f:
-                f.write(yaml.safe_dump(schema))
+        with open(query_path, "w") as f:
+            f.write("SELECT column_1 FROM test_table GROUP BY ALL")
+        with open(metadata_path, "w") as f:
+            f.write(yaml.safe_dump(metadata))
+        with open(schema_path, "w") as f:
+            f.write(yaml.safe_dump(schema))
 
-            metadata_from_file = Metadata.from_file(metadata_path)
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert (
-                "Shredder mitigation validation failed, GROUP BY must use an explicit list of"
-                " columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
-            ) in captured.out
+        metadata_from_file = Metadata.from_file(metadata_path)
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is False
+        assert (
+            "Shredder mitigation validation failed, GROUP BY must use an explicit list of"
+            " columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
+        ) in captured.out
 
-            with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table GROUP BY column_1, 2")
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert (
-                "Shredder mitigation validation failed, GROUP BY must use an explicit list "
-                "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
-            ) in captured.out
+        with open(query_path, "w") as f:
+            f.write("SELECT column_1 FROM test_table GROUP BY column_1, 2")
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is False
+        assert (
+            "Shredder mitigation validation failed, GROUP BY must use an explicit list "
+            "of columns. Avoid expressions like `GROUP BY ALL` or `GROUP BY 1, 2, 3`."
+        ) in captured.out
 
     @patch("google.cloud.bigquery.Client")
     @patch("google.cloud.bigquery.Table")
@@ -580,40 +582,38 @@ class TestMetadata:
             "Ensure that the table"
         )
 
-        with runner.isolated_filesystem():
-            query_path = Path(self.test_path) / "query.sql"
-            metadata_path = Path(self.test_path) / "metadata.yaml"
-            schema_path = Path(self.test_path) / "schema.yaml"
-            os.makedirs(self.test_path, exist_ok=True)
+        query_path = Path(self.test_path) / "query.sql"
+        metadata_path = Path(self.test_path) / "metadata.yaml"
+        schema_path = Path(self.test_path) / "schema.yaml"
 
-            with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table GROUP BY column_1")
-            with open(metadata_path, "w") as f:
-                f.write(yaml.safe_dump(metadata))
-            with open(schema_path, "w") as f:
-                f.write(yaml.safe_dump(schema))
+        with open(query_path, "w") as f:
+            f.write("SELECT column_1 FROM test_table GROUP BY column_1")
+        with open(metadata_path, "w") as f:
+            f.write(yaml.safe_dump(metadata))
+        with open(schema_path, "w") as f:
+            f.write(yaml.safe_dump(schema))
 
-            metadata_from_file = Metadata.from_file(metadata_path)
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert expected_exc in captured.out
+        metadata_from_file = Metadata.from_file(metadata_path)
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is False
+        assert expected_exc in captured.out
 
-            mock_instance_true = mock_bigquery_client.return_value
-            mock_instance_true.query.return_value.result.return_value = True
+        mock_instance_true = mock_bigquery_client.return_value
+        mock_instance_true.query.return_value.result.return_value = True
 
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is True
-            assert captured.out == ""
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is True
+        assert captured.out == ""
 
-            mock_instance_true = mock_bigquery_client.return_value
-            mock_instance_true.query.return_value.result.return_value = None
+        mock_instance_true = mock_bigquery_client.return_value
+        mock_instance_true.query.return_value.result.return_value = None
 
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is False
-            assert expected_exc in captured.out
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is False
+        assert expected_exc in captured.out
 
     @patch("google.cloud.bigquery.Client")
     def test_capture_validate_exception(self, mock_bigquery_client, runner, capfd):
@@ -641,25 +641,23 @@ class TestMetadata:
             " running a backfill with shredder mitigation."
         )
 
-        with runner.isolated_filesystem():
-            query_path = Path(self.test_path) / "query.sql"
-            metadata_path = Path(self.test_path) / "metadata.yaml"
-            schema_path = Path(self.test_path) / "schema.yaml"
-            os.makedirs(self.test_path, exist_ok=True)
+        query_path = Path(self.test_path) / "query.sql"
+        metadata_path = Path(self.test_path) / "metadata.yaml"
+        schema_path = Path(self.test_path) / "schema.yaml"
 
-            with open(query_path, "w") as f:
-                f.write("SELECT column_1 FROM test_table GROUP BY column_1")
-            with open(metadata_path, "w") as f:
-                f.write(yaml.safe_dump(metadata))
-            with open(schema_path, "w") as f:
-                f.write(yaml.safe_dump(schema))
+        with open(query_path, "w") as f:
+            f.write("SELECT column_1 FROM test_table GROUP BY column_1")
+        with open(metadata_path, "w") as f:
+            f.write(yaml.safe_dump(metadata))
+        with open(schema_path, "w") as f:
+            f.write(yaml.safe_dump(schema))
 
-            metadata_from_file = Metadata.from_file(metadata_path)
+        metadata_from_file = Metadata.from_file(metadata_path)
 
-            result = validate_shredder_mitigation(self.test_path, metadata_from_file)
-            captured = capfd.readouterr()
-            assert result is True
-            assert expected_exc in captured.out
+        result = validate_shredder_mitigation(self.test_path, metadata_from_file)
+        captured = capfd.readouterr()
+        assert result is True
+        assert expected_exc in captured.out
 
     def test_validate_metadata_without_labels(self, runner, capfd):
         """Test that metadata validation doesn't fail when labels are not present."""
@@ -674,14 +672,109 @@ class TestMetadata:
                 type: DATE
             """
 
-        with runner.isolated_filesystem():
-            os.makedirs(self.test_path, exist_ok=True)
-            with open(Path(self.test_path) / "metadata.yaml", "w") as f:
-                f.write(yaml.safe_dump(metadata))
-            with open(Path(self.test_path) / "schema.yaml", "w") as f:
-                f.write(schema)
+        with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+            f.write(yaml.safe_dump(metadata))
+        with open(Path(self.test_path) / "schema.yaml", "w") as f:
+            f.write(schema)
 
-            result = validate(self.test_path)
-            captured = capfd.readouterr()
-            assert result is None
-            assert captured.out == ""
+        result = validate(self.test_path)
+        captured = capfd.readouterr()
+        assert result is None
+        assert captured.out == ""
+
+    def test_validate_metadata_valid_param(self, runner, capfd):
+        """Validation should pass when date partition parameter isn't set on a partitioned table."""
+        metadata = {
+            "friendly_name": "Test",
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                }
+            },
+        }
+
+        with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+            f.write(yaml.safe_dump(metadata))
+
+        validate(self.test_path)
+
+    def test_validate_metadata_duplicate_param(self, runner, capfd):
+        """Validation should fail when there are duplicate query parameters."""
+        metadata = {
+            "friendly_name": "Test",
+            "scheduling": {
+                "date_partition_parameter": "test_param",
+                "parameters": ["test_param:DATE:{{ ds }}"],
+            },
+        }
+
+        with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+            f.write(yaml.safe_dump(metadata))
+
+        with pytest.raises(MetadataValidationError):
+            validate(self.test_path)
+        captured = capfd.readouterr()
+        assert "has duplicate query parameters: test_param" in captured.out
+
+    def test_validate_metadata_incompatible_partition_param(self, runner, capfd):
+        """Validation should fail when date_partition_parameter is set on unpartitioned table."""
+        metadata = {
+            "friendly_name": "Test",
+            "scheduling": {
+                "date_partition_parameter": "test_param",
+            },
+        }
+
+        with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+            f.write(yaml.safe_dump(metadata))
+
+        with pytest.raises(MetadataValidationError):
+            validate(self.test_path)
+        captured = capfd.readouterr()
+        assert (
+            "is not partitioned table but has a non-null partitioning parameter"
+            in captured.out
+        )
+
+    def test_validate_metadata_partitioned_with_null_partition_param(
+        self, runner, capfd
+    ):
+        """Validation should fail when date_partition_parameter is set to null on a partitioned table."""
+        metadata = {
+            "friendly_name": "Test",
+            "scheduling": {
+                "date_partition_parameter": None,
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                }
+            },
+        }
+
+        with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+            f.write(yaml.safe_dump(metadata))
+
+        with pytest.raises(MetadataValidationError):
+            validate(self.test_path)
+        captured = capfd.readouterr()
+        assert "is partitioned but has null partitioning parameter" in captured.out
+
+    def test_validate_metadata_partitioned_no_partition_param(self, runner, capfd):
+        """Validation should pass when date_partition_parameter is not set on a partitioned table."""
+        metadata = {
+            "friendly_name": "Test",
+            "scheduling": {
+                "parameters": ["test_param:DATE:{{ ds }}"],
+            },
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                }
+            },
+        }
+
+        with open(Path(self.test_path) / "metadata.yaml", "w") as f:
+            f.write(yaml.safe_dump(metadata))
+
+        validate(self.test_path)

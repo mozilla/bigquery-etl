@@ -30,4 +30,3 @@ bigquery:
     - normalized_channel
     - country
     - normalized_app_name
-deprecated: true

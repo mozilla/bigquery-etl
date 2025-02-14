@@ -288,6 +288,34 @@ def validate_retention_policy_based_on_table_type(metadata, path):
     return is_valid
 
 
+def validate_query_parameters(metadata: Metadata, path: str) -> bool:
+    """Check if there are duplicate query parameters or incompatible partitioning settings."""
+    parameters = set()
+    if metadata.scheduling:
+        if partition_param := metadata.scheduling.get("date_partition_parameter"):
+            parameters.add(partition_param)
+        for param in metadata.scheduling.get("parameters", []):
+            param_name = param.split(":")[0]
+            if param_name in parameters:
+                click.echo(f"ERROR: {path} has duplicate query parameters: {param_name}.")
+                return False
+            parameters.add(param_name)
+
+    partition_param_set = (
+        metadata.scheduling
+        and metadata.scheduling.get("date_partition_parameter")
+    )
+    time_partition_set = metadata.bigquery and metadata.bigquery.time_partitioning
+
+    if partition_param_set and not time_partition_set:
+        click.echo(
+            f"ERROR: {path} has partitioning parameter but is not a partitioned table."
+        )
+        return False
+
+    return True
+
+
 class MetadataValidationError(Exception):
     """Metadata validation failed."""
 
@@ -329,6 +357,9 @@ def validate(target):
                     if not validate_retention_policy_based_on_table_type(
                         metadata, path
                     ):
+                        failed = True
+
+                    if not validate_query_parameters(metadata, path):
                         failed = True
 
                     # todo more validation

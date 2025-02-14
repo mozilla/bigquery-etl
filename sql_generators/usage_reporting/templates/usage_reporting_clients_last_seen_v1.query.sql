@@ -4,6 +4,7 @@
 WITH _current AS (
   SELECT
     usage_profile_id,
+    app_channel,
     -- The rightmost bit in 'days_since_seen' represents whether the user sent a usage_reporting ping on the submission_date.
     CAST(TRUE AS INT64) AS days_seen_bits,
     -- The rightmost bit in days_active_bits represents whether the user counts as active on the submission_date.
@@ -19,6 +20,7 @@ WITH _current AS (
 _previous AS (
   SELECT
     usage_profile_id,
+    app_channel,
     days_seen_bits,
     days_active_bits,
     days_created_profile_bits,

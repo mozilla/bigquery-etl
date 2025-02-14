@@ -10,6 +10,7 @@ WITH
       @submission_date AS first_seen_date,
       {% endif %}
       {% endraw %}
+      app_channel,
     FROM
       `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
     WHERE
@@ -42,6 +43,7 @@ _previous AS (
 SELECT
   first_seen_date,
   usage_profile_id,
+  app_channel,
 FROM
   _current
 LEFT JOIN

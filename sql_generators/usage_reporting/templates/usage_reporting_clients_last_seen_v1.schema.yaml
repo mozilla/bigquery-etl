@@ -13,6 +13,12 @@ fields:
     A UUID of the usage_profile.
 
 - mode: NULLABLE
+  name: app_channel
+  type: STRING
+  description: |
+    The channel the application is being distributed on.
+
+- mode: NULLABLE
   name: days_seen_bits
   type: INTEGER
   description: |

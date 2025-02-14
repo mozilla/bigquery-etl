@@ -163,9 +163,9 @@ def generate(
 
                 channel_view_template = jinja_env.get_template(CHANNEL_VIEW_TEMPLATE)
 
-                # # Do not render channel view if only a single channel exists.
-                # if channel_name == "multichannel":
-                #     continue
+                # Do not render channel view if only a single channel exists.
+                if channel_name == "multichannel":
+                    continue
 
                 rendered_channel_view = channel_view_template.render(
                     **channel_args,
@@ -178,9 +178,6 @@ def generate(
                     sql=reformat(rendered_channel_view),
                     skip_existing=False,
                 )
-
-            if not channel_info.get("app_channel"):
-                continue
 
             channels_info = [
                 {

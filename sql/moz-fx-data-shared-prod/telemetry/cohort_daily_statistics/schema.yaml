@@ -2,72 +2,96 @@ fields:
 - name: cohort_date
   type: DATE
   mode: NULLABLE
+  description: Cohort Date
 - name: activity_date
   type: DATE
   mode: NULLABLE
+  description: Activity Date
 - name: activity_segment
   type: STRING
   mode: NULLABLE
+  description: Activity Segment
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: App Version
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
+  description: Attribution Campaign
 - name: attribution_content
   type: STRING
   mode: NULLABLE
+  description: Attribution Content
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
+  description: Attribution Experiment
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
+  description: Attribution Medium
 - name: attribution_source
   type: STRING
   mode: NULLABLE
+  description: Attribution Source
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
+  description: Attribution Variation
 - name: city
   type: STRING
   mode: NULLABLE
+  description: City
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: Device Model
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: Distribution ID
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Default Browser
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Locale
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: Normalized App Name
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: Normalized Channel
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: Normalized Operating System
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
+  description: Normalized Operating System Version
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
+  description: Operating System Major Version
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
+  description: Operating System Minor Version
 - name: num_clients_in_cohort
   type: INTEGER
   mode: NULLABLE
+  description: Number of Clients in Cohort
 - name: num_clients_active_on_day
   type: INTEGER
   mode: NULLABLE
+  description: Number of Clients Active on Day

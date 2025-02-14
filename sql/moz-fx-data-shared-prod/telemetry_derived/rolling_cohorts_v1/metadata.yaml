@@ -32,10 +32,8 @@ bigquery:
     - normalized_channel
     - country
     - normalized_app_name
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry.unified_metrics
+deprecated: true

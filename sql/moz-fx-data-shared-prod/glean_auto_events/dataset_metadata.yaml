@@ -1,6 +1,6 @@
-friendly_name: Fx Quant User Research
+friendly_name: Glean Auto Events
 description: |-
-  Contains views for Fx Quant User Research (from Alchemy)
+  Please provide a description for the dataset
 dataset_base_acl: view
 user_facing: true
 labels: {}
@@ -8,7 +8,6 @@ default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

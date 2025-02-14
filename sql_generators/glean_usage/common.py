@@ -257,8 +257,6 @@ class GleanTable:
         # but do not do so actively anymore. This is why they get excluded.
         enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
-        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
-
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -311,8 +309,6 @@ class GleanTable:
             )
         except TemplateNotFound:
             schema = None
-
-        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
 
         if enable_monitoring:
             try:

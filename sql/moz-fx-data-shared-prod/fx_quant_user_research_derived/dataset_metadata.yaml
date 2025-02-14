@@ -1,8 +1,6 @@
 friendly_name: Fx Quant User Research Derived
 description: |-
-  Contains tables for Fx Quant User Research Derived.
-
-  JIRA: https://mozilla-hub.atlassian.net/browse/DENG-6770
+  Contains tables for FX Quant User Research (from Alchemy)
 dataset_base_acl: derived
 user_facing: false
 labels: {}

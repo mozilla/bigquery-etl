@@ -2152,7 +2152,7 @@ bqetl_marketing_analysis:
 
 bqetl_fivetran_alchemer:
   description: |
-    DAG for scheduling queries pulling survey data from Alchemy.
+    DAG for scheduling queries pulling survey data from Alchemer.
   default_args:
     depends_on_past: false
     owner: oanaekwe@mozilla.com

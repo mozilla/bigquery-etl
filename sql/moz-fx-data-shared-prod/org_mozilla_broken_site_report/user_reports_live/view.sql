@@ -23,8 +23,8 @@ WITH live_reports AS (
 SELECT
   document_id AS uuid,
   CAST(submission_timestamp AS DATETIME) AS reported_at,
-  metrics.text2.broken_site_report_description AS comments,
-  metrics.url2.broken_site_report_url AS url,
+  metrics.text.broken_site_report_description AS comments,
+  metrics.url.broken_site_report_url AS url,
   metrics.string.broken_site_report_breakage_category AS breakage_category,
   app_name,
   client_info.app_display_version AS app_version,

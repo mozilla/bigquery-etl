@@ -2160,7 +2160,7 @@ bqetl_fivetran_alchemer:
       - oanaekwe@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: "2025-03-01"
+    start_date: "2025-02-18"
     retries: 1
     retry_delay: 25m
   tags:

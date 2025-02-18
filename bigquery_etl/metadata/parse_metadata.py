@@ -262,7 +262,7 @@ class Metadata:
         deprecated = False
         deletion_date = None
         monitoring = None
-        enforce_col_desc = True
+        enforce_col_desc = False
 
         with open(metadata_file, "r") as yaml_stream:
             try:

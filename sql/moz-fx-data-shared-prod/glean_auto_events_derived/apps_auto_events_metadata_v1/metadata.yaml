@@ -13,6 +13,7 @@ labels:
 scheduling:
   dag_name: bqetl_glean_dictionary
   depends_on_past: false
+  date_partition_parameter: null
 bigquery:
   clustering:
     fields:

@@ -1,5 +1,5 @@
 fields:
-- mode: NULLABLE
+- mode: REQUIRED
   name: submission_date
   type: DATE
   description: Submission Date

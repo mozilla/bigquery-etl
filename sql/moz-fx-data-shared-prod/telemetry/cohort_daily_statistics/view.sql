@@ -12,6 +12,13 @@ SELECT
   attribution_medium,
   attribution_source,
   attribution_variation,
+  CASE
+    WHEN row_source = 'Desktop'
+      THEN `moz-fx-data-shared-prod.udf.organic_vs_paid_desktop`(attribution_medium)
+    WHEN row_source = 'Mobile'
+      THEN `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network)
+    ELSE NULL
+  END AS paid_vs_organic,
   city,
   country,
   device_model,

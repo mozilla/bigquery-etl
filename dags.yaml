@@ -2150,6 +2150,24 @@ bqetl_marketing_analysis:
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
 
+bqetl_alchemer:
+  description: |
+    DAG for scheduling queries pulling survey data from Alchemer.
+  default_args:
+    depends_on_past: false
+    owner: ago@mozilla.com
+    email:
+      - ago@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-02-18"
+    retries: 1
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
+
 bqetl_cohort_retention:
   default_args:
     depends_on_past: false

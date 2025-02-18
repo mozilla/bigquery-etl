@@ -184,7 +184,7 @@ class Metadata:
     deprecated: bool = attr.ib(False)
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
-    enforce_col_desc: bool=attr.ib(False)
+    enforce_col_desc: bool = attr.ib(False)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -362,7 +362,7 @@ class Metadata:
                     deprecated,
                     deletion_date,
                     monitoring,
-                    enforce_col_desc
+                    enforce_col_desc,
                 )
             except yaml.YAMLError as e:
                 raise e

@@ -500,7 +500,9 @@ SELECT
       metrics.custom_distribution.ssl_tls13_intolerance_reason_post,
       metrics.custom_distribution.ssl_tls13_intolerance_reason_pre,
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
-      metrics.custom_distribution.tls_cipher_suite
+      metrics.custom_distribution.tls_cipher_suite,
+      metrics.custom_distribution.readermode_download_result,
+      metrics.custom_distribution.readermode_parse_result
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1983,7 +1985,9 @@ SELECT
       metrics.custom_distribution.ssl_tls13_intolerance_reason_post,
       metrics.custom_distribution.ssl_tls13_intolerance_reason_pre,
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
-      metrics.custom_distribution.tls_cipher_suite
+      metrics.custom_distribution.tls_cipher_suite,
+      metrics.custom_distribution.readermode_download_result,
+      metrics.custom_distribution.readermode_parse_result
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3484,7 +3488,9 @@ SELECT
       metrics.custom_distribution.ssl_tls13_intolerance_reason_post,
       metrics.custom_distribution.ssl_tls13_intolerance_reason_pre,
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
-      metrics.custom_distribution.tls_cipher_suite
+      metrics.custom_distribution.tls_cipher_suite,
+      metrics.custom_distribution.readermode_download_result,
+      metrics.custom_distribution.readermode_parse_result
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4994,7 +5000,9 @@ SELECT
       metrics.custom_distribution.ssl_tls13_intolerance_reason_post,
       metrics.custom_distribution.ssl_tls13_intolerance_reason_pre,
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
-      metrics.custom_distribution.tls_cipher_suite
+      metrics.custom_distribution.tls_cipher_suite,
+      metrics.custom_distribution.readermode_download_result,
+      metrics.custom_distribution.readermode_parse_result
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -6486,7 +6494,9 @@ SELECT
       metrics.custom_distribution.ssl_tls13_intolerance_reason_post,
       metrics.custom_distribution.ssl_tls13_intolerance_reason_pre,
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
-      metrics.custom_distribution.tls_cipher_suite
+      metrics.custom_distribution.tls_cipher_suite,
+      metrics.custom_distribution.readermode_download_result,
+      metrics.custom_distribution.readermode_parse_result
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,

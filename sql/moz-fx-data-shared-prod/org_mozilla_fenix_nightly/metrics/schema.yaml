@@ -2565,7 +2565,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -29477,6 +29478,64 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram TLS_CIPHER_SUITE.
+
+        '
+    - name: readermode_download_result
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The result of trying to download a document to show in reader
+        view (0=Success, 1=Error XHR, 2=Error no document)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram READER_MODE_DOWNLOAD_RESULT.
+
+        '
+    - name: readermode_parse_result
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The result of trying to parse a document to show in reader view
+        (0=Success, 1=Error too many elements, 2=Error in worker, 3=Error no article)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram READER_MODE_PARSE_RESULT.
 
         '
   - name: quantity

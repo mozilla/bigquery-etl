@@ -31,6 +31,15 @@ SELECT
   normalized_os_version,
   os_version_major,
   os_version_minor,
+  adjust_ad_group,
+  adjust_campaign,
+  adjust_creative,
+  adjust_network,
+  play_store_attribution_campaign,
+  play_store_attribution_medium,
+  play_store_attribution_source,
+  play_store_attribution_content,
+  play_store_attribution_term,
   num_clients_in_cohort,
   num_clients_active_on_day
 FROM

@@ -1,0 +1,27 @@
+friendly_name: Baseline Active Users Aggregates
+description: |-
+  Builds active_users_aggregates using baseline ping data
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  dag: bqetl_baseline_active_user_aggregates
+scheduling:
+  dag_name: bqetl_baseline_active_user_aggregates
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - app_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

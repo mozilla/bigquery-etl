@@ -12,6 +12,7 @@ labels:
 scheduling:
   dag_name: bqetl_glean_dictionary
   depends_on_past: false
+  date_partition_parameter: null
 bigquery:
   time_partitioning: null
   range_partitioning: null

@@ -127,10 +127,9 @@ with DAG(
         + [
             "--query_file=sql/moz-fx-data-shared-prod/glean_auto_events_derived/apps_auto_events_metadata_v1/query.sql"
         ]
-        + ["--destination_table=apps_auto_events_metadata${{ds_nodash}}"]
+        + ["--destination_table=apps_auto_events_metadata"]
         + ["--dataset_id=glean_auto_events_derived"]
-        + ["--project_id=moz-fx-data-shared-prod"]
-        + ["--parameter=submission_date:DATE:{{ds}}"],
+        + ["--project_id=moz-fx-data-shared-prod"],
         image=docker_image,
     )
 

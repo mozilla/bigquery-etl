@@ -69,8 +69,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="efilho@mozilla.com",
         email=["efilho@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     glean_auto_events_derived__daily_auto_events_metadata__v1 = bigquery_etl_query(

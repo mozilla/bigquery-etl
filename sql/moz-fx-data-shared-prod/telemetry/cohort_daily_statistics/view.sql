@@ -28,3 +28,6 @@ SELECT
   num_clients_active_on_day
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.cohort_daily_statistics_v2`
+WHERE
+  normalized_app_name NOT LIKE '%BrowserStack'
+  AND normalized_app_name NOT LIKE '%MozillaOnline'

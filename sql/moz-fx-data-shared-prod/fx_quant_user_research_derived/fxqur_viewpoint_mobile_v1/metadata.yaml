@@ -3,7 +3,7 @@ friendly_name: Alchemer Survey data for Viewpoint 2023 Expansion - Mobile
 description: >
   An import of survey data from Alchemer (SurveyGizmo) for Viewpoint 2023 Expansion - Mobile
 owners:
-  - oanaekwe@mozilla.com
+  - ago@mozilla.com
 labels:
   incremental: true
   schedule: daily

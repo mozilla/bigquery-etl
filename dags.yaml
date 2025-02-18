@@ -2155,9 +2155,9 @@ bqetl_alchemer:
     DAG for scheduling queries pulling survey data from Alchemer.
   default_args:
     depends_on_past: false
-    owner: oanaekwe@mozilla.com
+    owner: ago@mozilla.com
     email:
-      - oanaekwe@mozilla.com
+      - ago@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-02-18"

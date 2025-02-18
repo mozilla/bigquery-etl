@@ -761,6 +761,13 @@ def backfill(
         if metadata.bigquery and metadata.bigquery.time_partitioning:
             partitioning_type = metadata.bigquery.time_partitioning.type
 
+        # null date_partition_parameter explicitly set to null will
+        # cause each backfill query to overwrite the entire table
+        if partitioning_type is not None and date_partition_parameter is None:
+            raise ValueError(
+                f"Cannot backfill partitioned table with date_partition_parameter set to null: {query_file.parent}"
+            )
+
         date_range = BackfillDateRange(
             start_date.date(),
             end_date.date(),

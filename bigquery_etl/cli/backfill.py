@@ -35,8 +35,7 @@ from ..backfill.utils import (
     get_qualified_table_name_to_entries_map_by_project,
     get_scheduled_backfills,
     qualified_table_name_matching,
-    validate_depends_on_past,
-    validate_metadata_workgroups,
+    validate_table_metadata,
 )
 from ..backfill.validate import (
     validate_duplicate_entry_with_initiate_status,
@@ -152,12 +151,8 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
-    if not validate_depends_on_past(sql_dir, qualified_table_name):
-        click.echo("Tables that depend on past are currently not supported.")
-        sys.exit(1)
-
-    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-        click.echo("Only mozilla-confidential workgroups are supported.")
+    if errors := validate_table_metadata(sql_dir, qualified_table_name):
+        click.echo("\n".join(errors))
         sys.exit(1)
 
     existing_backfills = get_entries_from_qualified_table_name(
@@ -235,17 +230,8 @@ def validate(
         )
 
     for table_name in backfills_dict:
-
-        if not validate_depends_on_past(sql_dir, table_name):
-            click.echo(
-                f"Tables that depend on past are currently not supported:  {table_name}"
-            )
-            sys.exit(1)
-
-        if not validate_metadata_workgroups(sql_dir, table_name):
-            click.echo(
-                f"Only mozilla-confidential workgroups are supported.  {table_name} contain workgroup access that is not supported"
-            )
+        if errors := validate_table_metadata(sql_dir, table_name):
+            click.echo("\n".join(errors))
             sys.exit(1)
 
         try:

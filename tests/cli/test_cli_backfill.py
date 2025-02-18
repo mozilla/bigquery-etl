@@ -2,6 +2,7 @@ import json
 import os
 from datetime import date, timedelta
 from pathlib import Path
+from textwrap import dedent
 from unittest.mock import patch
 
 import pytest
@@ -26,6 +27,7 @@ from bigquery_etl.backfill.utils import (
     get_qualified_table_name_to_entries_map_by_project,
     qualified_table_name_matching,
     validate_metadata_workgroups,
+    validate_partitioning,
 )
 from bigquery_etl.cli.backfill import (
     complete,
@@ -2061,3 +2063,43 @@ class TestBackfill:
         )
 
         assert result.exit_code == 0
+
+    def test_validate_valid_partition_param(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+        with open(Path(QUERY_DIR) / "metadata.yaml", "w") as f:
+            f.write(
+                dedent(
+                    """
+                    bigquery:
+                      time_partitioning:
+                        type: day
+                        field: submission_date
+                        require_partition_filter: false
+                    """
+                )
+            )
+
+        result = validate_partitioning("sql", qualified_table_name)
+        assert result
+
+    def test_validate_null_partition_param(self, runner):
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+        with open(Path(QUERY_DIR) / "metadata.yaml", "w") as f:
+            f.write(
+                dedent(
+                    """
+                    scheduling:
+                        date_partition_parameter: null
+                    bigquery:
+                      time_partitioning:
+                        type: day
+                        field: submission_date
+                        require_partition_filter: false
+                    """
+                )
+            )
+
+        result = validate_partitioning("sql", qualified_table_name)
+        assert not result

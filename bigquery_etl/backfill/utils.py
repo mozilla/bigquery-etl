@@ -103,11 +103,34 @@ def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
+def validate_table_metadata(sql_dir: str, qualified_table_name: str) -> List[str]:
+    """Run all metadata.yaml validation checks and return list of error strings."""
+    errors = []
+    if not validate_depends_on_past(sql_dir, qualified_table_name):
+        errors.append(
+            f"Tables that depend on past are currently not supported:  {qualified_table_name}"
+        )
+
+    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+        errors.append(
+            "Only mozilla-confidential workgroups are supported. "
+            f"{qualified_table_name} contains workgroup access that is not supported"
+        )
+
+    if not validate_partitioning(sql_dir, qualified_table_name):
+        errors.append(
+            f"date_partition_parameter cannot be set to null on partitioned table {qualified_table_name}"
+        )
+
+    return errors
+
+
 def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
     """
     Check if the table depends on past.
 
     Managed backfills currently do not support tables that depends on past.
+    https://mozilla-hub.atlassian.net/browse/DENG-3656
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
@@ -185,6 +208,25 @@ def _validate_workgroup_members(workgroup_access, metadata_filename):
                 return True
 
     return False
+
+
+def validate_partitioning(sql_dir, qualified_table_name) -> bool:
+    """Check if date_partition_parameter is non-null on a partitioned table."""
+    project, dataset, table = qualified_table_name_matching(qualified_table_name)
+    table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
+
+    table_metadata = Metadata.from_file(table_metadata_path)
+    if (
+        table_metadata.scheduling.get("date_partition_parameter", "submission_date")
+        is None
+        and "date_partition_offset" not in table_metadata.scheduling
+    ):
+        return not (
+            table_metadata.bigquery
+            and table_metadata.bigquery.time_partitioning is not None
+        )
+
+    return True
 
 
 def qualified_table_name_matching(qualified_table_name) -> Tuple[str, str, str]:

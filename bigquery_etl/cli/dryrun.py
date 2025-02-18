@@ -5,6 +5,7 @@ import glob
 import os
 import re
 import sys
+import traceback
 from functools import partial
 from multiprocessing.pool import Pool
 from typing import List, Set, Tuple
@@ -54,6 +55,13 @@ from ..dryrun import DryRun, get_credentials, get_id_token
     default=False,
 )
 @click.option(
+    "--validate_union_schemas",
+    "--validate-union-schemas",
+    help="Require any subqueries being unioned to have exactly matching schemas.",
+    is_flag=True,
+    default=False,
+)
+@click.option(
     "--respect-skip/--ignore-skip",
     help="Respect or ignore query skip configuration. Default is --respect-skip.",
     default=True,
@@ -67,6 +75,7 @@ def dryrun(
     paths: List[str],
     use_cloud_function: bool,
     validate_schemas: bool,
+    validate_union_schemas: bool,
     respect_skip: bool,
     project: str,
 ):
@@ -112,9 +121,10 @@ def dryrun(
 
     sql_file_valid = partial(
         _sql_file_valid,
-        use_cloud_function,
-        respect_skip,
-        validate_schemas,
+        use_cloud_function=use_cloud_function,
+        respect_skip=respect_skip,
+        validate_schemas=validate_schemas,
+        validate_union_schemas=validate_union_schemas,
         credentials=credentials,
         id_token=id_token,
     )
@@ -133,7 +143,13 @@ def dryrun(
 
 
 def _sql_file_valid(
-    use_cloud_function, respect_skip, validate_schemas, sqlfile, credentials, id_token
+    sqlfile,
+    use_cloud_function,
+    respect_skip,
+    validate_schemas,
+    validate_union_schemas,
+    credentials,
+    id_token,
 ) -> Tuple[bool, str]:
     """Dry run the SQL file."""
     result = DryRun(
@@ -148,6 +164,17 @@ def _sql_file_valid(
             success = result.validate_schema()
         except Exception as e:  # validate_schema raises base exception
             click.echo(e, err=True)
+            success = False
+        return success, sqlfile
+
+    if validate_union_schemas:
+        try:
+            success = result.validate_union_schemas()
+        except Exception:
+            click.echo(
+                f"Failed to validate union schemas in {sqlfile}:\n{traceback.format_exc(limit=0)}",
+                err=True,
+            )
             success = False
         return success, sqlfile
 

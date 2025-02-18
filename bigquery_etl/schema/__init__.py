@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 import attr
 import yaml
@@ -15,6 +15,10 @@ from google.cloud.bigquery import SchemaField
 from .. import dryrun
 
 SCHEMA_FILE = "schema.yaml"
+
+
+class SchemaAssertError(Exception):
+    """Schema assert error."""
 
 
 @attr.s(auto_attribs=True)
@@ -272,6 +276,64 @@ class Schema:
                         raise Exception(
                             f"Field {prefix}.{field_path} is missing in schema"
                         )
+
+    def _assert_fields_exactly_unionable(
+        self,
+        fields: Sequence[dict[str, Any]],
+        other_fields: Sequence[dict[str, Any]],
+        parent_field_name: Optional[str] = None,
+    ) -> None:
+        """Raise an error if the two lists of fields don't match in terms of field positions, names, and types."""
+        parent_field_note = f" in {parent_field_name}" if parent_field_name else ""
+
+        if len(fields) != len(other_fields):
+            raise SchemaAssertError(
+                f"Different number of fields{parent_field_note} ({len(fields)} vs {len(other_fields)})."
+            )
+
+        for field_number, (field, other_field) in enumerate(
+            zip(fields, other_fields), start=1
+        ):
+            if field["name"] != other_field["name"]:
+                raise SchemaAssertError(
+                    f"Field #{field_number}{parent_field_note} has different names ({field['name']} vs {other_field['name']})."
+                )
+
+            field_name = (
+                f"{parent_field_name}.{field['name']}"
+                if parent_field_name
+                else field["name"]
+            )
+            field_is_repeated = field.get("mode") == "REPEATED"
+            other_field_is_repeated = other_field.get("mode") == "REPEATED"
+            field_type = (
+                f"REPEATED {field['type']}" if field_is_repeated else field["type"]
+            )
+            other_field_type = (
+                f"REPEATED {other_field['type']}"
+                if other_field_is_repeated
+                else other_field["type"]
+            )
+
+            if field_type != other_field_type:
+                raise SchemaAssertError(
+                    f"Field {field_name} has different types ({field_type} vs {other_field_type})."
+                )
+
+            if field["type"] == "RECORD":
+                self._assert_fields_exactly_unionable(
+                    field["fields"],
+                    other_field["fields"],
+                    parent_field_name=(
+                        field_name + ("[]" if field_is_repeated else "")
+                    ),
+                )
+
+    def assert_exactly_unionable_with(self, other: "Schema") -> None:
+        """Raise an error if this schema doesn't match the other schema in terms of field positions, names, and types."""
+        self._assert_fields_exactly_unionable(
+            self.schema["fields"], other.schema["fields"]
+        )
 
     def to_yaml_file(self, yaml_path: Path):
         """Write schema to the YAML file path."""

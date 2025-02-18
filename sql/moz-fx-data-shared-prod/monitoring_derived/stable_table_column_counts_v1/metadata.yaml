@@ -11,8 +11,7 @@ scheduling:
   referenced_tables:
   - ['moz-fx-data-shared-prod', '*_stable', '*']
   - ['moz-fx-data-shared-prod', 'telemetry_stable', 'main_v5']
-  date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day

@@ -10,7 +10,7 @@ description: |-
 owners:
 - srose@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat

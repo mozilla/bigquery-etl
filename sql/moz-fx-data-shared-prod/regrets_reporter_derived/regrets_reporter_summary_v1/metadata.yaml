@@ -19,9 +19,7 @@ scheduling:
   dag_name: bqetl_regrets_reporter_summary
   task_name: regrets_reporter_summary__v1
   schedule: daily
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
+  date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day

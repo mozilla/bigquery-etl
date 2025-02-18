@@ -6,7 +6,7 @@ owners:
 - frank@mozilla.com
 labels:
   application: firefox_accounts
-  incremental: true
+  incremental: false
   schedule: daily
   table_type: client_level
 # TODO: Once fxa_users_first_seen_v2 backfill is completed and data confirmed to be heatlhy

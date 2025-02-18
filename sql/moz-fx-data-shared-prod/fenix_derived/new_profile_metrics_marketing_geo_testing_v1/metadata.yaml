@@ -13,9 +13,7 @@ labels:
 scheduling:
   dag_name: bqetl_marketing_analysis
   date_partition_offset: -27
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
+  date_partition_parameter: submission_date
 bigquery:
   time_partitioning:
     type: day

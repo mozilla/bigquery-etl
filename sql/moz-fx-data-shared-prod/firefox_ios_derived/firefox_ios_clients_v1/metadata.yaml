@@ -23,7 +23,7 @@ owners:
 - kik@mozilla.com
 labels:
   application: firefox_ios
-  incremental: true
+  incremental: false
   schedule: daily
   dag: bqetl_firefox_ios
   owner1: kik

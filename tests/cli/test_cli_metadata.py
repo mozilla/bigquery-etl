@@ -742,6 +742,9 @@ class TestMetadata:
         """Validation should fail when date_partition_parameter is set to null on a partitioned table."""
         metadata = {
             "friendly_name": "Test",
+            "labels": {
+                "incremental": "true",
+            },
             "scheduling": {
                 "date_partition_parameter": None,
             },
@@ -758,7 +761,7 @@ class TestMetadata:
         with pytest.raises(MetadataValidationError):
             validate(self.test_path)
         captured = capfd.readouterr()
-        assert "is partitioned but has null partitioning parameter" in captured.out
+        assert "but has null partitioning parameter" in captured.out
 
     def test_validate_metadata_partitioned_no_partition_param(self, runner, capfd):
         """Validation should pass when date_partition_parameter is not set on a partitioned table."""

@@ -311,8 +311,8 @@ def validate_query_parameters(metadata: Metadata, path: str) -> bool:
     partition_param_null = metadata.scheduling["date_partition_parameter"] is None
     table_partitioned = metadata.bigquery and metadata.bigquery.time_partitioning
 
-    if partition_param_null and table_partitioned:
-        click.echo(f"ERROR: {path} is partitioned but has null partitioning parameter.")
+    if partition_param_null and table_partitioned and metadata.is_incremental():
+        click.echo(f"ERROR: {path} is partitioned and incremental but has null partitioning parameter.")
         return False
 
     if not partition_param_null and not table_partitioned:

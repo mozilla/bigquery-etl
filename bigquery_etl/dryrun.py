@@ -15,6 +15,7 @@ import glob
 import json
 import re
 import sys
+import time
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
@@ -126,6 +127,7 @@ class DryRun:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
+        self.dry_run_duration = None
 
         from bigquery_etl.cli.utils import is_authenticated
 
@@ -246,6 +248,7 @@ class DryRun:
         project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
+            start_time = time.time()
             if self.use_cloud_function:
                 json_data = {
                     "project": self.project or project,
@@ -271,7 +274,7 @@ class DryRun:
                         method="POST",
                     )
                 )
-                return json.load(r)
+                result = json.load(r)
             else:
                 self.client.project = project
                 job_config = bigquery.QueryJobConfig(
@@ -321,7 +324,8 @@ class DryRun:
                         },
                     }
 
-                return result
+            self.dry_run_duration = time.time() - start_time
+            return result
 
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)
@@ -472,12 +476,12 @@ class DryRun:
             return False
 
         if self.dry_run_result["valid"]:
-            print(f"{self.sqlfile!s:59} OK")
+            print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or 0:.2f}s")
         elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile!s:59} OK")
+            print(f"{self.sqlfile!s:59} OK, DDL/DML skipped")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run

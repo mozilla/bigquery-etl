@@ -1,0 +1,36 @@
+friendly_name: Alchemer Survey data for Viewpoint 2023 Expansion - Mobile
+description: |
+  An import of survey data from Alchemer (SurveyGizmo) for Viewpoint 2023 Expansion - Mobile
+owners:
+- ago@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_alchemer
+  owner1: ago
+scheduling:
+  dag_name: bqetl_alchemer
+  arguments:
+  - --date
+  - '{{ ds }}'
+  - --survey_id
+  - '7355778'
+  - --api_token
+  - '{{ var.value.surveygizmo_api_token }}'
+  - --api_secret
+  - '{{ var.value.surveygizmo_api_secret }}'
+  - --destination_table
+  - moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_mobile_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}

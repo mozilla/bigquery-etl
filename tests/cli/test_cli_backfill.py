@@ -241,7 +241,7 @@ class TestBackfill:
 
         assert result.exit_code == 1
         assert (
-            "Tables that depend on past are currently not supported." in result.output
+            "Tables that depend on past are currently not supported" in result.output
         )
 
     def test_create_backfill_with_invalid_watcher(self, runner):

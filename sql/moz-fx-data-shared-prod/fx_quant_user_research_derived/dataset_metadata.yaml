@@ -14,4 +14,7 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:fx-quant-user-research
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:fx-quant-user-research
 syndication: {}

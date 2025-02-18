@@ -1,4 +1,4 @@
-friendly_name: User Retention - Firefox iOS (Week 4)
+friendly_name: (DEPRECATED) User Retention - Firefox iOS (Week 4)
 description: |
   DEPRECATED, please use `retention` instead.
 
@@ -10,10 +10,9 @@ labels:
   schedule: daily
   incremental: true
   table_type: client_level
-# @kik 2025-02-18: descheduled due to deprecation.
-# scheduling:
-#   dag_name: bqetl_firefox_ios
-#   depends_on_past: false
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
 bigquery:
   time_partitioning:
     type: day

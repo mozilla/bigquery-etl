@@ -1,4 +1,4 @@
-friendly_name: Firefox iOS New Profile Activation
+friendly_name: (DEPRECATED) Firefox iOS New Profile Activation
 description: |-
   DEPRECATED, please use `new_profile_activation_clients` instead.
 
@@ -19,9 +19,8 @@ bigquery:
   clustering:
     fields:
     - sample_id
-# @kik 2025-02-18: descheduled due to deprecation.
-# scheduling:
-#   dag_name: bqetl_firefox_ios
-#   date_partition_parameter: submission_date
-#   depends_on_past: true
+scheduling:
+  dag_name: bqetl_firefox_ios
+  date_partition_parameter: submission_date
+  depends_on_past: true
 deprecated: true

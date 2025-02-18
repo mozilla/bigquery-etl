@@ -204,6 +204,32 @@ def validate_shredder_mitigation(query_dir, metadata):
     return True
 
 
+def validate_col_desc_enforced(query_dir, metadata):
+    """Check schemas with enforce_col_desc = True comply with requirements."""
+    # If column descriptions need to be enforced:
+    if metadata.enforce_col_desc is True:
+
+        schema_file = Path(query_dir) / SCHEMA_FILE
+        if not schema_file.exists():
+            click.echo(
+                click.style(
+                    f"Table {query_dir} does not have schema.yaml required for column descriptions.",
+                    fg="yellow",
+                )
+            )
+            return False
+        schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
+
+        for field in schema:
+            # Validate that the query columns have descriptions.
+            if not field.description:
+                click.echo(
+                    f"Column description validation failed, {field.name} does not have "
+                    f"a description in the schema."
+                )
+                return False
+
+
 def validate_deprecation(metadata, path):
     """Check that deprecated is True when deletion date exists."""
     if metadata.deletion_date and not metadata.deprecated:

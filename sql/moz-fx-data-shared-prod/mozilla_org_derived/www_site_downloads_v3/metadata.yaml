@@ -1,0 +1,31 @@
+friendly_name: WWW Site Downloads V3
+description: |-
+  Aggregated download counts for www.mozilla.org from Google Analytics 4 (GA4)
+  Important: GA4 tends to have attribution information nested within events in a session, 
+  and this attribution info isn't always on the download event itself
+  For example, this table contains columns that are on the event itself;
+  for example, campaign_from_event_params & source_from_event_params.
+  It also contains columns that say, what was the first seen source of attribution across all the events
+  in that session, such as first_campaign_from_event_params_in_session & first_source_from_event_params_in_session 
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau@mozilla.com
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+  depends_on:
+  - task_id: wait_for_wmo_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - device_category
+    - operating_system
+references: {}

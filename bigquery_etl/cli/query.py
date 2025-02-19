@@ -238,6 +238,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
             time_partitioning=PartitionMetadata(field="", type=PartitionType.DAY),
             clustering=ClusteringMetadata(fields=[]),
         ),
+        enforce_col_desc=True,
     )
     metadata.write(metadata_file)
 

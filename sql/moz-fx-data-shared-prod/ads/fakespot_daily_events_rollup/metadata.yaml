@@ -7,7 +7,3 @@ owners:
   - lvargas@mozilla.com
 labels:
   authorized: true
-workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:ads

@@ -1,9 +1,0 @@
-2025-02-17:
-  start_date: 2025-01-01
-  end_date: 2025-01-01
-  reason: test
-  watchers:
-  - bewu@mozilla.com
-  status: Initiate
-  shredder_mitigation: false
-  override_retention_limit: true

@@ -29,6 +29,7 @@ ARTIFACT_TEMPLATES = (
     "schema.yaml.jinja",
 )
 APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
+ACTIVE_USERS_VIEW_TEMPLATE = "usage_reporting_active_users.view.sql.jinja"
 
 
 @click.command()
@@ -204,3 +205,18 @@ def generate(
                 sql=reformat(rendered_app_union_view),
                 skip_existing=False,
             )
+
+        active_users_dataset_name = ACTIVE_USERS_VIEW_TEMPLATE.split(".")[0]
+        active_users_view_template = jinja_env.get_template(ACTIVE_USERS_VIEW_TEMPLATE)
+        rendered_active_users_view = active_users_view_template.render(
+            **app_template_args,
+            view_name=active_users_dataset_name,
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{active_users_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_active_users_view),
+            skip_existing=False,
+        )

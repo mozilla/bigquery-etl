@@ -34,10 +34,11 @@ from bigquery_etl.cli.backfill import (
     initiate,
     scheduled,
     validate,
+    _initialize_previous_partition,
 )
 from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException
-from bigquery_etl.metadata.parse_metadata import METADATA_FILE
+from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
 VALID_REASON = "test_reason"
@@ -221,26 +222,6 @@ class TestBackfill:
 
         assert result.exit_code == 1
         assert "Invalid billing project" in str(result.exception)
-
-    def test_create_backfill_depends_on_past_should_fail(self, runner):
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST))
-
-        result = runner.invoke(
-            create,
-            [
-                "moz-fx-data-shared-prod.test.test_query_v1",
-                "--start_date=2021-03-01",
-            ],
-        )
-
-        assert result.exit_code == 1
-        assert (
-            "Tables that depend on past are currently not supported." in result.output
-        )
 
     def test_create_backfill_with_invalid_watcher(self, runner):
         invalid_watcher = "test.org"
@@ -468,12 +449,18 @@ class TestBackfill:
         assert result.exit_code == 1
         assert "Invalid billing project" in str(result.exception)
 
-    def test_validate_backfill_depends_on_past_should_fail(self, runner):
+    def test_validate_backfill_depends_on_past_null_partition_param_fail(self, runner):
+        """Validation should fail if partition param is null on a table with depends on past."""
+        metadata = TABLE_METADATA_CONF.copy()
+        metadata["scheduling"] = {
+            "date_partition_parameter": None,
+            "depends_on_past": True,
+        }
         with open(
             "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
             "w",
         ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST))
+            f.write(yaml.dump(metadata))
 
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
@@ -486,7 +473,10 @@ class TestBackfill:
             ],
         )
         assert result.exit_code == 1
-        assert "Tables that depend on past are currently not supported" in result.output
+        assert (
+            "depends on past and null partition parameter are not supported"
+            in result.output
+        )
 
     def test_validate_backfill_invalid_table_name(self, runner):
         result = runner.invoke(
@@ -1304,63 +1294,6 @@ class TestBackfill:
         assert "1 backfill(s) require processing." in result.output
 
     @patch("google.cloud.bigquery.Client.get_table")
-    def test_backfill_scheduled_depends_on_past_should_fail(self, get_table, runner):
-        get_table.side_effect = [
-            None,  # Check that staging data exists
-            NotFound(  # Check that clone does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_backup_2021_05_03"
-                "not found"
-            ),
-            NotFound(  # Check that staging data does not exist
-                "moz-fx-data-shared-prod.backfills_staging_derived.test_query_v1_2021_05_04"
-                "not found"
-            ),
-        ]
-
-        with open(
-            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
-            "w",
-        ) as f:
-            f.write(yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST))
-
-        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
-        backfill_file.write_text(
-            BACKFILL_YAML_TEMPLATE
-            + """
-2021-05-03:
-  start_date: 2021-01-03
-  end_date: 2021-05-03
-  reason: test_reason
-  watchers:
-  - test@example.org
-  status: Complete"""
-        )
-
-        result = runner.invoke(
-            scheduled,
-            [
-                "--json_path=tmp.json",
-                "--status=Complete",
-            ],
-        )
-
-        assert result.exit_code == 0
-        assert "0 backfill(s) require processing." in result.output
-        assert Path("tmp.json").exists()
-        assert len(json.loads(Path("tmp.json").read_text())) == 0
-
-        result = runner.invoke(
-            scheduled,
-            [
-                "--json_path=tmp.json",
-                "--status=Initiate",
-            ],
-        )
-
-        assert result.exit_code == 0
-        assert "0 backfill(s) require processing." in result.output
-
-    @patch("google.cloud.bigquery.Client.get_table")
     @patch("google.cloud.bigquery.Client.copy_table")
     @patch("google.cloud.bigquery.Client.delete_table")
     def test_complete_partitioned_backfill(
@@ -1884,8 +1817,8 @@ class TestBackfill:
                 )
 
             assert result.exit_code == 0
-            mock_shredder_mitigation.call_count == 2
-            mock_backfill.call_count == 2
+            assert mock_shredder_mitigation.call_count == 2
+            assert mock_backfill.call_count == 2
 
     @patch("bigquery_etl.cli.backfill.deploy_table")
     def test_validate_backfill_initiate_with_label_true_and_entry_dont_match_should_fail(
@@ -2061,3 +1994,71 @@ class TestBackfill:
         )
 
         assert result.exit_code == 0
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_initialize_previous_partition_day(self, mock_copy_table):
+        """Previous day should be copied for day partitioned table."""
+        metadata = TABLE_METADATA_CONF_DEPENDS_ON_PAST.copy()
+        metadata["bigquery"] = {"time_partitioning": {"type": "day"}}
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 5, 3),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.INITIATE,
+        )
+
+        _initialize_previous_partition(
+            client=None,
+            table_name="project.prod.table",
+            staging_table_name="project.staging.table",
+            metadata=metadata,
+            backfill_entry=backfill_entry,
+        )
+
+        mock_copy_table.assert_called_once_with(
+            source_table="project.prod.table$20210102",
+            destination_table="project.staging.table$20210102",
+            client=None,
+        )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_initialize_previous_partition_month(self, mock_copy_table):
+        """Previous month should be copied for month partitioned table."""
+        metadata = TABLE_METADATA_CONF_DEPENDS_ON_PAST.copy()
+        metadata["bigquery"] = {"time_partitioning": {"type": "month"}}
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 5, 3),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.INITIATE,
+        )
+
+        _initialize_previous_partition(
+            client=None,
+            table_name="project.prod.table",
+            staging_table_name="project.staging.table",
+            metadata=metadata,
+            backfill_entry=backfill_entry,
+        )
+
+        mock_copy_table.assert_called_once_with(
+            source_table="project.prod.table$202012",
+            destination_table="project.staging.table$202012",
+            client=None,
+        )

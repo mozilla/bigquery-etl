@@ -1,7 +1,7 @@
 friendly_name: WWW Site Downloads V3
 description: |-
-  Aggregated download counts for www.mozilla.org from Google Analytics 4 (GA4)
-  Important: GA4 tends to have attribution information nested within events in a session,
+  Aggregated download counts for www.mozilla.org from Google Analytics 4
+  Note: GA4 tends to have attribution information nested within events in a session,
   and this attribution info isn't always on the download event itself
   For example, this table contains columns that are on the event itself;
   for example, campaign_from_event_params & source_from_event_params.

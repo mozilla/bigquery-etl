@@ -16,6 +16,7 @@ from bigquery_etl.metadata.parse_metadata import (
     METADATA_FILE,
     DatasetMetadata,
     Metadata,
+    PartitionType,
 )
 from bigquery_etl.util import extract_from_query_path
 
@@ -103,21 +104,20 @@ def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
-def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
+def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
     """
-    Check if the table depends on past.
-
-    Managed backfills currently do not support tables that depends on past.
+    Check if the partitioning type is supported.
     """
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
 
     table_metadata = Metadata.from_file(table_metadata_path)
 
-    if "depends_on_past" in table_metadata.scheduling:
-        return not table_metadata.scheduling[
-            "depends_on_past"
-        ]  # skip if depends_on_past
+    if table_metadata.bigquery and table_metadata.bigquery.time_partitioning:
+        return table_metadata.bigquery.time_partitioning in [
+            PartitionType.DAY,
+            PartitionType.MONTH,
+        ]
 
     return True
 
@@ -224,10 +224,6 @@ def get_scheduled_backfills(
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
-        # do not return backfill if depends on past
-        if not validate_depends_on_past(sql_dir, qualified_table_name):
-            continue
-
         # do not return backfill if not mozilla-confidential
         if not validate_metadata_workgroups(sql_dir, qualified_table_name):
             continue

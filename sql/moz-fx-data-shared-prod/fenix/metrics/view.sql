@@ -502,7 +502,15 @@ SELECT
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
       metrics.custom_distribution.tls_cipher_suite,
       metrics.custom_distribution.readermode_download_result,
-      metrics.custom_distribution.readermode_parse_result
+      metrics.custom_distribution.readermode_parse_result,
+      metrics.custom_distribution.http3_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_drop_dgrams,
+      metrics.custom_distribution.http3_loss_ratio,
+      metrics.custom_distribution.http3_request_per_conn,
+      metrics.custom_distribution.http3_saved_dgrams,
+      metrics.custom_distribution.http3_sending_blocked_by_flow_control_per_trans,
+      metrics.custom_distribution.http3_trans_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_trans_sending_blocked_by_flow_control_per_conn
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1270,7 +1278,8 @@ SELECT
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_link_change,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_normal,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_offline,
-      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown
+      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown,
+      metrics.timing_distribution.http3_timer_delayed
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1468,7 +1477,13 @@ SELECT
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
       metrics.labeled_custom_distribution.network_cache_size_share,
-      metrics.labeled_custom_distribution.service_worker_running
+      metrics.labeled_custom_distribution.service_worker_running,
+      metrics.labeled_custom_distribution.http3_connection_close_code,
+      metrics.labeled_custom_distribution.http3_counts_pto,
+      metrics.labeled_custom_distribution.http3_ech_outcome,
+      metrics.labeled_custom_distribution.http3_late_ack,
+      metrics.labeled_custom_distribution.http3_late_ack_ratio,
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -1987,7 +2002,15 @@ SELECT
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
       metrics.custom_distribution.tls_cipher_suite,
       metrics.custom_distribution.readermode_download_result,
-      metrics.custom_distribution.readermode_parse_result
+      metrics.custom_distribution.readermode_parse_result,
+      metrics.custom_distribution.http3_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_drop_dgrams,
+      metrics.custom_distribution.http3_loss_ratio,
+      metrics.custom_distribution.http3_request_per_conn,
+      metrics.custom_distribution.http3_saved_dgrams,
+      metrics.custom_distribution.http3_sending_blocked_by_flow_control_per_trans,
+      metrics.custom_distribution.http3_trans_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_trans_sending_blocked_by_flow_control_per_conn
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2755,7 +2778,8 @@ SELECT
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_link_change,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_normal,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_offline,
-      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown
+      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown,
+      metrics.timing_distribution.http3_timer_delayed
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2953,7 +2977,13 @@ SELECT
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
       metrics.labeled_custom_distribution.network_cache_size_share,
-      metrics.labeled_custom_distribution.service_worker_running
+      metrics.labeled_custom_distribution.service_worker_running,
+      metrics.labeled_custom_distribution.http3_connection_close_code,
+      metrics.labeled_custom_distribution.http3_counts_pto,
+      metrics.labeled_custom_distribution.http3_ech_outcome,
+      metrics.labeled_custom_distribution.http3_late_ack,
+      metrics.labeled_custom_distribution.http3_late_ack_ratio,
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -3490,7 +3520,15 @@ SELECT
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
       metrics.custom_distribution.tls_cipher_suite,
       metrics.custom_distribution.readermode_download_result,
-      metrics.custom_distribution.readermode_parse_result
+      metrics.custom_distribution.readermode_parse_result,
+      metrics.custom_distribution.http3_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_drop_dgrams,
+      metrics.custom_distribution.http3_loss_ratio,
+      metrics.custom_distribution.http3_request_per_conn,
+      metrics.custom_distribution.http3_saved_dgrams,
+      metrics.custom_distribution.http3_sending_blocked_by_flow_control_per_trans,
+      metrics.custom_distribution.http3_trans_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_trans_sending_blocked_by_flow_control_per_conn
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4258,7 +4296,8 @@ SELECT
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_link_change,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_normal,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_offline,
-      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown
+      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown,
+      metrics.timing_distribution.http3_timer_delayed
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -4456,7 +4495,13 @@ SELECT
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
       metrics.labeled_custom_distribution.network_cache_size_share,
-      metrics.labeled_custom_distribution.service_worker_running
+      metrics.labeled_custom_distribution.service_worker_running,
+      metrics.labeled_custom_distribution.http3_connection_close_code,
+      metrics.labeled_custom_distribution.http3_counts_pto,
+      metrics.labeled_custom_distribution.http3_ech_outcome,
+      metrics.labeled_custom_distribution.http3_late_ack,
+      metrics.labeled_custom_distribution.http3_late_ack_ratio,
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -5002,7 +5047,15 @@ SELECT
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
       metrics.custom_distribution.tls_cipher_suite,
       metrics.custom_distribution.readermode_download_result,
-      metrics.custom_distribution.readermode_parse_result
+      metrics.custom_distribution.readermode_parse_result,
+      metrics.custom_distribution.http3_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_drop_dgrams,
+      metrics.custom_distribution.http3_loss_ratio,
+      metrics.custom_distribution.http3_request_per_conn,
+      metrics.custom_distribution.http3_saved_dgrams,
+      metrics.custom_distribution.http3_sending_blocked_by_flow_control_per_trans,
+      metrics.custom_distribution.http3_trans_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_trans_sending_blocked_by_flow_control_per_conn
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5770,7 +5823,8 @@ SELECT
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_link_change,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_normal,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_offline,
-      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown
+      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown,
+      metrics.timing_distribution.http3_timer_delayed
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5968,7 +6022,13 @@ SELECT
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
       metrics.labeled_custom_distribution.network_cache_size_share,
-      metrics.labeled_custom_distribution.service_worker_running
+      metrics.labeled_custom_distribution.service_worker_running,
+      metrics.labeled_custom_distribution.http3_connection_close_code,
+      metrics.labeled_custom_distribution.http3_counts_pto,
+      metrics.labeled_custom_distribution.http3_ech_outcome,
+      metrics.labeled_custom_distribution.http3_late_ack,
+      metrics.labeled_custom_distribution.http3_late_ack_ratio,
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
@@ -6496,7 +6556,15 @@ SELECT
       metrics.custom_distribution.ssl_version_fallback_inappropriate,
       metrics.custom_distribution.tls_cipher_suite,
       metrics.custom_distribution.readermode_download_result,
-      metrics.custom_distribution.readermode_parse_result
+      metrics.custom_distribution.readermode_parse_result,
+      metrics.custom_distribution.http3_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_drop_dgrams,
+      metrics.custom_distribution.http3_loss_ratio,
+      metrics.custom_distribution.http3_request_per_conn,
+      metrics.custom_distribution.http3_saved_dgrams,
+      metrics.custom_distribution.http3_sending_blocked_by_flow_control_per_trans,
+      metrics.custom_distribution.http3_trans_blocked_by_stream_limit_per_conn,
+      metrics.custom_distribution.http3_trans_sending_blocked_by_flow_control_per_conn
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -7264,7 +7332,8 @@ SELECT
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_link_change,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_normal,
       metrics.timing_distribution.networking_prconnectcontinue_blocking_time_offline,
-      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown
+      metrics.timing_distribution.networking_prconnectcontinue_blocking_time_shutdown,
+      metrics.timing_distribution.http3_timer_delayed
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -7462,7 +7531,13 @@ SELECT
       metrics.labeled_custom_distribution.network_cache_entry_count,
       metrics.labeled_custom_distribution.network_cache_entry_count_share,
       metrics.labeled_custom_distribution.network_cache_size_share,
-      metrics.labeled_custom_distribution.service_worker_running
+      metrics.labeled_custom_distribution.service_worker_running,
+      metrics.labeled_custom_distribution.http3_connection_close_code,
+      metrics.labeled_custom_distribution.http3_counts_pto,
+      metrics.labeled_custom_distribution.http3_ech_outcome,
+      metrics.labeled_custom_distribution.http3_late_ack,
+      metrics.labeled_custom_distribution.http3_late_ack_ratio,
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,

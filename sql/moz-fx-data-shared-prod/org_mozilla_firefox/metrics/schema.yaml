@@ -8772,6 +8772,235 @@ fields:
         histogram READER_MODE_PARSE_RESULT.
 
         '
+    - name: http3_blocked_by_stream_limit_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: number of times a connection is blocked by maximum allowed
+        number of parallel streams per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_BLOCKED_BY_STREAM_LIMIT_PER_CONN.
+
+        '
+    - name: http3_drop_dgrams
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: the number of dropped datagrams.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_DROP_DGRAMS.
+
+        '
+    - name: http3_loss_ratio
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: packet loss ratio (multiply by 10000).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_LOSS_RATIO.
+
+        '
+    - name: http3_request_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: Streams created per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_REQUEST_PER_CONN.
+
+        '
+    - name: http3_saved_dgrams
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: the number of saved datagrams that are waiting for keys
+        to be available.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_SAVED_DGRAMS.
+
+        '
+    - name: http3_sending_blocked_by_flow_control_per_trans
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: number of times when a stream is blocked by the flow control
+        while sendnig data.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_SENDING_BLOCKED_BY_FLOW_CONTROL_PER_TRANS.
+
+        '
+    - name: http3_trans_blocked_by_stream_limit_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: number of transactions that are blocked by maximum allowed
+        number of parallel streams per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_TRANS_BLOCKED_BY_STREAM_LIMIT_PER_CONN.
+
+        '
+    - name: http3_trans_sending_blocked_by_flow_control_per_conn
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3: number of times streams are blocked by the flow control
+        while sending data per connection
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_TRANS_SENDING_BLOCKED_BY_FLOW_CONTROL_PER_CONN.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -29838,6 +30067,53 @@ fields:
         histogram PRCONNECTCONTINUE_BLOCKING_TIME_SHUTDOWN.
 
         '
+    - name: http3_timer_delayed
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time difference between setting timer value and actually firing
+        the timer for calling neqo
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_TIMER_DELAYED.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -34995,6 +35271,218 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry linear histogram
         SERVICE_WORKER_RUNNING.
+
+        '
+    - name: http3_connection_close_code
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Error code when http3 connection is closed. Look at Http3Session
+        for more details.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP3_CONNECTION_CLOSE_CODE_3.
+
+        '
+    - name: http3_counts_pto
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: the number of PTOs.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_COUNTS_PTO.
+
+        '
+    - name: http3_ech_outcome
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Success / Fail Rates for HTTP3 Keyed by ECH Usage
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram HTTP3_ECH_OUTCOME.
+
+        '
+    - name: http3_late_ack
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: the number of spurious retransmissions.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_LATE_ACK.
+
+        '
+    - name: http3_late_ack_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: spurious retransmissions ratio (spurios_retransmission
+        / packet sent * 10000).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_LATE_ACK_RATIO.
+
+        '
+    - name: http3_received_sent_dgrams
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'HTTP3: the number of received/sent packets.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_RECEIVED_SENT_DGRAMS.
 
         '
   - name: labeled_quantity

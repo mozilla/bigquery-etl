@@ -1,23 +1,20 @@
 fields:
-- name: date
+- mode: NULLABLE
+  name: date
   type: DATE
-  mode: NULLABLE
   description: Date of the visit
 - name: visit_identifier
   type: STRING
   mode: NULLABLE
-  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id
-    and ga_session_id
+  description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id and ga_session_id
 - name: device_category
   type: STRING
   mode: NULLABLE
-  description: Device Category - The device category the visitor used to visit the
-    site
+  description: Device Category - The device category the visitor used to visit the site
 - name: operating_system
   type: STRING
   mode: NULLABLE
-  description: Operating System - The operating system the visitor used to visit the
-    site
+  description: Operating System - The operating system the visitor used to visit the site
 - name: language
   type: STRING
   mode: NULLABLE
@@ -25,8 +22,7 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country - The country from which events were reported, based on IP
-    address
+  description: Country - The country from which events were reported, based on IP address
 - name: traffic_source_name
   type: STRING
   mode: NULLABLE
@@ -54,18 +50,15 @@ fields:
 - name: medium
   type: STRING
   mode: NULLABLE
-  description: Medium - Category of the source, such as 'organic' for a search engine
-    (comes from collected traffic source)
+  description: Medium - Category of the source, such as 'organic' for a search engine (comes from collected traffic source)
 - name: campaign
   type: STRING
   mode: NULLABLE
-  description: Campaign - Identifier for the marketing campaign (comes from collected
-    traffic source)
+  description: Campaign - Identifier for the marketing campaign (comes from collected traffic source)
 - name: ad_content
   type: STRING
   mode: NULLABLE
-  description: Ad Content - Indicates the particular link within a campaign  (comes
-    from collected traffic source)
+  description: Ad Content - Indicates the particular link within a campaign  (comes from collected traffic source)
 - name: browser
   type: STRING
   mode: NULLABLE
@@ -81,8 +74,7 @@ fields:
 - name: source_from_event_params
   type: STRING
   mode: NULLABLE
-  description: Source from Event Parameters - Parsed from nested event_params key
-    = source
+  description: Source from Event Parameters - Parsed from nested event_params key = source
 - name: first_source_from_event_params_in_session
   type: STRING
   mode: NULLABLE
@@ -94,10 +86,8 @@ fields:
 - name: downloads
   type: INTEGER
   mode: NULLABLE
-  description: Downloads; in GA3, if someone downloaded multiple times in 1 session,
-    it only counted 1x; but in GA4, all downloads count
+  description: Downloads; in GA3, if someone downloaded multiple times in 1 session, it only counted 1x; but in GA4, all downloads count
 - name: non_fx_downloads
   type: INTEGER
   mode: NULLABLE
-  description: Non Firefox Downloads - Number of Firefox Desktop Downloads from a
-    Non-Firefox Browser
+  description: Non Firefox Downloads - Number of Firefox Desktop Downloads from a Non-Firefox Browser

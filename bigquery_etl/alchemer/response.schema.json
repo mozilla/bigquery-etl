@@ -42,6 +42,11 @@
         "mode": "NULLABLE"
       },
       {
+        "type": "STRING",
+        "name": "parent",
+        "mode": "NULLABLE"
+      },
+      {
         "type": "RECORD",
         "name": "options",
         "mode": "REPEATED",

@@ -101,8 +101,6 @@ def get_survey_data(survey_id, date_string, token, secret):
         print(f"fetching page {page}")
         resp = _get_request(url + f"&page={page}")
         ret = ret + construct_data(resp.json(), date_string)
-
-    print(f"Survey data from API: {ret}")
     return ret
 
 
@@ -139,7 +137,6 @@ def insert_to_bq(
         time_partitioning=bigquery.table.TimePartitioning(field="submission_date"),
     )
     partition = f"{table}${date.replace('-', '')}"
-    print(f"Survey data for BQ {data}")
     job = client.load_table_from_json(data, partition, job_config=job_config)
     print(f"Running job {job.job_id}")
     # job.result() returns a LoadJob object if successful, or raises an exception if not

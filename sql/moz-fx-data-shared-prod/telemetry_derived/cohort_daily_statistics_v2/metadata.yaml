@@ -1,0 +1,27 @@
+friendly_name: Cohort Daily Statistics V2
+description: |-
+  Cohort Daily Statistics tracks retention for a cohort with
+  the same first seen date and same set of attributes over the next 180 days
+
+  Note that the values for client attributes are based on the
+  attributes at the time the cohort started (rather than the
+  values at activity time)
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_cohort_retention
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_app_name
+references: {}

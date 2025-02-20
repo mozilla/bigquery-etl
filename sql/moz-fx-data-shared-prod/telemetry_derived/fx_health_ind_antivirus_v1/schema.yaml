@@ -1,0 +1,17 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- name: antivirus
+  type: STRING
+  mode: REPEATED
+  description: Antivirus Software Array - Array of Antivirus Software Installed on Client
+- name: unique_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients

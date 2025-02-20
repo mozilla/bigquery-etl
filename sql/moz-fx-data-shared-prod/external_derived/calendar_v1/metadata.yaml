@@ -1,0 +1,12 @@
+friendly_name: Calendar
+description: |-
+  Contains all dates from 3/31/98 - 12/31/2100
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+bigquery:
+  range_partitioning: null
+references: {}

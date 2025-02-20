@@ -1,18 +1,40 @@
 queries:
   experiments_daily_active_clients_v1:
     per_app: false
+    destination_dataset: telemetry_derived
   experiment_enrollment_aggregates_live_v1:
     per_app: false
+    destination_dataset: telemetry_derived
   experiment_search_aggregates_v1:
     per_app: false
+    destination_dataset: telemetry_derived
   experiment_enrollment_aggregates_v1:
     per_app: false
+    destination_dataset: telemetry_derived
   experiment_events_live_v1:
     per_app: true
-    start_date: "2023-10-10"
+    start_date: "2025-01-10"
   experiment_search_events_live_v1:
     per_app: true
     start_date: "2023-10-10"
+  experiment_crash_events_live_v1:
+    per_app: true
+    start_date: "2025-01-05"
+    skip_applications:
+      - "*_cirrus"
+      - "org_mozilla_ios_*"  # no crash data collected for ios
+  experiment_crash_aggregates_v1:
+    per_app: false
+    destination_dataset: telemetry_derived
+    skip_applications:
+      - "*_cirrus"
+      - "org_mozilla_ios_*"  # no crash data collected for ios
+  experiment_crash_rates_live:
+    per_app: false
+    destination_dataset: telemetry
+    skip_applications:
+      - "*_cirrus"
+      - "org_mozilla_ios_*"  # no crash data collected for ios
 search_metrics:
   telemetry:
     ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar

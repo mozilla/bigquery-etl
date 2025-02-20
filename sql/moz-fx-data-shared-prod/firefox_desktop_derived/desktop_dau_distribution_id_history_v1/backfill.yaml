@@ -1,0 +1,9 @@
+2025-02-13:
+  start_date: 2022-12-31
+  end_date: 2025-02-12
+  reason: Backfill Legacy to GLEAN distribution ID mapping for KPI reporting
+  watchers:
+  - gkatre@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true

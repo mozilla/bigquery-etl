@@ -15,6 +15,7 @@ syndication:
     - status
     - resolution
     - field
+    - field_option
     - issue_field_history
     - issue_multiselect_history
     - status_category
@@ -24,4 +25,5 @@ syndication:
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-      - workgroup:mozilla-confidential
+      - workgroup:service-desk/data-viewers
+      - workgroup:service-desk/data-developers

@@ -21,10 +21,6 @@ tag_deployments:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
         metrics:
           - saved_metric_id: is_valid_channel
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.country
-        metrics:
-          - saved_metric_id: is_2_char_len
       # For now being commented out due to a bug in the predefined metric (wrong regex being used) resulting in 0 matches.
       # Will uncomment once the underlaying issue has been fixed.
       # - column_selectors:

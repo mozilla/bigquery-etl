@@ -22,7 +22,8 @@ SELECT
   baseline.sample_id,
   baseline.submission_date,
   baseline.normalized_channel,
-  * EXCEPT(submission_date, normalized_channel, client_id, sample_id),
+  * EXCEPT(submission_date, normalized_channel, client_id, sample_id, is_default_browser),
+  baseline.is_default_browser,
 FROM
   baseline
 LEFT JOIN metrics

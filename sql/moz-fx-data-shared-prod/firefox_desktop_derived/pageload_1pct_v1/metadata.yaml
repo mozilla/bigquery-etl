@@ -7,6 +7,7 @@ owners:
 - dpalmeiro@mozilla.com
 labels:
   incremental: true
+  table_type: client_level
 scheduling:
   dag_name: bqetl_pageload_v1
   task_name: firefox_desktop_pageload_1pct__v1
@@ -16,7 +17,7 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 780
+    expiration_days: 775
   range_partitioning: null
   clustering:
     fields:

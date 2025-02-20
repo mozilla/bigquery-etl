@@ -16,6 +16,7 @@ labels:
   schedule: daily
   dag: bqetl_main_summary
   owner1: ascholtz
+  table_type: client_level
 scheduling:
   dag_name: bqetl_main_summary
   start_date: '2019-11-05'
@@ -34,15 +35,10 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: null
+    expiration_days: 775
   range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-  - workgroup:cloudops-managed/telescope
 references: {}

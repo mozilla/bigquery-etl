@@ -622,7 +622,7 @@ class Task:
         task.is_bigeye_check = True
         task.depends_on_past = False
         task.destination_table = None
-        task.retries = 0
+        task.retries = 1
         task.depends_on_fivetran = []
         task.referenced_tables = None
         task.depends_on = []

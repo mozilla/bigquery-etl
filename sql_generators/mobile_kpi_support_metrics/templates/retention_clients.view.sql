@@ -14,6 +14,8 @@ WITH active_users AS (
     days_seen_bits,
     days_active_bits,
     is_mobile,
+    device_type,
+    device_manufacturer,
   FROM
     `{{ project_id }}.{{ dataset }}.active_users`
 ),
@@ -37,6 +39,8 @@ SELECT
   active_users.app_name,
   clients_daily.normalized_channel,
   clients_daily.country,
+  clients_daily.city,
+  clients_daily.geo_subdivision,
   clients_daily.app_display_version AS app_version,
   clients_daily.locale,
   clients_daily.isp,
@@ -81,6 +85,11 @@ SELECT
       THEN 'existing_user'
     ELSE 'Unknown'
   END AS lifecycle_stage,
+  active_users.device_type,
+  clients_daily.device_manufacturer,
+  clients_daily.device_model,
+  clients_daily.normalized_os AS os,
+  clients_daily.normalized_os_version AS os_version,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_daily` AS clients_daily
 INNER JOIN

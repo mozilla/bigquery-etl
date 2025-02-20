@@ -1,0 +1,9 @@
+2025-02-05:
+  start_date: 2021-12-01
+  end_date: 2025-02-03
+  reason: DAU computations based on baseline ping [DENG-7838]
+  watchers:
+  - gkatre@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: true

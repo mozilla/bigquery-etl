@@ -15,6 +15,7 @@ import glob
 import json
 import re
 import sys
+import time
 from enum import Enum
 from os.path import basename, dirname, exists
 from pathlib import Path
@@ -36,6 +37,21 @@ try:
 except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
+
+
+QUERY_PARAMETER_TYPE_VALUES = {
+    "DATE": "2019-01-01",
+    "DATETIME": "2019-01-01 00:00:00",
+    "TIMESTAMP": "2019-01-01 00:00:00",
+    "STRING": "foo",
+    "BOOL": True,
+    "FLOAT64": 1,
+    "FLOAT": 1,
+    "INT64": 1,
+    "INTEGER": 1,
+    "NUMERIC": 1,
+    "BIGNUMERIC": 1,
+}
 
 
 def get_credentials(auth_req: Optional[GoogleAuthRequest] = None):
@@ -111,6 +127,7 @@ class DryRun:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
             self.metadata = None
+        self.dry_run_duration = None
 
         from bigquery_etl.cli.utils import is_authenticated
 
@@ -204,36 +221,43 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
-        if self.metadata:
-            # use metadata to rewrite date-type query params as submission_date
-            date_params = [
-                query_param
-                for query_param in (
-                    self.metadata.scheduling.get("date_partition_parameter"),
-                    *(
-                        param.split(":", 1)[0]
-                        for param in self.metadata.scheduling.get("parameters", [])
-                        if re.fullmatch(r"[^:]+:DATE:{{.*ds.*}}", param)
-                    ),
+
+        query_parameters = []
+        scheduling_metadata = self.metadata.scheduling if self.metadata else {}
+        if date_partition_parameter := scheduling_metadata.get(
+            "date_partition_parameter", "submission_date"
+        ):
+            query_parameters.append(
+                bigquery.ScalarQueryParameter(
+                    date_partition_parameter,
+                    "DATE",
+                    QUERY_PARAMETER_TYPE_VALUES["DATE"],
                 )
-                if query_param and query_param != "submission_date"
-            ]
-            if date_params:
-                pattern = re.compile(
-                    "@("
-                    + "|".join(date_params)
-                    # match whole query parameter names
-                    + ")(?![a-zA-Z0-9_])"
+            )
+        for parameter in scheduling_metadata.get("parameters", []):
+            parameter_name, parameter_type, _ = parameter.strip().split(":", 2)
+            parameter_type = parameter_type.upper() or "STRING"
+            query_parameters.append(
+                bigquery.ScalarQueryParameter(
+                    parameter_name,
+                    parameter_type,
+                    QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
                 )
-                sql = pattern.sub("@submission_date", sql)
+            )
+
         project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
         try:
+            start_time = time.time()
             if self.use_cloud_function:
                 json_data = {
                     "project": self.project or project,
                     "dataset": self.dataset or dataset,
                     "query": sql,
+                    "query_parameters": [
+                        query_parameter.to_api_repr()
+                        for query_parameter in query_parameters
+                    ],
                 }
 
                 if self.table:
@@ -250,18 +274,14 @@ class DryRun:
                         method="POST",
                     )
                 )
-                return json.load(r)
+                result = json.load(r)
             else:
                 self.client.project = project
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,
                     default_dataset=f"{project}.{dataset}",
-                    query_parameters=[
-                        bigquery.ScalarQueryParameter(
-                            "submission_date", "DATE", "2019-01-01"
-                        )
-                    ],
+                    query_parameters=query_parameters,
                 )
                 job = self.client.query(sql, job_config=job_config)
                 try:
@@ -304,7 +324,8 @@ class DryRun:
                         },
                     }
 
-                return result
+            self.dry_run_duration = time.time() - start_time
+            return result
 
         except Exception as e:
             print(f"{self.sqlfile!s:59} ERROR\n", e)
@@ -455,12 +476,12 @@ class DryRun:
             return False
 
         if self.dry_run_result["valid"]:
-            print(f"{self.sqlfile!s:59} OK")
+            print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or 0:.2f}s")
         elif self.get_error() == Errors.READ_ONLY:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile!s:59} OK")
+            print(f"{self.sqlfile!s:59} OK but DDL/DML skipped")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run

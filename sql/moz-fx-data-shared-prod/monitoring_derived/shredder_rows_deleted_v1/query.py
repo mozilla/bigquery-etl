@@ -4,9 +4,10 @@ import datetime
 from argparse import ArgumentParser
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
+from typing import Optional
 
 import yaml
-from google.cloud import bigquery
+from google.cloud import bigquery, exceptions
 
 from bigquery_etl.util import standard_args
 
@@ -89,11 +90,17 @@ def get_job_info(
     return list(map(dict, query.result()))
 
 
-def add_job_metadata(client: bigquery.Client, job: dict) -> dict:
+def add_job_metadata(client: bigquery.Client, job: dict) -> Optional[dict]:
     if job["deleted_row_count"] is None:
         table = f'{job["project_id"]}.{job["dataset_id"]}.{job["table_id"]}'
-        before = client.get_table(f'{table}@{job["start_time_millis"]}').num_rows
-        after = client.get_table(f'{table}@{job["end_time_millis"]}').num_rows
+        try:
+            before = client.get_table(f'{table}@{job["start_time_millis"]}').num_rows
+            after = client.get_table(f'{table}@{job["end_time_millis"]}').num_rows
+        except exceptions.NotFound:
+            print(
+                f"Could not get table {table}, table may have been deleted since the job ran."
+            )
+            return None
         job["deleted_row_count"] = count = before - after
         if count < 0:
             raise ValueError(f"deleted_row_count must be >= 0, but got: {count}")
@@ -128,11 +135,13 @@ def main():
             ),
             start=[],
         )
-        json_rows = list(
-            pool.starmap(
+        json_rows = [
+            job
+            for job in pool.starmap(
                 add_job_metadata, ((client, job) for job in jobs), chunksize=1
-            ),
-        )
+            )
+            if job is not None
+        ]
 
     load_job = client.load_table_from_json(
         json_rows=json_rows,

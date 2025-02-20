@@ -33,8 +33,6 @@ BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
     "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
-APPS_WITH_DISTRIBUTION_ID = ("fenix",)
-
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
 
 
@@ -259,8 +257,6 @@ class GleanTable:
         # but do not do so actively anymore. This is why they get excluded.
         enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
-        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
-
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -268,7 +264,6 @@ class GleanTable:
             derived_dataset=derived_dataset,
             target_table=self.target_table_id,
             app_name=app_name,
-            has_distribution_id=app_name in APPS_WITH_DISTRIBUTION_ID,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
             enable_monitoring=enable_monitoring,
         )
@@ -314,8 +309,6 @@ class GleanTable:
             )
         except TemplateNotFound:
             schema = None
-
-        print(f"App_name: {app_name} | monitoring: {enable_monitoring}")
 
         if enable_monitoring:
             try:

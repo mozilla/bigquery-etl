@@ -1,0 +1,41 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: total_non_private_gb
+  type: FLOAT
+  mode: NULLABLE
+  description: Total Non-Private Usage (GB)
+- name: total_private_gb
+  type: FLOAT
+  mode: NULLABLE
+  description: Total Private Usage (GB)
+- name: mean_private_gb
+  type: FLOAT
+  mode: NULLABLE
+  description: Average Private Usage (GB)
+- name: pct_5
+  type: FLOAT
+  mode: NULLABLE
+  description: 5th percentile of private usage (GB)
+- name: pct_25
+  type: FLOAT
+  mode: NULLABLE
+  description: 25th percentile of private usage (GB)
+- name: pct_50
+  type: FLOAT
+  mode: NULLABLE
+  description: 50th percentile of private usage (GB)
+- name: pct_75
+  type: FLOAT
+  mode: NULLABLE
+  description: 75th percentile of private usage (GB)
+- name: pct_95
+  type: FLOAT
+  mode: NULLABLE
+  description: 95th percentile of private usage (GB)
+- name: pct_99
+  type: FLOAT
+  mode: NULLABLE
+  description: 99th percentile of private usage (GB)

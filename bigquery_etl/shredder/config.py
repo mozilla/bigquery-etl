@@ -19,6 +19,7 @@ from ..util.bigquery_id import qualified_table_id
 
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
+GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
 GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
@@ -91,6 +92,7 @@ DeleteIndex = dict[DeleteTarget, DeleteSource | tuple[DeleteSource, ...]]
 
 CLIENT_ID = "client_id"
 GLEAN_CLIENT_ID = "client_info.client_id"
+GLEAN_USAGE_PROFILE_ID = "metrics.uuid.usage_profile_id"
 IMPRESSION_ID = "impression_id"
 USER_ID = "user_id"
 POCKET_ID = "pocket_id"
@@ -158,6 +160,17 @@ LEGACY_MOBILE_SOURCES = tuple(
         "mozilla_lockbox",
     )
 )
+FOCUS_ADDITIONAL_DELETIONS = tuple(
+    DeleteSource(
+        table=f"{product}_derived.additional_deletion_requests_v1",
+        field="client_id",
+    )
+    for product in (
+        "org_mozilla_focus",
+        "org_mozilla_focus_beta",
+        "org_mozilla_focus_nightly",
+    )
+)
 USER_CHARACTERISTICS_SRC = DeleteSource(
     table="firefox_desktop_stable.deletion_request_v1",
     field=USER_CHARACTERISTICS_ID,
@@ -204,9 +217,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_derived.clients_last_seen_v2"): DESKTOP_SRC,
     client_id_target(
         table="telemetry_derived.clients_last_seen_joined_v1"
-    ): DESKTOP_SRC,
-    client_id_target(
-        table="telemetry_derived.clients_profile_per_install_affected_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.core_clients_daily_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.core_clients_last_seen_v1"): DESKTOP_SRC,
@@ -256,6 +266,20 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
     ),
+    DeleteTarget(
+        table="telemetry_derived.rolling_cohorts_v2",
+        field=(CLIENT_ID,) * 15,
+    ): (
+        DESKTOP_SRC,
+        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
+        *FOCUS_ADDITIONAL_DELETIONS,
+        *LEGACY_MOBILE_SOURCES,
+    ),
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)
@@ -298,8 +322,6 @@ DELETE_TARGETS: DeleteIndex = {
     DeleteTarget(table="telemetry_stable.sync_v4", field=SYNC_IDS): SYNC_SOURCES,
     DeleteTarget(table="telemetry_stable.sync_v5", field=SYNC_IDS): SYNC_SOURCES,
     # fxa
-    client_id_target(table="firefox_accounts_derived.events_daily_v1"): FXA_SRC,
-    client_id_target(table="firefox_accounts_derived.funnel_events_source_v1"): FXA_SRC,
     user_id_target(
         table="firefox_accounts_derived.fxa_amplitude_export_v1"
     ): FXA_HMAC_SRC,
@@ -533,20 +555,23 @@ def find_glean_targets(
     """
     datasets = {dataset.dataset_id for dataset in client.list_datasets(project)}
 
-    glean_stable_tables = [
-        table
-        for tables in pool.map(
-            client.list_tables,
-            [
-                bigquery.DatasetReference(project, dataset_id)
-                for dataset_id in datasets
-                if dataset_id.endswith("_stable")
-            ],
-            chunksize=1,
-        )
-        for table in tables
-        if table.labels.get("schema_id") == GLEAN_SCHEMA_ID
-    ]
+    def stable_tables_by_schema(schema_id):
+        return [
+            table
+            for tables in pool.map(
+                client.list_tables,
+                [
+                    bigquery.DatasetReference(project, dataset_id)
+                    for dataset_id in datasets
+                    if dataset_id.endswith("_stable")
+                ],
+                chunksize=1,
+            )
+            for table in tables
+            if table.labels.get("schema_id") == schema_id
+        ]
+
+    glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID)
 
     channel_to_app_name = get_glean_channel_to_app_name_mapping()
 
@@ -627,6 +652,33 @@ def find_glean_targets(
     manually_added_tables = {target.table for target in DELETE_TARGETS.keys()}
     skipped_tables = manually_added_tables | GLEAN_IGNORE_LIST
 
+    # Handle custom deletion requests for usage_reporting pings
+    glean_min_stable_tables = stable_tables_by_schema(GLEAN_MIN_SCHEMA_ID)
+    usage_reporting_sources: dict[str, tuple[DeleteSource, ...]] = defaultdict(tuple)
+    for table in glean_min_stable_tables:
+        if table.table_id == "usage_deletion_request_v1":
+            # usage_deletion_request ping is defined in application code,
+            # so we need to confirm that it has `usage_profile_id` metric
+            table = client.get_table(table)
+            if any(
+                field.name == "metrics"
+                and any(
+                    metric_type_field.name == "uuid"
+                    and any(
+                        [
+                            metric_field.name == "usage_profile_id"
+                            for metric_field in metric_type_field.fields
+                        ]
+                    )
+                    for metric_type_field in field.fields
+                )
+                for field in table.schema
+            ):
+                source = DeleteSource(
+                    qualified_table_id(table), GLEAN_USAGE_PROFILE_ID, project
+                )
+                usage_reporting_sources[table.dataset_id] += (source,)
+
     return {
         **{
             # glean stable tables that have a source
@@ -674,6 +726,18 @@ def find_glean_targets(
             and all(field.name != CLIENT_ID for field in table.schema)
             and not table.table_id.startswith(derived_source_prefix)
             and qualified_table_id(table) not in skipped_tables
+        },
+        **{
+            # usage_reporting tables via custom usage_deletion_request ping
+            DeleteTarget(
+                table=qualified_table_id(table),
+                # field must be repeated for each deletion source
+                field=(GLEAN_USAGE_PROFILE_ID,)
+                * len(usage_reporting_sources[table.dataset_id]),
+            ): usage_reporting_sources[table.dataset_id]
+            for table in glean_min_stable_tables
+            if table.table_id == "usage_reporting_v1"
+            and table.dataset_id in usage_reporting_sources
         },
     }
 

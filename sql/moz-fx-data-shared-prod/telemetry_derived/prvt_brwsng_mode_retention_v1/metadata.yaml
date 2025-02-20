@@ -1,0 +1,21 @@
+friendly_name: Private Browsing Mode Retention
+description: |-
+  Calculates retention over time for PBM users
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+  depends_on_past: false
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+references: {}

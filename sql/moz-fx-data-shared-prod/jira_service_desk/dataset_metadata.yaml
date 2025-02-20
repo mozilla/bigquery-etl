@@ -1,10 +1,11 @@
 friendly_name: Jira Service Desk
 description: |-
   Views on the Jira Service Desk data pulled from Fivetran.
-dataset_base_acl: view
+dataset_base_acl: view_restricted
 user_facing: true
 labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:mozilla-confidential
+  - workgroup:service-desk/data-viewers
+  - workgroup:service-desk/data-developers

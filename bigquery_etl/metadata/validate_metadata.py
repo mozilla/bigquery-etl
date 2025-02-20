@@ -206,29 +206,41 @@ def validate_shredder_mitigation(query_dir, metadata):
 
 def validate_col_desc_enforced(query_dir, metadata):
     """Check schemas with require_column_descriptions = True comply with requirements."""
-    if metadata.require_column_descriptions:
+    if not metadata.require_column_descriptions:
+        return True
 
-        schema_file = Path(query_dir) / SCHEMA_FILE
-        if not schema_file.exists():
-            click.echo(
-                click.style(
-                    f"Table {query_dir} does not have schema.yaml required for column descriptions.",
-                    fg="yellow",
-                )
+    schema_file = Path(query_dir) / SCHEMA_FILE
+    if not schema_file.exists():
+        click.echo(
+            click.style(
+                f"Table {query_dir} does not have schema.yaml required for column descriptions.",
+                fg="yellow",
             )
-            return False
-        schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
+        )
+        return False
 
-        for field in schema:
-            # Validate that the query columns have descriptions.
+    schema = Schema.from_schema_file(schema_file).to_bigquery_schema()
+
+    def validate_fields(fields, parent_path=""):
+        """Recursively validate field descriptions, including nested fields."""
+        for field in fields:
+            field_path = f"{parent_path}.{field.name}" if parent_path else field.name
+
             if not field.description:
                 click.echo(
                     f"Column description validation failed for {query_dir}, "
-                    f"{field.name} does not have a description in the schema."
+                    f"{field_path} does not have a description in the schema."
                 )
                 return False
+
+            # If the field has nested fields (e.g., RECORD type), recurse
+            if hasattr(field, "fields") and field.fields:
+                if not validate_fields(field.fields, field_path):
+                    return False
+
         return True
-    return True
+
+    return validate_fields(schema)
 
 
 def validate_deprecation(metadata, path):

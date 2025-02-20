@@ -228,6 +228,9 @@ def validate_col_desc_enforced(query_dir, metadata):
                     f"a description in the schema."
                 )
                 return False
+        return True
+    else:
+        return True
 
 
 def validate_deprecation(metadata, path):

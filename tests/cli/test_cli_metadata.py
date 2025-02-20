@@ -15,8 +15,8 @@ from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
     validate,
     validate_change_control,
-    validate_shredder_mitigation,
     validate_col_desc_enforced,
+    validate_shredder_mitigation,
 )
 
 TEST_DIR = Path(__file__).parent.parent

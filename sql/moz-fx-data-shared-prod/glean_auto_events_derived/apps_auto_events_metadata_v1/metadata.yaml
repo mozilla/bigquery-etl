@@ -7,7 +7,7 @@ labels:
   incremental: false
   owner1: efilho
   public_json: true
-  public_sql: true
+  public_bigquery: true
   review_bugs:
   - '1947481'
 scheduling:

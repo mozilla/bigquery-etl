@@ -127,9 +127,8 @@ def validate_table_metadata(sql_dir: str, qualified_table_name: str) -> List[str
     return errors
 
 
-def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
-    """
-    Check if the table depends on past and has null date_partition_parameter.
+def validate_depends_on_past(sql_dir: str, qualified_table_name: str) -> bool:
+    """Check if the table depends on past and has null date_partition_parameter.
 
     Fail if depends_on_past=true and date_partition_parameter=null
     """
@@ -151,9 +150,7 @@ def validate_depends_on_past(sql_dir, qualified_table_name) -> bool:
 
 
 def validate_partitioning_type(sql_dir: str, qualified_table_name: str) -> bool:
-    """
-    Check if the partitioning type is supported.
-    """
+    """Check if the partitioning type is supported."""
     project, dataset, table = qualified_table_name_matching(qualified_table_name)
     table_metadata_path = Path(sql_dir) / project / dataset / table / METADATA_FILE
 

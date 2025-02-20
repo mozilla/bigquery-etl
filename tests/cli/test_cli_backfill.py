@@ -28,13 +28,13 @@ from bigquery_etl.backfill.utils import (
     validate_metadata_workgroups,
 )
 from bigquery_etl.cli.backfill import (
+    _initialize_previous_partition,
     complete,
     create,
     info,
     initiate,
     scheduled,
     validate,
-    _initialize_previous_partition,
 )
 from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException

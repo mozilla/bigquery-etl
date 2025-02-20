@@ -39,6 +39,7 @@ from ..backfill.utils import (
     validate_table_metadata,
 )
 from ..backfill.validate import (
+    validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
 )
@@ -132,6 +133,13 @@ def backfill(ctx):
     help="True to allow running a backfill outside the retention policy limit.",
     default=False,
 )
+@click.option(
+    "--override-depends-on-past-end-date",
+    "--override_depends_on_past_end_date",
+    is_flag=True,
+    help="If set, allow backfill for depends_on_past tables to have an end date before the entry date. "
+    "In some cases, this can cause inconsistencies in the data.",
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -146,6 +154,7 @@ def create(
     custom_query_path,
     shredder_mitigation,
     override_retention_range_limit,
+    override_depends_on_past_end_date,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
@@ -171,16 +180,19 @@ def create(
         custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,
         override_retention_limit=override_retention_range_limit,
+        override_depends_on_past_end_date=override_depends_on_past_end_date,
         billing_project=billing_project,
     )
-
-    validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
-
-    existing_backfills.insert(0, new_entry)
 
     backfill_file = get_backfill_file_from_qualified_table_name(
         sql_dir, qualified_table_name
     )
+
+    validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
+
+    validate_depends_on_past_end_date(new_entry, backfill_file)
+
+    existing_backfills.insert(0, new_entry)
 
     backfill_file.write_text(
         "\n".join(
@@ -231,7 +243,7 @@ def validate(
         )
 
     for table_name in backfills_dict:
-        if errors := validate_table_metadata(sql_dir, qualified_table_name):
+        if errors := validate_table_metadata(sql_dir, table_name):
             click.echo("\n".join(errors))
             sys.exit(1)
 

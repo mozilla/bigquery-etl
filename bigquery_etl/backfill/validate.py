@@ -69,6 +69,26 @@ def validate_shredder_mitigation(entry: Backfill, backfill_file: Path) -> None:
             )
 
 
+def validate_depends_on_past_end_date(backfill_entry: Backfill, backfill_file: Path):
+    """Check if the table depends on past and has an end_date before the entry date.
+
+    An end date in the past may result in data inconsistencies with depends_on_past tables.
+    """
+    if backfill_entry.override_depends_on_past_end_date:
+        return
+
+    table_metadata = Metadata.from_file(backfill_file.parent / METADATA_FILE)
+
+    if not table_metadata.scheduling.get("depends_on_past", False):
+        return
+
+    if backfill_entry.end_date < backfill_entry.entry_date:
+        raise ValueError(
+            "End date must be on or after the backfill entry date for a depends_on_past table. "
+            "Use --override-depends-on-past-end-date flag with `bqetl backfill create` to override this check."
+        )
+
+
 def validate_file(file: Path) -> None:
     """Validate all entries from a given backfill.yaml file."""
     backfills = Backfill.entries_from_file(file)
@@ -87,15 +107,16 @@ def validate_duplicate_entry_with_initiate_status(
                 )
 
 
-def validate_entries(backfills: list, file: Path) -> None:
+def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
     """Validate a list of backfill entries."""
     for i, backfill_entry in enumerate(backfills):
         validate_default_watchers(backfill_entry)
         validate_default_reason(backfill_entry)
         validate_duplicate_entry_dates(backfill_entry, backfills[i + 1 :])
         validate_excluded_dates(backfill_entry)
-        validate_shredder_mitigation(backfill_entry, file)
+        validate_shredder_mitigation(backfill_entry, backfill_file)
         validate_duplicate_entry_with_initiate_status(
             backfill_entry, backfills[i + 1 :]
         )
+        validate_depends_on_past_end_date(backfill_entry, backfill_file)
     validate_entries_are_sorted(backfills)

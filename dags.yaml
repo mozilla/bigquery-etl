@@ -313,6 +313,9 @@ bqetl_public_data_json:
 
     Depends on the results of several upstream DAGs, the latest of which
     runs at 04:00 UTC.
+
+    As long as the most recent DAG run is successful this job can be considered healthy.
+    In such case, past DAG failures can be ignored.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2020-04-14"
@@ -2203,22 +2206,4 @@ bqetl_glean_dictionary:
   schedule_interval: 0 2 * * *
   tags:
     - impact/tier_3
-    - repo/bigquery-etl
-
-bqetl_baseline_active_user_aggregates:
-  default_args:
-    depends_on_past: false
-    email:
-      - kwindau@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    owner: kwindau@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2025-02-18'
-  description: Builds telemetry_derived.baseline_active_user_aggregates_v1
-  repo: bigquery-etl
-  schedule_interval: 40 4 * * *
-  tags:
-    - impact/tier_2
     - repo/bigquery-etl

@@ -787,3 +787,50 @@ class TestMetadata:
 
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is True
+
+    def test_nested_validate_col_desc(self, runner):
+        """Test that validation fails when metadata says enforce column descriptions is True and no desc on nested"""
+        metadata = {"friendly_name": "Test", "require_column_descriptions": True}
+
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "profile_id",
+                    "type": "STRING",
+                    "description": "description 1",
+                },
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_3",
+                    "type": "STRING",
+                    "description": "description 2",
+                },
+                {
+                    "mode": "REQUIRED",
+                    "name": "metadata",
+                    "type": "RECORD",
+                    "description": "description 2",
+                    "fields": [
+                        {"mode": "REQUIRED", "name": "column_3", "type": "STRING"}
+                    ],
+                },
+            ]
+        }
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table group by column_1")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            metadata_from_file = Metadata.from_file(metadata_path)
+
+            result = validate_col_desc_enforced(self.test_path, metadata_from_file)
+            assert result is False

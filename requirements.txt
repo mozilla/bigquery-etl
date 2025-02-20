@@ -1961,9 +1961,9 @@ rich==12.6.0 \
     #   bigeye-sdk
     #   rich-click
     #   typer
-rich-click==1.8.5 \
-    --hash=sha256:0fab7bb5b66c15da17c210b4104277cd45f3653a7322e0098820a169880baee0 \
-    --hash=sha256:a3eebe81da1c9da3c32f3810017c79bd687ff1b3fa35bfc9d8a3338797f1d1a1
+rich-click==1.8.6 \
+    --hash=sha256:55fb571bad7d3d69ac43ca45f05b44616fd019616161b1815ff053567b9a8e22 \
+    --hash=sha256:8a2448fd80e3d4e16fcb3815bfbc19be9bae75c9bb6aedf637901e45f3555752
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \

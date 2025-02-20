@@ -6,6 +6,19 @@ fields:
     Logical date corresponding to the partition (date when our server received the ping)
     that was processed for generating the metrics.
 
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
+
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: |
+    The channel the application is being distributed on, example values include: relase, beta, nightly.
+
+
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -13,18 +26,6 @@ fields:
     App name (Firefox Desktop), if client comes from MozillaOnline distribution
     then the distribution_id is appended to the app_name. If client comes from BrowserStack (isp)
     this is appended to the app_name.
-
-- name: app_version
-  type: STRING
-  mode: NULLABLE
-  description: |
-    The user visible version string (e.g. "1.0.3"). If the value was not provided through configuration, this metric gets set to Unknown.
-
-- name: channel
-  type: STRING
-  mode: NULLABLE
-  description: |
-    The channel the application is being distributed on, example values include: relase, beta, nightly.
 
 - name: country
   type: STRING
@@ -67,6 +68,12 @@ fields:
   description: |
     Minor or second part of the OS version reported by the client.
 
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: |
+    The user visible version string (e.g. "1.0.3"). If the value was not provided through configuration, this metric gets set to Unknown.
+
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
@@ -84,12 +91,6 @@ fields:
   mode: NULLABLE
   description: |
     Profile segmentation based on the number of days active in the last 28 days.
-
-- name: first_seen_year
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
 
 - name: daily_users
   type: INTEGER

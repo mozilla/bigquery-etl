@@ -357,6 +357,9 @@ def validate(target):
                     ):
                         failed = True
 
+                    if not validate_col_desc_enforced(root, metadata):
+                        failed = True
+
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
     else:

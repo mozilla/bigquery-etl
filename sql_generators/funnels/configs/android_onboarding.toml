@@ -40,7 +40,6 @@ dimensions = [
               "adjust_ad_group",
               "install_source",
               "repeat_first_month_user",
-              "retained_week_2",
               "retained_week_4"
               ]
 [steps.new_profile]
@@ -189,11 +188,11 @@ aggregation = "count distinct"
 [data_sources.onboarding_events]
 from_expression = """
   fenix.firefox_android_clients ac
-  LEFT JOIN `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-  ON ac.client_id = r.client_id
+  LEFT JOIN `moz-fx-data-shared-prod`.fenix.retention_clients AS r
+  USING(client_id)
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
-  ON ac.client_id = eu.client_info.client_id
+    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) AS eu
+  USING(client_id)
   LEFT JOIN
     (SELECT client_info.client_id,
     ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
@@ -201,7 +200,7 @@ from_expression = """
     WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
     AND DATE(submission_timestamp) = @submission_date
     GROUP BY 1) funnel_ids
-  ON ac.client_id  = funnel_ids.client_id
+  USING(client_id)
 
 """
 submission_date_column = "ac.submission_date"
@@ -217,19 +216,12 @@ friendly_name = "Funnel ID"
 description = "ID of the Onboarding Funnel"
 client_id_column = "ac.client_id"
 
-# these dimensions are sourced from funnel_retention_clients_week_4_v1
+# these dimensions are sourced from retention_clients
 [dimensions.repeat_first_month_user]
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is a Repeat First Month User"
 data_source = "onboarding_events"
 select_expression = "COALESCE(r.repeat_first_month_user, FALSE)"
-client_id_column = "r.client_id"
-
-[dimensions.retained_week_2]
-friendly_name = "Repeat First Month User"
-description = "Whether the Client is Retained in their Second Week"
-data_source = "onboarding_events"
-select_expression = "COALESCE(r.retained_week_2, FALSE)"
 client_id_column = "r.client_id"
 
 [dimensions.retained_week_4]

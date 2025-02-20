@@ -42,7 +42,7 @@
         "mode": "NULLABLE"
       },
       {
-        "type": "STRING",
+        "type": "INTEGER",
         "name": "parent",
         "mode": "NULLABLE"
       },

@@ -5,7 +5,8 @@ AS
 SELECT
   daily.* EXCEPT(app_channel, normalized_country_code),
   app_channel AS channel,
-  normalized_country_code AS country,
+  IFNULL(normalized_country_code, "??") AS country,
+  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
   {% if app_name in ("fenix", "firefox_desktop") %}
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
@@ -15,7 +16,6 @@ SELECT
   {% else %}
   "{{ app_name }}" AS app_name,
   {% endif %}
-  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
   -- Activity fields to support metrics built on top of activity
   CASE
     WHEN BIT_COUNT(days_active_bits)

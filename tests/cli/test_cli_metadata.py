@@ -16,6 +16,7 @@ from bigquery_etl.metadata.validate_metadata import (
     validate,
     validate_change_control,
     validate_shredder_mitigation,
+    validate_col_desc_enforced,
 )
 
 TEST_DIR = Path(__file__).parent.parent
@@ -685,3 +686,119 @@ class TestMetadata:
             captured = capfd.readouterr()
             assert result is None
             assert captured.out == ""
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_validate_col_desc_enforced(
+        self, mock_bigquery_table, mock_bigquery_client, runner
+    ):
+        """Test that validation fails when metadata says enforce column descriptions but a column desc is missing"""
+        metadata = {"friendly_name": "Test", "enforce_col_desc": True}
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "profile_id",
+                    "type": "STRING",
+                    "description": "description 1",
+                },
+                {"mode": "REQUIRED", "name": "column_3", "type": "STRING"},
+            ]
+        }
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table group by column_1")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            metadata_from_file = Metadata.from_file(metadata_path)
+
+            result = validate_col_desc_enforced(self.test_path, metadata_from_file)
+            assert result is False
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_validate_col_desc_passes_when_not_enforced(
+        self, mock_bigquery_table, mock_bigquery_client, runner
+    ):
+        """Test that validation passes when metadata says enforce column descriptions is False and a col desc is missing"""
+        metadata = {"friendly_name": "Test", "enforce_col_desc": False}
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "profile_id",
+                    "type": "STRING",
+                    "description": "description 1",
+                },
+                {"mode": "REQUIRED", "name": "column_3", "type": "STRING"},
+            ]
+        }
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table group by column_1")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            metadata_from_file = Metadata.from_file(metadata_path)
+
+            result = validate_col_desc_enforced(self.test_path, metadata_from_file)
+            assert result is True
+
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
+    def test_validate_col_desc_passes_with_all_col_desc_and_enforcement(
+        self, mock_bigquery_table, mock_bigquery_client, runner
+    ):
+        """Test that validation passes when metadata says enforce column descriptions is True and all cols have a desc"""
+        metadata = {"friendly_name": "Test", "enforce_col_desc": True}
+        schema = {
+            "fields": [
+                {
+                    "mode": "REQUIRED",
+                    "name": "profile_id",
+                    "type": "STRING",
+                    "description": "description 1",
+                },
+                {
+                    "mode": "REQUIRED",
+                    "name": "column_3",
+                    "type": "STRING",
+                    "description": "description 2",
+                },
+            ]
+        }
+        mock_bigquery_client().get_table.return_value = mock_bigquery_table()
+
+        with runner.isolated_filesystem():
+            query_path = Path(self.test_path) / "query.sql"
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            schema_path = Path(self.test_path) / "schema.yaml"
+            os.makedirs(self.test_path, exist_ok=True)
+
+            with open(query_path, "w") as f:
+                f.write("SELECT column_1 FROM test_table group by column_1")
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            metadata_from_file = Metadata.from_file(metadata_path)
+
+            result = validate_col_desc_enforced(self.test_path, metadata_from_file)
+            assert result is True

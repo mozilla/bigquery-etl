@@ -2062,3 +2062,38 @@ class TestBackfill:
             destination_table="project.staging.table$202012",
             client=None,
         )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_initialize_previous_partition_with_offset(self, mock_copy_table):
+        """Partition offset should be used to copy the correct partition."""
+        metadata = TABLE_METADATA_CONF_DEPENDS_ON_PAST.copy()
+        metadata["bigquery"] = {"time_partitioning": {"type": "day"}}
+        metadata["scheduling"] = {"date_partition_offset": -7, "depends_on_past": True}
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 5, 3),
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.INITIATE,
+        )
+
+        _initialize_previous_partition(
+            client=None,
+            table_name="project.prod.table",
+            staging_table_name="project.staging.table",
+            metadata=metadata,
+            backfill_entry=backfill_entry,
+        )
+
+        mock_copy_table.assert_called_once_with(
+            source_table="project.prod.table$20201226",
+            destination_table="project.staging.table$20201226",
+            client=None,
+        )

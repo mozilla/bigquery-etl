@@ -687,8 +687,6 @@ class TestMetadata:
             assert result is None
             assert captured.out == ""
 
-    @patch("google.cloud.bigquery.Client")
-    @patch("google.cloud.bigquery.Table")
     def test_validate_col_desc_enforced(
         self, mock_bigquery_table, mock_bigquery_client, runner
     ):
@@ -724,8 +722,6 @@ class TestMetadata:
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is False
 
-    @patch("google.cloud.bigquery.Client")
-    @patch("google.cloud.bigquery.Table")
     def test_validate_col_desc_passes_when_not_enforced(
         self, mock_bigquery_table, mock_bigquery_client, runner
     ):
@@ -761,8 +757,6 @@ class TestMetadata:
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is True
 
-    @patch("google.cloud.bigquery.Client")
-    @patch("google.cloud.bigquery.Table")
     def test_validate_col_desc_passes_with_all_col_desc_and_enforcement(
         self, mock_bigquery_table, mock_bigquery_client, runner
     ):

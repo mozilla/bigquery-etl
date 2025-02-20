@@ -207,7 +207,7 @@ def validate_shredder_mitigation(query_dir, metadata):
 def validate_col_desc_enforced(query_dir, metadata):
     """Check schemas with enforce_col_desc = True comply with requirements."""
     # If column descriptions need to be enforced:
-    if metadata.enforce_col_desc is True:
+    if metadata.require_column_descriptions:
 
         schema_file = Path(query_dir) / SCHEMA_FILE
         if not schema_file.exists():

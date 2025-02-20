@@ -10,7 +10,8 @@ labels:
 scheduling:
   dag_name: bqetl_monitoring
   arguments:
-  - --date '{{ ds }}'
+  - --date
+  - '{{ ds }}'
   date_partition_parameter: null
   secrets:
   - deploy_target: LOOKER_API_CLIENT_ID

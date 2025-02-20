@@ -299,7 +299,7 @@ with DAG(
             "python",
             "sql/moz-fx-data-shared-prod/monitoring_derived/looker_dashboard_load_times_v1/query.py",
         ]
-        + ["--date '{{ ds }}'"],
+        + ["--date", "{{ ds }}"],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "kwindau@mozilla.com"],

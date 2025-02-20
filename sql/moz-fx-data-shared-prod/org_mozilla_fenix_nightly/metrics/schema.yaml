@@ -2193,6 +2193,272 @@ fields:
         SHARED_WORKER_SPAWN_GETS_QUEUED.
 
         '
+    - name: update_cannot_stage_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that cannot stage updates (externally
+        initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CANNOT_STAGE_EXTERNAL.
+
+        '
+    - name: update_cannot_stage_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that cannot stage updates (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CANNOT_STAGE_NOTIFY.
+
+        '
+    - name: update_cannot_stage_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that cannot stage updates (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CANNOT_STAGE_SUBSEQUENT.
+
+        '
+    - name: update_check_no_update_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of no updates were found for a background update
+        check (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CHECK_NO_UPDATE_EXTERNAL.
+
+        '
+    - name: update_check_no_update_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of no updates were found for a background update
+        check (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CHECK_NO_UPDATE_NOTIFY.
+
+        '
+    - name: update_check_no_update_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of no updates were found for a background update
+        check (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CHECK_NO_UPDATE_SUBSEQUENT.
+
+        '
+    - name: update_invalid_lastupdatetime_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that have a last update time greater
+        than the current time (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_INVALID_LASTUPDATETIME_EXTERNAL.
+
+        '
+    - name: update_invalid_lastupdatetime_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that have a last update time greater
+        than the current time (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_INVALID_LASTUPDATETIME_NOTIFY.
+
+        '
+    - name: update_invalid_lastupdatetime_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that have a last update time greater
+        than the current time (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_INVALID_LASTUPDATETIME_SUBSEQUENT.
+
+        '
+    - name: update_not_pref_update_auto_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+        does not return the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_AUTO_EXTERNAL.
+
+        '
+    - name: update_not_pref_update_auto_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+        does not return the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_AUTO_NOTIFY.
+
+        '
+    - name: update_not_pref_update_auto_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when getAppUpdateAutoEnabled from UpdateUtils.sys.mjs
+        does not return the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_AUTO_SUBSEQUENT.
+
+        '
+    - name: update_not_pref_update_service_enabled_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when the app.update.service.enabled boolean preference
+        is not the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_SERVICE_ENABLED_EXTERNAL.
+
+        '
+    - name: update_not_pref_update_service_enabled_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when the app.update.service.enabled boolean preference
+        is not the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_SERVICE_ENABLED_NOTIFY.
+
+        '
+    - name: update_not_pref_update_service_enabled_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when the app.update.service.enabled boolean preference
+        is not the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_SERVICE_ENABLED_SUBSEQUENT.
+
+        '
+    - name: update_not_pref_update_staging_enabled_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when the app.update.staging.enabled boolean preference
+        is not the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_STAGING_ENABLED_EXTERNAL.
+
+        '
+    - name: update_not_pref_update_staging_enabled_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when the app.update.staging.enabled boolean preference
+        is not the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_STAGING_ENABLED_NOTIFY.
+
+        '
+    - name: update_not_pref_update_staging_enabled_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of when the app.update.staging.enabled boolean preference
+        is not the default value of true (true values are not submitted)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_NOT_PREF_UPDATE_STAGING_ENABLED_SUBSEQUENT.
+
+        '
+    - name: update_ping_count_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems for this ping for comparison with other
+        pings (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_PING_COUNT_EXTERNAL.
+
+        '
+    - name: update_ping_count_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems for this ping for comparison with other
+        pings (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_PING_COUNT_NOTIFY.
+
+        '
+    - name: update_ping_count_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems for this ping for comparison with other
+        pings (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_PING_COUNT_SUBSEQUENT.
+
+        '
+    - name: update_service_manually_uninstalled_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that manually uninstalled the service
+        (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_SERVICE_MANUALLY_UNINSTALLED_EXTERNAL.
+
+        '
+    - name: update_service_manually_uninstalled_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that manually uninstalled the service
+        (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_SERVICE_MANUALLY_UNINSTALLED_NOTIFY.
+
+        '
+    - name: update_service_manually_uninstalled_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that manually uninstalled the service
+        (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_SERVICE_MANUALLY_UNINSTALLED_SUBSEQUENT.
+
+        '
+    - name: update_unable_to_apply_external
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that cannot apply updates (externally
+        initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_UNABLE_TO_APPLY_EXTERNAL.
+
+        '
+    - name: update_unable_to_apply_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that cannot apply updates (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_UNABLE_TO_APPLY_NOTIFY.
+
+        '
+    - name: update_unable_to_apply_subsequent
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: count of systems that cannot apply updates (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_UNABLE_TO_APPLY_SUBSEQUENT.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2565,7 +2831,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -5848,7 +6115,8 @@ fields:
         = the storage access was granted due to the heuristic ''Redirect'', ''RedirectTracker''
         = the storage access was granted due to the heuristic ''RedirectTracker''.)
         Note, StorageGranted is used as a baseline measurement, which should be the
-        sum of all other measurements.
+        sum of all other measurements. We also duplicate all data reported into a
+        corresponding *_CT label where the grant is given to a known classified tracker.
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram STORAGE_ACCESS_GRANTED_COUNT.
@@ -6670,6 +6938,240 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'The encoding of the notification icon URL
+
+        '
+    - name: update_can_use_bits_external
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: Whether BITS could be used to download updates (externally
+        initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_CAN_USE_BITS_EXTERNAL.
+
+        '
+    - name: update_can_use_bits_notify
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: Whether BITS could be used to download updates (timer
+        initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_CAN_USE_BITS_NOTIFY.
+
+        '
+    - name: update_can_use_bits_subsequent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: Whether BITS could be used to download updates (after
+        we already have an update ready)
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_CAN_USE_BITS_SUBSEQUENT.
+
+        '
+    - name: update_check_extended_error_external
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: keyed count (key names are prefixed with AUS_CHECK_EX_ERR_)
+        of background update check extended error code (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CHECK_EXTENDED_ERROR_EXTERNAL.
+
+        '
+    - name: update_check_extended_error_notify
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: keyed count (key names are prefixed with AUS_CHECK_EX_ERR_)
+        of background update check extended error code (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CHECK_EXTENDED_ERROR_NOTIFY.
+
+        '
+    - name: update_check_extended_error_subsequent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: keyed count (key names are prefixed with AUS_CHECK_EX_ERR_)
+        of background update check extended error code (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        UPDATE_CHECK_EXTENDED_ERROR_SUBSEQUENT.
+
+        '
+    - name: update_notification_badge_shown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: the application update badge type that was displayed.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_NOTIFICATION_BADGE_SHOWN.
+
+        '
+    - name: update_notification_dismissed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: the dismiss action was executed for this application update
+        doorhanger type.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_NOTIFICATION_DISMISSED.
+
+        '
+    - name: update_notification_main_action_doorhanger
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: the main update action was initiated for this application
+        update doorhanger type.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_NOTIFICATION_MAIN_ACTION_DOORHANGER.
+
+        '
+    - name: update_notification_main_action_menu
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: the update action was initiated from the PanelUI application
+        update menu item.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_NOTIFICATION_MAIN_ACTION_MENU.
+
+        '
+    - name: update_notification_shown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: the application update doorhanger type that was displayed.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram UPDATE_NOTIFICATION_SHOWN.
+
+        '
+    - name: update_service_installed_external
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: whether the service is installed (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        UPDATE_SERVICE_INSTALLED_EXTERNAL.
+
+        '
+    - name: update_service_installed_notify
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: whether the service is installed (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        UPDATE_SERVICE_INSTALLED_NOTIFY.
+
+        '
+    - name: update_service_installed_subsequent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Update: whether the service is installed (after we already have
+        an update ready)
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        UPDATE_SERVICE_INSTALLED_SUBSEQUENT.
 
         '
   - name: string
@@ -23005,6 +23507,147 @@ fields:
         histogram HTTP3_TIMER_DELAYED.
 
         '
+    - name: update_last_notify_interval_days_external
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: interval in days since the last background update check
+        (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram UPDATE_LAST_NOTIFY_INTERVAL_DAYS_EXTERNAL.
+
+        '
+    - name: update_last_notify_interval_days_notify
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: interval in days since the last background update check
+        (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram UPDATE_LAST_NOTIFY_INTERVAL_DAYS_NOTIFY.
+
+        '
+    - name: update_last_notify_interval_days_subsequent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: interval in days since the last background update check
+        (after we already have an update ready)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram UPDATE_LAST_NOTIFY_INTERVAL_DAYS_SUBSEQUENT.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -29811,6 +30454,755 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram HTTP3_TRANS_SENDING_BLOCKED_BY_FLOW_CONTROL_PER_CONN.
+
+        '
+    - name: update_bits_result_complete
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: Result code from downloading a complete update via BITS
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_BITS_RESULT_COMPLETE.
+
+        '
+    - name: update_bits_result_partial
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: Result code from downloading a partial update via BITS
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_BITS_RESULT_PARTIAL.
+
+        '
+    - name: update_check_code_external
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: background update check result code except for no updates
+        found (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_CHECK_CODE_EXTERNAL.
+
+        '
+    - name: update_check_code_notify
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: background update check result code except for no updates
+        found (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_CHECK_CODE_NOTIFY.
+
+        '
+    - name: update_check_code_subsequent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: background update check result code except for no updates
+        found (after we already have an update ready). Possible codes are enumerated
+        by constants starting with CHK_ in toolkit/mozapps/update/UpdateTelemetry.sys.mjs
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_CHECK_CODE_SUBSEQUENT.
+
+        '
+    - name: update_download_code_complete
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: complete patch type download result code
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_DOWNLOAD_CODE_COMPLETE.
+
+        '
+    - name: update_download_code_partial
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: partial patch type download result code
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_DOWNLOAD_CODE_PARTIAL.
+
+        '
+    - name: update_download_code_unknown
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: unknown patch type download result code
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_DOWNLOAD_CODE_UNKNOWN.
+
+        '
+    - name: update_pref_service_errors_external
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: number of sequential update service errors greater than
+        0 (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_PREF_SERVICE_ERRORS_EXTERNAL.
+
+        '
+    - name: update_pref_service_errors_notify
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: number of sequential update service errors greater than
+        0 (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_PREF_SERVICE_ERRORS_NOTIFY.
+
+        '
+    - name: update_pref_service_errors_subsequent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: number of sequential update service errors greater than
+        0 (after we already have an update ready)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_PREF_SERVICE_ERRORS_SUBSEQUENT.
+
+        '
+    - name: update_pref_update_cancelations_external
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: number of sequential update elevation request cancelations
+        greater than 0 (externally initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_PREF_UPDATE_CANCELATIONS_EXTERNAL.
+
+        '
+    - name: update_pref_update_cancelations_notify
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: number of sequential update elevation request cancelations
+        greater than 0 (timer initiated)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_PREF_UPDATE_CANCELATIONS_NOTIFY.
+
+        '
+    - name: update_pref_update_cancelations_subsequent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: number of sequential update elevation request cancelations
+        greater than 0 (after we already have an update ready)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_PREF_UPDATE_CANCELATIONS_SUBSEQUENT.
+
+        '
+    - name: update_state_code_complete_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the state of a complete patch update from update.status
+        after staging
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATE_CODE_COMPLETE_STAGE.
+
+        '
+    - name: update_state_code_complete_startup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the state of a complete update from update.status on startup
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATE_CODE_COMPLETE_STARTUP.
+
+        '
+    - name: update_state_code_partial_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the state of a partial patch update from update.status
+        after staging
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATE_CODE_PARTIAL_STAGE.
+
+        '
+    - name: update_state_code_partial_startup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the state of a partial patch update from update.status
+        on startup
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATE_CODE_PARTIAL_STARTUP.
+
+        '
+    - name: update_state_code_unknown_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the state of an unknown patch update from update.status
+        after staging
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATE_CODE_UNKNOWN_STAGE.
+
+        '
+    - name: update_state_code_unknown_startup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the state of an unknown patch update from update.status
+        on startup
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATE_CODE_UNKNOWN_STARTUP.
+
+        '
+    - name: update_status_error_code_complete_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the status error code for a failed complete patch update
+        from update.status after staging
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATUS_ERROR_CODE_COMPLETE_STAGE.
+
+        '
+    - name: update_status_error_code_complete_startup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the status error code for a failed complete patch update
+        from update.status on startup
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATUS_ERROR_CODE_COMPLETE_STARTUP.
+
+        '
+    - name: update_status_error_code_partial_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the status error code for a failed partial patch update
+        from update.status after staging
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATUS_ERROR_CODE_PARTIAL_STAGE.
+
+        '
+    - name: update_status_error_code_partial_startup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the status error code for a failed partial patch update
+        from update.status on startup
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATUS_ERROR_CODE_PARTIAL_STARTUP.
+
+        '
+    - name: update_status_error_code_unknown_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the status error code for a failed unknown patch update
+        from update.status after staging
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATUS_ERROR_CODE_UNKNOWN_STAGE.
+
+        '
+    - name: update_status_error_code_unknown_startup
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: the status error code for a failed unknown patch update
+        from update.status on startup
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram UPDATE_STATUS_ERROR_CODE_UNKNOWN_STARTUP.
 
         '
   - name: quantity

@@ -275,6 +275,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the user uses Firefox Sync.
+    - name: nimbus_targeting_context_is_fx_a_signed_in
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the user is logged in to Firefox Accounts.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

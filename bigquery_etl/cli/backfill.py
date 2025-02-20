@@ -52,6 +52,7 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
+from ..format_sql.formatter import reformat
 from ..metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
 from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from ..schema import SCHEMA_FILE, Schema
@@ -570,6 +571,24 @@ def _initiate_backfill(
         )
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
+
+    # rewrite query to query the staging table instead of the prod table if table depends on past
+    if metadata.scheduling.get("depends_on_past"):
+        query_path = (
+            custom_query_path or Path("sql") / project / dataset / table / "query.sql"
+        )
+
+        # format to ensure fully qualified references
+        query_text = reformat(query_path.read_text())
+        updated_query_text = query_text.replace(
+            f"`{project}.{dataset}.{table}`",
+            f"`{backfill_staging_qualified_table_name}`",
+        )
+
+        replaced_ref_query = query_path.parent / "replaced_ref.sql"
+        replaced_ref_query.write_text(updated_query_text)
+
+        custom_query_path = replaced_ref_query
 
     override_retention_limit = entry.override_retention_limit
 

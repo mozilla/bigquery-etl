@@ -2,7 +2,7 @@ import json
 import os
 from datetime import date, timedelta
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
@@ -29,6 +29,7 @@ from bigquery_etl.backfill.utils import (
 )
 from bigquery_etl.cli.backfill import (
     _initialize_previous_partition,
+    _initiate_backfill,
     complete,
     create,
     info,
@@ -38,6 +39,7 @@ from bigquery_etl.cli.backfill import (
 )
 from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException
+from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
 
 DEFAULT_STATUS = BackfillStatus.INITIATE
@@ -1861,6 +1863,51 @@ class TestBackfill:
 
         assert result.exit_code == 1
         assert expected_error_output in result.output
+
+    @patch("google.cloud.bigquery.Client")
+    def test_initiate_backfill_depends_on_past_rewrite_query_path(
+        self, mock_client, runner
+    ):
+        """Backfill for depends_on_past tables should replace self references in queries with staging table."""
+        backfill_staging_table_name = (
+            "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1"
+        )
+        prod_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+        (Path(QUERY_DIR) / "query.sql").write_text(
+            f"SELECT * FROM `{prod_table_name}` WHERE TRUE"
+        )
+        (Path(QUERY_DIR) / "metadata.yaml").write_text(
+            yaml.dump(TABLE_METADATA_CONF_DEPENDS_ON_PAST)
+        )
+
+        entry = Backfill(
+            date(2021, 5, 3),
+            date(2021, 1, 3),
+            date(2021, 5, 3),
+            [date(2021, 2, 3)],
+            DEFAULT_REASON,
+            [DEFAULT_WATCHER],
+            DEFAULT_STATUS,
+        )
+
+        mock_context = MagicMock()
+
+        _initiate_backfill(
+            ctx=mock_context,
+            qualified_table_name=prod_table_name,
+            backfill_staging_qualified_table_name=backfill_staging_table_name,
+            entry=entry,
+        )
+
+        custom_query_path = Path(QUERY_DIR) / "replaced_ref.sql"
+
+        mock_context.invoke.assert_called_once()
+        assert (
+            mock_context.invoke.call_args[1]["custom_query_path"] == custom_query_path
+        )
+        assert custom_query_path.read_text() == reformat(
+            f"SELECT * FROM `{backfill_staging_table_name}` WHERE TRUE"
+        )
 
     @patch("bigquery_etl.cli.backfill.deploy_table")
     def test_validate_backfill_initiate_with_without_label_and_entry_dont_match_should_fail(

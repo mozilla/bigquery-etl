@@ -19,6 +19,9 @@ Daily exports of query data marked as public to GCS.
 Depends on the results of several upstream DAGs, the latest of which
 runs at 04:00 UTC.
 
+As long as the most recent DAG run is successful this job can be considered healthy.
+In such case, past DAG failures can be ignored.
+
 #### Owner
 
 ascholtz@mozilla.com

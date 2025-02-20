@@ -687,11 +687,13 @@ class TestMetadata:
             assert result is None
             assert captured.out == ""
 
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
     def test_validate_col_desc_enforced(
         self, mock_bigquery_table, mock_bigquery_client, runner
     ):
         """Test that validation fails when metadata says enforce column descriptions but a column desc is missing"""
-        metadata = {"friendly_name": "Test", "enforce_col_desc": True}
+        metadata = {"friendly_name": "Test", "require_column_descriptions": True}
         schema = {
             "fields": [
                 {
@@ -722,11 +724,13 @@ class TestMetadata:
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is False
 
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
     def test_validate_col_desc_passes_when_not_enforced(
         self, mock_bigquery_table, mock_bigquery_client, runner
     ):
         """Test that validation passes when metadata says enforce column descriptions is False and a col desc is missing"""
-        metadata = {"friendly_name": "Test", "enforce_col_desc": False}
+        metadata = {"friendly_name": "Test", "require_column_descriptions": False}
         schema = {
             "fields": [
                 {
@@ -757,11 +761,13 @@ class TestMetadata:
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is True
 
+    @patch("google.cloud.bigquery.Client")
+    @patch("google.cloud.bigquery.Table")
     def test_validate_col_desc_passes_with_all_col_desc_and_enforcement(
         self, mock_bigquery_table, mock_bigquery_client, runner
     ):
         """Test that validation passes when metadata says enforce column descriptions is True and all cols have a desc"""
-        metadata = {"friendly_name": "Test", "enforce_col_desc": True}
+        metadata = {"friendly_name": "Test", "require_column_descriptions": True}
         schema = {
             "fields": [
                 {

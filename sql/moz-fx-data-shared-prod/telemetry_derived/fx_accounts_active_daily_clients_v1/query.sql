@@ -20,7 +20,7 @@ WITH fxa_staging AS (
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts` fxa
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND fxa.metrics.uuid.client_association_legacy_client_id IS NOT NULL
+    AND fxa.client_info.client_id IS NOT NULL
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY

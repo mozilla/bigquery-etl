@@ -224,8 +224,8 @@ def validate_col_desc_enforced(query_dir, metadata):
             # Validate that the query columns have descriptions.
             if not field.description:
                 click.echo(
-                    f"Column description validation failed, {field.name} does not have "
-                    f"a description in the schema."
+                    f"Column description validation failed for {query_dir}, "
+                    f"{field.name} does not have a description in the schema."
                 )
                 return False
         return True

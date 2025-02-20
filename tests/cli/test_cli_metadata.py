@@ -836,7 +836,7 @@ class TestMetadata:
             assert result is False
 
     def test_nested_validate_col_desc2(self, runner):
-        """Test that validation fails when metadata says enforce column descriptions is True and no desc on nested"""
+        """Test that validation passes when metadata says enforce column descriptions is True and there are desc"""
         metadata = {"friendly_name": "Test", "require_column_descriptions": True}
 
         schema = {

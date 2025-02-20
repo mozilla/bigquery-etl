@@ -2220,7 +2220,7 @@ bqetl_client_attributes:
     owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2025-02-14'
+    start_date: '2025-02-19'
   description: Schedules daily level retention queries
   schedule_interval: 40 19 * * *
   tags:

@@ -1,14 +1,14 @@
 friendly_name: Baseline Active Users Aggregates
 description: |-
-  Builds active_users_aggregates using baseline ping data
+  Builds active_users_aggregates using the baseline ping.
 owners:
 - kwindau@mozilla.com
+- kik@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
   table_type: aggregate
 scheduling:
-  dag_name: bqetl_baseline_active_user_aggregates
+  dag_name: bqetl_analytics_aggregations
 bigquery:
   time_partitioning:
     type: day
@@ -19,4 +19,3 @@ bigquery:
   clustering:
     fields:
     - app_name
-references: {}

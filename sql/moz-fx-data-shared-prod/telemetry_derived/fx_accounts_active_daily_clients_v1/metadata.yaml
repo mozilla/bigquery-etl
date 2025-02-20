@@ -1,8 +1,8 @@
 friendly_name: Firefox Accounts Active Daily Clients
 description: |-
-  Table with 1 row per submission date and legacy telemetry client ID sending a Firefox Accounts ping that date, joined with telemetry data
+  Table with 1 row per submission date and Glean client ID sending a Firefox Accounts ping that date, joined with telemetry data
   Intentionally does not contain Firefox Account ID
-  Primary key is submission date & legacy_telemetry_client_id
+  Primary key is submission date & client_id
 owners:
 - kwindau@mozilla.com
 labels:

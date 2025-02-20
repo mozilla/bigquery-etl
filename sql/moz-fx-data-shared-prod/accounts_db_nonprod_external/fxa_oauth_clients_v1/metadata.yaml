@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-oauth-nonprod-stage-fxa-oauth', 'SELECT\n         id,\n         name,\n         imageUri,\n         redirectUri,\n         canGrant,\n         publicClient,\n         createdAt,\n         trusted,\n         allowedScopes,\n         notes\n       FROM\n         fxa_oauth.clients\n    ')
+require_column_descriptions: false

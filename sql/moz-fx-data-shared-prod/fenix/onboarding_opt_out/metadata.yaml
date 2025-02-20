@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.onboarding_opt_out
   - moz-fx-data-shared-prod.org_mozilla_firefox.onboarding_opt_out
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.onboarding_opt_out
+require_column_descriptions: false

@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.home
   - moz-fx-data-shared-prod.org_mozilla_firefox.home
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.home
+require_column_descriptions: false

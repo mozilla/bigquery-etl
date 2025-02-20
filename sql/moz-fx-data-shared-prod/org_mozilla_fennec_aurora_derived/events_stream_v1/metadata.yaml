@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - org_mozilla_fennec_aurora.events
+require_column_descriptions: false

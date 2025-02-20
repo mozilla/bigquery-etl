@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.app_store_syndicate.app_store_territory_source_type_report
+require_column_descriptions: false

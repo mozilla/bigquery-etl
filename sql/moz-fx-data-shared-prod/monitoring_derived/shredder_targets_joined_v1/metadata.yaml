@@ -30,3 +30,4 @@ references:
   - moz-fx-data-shared-prod.monitoring_derived.bigquery_tables_inventory_v1
   - moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1
   - moz-fx-data-shared-prod.monitoring_derived.shredder_targets_v1
+require_column_descriptions: false

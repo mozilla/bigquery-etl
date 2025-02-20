@@ -33,3 +33,4 @@ references:
   - moz-fx-data-shared-prod.telemetry_live.main_v5
   - moz-fx-data-shared-prod.telemetry_stable.crash_v4
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
+require_column_descriptions: false

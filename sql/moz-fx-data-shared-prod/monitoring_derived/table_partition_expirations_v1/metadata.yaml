@@ -105,3 +105,4 @@ references:
   - moz-fx-data-shared-prod.treeherder_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.viu_politica_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.webpagetest_stable.INFORMATION_SCHEMA.PARTITIONS
+require_column_descriptions: false

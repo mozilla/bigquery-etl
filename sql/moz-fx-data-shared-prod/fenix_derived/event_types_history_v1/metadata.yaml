@@ -35,3 +35,4 @@ references:
   - org_mozilla_fenix.events
   - org_mozilla_firefox.events
   - org_mozilla_firefox_beta.events
+require_column_descriptions: false

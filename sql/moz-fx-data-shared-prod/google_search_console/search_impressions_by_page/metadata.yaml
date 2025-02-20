@@ -21,3 +21,4 @@ references:
   - moz-fx-data-shared-prod.google_search_console_derived.search_impressions_by_page_v2
   - moz-fx-data-shared-prod.static.country_codes_v1
   - moz-fx-data-shared-prod.static.language_codes_v1
+require_column_descriptions: false

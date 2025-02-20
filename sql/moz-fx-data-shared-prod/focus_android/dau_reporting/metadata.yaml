@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.dau_reporting
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.dau_reporting
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.dau_reporting
+require_column_descriptions: false

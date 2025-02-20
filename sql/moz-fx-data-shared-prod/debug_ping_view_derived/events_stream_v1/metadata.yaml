@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - debug_ping_view.events
+require_column_descriptions: false

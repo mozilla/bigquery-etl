@@ -16,3 +16,4 @@ workgroup_access:
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.contextual_services_live.topsites_click_v1
+require_column_descriptions: false

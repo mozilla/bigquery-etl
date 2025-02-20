@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.suggest_impression_rate_live_v1
+require_column_descriptions: false

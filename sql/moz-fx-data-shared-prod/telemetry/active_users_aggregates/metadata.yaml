@@ -13,3 +13,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates
   - moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile
+require_column_descriptions: false

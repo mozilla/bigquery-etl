@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         commandId,\n         commandName\n       FROM\n         fxa.deviceCommandIdentifiers\n    ')
+require_column_descriptions: false

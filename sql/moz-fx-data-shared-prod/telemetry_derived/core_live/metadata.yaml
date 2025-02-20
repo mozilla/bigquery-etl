@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.telemetry_live.core_v7
   - moz-fx-data-shared-prod.telemetry_live.core_v8
   - moz-fx-data-shared-prod.telemetry_live.core_v9
+require_column_descriptions: false

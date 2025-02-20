@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - pocket-airflow-prod.data_from_pocket.pocket_reach_mau
+require_column_descriptions: false

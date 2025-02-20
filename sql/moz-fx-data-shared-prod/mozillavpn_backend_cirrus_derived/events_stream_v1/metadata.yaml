@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - mozillavpn_backend_cirrus.events
+require_column_descriptions: false

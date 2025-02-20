@@ -14,3 +14,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-marketing-prod.analytics_314096102.events_*
+require_column_descriptions: false

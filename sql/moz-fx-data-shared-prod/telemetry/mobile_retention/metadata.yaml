@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.focus_ios.retention
   - moz-fx-data-shared-prod.klar_android.retention
   - moz-fx-data-shared-prod.klar_ios.retention
+require_column_descriptions: false

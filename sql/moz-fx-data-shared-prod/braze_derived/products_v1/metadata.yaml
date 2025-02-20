@@ -31,3 +31,4 @@ references:
   - moz-fx-data-shared-prod.braze_derived.users_v1
   - moz-fx-data-shared-prod.ctms_braze.ctms_fxa
   - moz-fx-data-shared-prod.subscription_platform.logical_subscriptions
+require_column_descriptions: false

@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - viu_politica.events
+require_column_descriptions: false

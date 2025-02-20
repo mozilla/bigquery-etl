@@ -22,3 +22,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.events
+require_column_descriptions: false

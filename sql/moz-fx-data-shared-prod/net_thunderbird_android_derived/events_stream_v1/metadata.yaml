@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - net_thunderbird_android.events
+require_column_descriptions: false

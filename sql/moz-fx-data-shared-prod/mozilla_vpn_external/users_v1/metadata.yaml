@@ -32,3 +32,4 @@ references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-guardian-prod-bfc7.us.guardian-sql-prod', @external_database_query)
   - moz-fx-data-shared-prod.mozilla_vpn_external.users_v1
+require_column_descriptions: false

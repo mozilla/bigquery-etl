@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.startup_timeline
   - moz-fx-data-shared-prod.org_mozilla_firefox.startup_timeline
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.startup_timeline
+require_column_descriptions: false

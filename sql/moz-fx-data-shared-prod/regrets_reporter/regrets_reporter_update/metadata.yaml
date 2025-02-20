@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.regrets_reporter_stable.regrets_reporter_update_v1
+require_column_descriptions: false

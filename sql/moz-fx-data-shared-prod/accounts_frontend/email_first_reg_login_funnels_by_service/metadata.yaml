@@ -15,3 +15,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.accounts_db.fxa_oauth_clients
   - moz-fx-data-shared-prod.accounts_frontend_derived.email_first_reg_login_funnels_by_service_v1
+require_column_descriptions: false

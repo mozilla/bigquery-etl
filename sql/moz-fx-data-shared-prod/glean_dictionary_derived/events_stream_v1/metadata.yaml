@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - glean_dictionary.events
+require_column_descriptions: false

@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring.payload_bytes_error_all
+require_column_descriptions: false

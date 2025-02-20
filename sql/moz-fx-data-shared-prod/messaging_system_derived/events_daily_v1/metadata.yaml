@@ -32,3 +32,4 @@ references:
   query.sql:
   - messaging_system.event_types
   - messaging_system_derived.normalized_onboarding_events
+require_column_descriptions: false

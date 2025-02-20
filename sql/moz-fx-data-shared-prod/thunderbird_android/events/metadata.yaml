@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.net_thunderbird_android.events
   - moz-fx-data-shared-prod.net_thunderbird_android_beta.events
   - moz-fx-data-shared-prod.net_thunderbird_android_daily.events
+require_column_descriptions: false

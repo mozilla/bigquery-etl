@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - accounts_cirrus.events
+require_column_descriptions: false

@@ -15,3 +15,4 @@ references:
   - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_gcp_stderr_events_v1
   - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_gcp_stdout_events_v1
   - moz-fx-data-shared-prod.firefox_accounts_derived.nonprod_fxa_stdout_events_v1
+require_column_descriptions: false

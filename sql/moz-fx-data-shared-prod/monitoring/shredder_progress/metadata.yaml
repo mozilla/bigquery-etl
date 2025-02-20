@@ -14,3 +14,4 @@ references:
   - moz-fx-data-shredder.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
   - moz-fx-data-shredder.shredder_state.shredder_state
   - moz-fx-data-shredder.shredder_state.tasks
+require_column_descriptions: false

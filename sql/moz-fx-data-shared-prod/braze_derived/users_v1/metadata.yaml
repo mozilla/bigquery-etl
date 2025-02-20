@@ -35,3 +35,4 @@ references:
   - moz-fx-data-shared-prod.ctms_braze.ctms_newsletters
   - moz-fx-data-shared-prod.ctms_braze.ctms_waitlists
   - moz-fx-data-shared-prod.marketing_suppression_list_derived.main_suppression_list_v1
+require_column_descriptions: false

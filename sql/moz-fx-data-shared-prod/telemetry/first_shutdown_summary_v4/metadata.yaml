@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.first_shutdown_summary_v4
+require_column_descriptions: false

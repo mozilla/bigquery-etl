@@ -17,3 +17,4 @@ workgroup_access:
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser_live.events_v1
+require_column_descriptions: false

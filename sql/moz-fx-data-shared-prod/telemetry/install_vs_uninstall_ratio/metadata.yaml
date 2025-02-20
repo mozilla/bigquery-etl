@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.install_vs_uninstall_ratio_v1
+require_column_descriptions: false

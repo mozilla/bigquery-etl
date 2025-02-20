@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1
+require_column_descriptions: false

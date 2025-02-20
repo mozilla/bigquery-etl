@@ -18,3 +18,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_derived.baseline_clients_last_seen_v1
+require_column_descriptions: false

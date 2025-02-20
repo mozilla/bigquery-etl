@@ -22,3 +22,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitor_cirrus_derived.baseline_clients_daily_v1
+require_column_descriptions: false

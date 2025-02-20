@@ -23,3 +23,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.fenix_derived.client_adclicks_history_v1
+require_column_descriptions: false

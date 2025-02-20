@@ -15,3 +15,4 @@ workgroup_access:
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_focus_live.metrics_v1
+require_column_descriptions: false

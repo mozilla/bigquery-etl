@@ -33,3 +33,4 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1
   - moz-fx-data-shared-prod.search.search_clients_engines_sources_daily
   - moz-fx-data-shared-prod.telemetry.clients_daily
+require_column_descriptions: false

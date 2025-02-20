@@ -20,3 +20,4 @@ workgroup_access:
   - workgroup:search-terms/external-outerbounds-task-search-terms-sanitized
   - workgroup:search-terms/sanitized-writer
 references: {}
+require_column_descriptions: false

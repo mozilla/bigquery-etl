@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         id,\n         uid,\n         state,\n         errorReasonId,\n         offeringConfigId,\n         interval,\n         experiment,\n         taxAddress,\n         createdAt,\n         updatedAt,\n         couponCode,\n         stripeCustomerId,\n         email,\n         amount,\n         version,\n         eligibilityStatus\n       FROM\n         fxa.carts\n    ')
+require_column_descriptions: false

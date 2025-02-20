@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.focus_android_derived.active_users_aggregates_v3
+require_column_descriptions: false

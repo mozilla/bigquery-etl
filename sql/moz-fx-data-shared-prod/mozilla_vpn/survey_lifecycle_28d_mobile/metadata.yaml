@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.survey_lifecycle_28d_mobile_v1
+require_column_descriptions: false

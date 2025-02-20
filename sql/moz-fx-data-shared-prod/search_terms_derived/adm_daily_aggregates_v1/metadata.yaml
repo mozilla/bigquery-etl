@@ -33,3 +33,4 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.search_terms_derived.suggest_impression_sanitized_v3
+require_column_descriptions: false

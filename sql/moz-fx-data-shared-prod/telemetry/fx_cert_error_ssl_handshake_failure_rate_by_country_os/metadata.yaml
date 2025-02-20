@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.fx_cert_error_ssl_handshake_failure_rate_by_country_os_v1
+require_column_descriptions: false

@@ -37,3 +37,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus_stable.crash_v1
   - moz-fx-data-shared-prod.org_mozilla_klar_stable.crash_v1
   - moz-fx-data-shared-prod.telemetry_stable.crash_v4
+require_column_descriptions: false

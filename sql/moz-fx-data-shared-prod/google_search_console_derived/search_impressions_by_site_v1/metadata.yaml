@@ -47,3 +47,4 @@ references:
   - moz-fx-data-bq-fivetran.google_search_console_pocket.keyword_site_report_by_site
   - moz-fx-data-bq-fivetran.google_search_console_support.keyword_site_report_by_site
   - moz-fx-data-bq-fivetran.google_search_console_www.keyword_site_report_by_site
+require_column_descriptions: false

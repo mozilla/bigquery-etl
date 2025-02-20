@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fenix.active_users
   - moz-fx-data-shared-prod.fenix.attribution_clients
+require_column_descriptions: false

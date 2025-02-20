@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - firefox_desktop.events
+require_column_descriptions: false

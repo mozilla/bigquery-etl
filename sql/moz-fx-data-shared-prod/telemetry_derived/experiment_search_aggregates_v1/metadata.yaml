@@ -43,3 +43,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_klar_stable.metrics_v1
   - moz-fx-data-shared-prod.org_mozilla_klar_stable.metrics_v1
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
+require_column_descriptions: false

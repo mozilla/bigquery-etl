@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.bounce_tracking_protection
   - moz-fx-data-shared-prod.org_mozilla_firefox.bounce_tracking_protection
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.bounce_tracking_protection
+require_column_descriptions: false

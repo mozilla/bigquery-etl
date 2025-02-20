@@ -47,3 +47,4 @@ references:
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
   - mozdata.static.csa_gblmkt_languages
 deprecated: true
+require_column_descriptions: false

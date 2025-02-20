@@ -40,3 +40,4 @@ workgroup_access:
 references:
   query.sql:
   - monitor_backend.events
+require_column_descriptions: false

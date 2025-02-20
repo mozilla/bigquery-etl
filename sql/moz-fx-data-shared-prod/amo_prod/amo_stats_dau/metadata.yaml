@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.amo_prod.amo_stats_dau_v2
+require_column_descriptions: false

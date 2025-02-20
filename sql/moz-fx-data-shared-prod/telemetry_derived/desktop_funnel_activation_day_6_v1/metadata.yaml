@@ -28,3 +28,4 @@ references:
   - moz-fx-data-shared-prod.static.country_codes_v1
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
   - moz-fx-data-shared-prod.telemetry.new_profile
+require_column_descriptions: false

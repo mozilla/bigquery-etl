@@ -18,3 +18,4 @@ workgroup_access:
 references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.monitor_backend_live.events_v1
+require_column_descriptions: false

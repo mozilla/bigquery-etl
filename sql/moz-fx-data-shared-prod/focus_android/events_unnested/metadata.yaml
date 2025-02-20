@@ -13,3 +13,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.events
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.events
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.events
+require_column_descriptions: false

@@ -26,3 +26,4 @@ references:
   query.sql:
   - mozdata.accounts_backend.events_stream
   - mozdata.accounts_frontend.events_stream
+require_column_descriptions: false

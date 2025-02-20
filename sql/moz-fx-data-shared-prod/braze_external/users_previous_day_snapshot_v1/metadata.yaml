@@ -35,3 +35,4 @@ workgroup_access:
 references:
   checks.sql:
   - ..
+require_column_descriptions: false

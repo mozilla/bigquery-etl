@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.payload_bytes_error.structured
   - moz-fx-data-shared-prod.payload_bytes_error.stub_installer
   - moz-fx-data-shared-prod.payload_bytes_error.telemetry
+require_column_descriptions: false

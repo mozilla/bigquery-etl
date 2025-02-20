@@ -18,3 +18,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.baseline
+require_column_descriptions: false

@@ -21,3 +21,4 @@ external_data:
   - https://docs.google.com/spreadsheets/d/1j-tBTKOMlDxjbdEtn9EvH8KN99I5_jE5F0TSXvFuND4
   options:
     skip_leading_rows: 1
+require_column_descriptions: false

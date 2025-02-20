@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.segmented_dau_28_day_rolling_v1
+require_column_descriptions: false

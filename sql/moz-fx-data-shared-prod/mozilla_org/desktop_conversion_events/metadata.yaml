@@ -16,3 +16,4 @@ references:
   - moz-fx-data-shared-prod.mozilla_org_derived.ga_desktop_conversions_v2
   - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2
   - moz-fx-data-shared-prod.static.country_codes_v1
+require_column_descriptions: false

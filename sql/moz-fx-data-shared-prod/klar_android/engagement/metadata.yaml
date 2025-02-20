@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.klar_android_derived.engagement_v1
+require_column_descriptions: false

@@ -26,3 +26,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_klar_derived.experiment_search_events_live_v1
   - moz-fx-data-shared-prod.telemetry_derived.experiment_search_aggregates_v1
   - moz-fx-data-shared-prod.telemetry_derived.experiment_search_events_live_v1
+require_column_descriptions: false

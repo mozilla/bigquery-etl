@@ -18,3 +18,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.extensionsession
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.extensionsession
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.extensionsession
+require_column_descriptions: false

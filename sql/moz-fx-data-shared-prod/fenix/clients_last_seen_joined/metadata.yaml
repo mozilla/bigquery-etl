@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.fenix_derived.clients_last_seen_joined_v1
+require_column_descriptions: false

@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fenix.ltv_state_values
   - moz-fx-data-shared-prod.fenix_derived.client_ltv_v1
+require_column_descriptions: false

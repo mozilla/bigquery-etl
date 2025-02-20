@@ -56,3 +56,4 @@ workgroup_access:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
 references: {}
+require_column_descriptions: false

@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
   - moz-fx-data-shared-prod.monitoring.structured_error_counts
+require_column_descriptions: false

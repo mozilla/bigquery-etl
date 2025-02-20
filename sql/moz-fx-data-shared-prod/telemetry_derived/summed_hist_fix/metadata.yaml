@@ -8,3 +8,4 @@ workgroup_access: []
 references: {}
 deprecated: true
 deletion_date: 2024-05-31
+require_column_descriptions: false

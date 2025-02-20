@@ -13,3 +13,4 @@ references:
   - moz-fx-data-shared-prod.net_thunderbird_android.events_stream
   - moz-fx-data-shared-prod.net_thunderbird_android_beta.events_stream
   - moz-fx-data-shared-prod.net_thunderbird_android_daily.events_stream
+require_column_descriptions: false

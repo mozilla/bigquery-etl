@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.events_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.first_session_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.metrics_v1
+require_column_descriptions: false

@@ -18,3 +18,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.thunderbird_desktop_derived.events_stream_v1
+require_column_descriptions: false

@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.creditcards_sync
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.creditcards_sync
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.creditcards_sync
+require_column_descriptions: false

@@ -50,3 +50,4 @@ monitoring:
   collection: null
   partition_column: null
   partition_column_set: true
+require_column_descriptions: false

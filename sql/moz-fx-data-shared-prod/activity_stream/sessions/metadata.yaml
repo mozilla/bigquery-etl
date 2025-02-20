@@ -21,3 +21,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.activity_stream_stable.sessions_v1
+require_column_descriptions: false

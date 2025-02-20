@@ -60,3 +60,4 @@ references:
   - firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios.active_users
   - moz-fx-data-shared-prod.firefox_ios.metrics_clients_last_seen
+require_column_descriptions: false

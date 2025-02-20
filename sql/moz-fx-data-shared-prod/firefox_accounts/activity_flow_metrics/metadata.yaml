@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_accounts_stable.activity_flow_metrics_v1
+require_column_descriptions: false

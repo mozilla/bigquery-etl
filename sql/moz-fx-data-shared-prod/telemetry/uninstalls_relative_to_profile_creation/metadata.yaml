@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.uninstalls_relative_to_profile_creation_v1
+require_column_descriptions: false

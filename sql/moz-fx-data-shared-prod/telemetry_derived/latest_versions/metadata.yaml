@@ -11,3 +11,4 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_stable.main_v5
+require_column_descriptions: false

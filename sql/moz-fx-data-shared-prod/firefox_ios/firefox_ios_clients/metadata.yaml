@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_ios.clients_activation
   - moz-fx-data-shared-prod.firefox_ios_derived.firefox_ios_clients_v1
+require_column_descriptions: false

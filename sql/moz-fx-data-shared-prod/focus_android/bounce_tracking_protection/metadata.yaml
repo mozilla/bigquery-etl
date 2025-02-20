@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.bounce_tracking_protection
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.bounce_tracking_protection
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.bounce_tracking_protection
+require_column_descriptions: false

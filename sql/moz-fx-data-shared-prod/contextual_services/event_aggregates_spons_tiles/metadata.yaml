@@ -13,3 +13,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.contextual_services_derived.event_aggregates_spons_tiles_v1
+require_column_descriptions: false

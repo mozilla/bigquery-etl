@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.cookie_banner_report_site
   - moz-fx-data-shared-prod.org_mozilla_firefox.cookie_banner_report_site
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.cookie_banner_report_site
+require_column_descriptions: false

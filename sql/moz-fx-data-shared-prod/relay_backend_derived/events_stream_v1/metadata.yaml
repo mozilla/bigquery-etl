@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - relay_backend.events
+require_column_descriptions: false

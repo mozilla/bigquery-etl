@@ -21,3 +21,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.extensionsession_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.main_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_live.vpnsession_v1
+require_column_descriptions: false

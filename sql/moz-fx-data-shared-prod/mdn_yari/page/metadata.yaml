@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mdn_yari_stable.page_v1
+require_column_descriptions: false

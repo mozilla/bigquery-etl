@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - suggest-searches-prod-a30f.sanitized.suggest_impression_sanitized_v2
+require_column_descriptions: false

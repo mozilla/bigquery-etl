@@ -43,3 +43,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.topsites_impression
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.topsites_impression
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.topsites_impression
+require_column_descriptions: false

@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_overall_v1
+require_column_descriptions: false

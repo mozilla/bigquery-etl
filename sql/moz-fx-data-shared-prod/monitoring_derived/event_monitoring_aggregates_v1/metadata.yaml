@@ -134,3 +134,4 @@ references:
   - moz-fx-data-shared-prod.viu_politica_stable.events_v1
   - moz-fx-data-shared-prod.viu_politica_stable.main_events_v1
   - moz-fx-data-shared-prod.viu_politica_stable.video_index_v1
+require_column_descriptions: false

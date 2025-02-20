@@ -13,3 +13,4 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.static.fxa_amplitude_export_event_date
+require_column_descriptions: false

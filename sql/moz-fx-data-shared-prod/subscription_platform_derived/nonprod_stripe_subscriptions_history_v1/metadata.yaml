@@ -28,3 +28,4 @@ references:
   - moz-fx-data-shared-prod.stripe_external.nonprod_promotion_code_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_subscription_history_v1
   - moz-fx-data-shared-prod.stripe_external.nonprod_subscription_item_v1
+require_column_descriptions: false

@@ -9,3 +9,4 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references: {}
+require_column_descriptions: false

@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.user_characteristics
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.user_characteristics
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.user_characteristics
+require_column_descriptions: false

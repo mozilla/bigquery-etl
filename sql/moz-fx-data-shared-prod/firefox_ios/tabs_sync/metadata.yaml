@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.tabs_sync
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.tabs_sync
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.tabs_sync
+require_column_descriptions: false

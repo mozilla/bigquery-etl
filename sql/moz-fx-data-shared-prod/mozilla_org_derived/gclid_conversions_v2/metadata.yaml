@@ -33,3 +33,4 @@ workgroup_access:
   - workgroup:dataops-managed/external-census
   - workgroup:mozilla-confidential
 references: {}
+require_column_descriptions: false

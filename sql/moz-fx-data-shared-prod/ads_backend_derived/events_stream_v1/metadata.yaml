@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - ads_backend.events
+require_column_descriptions: false

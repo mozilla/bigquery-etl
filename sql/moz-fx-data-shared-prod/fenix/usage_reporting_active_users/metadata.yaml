@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.fenix.usage_reporting_clients_daily
   - moz-fx-data-shared-prod.fenix.usage_reporting_clients_last_seen
+require_column_descriptions: false

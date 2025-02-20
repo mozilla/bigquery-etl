@@ -34,3 +34,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.main_nightly_v1
+require_column_descriptions: false

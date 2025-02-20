@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_services_devices_daily_v1
   - moz-fx-data-shared-prod.static.country_names_v1
+require_column_descriptions: false

@@ -31,3 +31,4 @@ references:
   - moz-fx-data-shared-prod.fenix.attribution_clients
   - moz-fx-data-shared-prod.fenix.baseline_clients_daily
   - moz-fx-data-shared-prod.fenix.metrics
+require_column_descriptions: false

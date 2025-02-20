@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_lockbox.baseline_clients_first_seen
+require_column_descriptions: false

@@ -21,3 +21,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.ads_derived.nt_visits_to_sessions_conversion_factors_daily_v1
+require_column_descriptions: false

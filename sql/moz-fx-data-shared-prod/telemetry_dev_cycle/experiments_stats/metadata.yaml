@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_dev_cycle_external.experiments_stats_v1
+require_column_descriptions: false

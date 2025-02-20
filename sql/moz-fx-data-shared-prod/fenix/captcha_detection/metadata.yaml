@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.captcha_detection
   - moz-fx-data-shared-prod.org_mozilla_firefox.captcha_detection
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.captcha_detection
+require_column_descriptions: false

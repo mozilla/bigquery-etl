@@ -16,3 +16,4 @@ references:
   - moz-fx-data-shared-prod.contextual_services_stable.quicksuggest_impression_v1
   - moz-fx-data-shared-prod.search_terms_derived.remotesettings_suggestions_v1
   - suggest-searches-prod-a30f.logs.stdout
+require_column_descriptions: false

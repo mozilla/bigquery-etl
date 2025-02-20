@@ -28,3 +28,4 @@ workgroup_access:
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_desktop_stable.broken_site_report_v1
+require_column_descriptions: false

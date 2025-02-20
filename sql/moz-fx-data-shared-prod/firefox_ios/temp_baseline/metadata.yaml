@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.temp_baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.temp_baseline
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.temp_baseline
+require_column_descriptions: false

@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.prvt_brwsng_mode_retention_v1
+require_column_descriptions: false

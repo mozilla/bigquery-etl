@@ -24,3 +24,4 @@ references:
   - moz-fx-data-shared-prod.firefox_ios.baseline
   - moz-fx-data-shared-prod.firefox_ios.metrics
 deprecated: true
+require_column_descriptions: false

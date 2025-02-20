@@ -25,3 +25,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_stable.*
   - moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.TABLE_OPTIONS
+require_column_descriptions: false

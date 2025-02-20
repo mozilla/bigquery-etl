@@ -36,3 +36,4 @@ workgroup_access:
   members:
   - workgroup:dataplatform/developers
 references: {}
+require_column_descriptions: false

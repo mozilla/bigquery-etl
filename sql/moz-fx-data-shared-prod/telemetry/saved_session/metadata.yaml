@@ -20,3 +20,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_stable.saved_session_v5
+require_column_descriptions: false

@@ -30,3 +30,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.search.acer_cohort
   - moz-fx-data-shared-prod.search_derived.search_clients_daily_v8
+require_column_descriptions: false

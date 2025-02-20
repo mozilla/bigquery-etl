@@ -30,3 +30,4 @@ references:
   - moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1
   - moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
   - mozdata.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+require_column_descriptions: false

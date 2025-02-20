@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.focus_ios.engagement
   - moz-fx-data-shared-prod.klar_android.engagement
   - moz-fx-data-shared-prod.klar_ios.engagement
+require_column_descriptions: false

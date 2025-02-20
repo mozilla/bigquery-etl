@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.deletion_request
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.deletion_request
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.deletion_request
+require_column_descriptions: false

@@ -13,3 +13,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.baseline_clients_last_seen
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline_clients_last_seen
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline_clients_last_seen
+require_column_descriptions: false

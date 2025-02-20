@@ -25,3 +25,4 @@ workgroup_access:
 references:
   query.sql:
   - mozdata.accounts_frontend.events_stream
+require_column_descriptions: false

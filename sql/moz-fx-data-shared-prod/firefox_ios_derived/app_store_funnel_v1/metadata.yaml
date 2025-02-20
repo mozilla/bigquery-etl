@@ -38,3 +38,4 @@ references:
   - moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.static.country_names_v1
+require_column_descriptions: false

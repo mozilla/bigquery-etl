@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         uid,\n         normalizedEmail,\n         email,\n         emailVerified,\n         verifierVersion,\n         verifierSetAt,\n         createdAt,\n         locale,\n         lockedAt,\n         profileChangedAt,\n         keysChangedAt,\n         ecosystemAnonId,\n         disabledAt,\n         metricsOptOutAt,\n         atLeast18AtReg\n       FROM\n         fxa.accounts\n    ')
+require_column_descriptions: false

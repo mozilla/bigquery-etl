@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.broken_site_report_v1
+require_column_descriptions: false

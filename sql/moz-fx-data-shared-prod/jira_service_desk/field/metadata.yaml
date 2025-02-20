@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.jira_service_desk_syndicate.field
+require_column_descriptions: false

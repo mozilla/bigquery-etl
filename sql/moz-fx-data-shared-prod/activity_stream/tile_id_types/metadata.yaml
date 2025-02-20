@@ -13,3 +13,4 @@ workgroup_access:
 references:
   view.sql:
   - pocket-tiles.pocket_tiles_data.tile_id_types
+require_column_descriptions: false

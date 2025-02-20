@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.review_checker_clients_v1
+require_column_descriptions: false

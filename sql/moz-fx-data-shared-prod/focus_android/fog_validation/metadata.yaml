@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.fog_validation
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.fog_validation
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.fog_validation
+require_column_descriptions: false

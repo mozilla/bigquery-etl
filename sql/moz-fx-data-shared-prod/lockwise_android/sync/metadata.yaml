@@ -15,3 +15,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_lockbox.sync
+require_column_descriptions: false

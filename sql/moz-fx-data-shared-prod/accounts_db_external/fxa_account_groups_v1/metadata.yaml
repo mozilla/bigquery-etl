@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         uid,\n         group_id,\n         role,\n         managed_by,\n         expires,\n         notes\n       FROM\n         fxa.accountGroups\n    ')
+require_column_descriptions: false

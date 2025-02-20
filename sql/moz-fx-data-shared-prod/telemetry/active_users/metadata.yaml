@@ -13,3 +13,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.desktop_active_users
   - moz-fx-data-shared-prod.telemetry.mobile_active_users
+require_column_descriptions: false

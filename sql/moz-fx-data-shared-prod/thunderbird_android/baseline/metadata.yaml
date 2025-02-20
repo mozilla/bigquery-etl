@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.net_thunderbird_android.baseline
   - moz-fx-data-shared-prod.net_thunderbird_android_beta.baseline
   - moz-fx-data-shared-prod.net_thunderbird_android_daily.baseline
+require_column_descriptions: false

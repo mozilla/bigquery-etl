@@ -38,3 +38,4 @@ references:
   - moz-fx-data-shared-prod.fenix.new_profile_activation_clients
   - moz-fx-data-shared-prod.fenix.new_profile_clients
   - moz-fx-data-shared-prod.fenix.retention_clients
+require_column_descriptions: false

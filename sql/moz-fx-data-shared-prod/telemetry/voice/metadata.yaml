@@ -20,3 +20,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_stable.voice_v4
+require_column_descriptions: false

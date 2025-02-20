@@ -13,3 +13,4 @@ references:
   - moz-fx-data-shared-prod.fenix.firefox_android_clients
   - moz-fx-data-shared-prod.fenix.new_profile_activation
   - moz-fx-data-shared-prod.fenix_derived.attributable_clients_v2
+require_column_descriptions: false

@@ -24,3 +24,4 @@ references:
   - moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_v1
   - moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_v1
   - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v1
+require_column_descriptions: false

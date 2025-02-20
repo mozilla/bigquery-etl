@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.pocket_stable.fire_tv_events_v1
+require_column_descriptions: false

@@ -13,3 +13,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.event_counts_glean_v1
+require_column_descriptions: false

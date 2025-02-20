@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         uid,\n         billingAgreementId,\n         status,\n         createdAt,\n         endedAt\n       FROM\n         fxa.paypalCustomers\n    ')
+require_column_descriptions: false

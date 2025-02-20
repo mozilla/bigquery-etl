@@ -15,3 +15,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_klar.use_counters
+require_column_descriptions: false

@@ -30,3 +30,4 @@ references:
   - moz-fx-data-shared-prod.mozilla_vpn_derived.login_flows_v1
   - moz-fx-data-shared-prod.mozilla_vpn_derived.protected_v1
   - moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1
+require_column_descriptions: false

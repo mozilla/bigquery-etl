@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.telemetry_core_parquet_v3
+require_column_descriptions: false

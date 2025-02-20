@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.focus_ios.active_users
   - moz-fx-data-shared-prod.klar_android.active_users
   - moz-fx-data-shared-prod.klar_ios.active_users
+require_column_descriptions: false

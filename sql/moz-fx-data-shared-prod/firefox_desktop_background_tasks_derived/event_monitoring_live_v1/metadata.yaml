@@ -18,3 +18,4 @@ references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_live.background_tasks_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_live.events_v1
+require_column_descriptions: false

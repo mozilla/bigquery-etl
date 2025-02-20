@@ -48,3 +48,4 @@ references:
   - org_mozilla_ios_klar.baseline
   - org_mozilla_klar.baseline
   - telemetry.core
+require_column_descriptions: false

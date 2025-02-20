@@ -13,3 +13,4 @@ references:
   - moz-fx-data-shared-prod.net_thunderbird_android.baseline_clients_last_seen
   - moz-fx-data-shared-prod.net_thunderbird_android_beta.baseline_clients_last_seen
   - moz-fx-data-shared-prod.net_thunderbird_android_daily.baseline_clients_last_seen
+require_column_descriptions: false

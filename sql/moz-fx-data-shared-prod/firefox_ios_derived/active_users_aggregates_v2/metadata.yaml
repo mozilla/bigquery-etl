@@ -26,3 +26,4 @@ bigquery: null
 workgroup_access: []
 references: {}
 deprecated: true
+require_column_descriptions: false

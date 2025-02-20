@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.google_ads_derived.campaign_names_map_v1
+require_column_descriptions: false

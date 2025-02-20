@@ -11,3 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
+require_column_descriptions: false

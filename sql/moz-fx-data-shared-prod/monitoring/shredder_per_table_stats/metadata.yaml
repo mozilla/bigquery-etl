@@ -13,3 +13,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.shredder_per_job_stats_v1
+require_column_descriptions: false

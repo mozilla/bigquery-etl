@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_stable.main_v1
+require_column_descriptions: false

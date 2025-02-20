@@ -24,3 +24,4 @@ workgroup_access:
 references:
   query.sql:
   - dev-fivetran.stripe_nonprod.coupon
+require_column_descriptions: false

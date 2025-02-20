@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         email,\n         bounceType,\n         bounceSubType,\n         createdAt,\n         emailTypeId,\n         diagnosticCode\n       FROM\n         fxa.emailBounces\n    ')
+require_column_descriptions: false

@@ -18,3 +18,4 @@ external_data:
   options:
     skip_leading_rows: 1
     range: Tag Data
+require_column_descriptions: false

@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_focus.use_counters
   - moz-fx-data-shared-prod.org_mozilla_focus_beta.use_counters
   - moz-fx-data-shared-prod.org_mozilla_focus_nightly.use_counters
+require_column_descriptions: false

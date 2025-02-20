@@ -27,3 +27,4 @@ workgroup_access:
   - workgroup:pocket/external
   - workgroup:pocket/prefect
 references: {}
+require_column_descriptions: false

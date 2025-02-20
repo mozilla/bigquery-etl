@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.regrets_reporter_ucs_stable.video_data_v1
+require_column_descriptions: false

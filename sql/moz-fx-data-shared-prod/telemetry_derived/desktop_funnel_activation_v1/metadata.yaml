@@ -13,3 +13,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.desktop_funnel_activation_day_6_v1
+require_column_descriptions: false

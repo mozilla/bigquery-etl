@@ -18,3 +18,4 @@ references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.org_mozilla_bergamot_live.custom_v1
   - moz-fx-data-shared-prod.org_mozilla_bergamot_live.events_v1
+require_column_descriptions: false

@@ -41,3 +41,4 @@ workgroup_access:
 references:
   query.sql:
   - accounts_frontend.events
+require_column_descriptions: false

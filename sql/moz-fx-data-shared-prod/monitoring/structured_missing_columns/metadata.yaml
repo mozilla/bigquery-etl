@@ -12,3 +12,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.structured_missing_columns_v1
   - moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+require_column_descriptions: false

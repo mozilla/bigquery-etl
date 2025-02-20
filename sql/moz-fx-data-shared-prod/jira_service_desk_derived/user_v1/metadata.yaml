@@ -21,3 +21,4 @@ workgroup_access:
   - workgroup:service-desk/data-developers
   - workgroup:service-desk/data-viewers
 references: {}
+require_column_descriptions: false

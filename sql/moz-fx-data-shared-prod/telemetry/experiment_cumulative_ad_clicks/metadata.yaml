@@ -14,3 +14,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.experiment_cumulative_ad_clicks_v1
+require_column_descriptions: false

@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.fog_validation
   - moz-fx-data-shared-prod.org_mozilla_firefox.fog_validation
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.fog_validation
+require_column_descriptions: false

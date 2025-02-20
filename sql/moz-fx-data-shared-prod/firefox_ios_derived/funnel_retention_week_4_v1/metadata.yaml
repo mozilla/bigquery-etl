@@ -34,3 +34,4 @@ references:
   - ..funnel_retention_clients_week_4_v1
   query.sql:
   - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
+require_column_descriptions: false

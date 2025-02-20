@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - org_mozilla_reference_browser.events
+require_column_descriptions: false

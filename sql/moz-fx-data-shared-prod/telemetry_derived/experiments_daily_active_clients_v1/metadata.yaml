@@ -42,3 +42,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline
   - moz-fx-data-shared-prod.org_mozilla_klar.baseline
   - telemetry.clients_daily
+require_column_descriptions: false

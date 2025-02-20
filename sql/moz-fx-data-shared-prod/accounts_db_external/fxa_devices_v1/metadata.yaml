@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-prod.us.fxa-rds-prod-prod-fxa', 'SELECT\n         uid,\n         id,\n         name,\n         nameUtf8,\n         type,\n         createdAt,\n         callbackPublicKey,\n         callbackIsExpired\n       FROM\n         fxa.devices\n    ')
+require_column_descriptions: false

@@ -19,3 +19,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.use_counters
   - moz-fx-data-shared-prod.org_mozilla_firefox.use_counters
   - moz-fx-data-shared-prod.org_mozilla_firefox_beta.use_counters
+require_column_descriptions: false

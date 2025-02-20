@@ -32,3 +32,4 @@ references:
   - moz-fx-data-shared-prod.braze_derived.products_v1
   - moz-fx-data-shared-prod.braze_derived.users_v1
   - moz-fx-data-shared-prod.braze_derived.waitlists_v1
+require_column_descriptions: false

@@ -20,3 +20,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         id,\n         uid,\n         createdAt,\n         verified,\n         enabled\n       FROM\n         fxa.totp\n    ')
+require_column_descriptions: false

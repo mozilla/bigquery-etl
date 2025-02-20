@@ -26,3 +26,4 @@ workgroup_access:
 references:
   query.sql:
   - EXTERNAL_QUERY('moz-fx-fxa-nonprod.us.fxa-rds-nonprod-stage-fxa', 'SELECT\n         id,\n         normalizedEmail,\n         email,\n         uid,\n         isVerified,\n         isPrimary,\n         verifiedAt,\n         createdAt\n       FROM\n         emails\n    ')
+require_column_descriptions: false

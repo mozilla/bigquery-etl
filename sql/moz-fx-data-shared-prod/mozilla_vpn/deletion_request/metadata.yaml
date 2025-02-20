@@ -18,3 +18,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.deletion_request
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.deletion_request
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.deletion_request
+require_column_descriptions: false

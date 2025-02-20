@@ -12,3 +12,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_28_days_later_v1
+require_column_descriptions: false

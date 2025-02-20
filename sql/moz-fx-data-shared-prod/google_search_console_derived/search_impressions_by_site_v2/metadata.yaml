@@ -66,3 +66,4 @@ references:
   - moz-fx-data-marketing-prod.searchconsole_mdn.searchdata_site_impression
   - moz-fx-data-marketing-prod.searchconsole_support.searchdata_site_impression
   - moz-fx-data-marketing-prod.searchconsole_www.searchdata_site_impression
+require_column_descriptions: false

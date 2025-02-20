@@ -34,3 +34,4 @@ workgroup_access:
   - workgroup:google-managed/external-ads-dataproc
   - workgroup:mozilla-confidential
 references: {}
+require_column_descriptions: false

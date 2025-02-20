@@ -21,3 +21,4 @@ references:
   - moz-fx-data-shared-prod.telemetry.active_users_aggregates
   - moz-fx-data-shared-prod.telemetry.buildhub2
   - moz-fx-data-shared-prod.telemetry.clients_last_seen
+require_column_descriptions: false

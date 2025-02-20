@@ -39,3 +39,4 @@ workgroup_access:
 references:
   query.sql:
   - mozilla_lockbox.events
+require_column_descriptions: false

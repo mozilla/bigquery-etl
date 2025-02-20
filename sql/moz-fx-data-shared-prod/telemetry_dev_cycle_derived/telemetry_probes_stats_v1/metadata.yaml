@@ -18,3 +18,4 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.telemetry_dev_cycle_derived.firefox_major_release_dates_v1
   - moz-fx-data-shared-prod.telemetry_dev_cycle_external.telemetry_probes_stats_v1
+require_column_descriptions: false

@@ -32,3 +32,4 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:regrets-reporter
 references: {}
+require_column_descriptions: false

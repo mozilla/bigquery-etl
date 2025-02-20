@@ -20,3 +20,4 @@ workgroup_access:
   members:
   - workgroup:braze/writers
 references: {}
+require_column_descriptions: false

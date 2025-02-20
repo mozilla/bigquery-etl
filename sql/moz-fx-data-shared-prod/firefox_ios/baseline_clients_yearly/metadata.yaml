@@ -18,3 +18,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_ios_derived.baseline_clients_yearly_v1
+require_column_descriptions: false

@@ -19,3 +19,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.pine_stable.user_characteristics_v1
+require_column_descriptions: false

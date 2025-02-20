@@ -17,3 +17,4 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.metrics
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox.metrics
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.metrics
+require_column_descriptions: false

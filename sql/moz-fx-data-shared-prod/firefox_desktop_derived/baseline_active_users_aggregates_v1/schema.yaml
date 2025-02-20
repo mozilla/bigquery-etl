@@ -79,17 +79,11 @@ fields:
   description: |
     The id of the browser distribution made available in installation sources.
 
-- name: segment_dau
-  type: STRING
-  mode: NULLABLE
-  description: |
-    Profile segmentation based on the number of days active in the last 28 days.
-
 - name: activity_segment
   type: STRING
   mode: NULLABLE
   description: |
-    Profile segmentation based on the number of days seen in the last 28 days.
+    Profile segmentation based on the number of days active in the last 28 days.
 
 - name: first_seen_year
   type: INTEGER

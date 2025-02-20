@@ -788,7 +788,7 @@ class TestMetadata:
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is True
 
-    def test_nested_validate_col_desc(self, runner):
+    def test_nested_validate_col_desc1(self, runner):
         """Test that validation fails when metadata says enforce column descriptions is True and no desc on nested"""
         metadata = {"friendly_name": "Test", "require_column_descriptions": True}
 
@@ -835,7 +835,7 @@ class TestMetadata:
             result = validate_col_desc_enforced(self.test_path, metadata_from_file)
             assert result is False
 
-    def test_nested_validate_col_desc(self, runner):
+    def test_nested_validate_col_desc2(self, runner):
         """Test that validation fails when metadata says enforce column descriptions is True and no desc on nested"""
         metadata = {"friendly_name": "Test", "require_column_descriptions": True}
 

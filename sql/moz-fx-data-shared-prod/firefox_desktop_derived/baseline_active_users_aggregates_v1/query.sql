@@ -23,6 +23,8 @@ SELECT
   COUNTIF(is_mau) AS mau
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
+WHERE
+  submission_date = @submission_date
 GROUP BY
   submission_date,
   app_name,

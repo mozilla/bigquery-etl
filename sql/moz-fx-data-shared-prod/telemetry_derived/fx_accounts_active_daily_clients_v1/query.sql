@@ -24,7 +24,7 @@ WITH fxa_staging AS (
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
-        fxa.metrics.uuid.client_association_legacy_client_id
+        fxa.client_info.client_id
       ORDER BY
         submission_timestamp DESC
     ) = 1

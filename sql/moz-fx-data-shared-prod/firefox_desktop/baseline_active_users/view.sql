@@ -14,9 +14,9 @@ SELECT
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale
   ),
   CASE
-    WHEN isp = 'BrowserStack'
+    WHEN LOWER(isp) = 'browserstack'
       THEN CONCAT('Firefox Desktop', ' ', isp)
-    WHEN distribution_id = 'MozillaOnline'
+    WHEN LOWER(distribution_id) = 'mozillaonline'
       THEN CONCAT('Firefox Desktop', ' ', distribution_id)
     ELSE 'Firefox Desktop'
   END AS app_name,
@@ -75,6 +75,6 @@ SELECT
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_dau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
-  COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau
+  COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`

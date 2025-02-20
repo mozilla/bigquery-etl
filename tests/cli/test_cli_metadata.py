@@ -666,7 +666,6 @@ class TestMetadata:
         metadata = {
             "friendly_name": "Test",
             "labels": {},
-            "enforce_col_desc": False
         }
         schema = """
             fields:

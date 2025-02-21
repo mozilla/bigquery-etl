@@ -271,9 +271,11 @@ fields:
     - name: branch
       type: STRING
       mode: NULLABLE
+      description: Branch
     - name: extra
       type: RECORD
       mode: NULLABLE
+      description: Extra
       fields:
       - name: enrollment_id
         type: STRING

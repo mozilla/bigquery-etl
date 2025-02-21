@@ -20,5 +20,7 @@ bigquery:
   clustering:
     fields:
     - app_name
+    - channel
+    - country
 references: {}
 require_column_descriptions: false

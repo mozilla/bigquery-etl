@@ -1800,6 +1800,12 @@ fields:
         UPDATE_UNABLE_TO_APPLY_SUBSEQUENT.
 
         '
+    - name: web_push_unsubscribed_by_clearing_data
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts unsubscriptions triggered by ClearDataService.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

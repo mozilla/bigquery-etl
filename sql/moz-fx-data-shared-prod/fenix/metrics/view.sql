@@ -291,7 +291,8 @@ SELECT
       metrics.counter.update_service_manually_uninstalled_subsequent,
       metrics.counter.update_unable_to_apply_external,
       metrics.counter.update_unable_to_apply_notify,
-      metrics.counter.update_unable_to_apply_subsequent
+      metrics.counter.update_unable_to_apply_subsequent,
+      metrics.counter.web_push_unsubscribed_by_clearing_data
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1861,7 +1862,8 @@ SELECT
       metrics.counter.update_service_manually_uninstalled_subsequent,
       metrics.counter.update_unable_to_apply_external,
       metrics.counter.update_unable_to_apply_notify,
-      metrics.counter.update_unable_to_apply_subsequent
+      metrics.counter.update_unable_to_apply_subsequent,
+      metrics.counter.web_push_unsubscribed_by_clearing_data
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3449,7 +3451,8 @@ SELECT
       metrics.counter.update_service_manually_uninstalled_subsequent,
       metrics.counter.update_unable_to_apply_external,
       metrics.counter.update_unable_to_apply_notify,
-      metrics.counter.update_unable_to_apply_subsequent
+      metrics.counter.update_unable_to_apply_subsequent,
+      metrics.counter.web_push_unsubscribed_by_clearing_data
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5046,7 +5049,8 @@ SELECT
       metrics.counter.update_service_manually_uninstalled_subsequent,
       metrics.counter.update_unable_to_apply_external,
       metrics.counter.update_unable_to_apply_notify,
-      metrics.counter.update_unable_to_apply_subsequent
+      metrics.counter.update_unable_to_apply_subsequent,
+      metrics.counter.web_push_unsubscribed_by_clearing_data
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -6625,7 +6629,8 @@ SELECT
       metrics.counter.update_service_manually_uninstalled_subsequent,
       metrics.counter.update_unable_to_apply_external,
       metrics.counter.update_unable_to_apply_notify,
-      metrics.counter.update_unable_to_apply_subsequent
+      metrics.counter.update_unable_to_apply_subsequent,
+      metrics.counter.web_push_unsubscribed_by_clearing_data
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

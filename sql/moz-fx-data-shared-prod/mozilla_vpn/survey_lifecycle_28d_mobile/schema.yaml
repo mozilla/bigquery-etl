@@ -27,6 +27,9 @@ fields:
   - name: type
     type: STRING
     mode: NULLABLE
+  - name: parent
+    type: INTEGER
+    mode: NULLABLE
   - name: options
     type: RECORD
     mode: REPEATED

@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -1806,6 +1806,12 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry count histogram
         UPDATE_UNABLE_TO_APPLY_SUBSEQUENT.
+
+        '
+    - name: web_push_unsubscribed_by_clearing_data
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts unsubscriptions triggered by ClearDataService.
 
         '
   - name: datetime

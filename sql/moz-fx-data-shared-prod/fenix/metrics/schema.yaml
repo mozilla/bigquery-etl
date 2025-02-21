@@ -1021,6 +1021,9 @@ fields:
     - name: update_unable_to_apply_subsequent
       type: INTEGER
       mode: NULLABLE
+    - name: web_push_unsubscribed_by_clearing_data
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

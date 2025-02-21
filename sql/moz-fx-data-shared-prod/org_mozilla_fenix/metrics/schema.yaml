@@ -2459,6 +2459,12 @@ fields:
         UPDATE_UNABLE_TO_APPLY_SUBSEQUENT.
 
         '
+    - name: web_push_unsubscribed_by_clearing_data
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts unsubscriptions triggered by ClearDataService.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2831,8 +2837,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted

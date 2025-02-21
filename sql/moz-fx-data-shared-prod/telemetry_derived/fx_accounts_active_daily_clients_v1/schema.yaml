@@ -219,9 +219,11 @@ fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: Value
 - name: glean_error_invalid_state
   type: RECORD
   mode: REPEATED

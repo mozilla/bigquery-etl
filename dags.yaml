@@ -2164,7 +2164,7 @@ bqetl_alchemer:
       - eshallal@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: "2025-02-18"
+    start_date: "2023-06-01"
     retries: 1
     retry_delay: 1h
   tags:

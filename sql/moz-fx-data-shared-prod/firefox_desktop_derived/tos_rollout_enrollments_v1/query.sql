@@ -7,7 +7,7 @@ SELECT DISTINCT
   JSON_VALUE(event_extra, '$.experiment') AS slug,
   JSON_VALUE(event_extra, '$.branch') AS branch
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
+  `moz-fx-data-shared-prod.firefox_desktop.events_stream`
 WHERE
   1 = 1
   AND DATE(submission_timestamp) = @submission_date

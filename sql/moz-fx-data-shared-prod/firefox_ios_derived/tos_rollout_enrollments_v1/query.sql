@@ -7,7 +7,7 @@ SELECT DISTINCT
   JSON_VALUE(event_extra, '$.experiment') AS slug,
   JSON_VALUE(event_extra, '$.branch') AS branch
 FROM
-  `moz-fx-data-shared-prod.firefox_ios_desktop_derived.events_stream_v1`
+  `moz-fx-data-shared-prod.firefox_ios.events_stream`
 WHERE
   1 = 1
   AND DATE(submission_timestamp) = @submission_date
@@ -15,7 +15,7 @@ WHERE
   AND event_name = 'enrollment'
   AND JSON_VALUE(event_extra, '$.experiment') IN (
     'new-onboarding-experience-experiment-phase-1-ios',
-    'new-onboarding-experience-experiment-phase-1-ios',
-    'new-onboarding-experience-experiment-phase-1-ios',
-    'new-onboarding-experience-experiment-phase-1-ios'
+    'new-onboarding-experience-experiment-phase-2-ios',
+    'new-onboarding-experience-experiment-phase-3-ios',
+    'new-onboarding-experience-experiment-phase-4-ios'
   )

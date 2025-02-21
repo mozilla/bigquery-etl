@@ -7,7 +7,7 @@ SELECT DISTINCT
   JSON_VALUE(event_extra, '$.experiment') AS slug,
   JSON_VALUE(event_extra, '$.branch') AS branch
 FROM
-  `moz-fx-data-shared-prod.fenix_desktop_derived.events_stream_v1`
+  `moz-fx-data-shared-prod.fenix.events_stream`
 WHERE
   1 = 1
   AND DATE(submission_timestamp) = @submission_date
@@ -15,7 +15,7 @@ WHERE
   AND event_name = 'enrollment'
   AND JSON_VALUE(event_extra, '$.experiment') IN (
     'new-onboarding-experience-experiment-phase-1-android',
-    'new-onboarding-experience-experiment-phase-1-android',
-    'new-onboarding-experience-experiment-phase-1-android',
-    'new-onboarding-experience-experiment-phase-1-android'
+    'new-onboarding-experience-experiment-phase-2-android',
+    'new-onboarding-experience-experiment-phase-3-android',
+    'new-onboarding-experience-experiment-phase-4-android'
   )

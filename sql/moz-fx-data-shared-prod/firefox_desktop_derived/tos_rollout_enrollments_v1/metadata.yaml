@@ -5,17 +5,12 @@ owners:
   - dberry@mozilla.com
 labels:
   incremental: true
-  owner1: example
 scheduling:
   dag_name: bqetl_experiments_daily
 bigquery:
   time_partitioning:
     type: day
-    field: "submission_timestamp"
+    field: submission_timestamp
     require_partition_filter: true
-    expiration_days: null
-  range_partitioning: null
-  clustering:
-    fields: []
-references: {}
+    expiration_days: 775
 require_column_descriptions: true

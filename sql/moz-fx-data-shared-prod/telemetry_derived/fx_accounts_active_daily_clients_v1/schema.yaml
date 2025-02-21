@@ -66,7 +66,7 @@ fields:
 - name: session_id
   type: STRING
   mode: NULLABLE
-  description: Session ID
+  description: An optional UUID uniquely identifying the client's current session.
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
@@ -74,11 +74,11 @@ fields:
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: Windows Build Number
+  description: The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms
 - name: geo
   type: RECORD
   mode: NULLABLE
-  description: Geographic Information
+  description: Results of a geographic lookup based on the client's IP address
   fields:
   - name: city
     type: STRING
@@ -87,56 +87,56 @@ fields:
   - name: country
     type: STRING
     mode: NULLABLE
-    description: Country
+    description: An ISO 3166-1 alpha-2 country code
   - name: db_version
     type: STRING
     mode: NULLABLE
-    description: Database Version
+    description: The specific geo database version used for this lookup
   - name: subdivision1
     type: STRING
     mode: NULLABLE
-    description: Subdivision 1
+    description: First major country subdivision, typically a state, province, or county
   - name: subdivision2
     type: STRING
     mode: NULLABLE
-    description: Subdivision 2
+    description: Second major country subdivision; not applicable for most countries
 - name: header
   type: RECORD
   mode: NULLABLE
-  description: Header
+  description: Headers included in the client's HTTP request
   fields:
   - name: date
     type: STRING
     mode: NULLABLE
-    description: Date
+    description: Date HTTP header
   - name: dnt
     type: STRING
     mode: NULLABLE
-    description: Do Not Track
+    description: DNT (Do Not Track) Header
   - name: x_debug_id
     type: STRING
     mode: NULLABLE
-    description: X Debug ID
+    description: X-Debug-ID HTTP Header
   - name: x_foxsec_ip_reputation
     type: STRING
     mode: NULLABLE
-    description: X Foxsec IP Reputation
+    description: X-Foxsec-IP-Reputation header
   - name: x_lb_tags
     type: STRING
     mode: NULLABLE
-    description: X LB Tags
+    description: X-LB-Tags HTTP Header
   - name: x_pingsender_version
     type: STRING
     mode: NULLABLE
-    description: X Pingsender Version
+    description: X-PingSender-Version HTTP Header
   - name: x_source_tags
     type: STRING
     mode: NULLABLE
-    description: X Source Tags
+    description: X-Source-Tags HTTP header
   - name: x_telemetry_agent
     type: STRING
     mode: NULLABLE
-    description: X Telemetry Agent
+    description: X-Telemetry-Agent HTTP header
   - name: parsed_date
     type: TIMESTAMP
     mode: NULLABLE
@@ -161,20 +161,22 @@ fields:
 - name: isp
   type: RECORD
   mode: NULLABLE
-  description: Internet Service Provider
+  description: Results of ISP lookup based on the client's IP address
   fields:
   - name: db_version
     type: STRING
     mode: NULLABLE
-    description: Internet Service Provider Database Version
+    description: The specific geo ISP database version used for this lookup
   - name: name
     type: STRING
     mode: NULLABLE
-    description: Internet Service Provider Name
+    description: The name of the ISP associated with the client's IP address
   - name: organization
     type: STRING
     mode: NULLABLE
-    description: Internet Service Provider Organization
+    description: |-
+      The name of a specific business entity associated with the client's IP address when available;
+      otherwise the ISP name
 - name: user_agent
   type: RECORD
   mode: NULLABLE

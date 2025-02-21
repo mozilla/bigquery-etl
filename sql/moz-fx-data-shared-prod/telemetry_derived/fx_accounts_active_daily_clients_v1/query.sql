@@ -1,7 +1,7 @@
 SELECT
   DATE(submission_timestamp) AS submission_date,
   fxa.metrics.uuid.client_association_legacy_client_id AS legacy_telemetry_client_id,
-  fxa.client_info,
+  fxa.client_info.*,
   fxa.metadata,
   fxa.metrics.labeled_counter,
   fxa.metrics.string.glean_client_annotation_experimentation_id,

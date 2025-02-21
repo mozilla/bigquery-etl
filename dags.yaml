@@ -2161,11 +2161,12 @@ bqetl_alchemer:
     owner: ago@mozilla.com
     email:
       - ago@mozilla.com
+      - eshallal@mozilla.com
     email_on_failure: true
     email_on_retry: false
     start_date: "2025-02-18"
     retries: 1
-    retry_delay: 25m
+    retry_delay: 1h
   tags:
     - impact/tier_3
   repo: bigquery-etl

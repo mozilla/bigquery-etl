@@ -55,10 +55,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Distribution ID
-- name: segment_dau
-  type: STRING
-  mode: NULLABLE
-  description: Segment DAU
 - name: activity_segment
   type: STRING
   mode: NULLABLE
@@ -70,24 +66,24 @@ fields:
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Daily Users
+  description: Number of daily users on the submission_date (based on sending the ping).
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
-  description: Weekly Users
+  description: Number of weekly users on the submission_date (based on sending the ping).
 - name: monthly_users
   type: INTEGER
   mode: NULLABLE
-  description: Monthly Users
+  description: Number of monthly users on the submission_date (based on sending the ping).
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: Daily Active Users
+  description: Number of DAU (Daily Active Users) users on the submission_date (based on activity).
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: Weekly Active Users
+  description: Number of WAU (Weekly Active Users) users on the submission_date (based on activity).
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: Monthly Active Users
+  description: Number of MAU (Monthly Active Users) users on the submission_date (based on activity).

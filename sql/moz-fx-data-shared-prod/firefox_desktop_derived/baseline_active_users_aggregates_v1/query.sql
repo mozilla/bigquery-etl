@@ -43,23 +43,6 @@ WITH clients AS (
       WHEN BIT_COUNT(days_desktop_active_bits) >= 21
         THEN 'core_user'
       ELSE 'other'
-    END AS segment_dau,
-    CASE
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 1
-        AND 6
-        THEN 'infrequent_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 7
-        AND 13
-        THEN 'casual_user'
-      WHEN BIT_COUNT(days_seen_bits)
-        BETWEEN 14
-        AND 20
-        THEN 'regular_user'
-      WHEN BIT_COUNT(days_seen_bits) >= 21
-        THEN 'core_user'
-      ELSE 'other'
     END AS activity_segment,
     EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
     COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,

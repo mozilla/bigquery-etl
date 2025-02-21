@@ -34,7 +34,7 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the client.
+  description: A UUID uniquely identifying the client; also called Glean client ID
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE

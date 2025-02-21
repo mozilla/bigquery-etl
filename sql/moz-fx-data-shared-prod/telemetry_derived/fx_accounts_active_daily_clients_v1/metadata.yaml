@@ -1,0 +1,25 @@
+friendly_name: Firefox Accounts Active Daily Clients
+description: |-
+  Table with 1 row per submission date and Glean client ID sending a Firefox Accounts ping that date
+  Intentionally does not contain Firefox Account ID
+  Primary key is submission date & Glean client_info.client_id
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_client_attributes
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+references: {}
+require_column_descriptions: true

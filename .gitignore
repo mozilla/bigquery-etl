@@ -21,3 +21,6 @@ generated-sql/
 moz-fx-data-shared-prod_APPLY.yml
 moz-fx-data-shared-prod_PLAN.yml
 bigeye_credentials.ini
+
+# local commands
+commands.sh

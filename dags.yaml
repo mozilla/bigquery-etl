@@ -2171,6 +2171,7 @@ bqetl_alchemer:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
+  catchup: true
 
 bqetl_cohort_retention:
   default_args:

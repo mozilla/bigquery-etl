@@ -2,31 +2,39 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: |-
+    Logical date corresponding to the partition (date when our server received the ping)
+    that was processed for generating the metrics.
 - name: app_name
   type: STRING
   mode: NULLABLE
-  description: App Name
+  description: |-
+    App name (Firefox Desktop), if client comes from MozillaOnline distribution
+    then the distribution_id is appended to the app_name. If client comes from BrowserStack (isp)
+    this is appended to the app_name.
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: App Version
+  description: |-
+    The user visible version string (e.g. "1.0.3"). If the value was not provided through configuration,
+    this metric gets set to Unknown.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: Channel
+  description: |-
+    The channel the application is being distributed on, example values include: relase, beta, nightly.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: Country reported by the client.
 - name: city
   type: STRING
   mode: NULLABLE
-  description: City
+  description: City reported by the client.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale
+  description: Locale reported by the client, which is a combination of language and regional settings.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
@@ -54,15 +62,15 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID
+  description: The id of the browser distribution made available in installation sources.
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-  description: Activity Segment
+  description: Profile segmentation based on the number of days active in the last 28 days.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
-  description: First Seen Year
+  description: Year extracted from the first_seen_date, that corresponds to the date when the first ping was received.
 - name: daily_users
   type: INTEGER
   mode: NULLABLE

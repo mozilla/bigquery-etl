@@ -71,7 +71,6 @@ SELECT
   os_version_minor,
   is_default_browser,
   distribution_id,
-  segment_dau,
   activity_segment,
   first_seen_year,
   COUNTIF(is_daily_user) AS daily_users,
@@ -97,6 +96,5 @@ GROUP BY
   os_version_minor,
   is_default_browser,
   distribution_id,
-  segment_dau,
   activity_segment,
   first_seen_year

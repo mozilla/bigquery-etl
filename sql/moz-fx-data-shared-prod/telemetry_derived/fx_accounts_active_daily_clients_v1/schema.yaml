@@ -249,11 +249,11 @@ fields:
     - name: key
       type: STRING
       mode: NULLABLE
-      description:
+      description: Key
     - name: value
       type: INTEGER
       mode: NULLABLE
-      description:
+      description: Value
   - name: glean_error_invalid_value
     type: RECORD
     mode: REPEATED

@@ -197,7 +197,9 @@ fields:
 - name: glean_error_invalid_label
   type: RECORD
   mode: REPEATED
-  description: Glean Error Invalid Label
+  description: |-
+    Counts the number of times a metric was set with an invalid label.
+    The labels are the `category.name` identifier of the metric.
   fields:
   - name: key
     type: STRING
@@ -210,7 +212,9 @@ fields:
 - name: glean_error_invalid_overflow
   type: RECORD
   mode: REPEATED
-  description: Glean Error Invalid Overflow
+  description: |-
+    Counts the number of times a metric was set a value that overflowed.
+    The labels are the `category.name` identifier of the metric.
   fields:
   - name: key
     type: STRING
@@ -221,7 +225,9 @@ fields:
 - name: glean_error_invalid_state
   type: RECORD
   mode: REPEATED
-  description: Glean Error Invalid State
+  description: |-
+    Counts the number of times a timing metric was used incorrectly.
+    The labels are the `category.name` identifier of the metric.
   fields:
   - name: key
     type: STRING

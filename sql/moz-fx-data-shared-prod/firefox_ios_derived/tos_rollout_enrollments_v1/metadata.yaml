@@ -1,0 +1,27 @@
+friendly_name: Tos Rollout Enrollments
+description: |-
+  A client-level dataset from clients enrolled in the iOS ToS scaled rollout experiments.
+owners:
+- dberry@mozilla.com
+labels:
+  incremental: true
+  dag: bqetl_experiments_daily
+  owner1: dberry
+scheduling:
+  dag_name: bqetl_experiments_daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_ios.events_stream
+require_column_descriptions: true

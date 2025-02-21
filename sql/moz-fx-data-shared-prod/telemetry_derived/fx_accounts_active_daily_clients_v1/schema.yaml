@@ -78,105 +78,137 @@ fields:
 - name: geo
   type: RECORD
   mode: NULLABLE
+  description: Geographic Information
   fields:
   - name: city
     type: STRING
     mode: NULLABLE
+    description: City
   - name: country
     type: STRING
     mode: NULLABLE
+    description: Country
   - name: db_version
     type: STRING
     mode: NULLABLE
+    description: Database Version
   - name: subdivision1
     type: STRING
     mode: NULLABLE
+    description: Subdivision 1
   - name: subdivision2
     type: STRING
     mode: NULLABLE
+    description: Subdivision 2
 - name: header
   type: RECORD
   mode: NULLABLE
+  description: Header
   fields:
   - name: date
     type: STRING
     mode: NULLABLE
+    description: Date
   - name: dnt
     type: STRING
     mode: NULLABLE
+    description: Do Not Track
   - name: x_debug_id
     type: STRING
     mode: NULLABLE
+    description: X Debug ID
   - name: x_foxsec_ip_reputation
     type: STRING
     mode: NULLABLE
+    description: X Foxsec IP Reputation
   - name: x_lb_tags
     type: STRING
     mode: NULLABLE
+    description: X LB Tags
   - name: x_pingsender_version
     type: STRING
     mode: NULLABLE
+    description: X Pingsender Version
   - name: x_source_tags
     type: STRING
     mode: NULLABLE
+    description: X Source Tags
   - name: x_telemetry_agent
     type: STRING
     mode: NULLABLE
+    description: X Telemetry Agent
   - name: parsed_date
     type: TIMESTAMP
     mode: NULLABLE
+    description: Parsed Date
   - name: parsed_x_source_tags
     type: STRING
     mode: REPEATED
+    description: Parsed X Source Tags
   - name: parsed_x_lb_tags
     type: RECORD
     mode: NULLABLE
+    description: Parsed X LB Tags
     fields:
     - name: tls_version
       type: STRING
       mode: NULLABLE
+      description: TLS Version
     - name: tls_cipher_hex
       type: STRING
       mode: NULLABLE
+      description: TLS Cipher Hex
 - name: isp
   type: RECORD
   mode: NULLABLE
+  description: Internet Service Provider
   fields:
   - name: db_version
     type: STRING
     mode: NULLABLE
+    description: Internet Service Provider Database Version
   - name: name
     type: STRING
     mode: NULLABLE
+    description: Internet Service Provider Name
   - name: organization
     type: STRING
     mode: NULLABLE
+    description: Internet Service Provider Organization
 - name: user_agent
   type: RECORD
   mode: NULLABLE
+  description: User Agent
   fields:
   - name: browser
     type: STRING
     mode: NULLABLE
+    description: Browser
   - name: os
     type: STRING
     mode: NULLABLE
+    description: Operating System
   - name: version
     type: STRING
     mode: NULLABLE
+    description: Version
 - name: glean_error_invalid_label
   type: RECORD
   mode: REPEATED
+  description: Glean Error Invalid Label
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: Value
 - name: glean_error_invalid_overflow
   type: RECORD
   mode: REPEATED
+  description: Glean Error Invalid Overflow
   fields:
   - name: key
     type: STRING
@@ -187,36 +219,46 @@ fields:
 - name: glean_error_invalid_state
   type: RECORD
   mode: REPEATED
+  description: Glean Error Invalid State
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: Value
 - name: glean_error_invalid_value
   type: RECORD
   mode: REPEATED
+  description: Glean Error Invalid Value
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Key
   - name: value
     type: INTEGER
     mode: NULLABLE
+    description: Value
 - name: glean_client_annotation_experimentation_id
   type: STRING
   mode: NULLABLE
+  description: Clean Client Annotation Experiment ID
 - name: experiments
   type: RECORD
   mode: REPEATED
+  description: Experiments
   fields:
   - name: key
     type: STRING
     mode: NULLABLE
+    description: Key
   - name: value
     type: RECORD
     mode: NULLABLE
+    description: Value
     fields:
     - name: branch
       type: STRING
@@ -228,12 +270,15 @@ fields:
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
+        description: Enrollment ID
       - name: type
         type: STRING
         mode: NULLABLE
+        description: Type
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: Normalized Channel
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

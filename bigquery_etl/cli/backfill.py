@@ -10,6 +10,7 @@ from pathlib import Path
 
 import rich_click as click
 import yaml
+from dateutil.relativedelta import relativedelta
 from google.cloud import bigquery
 from google.cloud.exceptions import Conflict, NotFound
 
@@ -35,10 +36,10 @@ from ..backfill.utils import (
     get_qualified_table_name_to_entries_map_by_project,
     get_scheduled_backfills,
     qualified_table_name_matching,
-    validate_depends_on_past,
-    validate_metadata_workgroups,
+    validate_table_metadata,
 )
 from ..backfill.validate import (
+    validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
 )
@@ -51,7 +52,8 @@ from ..cli.utils import (
 )
 from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
-from ..metadata.parse_metadata import METADATA_FILE, Metadata
+from ..format_sql.formatter import reformat
+from ..metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
 from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
 from ..schema import SCHEMA_FILE, Schema
 
@@ -132,6 +134,13 @@ def backfill(ctx):
     help="True to allow running a backfill outside the retention policy limit.",
     default=False,
 )
+@click.option(
+    "--override-depends-on-past-end-date",
+    "--override_depends_on_past_end_date",
+    is_flag=True,
+    help="If set, allow backfill for depends_on_past tables to have an end date before the entry date. "
+    "In some cases, this can cause inconsistencies in the data.",
+)
 # If not specified, the billing project will be set to the default billing project when the backfill is initiated.
 @billing_project_option()
 @click.pass_context
@@ -146,18 +155,15 @@ def create(
     custom_query_path,
     shredder_mitigation,
     override_retention_range_limit,
+    override_depends_on_past_end_date,
     billing_project,
 ):
     """CLI command for creating a new backfill entry in backfill.yaml file.
 
     A backfill.yaml file will be created if it does not already exist.
     """
-    if not validate_depends_on_past(sql_dir, qualified_table_name):
-        click.echo("Tables that depend on past are currently not supported.")
-        sys.exit(1)
-
-    if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-        click.echo("Only mozilla-confidential workgroups are supported.")
+    if errors := validate_table_metadata(sql_dir, qualified_table_name):
+        click.echo("\n".join(errors))
         sys.exit(1)
 
     existing_backfills = get_entries_from_qualified_table_name(
@@ -175,16 +181,19 @@ def create(
         custom_query_path=custom_query_path,
         shredder_mitigation=shredder_mitigation,
         override_retention_limit=override_retention_range_limit,
+        override_depends_on_past_end_date=override_depends_on_past_end_date,
         billing_project=billing_project,
     )
-
-    validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
-
-    existing_backfills.insert(0, new_entry)
 
     backfill_file = get_backfill_file_from_qualified_table_name(
         sql_dir, qualified_table_name
     )
+
+    validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
+
+    validate_depends_on_past_end_date(new_entry, backfill_file)
+
+    existing_backfills.insert(0, new_entry)
 
     backfill_file.write_text(
         "\n".join(
@@ -235,17 +244,8 @@ def validate(
         )
 
     for table_name in backfills_dict:
-
-        if not validate_depends_on_past(sql_dir, table_name):
-            click.echo(
-                f"Tables that depend on past are currently not supported:  {table_name}"
-            )
-            sys.exit(1)
-
-        if not validate_metadata_workgroups(sql_dir, table_name):
-            click.echo(
-                f"Only mozilla-confidential workgroups are supported.  {table_name} contain workgroup access that is not supported"
-            )
+        if errors := validate_table_metadata(sql_dir, table_name):
+            click.echo("\n".join(errors))
             sys.exit(1)
 
         try:
@@ -543,6 +543,8 @@ def _initiate_backfill(
         )
         sys.exit(1)
 
+    client = bigquery.Client(project=project)
+
     if entry.shredder_mitigation is True:
         click.echo(
             click.style(
@@ -551,7 +553,7 @@ def _initiate_backfill(
             )
         )
         query_path, _ = generate_query_with_shredder_mitigation(
-            client=bigquery.Client(project=project),
+            client=client,
             project_id=project,
             dataset=dataset,
             destination_table=table,
@@ -570,7 +572,34 @@ def _initiate_backfill(
     elif entry.custom_query_path:
         custom_query_path = Path(entry.custom_query_path)
 
+    # rewrite query to query the staging table instead of the prod table if table depends on past
+    if metadata.scheduling.get("depends_on_past"):
+        query_path = (
+            custom_query_path or Path("sql") / project / dataset / table / "query.sql"
+        )
+
+        # format to ensure fully qualified references
+        query_text = reformat(query_path.read_text())
+        updated_query_text = query_text.replace(
+            f"`{project}.{dataset}.{table}`",
+            f"`{backfill_staging_qualified_table_name}`",
+        )
+
+        replaced_ref_query = query_path.parent / "replaced_ref.sql"
+        replaced_ref_query.write_text(updated_query_text)
+
+        custom_query_path = replaced_ref_query
+
     override_retention_limit = entry.override_retention_limit
+
+    # copy previous partition if depends_on_past
+    _initialize_previous_partition(
+        client,
+        qualified_table_name,
+        backfill_staging_qualified_table_name,
+        metadata,
+        entry,
+    )
 
     # Backfill table
     # in the long-run we should remove the query backfill command and require a backfill entry for all backfills
@@ -603,6 +632,64 @@ def _initiate_backfill(
         raise ValueError(
             f"Backfill initiate resulted in error for {qualified_table_name}"
         ) from e
+
+
+def _initialize_previous_partition(
+    client: bigquery.Client,
+    table_name: str,
+    staging_table_name: str,
+    metadata: Metadata,
+    backfill_entry: Backfill,
+):
+    """Initialize initial partition for tables with depends_on_past=true.
+
+    For tables with a null date partition parameter, the entire table is copied
+    """
+    if (
+        metadata.scheduling is None
+        or not metadata.scheduling.get("depends_on_past")
+        or metadata.bigquery is None
+        or metadata.bigquery.time_partitioning is None
+    ):
+        return
+
+    match metadata.bigquery.time_partitioning.type:
+        case PartitionType.DAY:
+            previous_partition_date = backfill_entry.start_date - timedelta(days=1)
+        case PartitionType.MONTH:
+            previous_partition_date = backfill_entry.start_date - relativedelta(
+                months=1
+            )
+        case _:
+            raise ValueError(
+                "Unsupported partitioning type for backfills: "
+                f"{metadata.bigquery.time_partitioning.type}"
+            )
+
+    partition_param, offset = "submission_date", 0
+    if metadata.scheduling:
+        partition_param = metadata.scheduling.get(
+            "date_partition_parameter", partition_param
+        )
+        offset = metadata.scheduling.get("date_partition_offset", offset)
+
+    previous_partition_id = get_backfill_partition(
+        previous_partition_date,
+        partition_param,
+        offset,
+        metadata.bigquery.time_partitioning.type,
+    )
+
+    if previous_partition_id is None:
+        raise ValueError(
+            f"Unable to get initial partition id for depends_on_past table: {table_name}"
+        )
+
+    _copy_table(
+        source_table=f"{table_name}${previous_partition_id}",
+        destination_table=f"{staging_table_name}${previous_partition_id}",
+        client=client,
+    )
 
 
 @backfill.command(

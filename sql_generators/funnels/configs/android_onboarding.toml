@@ -188,7 +188,12 @@ aggregation = "count distinct"
 [data_sources.onboarding_events]
 from_expression = """
   fenix.firefox_android_clients ac
-  LEFT JOIN `moz-fx-data-shared-prod`.fenix.retention_clients AS r
+  LEFT JOIN (
+    SELECT * FROM `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+    WHERE submission_date = @submission_date
+      AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+      AND new_profile_metric_date
+  ) AS r -- we only new_profile retention
   USING(client_id)
   LEFT JOIN
     (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) AS eu

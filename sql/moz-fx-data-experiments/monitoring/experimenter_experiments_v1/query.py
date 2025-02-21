@@ -15,13 +15,9 @@ import pytz
 import requests
 from google.cloud import bigquery
 
-EXPERIMENTER_API_URL_V1 = (
-    "https://experimenter.services.mozilla.com/api/v1/experiments/"
-)
-
 # for nimbus experiments
-EXPERIMENTER_API_URL_V6 = (
-    "https://experimenter.services.mozilla.com/api/v6/experiments/"
+EXPERIMENTER_API_URL_V8 = (
+    "https://experimenter.services.mozilla.com/api/v8/experiments/"
 )
 
 parser = ArgumentParser(description=__doc__)
@@ -65,92 +61,9 @@ class Experiment:
     feature_ids: List[str]
 
 
-def _coerce_none_to_zero(x: Optional[int]) -> int:
-    return 0 if x is None else x
-
-
 @attr.s(auto_attribs=True)
-class Variant:
-    """Defines a Variant."""
-
-    is_control: bool
-    slug: str
-    ratio: int
-    value: str
-
-
-@attr.s(auto_attribs=True)
-class ExperimentV1:
-    """Experimenter v1 experiment."""
-
-    slug: str  # experimenter slug
-    type: str
-    status: str
-    start_date: Optional[datetime.datetime]
-    end_date: Optional[datetime.datetime]
-    variants: List[Variant]
-    proposed_enrollment: Optional[int] = attr.ib(converter=_coerce_none_to_zero)
-    firefox_channel: str
-    population_percent: float
-    normandy_slug: Optional[str] = None
-    is_high_population: Optional[bool] = None
-
-    @staticmethod
-    def _unix_millis_to_datetime(num: Optional[float]) -> Optional[datetime.datetime]:
-        """Convert unix milliseconds to datetime."""
-        if num is None:
-            return None
-        return datetime.datetime.fromtimestamp(num / 1e3, pytz.utc)
-
-    @classmethod
-    def from_dict(cls, d) -> "ExperimentV1":
-        """Load an experiment from dict."""
-        converter = cattrs.BaseConverter()
-        converter.register_structure_hook(
-            datetime.datetime,
-            lambda num, _: cls._unix_millis_to_datetime(num),
-        )
-        return converter.structure(d, cls)
-
-    def to_experiment(self) -> "Experiment":
-        """Convert to Experiment."""
-        branches = [
-            Branch(slug=variant.slug, ratio=variant.ratio, features=None)
-            for variant in self.variants
-        ]
-        control_slug = None
-
-        control_slugs = [
-            variant.slug for variant in self.variants if variant.is_control
-        ]
-        if len(control_slugs) == 1:
-            control_slug = control_slugs[0]
-
-        return Experiment(
-            normandy_slug=self.normandy_slug,
-            experimenter_slug=self.slug,
-            type=self.type,
-            status=self.status,
-            start_date=self.start_date,
-            end_date=self.end_date,
-            enrollment_end_date=None,
-            branches=branches,
-            proposed_enrollment=self.proposed_enrollment,
-            reference_branch=control_slug,
-            is_high_population=self.is_high_population or False,
-            app_name="firefox_desktop",
-            app_id="firefox-desktop",
-            channel=self.firefox_channel.lower(),
-            targeting="",
-            targeted_percent=float(self.population_percent) / 100.0,
-            namespace=None,
-            feature_ids=[],
-        )
-
-
-@attr.s(auto_attribs=True)
-class ExperimentV6:
-    """Represents a v6 experiment from Experimenter."""
+class NimbusExperiment:
+    """Represents a v8 Nimbus experiment from Experimenter."""
 
     slug: str  # Normandy slug
     startDate: Optional[datetime.datetime]
@@ -167,7 +80,7 @@ class ExperimentV6:
     featureIds: list[str]
 
     @classmethod
-    def from_dict(cls, d) -> "ExperimentV6":
+    def from_dict(cls, d) -> "NimbusExperiment":
         """Load an experiment from dict."""
         converter = cattrs.BaseConverter()
         converter.register_structure_hook(
@@ -235,30 +148,18 @@ def fetch(url):
 
 def get_experiments() -> List[Experiment]:
     """Fetch experiments from Experimenter."""
-    legacy_experiments_json = fetch(EXPERIMENTER_API_URL_V1)
-    legacy_experiments = []
-
-    for experiment in legacy_experiments_json:
-        if experiment["type"] != "rapid":
-            try:
-                legacy_experiments.append(
-                    ExperimentV1.from_dict(experiment).to_experiment()
-                )
-            except Exception as e:
-                print(f"Cannot import experiment: {experiment}: {e}")
-
-    nimbus_experiments_json = fetch(EXPERIMENTER_API_URL_V6)
+    nimbus_experiments_json = fetch(EXPERIMENTER_API_URL_V8)
     nimbus_experiments = []
 
     for experiment in nimbus_experiments_json:
         try:
             nimbus_experiments.append(
-                ExperimentV6.from_dict(experiment).to_experiment()
+                NimbusExperiment.from_dict(experiment).to_experiment()
             )
         except Exception as e:
             print(f"Cannot import experiment: {experiment}: {e}")
 
-    return nimbus_experiments + legacy_experiments
+    return nimbus_experiments
 
 
 def main():

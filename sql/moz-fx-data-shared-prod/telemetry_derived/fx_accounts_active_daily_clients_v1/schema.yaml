@@ -154,11 +154,11 @@ fields:
     - name: parsed_x_source_tags
       type: STRING
       mode: REPEATED
-      description:
+      description: Parsed X Source Tags
     - name: parsed_x_lb_tags
       type: RECORD
       mode: NULLABLE
-      description: Parsed X Source Tags
+      description: Parsed X LB Tags
       fields:
       - name: tls_version
         type: STRING

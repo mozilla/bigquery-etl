@@ -330,7 +330,7 @@ fields:
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Monthly Active User - Was an Active User in Last Month
+  description: Is Monthly Active User - Was an Active User in Last 28 Days
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

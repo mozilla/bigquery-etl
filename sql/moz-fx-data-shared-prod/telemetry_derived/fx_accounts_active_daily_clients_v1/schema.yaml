@@ -322,16 +322,17 @@ fields:
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Daily Active User
+  description: Is Daily Active User - Was an Active User This Day
 - name: is_wau
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Weekly Active User
+  description: Is Weekly Active User - Was an Active User in Last 7 Days
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Monthly Active User
+  description: Is Monthly Active User - Was an Active User in Last Month
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Desktop
+  description: |-
+    Is Desktop - Flag indicating if counts towards Desktop DAU - excludes BrowserStack and MozillaOnline

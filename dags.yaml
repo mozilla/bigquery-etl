@@ -2207,3 +2207,21 @@ bqetl_glean_dictionary:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_client_attributes:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-02-20'
+  description: Schedules daily level retention queries
+  schedule_interval: 40 19 * * *
+  tags:
+    - impact/tier_2

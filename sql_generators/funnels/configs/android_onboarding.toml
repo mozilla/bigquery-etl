@@ -221,12 +221,12 @@ friendly_name = "Funnel ID"
 description = "ID of the Onboarding Funnel"
 client_id_column = "ac.client_id"
 
-# these dimensions are sourced from retention_clients
+# these dimensions are sourced from `retention_clients`
 [dimensions.repeat_first_month_user]
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is a Repeat First Month User"
 data_source = "onboarding_events"
-select_expression = "COALESCE(r.repeat_first_month_user, FALSE)"
+select_expression = "COALESCE(r.repeat_profile, FALSE)"
 client_id_column = "r.client_id"
 
 [dimensions.retained_week_4]

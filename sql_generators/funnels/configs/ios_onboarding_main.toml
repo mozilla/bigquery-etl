@@ -327,7 +327,7 @@ from_expression = """
   USING(client_id)
   LEFT JOIN
     (SELECT * FROM firefox_ios.events_stream eu WHERE DATE(submission_timestamp) = @submission_date) eu
-  ON ic.client_id = eu.client_id
+  USING(client_id)
   LEFT JOIN
     (SELECT client_id,
     ANY_VALUE(JSON_VALUE(event_extra.sequence_id)) AS funnel_id,
@@ -337,7 +337,7 @@ from_expression = """
     WHERE JSON_VALUE(event_extra.sequence_id) IS NOT NULL
     AND DATE(submission_timestamp) = @submission_date
     GROUP BY 1) funnel_ids
-  ON ic.client_id  = funnel_ids.client_id
+  USING(client_id)
 
 """
 submission_date_column = "DATE(ic.submission_timestamp)"
@@ -358,7 +358,7 @@ client_id_column = "ic.client_id"
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is a Repeat First Month User"
 data_source = "onboarding_events"
-select_expression = "COALESCE(r.repeat_first_month_user, FALSE)"
+select_expression = "COALESCE(r.repeat_profile, FALSE)"
 client_id_column = "r.client_id"
 
 [dimensions.retained_week_4]

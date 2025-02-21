@@ -1,0 +1,93 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App Name
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: App Version
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Channel
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: City
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System Version
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: Windows Build Number
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: Operating System Major Version
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: Operating System Minor Version
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Is Default Browser
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: segment_dau
+  type: STRING
+  mode: NULLABLE
+  description: Segment DAU
+- name: activity_segment
+  type: STRING
+  mode: NULLABLE
+  description: Activity Segment
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+  description: First Seen Year
+- name: daily_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Daily Users
+- name: weekly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Weekly Users
+- name: monthly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Monthly Users
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Daily Active Users
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: Weekly Active Users
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: Monthly Active Users

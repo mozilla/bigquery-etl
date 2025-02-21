@@ -268,7 +268,7 @@ DELETE_TARGETS: DeleteIndex = {
     ),
     DeleteTarget(
         table="telemetry_derived.fx_accounts_active_daily_clients_v1",
-        field=(CLIENT_ID),
+        field=(GLEAN_CLIENT_ID),
     ): (DESKTOP_GLEAN_SRC),
     DeleteTarget(
         table="telemetry_derived.rolling_cohorts_v2",

@@ -28,6 +28,7 @@ WITH usage_reporting_base AS (
     {% if app_name == "firefox_desktop" %}
     COALESCE(metrics.counter.browser_engagement_uri_count, 0) AS browser_engagement_uri_count,
     COALESCE(metrics.counter.browser_engagement_active_ticks, 0) AS browser_engagement_active_ticks,
+    metrics.quantity.usage_windows_build_number AS windows_build_number,
     {% else %}
     COALESCE(metrics.timespan.usage_duration.value, 0) AS duration,
     {% endif %}
@@ -54,6 +55,7 @@ SELECT
   -- is_active definition is different between desktop and mobile products.
   {% if app_name == "firefox_desktop" %}
   COALESCE(LOGICAL_OR(is_active), SUM(browser_engagement_uri_count) > 0 AND SUM(browser_engagement_active_ticks) > 0, FALSE) AS is_active,
+  udf.mode_last(ARRAY_AGG(windows_build_number IGNORE NULLS ORDER BY submission_timestamp ASC)) AS windows_build_number,
   {% else %}
   COALESCE(LOGICAL_OR(is_active), SUM(IF(duration BETWEEN 0 AND 100000, duration, 0)) > 0, FALSE) AS is_active,
   {% endif %}

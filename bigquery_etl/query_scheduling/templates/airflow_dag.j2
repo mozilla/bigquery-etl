@@ -81,9 +81,8 @@ default_args = {{
 }}
 
 tags = {{ tags }}
-catchup = {{ catchup }}
 
-with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md=docs, tags=tags, catchup=catchup) as dag:
+with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None -%}, schedule_interval={{ schedule_interval | format_timedelta | format_schedule_interval }}{%+ endif -%}, doc_md=docs, tags=tags, catchup={{ catchup }}) as dag:
 {% for task_group in task_groups | sort %}
     task_group_{{ task_group }} = TaskGroup('{{ task_group }}')
 {% endfor %}

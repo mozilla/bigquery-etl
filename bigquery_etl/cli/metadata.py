@@ -16,7 +16,11 @@ from bigquery_etl.metadata.parse_metadata import (
     WorkgroupAccessMetadata,
 )
 from bigquery_etl.metadata.publish_metadata import publish_metadata
-from bigquery_etl.metadata.validate_metadata import validate_workgroup_access, MetadataValidationError
+from bigquery_etl.metadata.validate_metadata import (
+    MetadataValidationError,
+    validate_default_table_workgroup_access,
+    validate_workgroup_access,
+)
 
 from ..cli.utils import (
     parallelism_option,
@@ -235,7 +239,25 @@ def deprecate(
     if not table_metadata_files:
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
 
-def validate_workgroups(name: str, sql_dir: str, project_id: str,):
+
+@metadata.command(
+    help="""
+    Validate workgroup_access and default_table_workgroup_access configurations.
+
+    Example:
+     ./bqetl metadata validate-workgroups ga_derived.downloads_with_attribution_v2
+    """
+)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@sql_dir_option
+def validate_workgroups(
+    name: str,
+    sql_dir: str,
+    project_id: str,
+):
     """Validate workgroup_access and default_table_workgroup_access configuration."""
     failed = False
 
@@ -245,7 +267,11 @@ def validate_workgroups(name: str, sql_dir: str, project_id: str,):
 
     for file in table_metadata_files:
         if Metadata.is_metadata_file(file):
+            metadata = Metadata.from_file(file)
             if not validate_workgroup_access(metadata, file):
+                failed = True
+
+            if not validate_default_table_workgroup_access(file):
                 failed = True
 
     if failed:

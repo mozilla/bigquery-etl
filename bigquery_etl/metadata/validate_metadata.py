@@ -295,6 +295,7 @@ def validate_workgroup_access(metadata, path):
     default_table_workgroup_access_dict = {
         workgroup_access.get("role"): workgroup_access.get("members", [])
         for workgroup_access in dataset_metadata.default_table_workgroup_access
+        if dataset_metadata.default_table_workgroup_access
     }
 
     if metadata.workgroup_access:
@@ -315,6 +316,37 @@ def validate_workgroup_access(metadata, path):
                                 fg="red",
                             )
                         )
+
+    return is_valid
+
+
+def validate_default_table_workgroup_access(path):
+    """
+    Check that default_table_workgroup_access does not exist in metadata.
+
+    default_table_workgroup_access will be generated from workgroup_access and
+    should not be overridden.
+    """
+    is_valid = True
+    dataset_metadata_path = Path(path).parent.parent / "dataset_metadata.yaml"
+    if not dataset_metadata_path.exists():
+        return is_valid
+
+    with open(dataset_metadata_path, "r") as yaml_stream:
+        try:
+            metadata = yaml.safe_load(yaml_stream)
+        except yaml.YAMLError as e:
+            raise e
+
+    if "default_table_workgroup_access" in metadata:
+        is_valid = False
+        click.echo(
+            click.style(
+                f"ERROR: default_table_workgroup_access should not be explicity specified in {dataset_metadata_path}. "
+                + f"The default_table_workgroup_access configuration will be automatically generated.",
+                fg="red",
+            )
+        )
 
     return is_valid
 

@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -19451,6 +19451,38 @@ fields:
       mode: NULLABLE
       description: 'Whether a page called called Document.xmlVersion. Compare against
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_doc_after_script_execute_event
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document regiested afterscriptexecute event listener.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_deprecated_ops_doc_before_script_execute_event
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document regiested beforescriptexecute event listener.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_after_script_execute_event
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page regiested afterscriptexecute event listener. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_before_script_execute_event
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page regiested beforescriptexecute event listener. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
   - name: labeled_counter

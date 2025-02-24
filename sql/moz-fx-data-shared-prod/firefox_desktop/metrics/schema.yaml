@@ -789,6 +789,15 @@ fields:
         scalar update.suppress_prompts.
 
         '
+    - name: shopping_settings_auto_close_user_disabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Indicates if the user has manually disabled the auto close sidebar
+        feature.
+
+        Set during shopping component init and updated when changed in browser.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -9282,6 +9291,177 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry boolean histogram
         FX_SESSION_RESTORE_CORRUPT_FILE.
+
+        '
+    - name: avif_major_brand
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'AVIF major brand
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram AVIF_MAJOR_BRAND.
+
+        '
+    - name: avif_sequence
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'AVIF image sequence
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram AVIF_SEQUENCE.
+
+        '
+    - name: browser_attribution_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count for the number of errors encountered trying to determine
+        attribution data: on Windows, from the installers (stub and full); on macOS,
+        from an extended attributed on the .app bundle.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram BROWSER_ATTRIBUTION_ERRORS.
+
+        '
+    - name: browser_is_user_default
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether Firefox is the system default browser on startup. A true
+        value is also recorded here, and a false value is recorded to set_default_error,
+        if a user clicked ''Use Firefox as my default browser'' on an in-product prompt.
+        (Note that on Windows 8+ the latter action opens the right settings dialog
+        but does not actually change the default browser without further user action.)
+        On Windows, ''system default browser'' is operationalized as whether Firefox
+        is the default HTTP protocol handler.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BROWSER_IS_USER_DEFAULT.
+
+        '
+    - name: browser_is_user_default_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True if the browser was unable to determine if the browser was
+        set as default.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BROWSER_IS_USER_DEFAULT_ERROR.
+
+        '
+    - name: browser_set_default_always_check
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True if the profile has `browser.shell.checkDefaultBrowser` set
+        to true.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BROWSER_SET_DEFAULT_ALWAYS_CHECK.
+
+        '
+    - name: browser_set_default_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True if the browser was unable to set Firefox as the default browser
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BROWSER_SET_DEFAULT_ERROR.
+
+        '
+    - name: browser_set_default_pdf_handler_user_choice_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Result of each attempt to set the default browser with SetDefaultExtensionHandlersUserChoice()
+        for pdf extension
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram BROWSER_SET_DEFAULT_PDF_HANDLER_USER_CHOICE_RESULT.
+
+        '
+    - name: browser_set_default_user_choice_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Result of each attempt to set the default browser with SetDefaultBrowserUserChoice()
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram BROWSER_SET_DEFAULT_USER_CHOICE_RESULT.
+
+        '
+    - name: history_sidebar_filter_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The type of search filters used for the sidebar search.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram PLACES_SEARCHBAR_FILTER_TYPE.
 
         '
   - name: memory_distribution
@@ -26064,6 +26244,145 @@ fields:
         histogram FX_SESSION_RESTORE_WRITE_FILE_MS.
 
         '
+    - name: bookmarks_toolbar_init
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Firefox: Time to initialize the bookmarks toolbar view (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_BOOKMARKS_TOOLBAR_INIT_MS.
+
+        '
+    - name: history_sidebar_lastvisited_tree_query_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'PLACES: Time to load the sidebar history tree sorted by last visit
+        (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HISTORY_LASTVISITED_TREE_QUERY_TIME_MS.
+
+        '
+    - name: library_history_search_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'PLACES: Time to search the history library (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PLACES_HISTORY_LIBRARY_SEARCH_TIME_MS.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -34803,6 +35122,213 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram FX_SESSION_RESTORE_NUMBER_OF_WINDOWS_RESTORED.
+
+        '
+    - name: bookmarks_sidebar_cumulative_searches
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Cumulative no. bookmark of searches performed before selecting
+        a link.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PLACES_BOOKMARKS_SEARCHBAR_CUMULATIVE_SEARCHES.
+
+        '
+    - name: browser_set_default_dialog_prompt_rawcount
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of times that a profile has seen the ''Set Default
+        Browser'' dialog.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram BROWSER_SET_DEFAULT_DIALOG_PROMPT_RAWCOUNT.
+
+        '
+    - name: browser_set_default_result
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Result of the Set Default Browser dialog. After Firefox 89 the
+        these values are: (0=Use Firefox + ''Don''t ask again'' checked, 1=Use Firefox
+        + ''Don''t ask again'' unchecked, 2=Not Now + ''Don''t ask again'' checked,
+        3=Not Now + ''Don''t ask again'' unchecked). Before Firefox 89 these values
+        were: (0=Use Firefox + ''Always perform check'' unchecked, 1=Use Firefox +
+        ''Always perform check'' checked, 2=Not Now + ''Always perform check'' unchecked,
+        3=Not Now + ''Always perform check'' checked).
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram BROWSER_SET_DEFAULT_RESULT.
+
+        '
+    - name: history_sidebar_cumulative_filter_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Cumulative no. of search filters applied performed before selecting
+        a link.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PLACES_SEARCHBAR_CUMULATIVE_FILTER_COUNT.
+
+        '
+    - name: history_sidebar_cumulative_searches
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Cumulative no. of searches performed before selecting a link.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PLACES_SEARCHBAR_CUMULATIVE_SEARCHES.
+
+        '
+    - name: library_cumulative_bookmark_searches
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Cumulative no. of Bookmark-specific searches performed before
+        selecting a bookmark link in Library.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PLACES_LIBRARY_CUMULATIVE_BOOKMARK_SEARCHES.
+
+        '
+    - name: library_cumulative_history_searches
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Cumulative no. of History-specific searches performed before selecting
+        a History link in Library.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram PLACES_LIBRARY_CUMULATIVE_HISTORY_SEARCHES.
 
         '
   - name: url2

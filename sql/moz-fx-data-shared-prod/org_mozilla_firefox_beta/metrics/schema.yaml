@@ -10679,7 +10679,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF major brand.
+      description: 'AVIF major brand
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram AVIF_MAJOR_BRAND.
 
         '
     - name: avif_pasp
@@ -10706,7 +10709,10 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'AVIF image sequence.
+      description: 'AVIF image sequence
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram AVIF_SEQUENCE.
 
         '
     - name: wallpapers_new_wallpaper_applied

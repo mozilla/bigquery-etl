@@ -2583,7 +2583,11 @@ SELECT
       metrics.counter.use_counter_page_htmldocument_webkitvisibilitystate,
       metrics.counter.use_counter_page_htmldocument_xmlencoding,
       metrics.counter.use_counter_page_htmldocument_xmlstandalone,
-      metrics.counter.use_counter_page_htmldocument_xmlversion
+      metrics.counter.use_counter_page_htmldocument_xmlversion,
+      metrics.counter.use_counter_deprecated_ops_doc_after_script_execute_event,
+      metrics.counter.use_counter_deprecated_ops_doc_before_script_execute_event,
+      metrics.counter.use_counter_deprecated_ops_page_after_script_execute_event,
+      metrics.counter.use_counter_deprecated_ops_page_before_script_execute_event
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

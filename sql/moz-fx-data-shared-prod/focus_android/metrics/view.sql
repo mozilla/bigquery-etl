@@ -518,7 +518,9 @@ SELECT
       metrics.labeled_counter.update_notification_shown,
       metrics.labeled_counter.update_service_installed_external,
       metrics.labeled_counter.update_service_installed_notify,
-      metrics.labeled_counter.update_service_installed_subsequent
+      metrics.labeled_counter.update_service_installed_subsequent,
+      metrics.labeled_counter.avif_major_brand,
+      metrics.labeled_counter.avif_sequence
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1863,7 +1865,9 @@ SELECT
       metrics.labeled_counter.update_notification_shown,
       metrics.labeled_counter.update_service_installed_external,
       metrics.labeled_counter.update_service_installed_notify,
-      metrics.labeled_counter.update_service_installed_subsequent
+      metrics.labeled_counter.update_service_installed_subsequent,
+      metrics.labeled_counter.avif_major_brand,
+      metrics.labeled_counter.avif_sequence
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3208,7 +3212,9 @@ SELECT
       metrics.labeled_counter.update_notification_shown,
       metrics.labeled_counter.update_service_installed_external,
       metrics.labeled_counter.update_service_installed_notify,
-      metrics.labeled_counter.update_service_installed_subsequent
+      metrics.labeled_counter.update_service_installed_subsequent,
+      metrics.labeled_counter.avif_major_brand,
+      metrics.labeled_counter.avif_sequence
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

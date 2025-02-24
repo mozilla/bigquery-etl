@@ -6048,6 +6048,38 @@ fields:
         UPDATE_SERVICE_INSTALLED_SUBSEQUENT.
 
         '
+    - name: avif_major_brand
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'AVIF major brand
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram AVIF_MAJOR_BRAND.
+
+        '
+    - name: avif_sequence
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'AVIF image sequence
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram AVIF_SEQUENCE.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

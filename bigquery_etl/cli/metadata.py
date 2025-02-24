@@ -16,6 +16,7 @@ from bigquery_etl.metadata.parse_metadata import (
     WorkgroupAccessMetadata,
 )
 from bigquery_etl.metadata.publish_metadata import publish_metadata
+from bigquery_etl.metadata.validate_metadata import validate_workgroup_access, MetadataValidationError
 
 from ..cli.utils import (
     parallelism_option,
@@ -233,3 +234,20 @@ def deprecate(
 
     if not table_metadata_files:
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
+
+def validate_workgroups(name: str, sql_dir: str, project_id: str,):
+    """Validate workgroup_access and default_table_workgroup_access configuration."""
+    failed = False
+
+    table_metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+
+    for file in table_metadata_files:
+        if Metadata.is_metadata_file(file):
+            if not validate_workgroup_access(metadata, file):
+                failed = True
+
+    if failed:
+        # TODO: add failed checks to message
+        raise MetadataValidationError(f"Metadata validation failed for {file}")

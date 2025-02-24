@@ -289,6 +289,10 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
+            - run:
+                name: Validate workgroup access configuration on main
+                command: |
+                  PATH="venv/bin:$PATH" script/bqetl metadata validate-workgroups
             - *attach_generated_sql
             - *copy_staged_sql
             - *authenticate

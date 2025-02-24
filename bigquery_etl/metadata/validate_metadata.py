@@ -408,8 +408,6 @@ def validate(target):
                     if not validate_col_desc_enforced(root, metadata):
                         failed = True
 
-                    if not validate_workgroup_access(metadata, path):
-                        failed = True
                     # todo more validation
                     # e.g. https://github.com/mozilla/bigquery-etl/issues/924
     else:

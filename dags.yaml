@@ -2225,3 +2225,20 @@ bqetl_client_attributes:
   schedule_interval: 40 19 * * *
   tags:
     - impact/tier_2
+
+bqetl_un_population:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-02-20'
+  description: Pulls world population data from United Nations API
+  schedule_interval: 20 17 * * *
+  tags:
+    - impact/tier_3

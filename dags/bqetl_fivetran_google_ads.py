@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 2 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_fenix_derived__firefox_android_clients__v1 = (

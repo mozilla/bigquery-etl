@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="0 2 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     braze_external__braze_currents_firefox_click__v1 = GKEPodOperator(

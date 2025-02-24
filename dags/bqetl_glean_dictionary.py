@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 2 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_accounts_frontend_derived__events_stream__v1 = ExternalTaskSensor(

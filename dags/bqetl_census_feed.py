@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 17 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v2 = (

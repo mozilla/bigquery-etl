@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 12 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (

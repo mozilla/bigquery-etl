@@ -50,6 +50,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     adjust_derived__adjust_cohort__v1 = GKEPodOperator(

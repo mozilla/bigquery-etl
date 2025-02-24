@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="0 14 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_fenix_derived__active_users_aggregates__v3 = (

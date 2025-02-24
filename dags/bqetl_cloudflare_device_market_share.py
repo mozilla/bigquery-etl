@@ -57,6 +57,7 @@ with DAG(
     schedule_interval="0 16 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     cloudflare_derived__device_usage__v1 = GKEPodOperator(

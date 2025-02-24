@@ -52,6 +52,7 @@ with DAG(
     schedule_interval="0 10 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     fivetran_airflow_metadata_import_sync_start = FivetranOperator(

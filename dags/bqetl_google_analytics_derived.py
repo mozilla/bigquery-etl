@@ -52,6 +52,7 @@ with DAG(
     schedule_interval="0 23 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     mozilla_org_derived__blogs_daily_summary__v1 = bigquery_etl_query(

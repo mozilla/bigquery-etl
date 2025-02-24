@@ -51,6 +51,7 @@ with DAG(
     schedule_interval="0 5 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     fivetran_log_prod_sync_start = FivetranOperator(

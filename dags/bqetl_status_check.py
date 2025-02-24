@@ -56,6 +56,7 @@ with DAG(
     schedule_interval=datetime.timedelta(seconds=3600),
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     monitoring_derived__bigquery_etl_python_run_check__v1 = GKEPodOperator(

@@ -50,6 +50,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_copy_deduplicate_all = ExternalTaskSensor(

@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="30 11 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_telemetry_derived__clients_first_seen_28_days_later__v1 = (

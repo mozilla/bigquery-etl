@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_telemetry_derived__unified_metrics__v1 = ExternalTaskSensor(

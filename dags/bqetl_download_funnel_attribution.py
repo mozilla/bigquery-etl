@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 23 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     checks__fail_mozilla_org_derived__downloads_with_attribution__v2 = bigquery_dq_check(

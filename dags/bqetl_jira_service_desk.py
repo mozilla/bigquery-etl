@@ -62,6 +62,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     jira_service_desk_derived__user__v1 = GKEPodOperator(

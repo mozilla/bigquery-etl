@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="40 12 * * 7",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     monitoring_derived__metadata_completeness__v1 = bigquery_etl_query(

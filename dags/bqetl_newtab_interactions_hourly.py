@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="@hourly",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     telemetry_derived__newtab_interactions_hourly__v1 = bigquery_etl_query(

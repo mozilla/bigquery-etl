@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="40 16 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(

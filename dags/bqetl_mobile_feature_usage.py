@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 12 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_bigeye__fenix_derived__attribution_clients__v1 = ExternalTaskSensor(

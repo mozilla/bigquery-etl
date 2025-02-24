@@ -45,6 +45,7 @@ with DAG(
     schedule_interval="0 2 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     task_group_accounts_backend = TaskGroup("accounts_backend")

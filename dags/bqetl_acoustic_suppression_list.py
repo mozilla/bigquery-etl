@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="0 9 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     acoustic_external__suppression_list__v1 = bigquery_etl_query(

@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 5 2 * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_search_derived__mobile_search_clients_daily__v2 = ExternalTaskSensor(

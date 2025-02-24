@@ -51,6 +51,7 @@ with DAG(
     schedule_interval="0 18 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     telemetry_dev_cycle_derived__firefox_major_release_dates__v1 = bigquery_etl_query(

@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="*/20 * * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     checks__fail_telemetry_derived__newtab_merino_extract__v1 = bigquery_dq_check(

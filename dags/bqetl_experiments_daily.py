@@ -51,6 +51,7 @@ with DAG(
     schedule_interval="0 3 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_org_mozilla_fenix_derived__events_stream__v1 = ExternalTaskSensor(

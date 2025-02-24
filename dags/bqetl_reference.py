@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     reference_derived__macroeconomic_indices__v1 = GKEPodOperator(

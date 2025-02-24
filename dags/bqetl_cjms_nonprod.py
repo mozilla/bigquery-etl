@@ -51,6 +51,7 @@ with DAG(
     schedule_interval="0 * * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     fivetran_stripe_nonprod_sync_start = FivetranOperator(

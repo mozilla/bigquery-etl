@@ -45,6 +45,7 @@ with DAG(
     schedule_interval=datetime.timedelta(seconds=10800),
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     telemetry_derived__error_aggregates__v1 = bigquery_etl_query(

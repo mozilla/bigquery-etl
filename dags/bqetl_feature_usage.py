@@ -56,6 +56,7 @@ with DAG(
     schedule_interval="0 5 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_bq_main_events = ExternalTaskSensor(

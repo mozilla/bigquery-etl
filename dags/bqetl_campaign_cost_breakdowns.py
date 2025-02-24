@@ -50,6 +50,7 @@ with DAG(
     schedule_interval="0 3 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_fenix_derived__attributable_clients__v1 = ExternalTaskSensor(

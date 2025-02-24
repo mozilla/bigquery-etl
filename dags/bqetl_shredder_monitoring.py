@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="0 12 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_monitoring_derived__bigquery_table_storage__v1 = ExternalTaskSensor(

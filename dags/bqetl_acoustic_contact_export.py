@@ -51,6 +51,7 @@ with DAG(
     schedule_interval="0 9 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_fivetran_load_completed = ExternalTaskSensor(

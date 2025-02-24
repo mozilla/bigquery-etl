@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="23 0 15 * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     checks__fail_external_derived__inflation__v1 = bigquery_dq_check(

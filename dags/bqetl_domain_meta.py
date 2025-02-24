@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="@monthly",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     domain_metadata_derived__top_domains__v1 = bigquery_etl_query(

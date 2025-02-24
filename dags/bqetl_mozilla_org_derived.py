@@ -45,6 +45,7 @@ with DAG(
     schedule_interval="0 2 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_dq_check(

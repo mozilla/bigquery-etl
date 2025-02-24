@@ -49,6 +49,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     analysis__bqetl_default_task__v1 = bigquery_etl_query(

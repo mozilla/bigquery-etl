@@ -56,6 +56,7 @@ with DAG(
     schedule_interval="0 0 1 * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     mdn_yari_derived__mdn_popularities__v1 = GKEPodOperator(

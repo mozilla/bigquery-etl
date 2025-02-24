@@ -59,6 +59,7 @@ with DAG(
     schedule_interval="30 1 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     docker_fxa_admin_server_v2 = bigquery_etl_query(

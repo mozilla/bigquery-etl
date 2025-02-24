@@ -56,6 +56,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     addon_moderations_derived__cinder_decisions_raw__v1 = GKEPodOperator(

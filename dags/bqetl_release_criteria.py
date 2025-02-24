@@ -45,6 +45,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     release_criteria__dashboard_health__v1 = bigquery_etl_query(

@@ -54,6 +54,7 @@ with DAG(
     schedule_interval="0 5,13,21 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     braze_derived__newsletters__v1 = bigquery_etl_query(

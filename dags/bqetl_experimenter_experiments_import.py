@@ -52,6 +52,7 @@ with DAG(
     schedule_interval="*/10 * * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     monitoring__experimenter_experiments__v1 = GKEPodOperator(

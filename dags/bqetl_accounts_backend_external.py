@@ -51,6 +51,7 @@ with DAG(
     schedule_interval="30 1 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     accounts_backend_external__accounts__v1 = bigquery_etl_query(

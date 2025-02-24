@@ -50,6 +50,7 @@ with DAG(
     schedule_interval="0 18 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     fxci_derived__task_run_costs__v1 = bigquery_etl_query(

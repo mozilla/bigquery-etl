@@ -45,6 +45,7 @@ with DAG(
     schedule_interval="0 1 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     monitoring_derived__deletion_request_volume__v2 = bigquery_etl_query(

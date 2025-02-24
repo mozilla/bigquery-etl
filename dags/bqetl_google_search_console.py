@@ -56,6 +56,7 @@ with DAG(
     schedule_interval="0 8 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_google_search_console_addons_url_impressions = (

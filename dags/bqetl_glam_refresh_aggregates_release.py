@@ -48,6 +48,7 @@ with DAG(
     schedule_interval="0 18 * * 6",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_fenix_release_done = ExternalTaskSensor(

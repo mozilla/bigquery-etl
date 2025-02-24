@@ -52,6 +52,7 @@ with DAG(
     schedule_interval="0 4 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     bigeye__org_mozilla_fenix_derived__releases__v1 = bigquery_bigeye_check(

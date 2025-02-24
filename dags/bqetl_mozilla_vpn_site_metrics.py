@@ -54,6 +54,7 @@ with DAG(
     schedule_interval="0 15 * * *",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_mozilla_vpn_derived__all_subscriptions__v1 = ExternalTaskSensor(

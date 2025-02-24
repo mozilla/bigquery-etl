@@ -4,6 +4,7 @@ description: >
   An import of survey data from Alchemer (SurveyGizmo) for Viewpoint 2023 Expansion - Desktop
 owners:
   - ago@mozilla.com
+  - eshallal@mozilla.com
 labels:
   incremental: true
   schedule: daily

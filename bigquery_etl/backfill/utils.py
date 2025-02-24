@@ -41,7 +41,7 @@ def get_entries_from_qualified_table_name(
     table_path = Path(sql_dir) / project / dataset / table
 
     if not table_path.exists():
-        click.echo(f"{project}.{dataset}.{table}" + " does not exist")
+        click.echo(f"{project}.{dataset}.{table} does not exist")
         sys.exit(1)
 
     backfill_file = get_backfill_file_from_qualified_table_name(
@@ -178,7 +178,12 @@ def validate_metadata_workgroups(sql_dir, qualified_table_name) -> bool:
     table_metadata_path = dataset_path / table / METADATA_FILE
 
     if not query_file.exists():
-        click.echo("No query.sql file found for {}", qualified_table_name)
+        if (query_file.parent / "query.py").exists():
+            click.echo(
+                f"Backfills with query.py are not supported: {qualified_table_name}"
+            )
+        else:
+            click.echo(f"No query.sql file found: {qualified_table_name}")
         sys.exit(1)
 
     # check dataset level metadata

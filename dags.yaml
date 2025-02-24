@@ -2161,15 +2161,17 @@ bqetl_alchemer:
     owner: ago@mozilla.com
     email:
       - ago@mozilla.com
+      - eshallal@mozilla.com
     email_on_failure: true
     email_on_retry: false
-    start_date: "2025-02-18"
+    start_date: "2023-06-01"
     retries: 1
-    retry_delay: 25m
+    retry_delay: 1h
   tags:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
+  catchup: true
 
 bqetl_cohort_retention:
   default_args:
@@ -2207,3 +2209,21 @@ bqetl_glean_dictionary:
   tags:
     - impact/tier_3
     - repo/bigquery-etl
+
+bqetl_client_attributes:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-02-20'
+  description: Schedules daily level retention queries
+  schedule_interval: 40 19 * * *
+  tags:
+    - impact/tier_2

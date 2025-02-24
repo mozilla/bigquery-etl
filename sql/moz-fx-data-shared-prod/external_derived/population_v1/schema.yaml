@@ -1,0 +1,129 @@
+fields:
+- name: location_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Location ID
+- name: iso3_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country Code in ISO3 Format
+- name: iso2_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country Code in ISO2 Format
+- name: location_type_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Location Type ID
+- name: indicator_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Indicator ID
+- name: indicator
+  type: STRING
+  mode: NULLABLE
+  description: Indicator
+- name: indicator_display_name
+  type: STRING
+  mode: NULLABLE
+  description: Indicator Display Name
+- name: source_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Source ID
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Source
+- name: revision
+  type: INTEGER
+  mode: NULLABLE
+  description: Revision
+- name: variant_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Variant ID
+- name: variant
+  type: STRING
+  mode: NULLABLE
+  description: Variant
+- name: variant_short_name
+  type: STRING
+  mode: NULLABLE
+  description: Variant Short Name
+- name: variant_label
+  type: STRING
+  mode: NULLABLE
+  description: Variant Label
+- name: time_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Time ID
+- name: time_label
+  type: STRING
+  mode: NULLABLE
+  description: Time Label
+- name: time_mid
+  type: STRING
+  mode: NULLABLE
+  description: Time Midpoint
+- name: category_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Category ID
+- name: category
+  type: STRING
+  mode: NULLABLE
+  description: Category
+- name: estimate_type_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimate Type ID
+- name: estimate_type
+  type: STRING
+  mode: NULLABLE
+  description: Estimate Type
+- name: estimate_method_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Estimate Method ID
+- name: estimate_method
+  type: STRING
+  mode: NULLABLE
+  description: Estimate Method
+- name: sex_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Sex ID
+- name: sex
+  type: STRING
+  mode: NULLABLE
+  description: Sex
+- name: age_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Age ID
+- name: age_label
+  type: STRING
+  mode: NULLABLE
+  description: Age Label
+- name: age_start
+  type: INTEGER
+  mode: NULLABLE
+  description: Age Start
+- name: age_end
+  type: INTEGER
+  mode: NULLABLE
+  description: Age End
+- name: age_mid
+  type: INTEGER
+  mode: NULLABLE
+  description: Age Mid
+- name: value
+  type: NUMERIC
+  mode: NULLABLE
+  description: Value
+- name: last_updated
+  type: DATE
+  mode: NULLABLE
+  description: Last Updated Date

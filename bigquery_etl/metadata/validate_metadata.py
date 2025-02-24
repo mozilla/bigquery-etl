@@ -343,7 +343,7 @@ def validate_default_table_workgroup_access(path):
         click.echo(
             click.style(
                 f"ERROR: default_table_workgroup_access should not be explicity specified in {dataset_metadata_path}. "
-                + f"The default_table_workgroup_access configuration will be automatically generated.",
+                + "The default_table_workgroup_access configuration will be automatically generated.",
                 fg="red",
             )
         )

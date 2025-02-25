@@ -4,5 +4,5 @@
   reason: Initial backfill of the table.
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false

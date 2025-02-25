@@ -18,7 +18,6 @@ fields:
   description: |
     The channel the application is being distributed on, example values include: relase, beta, nightly.
 
-
 - name: app_name
   type: STRING
   mode: NULLABLE

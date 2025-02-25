@@ -259,7 +259,7 @@ def validate_workgroups(
     project_id: str,
 ):
     """Validate workgroup_access and default_table_workgroup_access configuration."""
-    failed = False
+    failed_files = set()
 
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
@@ -271,10 +271,15 @@ def validate_workgroups(
             if Metadata.is_metadata_file(file):
                 metadata = Metadata.from_file(file)
                 if not validate_workgroup_access(metadata, file):
-                    failed = True
+                    failed_files.add(file)
 
                 if not validate_default_table_workgroup_access(file):
-                    failed = True
+                    failed_files.add(file)
 
-    if failed:
-        raise MetadataValidationError(f"Metadata workgroup validation failed for {file}")
+    if len(failed_files) > 0:
+        click.echo(click.style("Metadata workgroup validation failed for:", fg="red"))
+        for file in failed_files:
+            click.echo(click.style(str(file), fg="red"))
+        raise MetadataValidationError(
+            f"Metadata workgroup validation failed for: {failed_files}"
+        )

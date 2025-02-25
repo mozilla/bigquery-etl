@@ -31,5 +31,8 @@ workgroup_access:
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
   - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
 references: {}
 require_column_descriptions: false

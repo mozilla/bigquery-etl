@@ -17,6 +17,7 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:data-sumo/automation
   - workgroup:mozilla-confidential
 references: {}
 require_column_descriptions: false

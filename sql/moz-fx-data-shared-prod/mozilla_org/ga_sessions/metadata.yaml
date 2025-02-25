@@ -8,6 +8,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
 references:
   view.sql:
   - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v1

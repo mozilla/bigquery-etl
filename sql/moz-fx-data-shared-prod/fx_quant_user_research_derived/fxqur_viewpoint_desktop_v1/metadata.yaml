@@ -34,6 +34,10 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:fx-quant-user-research/data-viewers
   - workgroup:mozilla-confidential
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:fx-quant-user-research/data-developers
 references: {}
 require_column_descriptions: false

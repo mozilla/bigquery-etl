@@ -1,0 +1,7 @@
+fields:
+- name: metric
+  type: STRING
+  mode: NULLABLE
+- name: processes
+  type: STRING
+  mode: REPEATED

@@ -10,6 +10,7 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:data-sumo/automation
   - workgroup:mozilla-confidential
 references:
   view.sql:

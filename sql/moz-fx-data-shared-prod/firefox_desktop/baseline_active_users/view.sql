@@ -18,8 +18,12 @@ SELECT
   normalized_channel AS channel,
   normalized_os AS os,
   normalized_os_version AS os_version,
-  `mozfun.norm.truncate_version`(normalized_os_version, "major") AS os_version_major,
-  `mozfun.norm.truncate_version`(normalized_os_version, "minor") AS os_version_minor,
+  CAST(
+    `mozfun.norm.truncate_version`(normalized_os_version, "major") AS INTEGER
+  ) AS os_version_major,
+  CAST(
+    `mozfun.norm.truncate_version`(normalized_os_version, "minor") AS INTEGER
+  ) AS os_version_minor,
   COALESCE(
     `mozfun.norm.windows_version_info`(normalized_os, normalized_os_version, windows_build_number),
     normalized_os_version

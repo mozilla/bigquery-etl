@@ -49,7 +49,6 @@ fields:
   description: |
     Operating system reported by the client.
 
-
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE

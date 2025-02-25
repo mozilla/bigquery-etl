@@ -22,6 +22,7 @@ WITH usage_reporting_base AS (
     -- firefox_desktop specific fields.
     COALESCE(metrics.counter.browser_engagement_uri_count, 0) AS browser_engagement_uri_count,
     COALESCE(metrics.counter.browser_engagement_active_ticks, 0) AS browser_engagement_active_ticks,
+    metrics.quantity.usage_windows_build_number AS windows_build_number,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.usage_reporting_v1`
   WHERE
@@ -68,6 +69,9 @@ SELECT
     AND SUM(browser_engagement_active_ticks) > 0,
     FALSE
   ) AS is_active,
+  `moz-fx-data-shared-prod.udf.mode_last`(
+    ARRAY_AGG(windows_build_number IGNORE NULLS ORDER BY submission_timestamp ASC)
+  ) AS windows_build_number,
 FROM
   usage_reporting_base
 GROUP BY

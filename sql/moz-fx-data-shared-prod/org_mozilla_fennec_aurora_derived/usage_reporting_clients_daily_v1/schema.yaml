@@ -81,3 +81,4 @@ fields:
   type: BOOLEAN
   description: |
     A flag field indicating whether the specific client was active.
+

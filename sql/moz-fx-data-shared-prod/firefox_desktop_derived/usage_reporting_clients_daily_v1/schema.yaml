@@ -81,3 +81,8 @@ fields:
   type: BOOLEAN
   description: |
     A flag field indicating whether the specific client was active.
+- mode: NULLABLE
+  name: windows_build_number
+  type: INTEGER
+  description: |
+    The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms.

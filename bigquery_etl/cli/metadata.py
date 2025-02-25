@@ -264,16 +264,17 @@ def validate_workgroups(
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+    skip_validation = ConfigLoader.get("metadata", "validation", "skip", fallback=[])
 
     for file in table_metadata_files:
-        if Metadata.is_metadata_file(file):
-            metadata = Metadata.from_file(file)
-            if not validate_workgroup_access(metadata, file):
-                failed = True
+        if str(file) not in skip_validation:
+            if Metadata.is_metadata_file(file):
+                metadata = Metadata.from_file(file)
+                if not validate_workgroup_access(metadata, file):
+                    failed = True
 
-            if not validate_default_table_workgroup_access(file):
-                failed = True
+                if not validate_default_table_workgroup_access(file):
+                    failed = True
 
     if failed:
-        # TODO: add failed checks to message
-        raise MetadataValidationError(f"Metadata validation failed for {file}")
+        raise MetadataValidationError(f"Metadata workgroup validation failed for {file}")

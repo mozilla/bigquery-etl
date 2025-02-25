@@ -296,6 +296,11 @@ render:
   # uses {%s} which results in unknown tag exception
   - sql/mozfun/hist/string_to_json/udf.sql
 
+metadata:
+  validation:
+    skip:
+    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
+
 generate:
   glean_usage:
     skip_existing: # Skip automatically updating the following artifacts

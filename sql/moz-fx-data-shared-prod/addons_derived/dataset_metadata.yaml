@@ -4,9 +4,15 @@ description: |-
 dataset_base_acl: derived
 user_facing: false
 labels: {}
-workgroup_access:
+default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
   - workgroup:amo/prod
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  # Removed for now to allow compatibility with managed backfills.
+  # - workgroup:amo/prod
 syndication: {}

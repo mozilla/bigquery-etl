@@ -401,12 +401,17 @@ class MetadataValidationError(Exception):
 def validate(target):
     """Validate metadata files."""
     failed = False
+    skip_validation = ConfigLoader.get("metadata", "validation", "skip", fallback=[])
 
     if os.path.isdir(target):
         for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
                 if Metadata.is_metadata_file(file):
                     path = os.path.join(root, file)
+
+                    if path in skip_validation:
+                        continue
+
                     metadata = Metadata.from_file(path)
 
                     if not validate_public_data(metadata, path):

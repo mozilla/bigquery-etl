@@ -1,0 +1,16 @@
+friendly_name: Fxqur Viewpoint Desktop
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:fx-quant-user-research/data-developers
+  - workgroup:fx-quant-user-research/data-viewers
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_desktop_v1
+require_column_descriptions: false

@@ -3,17 +3,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   fxaadc.*,
-  CASE
-    WHEN fxaadc.normalized_os = 'Windows'
-      AND fxaadc.normalized_os_version = '10.0'
-      AND fxaadc.windows_build_number < 22000
-      THEN 'Windows 10'
-    WHEN fxaadc.normalized_os = 'Windows'
-      AND fxaadc.normalized_os_version = '10.0'
-      AND fxaadc.windows_build_number >= 22000
-      THEN 'Windows 11'
-    ELSE fxaadc.normalized_os || ' ' || fxaadc.normalized_os_version
-  END AS os_version_build,
   bau.is_dau,
   bau.is_wau,
   bau.is_mau,

@@ -36,7 +36,9 @@ SELECT
   CASE
     WHEN distribution_id LIKE "%vivo%"
       THEN "vivo"
-    ELSE "other"
+    WHEN distribution_id LIKE "%dt%"
+      THEN "dt"
+    ELSE CAST(NULL AS STRING)
   END AS partnership,
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`

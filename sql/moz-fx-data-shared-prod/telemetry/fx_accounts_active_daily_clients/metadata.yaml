@@ -11,5 +11,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
   - moz-fx-data-shared-prod.telemetry_derived.fx_accounts_active_daily_clients_v1
 require_column_descriptions: false

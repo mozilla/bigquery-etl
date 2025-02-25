@@ -147,12 +147,3 @@ fields:
 - name: os_version_build
   type: STRING
   mode: NULLABLE
-- name: os_version_major_1
-  type: INTEGER
-  mode: NULLABLE
-- name: os_version_minor_1
-  type: INTEGER
-  mode: NULLABLE
-- name: os_version_build_1
-  type: STRING
-  mode: NULLABLE

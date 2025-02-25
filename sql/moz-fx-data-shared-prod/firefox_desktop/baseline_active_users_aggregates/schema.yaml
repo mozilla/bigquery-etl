@@ -5,7 +5,23 @@ fields:
   description: 'Logical date corresponding to the partition (date when our server
     received the ping)
 
-    that was processed for generating the metrics.'
+    that was processed for generating the metrics.
+
+    '
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Year extracted from the first_seen_date, that corresponds to the date
+    when the first ping was received.
+
+    '
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: 'The channel the application is being distributed on, example values
+    include: relase, beta, nightly.
+
+    '
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -14,97 +30,125 @@ fields:
     then the distribution_id is appended to the app_name. If client comes from BrowserStack
     (isp)
 
-    this is appended to the app_name.'
+    this is appended to the app_name.
+
+    '
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: 'Country reported by the client.
+
+    '
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: ''
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: 'Locale reported by the client, which is a combination of language
+    and regional settings.
+
+    '
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: 'Operating system reported by the client.
+
+    '
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Major or first part of the OS version reported by the client.
+
+    '
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Minor or second part of the OS version reported by the client.
+
+    '
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
+  description: 'Normalized Windows version (Windows only).
+
+    '
 - name: app_version
   type: STRING
   mode: NULLABLE
   description: 'The user visible version string (e.g. "1.0.3"). If the value was not
-    provided through configuration,
+    provided through configuration, this metric gets set to Unknown.
 
-    this metric gets set to Unknown.'
-- name: channel
-  type: STRING
-  mode: NULLABLE
-  description: 'The channel the application is being distributed on, example values
-    include: relase, beta, nightly.'
-- name: country
-  type: STRING
-  mode: NULLABLE
-  description: Country reported by the client.
-- name: city
-  type: STRING
-  mode: NULLABLE
-  description: City reported by the client.
-- name: locale
-  type: STRING
-  mode: NULLABLE
-  description: Locale reported by the client, which is a combination of language and
-    regional settings.
-- name: normalized_os
-  type: STRING
-  mode: NULLABLE
-  description: Normalized Operating System
-- name: normalized_os_version
-  type: STRING
-  mode: NULLABLE
-  description: Normalized Operating System Version
-- name: windows_build_number
-  type: INTEGER
-  mode: NULLABLE
-  description: Windows Build Number
-- name: os_version_major
-  type: INTEGER
-  mode: NULLABLE
-  description: Operating System Major Version
-- name: os_version_minor
-  type: INTEGER
-  mode: NULLABLE
-  description: Operating System Minor Version
+    '
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Default Browser
+  description: 'Whether the browser is set as the default browser on the client side.
+
+    '
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The id of the browser distribution made available in installation sources.
+  description: 'The id of the browser distribution made available in installation
+    sources.
+
+    '
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-  description: Profile segmentation based on the number of days active in the last
+  description: 'Profile segmentation based on the number of days active in the last
     28 days.
-- name: first_seen_year
-  type: INTEGER
-  mode: NULLABLE
-  description: Year extracted from the first_seen_date, that corresponds to the date
-    when the first ping was received.
+
+    '
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of daily users on the submission_date (based on sending the
+  description: 'Number of daily users on the submission_date (based on sending the
     ping).
+
+    '
 - name: weekly_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of weekly users on the submission_date (based on sending the
+  description: 'Number of weekly users on the submission_date (based on sending the
     ping).
+
+    '
 - name: monthly_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of monthly users on the submission_date (based on sending the
+  description: 'Number of monthly users on the submission_date (based on sending the
     ping).
+
+    '
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: Number of DAU (Daily Active Users) users on the submission_date (based
+  description: 'Number of DAU (Daily Active Users) users on the submission_date (based
     on activity).
+
+    '
 - name: wau
   type: INTEGER
   mode: NULLABLE
-  description: Number of WAU (Weekly Active Users) users on the submission_date (based
+  description: 'Number of WAU (Weekly Active Users) users on the submission_date (based
     on activity).
+
+    '
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: Number of MAU (Monthly Active Users) users on the submission_date (based
-    on activity).
+  description: 'Number of MAU (Monthly Active Users) users on the submission_date
+    (based on activity).
+
+    '
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE

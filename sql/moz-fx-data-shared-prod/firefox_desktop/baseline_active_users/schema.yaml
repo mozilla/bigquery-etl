@@ -44,15 +44,6 @@ fields:
 - name: days_seen_session_end_bits
   type: INTEGER
   mode: NULLABLE
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-- name: normalized_os
-  type: STRING
-  mode: NULLABLE
-- name: normalized_os_version
-  type: STRING
-  mode: NULLABLE
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
@@ -69,9 +60,6 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: app_channel
-  type: STRING
-  mode: NULLABLE
-- name: app_display_version
   type: STRING
   mode: NULLABLE
 - name: architecture
@@ -131,29 +119,32 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-- name: segment_dau
-  type: STRING
-  mode: NULLABLE
-- name: is_dau_duration
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_wau_duration
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_mau_duration
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_dau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_wau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_mau
-  type: BOOLEAN
+- name: first_seen_year
+  type: INTEGER
   mode: NULLABLE
 - name: is_daily_user
   type: BOOLEAN
@@ -164,6 +155,12 @@ fields:
 - name: is_monthly_user
   type: BOOLEAN
   mode: NULLABLE
-- name: is_included_kpi
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mau
   type: BOOLEAN
   mode: NULLABLE

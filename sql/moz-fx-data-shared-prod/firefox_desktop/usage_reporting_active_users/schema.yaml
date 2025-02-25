@@ -44,6 +44,9 @@ fields:
 - name: is_active
   type: BOOLEAN
   mode: NULLABLE
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

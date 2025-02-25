@@ -4,6 +4,7 @@ description: |-
 dataset_base_acl: view
 user_facing: true
 labels: {}
+default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

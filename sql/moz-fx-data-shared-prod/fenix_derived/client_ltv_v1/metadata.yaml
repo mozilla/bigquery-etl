@@ -20,8 +20,4 @@ bigquery:
     fields:
     - sample_id
     - first_reported_country
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
 references: {}

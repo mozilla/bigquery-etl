@@ -19,8 +19,4 @@ bigquery:
   clustering:
     fields:
     - experiment_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:pocket/external
 references: {}

@@ -49,11 +49,6 @@ fields:
   description: |
     Operating system reported by the client.
 
-- name: os_version_build
-  type: STRING
-  mode: NULLABLE
-  description: |
-    TODO
 
 - name: os_version_major
   type: INTEGER
@@ -66,6 +61,12 @@ fields:
   mode: NULLABLE
   description: |
     Minor or second part of the OS version reported by the client.
+
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
+  description: |
+    Normalized Windows version (Windows only).
 
 - name: app_version
   type: STRING

@@ -2,13 +2,7 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
 AS
 SELECT
-  * EXCEPT (
-    app_display_version,
-    normalized_channel,
-    normalized_os,
-    normalized_os_version,
-    windows_build_number
-  ) REPLACE(
+  * EXCEPT (app_display_version, normalized_channel, normalized_os, normalized_os_version) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale

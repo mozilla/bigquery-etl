@@ -1,0 +1,18 @@
+fields:
+- name: uid
+  type: INTEGER
+  mode: NULLABLE
+  description: Account ID in hexadecimal format.
+- name: phoneNumber
+  type: STRING
+  mode: NULLABLE
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: lastConfirmed
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: lookupData
+  type: JSON
+  mode: NULLABLE
+

@@ -1,0 +1,14 @@
+fields:
+- name: year
+  type: STRING
+  mode: NULLABLE
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+- name: iso2_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Country Code in ISO2 Format
+- name: population
+  type: NUMERIC
+  mode: NULLABLE

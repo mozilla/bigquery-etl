@@ -29,7 +29,7 @@ GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 
 # Pull bearer token from Google Secret Manager
-os.getenv("UN_POPULATION_BEARER_TOKEN")
+bearer_token = os.getenv("UN_POPULATION_BEARER_TOKEN")
 
 
 # Define function to retrieve population data from United Nations API

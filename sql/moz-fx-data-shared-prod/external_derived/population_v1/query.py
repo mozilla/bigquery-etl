@@ -210,7 +210,7 @@ def main():
     del_job = client.query(delete_query)
     del_job.result()
 
-    # Load data from GCS to BQ table
+    # Load data from GCS to BQ table - appending to what is already there
     load_csv_to_gcp_job = client.load_table_from_uri(
         fpath,
         TARGET_TABLE,

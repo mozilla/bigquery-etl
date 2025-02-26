@@ -2,7 +2,13 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
 AS
 SELECT
-  * EXCEPT (app_display_version, normalized_channel, normalized_os, normalized_os_version) REPLACE(
+  * EXCEPT (
+    app_display_version,
+    normalized_channel,
+    normalized_os,
+    normalized_os_version,
+    distribution_id
+  ) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
     COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale
@@ -10,12 +16,26 @@ SELECT
   CASE
     WHEN LOWER(IFNULL(isp, '')) = 'browserstack'
       THEN CONCAT('Firefox Desktop', ' ', isp)
-    WHEN LOWER(IFNULL(distribution_id, '')) = 'mozillaonline'
-      THEN CONCAT('Firefox Desktop', ' ', distribution_id)
+    WHEN LOWER(
+        IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
+      ) = 'mozillaonline'
+      THEN CONCAT(
+          'Firefox Desktop',
+          ' ',
+          COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id)
+        )
     ELSE 'Firefox Desktop'
   END AS app_name,
   app_display_version AS app_version,
   normalized_channel AS channel,
+  COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
+  CASE
+    WHEN last_seen.distribution_id IS NOT NULL
+      THEN "glean"
+    WHEN distribution_mapping.distribution_id IS NOT NULL
+      THEN "legacy"
+    ELSE CAST(NULL AS STRING)
+  END AS distribution_id_source,
   normalized_os AS os,
   normalized_os_version AS os_version,
   CAST(
@@ -53,4 +73,7 @@ SELECT
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`
+  `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
+LEFT JOIN
+  `moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1` AS distribution_mapping
+  USING (submission_date, client_id)

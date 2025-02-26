@@ -374,6 +374,20 @@ with DAG(
         retries=1,
     )
 
+    with TaskGroup(
+        "bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1_external",
+    ) as bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1_external.set_upstream(
+            bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+        )
+
     checks__fail_fenix_derived__firefox_android_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__firefox_android_clients__v1",
         source_table="firefox_android_clients_v1",

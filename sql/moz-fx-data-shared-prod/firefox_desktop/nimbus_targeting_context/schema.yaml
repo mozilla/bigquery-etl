@@ -435,6 +435,10 @@ fields:
       type: JSON
       mode: NULLABLE
       description: An array of preferences that are user set.
+    - name: nimbus_targeting_context_primary_resolution
+      type: JSON
+      mode: NULLABLE
+      description: The resolution of the primary display.
   - name: quantity
     type: RECORD
     mode: NULLABLE

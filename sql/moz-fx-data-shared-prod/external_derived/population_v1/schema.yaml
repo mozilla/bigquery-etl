@@ -3,6 +3,10 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Location ID
+- name: location
+  type: STRING
+  mode: NULLABLE
+  description: Location
 - name: iso3_country_code
   type: STRING
   mode: NULLABLE
@@ -116,7 +120,7 @@ fields:
   mode: NULLABLE
   description: Age End
 - name: age_mid
-  type: INTEGER
+  type: NUMERIC
   mode: NULLABLE
   description: Age Mid
 - name: value

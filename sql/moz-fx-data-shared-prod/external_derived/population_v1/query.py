@@ -64,7 +64,7 @@ def pull_population_data(year_to_pull_data_for, location_id, indicator_id):
     url = f"https://population.un.org/dataportalapi/api/v1/data/indicators/{indicator_id}/locations/{location_id}/start/{year_to_pull_data_for}/end/{year_to_pull_data_for}?pagingInHeader=false&format=json"
     headers = {"Authorization": f"Bearer {bearer_token}"}
     payload = {}
-    results = fetch_data(url, hdr=headers, pyld=payload, timeout_limit=10)  # headers,
+    results = fetch_data(url, hdr=headers, pyld=payload, timeout_limit=10)
 
     # Initialize the dataframe with the first set of results
     results_df = pd.DataFrame(results["data"])

@@ -35,8 +35,8 @@ bearer_token = os.getenv("UN_POPULATION_BEARER_TOKEN")
 
 
 def fetch_data(url, hdr, pyld, timeout_limit):
-    """Inputs: URL, Header, Payload, Timeout Limit
-    Output: Shows errors if errors arise during the fetch"""
+    """Inputs: URL, Header, Payload, Timeout Limit (seconds)
+    Output: Raises an error if an issue arises during the fetch"""
     try:
         response = requests.get(url, headers=hdr, data=pyld, timeout=timeout_limit)
         response.raise_for_status()  # Raises an HTTPError for 4xx and 5xx status codes
@@ -68,12 +68,13 @@ def pull_population_data(year_to_pull_data_for, location_id, indicator_id):
 
     # Initialize the dataframe with the first set of results
     results_df = pd.DataFrame(results["data"])
+    # Code is currently only built to handle 1 page of results, so error out if there is more than 1
     if results["nextPage"] is not None:
         raise Exception(
             "More than 1 page of results provided; code only built to handle 1 page"
         )
 
-    # Rename the columns to the new, cleaner names
+    # Rename the columns to match the columns in schema.yaml
     results_df = results_df.rename(
         columns={
             "locationId": "location_id",
@@ -107,14 +108,15 @@ def pull_population_data(year_to_pull_data_for, location_id, indicator_id):
 
 
 def main():
-    """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
+    """Call the API, save data to GCS, delete any data already in table for same year, then load to BQ table"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     logical_date_date_string = logical_dag_date.strftime("%Y-%m-%d")
 
-    # Calculate year of interest from curr date
+    # Calculate year of interest from the DAG run date
+    # DAG runs 1x a year, so this gets the year from the DAG logical date
     year_of_interest = logical_dag_date.strftime("%Y")
     print(f"Pulling data for year: {year_of_interest}")
 
@@ -158,13 +160,13 @@ def main():
     )
 
     # For each location
-    for LOC_ID in LOC_IDS_OF_INTEREST:
-        # Get the population data
+    for loc_id in LOC_IDS_OF_INTEREST:
+        # Get the population data as a dataframe
         population_data = pull_population_data(
-            year_of_interest, LOC_ID, INDICATOR_ID_OF_INTEREST
+            year_of_interest, loc_id, INDICATOR_ID_OF_INTEREST
         )
 
-        # append to final results dataframe
+        # Append the new data to the full_results_df
         full_results_df = pd.concat([full_results_df, population_data])
 
     # Enforce data types

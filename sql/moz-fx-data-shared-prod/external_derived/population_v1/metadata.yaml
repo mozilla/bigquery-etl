@@ -20,6 +20,7 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_un_population
+  arguments: ["--date", "{{ds}}"]
   secrets:
   - deploy_target: UN_POPULATION_BEARER_TOKEN
     key: bqetl_un_population__un_population_bearer_token

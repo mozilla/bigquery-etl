@@ -1,13 +1,16 @@
 # Load packages
+import os
+from argparse import ArgumentParser
 from datetime import datetime
+
 import pandas as pd
 import requests
 from google.cloud import bigquery
-import os
 
 # Set variables
 INDICATOR_ID_OF_INTEREST = 49  # Total population by sex"
 LOC_IDS_OF_INTEREST = [
+    124,  # Canada
     276,  # Germany
     380,  # Italy
     372,  # Ireland
@@ -32,6 +35,27 @@ GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 bearer_token = os.getenv("UN_POPULATION_BEARER_TOKEN")
 
 
+def fetch_data(url, hdr, pyld, timeout_limit):
+    """Inputs: URL, Header, Payload, Timeout Limit
+    Output: Shows errors if errors arise during the fetch"""
+    try:
+        response = requests.get(url, headers=hdr, data=pyld, timeout=timeout_limit)
+        response.raise_for_status()  # Raises an HTTPError for 4xx and 5xx status codes
+        return response.json()  # or response.text if expecting plain text
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")  # Handle HTTP errors (4xx and 5xx)
+        raise  # Re-raise the error if needed
+    except requests.exceptions.ConnectionError:
+        print("Error: Could not connect to the server.")
+        raise
+    except requests.exceptions.Timeout:
+        print("Error: The request timed out.")
+        raise
+    except requests.exceptions.RequestException as err:
+        print(f"An error occurred: {err}")
+        raise
+
+
 # Define function to retrieve population data from United Nations API
 def pull_population_data(start_year, end_year, location_id, indicator_id):
     """Input: Start year, end year, indicator_id
@@ -41,8 +65,10 @@ def pull_population_data(start_year, end_year, location_id, indicator_id):
     url = f"https://population.un.org/dataportalapi/api/v1/data/indicators/{indicator_id}/locations/{location_id}/start/{start_year}/end/{end_year}?pagingInHeader=false&format=json"
     headers = {"Authorization": f"Bearer {bearer_token}"}
     payload = {}
-    response = requests.get(url, headers=headers, data=payload, timeout=10)
-    results = response.json()
+    try:
+        results = fetch_data(url, hdr=headers, pyld=payload, timeout_limit=10)
+    except Exception as e:
+        raise Exception(f"Failed to fetch data: {e}")
 
     # Initialize the dataframe with the first set of results
     results_df = pd.DataFrame(results["data"])
@@ -86,13 +112,15 @@ def pull_population_data(start_year, end_year, location_id, indicator_id):
 
 def main():
     """Call the API, save data to GCS, load to BQ staging, delete & load to BQ gold"""
-    today = datetime.today()
-    curr_date = today.strftime("%Y-%m-%d")
-    print("curr_date")
-    print(curr_date)
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--date", required=True)
+    args = parser.parse_args()
+    logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
+    logical_date_date_string = logical_dag_date.strftime("%Y-%m-%d")
 
     # Calculate year of interest from curr date
-    year_of_interest = today.strftime("%Y")
+    year_of_interest = logical_dag_date.strftime("%Y")
+    print(f"Pulling data for year: {year_of_interest}")
 
     # Initialize an empty data frame which we will append all results to
     full_results_df = pd.DataFrame(
@@ -166,12 +194,12 @@ def main():
     full_results_df["age_end"] = full_results_df["age_end"].astype(int)
 
     # Add last updated date
-    full_results_df["last_updated"] = curr_date
+    full_results_df["last_updated"] = logical_date_date_string
 
     # Calculate GCS filepath to write to and then write CSV to that filepath
     fpath = (
         GCS_BUCKET
-        + f"UN_Population_Data/pop_data_year_{year_of_interest}_as_of_{curr_date}.csv"
+        + f"UN_Population_Data/pop_data_year_{year_of_interest}_as_of_{logical_date_date_string}.csv"
     )
     full_results_df.to_csv(fpath, index=False)
 

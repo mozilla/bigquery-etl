@@ -29,7 +29,6 @@ LOC_IDS_OF_INTEREST = [
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.population_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
-GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 
 # Pull bearer token from Google Secret Manager
 bearer_token = os.getenv("UN_POPULATION_BEARER_TOKEN")
@@ -57,18 +56,15 @@ def fetch_data(url, hdr, pyld, timeout_limit):
 
 
 # Define function to retrieve population data from United Nations API
-def pull_population_data(start_year, end_year, location_id, indicator_id):
-    """Input: Start year, end year, indicator_id
+def pull_population_data(year_to_pull_data_for, location_id, indicator_id):
+    """Input: year to pull data for, location to pull data for, indicator_id (type of data you want)
     Output: JSON with population data
     Results are paginated, so if there is a non-null "nextPage", need to submit another request to get next page of results
     """
-    url = f"https://population.un.org/dataportalapi/api/v1/data/indicators/{indicator_id}/locations/{location_id}/start/{start_year}/end/{end_year}?pagingInHeader=false&format=json"
+    url = f"https://population.un.org/dataportalapi/api/v1/data/indicators/{indicator_id}/locations/{location_id}/start/{year_to_pull_data_for}/end/{year_to_pull_data_for}?pagingInHeader=false&format=json"
     headers = {"Authorization": f"Bearer {bearer_token}"}
     payload = {}
-    try:
-        results = fetch_data(url, hdr=headers, pyld=payload, timeout_limit=10)
-    except Exception as e:
-        raise Exception(f"Failed to fetch data: {e}")
+    results = fetch_data(url, hdr=headers, pyld=payload, timeout_limit=10)  # headers,
 
     # Initialize the dataframe with the first set of results
     results_df = pd.DataFrame(results["data"])
@@ -165,7 +161,7 @@ def main():
     for LOC_ID in LOC_IDS_OF_INTEREST:
         # Get the population data
         population_data = pull_population_data(
-            year_of_interest, year_of_interest, LOC_ID, INDICATOR_ID_OF_INTEREST
+            year_of_interest, LOC_ID, INDICATOR_ID_OF_INTEREST
         )
 
         # append to final results dataframe

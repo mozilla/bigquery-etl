@@ -29,6 +29,13 @@ SELECT
   app_display_version AS app_version,
   normalized_channel AS channel,
   COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
+  CASE
+    WHEN last_seen.distribution_id IS NOT NULL
+      THEN "glean"
+    WHEN distribution_mapping.distribution_id IS NOT NULL
+      THEN "legacy"
+    ELSE CAST(NULL AS STRING)
+  END AS distribution_id_source,
   normalized_os AS os,
   normalized_os_version AS os_version,
   CAST(

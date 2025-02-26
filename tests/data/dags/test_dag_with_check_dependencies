@@ -44,6 +44,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_checks__fail_test__external_table__v1 = ExternalTaskSensor(

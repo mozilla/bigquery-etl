@@ -284,6 +284,73 @@ def validate_exclusion_list_expiration_days(metadata, path):
     return is_valid
 
 
+def validate_workgroup_access(metadata, path):
+    """Check if there are any specifications of table-level access that are redundant with dataset access."""
+    is_valid = True
+    dataset_metadata_path = Path(path).parent.parent / "dataset_metadata.yaml"
+    if not dataset_metadata_path.exists():
+        return is_valid
+
+    dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
+    default_table_workgroup_access_dict = {
+        workgroup_access.get("role"): workgroup_access.get("members", [])
+        for workgroup_access in dataset_metadata.default_table_workgroup_access
+        if dataset_metadata.default_table_workgroup_access
+    }
+
+    if metadata.workgroup_access:
+        for table_workgroup_access in metadata.workgroup_access:
+            if table_workgroup_access.role in default_table_workgroup_access_dict:
+                for table_workgroup_member in table_workgroup_access.members:
+                    if (
+                        table_workgroup_member
+                        in default_table_workgroup_access_dict[
+                            table_workgroup_access.role
+                        ]
+                    ):
+                        is_valid = False
+                        click.echo(
+                            click.style(
+                                f"ERROR: Redundant table-level access specification in {path}. "
+                                + f"Table-level access for {table_workgroup_access.role}: {table_workgroup_member} defined in dataset_metadata.yaml.",
+                                fg="red",
+                            )
+                        )
+
+    return is_valid
+
+
+def validate_default_table_workgroup_access(path):
+    """
+    Check that default_table_workgroup_access does not exist in metadata.
+
+    default_table_workgroup_access will be generated from workgroup_access and
+    should not be overridden.
+    """
+    is_valid = True
+    dataset_metadata_path = Path(path).parent.parent / "dataset_metadata.yaml"
+    if not dataset_metadata_path.exists():
+        return is_valid
+
+    with open(dataset_metadata_path, "r") as yaml_stream:
+        try:
+            metadata = yaml.safe_load(yaml_stream)
+        except yaml.YAMLError as e:
+            raise e
+
+    if "default_table_workgroup_access" in metadata:
+        is_valid = False
+        click.echo(
+            click.style(
+                f"ERROR: default_table_workgroup_access should not be explicity specified in {dataset_metadata_path}. "
+                + "The default_table_workgroup_access configuration will be automatically generated.",
+                fg="red",
+            )
+        )
+
+    return is_valid
+
+
 def validate_retention_policy_based_on_table_type(metadata, path):
     """Check if any of the retention exclusion tables have expiration_days set."""
     is_valid = True
@@ -334,12 +401,17 @@ class MetadataValidationError(Exception):
 def validate(target):
     """Validate metadata files."""
     failed = False
+    skip_validation = ConfigLoader.get("metadata", "validation", "skip", fallback=[])
 
     if os.path.isdir(target):
         for root, dirs, files in os.walk(target, followlinks=True):
             for file in files:
                 if Metadata.is_metadata_file(file):
                     path = os.path.join(root, file)
+
+                    if path in skip_validation:
+                        continue
+
                     metadata = Metadata.from_file(path)
 
                     if not validate_public_data(metadata, path):

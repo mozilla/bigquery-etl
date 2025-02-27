@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path
 
 import pytest
@@ -12,6 +13,7 @@ from bigquery_etl.backfill.parse import (
 from bigquery_etl.backfill.validate import (
     validate_default_reason,
     validate_default_watchers,
+    validate_depends_on_past_end_date,
     validate_duplicate_entry_dates,
     validate_entries,
     validate_entries_are_sorted,
@@ -28,6 +30,9 @@ VALID_REASON = "test_reason"
 VALID_WATCHER = "test@example.org"
 TEST_BACKFILL_FILE = TEST_DIR / "backfill" / "test_dir_valid" / BACKFILL_FILE
 TEST_BACKFILL_FILE_1 = TEST_DIR / "backfill" / "test_dir_valid_1" / BACKFILL_FILE
+TEST_BACKFILL_FILE_DEPENDS_ON_PAST = (
+    TEST_DIR / "backfill" / "test_dir_depends_on_past" / BACKFILL_FILE
+)
 
 
 class TestValidateBackfill(object):
@@ -311,3 +316,65 @@ class TestValidateBackfill(object):
         assert has_shredder_mitigation_label is True
 
         validate_shredder_mitigation(valid_backfill, TEST_BACKFILL_FILE_1)
+
+    def test_validate_depends_on_past_end_date_override(self):
+        """override_depends_on_past_end_date should allow end date to be before entry date."""
+        backfill_entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            date(2021, 5, 1),
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            TEST_BACKFILL_1.status,
+            override_depends_on_past_end_date=True,
+        )
+
+        metadata_file = TEST_BACKFILL_FILE_DEPENDS_ON_PAST.parent / METADATA_FILE
+        metadata = Metadata.from_file(metadata_file)
+        assert metadata.scheduling.get(
+            "depends_on_past"
+        ), "depends_on_past should be true for this test"
+
+        validate_depends_on_past_end_date(
+            backfill_entry, TEST_BACKFILL_FILE_DEPENDS_ON_PAST
+        )
+
+    def test_validate_depends_on_past_end_date_without_override(self):
+        """override_depends_on_past_end_date=false or unset should fail if end date to be before entry date."""
+        backfill_entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            date(2021, 5, 1),
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            TEST_BACKFILL_1.status,
+        )
+
+        metadata_file = TEST_BACKFILL_FILE_DEPENDS_ON_PAST.parent / METADATA_FILE
+        metadata = Metadata.from_file(metadata_file)
+        assert metadata.scheduling.get(
+            "depends_on_past"
+        ), "depends_on_past should be true for this test"
+
+        with pytest.raises(ValueError):
+            validate_depends_on_past_end_date(
+                backfill_entry, TEST_BACKFILL_FILE_DEPENDS_ON_PAST
+            )
+
+        backfill_entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            date(2021, 5, 1),
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            TEST_BACKFILL_1.status,
+            override_depends_on_past_end_date=False,
+        )
+
+        with pytest.raises(ValueError):
+            validate_depends_on_past_end_date(
+                backfill_entry, TEST_BACKFILL_FILE_DEPENDS_ON_PAST
+            )

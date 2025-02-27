@@ -176,6 +176,11 @@ def info(name, dags_config, sql_dir, with_tasks):
     ),
     default="30m",
 )
+@click.option(
+    "--catchup",
+    help=("Allow DAG to run for past dates if its start date is in the past"),
+    default=False,
+)
 def create(
     name,
     dags_config,
@@ -187,6 +192,7 @@ def create(
     email,
     retries,
     retry_delay,
+    catchup,
 ):
     """Create a new DAG."""
     # create a DAG and validate all properties
@@ -202,6 +208,7 @@ def create(
                     "retries": retries,
                     "retry_delay": retry_delay,
                 },
+                "catchup": catchup,
                 "tags": tag,
             }
         }

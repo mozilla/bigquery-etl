@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v1`
+  `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`

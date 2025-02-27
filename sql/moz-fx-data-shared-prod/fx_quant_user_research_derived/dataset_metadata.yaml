@@ -1,16 +1,16 @@
 friendly_name: Fx Quant User Research Derived
 description: |-
-  Contains tables for FX Quant User Research (from Alchemy)
+  Contains tables for FX Quant User Research (from Alchemer)
 dataset_base_acl: derived
 user_facing: false
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
 default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:fx-quant-user-research/data-viewers
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:fx-quant-user-research/data-developers
 syndication: {}

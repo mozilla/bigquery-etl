@@ -297,6 +297,11 @@ render:
   # uses {%s} which results in unknown tag exception
   - sql/mozfun/hist/string_to_json/udf.sql
 
+metadata:
+  validation:
+    skip:
+    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
+
 generate:
   glean_usage:
     skip_existing: # Skip automatically updating the following artifacts
@@ -388,6 +393,20 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+  usage_reporting:
+    apps:
+      fenix:
+        channels:
+        - nightly
+        - beta
+      firefox_ios:
+        channels:
+        - nightly
+        - beta
+      firefox_desktop:
+        # firefox_desktop is a single app containing multiple channels hence why set to null.
+        channels: null
+
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

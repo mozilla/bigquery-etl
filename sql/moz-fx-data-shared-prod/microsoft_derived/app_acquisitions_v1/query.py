@@ -126,9 +126,8 @@ def check_json(microsoft_store_response_text):
             f_json.write(microsoft_store_response_text)
             try:
                 query_export = read_json(f_json.name)
-            except (
-                ValueError
-            ):  # ex. json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+            except ValueError as e:
+                print(e)
                 return None
     return query_export
 

@@ -11,4 +11,5 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_ios_fennec.usage_reporting_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.usage_reporting_clients_daily
 require_column_descriptions: false

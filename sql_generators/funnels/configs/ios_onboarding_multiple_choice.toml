@@ -19,7 +19,6 @@ steps = ["toolbar_bottom",
 dimensions = [
               "funnel_id",
               "repeat_first_month_user",
-              "retained_week_2",
               "retained_week_4",
               "country",
               "ios_version",
@@ -85,17 +84,20 @@ aggregation = "count distinct"
 [data_sources.onboarding_events]
 from_expression = """
   firefox_ios.firefox_ios_clients ic --each client_id has only one row
-  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-  ON ic.client_id = r.client_id
-  LEFT JOIN `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-  ON ic.client_id = r2.client_id
+  LEFT JOIN (
+    SELECT * FROM `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+    WHERE submission_date = @submission_date
+      AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+      AND new_profile_metric_date
+  ) AS r -- we only new_profile retention
+  USING(client_id)
   LEFT JOIN
     (SELECT * FROM firefox_ios.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) eu
   ON ic.client_id = eu.client_info.client_id
   LEFT JOIN
     (SELECT client_info.client_id,
     ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id,
-    1 + LENGTH(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id'))) - 
+    1 + LENGTH(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id'))) -
              LENGTH(REPLACE(ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')), '_', '')) AS number_of_onboarding_cards
     FROM firefox_ios.events_unnested
     WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
@@ -117,19 +119,12 @@ friendly_name = "Funnel ID"
 description = "ID of the Onboarding Funnel"
 client_id_column = "ic.client_id"
 
-# these dimensions are sourced from funnel_retention_clients_week_4_v1
+# these dimensions are sourced from `retention_clients`
 [dimensions.repeat_first_month_user]
 friendly_name = "Repeat First Month User"
 description = "Whether the Client is a Repeat First Month User"
 data_source = "onboarding_events"
-select_expression = "COALESCE(r.repeat_first_month_user, FALSE)"
-client_id_column = "r.client_id"
-
-[dimensions.retained_week_2]
-friendly_name = "Repeat First Month User"
-description = "Whether the Client is Retained in their Second Week"
-data_source = "onboarding_events"
-select_expression = "COALESCE(r.retained_week_2, FALSE)"
+select_expression = "COALESCE(r.repeat_profile, FALSE)"
 client_id_column = "r.client_id"
 
 [dimensions.retained_week_4]

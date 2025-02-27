@@ -591,7 +591,9 @@ SELECT
       metrics.custom_distribution.update_status_error_code_unknown_stage,
       metrics.custom_distribution.update_status_error_code_unknown_startup,
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
-      metrics.custom_distribution.devtools_toolbox_host
+      metrics.custom_distribution.devtools_toolbox_host,
+      metrics.custom_distribution.devtools_heap_snapshot_edge_count,
+      metrics.custom_distribution.devtools_heap_snapshot_node_count
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1408,7 +1410,9 @@ SELECT
       metrics.timing_distribution.devtools_storage_time_active,
       metrics.timing_distribution.devtools_styleeditor_time_active,
       metrics.timing_distribution.devtools_toolbox_time_active,
-      metrics.timing_distribution.devtools_webconsole_time_active
+      metrics.timing_distribution.devtools_webconsole_time_active,
+      metrics.timing_distribution.devtools_read_heap_snapshot,
+      metrics.timing_distribution.devtools_save_heap_snapshot
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2223,7 +2227,9 @@ SELECT
       metrics.custom_distribution.update_status_error_code_unknown_stage,
       metrics.custom_distribution.update_status_error_code_unknown_startup,
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
-      metrics.custom_distribution.devtools_toolbox_host
+      metrics.custom_distribution.devtools_toolbox_host,
+      metrics.custom_distribution.devtools_heap_snapshot_edge_count,
+      metrics.custom_distribution.devtools_heap_snapshot_node_count
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3040,7 +3046,9 @@ SELECT
       metrics.timing_distribution.devtools_storage_time_active,
       metrics.timing_distribution.devtools_styleeditor_time_active,
       metrics.timing_distribution.devtools_toolbox_time_active,
-      metrics.timing_distribution.devtools_webconsole_time_active
+      metrics.timing_distribution.devtools_webconsole_time_active,
+      metrics.timing_distribution.devtools_read_heap_snapshot,
+      metrics.timing_distribution.devtools_save_heap_snapshot
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3873,7 +3881,9 @@ SELECT
       metrics.custom_distribution.update_status_error_code_unknown_stage,
       metrics.custom_distribution.update_status_error_code_unknown_startup,
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
-      metrics.custom_distribution.devtools_toolbox_host
+      metrics.custom_distribution.devtools_toolbox_host,
+      metrics.custom_distribution.devtools_heap_snapshot_edge_count,
+      metrics.custom_distribution.devtools_heap_snapshot_node_count
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4690,7 +4700,9 @@ SELECT
       metrics.timing_distribution.devtools_storage_time_active,
       metrics.timing_distribution.devtools_styleeditor_time_active,
       metrics.timing_distribution.devtools_toolbox_time_active,
-      metrics.timing_distribution.devtools_webconsole_time_active
+      metrics.timing_distribution.devtools_webconsole_time_active,
+      metrics.timing_distribution.devtools_read_heap_snapshot,
+      metrics.timing_distribution.devtools_save_heap_snapshot
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5532,7 +5544,9 @@ SELECT
       metrics.custom_distribution.update_status_error_code_unknown_stage,
       metrics.custom_distribution.update_status_error_code_unknown_startup,
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
-      metrics.custom_distribution.devtools_toolbox_host
+      metrics.custom_distribution.devtools_toolbox_host,
+      metrics.custom_distribution.devtools_heap_snapshot_edge_count,
+      metrics.custom_distribution.devtools_heap_snapshot_node_count
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -6349,7 +6363,9 @@ SELECT
       metrics.timing_distribution.devtools_storage_time_active,
       metrics.timing_distribution.devtools_styleeditor_time_active,
       metrics.timing_distribution.devtools_toolbox_time_active,
-      metrics.timing_distribution.devtools_webconsole_time_active
+      metrics.timing_distribution.devtools_webconsole_time_active,
+      metrics.timing_distribution.devtools_read_heap_snapshot,
+      metrics.timing_distribution.devtools_save_heap_snapshot
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -7173,7 +7189,9 @@ SELECT
       metrics.custom_distribution.update_status_error_code_unknown_stage,
       metrics.custom_distribution.update_status_error_code_unknown_startup,
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
-      metrics.custom_distribution.devtools_toolbox_host
+      metrics.custom_distribution.devtools_toolbox_host,
+      metrics.custom_distribution.devtools_heap_snapshot_edge_count,
+      metrics.custom_distribution.devtools_heap_snapshot_node_count
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -7990,7 +8008,9 @@ SELECT
       metrics.timing_distribution.devtools_storage_time_active,
       metrics.timing_distribution.devtools_styleeditor_time_active,
       metrics.timing_distribution.devtools_toolbox_time_active,
-      metrics.timing_distribution.devtools_webconsole_time_active
+      metrics.timing_distribution.devtools_webconsole_time_active,
+      metrics.timing_distribution.devtools_read_heap_snapshot,
+      metrics.timing_distribution.devtools_save_heap_snapshot
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

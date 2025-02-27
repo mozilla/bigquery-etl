@@ -2,8 +2,7 @@
 WITH ios_onboarding_funnel_new_profile AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -21,11 +20,17 @@ WITH ios_onboarding_funnel_new_profile AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -35,7 +40,7 @@ WITH ios_onboarding_funnel_new_profile AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -52,15 +57,14 @@ WITH ios_onboarding_funnel_new_profile AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_first_card_impression AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -83,11 +87,17 @@ ios_onboarding_funnel_first_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -97,7 +107,7 @@ ios_onboarding_funnel_first_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -114,15 +124,14 @@ ios_onboarding_funnel_first_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_first_card_primary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -145,11 +154,17 @@ ios_onboarding_funnel_first_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -159,7 +174,7 @@ ios_onboarding_funnel_first_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -176,15 +191,14 @@ ios_onboarding_funnel_first_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_first_card_secondary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -207,11 +221,17 @@ ios_onboarding_funnel_first_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -221,7 +241,7 @@ ios_onboarding_funnel_first_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -238,15 +258,14 @@ ios_onboarding_funnel_first_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_first_card_close_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -269,11 +288,17 @@ ios_onboarding_funnel_first_card_close_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -283,7 +308,7 @@ ios_onboarding_funnel_first_card_close_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -300,15 +325,14 @@ ios_onboarding_funnel_first_card_close_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_first_card_multiple_choice_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -331,11 +355,17 @@ ios_onboarding_funnel_first_card_multiple_choice_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -345,7 +375,7 @@ ios_onboarding_funnel_first_card_multiple_choice_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -362,15 +392,14 @@ ios_onboarding_funnel_first_card_multiple_choice_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_second_card_impression AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -393,11 +422,17 @@ ios_onboarding_funnel_second_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -407,7 +442,7 @@ ios_onboarding_funnel_second_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -424,15 +459,14 @@ ios_onboarding_funnel_second_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_second_card_primary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -455,11 +489,17 @@ ios_onboarding_funnel_second_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -469,7 +509,7 @@ ios_onboarding_funnel_second_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -486,15 +526,14 @@ ios_onboarding_funnel_second_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_second_card_secondary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -517,11 +556,17 @@ ios_onboarding_funnel_second_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -531,7 +576,7 @@ ios_onboarding_funnel_second_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -548,15 +593,14 @@ ios_onboarding_funnel_second_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_second_card_close_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -579,11 +623,17 @@ ios_onboarding_funnel_second_card_close_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -593,7 +643,7 @@ ios_onboarding_funnel_second_card_close_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -610,15 +660,14 @@ ios_onboarding_funnel_second_card_close_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_second_card_multiple_choice_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -641,11 +690,17 @@ ios_onboarding_funnel_second_card_multiple_choice_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -655,7 +710,7 @@ ios_onboarding_funnel_second_card_multiple_choice_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -672,15 +727,14 @@ ios_onboarding_funnel_second_card_multiple_choice_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_third_card_impression AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -703,11 +757,17 @@ ios_onboarding_funnel_third_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -717,7 +777,7 @@ ios_onboarding_funnel_third_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -734,15 +794,14 @@ ios_onboarding_funnel_third_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_third_card_primary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -765,11 +824,17 @@ ios_onboarding_funnel_third_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -779,7 +844,7 @@ ios_onboarding_funnel_third_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -796,15 +861,14 @@ ios_onboarding_funnel_third_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_third_card_secondary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -827,11 +891,17 @@ ios_onboarding_funnel_third_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -841,7 +911,7 @@ ios_onboarding_funnel_third_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -858,15 +928,14 @@ ios_onboarding_funnel_third_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_third_card_close_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -889,11 +958,17 @@ ios_onboarding_funnel_third_card_close_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -903,7 +978,7 @@ ios_onboarding_funnel_third_card_close_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -920,15 +995,14 @@ ios_onboarding_funnel_third_card_close_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_third_card_multiple_choice_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -951,11 +1025,17 @@ ios_onboarding_funnel_third_card_multiple_choice_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -965,7 +1045,7 @@ ios_onboarding_funnel_third_card_multiple_choice_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -982,15 +1062,14 @@ ios_onboarding_funnel_third_card_multiple_choice_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fourth_card_impression AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1013,11 +1092,17 @@ ios_onboarding_funnel_fourth_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1027,7 +1112,7 @@ ios_onboarding_funnel_fourth_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1044,15 +1129,14 @@ ios_onboarding_funnel_fourth_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fourth_card_primary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1075,11 +1159,17 @@ ios_onboarding_funnel_fourth_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1089,7 +1179,7 @@ ios_onboarding_funnel_fourth_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1106,15 +1196,14 @@ ios_onboarding_funnel_fourth_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fourth_card_secondary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1137,11 +1226,17 @@ ios_onboarding_funnel_fourth_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1151,7 +1246,7 @@ ios_onboarding_funnel_fourth_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1168,15 +1263,14 @@ ios_onboarding_funnel_fourth_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fourth_card_close_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1199,11 +1293,17 @@ ios_onboarding_funnel_fourth_card_close_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1213,7 +1313,7 @@ ios_onboarding_funnel_fourth_card_close_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1230,15 +1330,14 @@ ios_onboarding_funnel_fourth_card_close_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fourth_card_multiple_choice_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1261,11 +1360,17 @@ ios_onboarding_funnel_fourth_card_multiple_choice_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1275,7 +1380,7 @@ ios_onboarding_funnel_fourth_card_multiple_choice_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1292,15 +1397,14 @@ ios_onboarding_funnel_fourth_card_multiple_choice_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fifth_card_impression AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1323,11 +1427,17 @@ ios_onboarding_funnel_fifth_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1337,7 +1447,7 @@ ios_onboarding_funnel_fifth_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1354,15 +1464,14 @@ ios_onboarding_funnel_fifth_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fifth_card_primary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1385,11 +1494,17 @@ ios_onboarding_funnel_fifth_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1399,7 +1514,7 @@ ios_onboarding_funnel_fifth_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1416,15 +1531,14 @@ ios_onboarding_funnel_fifth_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fifth_card_secondary_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1447,11 +1561,17 @@ ios_onboarding_funnel_fifth_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1461,7 +1581,7 @@ ios_onboarding_funnel_fifth_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1478,15 +1598,14 @@ ios_onboarding_funnel_fifth_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fifth_card_close_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1509,11 +1628,17 @@ ios_onboarding_funnel_fifth_card_close_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1523,7 +1648,7 @@ ios_onboarding_funnel_fifth_card_close_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1540,15 +1665,14 @@ ios_onboarding_funnel_fifth_card_close_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_fifth_card_multiple_choice_click AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1571,11 +1695,17 @@ ios_onboarding_funnel_fifth_card_multiple_choice_click AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1585,7 +1715,7 @@ ios_onboarding_funnel_fifth_card_multiple_choice_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1602,15 +1732,14 @@ ios_onboarding_funnel_fifth_card_multiple_choice_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_sync_sign_in AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1632,11 +1761,17 @@ ios_onboarding_funnel_sync_sign_in AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1646,7 +1781,7 @@ ios_onboarding_funnel_sync_sign_in AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1663,15 +1798,14 @@ ios_onboarding_funnel_sync_sign_in AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
 ios_onboarding_funnel_allow_notification AS (
   SELECT
     COALESCE(funnel_id, 'no_onboarding_reported') AS funnel_id,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ic.first_reported_country AS country,
     ic.os_version AS ios_version,
@@ -1694,11 +1828,17 @@ ios_onboarding_funnel_allow_notification AS (
   FROM
     `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` ic --each client_id has only one row
   LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_4_v1 r --each client_id has only one row
-    ON ic.client_id = r.client_id
-  LEFT JOIN
-    `moz-fx-data-shared-prod`.firefox_ios_derived.funnel_retention_clients_week_2_v1 r2 -- retained_week_2 is not included in funnel_retention_clients_week_4_v1
-    ON ic.client_id = r2.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1708,7 +1848,7 @@ ios_onboarding_funnel_allow_notification AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) eu
-    ON ic.client_id = eu.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -1725,7 +1865,7 @@ ios_onboarding_funnel_allow_notification AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ic.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     DATE(ic.submission_timestamp) = @submission_date
 ),
@@ -1736,7 +1876,6 @@ ios_onboarding_funnel_new_profile_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1754,7 +1893,6 @@ ios_onboarding_funnel_new_profile_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1775,7 +1913,6 @@ ios_onboarding_funnel_first_card_impression_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1793,7 +1930,6 @@ ios_onboarding_funnel_first_card_impression_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1814,7 +1950,6 @@ ios_onboarding_funnel_first_card_primary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1832,7 +1967,6 @@ ios_onboarding_funnel_first_card_primary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1853,7 +1987,6 @@ ios_onboarding_funnel_first_card_secondary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1871,7 +2004,6 @@ ios_onboarding_funnel_first_card_secondary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1892,7 +2024,6 @@ ios_onboarding_funnel_first_card_close_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1910,7 +2041,6 @@ ios_onboarding_funnel_first_card_close_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1931,7 +2061,6 @@ ios_onboarding_funnel_first_card_multiple_choice_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1949,7 +2078,6 @@ ios_onboarding_funnel_first_card_multiple_choice_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1970,7 +2098,6 @@ ios_onboarding_funnel_second_card_impression_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -1988,7 +2115,6 @@ ios_onboarding_funnel_second_card_impression_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2009,7 +2135,6 @@ ios_onboarding_funnel_second_card_primary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2027,7 +2152,6 @@ ios_onboarding_funnel_second_card_primary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2048,7 +2172,6 @@ ios_onboarding_funnel_second_card_secondary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2066,7 +2189,6 @@ ios_onboarding_funnel_second_card_secondary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2087,7 +2209,6 @@ ios_onboarding_funnel_second_card_close_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2105,7 +2226,6 @@ ios_onboarding_funnel_second_card_close_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2126,7 +2246,6 @@ ios_onboarding_funnel_second_card_multiple_choice_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2144,7 +2263,6 @@ ios_onboarding_funnel_second_card_multiple_choice_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2165,7 +2283,6 @@ ios_onboarding_funnel_third_card_impression_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2183,7 +2300,6 @@ ios_onboarding_funnel_third_card_impression_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2204,7 +2320,6 @@ ios_onboarding_funnel_third_card_primary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2222,7 +2337,6 @@ ios_onboarding_funnel_third_card_primary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2243,7 +2357,6 @@ ios_onboarding_funnel_third_card_secondary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2261,7 +2374,6 @@ ios_onboarding_funnel_third_card_secondary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2282,7 +2394,6 @@ ios_onboarding_funnel_third_card_close_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2300,7 +2411,6 @@ ios_onboarding_funnel_third_card_close_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2321,7 +2431,6 @@ ios_onboarding_funnel_third_card_multiple_choice_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2339,7 +2448,6 @@ ios_onboarding_funnel_third_card_multiple_choice_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2360,7 +2468,6 @@ ios_onboarding_funnel_fourth_card_impression_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2378,7 +2485,6 @@ ios_onboarding_funnel_fourth_card_impression_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2399,7 +2505,6 @@ ios_onboarding_funnel_fourth_card_primary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2417,7 +2522,6 @@ ios_onboarding_funnel_fourth_card_primary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2438,7 +2542,6 @@ ios_onboarding_funnel_fourth_card_secondary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2456,7 +2559,6 @@ ios_onboarding_funnel_fourth_card_secondary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2477,7 +2579,6 @@ ios_onboarding_funnel_fourth_card_close_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2495,7 +2596,6 @@ ios_onboarding_funnel_fourth_card_close_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2516,7 +2616,6 @@ ios_onboarding_funnel_fourth_card_multiple_choice_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2534,7 +2633,6 @@ ios_onboarding_funnel_fourth_card_multiple_choice_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2555,7 +2653,6 @@ ios_onboarding_funnel_fifth_card_impression_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2573,7 +2670,6 @@ ios_onboarding_funnel_fifth_card_impression_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2594,7 +2690,6 @@ ios_onboarding_funnel_fifth_card_primary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2612,7 +2707,6 @@ ios_onboarding_funnel_fifth_card_primary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2633,7 +2727,6 @@ ios_onboarding_funnel_fifth_card_secondary_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2651,7 +2744,6 @@ ios_onboarding_funnel_fifth_card_secondary_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2672,7 +2764,6 @@ ios_onboarding_funnel_fifth_card_close_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2690,7 +2781,6 @@ ios_onboarding_funnel_fifth_card_close_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2711,7 +2801,6 @@ ios_onboarding_funnel_fifth_card_multiple_choice_click_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2729,7 +2818,6 @@ ios_onboarding_funnel_fifth_card_multiple_choice_click_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2750,7 +2838,6 @@ ios_onboarding_funnel_sync_sign_in_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2768,7 +2855,6 @@ ios_onboarding_funnel_sync_sign_in_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2789,7 +2875,6 @@ ios_onboarding_funnel_allow_notification_aggregated AS (
     "ios_onboarding_funnel" AS funnel,
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2807,7 +2892,6 @@ ios_onboarding_funnel_allow_notification_aggregated AS (
   GROUP BY
     funnel_id,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     country,
     ios_version,
@@ -2829,7 +2913,6 @@ merged_funnels AS (
     COALESCE(
       ios_onboarding_funnel_new_profile_aggregated.repeat_first_month_user
     ) AS repeat_first_month_user,
-    COALESCE(ios_onboarding_funnel_new_profile_aggregated.retained_week_2) AS retained_week_2,
     COALESCE(ios_onboarding_funnel_new_profile_aggregated.retained_week_4) AS retained_week_4,
     COALESCE(ios_onboarding_funnel_new_profile_aggregated.country) AS country,
     COALESCE(ios_onboarding_funnel_new_profile_aggregated.ios_version) AS ios_version,
@@ -2931,7 +3014,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -2951,7 +3033,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -2971,7 +3052,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -2991,7 +3071,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3011,7 +3090,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3031,7 +3109,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3051,7 +3128,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3071,7 +3147,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3091,7 +3166,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3111,7 +3185,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3131,7 +3204,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3151,7 +3223,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3171,7 +3242,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3191,7 +3261,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3211,7 +3280,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3231,7 +3299,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3251,7 +3318,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3271,7 +3337,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3291,7 +3356,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3311,7 +3375,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3331,7 +3394,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3351,7 +3413,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3371,7 +3432,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3391,7 +3451,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3411,7 +3470,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3431,7 +3489,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,
@@ -3451,7 +3508,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       ios_version,

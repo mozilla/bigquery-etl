@@ -14,8 +14,7 @@ WITH onboarding_funnel_new_profile AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -23,8 +22,17 @@ WITH onboarding_funnel_new_profile AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -33,8 +41,8 @@ WITH onboarding_funnel_new_profile AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -48,7 +56,7 @@ WITH onboarding_funnel_new_profile AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -67,8 +75,7 @@ onboarding_funnel_first_card_impression AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -82,8 +89,17 @@ onboarding_funnel_first_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -92,8 +108,8 @@ onboarding_funnel_first_card_impression AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -107,7 +123,7 @@ onboarding_funnel_first_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -126,8 +142,7 @@ onboarding_funnel_first_card_primary_click AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -142,8 +157,17 @@ onboarding_funnel_first_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -152,8 +176,8 @@ onboarding_funnel_first_card_primary_click AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -167,7 +191,7 @@ onboarding_funnel_first_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -186,8 +210,7 @@ onboarding_funnel_first_card_secondary_click AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -202,8 +225,17 @@ onboarding_funnel_first_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -212,8 +244,8 @@ onboarding_funnel_first_card_secondary_click AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -227,7 +259,7 @@ onboarding_funnel_first_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -246,8 +278,7 @@ onboarding_funnel_second_card_impression AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -261,8 +292,17 @@ onboarding_funnel_second_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -271,8 +311,8 @@ onboarding_funnel_second_card_impression AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -286,7 +326,7 @@ onboarding_funnel_second_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -305,8 +345,7 @@ onboarding_funnel_second_card_primary_click AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -321,8 +360,17 @@ onboarding_funnel_second_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -331,8 +379,8 @@ onboarding_funnel_second_card_primary_click AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -346,7 +394,7 @@ onboarding_funnel_second_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -365,8 +413,7 @@ onboarding_funnel_second_card_secondary_click AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -381,8 +428,17 @@ onboarding_funnel_second_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -391,8 +447,8 @@ onboarding_funnel_second_card_secondary_click AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -406,7 +462,7 @@ onboarding_funnel_second_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -425,8 +481,7 @@ onboarding_funnel_third_card_impression AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -440,8 +495,17 @@ onboarding_funnel_third_card_impression AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -450,8 +514,8 @@ onboarding_funnel_third_card_impression AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -465,7 +529,7 @@ onboarding_funnel_third_card_impression AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -484,8 +548,7 @@ onboarding_funnel_third_card_primary_click AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -500,8 +563,17 @@ onboarding_funnel_third_card_primary_click AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -510,8 +582,8 @@ onboarding_funnel_third_card_primary_click AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -525,7 +597,7 @@ onboarding_funnel_third_card_primary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -544,8 +616,7 @@ onboarding_funnel_third_card_secondary_click AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -560,8 +631,17 @@ onboarding_funnel_third_card_secondary_click AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -570,8 +650,8 @@ onboarding_funnel_third_card_secondary_click AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -585,7 +665,7 @@ onboarding_funnel_third_card_secondary_click AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -604,8 +684,7 @@ onboarding_funnel_onboarding_completed AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -617,8 +696,17 @@ onboarding_funnel_onboarding_completed AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -627,8 +715,8 @@ onboarding_funnel_onboarding_completed AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -642,7 +730,7 @@ onboarding_funnel_onboarding_completed AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -661,8 +749,7 @@ onboarding_funnel_sync_sign_in AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -674,8 +761,17 @@ onboarding_funnel_sync_sign_in AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -684,8 +780,8 @@ onboarding_funnel_sync_sign_in AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -699,7 +795,7 @@ onboarding_funnel_sync_sign_in AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -718,8 +814,7 @@ onboarding_funnel_default_browser AS (
     ac.adjust_creative AS adjust_creative,
     ac.adjust_ad_group AS adjust_ad_group,
     ac.install_source AS install_source,
-    COALESCE(r.repeat_first_month_user, FALSE) AS repeat_first_month_user,
-    COALESCE(r.retained_week_2, FALSE) AS retained_week_2,
+    COALESCE(r.repeat_profile, FALSE) AS repeat_first_month_user,
     COALESCE(r.retained_week_4, FALSE) AS retained_week_4,
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
@@ -731,8 +826,17 @@ onboarding_funnel_default_browser AS (
   FROM
     `moz-fx-data-shared-prod.fenix.firefox_android_clients` ac
   LEFT JOIN
-    `moz-fx-data-shared-prod`.fenix_derived.funnel_retention_clients_week_4_v1 r
-    ON ac.client_id = r.client_id
+    (
+      SELECT
+        *
+      FROM
+        `moz-fx-data-shared-prod`.firefox_ios.retention_clients
+      WHERE
+        submission_date = @submission_date
+        AND metric_date = DATE_SUB(@submission_date, INTERVAL 27 DAY)
+        AND new_profile_metric_date
+    ) AS r -- we only new_profile retention
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -741,8 +845,8 @@ onboarding_funnel_default_browser AS (
         `moz-fx-data-shared-prod.fenix.events_unnested` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
-    ) eu
-    ON ac.client_id = eu.client_info.client_id
+    ) AS eu
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
@@ -756,7 +860,7 @@ onboarding_funnel_default_browser AS (
       GROUP BY
         1
     ) funnel_ids
-    ON ac.client_id = funnel_ids.client_id
+    USING (client_id)
   WHERE
     ac.submission_date = @submission_date
 ),
@@ -779,7 +883,6 @@ onboarding_funnel_new_profile_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -799,7 +902,6 @@ onboarding_funnel_new_profile_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -822,7 +924,6 @@ onboarding_funnel_first_card_impression_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -842,7 +943,6 @@ onboarding_funnel_first_card_impression_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -865,7 +965,6 @@ onboarding_funnel_first_card_primary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -885,7 +984,6 @@ onboarding_funnel_first_card_primary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -908,7 +1006,6 @@ onboarding_funnel_first_card_secondary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -928,7 +1025,6 @@ onboarding_funnel_first_card_secondary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -951,7 +1047,6 @@ onboarding_funnel_second_card_impression_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -971,7 +1066,6 @@ onboarding_funnel_second_card_impression_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -994,7 +1088,6 @@ onboarding_funnel_second_card_primary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1014,7 +1107,6 @@ onboarding_funnel_second_card_primary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1037,7 +1129,6 @@ onboarding_funnel_second_card_secondary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1057,7 +1148,6 @@ onboarding_funnel_second_card_secondary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1080,7 +1170,6 @@ onboarding_funnel_third_card_impression_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1100,7 +1189,6 @@ onboarding_funnel_third_card_impression_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1123,7 +1211,6 @@ onboarding_funnel_third_card_primary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1143,7 +1230,6 @@ onboarding_funnel_third_card_primary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1166,7 +1252,6 @@ onboarding_funnel_third_card_secondary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1186,7 +1271,6 @@ onboarding_funnel_third_card_secondary_click_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1209,7 +1293,6 @@ onboarding_funnel_onboarding_completed_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1229,7 +1312,6 @@ onboarding_funnel_onboarding_completed_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1252,7 +1334,6 @@ onboarding_funnel_sync_sign_in_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1272,7 +1353,6 @@ onboarding_funnel_sync_sign_in_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1295,7 +1375,6 @@ onboarding_funnel_default_browser_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     COUNT(DISTINCT column) AS aggregated
   FROM
@@ -1315,7 +1394,6 @@ onboarding_funnel_default_browser_aggregated AS (
     adjust_ad_group,
     install_source,
     repeat_first_month_user,
-    retained_week_2,
     retained_week_4,
     submission_date,
     funnel
@@ -1327,7 +1405,6 @@ merged_funnels AS (
     COALESCE(
       onboarding_funnel_new_profile_aggregated.repeat_first_month_user
     ) AS repeat_first_month_user,
-    COALESCE(onboarding_funnel_new_profile_aggregated.retained_week_2) AS retained_week_2,
     COALESCE(onboarding_funnel_new_profile_aggregated.retained_week_4) AS retained_week_4,
     COALESCE(onboarding_funnel_new_profile_aggregated.country) AS country,
     COALESCE(onboarding_funnel_new_profile_aggregated.locale) AS locale,
@@ -1382,7 +1459,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1404,7 +1480,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1426,7 +1501,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1448,7 +1522,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1470,7 +1543,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1492,7 +1564,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1514,7 +1585,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1536,7 +1606,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1558,7 +1627,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1580,7 +1648,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1602,7 +1669,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,
@@ -1624,7 +1690,6 @@ merged_funnels AS (
       submission_date,
       funnel_id,
       repeat_first_month_user,
-      retained_week_2,
       retained_week_4,
       country,
       locale,

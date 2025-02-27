@@ -623,20 +623,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    with TaskGroup(
-        "firefox_ios_derived__funnel_retention_clients_week_2__v1_external",
-    ) as firefox_ios_derived__funnel_retention_clients_week_2__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_generated_funnels__wait_for_firefox_ios_derived__funnel_retention_clients_week_2__v1",
-            external_dag_id="bqetl_generated_funnels",
-            external_task_id="wait_for_firefox_ios_derived__funnel_retention_clients_week_2__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        firefox_ios_derived__funnel_retention_clients_week_2__v1_external.set_upstream(
-            firefox_ios_derived__funnel_retention_clients_week_2__v1
-        )
-
     firefox_ios_derived__funnel_retention_clients_week_4__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__funnel_retention_clients_week_4__v1",
         destination_table="funnel_retention_clients_week_4_v1",
@@ -647,20 +633,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
-
-    with TaskGroup(
-        "firefox_ios_derived__funnel_retention_clients_week_4__v1_external",
-    ) as firefox_ios_derived__funnel_retention_clients_week_4__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_generated_funnels__wait_for_firefox_ios_derived__funnel_retention_clients_week_4__v1",
-            external_dag_id="bqetl_generated_funnels",
-            external_task_id="wait_for_firefox_ios_derived__funnel_retention_clients_week_4__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        firefox_ios_derived__funnel_retention_clients_week_4__v1_external.set_upstream(
-            firefox_ios_derived__funnel_retention_clients_week_4__v1
-        )
 
     firefox_ios_derived__funnel_retention_week_4__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__funnel_retention_week_4__v1",

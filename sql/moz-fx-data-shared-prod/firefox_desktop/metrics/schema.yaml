@@ -2524,6 +2524,94 @@ fields:
         DEVTOOLS_WEBCONSOLE_OPENED_COUNT.
 
         '
+    - name: telemetry_archive_session_ping_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of Telemetry pings added to the archive during the session
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_ARCHIVE_SESSION_PING_COUNT.
+
+        '
+    - name: telemetry_invalid_payload_submitted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of individual invalid payloads that were submitted to Telemetry.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_INVALID_PAYLOAD_SUBMITTED.
+
+        '
+    - name: telemetry_pending_load_failure_parse
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of pending Telemetry pings that failed to parse once loaded
+        from the disk
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PENDING_LOAD_FAILURE_PARSE.
+
+        '
+    - name: telemetry_pending_load_failure_read
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of pending Telemetry pings that failed to load from the
+        disk
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PENDING_LOAD_FAILURE_READ.
+
+        '
+    - name: telemetry_ping_evicted_for_server_errors
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of Telemetry ping files evicted due to server errors (4XX
+        HTTP code received)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PING_EVICTED_FOR_SERVER_ERRORS.
+
+        '
+    - name: telemetry_ping_size_exceeded_archived
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of archived Telemetry pings discarded because they exceeded
+        the maximum size
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PING_SIZE_EXCEEDED_ARCHIVED.
+
+        '
+    - name: telemetry_ping_size_exceeded_pending
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of Telemetry pending pings discarded because they exceeded
+        the maximum size
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PING_SIZE_EXCEEDED_PENDING.
+
+        '
+    - name: telemetry_ping_size_exceeded_send
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of Telemetry pings discarded before sending because they
+        exceeded the maximum size
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PING_SIZE_EXCEEDED_SEND.
+
+        '
+    - name: telemetry_ping_submission_waiting_clientid
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of pings that were submitted and had to wait for a
+        client id (i.e. before it was cached or loaded from disk)
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_PING_SUBMISSION_WAITING_CLIENTID.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -9725,6 +9813,103 @@ fields:
         histogram DEVTOOLS_FONTEDITOR_FONT_TYPE_DISPLAYED.
 
         '
+    - name: telemetry_event_ping_sent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of ''event'' pings sent, by reason
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram TELEMETRY_EVENT_PING_SENT.
+
+        '
+    - name: telemetry_event_recording_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of event recording failures, by type of failure
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram TELEMETRY_EVENT_RECORDING_ERROR.
+
+        '
+    - name: telemetry_event_registration_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of event registration failures, by field causing the failure
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram TELEMETRY_EVENT_REGISTRATION_ERROR.
+
+        '
+    - name: telemetry_invalid_ping_type_submitted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of individual invalid ping types that were submitted to
+        Telemetry.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        TELEMETRY_INVALID_PING_TYPE_SUBMITTED.
+
+        '
+    - name: telemetry_send_failure_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts of the different ways sending a Telemetry ping can fail.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram TELEMETRY_SEND_FAILURE_TYPE.
+
+        '
+    - name: telemetry_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Successful telemetry submission
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        TELEMETRY_SUCCESS.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -10786,6 +10971,150 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram FX_SESSION_RESTORE_FILE_SIZE_BYTES.
+
+        '
+    - name: telemetry_archive_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The size of the Telemetry archive (MB)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_ARCHIVE_SIZE_MB.
+
+        '
+    - name: telemetry_discarded_archived_pings_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The size (MB) of the Telemetry archived, compressed, pings exceeding
+        the maximum file size
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_DISCARDED_ARCHIVED_PINGS_SIZE_MB.
+
+        '
+    - name: telemetry_discarded_pending_pings_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The size (MB) of the Telemetry pending pings exceeding the maximum
+        file size
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_DISCARDED_PENDING_PINGS_SIZE_MB.
+
+        '
+    - name: telemetry_discarded_send_pings_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The size (MB) of the ping data submitted to Telemetry exceeding
+        the maximum size
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_DISCARDED_SEND_PINGS_SIZE_MB.
+
+        '
+    - name: telemetry_pending_pings_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The size of the Telemetry pending pings directory (MB). The special
+        value 17 is used to indicate over quota pings.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_PENDING_PINGS_SIZE_MB.
 
         '
   - name: string
@@ -27981,6 +28310,562 @@ fields:
         histogram DEVTOOLS_WEBCONSOLE_TIME_ACTIVE_SECONDS.
 
         '
+    - name: devtools_read_heap_snapshot
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time (in milliseconds) that it took to read a heap snapshot
+        in mozilla::devtools::ChromeUtils::ReadHeapSnapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DEVTOOLS_READ_HEAP_SNAPSHOT_MS.
+
+        '
+    - name: devtools_save_heap_snapshot
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time (in milliseconds) that it took to save a heap snapshot
+        in mozilla::devtools::ChromeUtils::SaveHeapSnapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DEVTOOLS_SAVE_HEAP_SNAPSHOT_MS.
+
+        '
+    - name: telemetry_archive_checking_over_quota
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) it takes for checking if the archive is over-quota
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_ARCHIVE_CHECKING_OVER_QUOTA_MS.
+
+        '
+    - name: telemetry_archive_evicting_dirs
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) it takes for evicting old directories
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_ARCHIVE_EVICTING_DIRS_MS.
+
+        '
+    - name: telemetry_archive_evicting_over_quota
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) it takes for evicting over-quota pings
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_ARCHIVE_EVICTING_OVER_QUOTA_MS.
+
+        '
+    - name: telemetry_compress
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time taken to compress telemetry object (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_COMPRESS.
+
+        '
+    - name: telemetry_pending_checking_over_quota
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) it takes for checking if the pending pings are over-quota
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_PENDING_CHECKING_OVER_QUOTA_MS.
+
+        '
+    - name: telemetry_pending_evicting_over_quota
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) it takes for evicting over-quota pending pings
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_PENDING_EVICTING_OVER_QUOTA_MS.
+
+        '
+    - name: telemetry_pending_pings_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The age, in days, of the pending pings.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_PENDING_PINGS_AGE.
+
+        '
+    - name: telemetry_send_failure
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time needed (in ms) for a failed send of a Telemetry ping to the
+        servers and getting a reply back.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_SEND_FAILURE.
+
+        '
+    - name: telemetry_send_success
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time needed (in ms) for a successful send of a Telemetry ping
+        to the servers and getting a reply back.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_SEND_SUCCESS.
+
+        '
+    - name: telemetry_stringify
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time to stringify telemetry object (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_STRINGIFY.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -36986,6 +37871,233 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram DEVTOOLS_TOOLBOX_HOST.
+
+        '
+    - name: devtools_heap_snapshot_edge_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of edges serialized into a heap snapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        DEVTOOLS_HEAP_SNAPSHOT_EDGE_COUNT.
+
+        '
+    - name: devtools_heap_snapshot_node_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of nodes serialized into a heap snapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        DEVTOOLS_HEAP_SNAPSHOT_NODE_COUNT.
+
+        '
+    - name: telemetry_archive_directories_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of directories in the archive at scan
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_ARCHIVE_DIRECTORIES_COUNT.
+
+        '
+    - name: telemetry_archive_evicted_old_dirs
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Telemetry directories evicted from the archive during
+        cleanup, because they were too old
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_ARCHIVE_EVICTED_OLD_DIRS.
+
+        '
+    - name: telemetry_archive_evicted_over_quota
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Telemetry pings evicted from the archive during cleanup,
+        because they were over the quota
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_ARCHIVE_EVICTED_OVER_QUOTA.
+
+        '
+    - name: telemetry_archive_oldest_directory_age
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The age of the oldest Telemetry archive directory in months
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        TELEMETRY_ARCHIVE_OLDEST_DIRECTORY_AGE.
+
+        '
+    - name: telemetry_archive_scan_ping_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Telemetry pings in the archive at scan
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_ARCHIVE_SCAN_PING_COUNT.
+
+        '
+    - name: telemetry_pending_pings_evicted_over_quota
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of Telemetry pings evicted from the pending pings directory
+        during cleanup, because they were over the quota
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TELEMETRY_PENDING_PINGS_EVICTED_OVER_QUOTA.
 
         '
   - name: url2

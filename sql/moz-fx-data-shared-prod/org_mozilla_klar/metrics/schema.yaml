@@ -15525,6 +15525,62 @@ fields:
         histogram DEVTOOLS_TOOLBOX_HOST.
 
         '
+    - name: devtools_heap_snapshot_edge_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of edges serialized into a heap snapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        DEVTOOLS_HEAP_SNAPSHOT_EDGE_COUNT.
+
+        '
+    - name: devtools_heap_snapshot_node_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of nodes serialized into a heap snapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        DEVTOOLS_HEAP_SNAPSHOT_NODE_COUNT.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -30460,6 +30516,100 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram DEVTOOLS_WEBCONSOLE_TIME_ACTIVE_SECONDS.
+
+        '
+    - name: devtools_read_heap_snapshot
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time (in milliseconds) that it took to read a heap snapshot
+        in mozilla::devtools::ChromeUtils::ReadHeapSnapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DEVTOOLS_READ_HEAP_SNAPSHOT_MS.
+
+        '
+    - name: devtools_save_heap_snapshot
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time (in milliseconds) that it took to save a heap snapshot
+        in mozilla::devtools::ChromeUtils::SaveHeapSnapshot.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DEVTOOLS_SAVE_HEAP_SNAPSHOT_MS.
 
         '
   - name: labeled_boolean

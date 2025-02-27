@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -19037,7 +19037,7 @@ fields:
     - name: use_counter_doc_htmldocument_caretrangefrompoint
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.caretRangeFromPoint.
+      description: 'Whether a document called called HTMLDocument.caretRangeFromPoint.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19045,7 +19045,7 @@ fields:
     - name: use_counter_doc_htmldocument_exitpictureinpicture
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.exitPictureInPicture.
+      description: 'Whether a document called called HTMLDocument.exitPictureInPicture.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19053,70 +19053,70 @@ fields:
     - name: use_counter_doc_htmldocument_featurepolicy
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.featurePolicy. Compare
+      description: 'Whether a document called called HTMLDocument.featurePolicy. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onbeforecopy
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onbeforecopy. Compare
+      description: 'Whether a document called called HTMLDocument.onbeforecopy. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onbeforecut
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onbeforecut. Compare
+      description: 'Whether a document called called HTMLDocument.onbeforecut. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onbeforepaste
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onbeforepaste. Compare
+      description: 'Whether a document called called HTMLDocument.onbeforepaste. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_oncancel
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.oncancel. Compare against
-        `use.counter.content_documents_destroyed` to calculate the rate.
+      description: 'Whether a document called called HTMLDocument.oncancel. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onfreeze
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onfreeze. Compare against
-        `use.counter.content_documents_destroyed` to calculate the rate.
+      description: 'Whether a document called called HTMLDocument.onfreeze. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onmousewheel
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onmousewheel. Compare
+      description: 'Whether a document called called HTMLDocument.onmousewheel. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onresume
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onresume. Compare against
-        `use.counter.content_documents_destroyed` to calculate the rate.
+      description: 'Whether a document called called HTMLDocument.onresume. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onsearch
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onsearch. Compare against
-        `use.counter.content_documents_destroyed` to calculate the rate.
+      description: 'Whether a document called called HTMLDocument.onsearch. Compare
+        against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_onwebkitfullscreenchange
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onwebkitfullscreenchange.
+      description: 'Whether a document called called HTMLDocument.onwebkitfullscreenchange.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19124,7 +19124,7 @@ fields:
     - name: use_counter_doc_htmldocument_onwebkitfullscreenerror
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.onwebkitfullscreenerror.
+      description: 'Whether a document called called HTMLDocument.onwebkitfullscreenerror.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19132,7 +19132,7 @@ fields:
     - name: use_counter_doc_htmldocument_pictureinpictureelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.pictureInPictureElement.
+      description: 'Whether a document called called HTMLDocument.pictureInPictureElement.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19140,7 +19140,7 @@ fields:
     - name: use_counter_doc_htmldocument_pictureinpictureenabled
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.pictureInPictureEnabled.
+      description: 'Whether a document called called HTMLDocument.pictureInPictureEnabled.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19148,21 +19148,22 @@ fields:
     - name: use_counter_doc_htmldocument_registerelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.registerElement. Compare
-        against `use.counter.content_documents_destroyed` to calculate the rate.
+      description: 'Whether a document called called HTMLDocument.registerElement.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_doc_htmldocument_wasdiscarded
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.wasDiscarded. Compare
+      description: 'Whether a document called called HTMLDocument.wasDiscarded. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_webkitcancelfullscreen
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitCancelFullScreen.
+      description: 'Whether a document called called HTMLDocument.webkitCancelFullScreen.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19170,7 +19171,7 @@ fields:
     - name: use_counter_doc_htmldocument_webkitcurrentfullscreenelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitCurrentFullScreenElement.
+      description: 'Whether a document called called HTMLDocument.webkitCurrentFullScreenElement.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19178,7 +19179,7 @@ fields:
     - name: use_counter_doc_htmldocument_webkitexitfullscreen
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitExitFullscreen.
+      description: 'Whether a document called called HTMLDocument.webkitExitFullscreen.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19186,7 +19187,7 @@ fields:
     - name: use_counter_doc_htmldocument_webkitfullscreenelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitFullscreenElement.
+      description: 'Whether a document called called HTMLDocument.webkitFullscreenElement.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19194,7 +19195,7 @@ fields:
     - name: use_counter_doc_htmldocument_webkitfullscreenenabled
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitFullscreenEnabled.
+      description: 'Whether a document called called HTMLDocument.webkitFullscreenEnabled.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19202,14 +19203,14 @@ fields:
     - name: use_counter_doc_htmldocument_webkithidden
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitHidden. Compare
+      description: 'Whether a document called called HTMLDocument.webkitHidden. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_webkitisfullscreen
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitIsFullScreen.
+      description: 'Whether a document called called HTMLDocument.webkitIsFullScreen.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19217,7 +19218,7 @@ fields:
     - name: use_counter_doc_htmldocument_webkitvisibilitystate
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.webkitVisibilityState.
+      description: 'Whether a document called called HTMLDocument.webkitVisibilityState.
         Compare against `use.counter.content_documents_destroyed` to calculate the
         rate.
 
@@ -19225,107 +19226,112 @@ fields:
     - name: use_counter_doc_htmldocument_xmlencoding
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.xmlEncoding. Compare
+      description: 'Whether a document called called HTMLDocument.xmlEncoding. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_xmlstandalone
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.xmlStandalone. Compare
+      description: 'Whether a document called called HTMLDocument.xmlStandalone. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_doc_htmldocument_xmlversion
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document called called Document.xmlVersion. Compare
+      description: 'Whether a document called called HTMLDocument.xmlVersion. Compare
         against `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_page_htmldocument_caretrangefrompoint
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.caretRangeFromPoint. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page called called HTMLDocument.caretRangeFromPoint.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
 
         '
     - name: use_counter_page_htmldocument_exitpictureinpicture
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.exitPictureInPicture. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page called called HTMLDocument.exitPictureInPicture.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
 
         '
     - name: use_counter_page_htmldocument_featurepolicy
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.featurePolicy. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.featurePolicy. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_onbeforecopy
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onbeforecopy. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.onbeforecopy. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_onbeforecut
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onbeforecut. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.onbeforecut. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_onbeforepaste
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onbeforepaste. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.onbeforepaste. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_oncancel
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.oncancel. Compare against
+      description: 'Whether a page called called HTMLDocument.oncancel. Compare against
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_page_htmldocument_onfreeze
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onfreeze. Compare against
+      description: 'Whether a page called called HTMLDocument.onfreeze. Compare against
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_page_htmldocument_onmousewheel
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onmousewheel. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.onmousewheel. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_onresume
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onresume. Compare against
+      description: 'Whether a page called called HTMLDocument.onresume. Compare against
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_page_htmldocument_onsearch
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onsearch. Compare against
+      description: 'Whether a page called called HTMLDocument.onsearch. Compare against
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_page_htmldocument_onwebkitfullscreenchange
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onwebkitfullscreenchange.
+      description: 'Whether a page called called HTMLDocument.onwebkitfullscreenchange.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19333,7 +19339,7 @@ fields:
     - name: use_counter_page_htmldocument_onwebkitfullscreenerror
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.onwebkitfullscreenerror.
+      description: 'Whether a page called called HTMLDocument.onwebkitfullscreenerror.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19341,7 +19347,7 @@ fields:
     - name: use_counter_page_htmldocument_pictureinpictureelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.pictureInPictureElement.
+      description: 'Whether a page called called HTMLDocument.pictureInPictureElement.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19349,7 +19355,7 @@ fields:
     - name: use_counter_page_htmldocument_pictureinpictureenabled
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.pictureInPictureEnabled.
+      description: 'Whether a page called called HTMLDocument.pictureInPictureEnabled.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19357,7 +19363,7 @@ fields:
     - name: use_counter_page_htmldocument_registerelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.registerElement. Compare
+      description: 'Whether a page called called HTMLDocument.registerElement. Compare
         against `use.counter.top_level_content_documents_destroyed` to calculate the
         rate.
 
@@ -19365,14 +19371,15 @@ fields:
     - name: use_counter_page_htmldocument_wasdiscarded
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.wasDiscarded. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.wasDiscarded. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_webkitcancelfullscreen
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitCancelFullScreen.
+      description: 'Whether a page called called HTMLDocument.webkitCancelFullScreen.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19380,7 +19387,7 @@ fields:
     - name: use_counter_page_htmldocument_webkitcurrentfullscreenelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitCurrentFullScreenElement.
+      description: 'Whether a page called called HTMLDocument.webkitCurrentFullScreenElement.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19388,15 +19395,15 @@ fields:
     - name: use_counter_page_htmldocument_webkitexitfullscreen
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitExitFullscreen. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page called called HTMLDocument.webkitExitFullscreen.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
 
         '
     - name: use_counter_page_htmldocument_webkitfullscreenelement
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitFullscreenElement.
+      description: 'Whether a page called called HTMLDocument.webkitFullscreenElement.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19404,7 +19411,7 @@ fields:
     - name: use_counter_page_htmldocument_webkitfullscreenenabled
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitFullscreenEnabled.
+      description: 'Whether a page called called HTMLDocument.webkitFullscreenEnabled.
         Compare against `use.counter.top_level_content_documents_destroyed` to calculate
         the rate.
 
@@ -19412,77 +19419,77 @@ fields:
     - name: use_counter_page_htmldocument_webkithidden
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitHidden. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.webkitHidden. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_webkitisfullscreen
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitIsFullScreen. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page called called HTMLDocument.webkitIsFullScreen.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
 
         '
     - name: use_counter_page_htmldocument_webkitvisibilitystate
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.webkitVisibilityState. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page called called HTMLDocument.webkitVisibilityState.
+        Compare against `use.counter.top_level_content_documents_destroyed` to calculate
+        the rate.
 
         '
     - name: use_counter_page_htmldocument_xmlencoding
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.xmlEncoding. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.xmlEncoding. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_xmlstandalone
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.xmlStandalone. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.xmlStandalone. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_page_htmldocument_xmlversion
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page called called Document.xmlVersion. Compare against
-        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+      description: 'Whether a page called called HTMLDocument.xmlVersion. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
 
         '
     - name: use_counter_deprecated_ops_doc_after_script_execute_event
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document regiested afterscriptexecute event listener.
-        Compare against `use.counter.content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a document used AfterScriptExecuteEvent. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_deprecated_ops_doc_before_script_execute_event
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a document regiested beforescriptexecute event listener.
-        Compare against `use.counter.content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a document used BeforeScriptExecuteEvent. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
 
         '
     - name: use_counter_deprecated_ops_page_after_script_execute_event
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page regiested afterscriptexecute event listener. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page used AfterScriptExecuteEvent. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
 
         '
     - name: use_counter_deprecated_ops_page_before_script_execute_event
       type: INTEGER
       mode: NULLABLE
-      description: 'Whether a page regiested beforescriptexecute event listener. Compare
-        against `use.counter.top_level_content_documents_destroyed` to calculate the
-        rate.
+      description: 'Whether a page used BeforeScriptExecuteEvent. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
   - name: labeled_counter

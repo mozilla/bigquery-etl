@@ -694,20 +694,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    with TaskGroup(
-        "fenix_derived__funnel_retention_clients_week_4__v1_external",
-    ) as fenix_derived__funnel_retention_clients_week_4__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_generated_funnels__wait_for_fenix_derived__funnel_retention_clients_week_4__v1",
-            external_dag_id="bqetl_generated_funnels",
-            external_task_id="wait_for_fenix_derived__funnel_retention_clients_week_4__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        fenix_derived__funnel_retention_clients_week_4__v1_external.set_upstream(
-            fenix_derived__funnel_retention_clients_week_4__v1
-        )
-
     fenix_derived__funnel_retention_week_4__v1 = bigquery_etl_query(
         task_id="fenix_derived__funnel_retention_week_4__v1",
         destination_table="funnel_retention_week_4_v1",

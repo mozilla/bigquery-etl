@@ -33,7 +33,6 @@ GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 # Pull bearer token from Google Secret Manager
 bearer_token = os.getenv("UN_POPULATION_BEARER_TOKEN")
 
-
 def fetch_data(url, hdr, pyld, timeout_limit):
     """Inputs: URL, Header, Payload, Timeout Limit (seconds)
     Output: Raises an error if an issue arises during the fetch"""
@@ -113,11 +112,16 @@ def main():
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-    logical_date_date_string = logical_dag_date.strftime("%Y-%m-%d")
+    logical_dag_date_string = logical_dag_date.strftime("%Y-%m-%d")
+
+    # Calculate current date
+    today = datetime.today()
+    curr_date = today.strftime("%Y-%m-%d")
 
     # Calculate year of interest from the DAG run date
     # DAG runs 1x a year, so this gets the year from the DAG logical date
     year_of_interest = logical_dag_date.strftime("%Y")
+    year_of_interest = str(int(year_of_interest) + 1)
     print(f"Pulling data for year: {year_of_interest}")
 
     # Initialize an empty data frame which we will append all results to
@@ -192,12 +196,12 @@ def main():
     full_results_df["age_end"] = full_results_df["age_end"].astype(int)
 
     # Add last updated date
-    full_results_df["last_updated"] = logical_date_date_string
+    full_results_df["last_updated"] = curr_date
 
     # Calculate GCS filepath to write to and then write CSV to that filepath
     fpath = (
         GCS_BUCKET
-        + f"UN_Population_Data/pop_data_year_{year_of_interest}_as_of_{logical_date_date_string}.csv"
+        + f"UN_Population_Data/pop_data_year_{year_of_interest}_as_of_{logical_dag_date_string}.csv"
     )
     full_results_df.to_csv(fpath, index=False)
 

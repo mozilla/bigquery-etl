@@ -133,9 +133,9 @@ babel==2.12.1 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.4.98 \
-    --hash=sha256:1301eb3a236ac1c0df50df9ddba69eb8db8e4c2d28a43782041c183cf78a8510 \
-    --hash=sha256:c5a0b712e805a96f89697eb33e14d748a0d4ae4a40710152a0decf55d62bc2fc
+bigeye-sdk==0.4.99 \
+    --hash=sha256:7681bc6afa7ef4e39d05f8a0d68a68284902359da555886fbfb5d53871efba18 \
+    --hash=sha256:9df9683f26866001c20031ea338a3cf77933975f0f2c70777f51aa742b6457a2
     # via -r requirements.in
 black==25.1.0 \
     --hash=sha256:030b9759066a4ee5e5aca28c3c77f9c64789cdd4de8ac1df642c40b708be6171 \
@@ -1958,7 +1958,6 @@ rich==12.6.0 \
     --hash=sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e \
     --hash=sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0
     # via
-    #   bigeye-sdk
     #   rich-click
     #   typer
 rich-click==1.8.6 \

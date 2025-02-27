@@ -14,12 +14,6 @@ fields:
 - name: first_run_date
   type: DATE
   mode: NULLABLE
-- name: app_channel
-  type: STRING
-  mode: NULLABLE
-- name: normalized_country_code
-  type: STRING
-  mode: NULLABLE
 - name: os
   type: STRING
   mode: NULLABLE
@@ -45,6 +39,15 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
 - name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_year
   type: INTEGER
   mode: NULLABLE
 - name: app_name

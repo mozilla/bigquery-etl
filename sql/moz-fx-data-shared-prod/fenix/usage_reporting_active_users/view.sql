@@ -3,7 +3,10 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.usage_reporting_active_users`
 AS
 SELECT
-  daily.*,
+  daily.* EXCEPT (app_channel, normalized_country_code),
+  app_channel AS channel,
+  IFNULL(normalized_country_code, "??") AS country,
+  EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
       THEN CONCAT("fenix", " ", distribution_id)
@@ -39,3 +42,6 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.fenix.usage_reporting_clients_daily` AS daily
   USING (submission_date, usage_profile_id, app_channel)
+LEFT JOIN
+  `moz-fx-data-shared-prod.fenix.usage_reporting_clients_first_seen` AS first_seen
+  USING (usage_profile_id, app_channel)

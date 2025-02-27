@@ -3,7 +3,10 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_active_users`
 AS
 SELECT
-  daily.*,
+  daily.* EXCEPT (app_channel, normalized_country_code),
+  app_channel AS channel,
+  IFNULL(normalized_country_code, "??") AS country,
+  EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
   "firefox_ios" AS app_name,
   -- Activity fields to support metrics built on top of activity
   CASE
@@ -35,3 +38,6 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_daily` AS daily
   USING (submission_date, usage_profile_id, app_channel)
+LEFT JOIN
+  `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_first_seen` AS first_seen
+  USING (usage_profile_id, app_channel)

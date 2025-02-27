@@ -434,6 +434,14 @@ DELETE_TARGETS: DeleteIndex = {
         table="accounts_frontend_derived.events_stream_v1",
         field=("metrics.string.account_user_id_sha256", CLIENT_ID),
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="relay_backend_stable.events_v1",
+        # Temporary workaround for identifier nested in event extras
+        # This triggers custom query override in `delete.py`
+        # We'll be able to remove this once fxa_id is migrated to string metric
+        # See https://mozilla-hub.atlassian.net/browse/DENG-7965 and 7964
+        field="events[*].extra.fxa_id",
+    ): FXA_SRC,
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

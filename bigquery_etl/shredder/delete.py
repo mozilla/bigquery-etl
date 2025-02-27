@@ -273,7 +273,7 @@ def _override_query_with_fxa_id_in_extras(
             """
                 EXISTS (
                   WITH user_ids AS (
-                  SELECT 
+                  SELECT
                     user_id_unhashed AS user_id
                   FROM
                   `moz-fx-data-shared-prod.firefox_accounts.fxa_delete_events`

@@ -1,6 +1,6 @@
 attrs==25.1.0
 authlib==1.5.0
-bigeye-sdk==0.4.98
+bigeye-sdk==0.4.99
 black==25.1.0
 cattrs==24.1.2
 click==8.1.8

@@ -11,7 +11,7 @@ WITH clients_first_seen_last_180_days AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
-    cohort_date >= DATE_SUB(CURRENT_DATE, INTERVAL 50 DAY)
+    cohort_date >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
 ),
 submission_date_activity AS (
   SELECT DISTINCT
@@ -21,7 +21,7 @@ submission_date_activity AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users`
   WHERE
-    submission_date > DATE_SUB(CURRENT_DATE, INTERVAL 50 DAY)
+    submission_date > DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
     AND is_dau IS TRUE
 ),
 clients_first_seen_in_last_180_days_and_activity_next_180_days AS (

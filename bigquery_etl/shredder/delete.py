@@ -408,7 +408,7 @@ def delete_from_partition(
                 """
             )
         run_tense = "Would run" if dry_run else "Running"
-        logging.info(f"{run_tense} query: {query}")
+        logging.debug(f"{run_tense} query: {query}")
         return client.query(query, job_config=job_config)
 
     return partial(

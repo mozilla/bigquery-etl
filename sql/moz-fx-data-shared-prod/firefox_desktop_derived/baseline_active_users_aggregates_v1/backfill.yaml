@@ -4,7 +4,7 @@
   reason: Re-run backfill to consider legacy distribution_id values.
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
 
 2025-02-25:

@@ -25,6 +25,25 @@ LOC_IDS_OF_INTEREST = [
     826,  # UK
     250,  # FR
     840,  # US
+    36,  # Australia
+    56,  # Belgium
+    68,  # Bolivia
+    76,  # Brazil
+    84,  # Belize
+    156,  # China
+    170,  # Colombia
+    188,  # Costa Rica
+    208,  # Denmark
+    304,  # Greenland
+    300,  # Greece
+    352,  # Iceland
+    360,  # Indonesia
+    404,  # Kenya
+    528,  # Netherlands
+    566,  # Nigeria
+    578,  # Norway
+    688,  # Serbia
+    702,  # Singapore
 ]
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.population_v1"

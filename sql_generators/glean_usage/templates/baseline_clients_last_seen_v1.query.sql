@@ -44,7 +44,38 @@ WITH _current AS (
     CAST(browser_engagement_uri_count > 0 AS INT64) &
     CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
     {% endif %}
-    * EXCEPT(submission_date)
+    client_id,
+    sample_id,
+    first_run_date,
+    durations,
+    days_seen_session_start_bits,
+    days_seen_session_end_bits,
+    normalized_channel,
+    normalized_os,
+    normalized_os_version,
+    android_sdk_version,
+    locale,
+    city,
+    country,
+    isp,
+    app_build,
+    app_channel,
+    app_display_version,
+    architecture,
+    device_manufacturer,
+    device_model,
+    telemetry_sdk_build,
+    first_seen_date,
+    is_new_profile,
+    distribution_id,
+    geo_subdivision,
+    profile_group_id,
+    install_source,
+    windows_build_number,
+    browser_engagement_uri_count,
+    browser_engagement_active_ticks,
+    legacy_telemetry_client_id,
+    is_default_browser,
   FROM
     `{{ daily_table }}`
   WHERE
@@ -54,21 +85,46 @@ WITH _current AS (
   --
 _previous AS (
   SELECT
+    -- All columns except submission_date ( * (EXCEPT(submission_date)) )
+    -- listed out to ensure order is identical to output of _current
     days_seen_bits,
     days_active_bits,
     {% if app_name == "firefox_desktop" %}
     days_desktop_active_bits,
     {% endif %}
     days_created_profile_bits,
-    * EXCEPT (
-        submission_date,
-        days_seen_bits,
-        days_active_bits,
-        {% if app_name == "firefox_desktop" %}
-        days_desktop_active_bits,
-        {% endif %}
-        days_created_profile_bits
-      ),
+    client_id,
+    sample_id,
+    first_run_date,
+    durations,
+    days_seen_session_start_bits,
+    days_seen_session_end_bits,
+    normalized_channel,
+    normalized_os,
+    normalized_os_version,
+    android_sdk_version,
+    locale,
+    city,
+    country,
+    isp,
+    app_build,
+    app_channel,
+    app_display_version,
+    architecture,
+    device_manufacturer,
+    device_model,
+    telemetry_sdk_build,
+    first_seen_date,
+    is_new_profile,
+    distribution_id,
+    geo_subdivision,
+    profile_group_id,
+    install_source,
+    windows_build_number,
+    browser_engagement_uri_count,
+    browser_engagement_active_ticks,
+    legacy_telemetry_client_id,
+    is_default_browser,
   FROM
     `{{ last_seen_table }}`
   WHERE

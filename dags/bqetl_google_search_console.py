@@ -70,7 +70,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -85,7 +85,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -100,7 +100,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -115,7 +115,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -130,7 +130,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -145,7 +145,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -160,7 +160,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -175,7 +175,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -190,7 +190,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -205,7 +205,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -220,7 +220,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 
@@ -235,7 +235,7 @@ with DAG(
             deferrable=False,
             mode="reschedule",
             poke_interval=datetime.timedelta(minutes=15),
-            timeout=datetime.timedelta(hours=8),
+            timeout=datetime.timedelta(hours=24),
         )
     )
 

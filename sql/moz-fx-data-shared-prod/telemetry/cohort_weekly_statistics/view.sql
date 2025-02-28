@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.cohort_weekly_statistics`
 AS
-WITH clients_first_seen_last_180_days AS (
+WITH clients_first_seen AS (
   SELECT
     normalized_app_name,
     normalized_channel,
@@ -11,7 +11,7 @@ WITH clients_first_seen_last_180_days AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
-    cohort_date >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
+    cohort_date >= DATE_TRUNC(DATE_SUB(current_date, interval 180 day), WEEK) --start of week for date 180 days ago
 ),
 submission_date_activity AS (
   SELECT DISTINCT
@@ -21,7 +21,7 @@ submission_date_activity AS (
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users`
   WHERE
-    submission_date > DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
+    submission_date > DATE_TRUNC(DATE_SUB(current_date, interval 180 day), WEEK) --start of week for date 180 days ago
     AND is_dau IS TRUE
 ),
 clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
@@ -33,7 +33,7 @@ clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
     b.activity_date_week,
     COUNT(DISTINCT(b.client_id)) AS nbr_active_clients
   FROM
-    clients_first_seen_last_180_days a
+    clients_first_seen a
   LEFT JOIN
     submission_date_activity b
     ON a.client_id = b.client_id
@@ -53,7 +53,7 @@ initial_cohort_counts AS (
     cohort_date_week,
     COUNT(DISTINCT(client_id)) AS nbr_clients_in_cohort
   FROM
-    clients_first_seen_last_180_days
+    clients_first_seen
   GROUP BY
     normalized_app_name,
     normalized_channel,

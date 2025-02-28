@@ -19,7 +19,7 @@ fields:
     mode: REQUIRED
   - name: started
     type: TIMESTAMP
-    mode: REQUIRED
+    mode: NULLABLE
   - name: state
     type: STRING
     mode: REQUIRED
@@ -28,7 +28,7 @@ fields:
     mode: REQUIRED
   - name: worker_group
     type: STRING
-    mode: REQUIRED
+    mode: NULLABLE
   - name: worker_id
     type: STRING
-    mode: REQUIRED
+    mode: NULLABLE

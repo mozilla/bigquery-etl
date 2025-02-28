@@ -12,7 +12,7 @@ from google.cloud import bigquery
 from requests import HTTPError
 
 
-def utc_date_to_eastern_string(date_string):
+def utc_date_to_eastern_string(date_string: str) -> str:
     """Normalize ISO date to UTC midnight."""
     naive_dt = dt.datetime.strptime(date_string, "%Y-%m-%d")
     as_utc = pytz.utc.localize(naive_dt)
@@ -20,27 +20,46 @@ def utc_date_to_eastern_string(date_string):
     return dt.datetime.strftime(as_eastern, "%Y-%m-%d+%H:%M:%S")
 
 
-def date_plus_one(date_string):
+def date_plus_one(date_string: str) -> str:
     """Get the day after the current date."""
     return dt.datetime.strftime(
         dt.date.fromisoformat(date_string) + dt.timedelta(days=1), "%Y-%m-%d"
     )
 
 
-def format_responses(s, date):
-    """Return a nested field of responses for each user."""
-    # `survey_data` is a dict with question ID as the key and question/response
-    # details as the value e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO',
-    # 'question': 'I trust Firefox to help me with my online privacy',
-    # 'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
-    # See https://apihelp.alchemer.com/help/surveyresponse-returned-fields-v5#getobject
+def extract_url_variables(survey_response: dict) -> list[dict]:
+    """Extract url variables from survey response."""
+    # Any new fields added (to the list below) must also be added to the url_variable record in the schema json file.
+    known_url_variables = frozenset(["flowid", "userid"])
+    url_variables: dict = {}
+    vars = survey_response.get("url_variables", {})
+    no_url_variables = vars is None or not isinstance(vars, dict)
+    if no_url_variables:
+        return [url_variables]
 
-    # Note that we are omitted date_submission and date_completed because the
-    # timezone is not ISO compliant. The submission date that is passed in as
-    # the time parameter should suffice.
-    fields = ["id", "session_id", "status", "response_time"]
-    results = []
-    for data in s.get("survey_data", {}).values():
+    for val in vars.values():
+        k, v = val["key"], val["value"]
+        variable_exists = url_variables.get(k) is not None
+        if variable_exists:
+            break
+
+        if k in known_url_variables:
+            url_variables[k] = v
+
+    return [url_variables]
+
+
+def extract_survey_data(survey_response: dict) -> list[dict]:
+    """Extract survey data from survey response.
+
+    `survey_data` is a dict with question ID as the key and question/response
+    details as the value e.g. survey_data: {'25': {'id': 25, 'type': 'RADIO',
+    'question': 'I trust Firefox to help me with my online privacy',
+    'section_id': 2, 'answer': 'Agree', 'answer_id': 10066, 'shown': True}}
+    See https://apihelp.alchemer.com/help/surveyresponse-returned-fields-v5#getobject
+    """
+    survey_data = []
+    for data in survey_response.get("survey_data", {}).values():
         # There can be answer_id's like "123456-other"
         if data.get("answer_id") and isinstance(data["answer_id"], str):
             numeric = re.findall(r"\d+", data["answer_id"])
@@ -52,22 +71,52 @@ def format_responses(s, date):
             data["options"] = list(data["options"].values())
         if data.get("subquestions"):
             data["subquestions"] = json.dumps(data["subquestions"])
-        results.append(data)
 
-    return {
-        # this is used as the partitioning field
-        "submission_date": date,
-        **{field: s[field] for field in fields},
-        "survey_data": results,
+        survey_data.append(data)
+
+    return survey_data
+
+
+def format_responses(
+    survey_response: dict, date: str, include_url_variables: bool
+) -> dict:
+    """Return a nested field of responses for each user."""
+    survey_data = extract_survey_data(survey_response)
+    url_variables = []
+    if include_url_variables:
+        url_variables = extract_url_variables(survey_response)
+
+    # Note that we are omitted date_submission and date_completed because the
+    # timezone is not ISO compliant. The submission date that is passed in as
+    # the time parameter should suffice.
+    fields = frozenset(
+        ["date_started", "id", "language", "response_time", "session_id", "status"]
+    )
+
+    response = {
+        "submission_date": date,  # this is used as the partitioning field
+        "survey_data": survey_data,
+        "url_variables": url_variables,
+        **{field: survey_response[field] for field in fields},
     }
 
+    return response
 
-def construct_data(survey, date):
+
+def construct_data(survey: dict, date: str, include_url_variables: bool) -> list[dict]:
     """Construct response data."""
-    return [format_responses(resp, date) for resp in survey["data"]]
+    return [
+        format_responses(resp, date, include_url_variables) for resp in survey["data"]
+    ]
 
 
-def get_survey_data(survey_id, date_string, token, secret):
+def get_survey_data(
+    survey_id: str,
+    date_string: str,
+    token: str,
+    secret: str,
+    include_url_variables: bool,
+) -> list[dict]:
     """Get survey data from a survey id and date."""
     # per SurveyGizmo docs, times are assumed to be eastern
     # https://apihelp.surveygizmo.com/help/filters-v5
@@ -95,16 +144,16 @@ def get_survey_data(survey_id, date_string, token, secret):
     print(f"Found {total_pages} pages after filtering on date={date_string}")
 
     print("fetching page 1")
-    ret = construct_data(survey, date_string)
+    ret = construct_data(survey, date_string, include_url_variables)
 
     for page in range(2, total_pages + 1):
         print(f"fetching page {page}")
         resp = _get_request(url + f"&page={page}")
-        ret = ret + construct_data(resp.json(), date_string)
+        ret = ret + construct_data(resp.json(), date_string, include_url_variables)
     return ret
 
 
-def _get_request(url):
+def _get_request(url: str) -> requests.Response:
     """Make get request and print response if there is an exception."""
     resp = requests.get(url)
     try:
@@ -115,7 +164,7 @@ def _get_request(url):
     return resp
 
 
-def response_schema():
+def response_schema() -> tuple[bigquery.SchemaField]:
     """Get the schema for the response object from disk."""
     path = Path(__file__).parent / "response.schema.json"
     return bigquery.SchemaField.from_api_repr(
@@ -124,11 +173,15 @@ def response_schema():
 
 
 def insert_to_bq(
-    data, table, date, write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE
-):
+    data: list[dict],
+    table: str,
+    date: str,
+    write_disposition: str = bigquery.job.WriteDisposition.WRITE_TRUNCATE,
+) -> None:
     """Insert data into a bigquery table."""
     client = bigquery.Client()
     print(f"Inserting {len(data)} rows into bigquery")
+
     job_config = bigquery.LoadJobConfig(
         # We may also infer the schema by setting `autodetect=True`
         schema=response_schema(),
@@ -139,6 +192,7 @@ def insert_to_bq(
     partition = f"{table}${date.replace('-', '')}"
     job = client.load_table_from_json(data, partition, job_config=job_config)
     print(f"Running job {job.job_id}")
+
     # job.result() returns a LoadJob object if successful, or raises an exception if not
     job.result()
 
@@ -149,9 +203,14 @@ def insert_to_bq(
 @click.option("--api_token", required=True)
 @click.option("--api_secret", required=True)
 @click.option("--destination_table", required=True)
-def main(date, survey_id, api_token, api_secret, destination_table):
+@click.option("--include_url_variables", required=True, default=False)
+def main(
+    date, survey_id, api_token, api_secret, destination_table, include_url_variables
+):
     """Import data from alchemer (surveygizmo) surveys into BigQuery."""
-    survey_data = get_survey_data(survey_id, date, api_token, api_secret)
+    survey_data = get_survey_data(
+        survey_id, date, api_token, api_secret, include_url_variables
+    )
     insert_to_bq(survey_data, destination_table, date)
 
 

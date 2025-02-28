@@ -20,7 +20,8 @@ from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
         --survey_id=xxxxxxxxxxx \\
         --api_token=xxxxxxxxxxxxxx \\
         --api_secret=xxxxxxxxxxxxxxx \\
-        --destination_table=moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes
+        --destination_table=moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes \\
+        --include_url_variables=False
     """
 )
 def alchemer():
@@ -37,7 +38,16 @@ def alchemer():
 @click.option("--api_token", required=True)
 @click.option("--api_secret", required=True)
 @click.option("--destination_table", required=True)
-def backfill(start_date, end_date, survey_id, api_token, api_secret, destination_table):
+@click.option("--include_url_variables", required=True, default=False)
+def backfill(
+    start_date,
+    end_date,
+    survey_id,
+    api_token,
+    api_secret,
+    destination_table,
+    include_url_variables,
+):
     """Import data from alchemer (surveygizmo) surveys into BigQuery.
 
     The date range is inclusive of the start and end values.
@@ -51,7 +61,9 @@ def backfill(start_date, end_date, survey_id, api_token, api_secret, destination
     for i in range(days):
         current_date = (start_date + timedelta(i)).isoformat()[:10]
         print(f"Running for {current_date}")
-        survey_data = get_survey_data(survey_id, current_date, api_token, api_secret)
+        survey_data = get_survey_data(
+            survey_id, current_date, api_token, api_secret, include_url_variables
+        )
         if not survey_data:
             print("No data, skipping insertion...")
             continue

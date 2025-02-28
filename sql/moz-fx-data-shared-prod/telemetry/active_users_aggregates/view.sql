@@ -34,9 +34,11 @@ SELECT
   app_version_is_major_release,
   os_grouped,
   CASE
-    WHEN distribution_id LIKE "%vivo%"
+    WHEN STARTS_WITH(distribution_id, "vivo-")
       THEN "vivo"
-    ELSE "other"
+    WHEN STARTS_WITH(distribution_id, "dt-")
+      THEN "dt"
+    ELSE CAST(NULL AS STRING)
   END AS partnership,
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users_aggregates_mobile`
@@ -75,9 +77,11 @@ SELECT
   app_version_is_major_release,
   os_grouped,
   CASE
-    WHEN distribution_id LIKE "%vivo%"
+    WHEN STARTS_WITH(distribution_id, "vivo-")
       THEN "vivo"
-    ELSE "other"
+    WHEN STARTS_WITH(distribution_id, "dt-")
+      THEN "dt"
+    ELSE CAST(NULL AS STRING)
   END AS partnership,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.active_users_aggregates`

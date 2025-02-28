@@ -197,7 +197,7 @@ from_expression = """
   USING(client_id)
   LEFT JOIN
     (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) AS eu
-  USING(client_id)
+  ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (SELECT client_info.client_id,
     ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id

@@ -26,6 +26,10 @@ submission_date_activity AS (
       DATE_SUB(current_date, INTERVAL 180 day),
       WEEK
     ) --start of week for date 180 days ago
+    AND submission_date <= DATE_SUB(
+      DATE_TRUNC(current_date, WEEK),
+      INTERVAL 1 DAY
+    ) --through last completed week
     AND is_dau IS TRUE
 ),
 clients_first_seen_in_last_180_days_and_activity_next_180_days AS (

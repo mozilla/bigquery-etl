@@ -1,0 +1,24 @@
+friendly_name: Firefox-CI Tasks
+description: |-
+  Derived Firefox-CI task data exported from Taskcluster pulse.
+owners:
+- ahalberstadt@mozilla.com
+labels:
+  incremental: true
+  owner1: ahalberstadt
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - task_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

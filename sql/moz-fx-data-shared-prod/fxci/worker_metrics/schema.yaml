@@ -1,0 +1,22 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: instance_id
+  type: STRING
+  mode: NULLABLE
+- name: project
+  type: STRING
+  mode: NULLABLE
+- name: zone
+  type: STRING
+  mode: NULLABLE
+- name: uptime
+  type: FLOAT
+  mode: NULLABLE
+- name: interval_start_time
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: interval_end_time
+  type: TIMESTAMP
+  mode: NULLABLE

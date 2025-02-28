@@ -1,0 +1,14 @@
+friendly_name: Worker Metrics
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.fxci_derived.worker_metrics_v1
+require_column_descriptions: false

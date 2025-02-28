@@ -15,8 +15,8 @@ WITH clients_first_seen AS (
       DATE_SUB(current_date, INTERVAL 180 day),
       WEEK
     ) --start of week for date 180 days ago
-    AND normalized_app_name NOT LIKE '%BrowserStack'
-    AND normalized_app_name NOT LIKE '%MozillaOnline'
+    AND LOWER(normalized_app_name) NOT LIKE '%browserstack'
+    AND LOWER(normalized_app_name) NOT LIKE '%mozillaonline'
 ),
 submission_date_activity AS (
   SELECT DISTINCT

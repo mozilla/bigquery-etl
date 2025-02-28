@@ -42,7 +42,7 @@ WITH onboarding_funnel_new_profile AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -109,7 +109,7 @@ onboarding_funnel_first_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -177,7 +177,7 @@ onboarding_funnel_first_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -245,7 +245,7 @@ onboarding_funnel_first_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -312,7 +312,7 @@ onboarding_funnel_second_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -380,7 +380,7 @@ onboarding_funnel_second_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -448,7 +448,7 @@ onboarding_funnel_second_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -515,7 +515,7 @@ onboarding_funnel_third_card_impression AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -583,7 +583,7 @@ onboarding_funnel_third_card_primary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -651,7 +651,7 @@ onboarding_funnel_third_card_secondary_click AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -716,7 +716,7 @@ onboarding_funnel_onboarding_completed AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -781,7 +781,7 @@ onboarding_funnel_sync_sign_in AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT
@@ -846,7 +846,7 @@ onboarding_funnel_default_browser AS (
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    USING (client_id)
+    ON ac.client_id = eu.client_info.client_id
   LEFT JOIN
     (
       SELECT

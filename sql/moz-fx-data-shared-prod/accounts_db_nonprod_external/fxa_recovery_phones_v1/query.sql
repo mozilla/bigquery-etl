@@ -17,4 +17,3 @@ FROM
          fxa.recoveryPhones
     """
   )
-

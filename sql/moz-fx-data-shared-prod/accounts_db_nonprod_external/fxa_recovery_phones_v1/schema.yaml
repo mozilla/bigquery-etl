@@ -15,4 +15,3 @@ fields:
 - name: lookupData
   type: JSON
   mode: NULLABLE
-

@@ -55,7 +55,8 @@ SELECT
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
       metrics.boolean.formautofill_availability,
       metrics.boolean.formautofill_os_auth_enabled,
-      metrics.boolean.pwmgr_os_auth_enabled
+      metrics.boolean.pwmgr_os_auth_enabled,
+      metrics.boolean.pwmgr_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -235,7 +236,9 @@ SELECT
       metrics.counter.devtools_storage_opened_count,
       metrics.counter.devtools_styleeditor_opened_count,
       metrics.counter.devtools_toolbox_opened_count,
-      metrics.counter.devtools_webconsole_opened_count
+      metrics.counter.devtools_webconsole_opened_count,
+      metrics.counter.localstorage_request_recv_cancel_counter,
+      metrics.counter.localstorage_request_send_cancel_counter
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -547,7 +550,11 @@ SELECT
       metrics.labeled_counter.avif_major_brand,
       metrics.labeled_counter.avif_sequence,
       metrics.labeled_counter.devtools_entry_point,
-      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed
+      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed,
+      metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -651,7 +658,8 @@ SELECT
       metrics.quantity.bounce_tracking_protection_mode,
       metrics.quantity.formautofill_addresses_autofill_profiles_count,
       metrics.quantity.timestamps_first_paint,
-      metrics.quantity.timestamps_first_paint_two
+      metrics.quantity.timestamps_first_paint_two,
+      metrics.quantity.pwmgr_num_saved_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1261,7 +1269,9 @@ SELECT
       metrics.timing_distribution.devtools_toolbox_time_active,
       metrics.timing_distribution.devtools_webconsole_time_active,
       metrics.timing_distribution.devtools_read_heap_snapshot,
-      metrics.timing_distribution.devtools_save_heap_snapshot
+      metrics.timing_distribution.devtools_save_heap_snapshot,
+      metrics.timing_distribution.localstorage_database_new_object_setup_time,
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

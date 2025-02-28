@@ -447,6 +447,9 @@ fields:
     - name: pwmgr_os_auth_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: pwmgr_saving_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1097,6 +1100,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: devtools_webconsole_opened_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: localstorage_request_recv_cancel_counter
+      type: INTEGER
+      mode: NULLABLE
+    - name: localstorage_request_send_cancel_counter
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution
@@ -9697,6 +9706,46 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: htmleditors_overridden_by_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: htmleditors_with_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: htmleditors_with_mutation_listeners_without_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: htmleditors_with_mutation_observers_without_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -9822,6 +9871,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: timestamps_first_paint_two
+      type: INTEGER
+      mode: NULLABLE
+    - name: pwmgr_num_saved_passwords
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -24505,6 +24557,82 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: devtools_save_heap_snapshot
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: localstorage_database_new_object_setup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: localstorage_request_prepare_datastore_processing_time
       type: RECORD
       mode: NULLABLE
       fields:

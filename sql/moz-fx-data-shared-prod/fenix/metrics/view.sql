@@ -99,7 +99,8 @@ SELECT
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
       metrics.boolean.formautofill_availability,
       metrics.boolean.formautofill_os_auth_enabled,
-      metrics.boolean.pwmgr_os_auth_enabled
+      metrics.boolean.pwmgr_os_auth_enabled,
+      metrics.boolean.pwmgr_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -317,7 +318,9 @@ SELECT
       metrics.counter.devtools_storage_opened_count,
       metrics.counter.devtools_styleeditor_opened_count,
       metrics.counter.devtools_toolbox_opened_count,
-      metrics.counter.devtools_webconsole_opened_count
+      metrics.counter.devtools_webconsole_opened_count,
+      metrics.counter.localstorage_request_recv_cancel_counter,
+      metrics.counter.localstorage_request_send_cancel_counter
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -906,7 +909,11 @@ SELECT
       metrics.labeled_counter.update_service_installed_notify,
       metrics.labeled_counter.update_service_installed_subsequent,
       metrics.labeled_counter.devtools_entry_point,
-      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed
+      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed,
+      metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -949,7 +956,8 @@ SELECT
       metrics.quantity.bounce_tracking_protection_mode,
       metrics.quantity.formautofill_addresses_autofill_profiles_count,
       metrics.quantity.timestamps_first_paint,
-      metrics.quantity.timestamps_first_paint_two
+      metrics.quantity.timestamps_first_paint_two,
+      metrics.quantity.pwmgr_num_saved_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1412,7 +1420,9 @@ SELECT
       metrics.timing_distribution.devtools_toolbox_time_active,
       metrics.timing_distribution.devtools_webconsole_time_active,
       metrics.timing_distribution.devtools_read_heap_snapshot,
-      metrics.timing_distribution.devtools_save_heap_snapshot
+      metrics.timing_distribution.devtools_save_heap_snapshot,
+      metrics.timing_distribution.localstorage_database_new_object_setup_time,
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1735,7 +1745,8 @@ SELECT
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
       metrics.boolean.formautofill_availability,
       metrics.boolean.formautofill_os_auth_enabled,
-      metrics.boolean.pwmgr_os_auth_enabled
+      metrics.boolean.pwmgr_os_auth_enabled,
+      metrics.boolean.pwmgr_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1953,7 +1964,9 @@ SELECT
       metrics.counter.devtools_storage_opened_count,
       metrics.counter.devtools_styleeditor_opened_count,
       metrics.counter.devtools_toolbox_opened_count,
-      metrics.counter.devtools_webconsole_opened_count
+      metrics.counter.devtools_webconsole_opened_count,
+      metrics.counter.localstorage_request_recv_cancel_counter,
+      metrics.counter.localstorage_request_send_cancel_counter
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2542,7 +2555,11 @@ SELECT
       metrics.labeled_counter.update_service_installed_notify,
       metrics.labeled_counter.update_service_installed_subsequent,
       metrics.labeled_counter.devtools_entry_point,
-      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed
+      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed,
+      metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2585,7 +2602,8 @@ SELECT
       metrics.quantity.bounce_tracking_protection_mode,
       metrics.quantity.formautofill_addresses_autofill_profiles_count,
       metrics.quantity.timestamps_first_paint,
-      metrics.quantity.timestamps_first_paint_two
+      metrics.quantity.timestamps_first_paint_two,
+      metrics.quantity.pwmgr_num_saved_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3048,7 +3066,9 @@ SELECT
       metrics.timing_distribution.devtools_toolbox_time_active,
       metrics.timing_distribution.devtools_webconsole_time_active,
       metrics.timing_distribution.devtools_read_heap_snapshot,
-      metrics.timing_distribution.devtools_save_heap_snapshot
+      metrics.timing_distribution.devtools_save_heap_snapshot,
+      metrics.timing_distribution.localstorage_database_new_object_setup_time,
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3389,7 +3409,8 @@ SELECT
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
       metrics.boolean.formautofill_availability,
       metrics.boolean.formautofill_os_auth_enabled,
-      metrics.boolean.pwmgr_os_auth_enabled
+      metrics.boolean.pwmgr_os_auth_enabled,
+      metrics.boolean.pwmgr_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3607,7 +3628,9 @@ SELECT
       metrics.counter.devtools_storage_opened_count,
       metrics.counter.devtools_styleeditor_opened_count,
       metrics.counter.devtools_toolbox_opened_count,
-      metrics.counter.devtools_webconsole_opened_count
+      metrics.counter.devtools_webconsole_opened_count,
+      metrics.counter.localstorage_request_recv_cancel_counter,
+      metrics.counter.localstorage_request_send_cancel_counter
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4196,7 +4219,11 @@ SELECT
       metrics.labeled_counter.update_service_installed_notify,
       metrics.labeled_counter.update_service_installed_subsequent,
       metrics.labeled_counter.devtools_entry_point,
-      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed
+      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed,
+      metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4239,7 +4266,8 @@ SELECT
       metrics.quantity.bounce_tracking_protection_mode,
       metrics.quantity.formautofill_addresses_autofill_profiles_count,
       metrics.quantity.timestamps_first_paint,
-      metrics.quantity.timestamps_first_paint_two
+      metrics.quantity.timestamps_first_paint_two,
+      metrics.quantity.pwmgr_num_saved_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -4702,7 +4730,9 @@ SELECT
       metrics.timing_distribution.devtools_toolbox_time_active,
       metrics.timing_distribution.devtools_webconsole_time_active,
       metrics.timing_distribution.devtools_read_heap_snapshot,
-      metrics.timing_distribution.devtools_save_heap_snapshot
+      metrics.timing_distribution.devtools_save_heap_snapshot,
+      metrics.timing_distribution.localstorage_database_new_object_setup_time,
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5052,7 +5082,8 @@ SELECT
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
       metrics.boolean.formautofill_availability,
       metrics.boolean.formautofill_os_auth_enabled,
-      metrics.boolean.pwmgr_os_auth_enabled
+      metrics.boolean.pwmgr_os_auth_enabled,
+      metrics.boolean.pwmgr_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5270,7 +5301,9 @@ SELECT
       metrics.counter.devtools_storage_opened_count,
       metrics.counter.devtools_styleeditor_opened_count,
       metrics.counter.devtools_toolbox_opened_count,
-      metrics.counter.devtools_webconsole_opened_count
+      metrics.counter.devtools_webconsole_opened_count,
+      metrics.counter.localstorage_request_recv_cancel_counter,
+      metrics.counter.localstorage_request_send_cancel_counter
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5859,7 +5892,11 @@ SELECT
       metrics.labeled_counter.update_service_installed_notify,
       metrics.labeled_counter.update_service_installed_subsequent,
       metrics.labeled_counter.devtools_entry_point,
-      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed
+      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed,
+      metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5902,7 +5939,8 @@ SELECT
       metrics.quantity.bounce_tracking_protection_mode,
       metrics.quantity.formautofill_addresses_autofill_profiles_count,
       metrics.quantity.timestamps_first_paint,
-      metrics.quantity.timestamps_first_paint_two
+      metrics.quantity.timestamps_first_paint_two,
+      metrics.quantity.pwmgr_num_saved_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -6365,7 +6403,9 @@ SELECT
       metrics.timing_distribution.devtools_toolbox_time_active,
       metrics.timing_distribution.devtools_webconsole_time_active,
       metrics.timing_distribution.devtools_read_heap_snapshot,
-      metrics.timing_distribution.devtools_save_heap_snapshot
+      metrics.timing_distribution.devtools_save_heap_snapshot,
+      metrics.timing_distribution.localstorage_database_new_object_setup_time,
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -6697,7 +6737,8 @@ SELECT
       metrics.boolean.devtools_shadowdom_shadow_root_expanded,
       metrics.boolean.formautofill_availability,
       metrics.boolean.formautofill_os_auth_enabled,
-      metrics.boolean.pwmgr_os_auth_enabled
+      metrics.boolean.pwmgr_os_auth_enabled,
+      metrics.boolean.pwmgr_saving_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -6915,7 +6956,9 @@ SELECT
       metrics.counter.devtools_storage_opened_count,
       metrics.counter.devtools_styleeditor_opened_count,
       metrics.counter.devtools_toolbox_opened_count,
-      metrics.counter.devtools_webconsole_opened_count
+      metrics.counter.devtools_webconsole_opened_count,
+      metrics.counter.localstorage_request_recv_cancel_counter,
+      metrics.counter.localstorage_request_send_cancel_counter
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -7504,7 +7547,11 @@ SELECT
       metrics.labeled_counter.update_service_installed_notify,
       metrics.labeled_counter.update_service_installed_subsequent,
       metrics.labeled_counter.devtools_entry_point,
-      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed
+      metrics.labeled_counter.devtools_inspector_fonteditor_font_type_displayed,
+      metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -7547,7 +7594,8 @@ SELECT
       metrics.quantity.bounce_tracking_protection_mode,
       metrics.quantity.formautofill_addresses_autofill_profiles_count,
       metrics.quantity.timestamps_first_paint,
-      metrics.quantity.timestamps_first_paint_two
+      metrics.quantity.timestamps_first_paint_two,
+      metrics.quantity.pwmgr_num_saved_passwords
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -8010,7 +8058,9 @@ SELECT
       metrics.timing_distribution.devtools_toolbox_time_active,
       metrics.timing_distribution.devtools_webconsole_time_active,
       metrics.timing_distribution.devtools_read_heap_snapshot,
-      metrics.timing_distribution.devtools_save_heap_snapshot
+      metrics.timing_distribution.devtools_save_heap_snapshot,
+      metrics.timing_distribution.localstorage_database_new_object_setup_time,
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

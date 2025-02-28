@@ -573,6 +573,14 @@ fields:
         passwords.
 
         '
+    - name: pwmgr_saving_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether password saving is enabled globally.
+
+        Tracks the pref `signon.rememberSignons`.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -2032,6 +2040,22 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry count histogram
         DEVTOOLS_WEBCONSOLE_OPENED_COUNT.
+
+        '
+    - name: localstorage_request_recv_cancel_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Increments whenever a request cancellation message is successfully
+        received. This includes cancellations for requests related to either databases
+        or observers.
+
+        '
+    - name: localstorage_request_send_cancel_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Increments whenever a request cancellation message is successfully
+        sent. This includes cancellations for requests related to either databases
+        or observers.
 
         '
   - name: datetime
@@ -6603,6 +6627,74 @@ fields:
         histogram DEVTOOLS_FONTEDITOR_FONT_TYPE_DISPLAYED.
 
         '
+    - name: htmleditors_overridden_by_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTML editors whose dispatching beforeinput events are
+        canceled
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTMLEDITORS_OVERRIDDEN_BY_BEFOREINPUT_LISTENERS.
+
+        '
+    - name: htmleditors_with_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTML editors whose window or a node in it has had beforeinput
+        event listeners
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTMLEDITORS_WITH_BEFOREINPUT_LISTENERS.
+
+        '
+    - name: htmleditors_with_mutation_listeners_without_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTML editors whose window or a node in it has had mutation
+        event listeners, but has not had beforeinput event listeners
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTMLEDITORS_WITH_MUTATION_LISTENERS_WITHOUT_BEFOREINPUT_LISTENERS.
+
+        '
+    - name: htmleditors_with_mutation_observers_without_beforeinput_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Number of HTML editors a node in the window has been observed
+        by mutation observers, but has not had beforeinput event listeners
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTMLEDITORS_WITH_MUTATION_OBSERVERS_WITHOUT_BEFOREINPUT_LISTENERS.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -8032,6 +8124,14 @@ fields:
         since process start. Intended to replace first_paint since first_paint is
         broken. This metric was generated to correspond to the Legacy Telemetry scalar
         timestamps.first_paint_two.
+
+        '
+    - name: pwmgr_num_saved_passwords
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of saved logins, including those that cannot be decrypted.
+
+        Similar to the legacy telemetry histogram PWMGR_NUM_SAVED_PASSWORDS.
 
         '
   - name: custom_distribution
@@ -30610,6 +30710,102 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram DEVTOOLS_SAVE_HEAP_SNAPSHOT_MS.
+
+        '
+    - name: localstorage_database_new_object_setup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures the time taken for the content process to fully set up
+        a new database, including any time required for datastore preparation in the
+        parent process. This duration can be significantly affected by datastore preloading,
+        which is triggered when a page begins loading. If an error occurs, the time
+        is not recorded.
+
+        '
+    - name: localstorage_request_prepare_datastore_processing_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Measures the time taken by the parent process to prepare a datastore.
+        This duration can be significantly affected by datastore preloading, which
+        is triggered when a page begins to load. When a datastore is already preloaded,
+        preparation is usually fast since no additional I/O is required. If an error
+        occurs, the time is not recorded. In the future, we may introduce separate
+        metrics to distinguish between different types of datastore preparations (e.g.,
+        loading data from disk vs. using preloaded data).
 
         '
   - name: labeled_boolean

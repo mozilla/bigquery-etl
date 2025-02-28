@@ -29,7 +29,7 @@ def date_plus_one(date_string: str) -> str:
 
 def extract_url_variables(survey_response: dict) -> list[dict]:
     """Extract url variables from survey response."""
-    # Any new fields added (to the list below) must also be added to the url_variable record in the schema json file.
+    # Any new fields added (to the list below) must also be added to the url_variables record in the schema json file.
     known_url_variables = frozenset(["flowid", "userid"])
     url_variables: dict = {}
     vars = survey_response.get("url_variables", {})

@@ -485,6 +485,22 @@ with DAG(
         task_concurrency=1,
     )
 
+    accounts_db_external__fxa_recovery_phones__v1 = bigquery_etl_query(
+        task_id="accounts_db_external__fxa_recovery_phones__v1",
+        destination_table="fxa_recovery_phones_v1",
+        dataset_id="accounts_db_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="wclouser@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wclouser@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     accounts_db_external__fxa_security_event_names__v1 = bigquery_etl_query(
         task_id="accounts_db_external__fxa_security_event_names__v1",
         destination_table="fxa_security_event_names_v1",
@@ -962,6 +978,22 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="akomar@mozilla.com",
         email=["akomar@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    accounts_db_nonprod_external__fxa_recovery_phones__v1 = bigquery_etl_query(
+        task_id="accounts_db_nonprod_external__fxa_recovery_phones__v1",
+        destination_table="fxa_recovery_phones_v1",
+        dataset_id="accounts_db_nonprod_external",
+        project_id="moz-fx-data-shared-prod",
+        owner="wclouser@mozilla.com",
+        email=[
+            "akomar@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wclouser@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,

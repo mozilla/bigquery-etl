@@ -1,11 +1,9 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.telemetry.cohort_weekly_statistics`
+  `moz-fx-data-shared-prod.telemetry.cohort_weekly_statistics_by_app`
 AS
 WITH clients_first_seen AS (
   SELECT
     normalized_app_name,
-    normalized_channel,
-    app_version,
     DATE_TRUNC(cohort_date, WEEK) AS cohort_date_week,
     client_id
   FROM
@@ -33,8 +31,6 @@ submission_date_activity AS (
 clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
   SELECT
     a.normalized_app_name,
-    a.normalized_channel,
-    a.app_version,
     a.cohort_date_week,
     b.activity_date_week,
     COUNT(DISTINCT(b.client_id)) AS nbr_active_clients
@@ -45,8 +41,6 @@ clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
     ON a.client_id = b.client_id
   GROUP BY
     a.normalized_app_name,
-    a.normalized_channel,
-    a.app_version,
     a.cohort_date_week,
     b.activity_date_week
 ),
@@ -54,22 +48,16 @@ clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
 initial_cohort_counts AS (
   SELECT
     normalized_app_name,
-    normalized_channel,
-    app_version,
     cohort_date_week,
     COUNT(DISTINCT(client_id)) AS nbr_clients_in_cohort
   FROM
     clients_first_seen
   GROUP BY
     normalized_app_name,
-    normalized_channel,
-    app_version,
     cohort_date_week
 )
 SELECT
   i.normalized_app_name,
-  i.normalized_channel,
-  i.app_version,
   i.cohort_date_week,
   i.nbr_clients_in_cohort,
   a.activity_date_week,
@@ -81,6 +69,4 @@ FROM
 LEFT JOIN
   clients_first_seen_in_last_180_days_and_activity_next_180_days AS a
   ON COALESCE(i.normalized_app_name, 'NULL') = COALESCE(a.normalized_app_name, 'NULL')
-  AND COALESCE(i.normalized_channel, 'NULL') = COALESCE(a.normalized_channel, 'NULL')
-  AND COALESCE(i.app_version, 'NULL') = COALESCE(a.app_version, 'NULL')
   AND i.cohort_date_week = a.cohort_date_week

@@ -134,7 +134,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if table_sensor_task.timeout != None -%}
         timeout={{ table_sensor_task.timeout | format_timedelta | format_repr }},
         {% else -%}
-        timeout=datetime.timedelta(hours=8),
+        timeout=datetime.timedelta(hours=24),
         {% endif -%}
         {% if table_sensor_task.retries != None -%}
         retries={{ table_sensor_task.retries }},
@@ -165,7 +165,7 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% if table_partition_sensor_task.timeout != None -%}
         timeout={{ table_partition_sensor_task.timeout | format_timedelta | format_repr }},
         {% else -%}
-        timeout=datetime.timedelta(hours=8),
+        timeout=datetime.timedelta(hours=24),
         {% endif -%}
         {% if table_partition_sensor_task.retries != None -%}
         retries={{ table_partition_sensor_task.retries }},

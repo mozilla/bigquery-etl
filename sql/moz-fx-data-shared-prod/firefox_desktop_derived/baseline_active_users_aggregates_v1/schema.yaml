@@ -49,23 +49,17 @@ fields:
   description: |
     Operating system reported by the client.
 
-- name: os_version_major
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    Major or first part of the OS version reported by the client.
-
-- name: os_version_minor
-  type: INTEGER
-  mode: NULLABLE
-  description: |
-    Minor or second part of the OS version reported by the client.
-
-- name: os_version_build
+- name: os_version
   type: STRING
   mode: NULLABLE
   description: |
-    Normalized Windows version (Windows only).
+    OS version reported by the client.
+
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms (Windows only).
 
 - name: app_version
   type: STRING

@@ -6,7 +6,7 @@ WITH run AS (
     task_runs.worker_id AS worker_id,
     TIMESTAMP_DIFF(task_runs.resolved, task_runs.started, SECOND) AS duration
   FROM
-    `moz-fx-data-shared-prod.fxci.task_runs_v1` AS task_runs
+    `moz-fx-data-shared-prod.fxci_derived.task_runs_v1` AS task_runs
   WHERE
     task_runs.submission_date = @submission_date
 ),
@@ -31,7 +31,7 @@ worker_metric AS (
     instance_id,
     SUM(uptime) AS total_uptime
   FROM
-    `moz-fx-data-shared-prod.fxci.worker_metrics_v1`
+    `moz-fx-data-shared-prod.fxci_derived.worker_metrics_v1`
   WHERE
     submission_date
     BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)

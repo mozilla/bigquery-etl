@@ -122,9 +122,9 @@ attrs==25.1.0 \
     #   mozilla-metric-config-parser
     #   pytest-mypy
     #   referencing
-authlib==1.4.1 \
-    --hash=sha256:30ead9ea4993cdbab821dc6e01e818362f92da290c04c7f6a1940f86507a790d \
-    --hash=sha256:edc29c3f6a3e72cd9e9f45fff67fc663a2c364022eb0371c003f22d5405915c1
+authlib==1.5.0 \
+    --hash=sha256:8fd8bd8f806485a532ac39a17b579982cf54688f956174f995cc938a91725423 \
+    --hash=sha256:b3cc5ccfc19cf87678046b6e7cb19d402d8a631a33c40e36385232203227953a
     # via -r requirements.in
 babel==2.12.1 \
     --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
@@ -133,9 +133,9 @@ babel==2.12.1 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.4.98 \
-    --hash=sha256:1301eb3a236ac1c0df50df9ddba69eb8db8e4c2d28a43782041c183cf78a8510 \
-    --hash=sha256:c5a0b712e805a96f89697eb33e14d748a0d4ae4a40710152a0decf55d62bc2fc
+bigeye-sdk==0.4.99 \
+    --hash=sha256:7681bc6afa7ef4e39d05f8a0d68a68284902359da555886fbfb5d53871efba18 \
+    --hash=sha256:9df9683f26866001c20031ea338a3cf77933975f0f2c70777f51aa742b6457a2
     # via -r requirements.in
 black==25.1.0 \
     --hash=sha256:030b9759066a4ee5e5aca28c3c77f9c64789cdd4de8ac1df642c40b708be6171 \
@@ -550,9 +550,9 @@ google-auth-oauthlib==0.8.0 \
     --hash=sha256:40cc612a13c3336d5433e94e2adb42a0c88f6feb6c55769e44500fc70043a576 \
     --hash=sha256:81056a310fb1c4a3e5a7e1a443e1eb96593c6bbc55b26c0261e4d3295d3e6593
     # via gcsfs
-google-cloud-bigquery==3.29.0 \
-    --hash=sha256:5453a4eabe50118254eda9778f3d7dad413490de5f7046b5e66c98f5a1580308 \
-    --hash=sha256:fafc2b455ffce3bcc6ce0e884184ef50b6a11350a83b91e327fadda4d5566e72
+google-cloud-bigquery==3.30.0 \
+    --hash=sha256:7e27fbafc8ed33cc200fe05af12ecd74d279fe3da6692585a3cef7aee90575b6 \
+    --hash=sha256:f4d28d846a727f20569c9b2d2f4fa703242daadcb2ec4240905aa485ba461877
     # via -r requirements.in
 google-cloud-bigquery-storage[fastavro]==2.28.0 \
     --hash=sha256:310c2dcc7d0a03b8e3b30ee90f34daf0bdefdb198c51a7f38db45904704f131c \
@@ -1958,7 +1958,6 @@ rich==12.6.0 \
     --hash=sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e \
     --hash=sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0
     # via
-    #   bigeye-sdk
     #   rich-click
     #   typer
 rich-click==1.8.6 \
@@ -2580,9 +2579,9 @@ pip==23.3.2 \
     --hash=sha256:5052d7889c1f9d05224cd41741acb7c5d6fa735ab34e339624a614eaaa7e7d76 \
     --hash=sha256:7fd9972f96db22c8077a1ee2691b172c8089b17a5652a44494a9ecb0d78f9149
     # via pip-tools
-setuptools==75.8.0 \
-    --hash=sha256:c5afc8f407c626b8313a86e10311dd3f661c6cd9c09d4bf8c15c0e11f9f2b0e6 \
-    --hash=sha256:e3982f444617239225d675215d51f6ba05f845d4eec313da4418fdbb56fb27e3
+setuptools==75.8.2 \
+    --hash=sha256:4880473a969e5f23f2a2be3646b2dfd84af9028716d398e46192f84bc36900d2 \
+    --hash=sha256:558e47c15f1811c1fa7adbd0096669bf76c1d3f433f58324df69f3f5ecac4e8f
     # via
     #   bigeye-sdk
     #   nodeenv

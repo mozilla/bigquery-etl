@@ -253,6 +253,45 @@ class Partition:
     is_special: bool = False
 
 
+def _override_query_with_fxa_id_in_extras(
+    field_condition: str,
+    target: DeleteTarget,
+    sources: Iterable[DeleteSource],
+    source_condition: str,
+) -> str:
+    """Override query to handle fxa_id nested in event extras in relay_backend_stable.events_v1."""
+    sources = list(sources)
+    if (
+        target.table == "relay_backend_stable.events_v1"
+        and len(target.fields) == 1
+        and target.fields[0] == "events[*].extra.fxa_id"
+        and len(sources) == 1
+        and sources[0].table == "firefox_accounts.fxa_delete_events"
+        and sources[0].field == "user_id"
+    ):
+        field_condition = (
+            """
+                EXISTS (
+                  WITH user_ids AS (
+                  SELECT
+                    user_id_unhashed AS user_id
+                  FROM
+                  `moz-fx-data-shared-prod.firefox_accounts.fxa_delete_events`
+                  WHERE """
+            + " AND ".join((source_condition, *sources[0].conditions))
+            + """)
+                  SELECT 1
+                  FROM UNNEST(events) AS e
+                  JOIN UNNEST(e.extra) AS ex
+                  JOIN user_ids u
+                  ON ex.value = u.user_id
+                  WHERE ex.key = 'fxa_id'
+                )
+                """
+        )
+    return field_condition
+
+
 def delete_from_partition(
     dry_run: bool,
     partition: Partition,
@@ -299,6 +338,14 @@ def delete_from_partition(
                 + ")"
                 for field, source in zip(target.fields, sources)
             )
+
+            # Temporary workaround for fxa_id nested in event extras in relay_backend_stable.events_v1
+            # We'll be able to remove this once fxa_id is migrated to string metric
+            # See https://mozilla-hub.atlassian.net/browse/DENG-7965 and 7964
+            field_condition = _override_query_with_fxa_id_in_extras(
+                field_condition, target, sources, source_condition
+            )
+
             query = reformat(
                 f"""
                 DELETE

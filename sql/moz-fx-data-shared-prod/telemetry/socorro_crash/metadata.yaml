@@ -13,4 +13,3 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:ci-and-quality-tools/taskcluster
-      - workgroup:mozilla-confidential

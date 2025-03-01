@@ -1,5 +1,7 @@
-friendly_name: User Retention Aggregations - Firefox Android (Week 4)
+friendly_name: (DEPRECATED) User Retention Aggregations - Firefox Android (Week 4)
 description: |
+  DEPRECATED, please use `retention` instead.
+
   Aggregated dataset for Firefox Android retention analysis.
 owners:
 - kik@mozilla.com
@@ -20,3 +22,4 @@ bigquery:
     fields:
     - first_reported_country
     - adjust_network
+deprecated: true

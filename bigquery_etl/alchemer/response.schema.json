@@ -79,6 +79,23 @@
     "mode": "REPEATED"
   },
   {
+    "fields": [
+      {
+        "type": "STRING",
+        "name": "flowid",
+        "mode": "NULLABLE"
+      },
+      {
+        "type": "STRING",
+        "name": "userid",
+        "mode": "NULLABLE"
+      }
+    ],
+    "type": "RECORD",
+    "name": "url_variables",
+    "mode": "REPEATED"
+  },
+  {
     "type": "INTEGER",
     "name": "response_time",
     "mode": "NULLABLE"
@@ -102,6 +119,16 @@
   {
     "type": "STRING",
     "name": "status",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "date_started",
+    "mode": "NULLABLE"
+  },
+  {
+    "type": "STRING",
+    "name": "language",
     "mode": "NULLABLE"
   }
 ]

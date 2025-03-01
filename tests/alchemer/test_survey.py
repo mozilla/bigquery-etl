@@ -349,7 +349,7 @@ def test_response_schema():
 
 @pytest.mark.integration
 def test_insert_to_bq(testing_table_id):
-    transformed = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE)
+    transformed = construct_data(EXAMPLE_RESPONSE, SUBMISSION_DATE, False)
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
@@ -382,7 +382,7 @@ def test_insert_to_bq_options(testing_table_id):
             "shown": True,
         },
     }
-    transformed = [format_responses(base, SUBMISSION_DATE)]
+    transformed = [format_responses(base, SUBMISSION_DATE, False)]
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 
@@ -465,7 +465,7 @@ def test_insert_to_bq_subquestions(testing_table_id):
             "shown": True,
         },
     }
-    transformed = [format_responses(base, SUBMISSION_DATE)]
+    transformed = [format_responses(base, SUBMISSION_DATE, False)]
     insert_to_bq(transformed, testing_table_id, SUBMISSION_DATE)
 
 

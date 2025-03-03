@@ -38,7 +38,7 @@ def alchemer():
 @click.option("--api_token", required=True)
 @click.option("--api_secret", required=True)
 @click.option("--destination_table", required=True)
-@click.option("--include_url_variables", required=True, default=False)
+@click.option("--include_url_variables", is_flag=True, default=False)
 def backfill(
     start_date,
     end_date,

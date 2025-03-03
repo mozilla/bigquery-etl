@@ -1,6 +1,6 @@
 fields:
 - name: uid
-  type: INTEGER
+  type: STRING
   mode: NULLABLE
   description: Account ID in hexadecimal format.
 - name: phoneNumber

@@ -1,0 +1,16 @@
+friendly_name: Google Play Store Derived
+description: |-
+  Contains data pulled from the Google Play Store developer API
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

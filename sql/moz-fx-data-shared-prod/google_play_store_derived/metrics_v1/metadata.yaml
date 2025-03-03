@@ -1,0 +1,24 @@
+friendly_name: Metrics
+description: |-
+  Google Play Store - Metrics Data
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_google_play_store_data
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: GOOGLE_PLAY_STORE_DEVELOPER_CREDS
+    key: bqetl_google_play_store_data__google_play_store_developer_token
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

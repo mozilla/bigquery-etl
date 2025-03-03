@@ -1,0 +1,16 @@
+friendly_name: Google Play Store
+description: |-
+  Please provide a description for the dataset
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

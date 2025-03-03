@@ -23,6 +23,3 @@ fields:
 - name: nbr_active_clients
   type: INTEGER
   mode: NULLABLE
-- name: pct_retained
-  type: FLOAT
-  mode: NULLABLE

@@ -120,7 +120,9 @@ def format_responses(survey_response: dict, date: str, include_url_variables) ->
     return response
 
 
-def construct_data(survey: dict, date: str, include_url_variables: bool) -> list[dict]:
+def construct_data(
+    survey: dict, date: str, include_url_variables: bool = False
+) -> list[dict]:
     """Construct response data."""
     return [
         format_responses(resp, date, include_url_variables) for resp in survey["data"]

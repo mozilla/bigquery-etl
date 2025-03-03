@@ -21,7 +21,7 @@ from bigquery_etl.alchemer.survey import get_survey_data, insert_to_bq
         --api_token=xxxxxxxxxxxxxx \\
         --api_secret=xxxxxxxxxxxxxxx \\
         --destination_table=moz-fx-data-shared-prod.telemetry_derived.survey_gizmo_daily_attitudes \\
-        --include_url_variables=False
+        --include_url_variables
     """
 )
 def alchemer():

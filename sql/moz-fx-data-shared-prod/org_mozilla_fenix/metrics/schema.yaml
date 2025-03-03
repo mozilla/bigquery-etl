@@ -7538,6 +7538,34 @@ fields:
         HTMLEDITORS_WITH_MUTATION_OBSERVERS_WITHOUT_BEFOREINPUT_LISTENERS.
 
         '
+    - name: pdfjs_signature_clear
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user clears the signature while
+        editing it.
+
+        '
+    - name: pdfjs_signature_edit_description
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user edit the description of a
+        signature instance.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

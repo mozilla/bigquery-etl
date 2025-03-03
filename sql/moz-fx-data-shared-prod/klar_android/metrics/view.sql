@@ -554,7 +554,9 @@ SELECT
       metrics.labeled_counter.htmleditors_overridden_by_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
-      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners
+      metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
+      metrics.labeled_counter.pdfjs_signature_clear,
+      metrics.labeled_counter.pdfjs_signature_edit_description
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

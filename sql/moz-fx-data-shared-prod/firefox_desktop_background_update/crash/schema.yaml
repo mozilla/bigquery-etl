@@ -629,6 +629,9 @@ fields:
     - name: crash_utility_actors_name
       type: STRING
       mode: REPEATED
+    - name: environment_nimbus_enrollments
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

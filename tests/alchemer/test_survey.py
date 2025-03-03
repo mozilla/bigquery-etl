@@ -147,7 +147,7 @@ SUBMISSION_DATE = "2021-01-05"
 
 EXAMPLE_RESPONSE_FORMATTED_0 = {
     "submission_date": SUBMISSION_DATE,
-    "date_started": "2018-09-27 10:42:16 EDT",
+    "date_started": "2018-09-27 10:42:16 -04:00",
     "id": "1",
     "status": "Complete",
     "language": "English",
@@ -188,7 +188,7 @@ EXAMPLE_RESPONSE_FORMATTED = [
     EXAMPLE_RESPONSE_FORMATTED_0,
     {
         "submission_date": SUBMISSION_DATE,
-        "date_started": "2018-09-27 10:43:01 EDT",
+        "date_started": "2018-09-27 10:43:01 -04:00",
         "id": "2",
         "status": "Complete",
         "language": "English",

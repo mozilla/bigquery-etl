@@ -72,7 +72,7 @@ fields:
 - type: STRING
   name: status
   mode: NULLABLE
-- type: STRING
+- type: TIMESTAMP
   name: date_started
   mode: NULLABLE
 - type: STRING

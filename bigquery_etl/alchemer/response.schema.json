@@ -122,7 +122,7 @@
     "mode": "NULLABLE"
   },
   {
-    "type": "STRING",
+    "type": "TIMESTAMP",
     "name": "date_started",
     "mode": "NULLABLE"
   },

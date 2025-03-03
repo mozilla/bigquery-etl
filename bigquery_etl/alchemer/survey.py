@@ -27,6 +27,22 @@ def date_plus_one(date_string: str) -> str:
     )
 
 
+def make_date_iso_compliant(date_string: str) -> str:
+    """Convert date to ISO-compliant format."""
+    tz_mapping = {"EDT": "-04:00", "EST": "-05:00"}
+    tz_match = re.search("E[DS]T", date_string)
+    if not tz_match:
+        raise ValueError(
+            f"Unrecognized timezone in {date_string}. Recognized timezones: {list(tz_mapping.keys())}"
+        )
+
+    tz_string = tz_match.group(0)
+    tz_repl = tz_mapping[tz_string]
+    updated_date_string = re.sub(tz_string, tz_repl, date_string)
+
+    return updated_date_string
+
+
 def extract_url_variables(survey_response: dict) -> list[dict]:
     """Extract url variables from survey response."""
     # Any new fields added (to the list below) must also be added to the url_variables record in the schema json file.
@@ -41,7 +57,7 @@ def extract_url_variables(survey_response: dict) -> list[dict]:
         k, v = val["key"], val["value"]
         variable_exists = url_variables.get(k) is not None
         if variable_exists:
-            break
+            continue
 
         if k in known_url_variables:
             url_variables[k] = v
@@ -77,9 +93,7 @@ def extract_survey_data(survey_response: dict) -> list[dict]:
     return survey_data
 
 
-def format_responses(
-    survey_response: dict, date: str, include_url_variables: bool
-) -> dict:
+def format_responses(survey_response: dict, date: str, include_url_variables) -> dict:
     """Return a nested field of responses for each user."""
     survey_data = extract_survey_data(survey_response)
     url_variables = []
@@ -93,11 +107,14 @@ def format_responses(
         ["date_started", "id", "language", "response_time", "session_id", "status"]
     )
 
+    _fields = {f: survey_response[f] for f in fields}
+    _fields["date_started"] = make_date_iso_compliant(_fields["date_started"])
+
     response = {
         "submission_date": date,  # this is used as the partitioning field
         "survey_data": survey_data,
         "url_variables": url_variables,
-        **{field: survey_response[field] for field in fields},
+        **_fields,
     }
 
     return response
@@ -115,7 +132,7 @@ def get_survey_data(
     date_string: str,
     token: str,
     secret: str,
-    include_url_variables: bool,
+    include_url_variables: bool = False,
 ) -> list[dict]:
     """Get survey data from a survey id and date."""
     # per SurveyGizmo docs, times are assumed to be eastern
@@ -203,7 +220,7 @@ def insert_to_bq(
 @click.option("--api_token", required=True)
 @click.option("--api_secret", required=True)
 @click.option("--destination_table", required=True)
-@click.option("--include_url_variables", required=True, default=False)
+@click.option("--include_url_variables", is_flag=True, default=False)
 def main(
     date, survey_id, api_token, api_secret, destination_table, include_url_variables
 ):

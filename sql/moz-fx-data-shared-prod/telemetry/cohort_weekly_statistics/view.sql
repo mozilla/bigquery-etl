@@ -190,8 +190,7 @@ SELECT
   i.nbr_clients_in_cohort,
   a.activity_date_week,
   DATE_DIFF(a.activity_date_week, i.cohort_date_week, WEEK) AS weeks_after_first_seen_week,
-  a.nbr_active_clients,
-  SAFE_DIVIDE(a.nbr_active_clients, i.nbr_clients_in_cohort) AS pct_retained
+  a.nbr_active_clients
 FROM
   initial_cohort_counts AS i
 LEFT JOIN

@@ -5,7 +5,7 @@ MERGE INTO
       n.client_id,
       n.linked_client_id,
       COALESCE(old.linkage_first_seen_date, n.submission_date) AS linkage_first_seen_date,
-      n.submission_date AS linkage_last_seen_date
+      GREATEST(old.linkage_last_seen_date, n.submission_date) AS linkage_last_seen_date
     FROM
       (
         SELECT

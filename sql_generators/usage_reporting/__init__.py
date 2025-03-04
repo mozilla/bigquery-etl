@@ -30,6 +30,9 @@ ARTIFACT_TEMPLATES = (
 )
 APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
 ACTIVE_USERS_VIEW_TEMPLATE = "usage_reporting_active_users.view.sql.jinja"
+COMPOSITE_ACTIVE_USERS_AGGREGATES_TEMPLATE = (
+    "composite_active_users_aggregates.view.sql.jinja"
+)
 
 
 @click.command()
@@ -218,5 +221,26 @@ def generate(
             full_table_id=f"{target_project}.{app_name}.{active_users_dataset_name}",
             basename="view.sql",
             sql=reformat(rendered_active_users_view),
+            skip_existing=False,
+        )
+
+        composite_active_users_aggregates_dataset_name = (
+            COMPOSITE_ACTIVE_USERS_AGGREGATES_TEMPLATE.split(".")[0]
+        )
+        composite_active_users_aggregates_view_template = jinja_env.get_template(
+            COMPOSITE_ACTIVE_USERS_AGGREGATES_TEMPLATE
+        )
+        rendered_composite_active_users_aggregates_view = (
+            composite_active_users_aggregates_view_template.render(
+                **app_template_args,
+                view_name=composite_active_users_aggregates_dataset_name,
+            )
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{composite_active_users_aggregates_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_composite_active_users_aggregates_view),
             skip_existing=False,
         )

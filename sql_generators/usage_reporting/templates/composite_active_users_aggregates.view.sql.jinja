@@ -1,0 +1,52 @@
+CREATE OR REPLACE VIEW
+  `{{ project_id }}.{{ app_name }}.{{ view_name }}`
+AS
+SELECT
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  country,
+  os,
+  os_version,
+  distribution_id,
+  is_default_browser,
+  activity_segment,
+  is_dau,
+  is_wau,
+  is_mau,
+  is_daily_user,
+  is_weekly_user,
+  is_monthly_user,
+FROM
+  {% if app_name == "firefox_desktop" %}
+  `{{ project_id }}.{{ app_name }}.baseline_active_users_active_users_aggregates`
+  {% else %}
+  `{{ project_id }}.{{ app_name }}.active_users_aggregates`
+  {% endif %}
+WHERE
+  mozfun.norm.browser_version_info(app_version).major_version < 136
+UNION ALL
+SELECT
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  country,
+  os,
+  os_version,
+  distribution_id,
+  is_default_browser,
+  activity_segment,
+  is_dau,
+  is_wau,
+  is_mau,
+  is_daily_user,
+  is_weekly_user,
+  is_monthly_user,
+FROM
+  `{{ project_id }}.{{ app_name }}.usage_reporting_active_users_aggregates`
+WHERE
+  mozfun.norm.browser_version_info(app_version).major_version >= 136

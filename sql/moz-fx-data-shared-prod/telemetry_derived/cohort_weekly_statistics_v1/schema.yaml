@@ -114,8 +114,7 @@ fields:
 - name: weeks_after_first_seen_week
   type: INTEGER
   mode: NULLABLE
-  description: Number of Weeks After First Seen Week - if 0, then same week as first
-    seen week
+  description: Number of Weeks After First Seen Week - if 0, then same week as first seen week
 - name: nbr_active_clients
   type: INTEGER
   mode: NULLABLE

@@ -1,7 +1,6 @@
 friendly_name: Cohort Weekly Statistics
 description: |-
-  Contains info on weekly retention by multiple different 
-  attributes as of first seen date
+  Contains weekly retention by multiple different attributes as of first seen date
 owners:
 - kwindau@mozilla.com
 labels:

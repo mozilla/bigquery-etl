@@ -1,0 +1,19 @@
+friendly_name: Fx Accounts Linked Clients Staging
+description: |-
+  Staging table used to assist with building fx_accounts_linked_clients_v1
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_client_attributes
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  depends_on_past: true
 scheduling:
   dag_name: bqetl_client_attributes
   date_partition_parameter: null

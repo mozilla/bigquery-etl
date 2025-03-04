@@ -38,9 +38,9 @@ def make_date_iso_compliant(date_string: str) -> str:
 
     tz_string = tz_match.group(0)
     tz_repl = tz_mapping[tz_string]
-    updated_date_string = re.sub(tz_string, tz_repl, date_string)
+    iso_compliant_dt_string = re.sub(tz_string, tz_repl, date_string)
 
-    return updated_date_string
+    return iso_compliant_dt_string
 
 
 def extract_url_variables(survey_response: dict) -> list[dict]:

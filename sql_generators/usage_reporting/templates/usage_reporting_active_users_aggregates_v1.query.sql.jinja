@@ -1,0 +1,36 @@
+-- {{ header }}
+CREATE OR REPLACE VIEW
+  `{{ project_id }}.{{ app_name }}.{{ view_name }}`
+AS
+SELECT
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  country,
+  os,
+  os_version,
+  distribution_id,
+  is_default_browser,
+  activity_segment,
+  COUNTIF(is_daily_user) AS daily_users,
+  COUNTIF(is_weekly_user) AS weekly_users,
+  COUNTIF(is_monthly_user) AS monthly_users,
+  COUNTIF(is_dau) AS dau,
+  COUNTIF(is_wau) AS wau,
+  COUNTIF(is_mau) AS mau,
+FROM
+  `{{ project_id }}.{{ app_name }}.usage_reporting_active_users`
+GROUP BY
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  country,
+  os,
+  os_version,
+  distribution_id,
+  is_default_browser,
+  activity_segment

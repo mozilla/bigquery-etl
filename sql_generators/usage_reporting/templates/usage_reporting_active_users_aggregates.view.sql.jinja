@@ -1,0 +1,8 @@
+-- {{ header }}
+CREATE OR REPLACE VIEW
+  `{{ project_id }}.{{ app_name }}.{{ view_name }}`
+AS
+SELECT
+  *,
+FROM
+  `{{ project_id }}.{{ app_name }}.{{ view_name }}_v1`

@@ -37,7 +37,7 @@ pytest-isort==4.0.0
 pytest-mypy==0.10.3
 pytest-pydocstyle==2.4.0
 pytest-xdist==3.6.1
-pytest==7.4.3
+pytest==8.3.5
 PyYAML==6.0.2
 rich-click==1.8.6
 smart_open==6.4.0

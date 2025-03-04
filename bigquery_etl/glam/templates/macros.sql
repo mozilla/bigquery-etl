@@ -54,3 +54,43 @@ static_combos AS (
     {% endif %}
 )
 {% endmacro %}
+{% macro filtered_data(source_table, add_windows_release_sample, use_sample_id) %}
+filtered_data AS (
+  SELECT
+    *,
+    {% if add_windows_release_sample %}
+        table.os = 'Windows'
+        AND app_version >= 119 AS sampled,
+    {% endif %}
+  FROM
+    {{ source_table }} table
+    {% if use_sample_id %}
+        WHERE
+            sample_id >= @min_sample_id
+            AND sample_id <= @max_sample_id
+    {% endif %}
+)
+{% endmacro %}
+{% macro histograms_cte_select(source_table, fixed_attributes, metric_attributes, add_windows_release_sample, combination) %}
+SELECT
+    {% if add_windows_release_sample %}
+      sampled,
+    {% endif %}
+    {{ fixed_attributes }},
+    ARRAY(
+      SELECT AS STRUCT
+        {{ metric_attributes }},
+        {% if add_windows_release_sample %}
+        -- Logic to count clients based on sampled windows release data, which started in v119.
+        -- If you're changing this, then you'll also need to change
+        -- clients_daily_[scalar | histogram]_aggregates
+          mozfun.glam.histogram_normalized_sum_with_original(value, IF(sampled, 10.0, 1.0)) AS aggregates,
+        {% else %}
+          mozfun.glam.histogram_normalized_sum_with_original(value, 1.0) AS aggregates,
+        {% endif %}
+      FROM unnest(histogram_aggregates)
+    )AS histogram_aggregates,
+    {{ combination }}
+  FROM
+    {{ source_table }}
+{% endmacro %}

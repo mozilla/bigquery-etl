@@ -115,6 +115,7 @@ def histogram_bucket_counts(**kwargs):
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),
+        fixed_attributes=",".join(fixed_attributes),
         cubed_attributes=cubed_attributes,
         attribute_combinations=compute_datacube_groupings(cubed_attributes),
         metric_attributes_list=metric_attributes_list,

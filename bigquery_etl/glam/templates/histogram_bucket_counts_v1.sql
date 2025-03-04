@@ -1,13 +1,9 @@
 {{ header }}
-{% from 'macros.sql' import enumerate_table_combinations %}
-
+{% from 'macros.sql' import enumerate_table_combinations, filtered_data, histograms_cte_select %}
 WITH
 {{
-    enumerate_table_combinations(
+    filtered_data(
         source_table,
-        "all_combos",
-        cubed_attributes,
-        attribute_combinations,
         add_windows_release_sample = channel == "release",
         use_sample_id = use_sample_id
     )
@@ -17,33 +13,83 @@ build_ids AS (
     app_build_id,
     channel,
   FROM
-    all_combos
+    filtered_data
   GROUP BY
     1,
     2
   HAVING
-      COUNT(DISTINCT client_id) > {{ minimum_client_count }}),
-histograms_cte AS (
-  SELECT
-    {% if channel == "release" %}
-      sampled,
+    {% if use_sample_id %}
+      -- At least <min_client_count>*sample_size clients in the sample
+      COUNT(DISTINCT client_id) > {{ minimum_client_count }} * (@max_sample_id - @min_sample_id + 1)/100
+    {% else %}
+      COUNT(DISTINCT client_id) > {{ minimum_client_count }}
     {% endif %}
-    {{ attributes }},
-    ARRAY(
-      SELECT AS STRUCT
-        {{metric_attributes}},
-        {% if channel == "release" %}
-        -- Logic to count clients based on sampled windows release data, which started in v119.
-        -- If you're changing this, then you'll also need to change
-        -- clients_daily_[scalar | histogram]_aggregates
-          mozfun.glam.histogram_normalized_sum_with_original(value, IF(sampled, 10.0, 1.0)) AS aggregates,
-        {% else %}
-          mozfun.glam.histogram_normalized_sum_with_original(value, 1.0) AS aggregates,
-        {% endif %}
-      FROM unnest(histogram_aggregates)
-    )AS histogram_aggregates
+),
+data_with_enough_wau AS (
+  SELECT
+    *
   FROM
-    all_combos
+    filtered_data table
+  INNER JOIN
+    build_ids
+  USING (app_build_id, channel)
+),
+histograms_cte AS (
+    {% set combinations = [
+      '
+      COALESCE(CAST(NULL AS STRING), ping_type) AS ping_type,
+      COALESCE(CAST(NULL AS STRING), os) AS os,
+      COALESCE(CAST(NULL AS STRING), app_build_id) AS app_build_id,
+      ',
+      '
+      COALESCE(CAST(NULL AS STRING), ping_type) AS ping_type,
+      COALESCE(CAST(NULL AS STRING), os) AS os,
+      "*" AS app_build_id,
+      ',
+      '
+      COALESCE(CAST(NULL AS STRING), ping_type) AS ping_type,
+      "*" AS os,
+      COALESCE(CAST(NULL AS STRING), app_build_id) AS app_build_id,
+      ',
+      '
+      COALESCE(CAST(NULL AS STRING), ping_type) AS ping_type,
+      "*" AS os,
+      "*" AS app_build_id,
+      ',
+      '
+      "*" AS ping_type,
+      COALESCE(CAST(NULL AS STRING), os) AS os,
+      COALESCE(CAST(NULL AS STRING), app_build_id) AS app_build_id,
+      ',
+      '
+      "*" AS ping_type,
+      COALESCE(CAST(NULL AS STRING), os) AS os,
+      "*" AS app_build_id,
+      ',
+      '
+      "*" AS ping_type,
+      "*" AS os,
+      COALESCE(CAST(NULL AS STRING), app_build_id) AS app_build_id,
+      ',
+      '
+      "*" AS ping_type,
+      "*" AS os,
+      "*" AS app_build_id,
+      '
+    ] %}
+    {% for combination in combinations %}
+      {{
+        histograms_cte_select(
+          "data_with_enough_wau",
+          fixed_attributes,
+          metric_attributes,
+          channel == "release",
+          combination)
+      }}
+      {% if not loop.last %}
+        UNION ALL
+      {% endif %}
+    {% endfor %}
 ),
 unnested AS (
   SELECT
@@ -58,8 +104,6 @@ unnested AS (
     histograms_cte,
     UNNEST(histogram_aggregates) AS histogram_aggregates,
     UNNEST(aggregates) AS aggregates
-  INNER JOIN build_ids
-  USING (app_build_id,channel)
 ),
 -- Find information that can be used to construct the bucket range. Most of the
 -- distributions follow a bucketing rule of 8*log2(n). This doesn't apply to the

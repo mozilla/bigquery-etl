@@ -19,8 +19,8 @@ MERGE INTO
       ) n
     LEFT JOIN
       `moz-fx-data-shared-prod.telemetry_derived.fx_accounts_linked_clients_v1` old
-      ON a.client_id = old.client_id
-      AND a.linked_client_id = old.linked_client_id
+      ON n.client_id = old.client_id
+      AND n.linked_client_id = old.linked_client_id
   ) AS S
   ON T.client_id = S.client_id
   AND T.linked_client_id = S.linked_client_id

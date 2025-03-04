@@ -399,10 +399,12 @@ generate:
         channels:
         - nightly
         - beta
+        - release
       firefox_ios:
         channels:
         - nightly
         - beta
+        - release
       firefox_desktop:
         # firefox_desktop is a single app containing multiple channels hence why set to null.
         channels: null

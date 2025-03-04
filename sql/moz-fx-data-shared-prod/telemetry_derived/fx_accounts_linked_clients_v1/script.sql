@@ -4,8 +4,8 @@ MERGE INTO
     SELECT
       n.client_id,
       n.linked_client_id,
-      COALESCE(old.first_seen_linkage_date, n.submission_date) AS first_seen_linkage_date,
-      n.submission_date AS last_seen_linkage_date
+      COALESCE(old.first_seen_linkage_date, n.submission_date) AS linkage_first_seen_date,
+      n.submission_date AS linkage_last_seen_date
     FROM
       (
         SELECT
@@ -27,10 +27,10 @@ MERGE INTO
 WHEN NOT MATCHED BY TARGET
 THEN
   INSERT
-    (client_id, linked_client_id, first_seen_linkage_date, last_seen_linkage_date)
+    (client_id, linked_client_id, linkage_first_seen_date, linkage_last_seen_date)
   VALUES
-    (S.client_id, S.linked_client_id, S.first_seen_linkage_date, S.last_seen_linkage_date)
+    (S.client_id, S.linked_client_id, S.linkage_first_seen_date, S.linkage_last_seen_date)
   WHEN MATCHED
 THEN
   UPDATE
-    SET T.last_seen_linkage_date = S.last_seen_linkage_date
+    SET T.linkage_last_seen_date = S.linkage_last_seen_date

@@ -45,24 +45,18 @@ def make_date_iso_compliant(date_string: str) -> str:
 
 def extract_url_variables(survey_response: dict) -> list[dict]:
     """Extract url variables from survey response."""
-    # Any new fields added (to the list below) must also be added to the url_variables record in the schema json file.
-    known_url_variables = frozenset(["flowid", "userid"])
-    url_variables: dict = {}
     vars = survey_response.get("url_variables", {})
     no_url_variables = vars is None or not isinstance(vars, dict)
     if no_url_variables:
-        return [url_variables]
+        return []
 
+    url_variables = []
     for val in vars.values():
         k, v = val["key"], val["value"]
-        variable_exists = url_variables.get(k) is not None
-        if variable_exists:
-            continue
+        url_variable = {"key": k, "value": v}
+        url_variables.append(url_variable)
 
-        if k in known_url_variables:
-            url_variables[k] = v
-
-    return [url_variables]
+    return url_variables
 
 
 def extract_survey_data(survey_response: dict) -> list[dict]:

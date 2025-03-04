@@ -82,12 +82,12 @@
     "fields": [
       {
         "type": "STRING",
-        "name": "flowid",
+        "name": "key",
         "mode": "NULLABLE"
       },
       {
         "type": "STRING",
-        "name": "userid",
+        "name": "value",
         "mode": "NULLABLE"
       }
     ],

@@ -90,6 +90,7 @@ clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
   LEFT JOIN
     submission_date_activity b
     ON a.client_id = b.client_id
+    AND a.cohort_date_week <= b.activity_date_week
   GROUP BY
     a.normalized_app_name,
     a.normalized_channel,

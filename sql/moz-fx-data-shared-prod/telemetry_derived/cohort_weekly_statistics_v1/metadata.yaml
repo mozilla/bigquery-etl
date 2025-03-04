@@ -11,5 +11,11 @@ scheduling:
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_app_name
+    - normalized_channel
+    - app_version
 references: {}
 require_column_descriptions: true

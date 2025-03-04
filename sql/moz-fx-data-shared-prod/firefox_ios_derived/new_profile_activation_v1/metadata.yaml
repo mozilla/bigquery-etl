@@ -1,4 +1,4 @@
-friendly_name: Firefox iOS New Profile Activation
+friendly_name: DEPRECATED - Firefox iOS New Profile Activation
 description: |-
   Mobile activation metric used for Marketing campaign performance
 owners:
@@ -17,3 +17,4 @@ bigquery:
 scheduling:
   dag_name: bqetl_mobile_activation
   date_partition_parameter: submission_date
+deprecated: true

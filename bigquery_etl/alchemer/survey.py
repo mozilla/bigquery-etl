@@ -28,7 +28,7 @@ def date_plus_one(date_string: str) -> str:
 
 
 def make_date_iso_compliant(date_string: str) -> str:
-    """Convert date to ISO-compliant format."""
+    """Convert date to ISO-compliant format. '2018-09-27 10:42:16 EDT' becomes 2018-09-27 10:42:16 -04:00'."""
     tz_mapping = {"EDT": "-04:00", "EST": "-05:00"}
     tz_match = re.search("E[DS]T", date_string)
     if not tz_match:

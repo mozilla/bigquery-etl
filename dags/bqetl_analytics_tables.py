@@ -498,60 +498,6 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_fenix_derived__funnel_retention_clients_week_2__v1 = bigquery_dq_check(
-        task_id="checks__warn_fenix_derived__funnel_retention_clients_week_2__v1",
-        source_table="funnel_retention_clients_week_2_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="kik@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__warn_fenix_derived__funnel_retention_clients_week_4__v1 = bigquery_dq_check(
-        task_id="checks__warn_fenix_derived__funnel_retention_clients_week_4__v1",
-        source_table="funnel_retention_clients_week_4_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="kik@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__warn_fenix_derived__funnel_retention_week_4__v1 = bigquery_dq_check(
-        task_id="checks__warn_fenix_derived__funnel_retention_week_4__v1",
-        source_table="funnel_retention_week_4_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="kik@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     clients_first_seen_v2 = bigquery_etl_query(
         task_id="clients_first_seen_v2",
         destination_table="clients_first_seen_v2",
@@ -822,18 +768,6 @@ with DAG(
 
     checks__warn_fenix_derived__firefox_android_clients__v1.set_upstream(
         firefox_android_clients
-    )
-
-    checks__warn_fenix_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        fenix_derived__funnel_retention_clients_week_2__v1
-    )
-
-    checks__warn_fenix_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        fenix_derived__funnel_retention_clients_week_4__v1
-    )
-
-    checks__warn_fenix_derived__funnel_retention_week_4__v1.set_upstream(
-        fenix_derived__funnel_retention_week_4__v1
     )
 
     clients_first_seen_v2.set_upstream(wait_for_copy_deduplicate_all)

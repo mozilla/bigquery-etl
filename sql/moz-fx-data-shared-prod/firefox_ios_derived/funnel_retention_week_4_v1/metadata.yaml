@@ -1,5 +1,7 @@
 friendly_name: User Retention Aggregations - Firefox iOS (Week 4)
 description: |
+  DEPRECATED, please use `retention` instead.
+
   Aggregated dataset for Firefox iOS retention analysis.
 owners:
 - kik@mozilla.com
@@ -8,11 +10,7 @@ labels:
   incremental: true
   shredder_mitigation: true
   table_type: aggregate
-  dag: bqetl_firefox_ios
   owner1: kik
-scheduling:
-  dag_name: bqetl_firefox_ios
-  depends_on_past: false
 bigquery:
   time_partitioning:
     type: day
@@ -24,14 +22,9 @@ bigquery:
     fields:
     - first_reported_country
     - adjust_network
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
-  checks.sql:
-  - ..
-  - ..funnel_retention_clients_week_4_v1
   query.sql:
   - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
+deprecated: true
 require_column_descriptions: false

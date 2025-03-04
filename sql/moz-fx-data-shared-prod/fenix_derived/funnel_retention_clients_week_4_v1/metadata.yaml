@@ -1,5 +1,7 @@
-friendly_name: User Retention - Firefox Android (Week 4)
+friendly_name: (DEPRECATED) User Retention - Firefox Android (Week 4)
 description: |
+  DEPRECATED, please use `retention` instead.
+
   Derived dataset for Firefox Android retention analysis. Contains metrics that can be calculated
   4 weeks (28 days) after a user was first seen.
 owners:
@@ -24,14 +26,10 @@ bigquery:
     fields:
     - sample_id
     - first_seen_date
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
-  checks.sql:
-  - ..
   query.sql:
   - moz-fx-data-shared-prod.fenix.baseline_clients_last_seen
   - moz-fx-data-shared-prod.fenix.firefox_android_clients
+deprecated: true
 require_column_descriptions: false

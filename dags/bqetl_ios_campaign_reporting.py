@@ -92,19 +92,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_firefox_ios_derived__funnel_retention_week_4__v1 = ExternalTaskSensor(
-        task_id="wait_for_firefox_ios_derived__funnel_retention_week_4__v1",
-        external_dag_id="bqetl_firefox_ios",
-        external_task_id="firefox_ios_derived__funnel_retention_week_4__v1",
-        execution_delta=datetime.timedelta(seconds=28800),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     apple_ads_external__ios_app_campaign_stats__v1 = bigquery_etl_query(
         task_id="apple_ads_external__ios_app_campaign_stats__v1",
         destination_table='ios_app_campaign_stats_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -139,10 +126,6 @@ with DAG(
 
     apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    apple_ads_external__ios_app_campaign_stats__v1.set_upstream(
-        wait_for_firefox_ios_derived__funnel_retention_week_4__v1
     )
 
     bigeye__apple_ads_external__ios_app_campaign_stats__v1.set_upstream(

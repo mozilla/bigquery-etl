@@ -77,9 +77,33 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_telemetry_derived__fx_accounts_linked_clients_staging__v1 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__fx_accounts_linked_clients_staging__v1",
+        source_table="fx_accounts_linked_clients_staging_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     telemetry_derived__fx_accounts_active_daily_clients__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_accounts_active_daily_clients__v1",
         destination_table="fx_accounts_active_daily_clients_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__fx_accounts_linked_clients_staging__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_accounts_linked_clients_staging__v1",
+        destination_table="fx_accounts_linked_clients_staging_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
@@ -92,6 +116,14 @@ with DAG(
         telemetry_derived__fx_accounts_active_daily_clients__v1
     )
 
+    checks__fail_telemetry_derived__fx_accounts_linked_clients_staging__v1.set_upstream(
+        telemetry_derived__fx_accounts_linked_clients_staging__v1
+    )
+
     telemetry_derived__fx_accounts_active_daily_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__fx_accounts_linked_clients_staging__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

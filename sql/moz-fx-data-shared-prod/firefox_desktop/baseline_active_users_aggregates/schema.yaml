@@ -147,3 +147,15 @@ fields:
 - name: os_version_build
   type: STRING
   mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch_revision
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_is_major_release
+  type: BOOLEAN
+  mode: NULLABLE

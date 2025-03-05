@@ -25,7 +25,7 @@ build_ids AS (
       COUNT(DISTINCT client_id) > {{ minimum_client_count }}
     {% endif %}
 ),
-data_with_enough_wau AS (
+data_with_enough_clients AS (
   SELECT
     *
   FROM
@@ -80,7 +80,7 @@ histograms_cte AS (
     {% for combination in combinations %}
       {{
         histograms_cte_select(
-          "data_with_enough_wau",
+          "data_with_enough_clients",
           fixed_attributes,
           metric_attributes,
           channel == "release",

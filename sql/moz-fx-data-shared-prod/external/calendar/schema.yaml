@@ -18,6 +18,9 @@ fields:
 - name: week_number
   type: INTEGER
   mode: NULLABLE
+- name: first_date_of_week
+  type: DATE
+  mode: NULLABLE
 - name: first_date_of_month
   type: DATE
   mode: NULLABLE
@@ -26,6 +29,9 @@ fields:
   type: DATE
   mode: NULLABLE
   description: First Date of Quarter
+- name: first_date_of_year
+  type: DATE
+  mode: NULLABLE
 - name: day_of_year
   type: INTEGER
   mode: NULLABLE

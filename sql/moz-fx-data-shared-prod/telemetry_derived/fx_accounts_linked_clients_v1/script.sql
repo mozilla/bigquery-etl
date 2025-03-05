@@ -8,7 +8,10 @@ MERGE INTO
         COALESCE(old.linkage_first_seen_date, n.submission_date),
         n.submission_date
       ) AS linkage_first_seen_date,
-      GREATEST(old.linkage_last_seen_date, n.submission_date) AS linkage_last_seen_date
+      GREATEST(
+        COALESCE(old.linkage_last_seen_date, n.submission_date),
+        n.submission_date
+      ) AS linkage_last_seen_date
     FROM
       (
         SELECT

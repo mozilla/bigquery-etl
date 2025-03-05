@@ -1,0 +1,22 @@
+friendly_name: App-specific view for Glean ping "adjust-attribution"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.adjust_attribution, org_mozilla_firefox_beta.adjust_attribution, org_mozilla_fenix.adjust_attribution, org_mozilla_fenix_nightly.adjust_attribution, org_mozilla_fennec_aurora.adjust_attribution).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.adjust_attribution
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.adjust_attribution
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.adjust_attribution
+  - moz-fx-data-shared-prod.org_mozilla_firefox.adjust_attribution
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.adjust_attribution
+require_column_descriptions: false

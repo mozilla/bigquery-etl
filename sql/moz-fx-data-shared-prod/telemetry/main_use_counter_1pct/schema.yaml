@@ -8426,6 +8426,18 @@ fields:
     - name: use_counter2_deprecated_before_script_execute_event_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_optimizearrayspecies_fuse_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_optimizearrayspecies_fuse_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_thenable_object_proto_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_thenable_object_proto_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16719,6 +16731,18 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_before_script_execute_event_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_optimizearrayspecies_fuse_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_optimizearrayspecies_fuse_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_thenable_object_proto_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_thenable_object_proto_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

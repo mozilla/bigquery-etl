@@ -11418,6 +11418,25 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used BeforeScriptExecuteEvent
+    - name: use_counter2_js_optimizearrayspecies_fuse_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has modified builtin Array objects such that
+        the ArraySpecies fuse is popped
+    - name: use_counter2_js_optimizearrayspecies_fuse_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has modified builtin Array objects such that the
+        ArraySpecies fuse is popped
+    - name: use_counter2_js_thenable_object_proto_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document resolved a promise using thenable on a realms
+        Object.prototype
+    - name: use_counter2_js_thenable_object_proto_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page resolved a promise using thenable on a realms Object.prototype
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22691,6 +22710,26 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used BeforeScriptExecuteEvent
+        - name: use_counter2_js_optimizearrayspecies_fuse_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has modified builtin Array objects such
+            that the ArraySpecies fuse is popped
+        - name: use_counter2_js_optimizearrayspecies_fuse_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has modified builtin Array objects such that
+            the ArraySpecies fuse is popped
+        - name: use_counter2_js_thenable_object_proto_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document resolved a promise using thenable on a realms
+            Object.prototype
+        - name: use_counter2_js_thenable_object_proto_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page resolved a promise using thenable on a realms
+            Object.prototype
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

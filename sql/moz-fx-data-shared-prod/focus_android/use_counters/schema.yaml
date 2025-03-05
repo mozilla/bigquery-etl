@@ -7920,6 +7920,18 @@ fields:
     - name: use_counter_deprecated_ops_page_before_script_execute_event
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_optimize_array_species_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_thenable_object_proto
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_optimize_array_species_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_thenable_object_proto
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

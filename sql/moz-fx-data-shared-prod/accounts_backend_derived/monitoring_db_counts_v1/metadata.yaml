@@ -45,6 +45,7 @@ references:
     SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_paypal_customers_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_codes_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_recovery_phones_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_security_events_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_sent_emails_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_session_tokens_v1 FOR SYSTEM_TIME

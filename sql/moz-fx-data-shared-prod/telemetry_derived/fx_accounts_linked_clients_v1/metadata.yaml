@@ -1,0 +1,31 @@
+friendly_name: Firefox Accounts Linked Clients
+description: |-
+  Unique combinations of client IDs linked via the same account
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  depends_on_past: true
+  table_type: client_level
+  dag: bqetl_client_attributes
+scheduling:
+  dag_name: bqetl_client_attributes
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: linkage_first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: true

@@ -1,7 +1,4 @@
 -- {{ header }}
-CREATE OR REPLACE VIEW
-  `{{ project_id }}.{{ app_name }}.{{ view_name }}`
-AS
 SELECT
   submission_date,
   first_seen_year,
@@ -11,7 +8,9 @@ SELECT
   country,
   os,
   os_version,
+  {% if app_name == "firefox_destop" %}
   windows_build_number,
+  {% endif %}
   distribution_id,
   is_default_browser,
   activity_segment,
@@ -23,6 +22,8 @@ SELECT
   COUNTIF(is_mau) AS mau,
 FROM
   `{{ project_id }}.{{ app_name }}.usage_reporting_active_users`
+WHERE
+  submission_date = @submission_date
 GROUP BY
   submission_date,
   first_seen_year,
@@ -32,7 +33,9 @@ GROUP BY
   country,
   os,
   os_version,
+  {% if app_name == "firefox_destop" %}
   windows_build_number,
+  {% endif %}
   distribution_id,
   is_default_browser,
   activity_segment

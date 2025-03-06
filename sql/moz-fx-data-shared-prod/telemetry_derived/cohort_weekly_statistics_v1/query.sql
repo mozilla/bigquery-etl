@@ -1,4 +1,5 @@
 WITH clients_first_seen AS (
+  --Get 1 row per client ID, with all their attributes as of their first seen date
   SELECT
     normalized_app_name,
     normalized_channel,
@@ -34,93 +35,53 @@ WITH clients_first_seen AS (
       DATE_SUB(@submission_date, INTERVAL 180 day),
       WEEK
     ) --start of week for date 180 days ago
+    AND cohort_date <= DATE_SUB(
+      DATE_TRUNC(@submission_date, WEEK),
+      INTERVAL 1 DAY
+    ) --end of last completed week
     AND LOWER(normalized_app_name) NOT LIKE '%browserstack'
     AND LOWER(normalized_app_name) NOT LIKE '%mozillaonline'
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_id
+      ORDER BY
+        cohort_date ASC
+    ) = 1  --necessary due to mobile having some clients with multiple first seen dates
 ),
-submission_date_activity AS (
+weekly_active_clients AS (
+  --Get 1 row per client ID & week where the client ID was a DAU at least 1 day during that week
   SELECT DISTINCT
     client_id,
-    submission_date AS activity_date,
     DATE_TRUNC(submission_date, WEEK) AS activity_date_week
   FROM
     `moz-fx-data-shared-prod.telemetry.active_users`
   WHERE
-    submission_date > DATE_TRUNC(
+    submission_date >= DATE_TRUNC(
       DATE_SUB(@submission_date, INTERVAL 180 day),
       WEEK
     ) --start of week for date 180 days ago
     AND submission_date <= DATE_SUB(
       DATE_TRUNC(@submission_date, WEEK),
       INTERVAL 1 DAY
-    ) --through last completed week
+    ) --through end of last completed week
     AND is_dau IS TRUE
 ),
-clients_first_seen_in_last_180_days_and_activity_next_180_days AS (
-  SELECT
-    a.normalized_app_name,
-    a.normalized_channel,
-    a.app_version,
-    a.attribution_campaign,
-    a.attribution_content,
-    a.attribution_experiment,
-    a.attribution_medium,
-    a.attribution_source,
-    a.attribution_variation,
-    a.country,
-    a.device_model,
-    a.distribution_id,
-    a.is_default_browser,
-    a.locale,
-    a.normalized_os,
-    a.normalized_os_version,
-    a.adjust_ad_group,
-    a.adjust_campaign,
-    a.adjust_creative,
-    a.adjust_network,
-    a.play_store_attribution_campaign,
-    a.play_store_attribution_medium,
-    a.play_store_attribution_source,
-    a.play_store_attribution_content,
-    a.play_store_attribution_term,
-    a.cohort_date_week,
-    b.activity_date_week,
-    COUNT(DISTINCT(b.client_id)) AS nbr_active_clients
+unique_weeks AS (
+  SELECT DISTINCT
+    first_date_of_week AS activity_date_week
   FROM
-    clients_first_seen a
-  LEFT JOIN
-    submission_date_activity b
-    ON a.client_id = b.client_id
-    AND a.cohort_date_week <= b.activity_date_week
-  GROUP BY
-    a.normalized_app_name,
-    a.normalized_channel,
-    a.app_version,
-    a.attribution_campaign,
-    a.attribution_content,
-    a.attribution_experiment,
-    a.attribution_medium,
-    a.attribution_source,
-    a.attribution_variation,
-    a.country,
-    a.device_model,
-    a.distribution_id,
-    a.is_default_browser,
-    a.locale,
-    a.normalized_os,
-    a.normalized_os_version,
-    a.adjust_ad_group,
-    a.adjust_campaign,
-    a.adjust_creative,
-    a.adjust_network,
-    a.play_store_attribution_campaign,
-    a.play_store_attribution_medium,
-    a.play_store_attribution_source,
-    a.play_store_attribution_content,
-    a.play_store_attribution_term,
-    a.cohort_date_week,
-    b.activity_date_week
+    `mozdata.external.calendar`
+  WHERE
+    submission_date >= DATE_TRUNC(
+      DATE_SUB(@submission_date, INTERVAL 180 day),
+      WEEK
+    ) --start of week 180 days ago
+    AND submission_date <= DATE_SUB(
+      DATE_TRUNC(@submission_date, WEEK),
+      INTERVAL 1 DAY
+    ) --end of last completed week
 ),
---get # of unique clients by cohort start date week, normalized app name, channel, and app version
 initial_cohort_counts AS (
   SELECT
     normalized_app_name,
@@ -179,83 +140,186 @@ initial_cohort_counts AS (
     play_store_attribution_content,
     play_store_attribution_term,
     cohort_date_week
+),
+unique_week_group_combos AS (
+  SELECT
+    i.normalized_app_name,
+    i.normalized_channel,
+    i.app_version,
+    i.attribution_campaign,
+    i.attribution_content,
+    i.attribution_experiment,
+    i.attribution_medium,
+    i.attribution_source,
+    i.attribution_variation,
+    i.country,
+    i.device_model,
+    i.distribution_id,
+    i.is_default_browser,
+    i.locale,
+    i.normalized_os,
+    i.normalized_os_version,
+    i.adjust_ad_group,
+    i.adjust_campaign,
+    i.adjust_creative,
+    i.adjust_network,
+    i.play_store_attribution_campaign,
+    i.play_store_attribution_medium,
+    i.play_store_attribution_source,
+    i.play_store_attribution_content,
+    i.play_store_attribution_term,
+    i.cohort_date_week,
+    i.nbr_clients_in_cohort,
+    w.activity_date_week
+  FROM
+    initial_cohort_counts i
+  CROSS JOIN
+    unique_weeks w
+),
+weekly_active_agg AS (
+  SELECT
+    cfs.normalized_app_name,
+    cfs.normalized_channel,
+    cfs.app_version,
+    cfs.attribution_campaign,
+    cfs.attribution_content,
+    cfs.attribution_experiment,
+    cfs.attribution_medium,
+    cfs.attribution_source,
+    cfs.attribution_variation,
+    cfs.country,
+    cfs.device_model,
+    cfs.distribution_id,
+    cfs.is_default_browser,
+    cfs.locale,
+    cfs.normalized_os,
+    cfs.normalized_os_version,
+    cfs.adjust_ad_group,
+    cfs.adjust_campaign,
+    cfs.adjust_creative,
+    cfs.adjust_network,
+    cfs.play_store_attribution_campaign,
+    cfs.play_store_attribution_medium,
+    cfs.play_store_attribution_source,
+    cfs.play_store_attribution_content,
+    cfs.play_store_attribution_term,
+    cfs.cohort_date_week,
+    wac.activity_date_week,
+    COUNT(DISTINCT(wac.client_id)) AS nbr_active_clients
+  FROM
+    clients_first_seen cfs
+  JOIN
+    weekly_active_clients wac
+    ON cfs.client_id = wac.client_id
+    AND cfs.cohort_date_week <= wac.activity_date_week
+  GROUP BY
+    cfs.normalized_app_name,
+    cfs.normalized_channel,
+    cfs.app_version,
+    cfs.attribution_campaign,
+    cfs.attribution_content,
+    cfs.attribution_experiment,
+    cfs.attribution_medium,
+    cfs.attribution_source,
+    cfs.attribution_variation,
+    cfs.country,
+    cfs.device_model,
+    cfs.distribution_id,
+    cfs.is_default_browser,
+    cfs.locale,
+    cfs.normalized_os,
+    cfs.normalized_os_version,
+    cfs.adjust_ad_group,
+    cfs.adjust_campaign,
+    cfs.adjust_creative,
+    cfs.adjust_network,
+    cfs.play_store_attribution_campaign,
+    cfs.play_store_attribution_medium,
+    cfs.play_store_attribution_source,
+    cfs.play_store_attribution_content,
+    cfs.play_store_attribution_term,
+    cfs.cohort_date_week,
+    wac.activity_date_week
 )
 SELECT
-  i.normalized_app_name,
-  i.normalized_channel,
-  i.app_version,
-  i.attribution_campaign,
-  i.attribution_content,
-  i.attribution_experiment,
-  i.attribution_medium,
-  i.attribution_source,
-  i.attribution_variation,
-  i.country,
-  i.device_model,
-  i.distribution_id,
-  i.is_default_browser,
-  i.locale,
-  i.normalized_os,
-  i.normalized_os_version,
-  i.adjust_ad_group,
-  i.adjust_campaign,
-  i.adjust_creative,
-  i.adjust_network,
-  i.play_store_attribution_campaign,
-  i.play_store_attribution_medium,
-  i.play_store_attribution_source,
-  i.play_store_attribution_content,
-  i.play_store_attribution_term,
-  i.cohort_date_week,
-  i.nbr_clients_in_cohort,
-  a.activity_date_week,
-  DATE_DIFF(a.activity_date_week, i.cohort_date_week, WEEK) AS weeks_after_first_seen_week,
-  a.nbr_active_clients
+  uwgc.normalized_app_name,
+  uwgc.normalized_channel,
+  uwgc.app_version,
+  uwgc.attribution_campaign,
+  uwgc.attribution_content,
+  uwgc.attribution_experiment,
+  uwgc.attribution_medium,
+  uwgc.attribution_source,
+  uwgc.attribution_variation,
+  uwgc.country,
+  uwgc.device_model,
+  uwgc.distribution_id,
+  uwgc.is_default_browser,
+  uwgc.locale,
+  uwgc.normalized_os,
+  uwgc.normalized_os_version,
+  uwgc.adjust_ad_group,
+  uwgc.adjust_campaign,
+  uwgc.adjust_creative,
+  uwgc.adjust_network,
+  uwgc.play_store_attribution_campaign,
+  uwgc.play_store_attribution_medium,
+  uwgc.play_store_attribution_source,
+  uwgc.play_store_attribution_content,
+  uwgc.play_store_attribution_term,
+  uwgc.cohort_date_week,
+  uwgc.nbr_clients_in_cohort,
+  uwgc.activity_date_week,
+  DATE_DIFF(uwgc.activity_date_week, uwgc.cohort_date_week, WEEK) AS weeks_after_first_seen_week,
+  COALESCE(waa.nbr_active_clients, 0) AS nbr_active_clients
 FROM
-  initial_cohort_counts AS i
+  unique_week_group_combos uwgc
 LEFT JOIN
-  clients_first_seen_in_last_180_days_and_activity_next_180_days AS a
-  ON COALESCE(i.normalized_app_name, 'NULL') = COALESCE(a.normalized_app_name, 'NULL')
-  AND COALESCE(i.normalized_channel, 'NULL') = COALESCE(a.normalized_channel, 'NULL')
-  AND COALESCE(i.app_version, 'NULL') = COALESCE(a.app_version, 'NULL')
-  AND COALESCE(i.attribution_campaign, 'NULL') = COALESCE(a.attribution_campaign, 'NULL')
-  AND COALESCE(i.attribution_content, 'NULL') = COALESCE(a.attribution_content, 'NULL')
-  AND COALESCE(i.attribution_experiment, 'NULL') = COALESCE(a.attribution_experiment, 'NULL')
-  AND COALESCE(i.attribution_medium, 'NULL') = COALESCE(a.attribution_medium, 'NULL')
-  AND COALESCE(i.attribution_source, 'NULL') = COALESCE(a.attribution_source, 'NULL')
-  AND COALESCE(i.attribution_variation, 'NULL') = COALESCE(a.attribution_variation, 'NULL')
-  AND COALESCE(i.country, 'NULL') = COALESCE(a.country, 'NULL')
-  AND COALESCE(i.device_model, 'NULL') = COALESCE(a.device_model, 'NULL')
-  AND COALESCE(i.distribution_id, 'NULL') = COALESCE(a.distribution_id, 'NULL')
-  AND COALESCE(CAST(i.is_default_browser AS STRING), 'NULL') = COALESCE(
-    CAST(a.is_default_browser AS string),
+  weekly_active_agg waa
+  ON COALESCE(uwgc.normalized_app_name, 'NULL') = COALESCE(waa.normalized_app_name, 'NULL')
+  AND COALESCE(uwgc.normalized_channel, 'NULL') = COALESCE(waa.normalized_channel, 'NULL')
+  AND COALESCE(uwgc.app_version, 'NULL') = COALESCE(waa.app_version, 'NULL')
+  AND COALESCE(uwgc.attribution_campaign, 'NULL') = COALESCE(waa.attribution_campaign, 'NULL')
+  AND COALESCE(uwgc.attribution_content, 'NULL') = COALESCE(waa.attribution_content, 'NULL')
+  AND COALESCE(uwgc.attribution_experiment, 'NULL') = COALESCE(waa.attribution_experiment, 'NULL')
+  AND COALESCE(uwgc.attribution_medium, 'NULL') = COALESCE(waa.attribution_medium, 'NULL')
+  AND COALESCE(uwgc.attribution_source, 'NULL') = COALESCE(waa.attribution_source, 'NULL')
+  AND COALESCE(uwgc.attribution_variation, 'NULL') = COALESCE(waa.attribution_variation, 'NULL')
+  AND COALESCE(uwgc.country, 'NULL') = COALESCE(waa.country, 'NULL')
+  AND COALESCE(uwgc.device_model, 'NULL') = COALESCE(waa.device_model, 'NULL')
+  AND COALESCE(uwgc.distribution_id, 'NULL') = COALESCE(waa.distribution_id, 'NULL')
+  AND COALESCE(CAST(uwgc.is_default_browser AS string), 'NULL') = COALESCE(
+    CAST(waa.is_default_browser AS string),
     'NULL'
   )
-  AND COALESCE(i.locale, 'NULL') = COALESCE(a.locale, 'NULL')
-  AND COALESCE(i.normalized_os, 'NULL') = COALESCE(a.normalized_os, 'NULL')
-  AND COALESCE(i.normalized_os_version, 'NULL') = COALESCE(a.normalized_os_version, 'NULL')
-  AND COALESCE(i.adjust_ad_group, 'NULL') = COALESCE(a.adjust_ad_group, 'NULL')
-  AND COALESCE(i.adjust_campaign, 'NULL') = COALESCE(a.adjust_campaign, 'NULL')
-  AND COALESCE(i.adjust_creative, 'NULL') = COALESCE(a.adjust_network, 'NULL')
-  AND COALESCE(i.adjust_network, 'NULL') = COALESCE(a.adjust_network, 'NULL')
-  AND COALESCE(i.play_store_attribution_campaign, 'NULL') = COALESCE(
-    a.play_store_attribution_campaign,
+  AND COALESCE(uwgc.locale, 'NULL') = COALESCE(waa.locale, 'NULL')
+  AND COALESCE(uwgc.normalized_os, 'NULL') = COALESCE(waa.normalized_os, 'NULL')
+  AND COALESCE(uwgc.normalized_os_version, 'NULL') = COALESCE(waa.normalized_os_version, 'NULL')
+  AND COALESCE(uwgc.adjust_ad_group, 'NULL') = COALESCE(waa.adjust_ad_group, 'NULL')
+  AND COALESCE(uwgc.adjust_campaign, 'NULL') = COALESCE(waa.adjust_campaign, 'NULL')
+  AND COALESCE(uwgc.adjust_creative, 'NULL') = COALESCE(waa.adjust_creative, 'NULL')
+  AND COALESCE(uwgc.adjust_network, 'NULL') = COALESCE(waa.adjust_network, 'NULL')
+  AND COALESCE(uwgc.play_store_attribution_campaign, 'NULL') = COALESCE(
+    waa.play_store_attribution_campaign,
     'NULL'
   )
-  AND COALESCE(i.play_store_attribution_medium, 'NULL') = COALESCE(
-    a.play_store_attribution_medium,
+  AND COALESCE(uwgc.play_store_attribution_medium, 'NULL') = COALESCE(
+    waa.play_store_attribution_medium,
     'NULL'
   )
-  AND COALESCE(i.play_store_attribution_source, 'NULL') = COALESCE(
-    a.play_store_attribution_source,
+  AND COALESCE(uwgc.play_store_attribution_source, 'NULL') = COALESCE(
+    waa.play_store_attribution_source,
     'NULL'
   )
-  AND COALESCE(i.play_store_attribution_content, 'NULL') = COALESCE(
-    a.play_store_attribution_content,
+  AND COALESCE(uwgc.play_store_attribution_content, 'NULL') = COALESCE(
+    waa.play_store_attribution_content,
     'NULL'
   )
-  AND COALESCE(i.play_store_attribution_term, 'NULL') = COALESCE(
-    a.play_store_attribution_term,
+  AND COALESCE(uwgc.play_store_attribution_term, 'NULL') = COALESCE(
+    waa.play_store_attribution_term,
     'NULL'
   )
-  AND i.cohort_date_week = a.cohort_date_week
+  AND uwgc.cohort_date_week = waa.cohort_date_week
+  AND uwgc.activity_date_week = waa.activity_date_week
+WHERE
+  uwgc.activity_date_week >= uwgc.cohort_date_week

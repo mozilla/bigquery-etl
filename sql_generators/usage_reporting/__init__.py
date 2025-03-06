@@ -263,6 +263,8 @@ def generate(
             view_name=active_users_aggregates_dataset_name,
         )
 
+        active_users_aggregates_table_id = f"{target_project}.{app_name}_derived.{active_users_aggregates_dataset_name}"
+
         write_sql(
             output_dir=output_dir,
             full_table_id=f"{target_project}.{app_name}_derived.{active_users_aggregates_dataset_name}",
@@ -270,3 +272,20 @@ def generate(
             sql=reformat(rendered_active_users_aggregates),
             skip_existing=False,
         )
+
+        for query_artifact_template in ARTIFACT_TEMPLATES:
+            _artifact_template = jinja_env.get_template(
+                f"{table_name}.{query_artifact_template}"
+            )
+            rendered_artifact = _artifact_template.render(
+                **channel_args,
+                format=False,
+            )
+
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=active_users_aggregates_table_id,
+                basename=".".join(query_artifact_template.split(".")[:-1]),
+                sql=rendered_artifact,
+                skip_existing=False,
+            )

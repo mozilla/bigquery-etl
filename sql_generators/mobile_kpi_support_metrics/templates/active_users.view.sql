@@ -60,6 +60,10 @@ SELECT
     ELSE
       CAST(NULL AS STRING)
   END AS device_type,
+  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
   app_display_version AS app_version,
+  normalized_os AS os,
+  normalized_os_version AS os_version,
+  normalized_channel AS channel,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen`

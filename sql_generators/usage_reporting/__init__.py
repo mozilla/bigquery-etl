@@ -18,19 +18,29 @@ HEADER = f"Generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
 
 TEMPLATES_LOCATION = "templates"
+
 CHANNEL_TEMPLATES = (
     "usage_reporting_clients_daily_v1.query.sql.jinja",
     "usage_reporting_clients_first_seen_v1.query.sql.jinja",
     "usage_reporting_clients_last_seen_v1.query.sql.jinja",
 )
 CHANNEL_VIEW_TEMPLATE = "channel.view.sql.jinja"
+
 ARTIFACT_TEMPLATES = (
     "metadata.yaml.jinja",
     "schema.yaml.jinja",
 )
 APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
+
 ACTIVE_USERS_VIEW_TEMPLATE = "usage_reporting_active_users.view.sql.jinja"
 COMPOSITE_ACTIVE_USERS_TEMPLATE = "composite_active_users.view.sql.jinja"
+
+ACTIVE_USERS_AGGREGATES_TEMPLATE = (
+    "usage_reporting_active_users_aggregates_v1.query.sql.jinja"
+)
+ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
+    "usage_reporting_active_users_aggregates.view.sql.jinja"
+)
 
 
 @click.command()
@@ -242,3 +252,62 @@ def generate(
             sql=reformat(rendered_composite_active_users_view),
             skip_existing=False,
         )
+
+        active_users_aggregates_dataset_name = (
+            ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE.split(".")[0]
+        )
+        active_users_aggregates_view_template = jinja_env.get_template(
+            ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE
+        )
+        rendered_active_users_aggregates_view = (
+            active_users_aggregates_view_template.render(
+                **app_template_args,
+                view_name=active_users_aggregates_dataset_name,
+            )
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{active_users_aggregates_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_active_users_aggregates_view),
+            skip_existing=False,
+        )
+
+        active_users_aggregates_dataset_name = ACTIVE_USERS_AGGREGATES_TEMPLATE.split(
+            "."
+        )[0]
+        active_users_aggregates_template = jinja_env.get_template(
+            ACTIVE_USERS_AGGREGATES_TEMPLATE
+        )
+        rendered_active_users_aggregates = active_users_aggregates_template.render(
+            **app_template_args,
+            view_name=active_users_aggregates_dataset_name,
+        )
+
+        active_users_aggregates_table_id = f"{target_project}.{app_name}_derived.{active_users_aggregates_dataset_name}"
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}_derived.{active_users_aggregates_dataset_name}",
+            basename="query.sql",
+            sql=reformat(rendered_active_users_aggregates),
+            skip_existing=False,
+        )
+
+        for query_artifact_template in ARTIFACT_TEMPLATES:
+            _artifact_template = jinja_env.get_template(
+                f"{table_name}.{query_artifact_template}"
+            )
+            rendered_artifact = _artifact_template.render(
+                **channel_args,
+                format=False,
+            )
+
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=active_users_aggregates_table_id,
+                basename=".".join(query_artifact_template.split(".")[:-1]),
+                sql=rendered_artifact,
+                skip_existing=False,
+            )

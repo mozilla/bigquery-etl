@@ -56,11 +56,13 @@ fields:
   description: |
     OS version reported by the client.
 
+{% if app_name == "firefox_destop" %}
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
   description: |
     The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms (Windows only).
+{% endif %}
 
 - name: app_version
   type: STRING

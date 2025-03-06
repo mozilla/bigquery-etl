@@ -11,7 +11,9 @@ SELECT
   country,
   os,
   os_version,
+  {% if app_name == "firefox_destop" %}
   windows_build_number,
+  {% endif %}
   distribution_id,
   is_default_browser,
   activity_segment,
@@ -32,7 +34,9 @@ GROUP BY
   country,
   os,
   os_version,
+  {% if app_name == "firefox_destop" %}
   windows_build_number,
+  {% endif %}
   distribution_id,
   is_default_browser,
   activity_segment

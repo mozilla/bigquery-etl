@@ -60,5 +60,6 @@ SELECT
     ELSE
       CAST(NULL AS STRING)
   END AS device_type,
+  app_display_version AS app_version,
 FROM
   `{{ project_id }}.{{ dataset }}.baseline_clients_last_seen`

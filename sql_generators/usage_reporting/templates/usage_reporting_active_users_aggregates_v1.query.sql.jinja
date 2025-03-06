@@ -8,11 +8,11 @@ SELECT
   country,
   os,
   os_version,
-  {% if app_name == "firefox_destop" %}
+  {% if app_name == "firefox_desktop" %}
   windows_build_number,
   {% endif %}
-  distribution_id,
   is_default_browser,
+  distribution_id,
   activity_segment,
   COUNTIF(is_daily_user) AS daily_users,
   COUNTIF(is_weekly_user) AS weekly_users,
@@ -24,6 +24,7 @@ FROM
   `{{ project_id }}.{{ app_name }}.usage_reporting_active_users`
 WHERE
   submission_date = @submission_date
+  AND `date` = @submission_date
 GROUP BY
   submission_date,
   first_seen_year,
@@ -33,9 +34,9 @@ GROUP BY
   country,
   os,
   os_version,
-  {% if app_name == "firefox_destop" %}
+  {% if app_name == "firefox_desktop" %}
   windows_build_number,
   {% endif %}
-  distribution_id,
   is_default_browser,
+  distribution_id,
   activity_segment

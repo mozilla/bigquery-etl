@@ -297,7 +297,7 @@ def generate(
 
         for query_artifact_template in ARTIFACT_TEMPLATES:
             _artifact_template = jinja_env.get_template(
-                f"{table_name}.{query_artifact_template}"
+                f"{active_users_aggregates_dataset_name}.{query_artifact_template}"
             )
             rendered_artifact = _artifact_template.render(
                 **channel_args,

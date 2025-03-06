@@ -570,9 +570,9 @@ google-cloud-bigquery-storage[fastavro]==2.28.0 \
     --hash=sha256:310c2dcc7d0a03b8e3b30ee90f34daf0bdefdb198c51a7f38db45904704f131c \
     --hash=sha256:7f4a42e614b6173f6d7da75eda3913aa03f74854d3e5e9b1ab462c8468d4deed
     # via -r requirements.in
-google-cloud-core==2.4.1 \
-    --hash=sha256:9b7749272a812bde58fff28868d0c5e2f585b82f37e09a1f6ed2d4d10f134073 \
-    --hash=sha256:a9e6a4422b9ac5c29f79a0ede9485473338e2ce78d91f2370c01e730eab22e61
+google-cloud-core==2.4.2 \
+    --hash=sha256:7459c3e83de7cb8b9ecfec9babc910efb4314030c56dd798eaad12c426f7d180 \
+    --hash=sha256:a4fcb0e2fcfd4bfe963837fad6d10943754fd79c1a50097d68540b6eb3d67f35
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
@@ -580,9 +580,9 @@ google-cloud-datacatalog-lineage==0.3.12 \
     --hash=sha256:833f515eb42750bd71f86709154f7280272dae458d00992c8fa91ee0a65506b1 \
     --hash=sha256:e75b1b8e359478da630d9900f23f4e1dc939746832a251a6b15ba5fe8186f8c7
     # via -r requirements.in
-google-cloud-storage==3.0.0 \
-    --hash=sha256:2accb3e828e584888beff1165e5f3ac61aa9088965eb0165794a82d8c7f95297 \
-    --hash=sha256:f85fd059650d2dbb0ac158a9a6b304b66143b35ed2419afec2905ca522eb2c6a
+google-cloud-storage==3.1.0 \
+    --hash=sha256:944273179897c7c8a07ee15f2e6466a02da0c7c4b9ecceac2a26017cb2972049 \
+    --hash=sha256:eaf36966b68660a9633f03b067e4a10ce09f1377cae3ff9f2c699f69a81c66c6
     # via
     #   -r requirements.in
     #   gcsfs

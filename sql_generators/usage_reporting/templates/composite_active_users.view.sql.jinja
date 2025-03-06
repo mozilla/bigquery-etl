@@ -5,6 +5,7 @@ SELECT
   submission_date,
   client_id AS usage_profile_id,
   first_seen_year,
+  first_seen_date,
   channel,
   app_name,
   app_version,
@@ -42,6 +43,7 @@ SELECT
   submission_date,
   usage_profile_id,
   first_seen_year,
+  first_seen_date,
   channel,
   app_name,
   app_version,
@@ -57,6 +59,7 @@ SELECT
   {% if app_name == "firefox_desktop" %}
   os_version_build,
   {% endif %}
+  distribution_id,
   is_default_browser,
   activity_segment,
   is_dau,

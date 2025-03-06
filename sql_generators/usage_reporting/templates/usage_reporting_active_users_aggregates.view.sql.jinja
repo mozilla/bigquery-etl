@@ -6,9 +6,11 @@ SELECT
   * EXCEPT(windows_build_number),
   CAST(`mozfun.norm.truncate_version`(os_version, "major") AS INTEGER) AS os_version_major,
   CAST(`mozfun.norm.truncate_version`(os_version, "minor") AS INTEGER) AS os_version_minor,
+  {% if app_name == "firefox_desktop" %}
   COALESCE(
     `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
     os_version
   ) AS os_version_build,
+  {% endif %}
 FROM
   `{{ project_id }}.{{ app_name }}.{{ view_name }}_v1`

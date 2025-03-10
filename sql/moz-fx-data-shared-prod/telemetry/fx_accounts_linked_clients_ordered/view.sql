@@ -4,11 +4,13 @@ AS
 WITH first_seen_date_by_glean_client_id AS (
   SELECT
     client_id,
-    first_seen_date
+    MIN(first_seen_date) AS first_seen_date
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_first_seen`
   WHERE
     submission_date <= CURRENT_DATE
+  GROUP BY
+    client_id
 ),
 fxa_linked_plus_fsd AS (
   SELECT

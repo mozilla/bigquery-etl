@@ -1,0 +1,19 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: linked_client_id
+  type: STRING
+  mode: NULLABLE
+- name: linkage_first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: linkage_last_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id_first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: linked_client_id_first_seen_date
+  type: DATE
+  mode: NULLABLE

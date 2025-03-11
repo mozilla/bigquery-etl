@@ -1590,7 +1590,9 @@ SELECT
       metrics.labeled_timing_distribution.workers_sync_worker_operation,
       metrics.labeled_timing_distribution.devtools_cold_toolbox_open_delay,
       metrics.labeled_timing_distribution.devtools_toolbox_page_reload_delay,
-      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay
+      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -3238,7 +3240,9 @@ SELECT
       metrics.labeled_timing_distribution.workers_sync_worker_operation,
       metrics.labeled_timing_distribution.devtools_cold_toolbox_open_delay,
       metrics.labeled_timing_distribution.devtools_toolbox_page_reload_delay,
-      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay
+      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4904,7 +4908,9 @@ SELECT
       metrics.labeled_timing_distribution.workers_sync_worker_operation,
       metrics.labeled_timing_distribution.devtools_cold_toolbox_open_delay,
       metrics.labeled_timing_distribution.devtools_toolbox_page_reload_delay,
-      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay
+      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -6579,7 +6585,9 @@ SELECT
       metrics.labeled_timing_distribution.workers_sync_worker_operation,
       metrics.labeled_timing_distribution.devtools_cold_toolbox_open_delay,
       metrics.labeled_timing_distribution.devtools_toolbox_page_reload_delay,
-      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay
+      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -8236,7 +8244,9 @@ SELECT
       metrics.labeled_timing_distribution.workers_sync_worker_operation,
       metrics.labeled_timing_distribution.devtools_cold_toolbox_open_delay,
       metrics.labeled_timing_distribution.devtools_toolbox_page_reload_delay,
-      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay
+      metrics.labeled_timing_distribution.devtools_warm_toolbox_open_delay,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
+      metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

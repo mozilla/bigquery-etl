@@ -1534,6 +1534,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Optional, contains a string describing the reason the crash occurred
+    - name: nimbus_enrollments
+      type: STRING
+      mode: NULLABLE
+      description: Optional, a omma-separated string that specifies the active Nimbus
+        experiments and rollouts, as well as their branches
   - name: process_type
     type: STRING
     mode: NULLABLE

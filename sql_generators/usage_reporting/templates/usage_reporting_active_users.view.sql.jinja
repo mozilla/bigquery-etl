@@ -7,6 +7,7 @@ SELECT
   app_channel AS channel,
   IFNULL(normalized_country_code, "??") AS country,
   EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
+  first_seen.first_seen_date,
   {% if app_name in ("fenix", "firefox_desktop") %}
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"

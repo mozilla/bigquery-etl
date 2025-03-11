@@ -4,11 +4,12 @@
     CAST(NULL AS INT64) AS days_seen_bits,
     CAST(NULL AS INT64) AS days_active_bits,
     CAST(NULL AS INT64) AS days_created_profile_bits,
+    isp,
   -- We make sure to delay * until the end so that as new columns are added
   -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
-    *
+    * EXCEPT (isp),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.baseline_clients_daily_v1`
   WHERE
@@ -28,7 +29,8 @@
       `moz-fx-data-shared-prod.udf.days_since_created_profile_as_28_bits`(
         DATE_DIFF(submission_date, first_run_date, DAY)
       ) AS days_created_profile_bits,
-      * EXCEPT (submission_date)
+      isp,
+      * EXCEPT (submission_date, isp)
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.baseline_clients_daily_v1`
     WHERE
@@ -41,7 +43,8 @@
       days_seen_bits,
       days_active_bits,
       days_created_profile_bits,
-      * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits),
+      isp,
+      * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits, isp),
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.baseline_clients_last_seen_v1`
     WHERE

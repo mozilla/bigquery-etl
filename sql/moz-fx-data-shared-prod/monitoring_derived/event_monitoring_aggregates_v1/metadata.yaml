@@ -14,7 +14,7 @@ scheduling:
   dag_name: bqetl_monitoring
   arguments:
   - --billing-project
-  - moz-fx-data-backfill-2
+  - moz-fx-data-backfill-3
 bigquery:
   time_partitioning:
     type: day

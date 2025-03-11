@@ -215,6 +215,7 @@ joined as (
 )
 --
 SELECT
-  *
+  *,
+  123 AS test_col,
 FROM
   joined

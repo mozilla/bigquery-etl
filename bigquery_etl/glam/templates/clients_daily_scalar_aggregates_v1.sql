@@ -36,78 +36,101 @@ sampled_data AS (
 unlabeled_metrics AS (
   SELECT
     {{ attributes }},
-    ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
-        {{ unlabeled_metrics }}
-    ] as scalar_aggregates
+    source_metric,
   FROM
     sampled_data
+  CROSS JOIN
+    UNNEST(
+      ARRAY<STRUCT<name STRING, type STRING, value FLOAT64>>[
+        {{ unlabeled_metrics }},
+        {{ labeled_metrics }}
+      ]
+    ) AS source_metric
+  WHERE source_metric.value IS NOT NULL
+),
+aggregated_unlabeled_metrics AS (
+  SELECT
+  {{ attributes }},
+  source_metric.name AS metric,
+  source_metric.type AS metric_type,
+  CASE
+      source_metric.type
+      WHEN 'boolean'
+        THEN ARRAY<STRUCT<key STRING, agg_type STRING, value FLOAT64>>[
+            ('', 'false', SUM(CAST(source_metric.value = 0 AS INT64))),
+            ('', 'true', SUM(CAST(source_metric.value = 1 AS INT64)))
+          ]
+      ELSE ARRAY<STRUCT<key STRING, agg_type STRING, value FLOAT64>>[
+          ('', 'avg', AVG(CAST(source_metric.value AS NUMERIC))),
+          ('', 'count', IF(MIN(source_metric.value) IS NULL, NULL, COUNT(*))),
+          ('', 'max', MAX(CAST(source_metric.value AS NUMERIC))),
+          ('', 'min', MIN(CAST(source_metric.value AS NUMERIC))),
+          ('', 'sum', SUM(CAST(source_metric.value AS NUMERIC)))
+        ]
+    END AS scalar_aggregates,
+  FROM
+    unlabeled_metrics
   GROUP BY
-    {{ attributes }}
+    client_id,
+    ping_type,
+    submission_date,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    source_metric.name,
+    source_metric.type
 ),
 grouped_labeled_metrics AS (
   SELECT
     {{ attributes }},
-    ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
-        {{ labeled_metrics }}
-    ] as metrics
+    source_metric,
+    value,
   FROM
     sampled_data
-),
-flattened_labeled_metrics AS (
-  SELECT
-    {{ attributes }},
-    metrics.name AS metric,
-    metrics.type AS metric_type,
-    value.key AS key,
-    value.value AS value
-  FROM
-    grouped_labeled_metrics
   CROSS JOIN
-    UNNEST(metrics) AS metrics,
-    UNNEST(metrics.value) AS value
+    UNNEST(
+      ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
+          {{ labeled_metrics }}
+      ]
+    ) AS source_metric
+  CROSS JOIN
+    UNNEST(source_metric.value) AS value
+  WHERE
+    source_metric.value IS NOT NULL
 ),
 aggregated_labeled_metrics AS (
   SELECT
     {{ attributes }},
-    metric,
-    metric_type,
-    key,
-    MAX(value) AS max,
-    MIN(value) AS min,
-    AVG(value) AS avg,
-    SUM(value) AS sum,
-    IF(MIN(value) IS NULL, NULL, COUNT(*)) AS count
+    source_metric.name AS metric,
+    source_metric.type AS metric_type,
+    ARRAY<STRUCT<key STRING, agg_type STRING, value FLOAT64>>[
+      (value.key, 'max', MAX(value.value)),
+      (value.key, 'min', MIN(value.value)),
+      (value.key, 'avg', AVG(value.value)),
+      (value.key, 'sum', SUM(value.value)),
+      (value.key, 'count', IF(MIN(value.value) IS NULL, NULL, COUNT(*)))
+    ] AS scalar_aggregates,
   FROM
-    flattened_labeled_metrics
+    grouped_labeled_metrics
   GROUP BY
-    {{ attributes }},
-    metric,
-    metric_type,
-    key
-),
-labeled_metrics AS (
-  SELECT
-    {{ attributes }},
-    ARRAY_CONCAT_AGG(
-        ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
-        (metric, metric_type, key, 'max', max),
-        (metric, metric_type, key, 'min', min),
-        (metric, metric_type, key, 'avg', avg),
-        (metric, metric_type, key, 'sum', sum),
-        (metric, metric_type, key, 'count', count)
-        ]
-    ) AS scalar_aggregates
-  FROM
-    aggregated_labeled_metrics
-  GROUP BY
-    {{ attributes }}
+    client_id,
+    ping_type,
+    submission_date,
+    os,
+    app_version,
+    app_build_id,
+    channel,
+    source_metric.name,
+    source_metric.type,
+    value.key
 )
 SELECT
   *
 FROM
-  unlabeled_metrics
+  aggregated_unlabeled_metrics
 UNION ALL
 SELECT
   *
 FROM
-  labeled_metrics
+  aggregated_labeled_metrics

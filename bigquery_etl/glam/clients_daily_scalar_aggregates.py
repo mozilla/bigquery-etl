@@ -36,9 +36,15 @@ def get_labeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     probes_struct = []
     for metric_type, _probes in probes.items():
         for probe in _probes:
-            probes_struct.append(
-                f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe})"
-            )
+            if metric_type == "boolean":
+                probes_struct.append(
+                    f"('{probe}', '{metric_type}', CAST(metrics.{metric_type}.{probe} AS INT64))"
+                )
+            else:
+                suffix = ".value" if metric_type == "timespan" else ""
+                probes_struct.append(
+                    f"('{probe}', '{metric_type}', metrics.{metric_type}.{probe}{suffix})"
+                )
 
     probes_struct.sort()
     probes_arr = ",\n".join(probes_struct)
@@ -147,7 +153,7 @@ def main():
     schema = get_schema(args.source_table)
     unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
     labeled_metric_names = get_scalar_metrics(schema, "labeled")
-    unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
+    unlabeled_metrics = get_labeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
 
     if not unlabeled_metrics and not labeled_metrics:

@@ -1,0 +1,14 @@
+friendly_name: Crash Ping Ingest External
+description: |-
+  The data in this dataset is written to from a taskcluster task.
+  See https://mozilla-hub.atlassian.net/browse/DSRE-1900 for more information.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:dataops-managed/crash-ping-ingest

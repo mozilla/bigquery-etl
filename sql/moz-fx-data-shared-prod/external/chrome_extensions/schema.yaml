@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: url
+  type: STRING
+  mode: NULLABLE
+  description: Chrome Extension URL
+- name: chrome_extension_name
+  type: STRING
+  mode: NULLABLE
+  description: Chrome Extension Name
+- name: star_rating
+  type: NUMERIC
+  mode: NULLABLE
+  description: Star Rating
+- name: number_of_ratings
+  type: STRING
+  mode: NULLABLE
+  description: Number of Ratings
+- name: number_of_users
+  type: STRING
+  mode: NULLABLE
+  description: Number of Users

@@ -155,6 +155,39 @@ fields:
 - name: device_type
   type: STRING
   mode: NULLABLE
+- name: first_seen_year
+  type: INTEGER
+  mode: NULLABLE
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch_revision
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_is_major_release
+  type: BOOLEAN
+  mode: NULLABLE
+- name: os
+  type: STRING
+  mode: NULLABLE
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
 - name: product_name
   type: STRING
   mode: NULLABLE

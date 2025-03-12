@@ -2256,7 +2256,7 @@ bqetl_chrome_extensions_scraper:
     owner: kwindau@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2025-03-20'
+    start_date: '2025-03-01'
   description: Pulls info about Chrome extensions from the Chrome webstore
   schedule_interval: 40 21 * * 1
   tags:

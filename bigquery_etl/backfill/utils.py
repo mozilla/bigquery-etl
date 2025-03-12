@@ -107,8 +107,21 @@ def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
-def validate_table_metadata(sql_dir: str, qualified_table_name: str) -> List[str]:
+def validate_table_metadata(
+    sql_dir: str, qualified_table_name: str, ignore_missing_metadata: bool
+) -> List[str]:
     """Run all metadata.yaml validation checks and return list of error strings."""
+    if ignore_missing_metadata:
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        metadata_exists = (
+            Path(sql_dir) / project / dataset / table / METADATA_FILE
+        ).exists()
+        if not metadata_exists:
+            print(
+                f"Skipping {qualified_table_name} validation because of missing metadata.yaml"
+            )
+            return []
+
     errors = []
     if not validate_depends_on_past(sql_dir, qualified_table_name):
         errors.append(

@@ -172,7 +172,9 @@ def create(
 
     A backfill.yaml file will be created if it does not already exist.
     """
-    if errors := validate_table_metadata(sql_dir, qualified_table_name):
+    if errors := validate_table_metadata(
+        sql_dir, qualified_table_name, ignore_missing_metadata=False
+    ):
         click.echo("\n".join(errors))
         sys.exit(1)
 
@@ -258,29 +260,32 @@ def validate(
     errors = defaultdict(list)
 
     for table_name in backfills_dict:
-        try:
-            if errors := validate_table_metadata(sql_dir, table_name):
-                click.echo("\n".join(errors))
-                sys.exit(1)
+        if metadata_errors := validate_table_metadata(
+            sql_dir, table_name, ignore_missing_metadata
+        ):
+            click.echo("\n".join(metadata_errors))
+            sys.exit(1)
 
-                try:
-                    backfill_file = get_backfill_file_from_qualified_table_name(
-                        sql_dir, table_name
-                    )
-                    validate_file(backfill_file)
-                except (yaml.YAMLError, ValueError) as e:
-                    errors[table_name].append(
-                        f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
-                    )
-                if table_name in errors:
-                    click.echo(f"{BACKFILL_FILE} validation failed for {table_name}")
-                else:
-                    click.echo(f"{BACKFILL_FILE} has been validated for {table_name}.")
+        try:
+            backfill_file = get_backfill_file_from_qualified_table_name(
+                sql_dir, table_name
+            )
+            validate_file(backfill_file)
+        except (yaml.YAMLError, ValueError) as e:
+            errors[table_name].append(
+                f"Backfill.yaml file for {table_name} contains the following error:\n {e}"
+            )
         except FileNotFoundError:
             if ignore_missing_metadata:
                 click.echo(f"Skipping {table_name} due to --ignore-missing-metadata")
             else:
                 raise
+
+        if table_name in errors:
+            click.echo(f"{BACKFILL_FILE} validation failed for {table_name}")
+        else:
+            click.echo(f"{BACKFILL_FILE} has been validated for {table_name}.")
+
     if len(errors) > 0:
         click.echo("Failed to validate the following backfill entries:")
         for table_name, error_list in errors.items():

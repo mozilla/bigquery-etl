@@ -1,0 +1,20 @@
+friendly_name: Chrome Extensions
+description: |-
+  Data about extensions offered by Google Chrome
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_chrome_extensions_scraper
+  arguments: ["--date", "{{ds}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

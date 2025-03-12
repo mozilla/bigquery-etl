@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
 scheduling:
   dag_name: bqetl_chrome_extensions_scraper
+  arguments: ["--date", "{{ds}}"]
 bigquery:
   time_partitioning:
     type: day

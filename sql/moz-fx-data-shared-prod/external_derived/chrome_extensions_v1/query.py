@@ -205,9 +205,6 @@ def main():
 
     # Loop through the links found on the main page of the Chrome Webstore
     for idx, current_link in enumerate(unique_links_on_chrome_webstore_page):
-        # Print the link # and the link URL
-        print("PROCESSING TOP LEVEL idx: ", str(idx))
-        print("PROCESSING TOP LEVEL LINK: ", str(current_link))
 
         # Check if the link is a "detail page" or a "non detail page"
         is_detail_page = check_if_detail_or_non_detail_page(current_link)
@@ -238,13 +235,6 @@ def main():
             # Loop through each link on this page
             for link_on_page in unique_links_on_non_detail_page:
 
-                # Print the link we are about to process
-                print(
-                    "Processing Secondary Link: ",
-                    link_on_page,
-                    " found on main page link: ",
-                    current_link,
-                )
 
                 # Check if it's a detail page link or not
                 is_detail_page = check_if_detail_or_non_detail_page(link_on_page)

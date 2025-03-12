@@ -27,6 +27,14 @@ SELECT
     ELSE 'Firefox Desktop'
   END AS app_name,
   app_display_version AS app_version,
+  `mozfun.norm.browser_version_info`(app_display_version).major_version AS app_version_major,
+  `mozfun.norm.browser_version_info`(app_display_version).minor_version AS app_version_minor,
+  `mozfun.norm.browser_version_info`(
+    app_display_version
+  ).patch_revision AS app_version_patch_revision,
+  `mozfun.norm.browser_version_info`(
+    app_display_version
+  ).is_major_release AS app_version_is_major_release,
   normalized_channel AS channel,
   COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
   CASE

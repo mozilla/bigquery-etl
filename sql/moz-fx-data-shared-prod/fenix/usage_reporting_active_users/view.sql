@@ -3,10 +3,11 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.fenix.usage_reporting_active_users`
 AS
 SELECT
-  daily.* EXCEPT (app_channel, normalized_country_code),
+  daily.* EXCEPT (app_channel, normalized_country_code, app_display_version),
   app_channel AS channel,
   IFNULL(normalized_country_code, "??") AS country,
   EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
+  first_seen.first_seen_date,
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
       THEN CONCAT("fenix", " ", distribution_id)
@@ -30,6 +31,17 @@ SELECT
       THEN "core_user"
     ELSE "other"
   END AS activity_segment,
+  CAST(`mozfun.norm.truncate_version`(os_version, "major") AS INTEGER) AS os_version_major,
+  CAST(`mozfun.norm.truncate_version`(os_version, "minor") AS INTEGER) AS os_version_minor,
+  app_display_version AS app_version,
+  `mozfun.norm.browser_version_info`(app_display_version).major_version AS app_version_major,
+  `mozfun.norm.browser_version_info`(app_display_version).minor_version AS app_version_minor,
+  `mozfun.norm.browser_version_info`(
+    app_display_version
+  ).patch_revision AS app_version_patch_revision,
+  `mozfun.norm.browser_version_info`(
+    app_display_version
+  ).is_major_release AS app_version_is_major_release,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) = 0, FALSE) AS is_dau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 7, FALSE) AS is_wau,
   IFNULL(mozfun.bits28.days_since_seen(days_active_bits) < 28, FALSE) AS is_mau,

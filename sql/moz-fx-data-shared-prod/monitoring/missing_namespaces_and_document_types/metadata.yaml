@@ -1,0 +1,19 @@
+friendly_name: Missing namespaces and document types
+description: |-
+  This view provides aggregated counts over the last 7 days of missing namespaces and document types,
+  identified through SchemaNotFoundExceptions during data ingestion.
+  This view is used for data platform health checks.
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured
+  - moz-fx-data-shared-prod.static.monitoring_missing_document_namespaces_notes_v1
+require_column_descriptions: false

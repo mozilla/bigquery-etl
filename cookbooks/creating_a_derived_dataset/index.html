@@ -2004,6 +2004,9 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <ol>
 <li>
 <p>Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)</p>
+<ul>
+<li>Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill</li>
+</ul>
 </li>
 <li>
 <p>If the data is valid, open a Pull Request, setting the backfill status to Complete, see <a href="https://github.com/mozilla/bigquery-etl/pull/5352">this example</a>. Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.</p>

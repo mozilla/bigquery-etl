@@ -1,5 +1,6 @@
 """Validate backfill entries."""
 
+import datetime
 from pathlib import Path
 from typing import List
 
@@ -12,6 +13,7 @@ from ..backfill.parse import (
 )
 from ..metadata.parse_metadata import METADATA_FILE, Metadata
 from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
+from .utils import MAX_BACKFILL_ENTRY_AGE_DAYS
 
 
 def validate_duplicate_entry_dates(
@@ -89,12 +91,6 @@ def validate_depends_on_past_end_date(backfill_entry: Backfill, backfill_file: P
         )
 
 
-def validate_file(file: Path) -> None:
-    """Validate all entries from a given backfill.yaml file."""
-    backfills = Backfill.entries_from_file(file)
-    validate_entries(backfills, file)
-
-
 def validate_duplicate_entry_with_initiate_status(
     backfill_entry: Backfill, backfills: list
 ) -> None:
@@ -105,6 +101,25 @@ def validate_duplicate_entry_with_initiate_status(
                 raise ValueError(
                     "Backfill entries cannot contain more than one entry with Initiate status"
                 )
+
+
+def validate_old_entry_date(backfill_entry: Backfill) -> None:
+    """Check if entry is in Initiate but is too old to run."""
+    if (
+        backfill_entry.status == BackfillStatus.INITIATE
+        and backfill_entry.entry_date
+        < datetime.date.today() - datetime.timedelta(days=MAX_BACKFILL_ENTRY_AGE_DAYS)
+    ):
+        raise ValueError(
+            "Backfill entries will not run if they are older than "
+            f"{MAX_BACKFILL_ENTRY_AGE_DAYS} days old"
+        )
+
+
+def validate_file(file: Path) -> None:
+    """Validate all entries from a given backfill.yaml file."""
+    backfills = Backfill.entries_from_file(file)
+    validate_entries(backfills, file)
 
 
 def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
@@ -119,4 +134,5 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
             backfill_entry, backfills[i + 1 :]
         )
         validate_depends_on_past_end_date(backfill_entry, backfill_file)
+        validate_old_entry_date(backfill_entry)
     validate_entries_are_sorted(backfills)

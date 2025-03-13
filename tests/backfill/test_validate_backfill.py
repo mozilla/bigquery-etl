@@ -1,5 +1,6 @@
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -10,6 +11,7 @@ from bigquery_etl.backfill.parse import (
     Backfill,
     BackfillStatus,
 )
+from bigquery_etl.backfill.utils import MAX_BACKFILL_ENTRY_AGE_DAYS
 from bigquery_etl.backfill.validate import (
     validate_default_reason,
     validate_default_watchers,
@@ -18,6 +20,7 @@ from bigquery_etl.backfill.validate import (
     validate_entries,
     validate_entries_are_sorted,
     validate_file,
+    validate_old_entry_date,
     validate_shredder_mitigation,
 )
 from bigquery_etl.metadata.parse_metadata import METADATA_FILE, Metadata
@@ -36,6 +39,14 @@ TEST_BACKFILL_FILE_DEPENDS_ON_PAST = (
 
 
 class TestValidateBackfill(object):
+
+    @pytest.fixture(autouse=True)
+    def mock_date(self):
+        """Use fixed date.today() for tests."""
+        with patch("bigquery_etl.backfill.validate.datetime.date") as d:
+            d.today.return_value = date(2021, 5, 4)
+            d.side_effect = lambda *args, **kw: date(*args, **kw)
+            yield
 
     def test_entries_duplicate_entry_dates_should_fail(self):
         backfills = [TEST_BACKFILL_1, TEST_BACKFILL_1]
@@ -378,3 +389,41 @@ class TestValidateBackfill(object):
             validate_depends_on_past_end_date(
                 backfill_entry, TEST_BACKFILL_FILE_DEPENDS_ON_PAST
             )
+
+    @patch("bigquery_etl.backfill.validate.datetime.date")
+    def test_validate_old_entry_date_initiate(self, mock_date):
+        """Error should be raised if an initiate entry is older than the max allowed."""
+        mock_date.today.return_value = date(2021, 6, 4)
+        backfill_entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.INITIATE,
+        )
+
+        with pytest.raises(ValueError) as e:
+            validate_old_entry_date(backfill_entry)
+
+        assert (
+            f"Backfill entries will not run if they are older than {MAX_BACKFILL_ENTRY_AGE_DAYS} days old"
+            in str(e.value)
+        )
+
+    @patch("bigquery_etl.backfill.validate.datetime.date")
+    def test_validate_old_entry_date_complete(self, mock_date):
+        """No error should be raised for complete entries that are older than the max allowed."""
+        mock_date.today.return_value = date(2021, 6, 4)
+        backfill_entry = Backfill(
+            TEST_BACKFILL_1.entry_date,
+            TEST_BACKFILL_1.start_date,
+            TEST_BACKFILL_1.end_date,
+            TEST_BACKFILL_1.excluded_dates,
+            VALID_REASON,
+            TEST_BACKFILL_1.watchers,
+            status=BackfillStatus.COMPLETE,
+        )
+
+        validate_old_entry_date(backfill_entry)

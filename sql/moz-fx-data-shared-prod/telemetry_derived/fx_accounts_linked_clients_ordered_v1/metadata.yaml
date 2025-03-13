@@ -1,0 +1,16 @@
+friendly_name: Firefox Accounts Linked Clients Ordered
+description: |-
+  Table overwrites daily with latest information, orders clients by first seen date
+  Client ID with the smaller first seen date is client ID
+  Client ID with the larger first seen date is linked client ID
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_client_attributes
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+references: {}
+require_column_descriptions: true

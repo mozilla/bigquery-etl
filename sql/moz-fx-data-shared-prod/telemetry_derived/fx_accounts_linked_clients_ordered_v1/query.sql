@@ -10,16 +10,17 @@ WITH first_seen_date_by_glean_client_id AS (
     client_id
 ),
 last_seen_date_by_glean_client_id AS (
-  SELECT 
+  SELECT
     client_id,
     MAX(submission_date) AS last_seen_date
-  FROM 
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily`
-  WHERE 
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`
+  WHERE
     days_since_seen = 0
     AND submission_date <= @submission_date
-  GROUP BY client_id
-)
+  GROUP BY
+    client_id
+),
 fxa_linked_plus_fsd AS (
   SELECT
     a.client_id,
@@ -38,10 +39,10 @@ fxa_linked_plus_fsd AS (
   LEFT JOIN
     first_seen_date_by_glean_client_id c
     ON a.linked_client_id = c.client_id
-  LEFT JOIN 
-    last_seen_date_by_glean_client_id d 
-    ON a.client_id = d.client_id 
-  LEFT JOIN 
+  LEFT JOIN
+    last_seen_date_by_glean_client_id d
+    ON a.client_id = d.client_id
+  LEFT JOIN
     last_seen_date_by_glean_client_id e
     ON a.linked_client_id = e.client_id
 )

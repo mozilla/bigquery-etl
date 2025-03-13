@@ -14,10 +14,9 @@ last_seen_date_by_glean_client_id AS (
     client_id,
     MAX(submission_date) AS last_seen_date
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`
+    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily`
   WHERE
-    days_since_seen = 0
-    AND submission_date <= @submission_date
+    submission_date <= @submission_date
   GROUP BY
     client_id
 ),

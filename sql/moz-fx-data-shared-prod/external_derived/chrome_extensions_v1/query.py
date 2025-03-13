@@ -267,7 +267,6 @@ def main():
     client = bigquery.Client(TARGET_PROJECT)
 
     # If data already ran for this date, delete out
-    # Delete any data already in table for same year so we don't end up with duplicates
     delete_query = f"""DELETE FROM `moz-fx-data-shared-prod.external_derived.chrome_extensions_v1`
   WHERE submission_date = '{logical_dag_date_string}'"""
     del_job = client.query(delete_query)

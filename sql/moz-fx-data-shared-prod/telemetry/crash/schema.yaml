@@ -688,6 +688,18 @@ fields:
         mode: NULLABLE
         description: The CPU name, e.g. 'Intel(R) Core(TM) i9-8950HK CPU @ 2.90GHz',
           or `null` on failure. Desktop only.
+      - name: ecount
+        type: INTEGER
+        mode: NULLABLE
+        description: Heterogeneous CPU info for little CPUs.
+      - name: mcount
+        type: INTEGER
+        mode: NULLABLE
+        description: Heterogeneous CPU info for medium CPUs.
+      - name: pcount
+        type: INTEGER
+        mode: NULLABLE
+        description: Heterogeneous CPU info for big CPUs.
     - name: device
       type: RECORD
       mode: NULLABLE

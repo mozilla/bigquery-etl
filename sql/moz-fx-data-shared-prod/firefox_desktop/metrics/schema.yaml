@@ -10030,6 +10030,49 @@ fields:
         signature instance.
 
         '
+    - name: sap_deprecated_counts
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'This is deprecated metric that should not be incoporated into
+        dashboards. Use the `sap.counts` event instead.
+
+        This metric has been added to Glean to aid transition of histograms and allow
+        the legacy telemetry SEARCH_COUNTS to continue to be recorded.
+
+        Records search counts for search access points. The format is: <engine-name>.<search-access-point>.
+        For the urlbar when in search mode, the format is <engine name>.urlbar-searchmode.
+        For the urlbar when an internal @engine shortcut is used, the format is: <engine-name>.alias.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SEARCH_COUNTS.
+
+        '
+    - name: searchbar_selected_result_method
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The input method the user used to select a result in the searchbar.
+        ''enter'' => The user hit the Enter key without choosing a result in the popup.
+        ''enterSelection'' => The user chose a result and then hit the Enter key.
+        ''click'' => The user clicked a result with the mouse.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram FX_SEARCHBAR_SELECTED_RESULT_METHOD.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -41298,6 +41341,61 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'An inference engine was created
+
+        '
+    - name: search_suggestions_latency
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Records the latencies (ms) of search suggestions fetches per search
+        engine. Keys in this histogram are search engine IDs for built-in search engines
+        and ''other'' for non-built-in search engines.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SEARCH_SUGGESTIONS_LATENCY_MS.
 
         '
   - name: labeled_custom_distribution

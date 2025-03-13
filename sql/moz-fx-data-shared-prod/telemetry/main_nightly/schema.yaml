@@ -553,6 +553,15 @@ fields:
       - name: vendor
         type: STRING
         mode: NULLABLE
+      - name: ecount
+        type: INTEGER
+        mode: NULLABLE
+      - name: mcount
+        type: INTEGER
+        mode: NULLABLE
+      - name: pcount
+        type: INTEGER
+        mode: NULLABLE
     - name: device
       type: RECORD
       mode: NULLABLE

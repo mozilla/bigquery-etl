@@ -13,7 +13,7 @@ bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: null
   range_partitioning: null
 references: {}

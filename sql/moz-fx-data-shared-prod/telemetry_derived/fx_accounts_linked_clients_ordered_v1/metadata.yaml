@@ -10,6 +10,7 @@ labels:
   owner1: kwindau
 scheduling:
   dag_name: bqetl_client_attributes
+  depends_on_past: true
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
 references: {}

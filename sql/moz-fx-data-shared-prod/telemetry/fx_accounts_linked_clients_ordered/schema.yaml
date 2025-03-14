@@ -2,18 +2,34 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: The client ID with the earlier first_seen_date
 - name: linked_client_id
   type: STRING
   mode: NULLABLE
+  description: The client ID with the later first_seen_date
 - name: linkage_first_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date of when a client ID and linked client ID are first detected to
+    be using the same account ID
 - name: linkage_last_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date of when a client ID and linked client ID are last detected to
+    be using the same account ID
 - name: client_id_first_seen_date
   type: DATE
   mode: NULLABLE
+  description: The first_seen_date of the client_id
 - name: linked_client_id_first_seen_date
   type: DATE
   mode: NULLABLE
+  description: The first_seen_date of the linked_client_id
+- name: client_id_last_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: The last_seen_date of the client_id
+- name: linked_client_id_last_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: The last_seen_date of the linked_client_id

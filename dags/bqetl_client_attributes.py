@@ -64,6 +64,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=63600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_telemetry_derived__fx_accounts_active_daily_clients__v1 = bigquery_dq_check(
         task_id="checks__fail_telemetry_derived__fx_accounts_active_daily_clients__v1",
         source_table="fx_accounts_active_daily_clients_v1",
@@ -114,6 +127,18 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1/script.sql",
     )
 
+    telemetry_derived__fx_accounts_linked_clients_ordered__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__fx_accounts_linked_clients_ordered__v1",
+        destination_table="fx_accounts_linked_clients_ordered_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__fx_accounts_linked_clients_staging__v1 = bigquery_etl_query(
         task_id="telemetry_derived__fx_accounts_linked_clients_staging__v1",
         destination_table="fx_accounts_linked_clients_staging_v1",
@@ -139,6 +164,14 @@ with DAG(
 
     telemetry_derived__fx_accounts_linked_clients__v1.set_upstream(
         checks__fail_telemetry_derived__fx_accounts_linked_clients_staging__v1
+    )
+
+    telemetry_derived__fx_accounts_linked_clients_ordered__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1
+    )
+
+    telemetry_derived__fx_accounts_linked_clients_ordered__v1.set_upstream(
+        telemetry_derived__fx_accounts_linked_clients__v1
     )
 
     telemetry_derived__fx_accounts_linked_clients_staging__v1.set_upstream(

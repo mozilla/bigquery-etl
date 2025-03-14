@@ -6,8 +6,8 @@ description: |-
 owners:
 - kwindau@mozilla.com
 labels:
-  incremental: true
   owner1: kwindau
+  table_type: client_level
   dag: bqetl_client_attributes
 scheduling:
   dag_name: bqetl_client_attributes

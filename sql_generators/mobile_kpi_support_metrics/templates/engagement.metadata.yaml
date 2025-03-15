@@ -31,5 +31,5 @@ bigquery:
       - country
       - first_seen_date
 monitoring:
-  enabled: true
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
   collection: {{ bigeye_collection }}

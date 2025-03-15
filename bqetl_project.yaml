@@ -408,6 +408,16 @@ generate:
       firefox_desktop:
         # firefox_desktop is a single app containing multiple channels hence why set to null.
         channels: null
+      focus_android:
+        channels:
+        - release
+        - beta
+        - nightly
+      focus_ios:
+        channels:
+        - release
+        - beta
+        - nightly
 
 
 retention_exclusion_list:

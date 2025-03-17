@@ -1,0 +1,121 @@
+fields:
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+  description: Normalized App Name
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: App Version
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Campaign
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Content
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Medium
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Source
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Variation
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: ISO-2 country code
+- name: device_model
+  type: STRING
+  mode: NULLABLE
+  description: Device Model
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: is_default_browser
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Boolean flag indicating if Firefox is the default browser
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System Version
+- name: adjust_ad_group
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Ad Group
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Campaign
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Creative
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: Adjust Network
+- name: play_store_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Campaign
+- name: play_store_attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Medium
+- name: play_store_attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Source
+- name: play_store_attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Content
+- name: play_store_attribution_term
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Term
+- name: cohort_date_week
+  type: DATE
+  mode: NULLABLE
+  description: Week of First Seen Date
+- name: nbr_clients_in_cohort
+  type: INTEGER
+  mode: NULLABLE
+  description: Total Number of Clients in Cohort
+- name: activity_date_week
+  type: DATE
+  mode: NULLABLE
+  description: Activity Date Week
+- name: weeks_after_first_seen_week
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Weeks After First Seen Week - if 0, then same week as first seen week
+- name: nbr_active_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Active Clients

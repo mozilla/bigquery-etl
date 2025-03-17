@@ -39,6 +39,7 @@ def run_query(sdk, date):
             "dashboard_performance.seconds_until_last_data_received",
             "dashboard_performance.seconds_until_last_tile_finished_rendering",
             "dashboard_performance.dash_id",
+            "dashboard_performance.dashboard_page_session",
             "dashboard_performance.first_event_at_date",
         ],
         pivots=None,

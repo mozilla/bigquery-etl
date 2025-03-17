@@ -22,6 +22,7 @@ scheduling:
       "{{ var.value.surveygizmo_api_secret }}",
       "--destination_table",
       "moz-fx-data-shared-prod.fx_quant_user_research_derived.fxqur_viewpoint_mobile_v1",
+      "--include_url_variables"
     ]
 bigquery:
   time_partitioning:

@@ -2116,6 +2116,24 @@ bqetl_ltv:
   tags:
     - impact/tier_1
 
+bqetl_imf_exchange_rates:
+  description: |
+    This DAG pulls exchange rate data from the International Monetary Fund API
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-01-01"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 23 0 18 * *
+
 bqetl_imf_cpi_data:
   description: |
     This DAG pulls inflation data from the International Monetary Fund CPI API
@@ -2242,5 +2260,22 @@ bqetl_un_population:
     start_date: '2024-01-01'
   description: Pulls world population data from United Nations API
   schedule_interval: 0 13 15 2 *
+  tags:
+    - impact/tier_3
+
+bqetl_chrome_extensions_scraper:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-03-01'
+  description: Pulls info about Chrome extensions from the Chrome webstore
+  schedule_interval: 40 21 * * 1
   tags:
     - impact/tier_3

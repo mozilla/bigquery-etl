@@ -44,6 +44,7 @@ LOC_IDS_OF_INTEREST = [
     578,  # Norway
     688,  # Serbia
     702,  # Singapore
+    724, # Spain
 ]
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.population_v1"

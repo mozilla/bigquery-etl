@@ -52,9 +52,9 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    checks__fail_external_derived__exchange_rates__v1 = bigquery_dq_check(
-        task_id="checks__fail_external_derived__exchange_rates__v1",
-        source_table="exchange_rates_v1",
+    checks__fail_external_derived__imf_exchange_rates__v1 = bigquery_dq_check(
+        task_id="checks__fail_external_derived__imf_exchange_rates__v1",
+        source_table="imf_exchange_rates_v1",
         dataset_id="external_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
@@ -65,11 +65,11 @@ with DAG(
         retries=0,
     )
 
-    external_derived__exchange_rates__v1 = GKEPodOperator(
-        task_id="external_derived__exchange_rates__v1",
+    external_derived__imf_exchange_rates__v1 = GKEPodOperator(
+        task_id="external_derived__imf_exchange_rates__v1",
         arguments=[
             "python",
-            "sql/moz-fx-data-shared-prod/external_derived/exchange_rates_v1/query.py",
+            "sql/moz-fx-data-shared-prod/external_derived/imf_exchange_rates_v1/query.py",
         ]
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
@@ -77,6 +77,6 @@ with DAG(
         email=["kwindau@mozilla.com"],
     )
 
-    checks__fail_external_derived__exchange_rates__v1.set_upstream(
-        external_derived__exchange_rates__v1
+    checks__fail_external_derived__imf_exchange_rates__v1.set_upstream(
+        external_derived__imf_exchange_rates__v1
     )

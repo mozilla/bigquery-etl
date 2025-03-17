@@ -1,4 +1,4 @@
-friendly_name: Exchange Rates
+friendly_name: Imf Exchange Rates
 description: |-
   Please provide a description for the query
 owners: []
@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.external_derived.exchange_rates_v1
+  - moz-fx-data-shared-prod.external_derived.imf_exchange_rates_v1
 require_column_descriptions: false

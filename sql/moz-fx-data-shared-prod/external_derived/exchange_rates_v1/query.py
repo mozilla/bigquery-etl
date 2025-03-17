@@ -4,7 +4,7 @@ import time
 import pandas as pd
 import requests
 from google.cloud import bigquery
-
+import sys
 
 # Define inputs
 country_codes = ["CA", "GB", "JP", "PL"]
@@ -74,12 +74,16 @@ def fetch_exchange_rate_data(
 
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while fetching the data: {e}")
+        sys.exit(1)
     except KeyError as e:
         print(f"An error occurred while accessing the JSON structure: {e}")
+        sys.exit(1)
     except ValueError as e:
         print(f"Error: {e}")
+        sys.exit(1)
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+        sys.exit(1)
 
 
 def initialize_results_df():

@@ -2594,7 +2594,9 @@ SELECT
       metrics.counter.use_counter_doc_js_optimize_array_species_fuse,
       metrics.counter.use_counter_doc_js_thenable_object_proto,
       metrics.counter.use_counter_page_js_optimize_array_species_fuse,
-      metrics.counter.use_counter_page_js_thenable_object_proto
+      metrics.counter.use_counter_page_js_thenable_object_proto,
+      metrics.counter.use_counter_doc_js_optimize_promise_lookup_fuse,
+      metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5210,7 +5212,9 @@ SELECT
       metrics.counter.use_counter_doc_js_optimize_array_species_fuse,
       metrics.counter.use_counter_doc_js_thenable_object_proto,
       metrics.counter.use_counter_page_js_optimize_array_species_fuse,
-      metrics.counter.use_counter_page_js_thenable_object_proto
+      metrics.counter.use_counter_page_js_thenable_object_proto,
+      metrics.counter.use_counter_doc_js_optimize_promise_lookup_fuse,
+      metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7826,7 +7830,9 @@ SELECT
       metrics.counter.use_counter_doc_js_optimize_array_species_fuse,
       metrics.counter.use_counter_doc_js_thenable_object_proto,
       metrics.counter.use_counter_page_js_optimize_array_species_fuse,
-      metrics.counter.use_counter_page_js_thenable_object_proto
+      metrics.counter.use_counter_page_js_thenable_object_proto,
+      metrics.counter.use_counter_doc_js_optimize_promise_lookup_fuse,
+      metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10442,7 +10448,9 @@ SELECT
       metrics.counter.use_counter_doc_js_optimize_array_species_fuse,
       metrics.counter.use_counter_doc_js_thenable_object_proto,
       metrics.counter.use_counter_page_js_optimize_array_species_fuse,
-      metrics.counter.use_counter_page_js_thenable_object_proto
+      metrics.counter.use_counter_page_js_thenable_object_proto,
+      metrics.counter.use_counter_doc_js_optimize_promise_lookup_fuse,
+      metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13058,7 +13066,9 @@ SELECT
       metrics.counter.use_counter_doc_js_optimize_array_species_fuse,
       metrics.counter.use_counter_doc_js_thenable_object_proto,
       metrics.counter.use_counter_page_js_optimize_array_species_fuse,
-      metrics.counter.use_counter_page_js_thenable_object_proto
+      metrics.counter.use_counter_page_js_thenable_object_proto,
+      metrics.counter.use_counter_doc_js_optimize_promise_lookup_fuse,
+      metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

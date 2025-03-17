@@ -8438,6 +8438,12 @@ fields:
     - name: use_counter2_js_thenable_object_proto_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_optimizepromiselookup_fuse_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_optimizepromiselookup_fuse_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16743,6 +16749,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_thenable_object_proto_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_optimizepromiselookup_fuse_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_optimizepromiselookup_fuse_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

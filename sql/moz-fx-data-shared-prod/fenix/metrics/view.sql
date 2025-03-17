@@ -320,7 +320,11 @@ SELECT
       metrics.counter.devtools_toolbox_opened_count,
       metrics.counter.devtools_webconsole_opened_count,
       metrics.counter.localstorage_request_recv_cancel_counter,
-      metrics.counter.localstorage_request_send_cancel_counter
+      metrics.counter.localstorage_request_send_cancel_counter,
+      metrics.counter.glam_experiment_cpu_time_bogus_values,
+      metrics.counter.glam_experiment_os_socket_limit_reached,
+      metrics.counter.glam_experiment_total_cpu_time_ms,
+      metrics.counter.glam_experiment_used
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -915,7 +919,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
-      metrics.labeled_counter.pdfjs_signature_edit_description
+      metrics.labeled_counter.pdfjs_signature_edit_description,
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1424,7 +1429,13 @@ SELECT
       metrics.timing_distribution.devtools_read_heap_snapshot,
       metrics.timing_distribution.devtools_save_heap_snapshot,
       metrics.timing_distribution.localstorage_database_new_object_setup_time,
-      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time,
+      metrics.timing_distribution.glam_experiment_async_sheet_load,
+      metrics.timing_distribution.glam_experiment_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.glam_experiment_largest_contentful_paint,
+      metrics.timing_distribution.glam_experiment_protect_time,
+      metrics.timing_distribution.glam_experiment_sub_complete_load_net,
+      metrics.timing_distribution.glam_experiment_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -1970,7 +1981,11 @@ SELECT
       metrics.counter.devtools_toolbox_opened_count,
       metrics.counter.devtools_webconsole_opened_count,
       metrics.counter.localstorage_request_recv_cancel_counter,
-      metrics.counter.localstorage_request_send_cancel_counter
+      metrics.counter.localstorage_request_send_cancel_counter,
+      metrics.counter.glam_experiment_cpu_time_bogus_values,
+      metrics.counter.glam_experiment_os_socket_limit_reached,
+      metrics.counter.glam_experiment_total_cpu_time_ms,
+      metrics.counter.glam_experiment_used
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2565,7 +2580,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
-      metrics.labeled_counter.pdfjs_signature_edit_description
+      metrics.labeled_counter.pdfjs_signature_edit_description,
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3074,7 +3090,13 @@ SELECT
       metrics.timing_distribution.devtools_read_heap_snapshot,
       metrics.timing_distribution.devtools_save_heap_snapshot,
       metrics.timing_distribution.localstorage_database_new_object_setup_time,
-      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time,
+      metrics.timing_distribution.glam_experiment_async_sheet_load,
+      metrics.timing_distribution.glam_experiment_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.glam_experiment_largest_contentful_paint,
+      metrics.timing_distribution.glam_experiment_protect_time,
+      metrics.timing_distribution.glam_experiment_sub_complete_load_net,
+      metrics.timing_distribution.glam_experiment_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3638,7 +3660,11 @@ SELECT
       metrics.counter.devtools_toolbox_opened_count,
       metrics.counter.devtools_webconsole_opened_count,
       metrics.counter.localstorage_request_recv_cancel_counter,
-      metrics.counter.localstorage_request_send_cancel_counter
+      metrics.counter.localstorage_request_send_cancel_counter,
+      metrics.counter.glam_experiment_cpu_time_bogus_values,
+      metrics.counter.glam_experiment_os_socket_limit_reached,
+      metrics.counter.glam_experiment_total_cpu_time_ms,
+      metrics.counter.glam_experiment_used
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4233,7 +4259,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
-      metrics.labeled_counter.pdfjs_signature_edit_description
+      metrics.labeled_counter.pdfjs_signature_edit_description,
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4742,7 +4769,13 @@ SELECT
       metrics.timing_distribution.devtools_read_heap_snapshot,
       metrics.timing_distribution.devtools_save_heap_snapshot,
       metrics.timing_distribution.localstorage_database_new_object_setup_time,
-      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time,
+      metrics.timing_distribution.glam_experiment_async_sheet_load,
+      metrics.timing_distribution.glam_experiment_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.glam_experiment_largest_contentful_paint,
+      metrics.timing_distribution.glam_experiment_protect_time,
+      metrics.timing_distribution.glam_experiment_sub_complete_load_net,
+      metrics.timing_distribution.glam_experiment_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5315,7 +5348,11 @@ SELECT
       metrics.counter.devtools_toolbox_opened_count,
       metrics.counter.devtools_webconsole_opened_count,
       metrics.counter.localstorage_request_recv_cancel_counter,
-      metrics.counter.localstorage_request_send_cancel_counter
+      metrics.counter.localstorage_request_send_cancel_counter,
+      metrics.counter.glam_experiment_cpu_time_bogus_values,
+      metrics.counter.glam_experiment_os_socket_limit_reached,
+      metrics.counter.glam_experiment_total_cpu_time_ms,
+      metrics.counter.glam_experiment_used
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5910,7 +5947,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
-      metrics.labeled_counter.pdfjs_signature_edit_description
+      metrics.labeled_counter.pdfjs_signature_edit_description,
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6419,7 +6457,13 @@ SELECT
       metrics.timing_distribution.devtools_read_heap_snapshot,
       metrics.timing_distribution.devtools_save_heap_snapshot,
       metrics.timing_distribution.localstorage_database_new_object_setup_time,
-      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time,
+      metrics.timing_distribution.glam_experiment_async_sheet_load,
+      metrics.timing_distribution.glam_experiment_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.glam_experiment_largest_contentful_paint,
+      metrics.timing_distribution.glam_experiment_protect_time,
+      metrics.timing_distribution.glam_experiment_sub_complete_load_net,
+      metrics.timing_distribution.glam_experiment_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -6974,7 +7018,11 @@ SELECT
       metrics.counter.devtools_toolbox_opened_count,
       metrics.counter.devtools_webconsole_opened_count,
       metrics.counter.localstorage_request_recv_cancel_counter,
-      metrics.counter.localstorage_request_send_cancel_counter
+      metrics.counter.localstorage_request_send_cancel_counter,
+      metrics.counter.glam_experiment_cpu_time_bogus_values,
+      metrics.counter.glam_experiment_os_socket_limit_reached,
+      metrics.counter.glam_experiment_total_cpu_time_ms,
+      metrics.counter.glam_experiment_used
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -7569,7 +7617,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_listeners_without_beforeinput_listeners,
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
-      metrics.labeled_counter.pdfjs_signature_edit_description
+      metrics.labeled_counter.pdfjs_signature_edit_description,
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -8078,7 +8127,13 @@ SELECT
       metrics.timing_distribution.devtools_read_heap_snapshot,
       metrics.timing_distribution.devtools_save_heap_snapshot,
       metrics.timing_distribution.localstorage_database_new_object_setup_time,
-      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time
+      metrics.timing_distribution.localstorage_request_prepare_datastore_processing_time,
+      metrics.timing_distribution.glam_experiment_async_sheet_load,
+      metrics.timing_distribution.glam_experiment_http_content_html5parser_ondatafinished_to_onstop_delay,
+      metrics.timing_distribution.glam_experiment_largest_contentful_paint,
+      metrics.timing_distribution.glam_experiment_protect_time,
+      metrics.timing_distribution.glam_experiment_sub_complete_load_net,
+      metrics.timing_distribution.glam_experiment_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

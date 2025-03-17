@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: App ID of the channel data was received from
 - name: normalized_channel
-  mode: NULLABLE
   type: STRING
+  mode: NULLABLE
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -7930,6 +7930,12 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: use_counter_page_js_thenable_object_proto
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_optimize_promise_lookup_fuse
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_optimize_promise_lookup_fuse
       type: INTEGER
       mode: NULLABLE
   - name: labeled_counter

@@ -2636,6 +2636,71 @@ fields:
         or observers.
 
         '
+    - name: glam_experiment_active_ticks
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Duplicate of:
+
+        `browser.engagement.active_ticks`
+
+
+        Intended for the purpose of testing client side sampling of data. This
+
+        metric is disabled by default and will be enabled only for the purpose
+
+        of the experiment. See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_cpu_time_bogus_values
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Duplicate of: `power.cpu_time_bogus_values`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_os_socket_limit_reached
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Duplicate of: `networking.os_socket_limit_reached`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_panel_shown
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Duplicate of: `downloads.panel_shown`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_total_cpu_time_ms
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Duplicate of: `power.total_cpu_time_ms`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_used
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Duplicate of: `pdfjs.used`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -10071,6 +10136,20 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram FX_SEARCHBAR_SELECTED_RESULT_METHOD.
+
+        '
+    - name: creditcard_detected_cc_number_fields_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The count of detected input fields that a website plans on splitting
+        the cc number digits across
 
         '
   - name: memory_distribution
@@ -29123,6 +29202,288 @@ fields:
         occurs, the time is not recorded. In the future, we may introduce separate
         metrics to distinguish between different types of datastore preparations (e.g.,
         loading data from disk vs. using preloaded data).
+
+        '
+    - name: glam_experiment_async_sheet_load
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Duplicate of: `performance.pageload.async_sheet_load`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_http_content_html5parser_ondatafinished_to_onstop_delay
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Duplicate of: `networking.http_content_html5parser_ondatafinished_to_onstop_delay`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_largest_contentful_paint
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Duplicate of: `perf.largest_contentful_paint`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_protect_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Duplicate of: `javascript_pageload.protect_time`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_sub_complete_load_net
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Duplicate of: `network.sub_complete_load_net`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
+
+        '
+    - name: glam_experiment_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Duplicate of: `performance.clone.deserialize.time`
+
+        Intended for the purpose of testing client side sampling of data. This metric
+        is disabled by default and will be enabled only for the purpose of the experiment.
+        See Bug 1947604 for more information.
 
         '
   - name: quantity

@@ -10,7 +10,7 @@ import sys
 country_codes = ["CA", "GB", "JP", "PL"]
 LOOKBACK_YEARS = 5
 TARGET_PROJECT = "moz-fx-data-shared-prod"
-TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.exchange_rates_v1"
+TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.imf_exchange_rates_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_EXCHANGE_RATES/imf_exchange_rate_data_%s.csv"

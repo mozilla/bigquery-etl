@@ -46,12 +46,6 @@ def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
     gdp_data = response.json()
     gdp_data = gdp_data[1]
 
-    # TEMP BELOW
-    print("gdp_data")
-    print(gdp_data)
-
-    # TEMP ABOVE
-
     # Initialize a results data frame
     results_df = pd.DataFrame(
         {

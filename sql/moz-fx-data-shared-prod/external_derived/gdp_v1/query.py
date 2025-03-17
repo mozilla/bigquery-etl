@@ -39,7 +39,8 @@ countries = [
     "SRB",
     "SWE",
     "SGP",
-    "TUR" "USA",
+    "TUR",
+    "USA",
 ]
 LOOKBACK_YEARS = 5
 TARGET_PROJECT = "moz-fx-data-shared-prod"

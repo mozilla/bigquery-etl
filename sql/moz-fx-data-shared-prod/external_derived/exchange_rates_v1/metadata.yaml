@@ -1,0 +1,19 @@
+friendly_name: Exchange Rates
+description: |-
+  Pulls data from the IMF API about exchange rates by country & report period
+  Completely overwrites the BQ table each time it runs
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
+  table_type: aggregate
+  dag: bqetl_imf_exchange_rates
+scheduling:
+  dag_name: bqetl_imf_exchange_rates
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: true

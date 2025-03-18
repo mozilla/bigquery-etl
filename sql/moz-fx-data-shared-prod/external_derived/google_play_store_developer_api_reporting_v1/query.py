@@ -10,7 +10,10 @@ from google.cloud import bigquery
 import pandas as pd
 
 # Set variables
-METRIC_METADATA_API_URL = "https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozilla.firefox/crashRateMetricSet"
+API_URL = "https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozilla.firefox/%s"
+
+metrics_of_interest = {'crashRateMetricSet': None} #{'vitals': 'slowstartuprate'}
+
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.google_play_store_developer_api_reporting_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
@@ -20,16 +23,18 @@ SERVICE_ACCOUNT_FILE = "/Users/kwindau/Documents/2025/202502/boxwood-axon-825-a8
 SCOPES = ["https://www.googleapis.com/auth/playdeveloperreporting"]
 
 
-def call_api(access_token, url, timeout_seconds):
+def get_metric_set_metadata(access_token, url, metric_set, timeout_seconds):
     """Call the API URL using the given credentials and the given timeout limit
     Inputs:
     * Access Token
     * URL (string)
+    * Metric Set
     * Timeout Seconds (int)
     Outputs:
     * API call response"""
+    full_url = url % (metric_set)
     headers = {"Authorization": f"Bearer {access_token}", "Accept": "application/json"}
-    response = requests.get(url, headers=headers, timeout=timeout_seconds)
+    response = requests.get(full_url, headers=headers, timeout=timeout_seconds)
     return response
 
 
@@ -98,40 +103,82 @@ def parse_metric_set_metadata(metric_set_metadata_json):
     return metric_set_hourly_metadata_df, metric_set_daily_metadata_df
 
 
+#def pull_metric_set_reporting_data(metric_set, query_string, url, timeout_seconds):
+    
+    
+
+
 def main():
     """Call the API, save data to GCS, write data to BQ"""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
+    #Get the DAG logical run date
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     logical_dag_date_string = logical_dag_date.strftime("%Y-%m-%d")
-
     print("logical_dag_date_string: ", logical_dag_date_string)
 
-    # Get credentials #######TEMP - will replace later on when moved to airflow###########
+    #Get today's date
+    today = datetime.today()
+    curr_date = today.strftime("%Y-%m-%d")
+    print("curr_date")
+    print(curr_date)
+
+    # Get credentials 
+    # #######TEMP BELOW - will replace later on when moved to airflow ###########
     credentials = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES
     )
     credentials.refresh(Request())
     access_token = credentials.token
+    # ####### TEMP ABOVE - will replace later on when moved to airflow #### 
 
-    # Get the metric metadata
-    metricset_metadata = call_api(
-        access_token, METRIC_METADATA_API_URL, TIMEOUT_IN_SECONDS
-    )
-    print("metricset_metadata")
-    print(metricset_metadata.json())
+    # Loop through the metrics_of_interest dictionary
+    for metric_set, metric in metrics_of_interest.items():
+      #Print the current key and value
+      print('Current Metric Set: ', metric_set)
+      print('Current Metric: ', metric)
+      #Get the freshness metadata for this metric set
+      metricset_metadata = get_metric_set_metadata(
+          access_token, API_URL, metric_set, TIMEOUT_IN_SECONDS
+      )
+      #print("metricset_metadata")
+      #print(metricset_metadata.json())
 
-    metadata_hourly_df, metadata_daily_df = parse_metric_set_metadata(
-        metricset_metadata.json()
-    )
-    print("metadata_hourly_df")
-    print(metadata_hourly_df)
+      metadata_hourly_df, metadata_daily_df = parse_metric_set_metadata(
+          metricset_metadata.json()
+      )
+      print("metadata_hourly_df")
+      print(metadata_hourly_df)
 
-    print("metadata_daily_df")
-    print(metadata_daily_df)
+      print("metadata_daily_df")
+      print(metadata_daily_df)
 
-    # Now, let's query the metric sets
+      # Now, let's query the metric sets and put into a final_df
+      #final_df = #??
+
+    # #Let's load the data to CSV in GCS
+    # final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (curr_date)
+    # print("final_results_fpath: ", final_results_fpath)
+    # final_df.to_csv(final_results_fpath, index=False)
+
+    #Let's copy it from the CSV to BQ
+    # client = bigquery.Client(TARGET_PROJECT)
+    # load_csv_to_gcp_job = client.load_table_from_uri(
+    #     final_results_fpath,
+    #     TARGET_TABLE,
+    #     job_config=bigquery.LoadJobConfig(
+    #         create_disposition="CREATE_NEVER",
+    #         write_disposition="WRITE_TRUNCATE",
+    #         schema=[
+    #             {"name": "submission_date", "type": "DATE", "mode": "NULLABLE"},
+    #         ],
+    #         skip_leading_rows=1,
+    #         source_format=bigquery.SourceFormat.CSV,
+    #     ),
+    # )
+
+    # load_csv_to_gcp_job.result()    
 
 
 if __name__ == "__main__":

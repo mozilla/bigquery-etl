@@ -1,0 +1,19 @@
+friendly_name: Google Play Store Developer Api Reporting
+description: |-
+  Pulls data from the Google Play Store Developer API
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_google_play_store_developer_reporting_api_data
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

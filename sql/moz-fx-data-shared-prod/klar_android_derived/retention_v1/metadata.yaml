@@ -45,7 +45,7 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.klar_android.retention_clients
 monitoring:
-  enabled: true
+  enabled: false
   collection: Operational Checks
   partition_column: null
   partition_column_set: true

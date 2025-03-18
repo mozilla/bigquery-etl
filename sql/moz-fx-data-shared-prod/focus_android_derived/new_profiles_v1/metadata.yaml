@@ -35,7 +35,7 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.focus_android.new_profile_clients
 monitoring:
-  enabled: true
+  enabled: false
   collection: Operational Checks
   partition_column: null
   partition_column_set: true

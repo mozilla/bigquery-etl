@@ -37,7 +37,7 @@ references:
   - moz-fx-data-shared-prod.klar_ios.new_profile_clients
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
 monitoring:
-  enabled: true
+  enabled: false
   collection: Operational Checks
   partition_column: null
   partition_column_set: true

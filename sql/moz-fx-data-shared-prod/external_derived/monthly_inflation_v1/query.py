@@ -6,7 +6,28 @@ import requests
 from google.cloud import bigquery
 
 # Set variables
-countries = ["CA", "US", "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"]
+countries = [
+    "PA",
+    "PE",
+    "NO",
+    "MX",
+    "KE",
+    "IN",
+    "IS",
+    "BR",
+    "CA",
+    "CO",
+    "GR",
+    "US",
+    "CH",
+    "GB",
+    "FR",
+    "ES",
+    "DE",
+    "IT",
+    "JP",
+    "PL",
+]
 START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
 WAIT_TIME_SECONDS = 30

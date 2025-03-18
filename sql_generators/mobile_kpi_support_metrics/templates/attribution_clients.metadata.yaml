@@ -19,5 +19,5 @@ bigquery:
     field: submission_date
     require_partition_filter: false
 monitoring:
-  enabled: true
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
   collection: {{ bigeye_collection }}

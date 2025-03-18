@@ -52,9 +52,22 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    checks__fail_external_derived__inflation__v1 = bigquery_dq_check(
-        task_id="checks__fail_external_derived__inflation__v1",
-        source_table="inflation_v1",
+    checks__fail_external_derived__monthly_inflation__v1 = bigquery_dq_check(
+        task_id="checks__fail_external_derived__monthly_inflation__v1",
+        source_table="monthly_inflation_v1",
+        dataset_id="external_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__fail_external_derived__quarterly_inflation__v1 = bigquery_dq_check(
+        task_id="checks__fail_external_derived__quarterly_inflation__v1",
+        source_table="quarterly_inflation_v1",
         dataset_id="external_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
@@ -77,11 +90,11 @@ with DAG(
         email=["kwindau@mozilla.com"],
     )
 
-    external_derived__inflation__v1 = GKEPodOperator(
-        task_id="external_derived__inflation__v1",
+    external_derived__monthly_inflation__v1 = GKEPodOperator(
+        task_id="external_derived__monthly_inflation__v1",
         arguments=[
             "python",
-            "sql/moz-fx-data-shared-prod/external_derived/inflation_v1/query.py",
+            "sql/moz-fx-data-shared-prod/external_derived/monthly_inflation_v1/query.py",
         ]
         + [],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
@@ -89,6 +102,22 @@ with DAG(
         email=["kwindau@mozilla.com"],
     )
 
-    checks__fail_external_derived__inflation__v1.set_upstream(
-        external_derived__inflation__v1
+    external_derived__quarterly_inflation__v1 = GKEPodOperator(
+        task_id="external_derived__quarterly_inflation__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/external_derived/quarterly_inflation_v1/query.py",
+        ]
+        + [],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+    )
+
+    checks__fail_external_derived__monthly_inflation__v1.set_upstream(
+        external_derived__monthly_inflation__v1
+    )
+
+    checks__fail_external_derived__quarterly_inflation__v1.set_upstream(
+        external_derived__quarterly_inflation__v1
     )

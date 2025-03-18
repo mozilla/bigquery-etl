@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
 scheduling:
   dag_name: bqetl_google_play_store_developer_reporting_api_data
+  arguments: ["--date", "{{ds}}"]
 bigquery:
   time_partitioning:
     type: day

@@ -1926,6 +1926,22 @@ with DAG(
         task_group=task_group_fenix,
     )
 
+    fenix_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
+        task_id="fenix_derived__usage_reporting_active_users_aggregates__v1",
+        destination_table="usage_reporting_active_users_aggregates_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_fenix,
+    )
+
     firefox_crashreporter_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_crashreporter_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -2309,6 +2325,22 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__usage_reporting_active_users_aggregates__v1",
+        destination_table="usage_reporting_active_users_aggregates_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "kik@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_firefox_desktop,
+    )
+
     firefox_desktop_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__usage_reporting_clients_daily__v1",
         destination_table="usage_reporting_clients_daily_v1",
@@ -2465,6 +2497,24 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_firefox_ios,
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1 = (
+        bigquery_etl_query(
+            task_id="firefox_ios_derived__usage_reporting_active_users_aggregates__v1",
+            destination_table="usage_reporting_active_users_aggregates_v1",
+            dataset_id="firefox_ios_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="kik@mozilla.com",
+            email=[
+                "ascholtz@mozilla.com",
+                "kik@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+            task_group=task_group_firefox_ios,
+        )
     )
 
     firefox_reality_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -6173,6 +6223,66 @@ with DAG(
         bigeye__fenix_derived__metrics_clients_daily__v1
     )
 
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1
+    )
+
     firefox_crashreporter_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -6337,6 +6447,18 @@ with DAG(
         bigeye__firefox_desktop_derived__metrics_clients_daily__v1
     )
 
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        firefox_desktop_derived__usage_reporting_clients_daily__v1
+    )
+
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        firefox_desktop_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        firefox_desktop_derived__usage_reporting_clients_last_seen__v1
+    )
+
     firefox_desktop_derived__usage_reporting_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -6403,6 +6525,42 @@ with DAG(
 
     firefox_ios_derived__metrics_clients_last_seen__v1.set_upstream(
         bigeye__firefox_ios_derived__metrics_clients_daily__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1
     )
 
     firefox_reality_derived__clients_last_seen_joined__v1.set_upstream(

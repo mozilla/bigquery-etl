@@ -3,11 +3,12 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_active_users`
 AS
 SELECT
-  daily.* EXCEPT (app_channel, normalized_country_code, app_display_version),
-  app_channel AS channel,
+  * EXCEPT (submission_date, app_channel, normalized_country_code, app_display_version),
+  last_seen.submission_date,
+  daily.submission_date AS `date`,
+  normalized_channel AS channel,
   IFNULL(normalized_country_code, "??") AS country,
-  EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
-  first_seen.first_seen_date,
+  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
   "firefox_ios" AS app_name,
   -- Activity fields to support metrics built on top of activity
   CASE
@@ -46,10 +47,10 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
 FROM
-  `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_last_seen`
+  `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_last_seen` AS last_seen
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_daily` AS daily
-  USING (submission_date, usage_profile_id, app_channel)
+  USING (submission_date, usage_profile_id, normalized_app_id, normalized_channel)
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_first_seen` AS first_seen
-  USING (usage_profile_id, app_channel)
+  USING (usage_profile_id, normalized_app_id, normalized_channel)

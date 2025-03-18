@@ -1,15 +1,21 @@
 fields:
+- name: usage_profile_id
+  type: STRING
+  mode: NULLABLE
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-- name: submission_date
-  type: DATE
+- name: days_seen_bits
+  type: INTEGER
   mode: NULLABLE
-- name: usage_profile_id
-  type: STRING
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_created_profile_bits
+  type: INTEGER
   mode: NULLABLE
 - name: first_run_date
   type: DATE
@@ -35,6 +41,15 @@ fields:
 - name: is_active
   type: BOOLEAN
   mode: NULLABLE
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: date
+  type: DATE
+  mode: NULLABLE
 - name: channel
   type: STRING
   mode: NULLABLE
@@ -43,9 +58,6 @@ fields:
   mode: NULLABLE
 - name: first_seen_year
   type: INTEGER
-  mode: NULLABLE
-- name: first_seen_date
-  type: DATE
   mode: NULLABLE
 - name: app_name
   type: STRING

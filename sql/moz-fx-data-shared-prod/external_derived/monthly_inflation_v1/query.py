@@ -14,7 +14,7 @@ TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.monthly_inflation_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
-RESULTS_FPATH = "IMF_CPI/imf_cpi_data_%s.csv"
+RESULTS_FPATH = "IMF_MONTHLY_CPI/imf_monthly_cpi_data_%s.csv"
 
 
 # Define function to pull CPI data

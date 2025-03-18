@@ -12,7 +12,26 @@ import pandas as pd
 # Set variables
 API_URL = "https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozilla.firefox/%s"
 
-metrics_of_interest = {'slowStartRateMetricSet': None} #{'vitals': 'slowstartuprate'}
+metrics_of_interest = {'slowStartRateMetricSet': None} 
+
+example_request_payload = {"timelineSpec": {
+                                    "aggregationPeriod": "DAILY",
+                                    "startTime": {
+                                        "year": 2025,
+                                        "month": 3,
+                                        "day": 1,
+                                        "timeZone": "America/Los_Angeles"
+                                    },
+                                    "endTime": {
+                                        "year": 2025,
+                                        "month": 3,
+                                        "day": 17,
+                                        "timeZone": "America/Los_Angeles"
+                                    }
+                                },
+                                "metrics": ["slowStartRate"],
+                                "dimensions": [],
+                                "pageSize": 100}
 
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.google_play_store_developer_api_reporting_v1"
@@ -40,16 +59,6 @@ def get_metric_set_metadata(access_token, url, metric_set, timeout_seconds):
 
 def parse_metric_set_metadata(metric_set_metadata_json):
     """Takes a JSON, returns 2 pandas dataframes = 1 for hourly info, 1 for daily info"""
-    # Initialize a dataframe
-    # metric_set_hourly_metadata_df = pd.DataFrame(
-    #     {
-    #         "latest_end_time_year": [],
-    #         "latest_end_time_month": [],
-    #         "latest_end_time_day": [],
-    #         "latest_end_time_hours": [],
-    #         "latest_end_time_timezone": [],
-    #     }
-    # )
 
     metric_set_daily_metadata_df = pd.DataFrame(
         {
@@ -59,30 +68,8 @@ def parse_metric_set_metadata(metric_set_metadata_json):
             "latest_end_time_timezone": [],
         }
     )
-
     for freshness in metric_set_metadata_json["freshnessInfo"]["freshnesses"]:
         agg_period = freshness["aggregationPeriod"]
-        print("agg_period")
-        print(agg_period)
-        # if agg_period == "HOURLY":
-        #     latest_end_time_year = freshness["latestEndTime"]["year"]
-        #     latest_end_time_month = freshness["latestEndTime"]["month"]
-        #     latest_end_time_day = freshness["latestEndTime"]["day"]
-        #     latest_end_time_hours = freshness["latestEndTime"]["hours"]
-        #     latest_end_time_tz = freshness["latestEndTime"]["timeZone"]["id"]
-        #     new_hourly_df = pd.DataFrame(
-        #         {
-        #             "latest_end_time_year": [latest_end_time_year],
-        #             "latest_end_time_month": [latest_end_time_month],
-        #             "latest_end_time_day": [latest_end_time_day],
-        #             "latest_end_time_hours": [latest_end_time_hours],
-        #             "latest_end_time_timezone": [latest_end_time_tz],
-        #         }
-        #     )
-        #     metric_set_hourly_metadata_df = pd.concat(
-        #         [metric_set_hourly_metadata_df, new_hourly_df]
-        #     )
-
         if agg_period == "DAILY":
             latest_end_time_year = freshness["latestEndTime"]["year"]
             latest_end_time_month = freshness["latestEndTime"]["month"]
@@ -104,10 +91,16 @@ def parse_metric_set_metadata(metric_set_metadata_json):
     return metric_set_daily_metadata_df
 
 
-#def pull_metric_set_reporting_data(metric_set, query_string, url, timeout_seconds):
+def pull_metric_set_reporting_data(token, request_payload, metric_set_to_query, timeout_seconds):
+    url = f"https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozilla.firefox/{metric_set_to_query}:query"
     
-    
+    headers = {
+    "Authorization": f"Bearer {token}",
+    "Content-Type": "application/json"
+    }
 
+    response = requests.post(url, headers=headers, json=request_payload, timeout=timeout_seconds)
+    return response
 
 def main():
     """Call the API, save data to GCS, write data to BQ"""
@@ -144,15 +137,24 @@ def main():
       metricset_metadata = get_metric_set_metadata(
           access_token, API_URL, metric_set, TIMEOUT_IN_SECONDS
       )
-      print("metricset_metadata")
-      print(metricset_metadata.json())
+      metricset_metadata_json = metricset_metadata.json()
+      print("metricset_metadata_json")
+      print(metricset_metadata_json)
 
       metadata_daily_df = parse_metric_set_metadata(
-          metricset_metadata.json()
+         metricset_metadata_json
       )
 
       print("metadata_daily_df")
       print(metadata_daily_df)
+
+      #Now pull the query data for each metric
+      results = pull_metric_set_reporting_data(token=access_token, 
+                                               request_payload=example_request_payload, 
+                                               metric_set_to_query=metric_set, 
+                                               timeout_seconds=TIMEOUT_IN_SECONDS)
+      print(results)
+
 
       # Now, let's query the metric sets and put into a final_df
       #final_df = #??

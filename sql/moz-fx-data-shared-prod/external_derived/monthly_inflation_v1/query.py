@@ -11,11 +11,12 @@ START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
 WAIT_TIME_SECONDS = 30
 TARGET_PROJECT = "moz-fx-data-shared-prod"
-TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.inflation_v1"
+TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.monthly_inflation_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_CPI/imf_cpi_data_%s.csv"
 
+quarterly_countries = ["AU"]
 
 # Define function to pull CPI data
 def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):

@@ -7,7 +7,23 @@ from google.cloud import bigquery
 import sys
 
 # Define inputs
-country_codes = ["BR", "CA", "CN", "CO", "GB", "IN", "IS", "JP", "MX", "PL", "TR"]
+country_codes = [
+    "AU",
+    "CH",
+    "GB",
+    "US",
+    "BR",
+    "CA",
+    "CN",
+    "CO",
+    "GB",
+    "IN",
+    "IS",
+    "JP",
+    "MX",
+    "PL",
+    "TR",
+]
 LOOKBACK_YEARS = 5
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.imf_exchange_rates_v1"

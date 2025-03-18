@@ -23,7 +23,7 @@ country_codes = [
     "MX",
     "PL",
     "TR",
-]  # old already working
+]
 LOOKBACK_YEARS = 5
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.imf_exchange_rates_v1"

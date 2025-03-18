@@ -12,7 +12,7 @@ import pandas as pd
 # Set variables
 API_URL = "https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozilla.firefox/%s"
 
-metrics_of_interest = {'crashRateMetricSet': None} #{'vitals': 'slowstartuprate'}
+metrics_of_interest = {'slowStartRateMetricSet': None} #{'vitals': 'slowstartuprate'}
 
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.google_play_store_developer_api_reporting_v1"
@@ -41,15 +41,15 @@ def get_metric_set_metadata(access_token, url, metric_set, timeout_seconds):
 def parse_metric_set_metadata(metric_set_metadata_json):
     """Takes a JSON, returns 2 pandas dataframes = 1 for hourly info, 1 for daily info"""
     # Initialize a dataframe
-    metric_set_hourly_metadata_df = pd.DataFrame(
-        {
-            "latest_end_time_year": [],
-            "latest_end_time_month": [],
-            "latest_end_time_day": [],
-            "latest_end_time_hours": [],
-            "latest_end_time_timezone": [],
-        }
-    )
+    # metric_set_hourly_metadata_df = pd.DataFrame(
+    #     {
+    #         "latest_end_time_year": [],
+    #         "latest_end_time_month": [],
+    #         "latest_end_time_day": [],
+    #         "latest_end_time_hours": [],
+    #         "latest_end_time_timezone": [],
+    #     }
+    # )
 
     metric_set_daily_metadata_df = pd.DataFrame(
         {
@@ -64,24 +64,24 @@ def parse_metric_set_metadata(metric_set_metadata_json):
         agg_period = freshness["aggregationPeriod"]
         print("agg_period")
         print(agg_period)
-        if agg_period == "HOURLY":
-            latest_end_time_year = freshness["latestEndTime"]["year"]
-            latest_end_time_month = freshness["latestEndTime"]["month"]
-            latest_end_time_day = freshness["latestEndTime"]["day"]
-            latest_end_time_hours = freshness["latestEndTime"]["hours"]
-            latest_end_time_tz = freshness["latestEndTime"]["timeZone"]["id"]
-            new_hourly_df = pd.DataFrame(
-                {
-                    "latest_end_time_year": [latest_end_time_year],
-                    "latest_end_time_month": [latest_end_time_month],
-                    "latest_end_time_day": [latest_end_time_day],
-                    "latest_end_time_hours": [latest_end_time_hours],
-                    "latest_end_time_timezone": [latest_end_time_tz],
-                }
-            )
-            metric_set_hourly_metadata_df = pd.concat(
-                [metric_set_hourly_metadata_df, new_hourly_df]
-            )
+        # if agg_period == "HOURLY":
+        #     latest_end_time_year = freshness["latestEndTime"]["year"]
+        #     latest_end_time_month = freshness["latestEndTime"]["month"]
+        #     latest_end_time_day = freshness["latestEndTime"]["day"]
+        #     latest_end_time_hours = freshness["latestEndTime"]["hours"]
+        #     latest_end_time_tz = freshness["latestEndTime"]["timeZone"]["id"]
+        #     new_hourly_df = pd.DataFrame(
+        #         {
+        #             "latest_end_time_year": [latest_end_time_year],
+        #             "latest_end_time_month": [latest_end_time_month],
+        #             "latest_end_time_day": [latest_end_time_day],
+        #             "latest_end_time_hours": [latest_end_time_hours],
+        #             "latest_end_time_timezone": [latest_end_time_tz],
+        #         }
+        #     )
+        #     metric_set_hourly_metadata_df = pd.concat(
+        #         [metric_set_hourly_metadata_df, new_hourly_df]
+        #     )
 
         if agg_period == "DAILY":
             latest_end_time_year = freshness["latestEndTime"]["year"]
@@ -100,7 +100,8 @@ def parse_metric_set_metadata(metric_set_metadata_json):
                 [metric_set_daily_metadata_df, new_daily_df]
             )
 
-    return metric_set_hourly_metadata_df, metric_set_daily_metadata_df
+    #return metric_set_hourly_metadata_df, metric_set_daily_metadata_df
+    return metric_set_daily_metadata_df
 
 
 #def pull_metric_set_reporting_data(metric_set, query_string, url, timeout_seconds):
@@ -113,6 +114,7 @@ def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
+
     #Get the DAG logical run date
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     logical_dag_date_string = logical_dag_date.strftime("%Y-%m-%d")
@@ -142,14 +144,12 @@ def main():
       metricset_metadata = get_metric_set_metadata(
           access_token, API_URL, metric_set, TIMEOUT_IN_SECONDS
       )
-      #print("metricset_metadata")
-      #print(metricset_metadata.json())
+      print("metricset_metadata")
+      print(metricset_metadata.json())
 
-      metadata_hourly_df, metadata_daily_df = parse_metric_set_metadata(
+      metadata_daily_df = parse_metric_set_metadata(
           metricset_metadata.json()
       )
-      print("metadata_hourly_df")
-      print(metadata_hourly_df)
 
       print("metadata_daily_df")
       print(metadata_daily_df)

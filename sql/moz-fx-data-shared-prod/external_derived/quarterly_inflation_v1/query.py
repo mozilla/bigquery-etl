@@ -6,19 +6,18 @@ import requests
 from google.cloud import bigquery
 
 # Set variables
-countries = ["CA", "US", "CH", "GB", "FR", "ES", "DE", "IT", "JP", "PL"]
+countries = ["AU"]
 START_LOOKBACK_DAYS = 1825
 END_LOOKBACK_DAYS = 15
 WAIT_TIME_SECONDS = 30
 TARGET_PROJECT = "moz-fx-data-shared-prod"
-TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.monthly_inflation_v1"
+TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.quarterly_inflation_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_CPI/imf_cpi_data_%s.csv"
 
-
 # Define function to pull CPI data
-def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
+def pull_quarterly_cpi_data_from_imf(country_code, start_month, end_month):
     """
     Inputs:
         Country Code - 2 letter country code, for example, US
@@ -26,9 +25,9 @@ def pull_monthly_cpi_data_from_imf(country_code, start_month, end_month):
         End Month - YYYY-MM - for example, 2023-12
 
     Output:
-      JSON with data for this country for the months between start month and end month
+      JSON with data for this country for the quarters between start month and end month
     """
-    api_url = f"http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/M.{country_code}.PCPI_IX.?startPeriod={start_month}&endPeriod={end_month}"
+    api_url = f"http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/Q.{country_code}.PCPI_IX.?startPeriod={start_month}&endPeriod={end_month}"
 
     response = requests.get(api_url, timeout=10)
     inflation_data = response.json()
@@ -83,7 +82,7 @@ def main():
     for country in countries:
         print("pulling data for current country: ", country)
         # Pull the CPI data
-        curr_country_infl_df = pull_monthly_cpi_data_from_imf(
+        curr_country_infl_df = pull_quarterly_cpi_data_from_imf(
             country, start_month, end_month
         )
 

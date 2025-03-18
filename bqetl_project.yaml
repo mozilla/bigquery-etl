@@ -417,8 +417,6 @@ generate:
       focus_ios:
         channels:
         - release
-        - beta
-        - nightly
 
 
 retention_exclusion_list:

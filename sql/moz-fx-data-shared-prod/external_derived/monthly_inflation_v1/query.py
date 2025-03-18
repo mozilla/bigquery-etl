@@ -7,6 +7,10 @@ from google.cloud import bigquery
 
 # Set variables
 countries = [
+    "PA",
+    "PE",
+    "NO",
+    "MX",
     "KE",
     "IN",
     "IS",

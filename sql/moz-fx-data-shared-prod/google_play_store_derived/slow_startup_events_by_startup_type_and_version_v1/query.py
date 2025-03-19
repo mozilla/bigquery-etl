@@ -9,9 +9,9 @@ import pandas as pd
 
 # Set variables
 TARGET_PROJECT = "moz-fx-data-shared-prod"
-TARGET_TABLE = "moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_v1"
+TARGET_TABLE = "moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_and_version_v1"
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
-RESULTS_FPATH = "GOOGLE_PLAY_STORE/developer_api_reporting_slow_startup_events_by_startup_type_%s.csv"
+RESULTS_FPATH = "GOOGLE_PLAY_STORE_TYPE_VERSION/developer_api_reporting_slow_startup_events_by_startup_type_and_version_%s.csv"
 TIMEOUT_IN_SECONDS = 10
 SERVICE_ACCOUNT_FILE = "/Users/kwindau/Documents/2025/202502/boxwood-axon-825-a8f9a0239d65.json"  # TEMP - replace before moving to airflow
 SCOPES = ["https://www.googleapis.com/auth/playdeveloperreporting"]
@@ -23,9 +23,10 @@ APP_NAMES = [
     "org.mozilla.firefox.vpn",
     "org.mozilla.focus",
 ]
+PAGE_SIZE_LIMIT = 5000
 
 
-def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
+def create_request_payload_using_logical_dag_date(date_to_pull_data_for, pg_size_limit):
     """Input: datetime.date, Output: JSON for request payload that pulls data for that same day"""
     # Get the date to pull data for, as year, month day
     date_to_pull_data_for_yr = date_to_pull_data_for.year
@@ -55,13 +56,13 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
             },
         },
         "metrics": ["slowStartRate"],
-        "dimensions": ["startType"],
-        "pageSize": 100,
+        "dimensions": ["startType", "versionCode"],
+        "pageSize": pg_size_limit,
     }
     return request_payload
 
 
-def get_slow_start_rates_by_app_and_date(
+def get_slow_start_rates_by_app_and_date_and_version(
     access_token, app_name, request_payload, timeout_seconds
 ):
     """Call the API URL using the given credentials and the given timeout limit
@@ -88,7 +89,6 @@ def main():
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     print("logical_dag_date")
     print(logical_dag_date)
-
     logical_dag_date_string = logical_dag_date.strftime("%Y-%m-%d")
     print("logical_dag_date_string: ", logical_dag_date_string)
 
@@ -108,16 +108,18 @@ def main():
     access_credentials = credentials.token
 
     # Calculate the request payload
-    payload_for_api_call = create_request_payload_using_logical_dag_date(data_pull_date)
+    payload_for_api_call = create_request_payload_using_logical_dag_date(
+        data_pull_date, PAGE_SIZE_LIMIT
+    )
 
     # Initialize a dataframe to store the data
     final_df = pd.DataFrame(
         {
             "submission_date": [],
             "google_play_store_app_name": [],
-            "pct_users_with_slow_start_event_during_cold_app_start": [],
-            "pct_users_with_slow_start_event_during_warm_app_start": [],
-            "pct_users_with_slow_start_event_during_hot_app_start": [],
+            "app_version_code": [],
+            "startup_type": [],
+            "pct_users_with_slow_start_during_startup_type": [],
         }
     )
 
@@ -125,7 +127,7 @@ def main():
     for app in APP_NAMES:
         print("Pulling data for: ", app)
 
-        api_call_result = get_slow_start_rates_by_app_and_date(
+        api_call_result = get_slow_start_rates_by_app_and_date_and_version(
             access_token=access_credentials,
             app_name=app,
             request_payload=payload_for_api_call,
@@ -135,47 +137,39 @@ def main():
         # Get the data from the result
         result_json = api_call_result.json()
 
-        # Initialize as none until we find them for each app
-        pct_users_w_slow_start_during_cold_start = None
-        pct_users_w_slow_start_during_warm_start = None
-        pct_users_w_slow_start_during_hot_start = None
+        if "nextPageToken" in result_json:
+            print("next page found, not parsed")
+            raise KeyError
 
+        # Loop through each row
         for row in result_json["rows"]:
-            startup_type = row["dimensions"][0]["stringValue"]
-            if startup_type == "COLD":
-                pct_users_w_slow_start_during_cold_start = row["metrics"][0][
-                    "decimalValue"
-                ]["value"]
 
-            if startup_type == "WARM":
-                pct_users_w_slow_start_during_warm_start = row["metrics"][0][
-                    "decimalValue"
-                ]["value"]
+            # Initialize as none until we find them for each app
+            version_code = None
+            startup_type = None
 
-            if startup_type == "HOT":
-                pct_users_w_slow_start_during_hot_start = row["metrics"][0][
-                    "decimalValue"
-                ]["value"]
+            for dimension in row["dimensions"]:
 
-        # Parse the result into a dataframe
-        new_df = pd.DataFrame(
-            {
-                "submission_date": [data_pull_date_string],
-                "google_play_store_app_name": [app],
-                "pct_users_with_slow_start_event_during_cold_app_start": [
-                    pct_users_w_slow_start_during_cold_start
-                ],
-                "pct_users_with_slow_start_event_during_warm_app_start": [
-                    pct_users_w_slow_start_during_warm_start
-                ],
-                "pct_users_with_slow_start_event_during_hot_app_start": [
-                    pct_users_w_slow_start_during_hot_start
-                ],
-            }
-        )
+                if dimension["dimension"] == "startType":
+                    startup_type = dimension["stringValue"]
+                if dimension["dimension"] == "versionCode":
+                    version_code = dimension["stringValue"]
 
-        # Append the data into the results dataframe
-        final_df = pd.concat([final_df, new_df])
+            slow_startup_pct = row["metrics"][0]["decimalValue"]["value"]
+
+            # Parse the result into a dataframe
+            new_df = pd.DataFrame(
+                {
+                    "submission_date": [data_pull_date_string],
+                    "google_play_store_app_name": [app],
+                    "app_version_code": [version_code],
+                    "startup_type": [startup_type],
+                    "pct_users_with_slow_start_during_startup_type": [slow_startup_pct],
+                }
+            )
+
+            # Append the data into the results dataframe
+            final_df = pd.concat([final_df, new_df])
 
     # Let's load the data to CSV in GCS
     final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string)
@@ -186,7 +180,7 @@ def main():
     client = bigquery.Client(TARGET_PROJECT)
 
     # If there is anything already in the table for this day, delete it
-    delete_query = f"""DELETE FROM `moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_v1`
+    delete_query = f"""DELETE FROM `moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_and_version_v1`
   WHERE submission_date = '{data_pull_date_string}'"""
     del_job = client.query(delete_query)
     del_job.result()
@@ -206,17 +200,17 @@ def main():
                     "mode": "NULLABLE",
                 },
                 {
-                    "name": "pct_users_with_slow_start_event_during_cold_app_start",
-                    "type": "NUMERIC",
+                    "name": "app_version_code",
+                    "type": "STRING",
                     "mode": "NULLABLE",
                 },
                 {
-                    "name": "pct_users_with_slow_start_event_during_warm_app_start",
-                    "type": "NUMERIC",
+                    "name": "startup_type",
+                    "type": "STRING",
                     "mode": "NULLABLE",
                 },
                 {
-                    "name": "pct_users_with_slow_start_event_during_hot_app_start",
+                    "name": "pct_users_with_slow_start_during_startup_type",
                     "type": "NUMERIC",
                     "mode": "NULLABLE",
                 },

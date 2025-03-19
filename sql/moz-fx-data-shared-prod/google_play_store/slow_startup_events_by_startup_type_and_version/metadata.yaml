@@ -1,0 +1,14 @@
+friendly_name: Slow Startup Events By Startup Type And Version
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.google_play_store_derived.slow_startup_events_by_startup_type_and_version_v1
+require_column_descriptions: false

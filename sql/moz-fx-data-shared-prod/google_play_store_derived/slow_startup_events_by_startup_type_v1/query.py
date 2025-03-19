@@ -21,6 +21,7 @@ APP_NAMES = [
     "org.mozilla.fenix",
     "org.mozilla.klar",
     "org.mozilla.firefox.vpn",
+    "org.mozilla.focus"
 ]
 
 

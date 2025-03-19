@@ -6,6 +6,7 @@ description: |-
   * org.mozilla.fenix
   * org.mozilla.klar
   * org.mozilla.firefox.vpn
+  * org.mozilla.focus
 owners:
 - kwindau@mozilla.com
 labels:

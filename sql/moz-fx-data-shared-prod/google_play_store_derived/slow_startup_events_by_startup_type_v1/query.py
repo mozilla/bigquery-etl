@@ -6,6 +6,8 @@ import requests
 from argparse import ArgumentParser
 from google.cloud import bigquery
 import pandas as pd
+import os
+import json
 
 # Set variables
 TARGET_PROJECT = "moz-fx-data-shared-prod"
@@ -13,7 +15,6 @@ TARGET_TABLE = "moz-fx-data-shared-prod.google_play_store_derived.slow_startup_e
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 RESULTS_FPATH = "GOOGLE_PLAY_STORE/developer_api_reporting_slow_startup_events_by_startup_type_%s.csv"
 TIMEOUT_IN_SECONDS = 10
-SERVICE_ACCOUNT_FILE = "/Users/kwindau/Documents/2025/202502/boxwood-axon-825-a8f9a0239d65.json"  # TEMP - replace before moving to airflow
 SCOPES = ["https://www.googleapis.com/auth/playdeveloperreporting"]
 APP_NAMES = [
     "org.mozilla.firefox",
@@ -100,9 +101,9 @@ def main():
     print("data_pull_date_string")
     print(data_pull_date_string)
 
-    # Get credentials ###NOTE: temporary, need to replace before movimg to Airflow
-    credentials = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
+    service_account_info = json.loads(os.getenv("GOOGLE_PLAY_STORE_SRVC_ACCT_INFO"))
+    credentials = service_account.Credentials.from_service_account_info(
+        service_account_info, scopes=SCOPES
     )
     credentials.refresh(Request())
     access_credentials = credentials.token

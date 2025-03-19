@@ -42,11 +42,14 @@ ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
 )
 
 
+def get_generation_config():
+    """Retrieve external configuration for this generator."""
+    return ConfigLoader.get("generate", "usage_reporting", "apps", fallback=[])
+
+
 def generate_usage_reporting(target_project, output_dir):
     """Generate usage_reporting queries and views."""
-    usage_reporting_apps = ConfigLoader.get(
-        "generate", "usage_reporting", "apps", fallback=[]
-    )
+    usage_reporting_apps = get_generation_config()
 
     app_info_filtered = dict()
 

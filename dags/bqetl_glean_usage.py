@@ -6907,6 +6907,18 @@ with DAG(
         bigeye__focus_ios_derived__metrics_clients_daily__v1
     )
 
+    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+    )
+
+    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1
+    )
+
     glean_dictionary_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )

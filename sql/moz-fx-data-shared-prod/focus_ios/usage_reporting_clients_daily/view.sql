@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   "org_mozilla_ios_focus" AS normalized_app_id,
-  "None" AS normalized_channel,
+  "release" AS normalized_channel,
   *,
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_ios_focus.usage_reporting_clients_daily`
+  `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_daily_v1`

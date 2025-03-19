@@ -15,7 +15,12 @@ RESULTS_FPATH = "GOOGLE_PLAY_STORE/developer_api_reporting_slow_startup_events_b
 TIMEOUT_IN_SECONDS = 10
 SERVICE_ACCOUNT_FILE = "/Users/kwindau/Documents/2025/202502/boxwood-axon-825-a8f9a0239d65.json"  # TEMP - replace before moving to airflow
 SCOPES = ["https://www.googleapis.com/auth/playdeveloperreporting"]
-APP_NAMES = ["org.mozilla.firefox", "org.mozilla.firefox_beta", "org.mozilla.fenix"]
+APP_NAMES = [
+    "org.mozilla.firefox",
+    "org.mozilla.firefox_beta",
+    "org.mozilla.fenix",
+    "org.mozilla.klar",
+]
 
 
 def create_request_payload_using_logical_dag_date(date_to_pull_data_for):

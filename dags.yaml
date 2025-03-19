@@ -86,7 +86,7 @@ bqetl_mobile_search:
   tags:
     - impact/tier_1
 
-bqetl_google_play_store_developer_reporting_api_data:
+bqetl_google_play_store:
   default_args:
     depends_on_past: false
     email:

@@ -1,0 +1,14 @@
+friendly_name: Usage Reporting Clients First Seen
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.usage_reporting_clients_first_seen_v1
+require_column_descriptions: false

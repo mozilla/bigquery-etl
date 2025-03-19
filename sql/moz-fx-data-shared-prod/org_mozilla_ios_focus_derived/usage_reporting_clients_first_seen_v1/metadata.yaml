@@ -1,0 +1,31 @@
+friendly_name: Clients First Seen Based on the DAU Reporting Ping.
+description: |-
+  A representation of when we saw each `usage_profile_id`
+  for the first time based on the usage_reporting ping.
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: kik
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: focus_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus.usage_reporting_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus.usage_reporting_clients_first_seen
+require_column_descriptions: false

@@ -1,0 +1,35 @@
+friendly_name: Usage Reporting Active Users Aggregates
+description: |-
+  Builds active_users_aggregates using the usage_reporting ping.
+
+  Cluster by: `channel`, `country`, `os`
+owners:
+- kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: kik
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: focus_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - channel
+    - country
+    - os
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.focus_ios.usage_reporting_active_users
+require_column_descriptions: false

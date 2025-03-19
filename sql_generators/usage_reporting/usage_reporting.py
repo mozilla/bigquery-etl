@@ -64,7 +64,11 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
         app_info_filtered[app_name] = dict()
 
         if len(app_info) == 1:
-            app_info_filtered[app_name]["multichannel"] = app_info[0]
+            app_info_filtered[app_name]["multichannel"] = {
+                "app_channel": "release",
+                "app_name": app_info[0]["app_name"],
+                "bq_dataset_family": app_info[0]["bq_dataset_family"],
+            }
         else:
             for index, channel_info in enumerate(app_info):
                 if (
@@ -72,7 +76,11 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
                 ) not in usage_reporting_apps[app_name]["channels"]:
                     continue
 
-                app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
+                app_info_filtered[app_name][f"{channel}__{index}"] = {
+                    "app_channel": channel_info["app_channel"],
+                    "app_name": channel_info["app_name"],
+                    "bq_dataset_family": channel_info["bq_dataset_family"],
+                }
 
     return app_info_filtered
 

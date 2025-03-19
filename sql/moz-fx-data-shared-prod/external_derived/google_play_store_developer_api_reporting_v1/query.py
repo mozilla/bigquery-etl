@@ -14,24 +14,17 @@ API_URL = "https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozill
 
 metrics_of_interest = {'slowStartRateMetricSet': None} 
 
-example_request_payload = {"timelineSpec": {
-                                    "aggregationPeriod": "DAILY",
-                                    "startTime": {
-                                        "year": 2025,
-                                        "month": 3,
-                                        "day": 1,
-                                        "timeZone": "America/Los_Angeles"
-                                    },
-                                    "endTime": {
-                                        "year": 2025,
-                                        "month": 3,
-                                        "day": 17,
-                                        "timeZone": "America/Los_Angeles"
-                                    }
-                                },
-                                "metrics": ["slowStartRate"],
-                                "dimensions": [],
-                                "pageSize": 100}
+request_payload = request_payload = {
+    "timelineSpec": {
+        "aggregationPeriod": "DAILY",
+        "startTime": {"year": 2025, "month": 3, "day": 16},
+        "endTime": {"year": 2025, "month": 3, "day": 17}
+    },
+    "metrics": ["slowStartRate"],
+    "dimensions": ["startType", "countryCode", "versionCode"],  # REQUIRED dimension startType, others are optional
+    "pageSize": 100  # Adjust as needed
+}
+
 
 TARGET_PROJECT = "moz-fx-data-shared-prod"
 TARGET_TABLE = "moz-fx-data-shared-prod.external_derived.google_play_store_developer_api_reporting_v1"
@@ -91,7 +84,8 @@ def parse_metric_set_metadata(metric_set_metadata_json):
     return metric_set_daily_metadata_df
 
 
-def pull_metric_set_reporting_data(token, request_payload, metric_set_to_query, timeout_seconds):
+
+def pull_metric_data(token, metric_set_to_query, timeout_seconds):
     url = f"https://playdeveloperreporting.googleapis.com/v1beta1/apps/org.mozilla.firefox/{metric_set_to_query}:query"
     
     headers = {
@@ -148,13 +142,12 @@ def main():
       print("metadata_daily_df")
       print(metadata_daily_df)
 
-      #Now pull the query data for each metric
-      results = pull_metric_set_reporting_data(token=access_token, 
-                                               request_payload=example_request_payload, 
-                                               metric_set_to_query=metric_set, 
-                                               timeout_seconds=TIMEOUT_IN_SECONDS)
-      print(results)
-
+      new_results = pull_metric_data(token=access_token,
+                             metric_set_to_query=metric_set,
+                             timeout_seconds=TIMEOUT_IN_SECONDS)
+      print('new_results')
+      print(new_results)
+      print(new_results.text)
 
       # Now, let's query the metric sets and put into a final_df
       #final_df = #??

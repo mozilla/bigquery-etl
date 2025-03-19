@@ -5920,6 +5920,754 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_worker_shared_scheduler_posttask
     ) AS use_counter_worker_shared_scheduler_posttask,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_idbobject_store_create_index_locale
+    ) AS use_counter_deprecated_ops_doc_idbobject_store_create_index_locale,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_idbobject_store_create_index_locale
+    ) AS use_counter_deprecated_ops_page_idbobject_store_create_index_locale,
+    SUM(
+      metrics.counter.use_counter_doc_htmldialogelement_show
+    ) AS use_counter_doc_htmldialogelement_show,
+    SUM(
+      metrics.counter.use_counter_page_htmldialogelement_show
+    ) AS use_counter_page_htmldialogelement_show,
+    SUM(
+      metrics.counter.use_counter_doc_js_wasm_legacy_exceptions
+    ) AS use_counter_doc_js_wasm_legacy_exceptions,
+    SUM(
+      metrics.counter.use_counter_page_js_wasm_legacy_exceptions
+    ) AS use_counter_page_js_wasm_legacy_exceptions,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_text_wrap_mode
+    ) AS use_counter_css_doc_css_text_wrap_mode,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_text_wrap_style
+    ) AS use_counter_css_doc_css_text_wrap_style,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_white_space_collapse
+    ) AS use_counter_css_doc_css_white_space_collapse,
+    SUM(
+      metrics.counter.use_counter_css_page_css_text_wrap_mode
+    ) AS use_counter_css_page_css_text_wrap_mode,
+    SUM(
+      metrics.counter.use_counter_css_page_css_text_wrap_style
+    ) AS use_counter_css_page_css_text_wrap_style,
+    SUM(
+      metrics.counter.use_counter_css_page_css_white_space_collapse
+    ) AS use_counter_css_page_css_white_space_collapse,
+    SUM(metrics.counter.use_counter_css_doc_css_user_find) AS use_counter_css_doc_css_user_find,
+    SUM(metrics.counter.use_counter_css_page_css_user_find) AS use_counter_css_page_css_user_find,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_transition_behavior
+    ) AS use_counter_css_doc_css_transition_behavior,
+    SUM(
+      metrics.counter.use_counter_css_page_css_transition_behavior
+    ) AS use_counter_css_page_css_transition_behavior,
+    SUM(metrics.counter.use_counter_css_doc_css_anchor_name) AS use_counter_css_doc_css_anchor_name,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_anchor_scope
+    ) AS use_counter_css_doc_css_anchor_scope,
+    SUM(
+      metrics.counter.use_counter_css_page_css_anchor_name
+    ) AS use_counter_css_page_css_anchor_name,
+    SUM(
+      metrics.counter.use_counter_css_page_css_anchor_scope
+    ) AS use_counter_css_page_css_anchor_scope,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_anchor
+    ) AS use_counter_css_doc_css_position_anchor,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_anchor
+    ) AS use_counter_css_page_css_position_anchor,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_visibility
+    ) AS use_counter_css_doc_css_position_visibility,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_visibility
+    ) AS use_counter_css_page_css_position_visibility,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_array_type_2
+    ) AS use_counter_doc_js_subclassing_array_type_2,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_array_type_3
+    ) AS use_counter_doc_js_subclassing_array_type_3,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_arraybuffer_type_3
+    ) AS use_counter_doc_js_subclassing_arraybuffer_type_3,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_promise_type_2
+    ) AS use_counter_doc_js_subclassing_promise_type_2,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_promise_type_3
+    ) AS use_counter_doc_js_subclassing_promise_type_3,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_regexp_type_3
+    ) AS use_counter_doc_js_subclassing_regexp_type_3,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_regexp_type_4
+    ) AS use_counter_doc_js_subclassing_regexp_type_4,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_sharedarraybuffer_type_3
+    ) AS use_counter_doc_js_subclassing_sharedarraybuffer_type_3,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_typedarray_type_2
+    ) AS use_counter_doc_js_subclassing_typedarray_type_2,
+    SUM(
+      metrics.counter.use_counter_doc_js_subclassing_typedarray_type_3
+    ) AS use_counter_doc_js_subclassing_typedarray_type_3,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_array_type_2
+    ) AS use_counter_page_js_subclassing_array_type_2,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_array_type_3
+    ) AS use_counter_page_js_subclassing_array_type_3,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_arraybuffer_type_3
+    ) AS use_counter_page_js_subclassing_arraybuffer_type_3,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_promise_type_2
+    ) AS use_counter_page_js_subclassing_promise_type_2,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_promise_type_3
+    ) AS use_counter_page_js_subclassing_promise_type_3,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_regexp_type_3
+    ) AS use_counter_page_js_subclassing_regexp_type_3,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_regexp_type_4
+    ) AS use_counter_page_js_subclassing_regexp_type_4,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_sharedarraybuffer_type_3
+    ) AS use_counter_page_js_subclassing_sharedarraybuffer_type_3,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_typedarray_type_2
+    ) AS use_counter_page_js_subclassing_typedarray_type_2,
+    SUM(
+      metrics.counter.use_counter_page_js_subclassing_typedarray_type_3
+    ) AS use_counter_page_js_subclassing_typedarray_type_3,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domattr_modified
+    ) AS use_counter_deprecated_ops_doc_domattr_modified,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domcharacter_data_modified
+    ) AS use_counter_deprecated_ops_doc_domcharacter_data_modified,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domnode_inserted
+    ) AS use_counter_deprecated_ops_doc_domnode_inserted,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domnode_inserted_into_document
+    ) AS use_counter_deprecated_ops_doc_domnode_inserted_into_document,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domnode_removed
+    ) AS use_counter_deprecated_ops_doc_domnode_removed,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domnode_removed_from_document
+    ) AS use_counter_deprecated_ops_doc_domnode_removed_from_document,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_domsubtree_modified
+    ) AS use_counter_deprecated_ops_doc_domsubtree_modified,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domattr_modified
+    ) AS use_counter_deprecated_ops_page_domattr_modified,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domcharacter_data_modified
+    ) AS use_counter_deprecated_ops_page_domcharacter_data_modified,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domnode_inserted
+    ) AS use_counter_deprecated_ops_page_domnode_inserted,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domnode_inserted_into_document
+    ) AS use_counter_deprecated_ops_page_domnode_inserted_into_document,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domnode_removed
+    ) AS use_counter_deprecated_ops_page_domnode_removed,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domnode_removed_from_document
+    ) AS use_counter_deprecated_ops_page_domnode_removed_from_document,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_domsubtree_modified
+    ) AS use_counter_deprecated_ops_page_domsubtree_modified,
+    SUM(metrics.counter.use_counter_css_doc_css_inset_area) AS use_counter_css_doc_css_inset_area,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_try_order
+    ) AS use_counter_css_doc_css_position_try_order,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_webkit_font_smoothing
+    ) AS use_counter_css_doc_css_webkit_font_smoothing,
+    SUM(metrics.counter.use_counter_css_page_css_inset_area) AS use_counter_css_page_css_inset_area,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_try_order
+    ) AS use_counter_css_page_css_position_try_order,
+    SUM(
+      metrics.counter.use_counter_css_page_css_webkit_font_smoothing
+    ) AS use_counter_css_page_css_webkit_font_smoothing,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_try_options
+    ) AS use_counter_css_doc_css_position_try_options,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_try_options
+    ) AS use_counter_css_page_css_position_try_options,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_field_sizing
+    ) AS use_counter_css_doc_css_field_sizing,
+    SUM(
+      metrics.counter.use_counter_css_page_css_field_sizing
+    ) AS use_counter_css_page_css_field_sizing,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_webkit_font_feature_settings
+    ) AS use_counter_css_doc_css_webkit_font_feature_settings,
+    SUM(
+      metrics.counter.use_counter_css_page_css_webkit_font_feature_settings
+    ) AS use_counter_css_page_css_webkit_font_feature_settings,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_try_fallbacks
+    ) AS use_counter_css_doc_css_position_try_fallbacks,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_try_fallbacks
+    ) AS use_counter_css_page_css_position_try_fallbacks,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_area
+    ) AS use_counter_css_doc_css_position_area,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_area
+    ) AS use_counter_css_page_css_position_area,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_view_transition_name
+    ) AS use_counter_css_doc_css_view_transition_name,
+    SUM(
+      metrics.counter.use_counter_css_page_css_view_transition_name
+    ) AS use_counter_css_page_css_view_transition_name,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_position_try
+    ) AS use_counter_css_doc_css_position_try,
+    SUM(
+      metrics.counter.use_counter_css_page_css_position_try
+    ) AS use_counter_css_page_css_position_try,
+    SUM(metrics.counter.use_counter_doc_js_is_htmldda_fuse) AS use_counter_doc_js_is_htmldda_fuse,
+    SUM(
+      metrics.counter.use_counter_doc_js_optimize_get_iterator_fuse
+    ) AS use_counter_doc_js_optimize_get_iterator_fuse,
+    SUM(metrics.counter.use_counter_page_js_is_htmldda_fuse) AS use_counter_page_js_is_htmldda_fuse,
+    SUM(
+      metrics.counter.use_counter_page_js_optimize_get_iterator_fuse
+    ) AS use_counter_page_js_optimize_get_iterator_fuse,
+    SUM(metrics.counter.use_counter_doc_mls_deriveexporter) AS use_counter_doc_mls_deriveexporter,
+    SUM(
+      metrics.counter.use_counter_doc_mls_generatecredentialbasic
+    ) AS use_counter_doc_mls_generatecredentialbasic,
+    SUM(
+      metrics.counter.use_counter_doc_mls_generatekeypackage
+    ) AS use_counter_doc_mls_generatekeypackage,
+    SUM(
+      metrics.counter.use_counter_doc_mls_generatesignaturekeypair
+    ) AS use_counter_doc_mls_generatesignaturekeypair,
+    SUM(metrics.counter.use_counter_doc_mls_groupadd) AS use_counter_doc_mls_groupadd,
+    SUM(metrics.counter.use_counter_doc_mls_groupclose) AS use_counter_doc_mls_groupclose,
+    SUM(metrics.counter.use_counter_doc_mls_groupcreate) AS use_counter_doc_mls_groupcreate,
+    SUM(metrics.counter.use_counter_doc_mls_groupjoin) AS use_counter_doc_mls_groupjoin,
+    SUM(metrics.counter.use_counter_doc_mls_groupmembers) AS use_counter_doc_mls_groupmembers,
+    SUM(metrics.counter.use_counter_doc_mls_groupproposeadd) AS use_counter_doc_mls_groupproposeadd,
+    SUM(
+      metrics.counter.use_counter_doc_mls_groupproposeremove
+    ) AS use_counter_doc_mls_groupproposeremove,
+    SUM(metrics.counter.use_counter_doc_mls_groupremove) AS use_counter_doc_mls_groupremove,
+    SUM(metrics.counter.use_counter_doc_mls_receive) AS use_counter_doc_mls_receive,
+    SUM(metrics.counter.use_counter_doc_mls_send) AS use_counter_doc_mls_send,
+    SUM(metrics.counter.use_counter_doc_mls_statedelete) AS use_counter_doc_mls_statedelete,
+    SUM(
+      metrics.counter.use_counter_doc_mls_statedeletegroup
+    ) AS use_counter_doc_mls_statedeletegroup,
+    SUM(metrics.counter.use_counter_page_mls_deriveexporter) AS use_counter_page_mls_deriveexporter,
+    SUM(
+      metrics.counter.use_counter_page_mls_generatecredentialbasic
+    ) AS use_counter_page_mls_generatecredentialbasic,
+    SUM(
+      metrics.counter.use_counter_page_mls_generatekeypackage
+    ) AS use_counter_page_mls_generatekeypackage,
+    SUM(
+      metrics.counter.use_counter_page_mls_generatesignaturekeypair
+    ) AS use_counter_page_mls_generatesignaturekeypair,
+    SUM(metrics.counter.use_counter_page_mls_groupadd) AS use_counter_page_mls_groupadd,
+    SUM(metrics.counter.use_counter_page_mls_groupclose) AS use_counter_page_mls_groupclose,
+    SUM(metrics.counter.use_counter_page_mls_groupcreate) AS use_counter_page_mls_groupcreate,
+    SUM(metrics.counter.use_counter_page_mls_groupjoin) AS use_counter_page_mls_groupjoin,
+    SUM(metrics.counter.use_counter_page_mls_groupmembers) AS use_counter_page_mls_groupmembers,
+    SUM(
+      metrics.counter.use_counter_page_mls_groupproposeadd
+    ) AS use_counter_page_mls_groupproposeadd,
+    SUM(
+      metrics.counter.use_counter_page_mls_groupproposeremove
+    ) AS use_counter_page_mls_groupproposeremove,
+    SUM(metrics.counter.use_counter_page_mls_groupremove) AS use_counter_page_mls_groupremove,
+    SUM(metrics.counter.use_counter_page_mls_receive) AS use_counter_page_mls_receive,
+    SUM(metrics.counter.use_counter_page_mls_send) AS use_counter_page_mls_send,
+    SUM(metrics.counter.use_counter_page_mls_statedelete) AS use_counter_page_mls_statedelete,
+    SUM(
+      metrics.counter.use_counter_page_mls_statedeletegroup
+    ) AS use_counter_page_mls_statedeletegroup,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_deriveexporter
+    ) AS use_counter_worker_dedicated_mls_deriveexporter,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_generatecredentialbasic
+    ) AS use_counter_worker_dedicated_mls_generatecredentialbasic,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_generatekeypackage
+    ) AS use_counter_worker_dedicated_mls_generatekeypackage,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_generatesignaturekeypair
+    ) AS use_counter_worker_dedicated_mls_generatesignaturekeypair,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupadd
+    ) AS use_counter_worker_dedicated_mls_groupadd,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupclose
+    ) AS use_counter_worker_dedicated_mls_groupclose,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupcreate
+    ) AS use_counter_worker_dedicated_mls_groupcreate,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupjoin
+    ) AS use_counter_worker_dedicated_mls_groupjoin,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupmembers
+    ) AS use_counter_worker_dedicated_mls_groupmembers,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupproposeadd
+    ) AS use_counter_worker_dedicated_mls_groupproposeadd,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupproposeremove
+    ) AS use_counter_worker_dedicated_mls_groupproposeremove,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_groupremove
+    ) AS use_counter_worker_dedicated_mls_groupremove,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_receive
+    ) AS use_counter_worker_dedicated_mls_receive,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_send
+    ) AS use_counter_worker_dedicated_mls_send,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_statedelete
+    ) AS use_counter_worker_dedicated_mls_statedelete,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_mls_statedeletegroup
+    ) AS use_counter_worker_dedicated_mls_statedeletegroup,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_deriveexporter
+    ) AS use_counter_worker_service_mls_deriveexporter,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_generatecredentialbasic
+    ) AS use_counter_worker_service_mls_generatecredentialbasic,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_generatekeypackage
+    ) AS use_counter_worker_service_mls_generatekeypackage,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_generatesignaturekeypair
+    ) AS use_counter_worker_service_mls_generatesignaturekeypair,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupadd
+    ) AS use_counter_worker_service_mls_groupadd,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupclose
+    ) AS use_counter_worker_service_mls_groupclose,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupcreate
+    ) AS use_counter_worker_service_mls_groupcreate,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupjoin
+    ) AS use_counter_worker_service_mls_groupjoin,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupmembers
+    ) AS use_counter_worker_service_mls_groupmembers,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupproposeadd
+    ) AS use_counter_worker_service_mls_groupproposeadd,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupproposeremove
+    ) AS use_counter_worker_service_mls_groupproposeremove,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_groupremove
+    ) AS use_counter_worker_service_mls_groupremove,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_receive
+    ) AS use_counter_worker_service_mls_receive,
+    SUM(metrics.counter.use_counter_worker_service_mls_send) AS use_counter_worker_service_mls_send,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_statedelete
+    ) AS use_counter_worker_service_mls_statedelete,
+    SUM(
+      metrics.counter.use_counter_worker_service_mls_statedeletegroup
+    ) AS use_counter_worker_service_mls_statedeletegroup,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_deriveexporter
+    ) AS use_counter_worker_shared_mls_deriveexporter,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_generatecredentialbasic
+    ) AS use_counter_worker_shared_mls_generatecredentialbasic,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_generatekeypackage
+    ) AS use_counter_worker_shared_mls_generatekeypackage,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_generatesignaturekeypair
+    ) AS use_counter_worker_shared_mls_generatesignaturekeypair,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupadd
+    ) AS use_counter_worker_shared_mls_groupadd,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupclose
+    ) AS use_counter_worker_shared_mls_groupclose,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupcreate
+    ) AS use_counter_worker_shared_mls_groupcreate,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupjoin
+    ) AS use_counter_worker_shared_mls_groupjoin,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupmembers
+    ) AS use_counter_worker_shared_mls_groupmembers,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupproposeadd
+    ) AS use_counter_worker_shared_mls_groupproposeadd,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupproposeremove
+    ) AS use_counter_worker_shared_mls_groupproposeremove,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_groupremove
+    ) AS use_counter_worker_shared_mls_groupremove,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_receive
+    ) AS use_counter_worker_shared_mls_receive,
+    SUM(metrics.counter.use_counter_worker_shared_mls_send) AS use_counter_worker_shared_mls_send,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_statedelete
+    ) AS use_counter_worker_shared_mls_statedelete,
+    SUM(
+      metrics.counter.use_counter_worker_shared_mls_statedeletegroup
+    ) AS use_counter_worker_shared_mls_statedeletegroup,
+    SUM(
+      metrics.counter.use_counter_doc_components_shim_resolved
+    ) AS use_counter_doc_components_shim_resolved,
+    SUM(
+      metrics.counter.use_counter_page_components_shim_resolved
+    ) AS use_counter_page_components_shim_resolved,
+    SUM(metrics.counter.use_counter_doc_js_thenable) AS use_counter_doc_js_thenable,
+    SUM(metrics.counter.use_counter_doc_js_thenable_proto) AS use_counter_doc_js_thenable_proto,
+    SUM(
+      metrics.counter.use_counter_doc_js_thenable_standard_proto
+    ) AS use_counter_doc_js_thenable_standard_proto,
+    SUM(metrics.counter.use_counter_page_js_thenable) AS use_counter_page_js_thenable,
+    SUM(metrics.counter.use_counter_page_js_thenable_proto) AS use_counter_page_js_thenable_proto,
+    SUM(
+      metrics.counter.use_counter_page_js_thenable_standard_proto
+    ) AS use_counter_page_js_thenable_standard_proto,
+    SUM(
+      metrics.counter.use_counter_doc_js_legacy_lang_subtag
+    ) AS use_counter_doc_js_legacy_lang_subtag,
+    SUM(
+      metrics.counter.use_counter_page_js_legacy_lang_subtag
+    ) AS use_counter_page_js_legacy_lang_subtag,
+    SUM(metrics.counter.use_counter_doc_js_ic_stub_oom) AS use_counter_doc_js_ic_stub_oom,
+    SUM(
+      metrics.counter.use_counter_doc_js_ic_stub_too_large
+    ) AS use_counter_doc_js_ic_stub_too_large,
+    SUM(metrics.counter.use_counter_page_js_ic_stub_oom) AS use_counter_page_js_ic_stub_oom,
+    SUM(
+      metrics.counter.use_counter_page_js_ic_stub_too_large
+    ) AS use_counter_page_js_ic_stub_too_large,
+    SUM(metrics.counter.use_counter_doc_cookiestore_delete) AS use_counter_doc_cookiestore_delete,
+    SUM(metrics.counter.use_counter_doc_cookiestore_get) AS use_counter_doc_cookiestore_get,
+    SUM(metrics.counter.use_counter_doc_cookiestore_getall) AS use_counter_doc_cookiestore_getall,
+    SUM(metrics.counter.use_counter_doc_cookiestore_set) AS use_counter_doc_cookiestore_set,
+    SUM(metrics.counter.use_counter_page_cookiestore_delete) AS use_counter_page_cookiestore_delete,
+    SUM(metrics.counter.use_counter_page_cookiestore_get) AS use_counter_page_cookiestore_get,
+    SUM(metrics.counter.use_counter_page_cookiestore_getall) AS use_counter_page_cookiestore_getall,
+    SUM(metrics.counter.use_counter_page_cookiestore_set) AS use_counter_page_cookiestore_set,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_cookiestore_delete
+    ) AS use_counter_worker_dedicated_cookiestore_delete,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_cookiestore_get
+    ) AS use_counter_worker_dedicated_cookiestore_get,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_cookiestore_getall
+    ) AS use_counter_worker_dedicated_cookiestore_getall,
+    SUM(
+      metrics.counter.use_counter_worker_dedicated_cookiestore_set
+    ) AS use_counter_worker_dedicated_cookiestore_set,
+    SUM(
+      metrics.counter.use_counter_worker_service_cookiestore_delete
+    ) AS use_counter_worker_service_cookiestore_delete,
+    SUM(
+      metrics.counter.use_counter_worker_service_cookiestore_get
+    ) AS use_counter_worker_service_cookiestore_get,
+    SUM(
+      metrics.counter.use_counter_worker_service_cookiestore_getall
+    ) AS use_counter_worker_service_cookiestore_getall,
+    SUM(
+      metrics.counter.use_counter_worker_service_cookiestore_set
+    ) AS use_counter_worker_service_cookiestore_set,
+    SUM(
+      metrics.counter.use_counter_worker_shared_cookiestore_delete
+    ) AS use_counter_worker_shared_cookiestore_delete,
+    SUM(
+      metrics.counter.use_counter_worker_shared_cookiestore_get
+    ) AS use_counter_worker_shared_cookiestore_get,
+    SUM(
+      metrics.counter.use_counter_worker_shared_cookiestore_getall
+    ) AS use_counter_worker_shared_cookiestore_getall,
+    SUM(
+      metrics.counter.use_counter_worker_shared_cookiestore_set
+    ) AS use_counter_worker_shared_cookiestore_set,
+    SUM(
+      metrics.counter.use_counter_doc_js_errorstack_getter
+    ) AS use_counter_doc_js_errorstack_getter,
+    SUM(
+      metrics.counter.use_counter_doc_js_errorstack_getter_no_errordata
+    ) AS use_counter_doc_js_errorstack_getter_no_errordata,
+    SUM(
+      metrics.counter.use_counter_doc_js_errorstack_setter
+    ) AS use_counter_doc_js_errorstack_setter,
+    SUM(
+      metrics.counter.use_counter_doc_js_errorstack_setter_no_errordata
+    ) AS use_counter_doc_js_errorstack_setter_no_errordata,
+    SUM(
+      metrics.counter.use_counter_doc_js_errorstack_setter_nonstring
+    ) AS use_counter_doc_js_errorstack_setter_nonstring,
+    SUM(
+      metrics.counter.use_counter_page_js_errorstack_getter
+    ) AS use_counter_page_js_errorstack_getter,
+    SUM(
+      metrics.counter.use_counter_page_js_errorstack_getter_no_errordata
+    ) AS use_counter_page_js_errorstack_getter_no_errordata,
+    SUM(
+      metrics.counter.use_counter_page_js_errorstack_setter
+    ) AS use_counter_page_js_errorstack_setter,
+    SUM(
+      metrics.counter.use_counter_page_js_errorstack_setter_no_errordata
+    ) AS use_counter_page_js_errorstack_setter_no_errordata,
+    SUM(
+      metrics.counter.use_counter_page_js_errorstack_setter_nonstring
+    ) AS use_counter_page_js_errorstack_setter_nonstring,
+    SUM(
+      metrics.counter.use_counter_doc_sectioning_h1_with_no_font_size_or_margins
+    ) AS use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+    SUM(
+      metrics.counter.use_counter_page_sectioning_h1_with_no_font_size_or_margins
+    ) AS use_counter_page_sectioning_h1_with_no_font_size_or_margins,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_hyphenate_limit_chars
+    ) AS use_counter_css_doc_css_hyphenate_limit_chars,
+    SUM(
+      metrics.counter.use_counter_css_page_css_hyphenate_limit_chars
+    ) AS use_counter_css_page_css_hyphenate_limit_chars,
+    SUM(metrics.counter.use_counter_doc_js_dateparse) AS use_counter_doc_js_dateparse,
+    SUM(
+      metrics.counter.use_counter_doc_js_dateparse_impl_def
+    ) AS use_counter_doc_js_dateparse_impl_def,
+    SUM(metrics.counter.use_counter_page_js_dateparse) AS use_counter_page_js_dateparse,
+    SUM(
+      metrics.counter.use_counter_page_js_dateparse_impl_def
+    ) AS use_counter_page_js_dateparse_impl_def,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_caretrangefrompoint
+    ) AS use_counter_doc_htmldocument_caretrangefrompoint,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_exitpictureinpicture
+    ) AS use_counter_doc_htmldocument_exitpictureinpicture,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_featurepolicy
+    ) AS use_counter_doc_htmldocument_featurepolicy,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onbeforecopy
+    ) AS use_counter_doc_htmldocument_onbeforecopy,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onbeforecut
+    ) AS use_counter_doc_htmldocument_onbeforecut,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onbeforepaste
+    ) AS use_counter_doc_htmldocument_onbeforepaste,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_oncancel
+    ) AS use_counter_doc_htmldocument_oncancel,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onfreeze
+    ) AS use_counter_doc_htmldocument_onfreeze,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onmousewheel
+    ) AS use_counter_doc_htmldocument_onmousewheel,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onresume
+    ) AS use_counter_doc_htmldocument_onresume,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onsearch
+    ) AS use_counter_doc_htmldocument_onsearch,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onwebkitfullscreenchange
+    ) AS use_counter_doc_htmldocument_onwebkitfullscreenchange,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_onwebkitfullscreenerror
+    ) AS use_counter_doc_htmldocument_onwebkitfullscreenerror,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_pictureinpictureelement
+    ) AS use_counter_doc_htmldocument_pictureinpictureelement,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_pictureinpictureenabled
+    ) AS use_counter_doc_htmldocument_pictureinpictureenabled,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_registerelement
+    ) AS use_counter_doc_htmldocument_registerelement,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_wasdiscarded
+    ) AS use_counter_doc_htmldocument_wasdiscarded,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitcancelfullscreen
+    ) AS use_counter_doc_htmldocument_webkitcancelfullscreen,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitcurrentfullscreenelement
+    ) AS use_counter_doc_htmldocument_webkitcurrentfullscreenelement,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitexitfullscreen
+    ) AS use_counter_doc_htmldocument_webkitexitfullscreen,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitfullscreenelement
+    ) AS use_counter_doc_htmldocument_webkitfullscreenelement,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitfullscreenenabled
+    ) AS use_counter_doc_htmldocument_webkitfullscreenenabled,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkithidden
+    ) AS use_counter_doc_htmldocument_webkithidden,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitisfullscreen
+    ) AS use_counter_doc_htmldocument_webkitisfullscreen,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_webkitvisibilitystate
+    ) AS use_counter_doc_htmldocument_webkitvisibilitystate,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_xmlencoding
+    ) AS use_counter_doc_htmldocument_xmlencoding,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_xmlstandalone
+    ) AS use_counter_doc_htmldocument_xmlstandalone,
+    SUM(
+      metrics.counter.use_counter_doc_htmldocument_xmlversion
+    ) AS use_counter_doc_htmldocument_xmlversion,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_caretrangefrompoint
+    ) AS use_counter_page_htmldocument_caretrangefrompoint,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_exitpictureinpicture
+    ) AS use_counter_page_htmldocument_exitpictureinpicture,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_featurepolicy
+    ) AS use_counter_page_htmldocument_featurepolicy,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onbeforecopy
+    ) AS use_counter_page_htmldocument_onbeforecopy,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onbeforecut
+    ) AS use_counter_page_htmldocument_onbeforecut,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onbeforepaste
+    ) AS use_counter_page_htmldocument_onbeforepaste,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_oncancel
+    ) AS use_counter_page_htmldocument_oncancel,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onfreeze
+    ) AS use_counter_page_htmldocument_onfreeze,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onmousewheel
+    ) AS use_counter_page_htmldocument_onmousewheel,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onresume
+    ) AS use_counter_page_htmldocument_onresume,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onsearch
+    ) AS use_counter_page_htmldocument_onsearch,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onwebkitfullscreenchange
+    ) AS use_counter_page_htmldocument_onwebkitfullscreenchange,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_onwebkitfullscreenerror
+    ) AS use_counter_page_htmldocument_onwebkitfullscreenerror,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_pictureinpictureelement
+    ) AS use_counter_page_htmldocument_pictureinpictureelement,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_pictureinpictureenabled
+    ) AS use_counter_page_htmldocument_pictureinpictureenabled,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_registerelement
+    ) AS use_counter_page_htmldocument_registerelement,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_wasdiscarded
+    ) AS use_counter_page_htmldocument_wasdiscarded,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitcancelfullscreen
+    ) AS use_counter_page_htmldocument_webkitcancelfullscreen,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitcurrentfullscreenelement
+    ) AS use_counter_page_htmldocument_webkitcurrentfullscreenelement,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitexitfullscreen
+    ) AS use_counter_page_htmldocument_webkitexitfullscreen,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitfullscreenelement
+    ) AS use_counter_page_htmldocument_webkitfullscreenelement,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitfullscreenenabled
+    ) AS use_counter_page_htmldocument_webkitfullscreenenabled,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkithidden
+    ) AS use_counter_page_htmldocument_webkithidden,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitisfullscreen
+    ) AS use_counter_page_htmldocument_webkitisfullscreen,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_webkitvisibilitystate
+    ) AS use_counter_page_htmldocument_webkitvisibilitystate,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_xmlencoding
+    ) AS use_counter_page_htmldocument_xmlencoding,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_xmlstandalone
+    ) AS use_counter_page_htmldocument_xmlstandalone,
+    SUM(
+      metrics.counter.use_counter_page_htmldocument_xmlversion
+    ) AS use_counter_page_htmldocument_xmlversion,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_after_script_execute_event
+    ) AS use_counter_deprecated_ops_doc_after_script_execute_event,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_doc_before_script_execute_event
+    ) AS use_counter_deprecated_ops_doc_before_script_execute_event,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_after_script_execute_event
+    ) AS use_counter_deprecated_ops_page_after_script_execute_event,
+    SUM(
+      metrics.counter.use_counter_deprecated_ops_page_before_script_execute_event
+    ) AS use_counter_deprecated_ops_page_before_script_execute_event,
+    SUM(
+      metrics.counter.use_counter_doc_js_optimize_array_species_fuse
+    ) AS use_counter_doc_js_optimize_array_species_fuse,
+    SUM(
+      metrics.counter.use_counter_doc_js_thenable_object_proto
+    ) AS use_counter_doc_js_thenable_object_proto,
+    SUM(
+      metrics.counter.use_counter_page_js_optimize_array_species_fuse
+    ) AS use_counter_page_js_optimize_array_species_fuse,
+    SUM(
+      metrics.counter.use_counter_page_js_thenable_object_proto
+    ) AS use_counter_page_js_thenable_object_proto,
+    SUM(
+      metrics.counter.use_counter_doc_js_optimize_promise_lookup_fuse
+    ) AS use_counter_doc_js_optimize_promise_lookup_fuse,
+    SUM(
+      metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
+    ) AS use_counter_page_js_optimize_promise_lookup_fuse,
   FROM
     `moz-fx-data-shared-prod.fenix.use_counters`
   WHERE
@@ -8234,7 +8982,287 @@ pivoted_raw AS (
         use_counter_worker_shared_private_browsing_idbfactory_open,
         use_counter_worker_shared_pushmanager_subscribe,
         use_counter_worker_shared_pushsubscription_unsubscribe,
-        use_counter_worker_shared_scheduler_posttask
+        use_counter_worker_shared_scheduler_posttask,
+        use_counter_deprecated_ops_doc_idbobject_store_create_index_locale,
+        use_counter_deprecated_ops_page_idbobject_store_create_index_locale,
+        use_counter_doc_htmldialogelement_show,
+        use_counter_page_htmldialogelement_show,
+        use_counter_doc_js_wasm_legacy_exceptions,
+        use_counter_page_js_wasm_legacy_exceptions,
+        use_counter_css_doc_css_text_wrap_mode,
+        use_counter_css_doc_css_text_wrap_style,
+        use_counter_css_doc_css_white_space_collapse,
+        use_counter_css_page_css_text_wrap_mode,
+        use_counter_css_page_css_text_wrap_style,
+        use_counter_css_page_css_white_space_collapse,
+        use_counter_css_doc_css_user_find,
+        use_counter_css_page_css_user_find,
+        use_counter_css_doc_css_transition_behavior,
+        use_counter_css_page_css_transition_behavior,
+        use_counter_css_doc_css_anchor_name,
+        use_counter_css_doc_css_anchor_scope,
+        use_counter_css_page_css_anchor_name,
+        use_counter_css_page_css_anchor_scope,
+        use_counter_css_doc_css_position_anchor,
+        use_counter_css_page_css_position_anchor,
+        use_counter_css_doc_css_position_visibility,
+        use_counter_css_page_css_position_visibility,
+        use_counter_doc_js_subclassing_array_type_2,
+        use_counter_doc_js_subclassing_array_type_3,
+        use_counter_doc_js_subclassing_arraybuffer_type_3,
+        use_counter_doc_js_subclassing_promise_type_2,
+        use_counter_doc_js_subclassing_promise_type_3,
+        use_counter_doc_js_subclassing_regexp_type_3,
+        use_counter_doc_js_subclassing_regexp_type_4,
+        use_counter_doc_js_subclassing_sharedarraybuffer_type_3,
+        use_counter_doc_js_subclassing_typedarray_type_2,
+        use_counter_doc_js_subclassing_typedarray_type_3,
+        use_counter_page_js_subclassing_array_type_2,
+        use_counter_page_js_subclassing_array_type_3,
+        use_counter_page_js_subclassing_arraybuffer_type_3,
+        use_counter_page_js_subclassing_promise_type_2,
+        use_counter_page_js_subclassing_promise_type_3,
+        use_counter_page_js_subclassing_regexp_type_3,
+        use_counter_page_js_subclassing_regexp_type_4,
+        use_counter_page_js_subclassing_sharedarraybuffer_type_3,
+        use_counter_page_js_subclassing_typedarray_type_2,
+        use_counter_page_js_subclassing_typedarray_type_3,
+        use_counter_deprecated_ops_doc_domattr_modified,
+        use_counter_deprecated_ops_doc_domcharacter_data_modified,
+        use_counter_deprecated_ops_doc_domnode_inserted,
+        use_counter_deprecated_ops_doc_domnode_inserted_into_document,
+        use_counter_deprecated_ops_doc_domnode_removed,
+        use_counter_deprecated_ops_doc_domnode_removed_from_document,
+        use_counter_deprecated_ops_doc_domsubtree_modified,
+        use_counter_deprecated_ops_page_domattr_modified,
+        use_counter_deprecated_ops_page_domcharacter_data_modified,
+        use_counter_deprecated_ops_page_domnode_inserted,
+        use_counter_deprecated_ops_page_domnode_inserted_into_document,
+        use_counter_deprecated_ops_page_domnode_removed,
+        use_counter_deprecated_ops_page_domnode_removed_from_document,
+        use_counter_deprecated_ops_page_domsubtree_modified,
+        use_counter_css_doc_css_inset_area,
+        use_counter_css_doc_css_position_try_order,
+        use_counter_css_doc_css_webkit_font_smoothing,
+        use_counter_css_page_css_inset_area,
+        use_counter_css_page_css_position_try_order,
+        use_counter_css_page_css_webkit_font_smoothing,
+        use_counter_css_doc_css_position_try_options,
+        use_counter_css_page_css_position_try_options,
+        use_counter_css_doc_css_field_sizing,
+        use_counter_css_page_css_field_sizing,
+        use_counter_css_doc_css_webkit_font_feature_settings,
+        use_counter_css_page_css_webkit_font_feature_settings,
+        use_counter_css_doc_css_position_try_fallbacks,
+        use_counter_css_page_css_position_try_fallbacks,
+        use_counter_css_doc_css_position_area,
+        use_counter_css_page_css_position_area,
+        use_counter_css_doc_css_view_transition_name,
+        use_counter_css_page_css_view_transition_name,
+        use_counter_css_doc_css_position_try,
+        use_counter_css_page_css_position_try,
+        use_counter_doc_js_is_htmldda_fuse,
+        use_counter_doc_js_optimize_get_iterator_fuse,
+        use_counter_page_js_is_htmldda_fuse,
+        use_counter_page_js_optimize_get_iterator_fuse,
+        use_counter_doc_mls_deriveexporter,
+        use_counter_doc_mls_generatecredentialbasic,
+        use_counter_doc_mls_generatekeypackage,
+        use_counter_doc_mls_generatesignaturekeypair,
+        use_counter_doc_mls_groupadd,
+        use_counter_doc_mls_groupclose,
+        use_counter_doc_mls_groupcreate,
+        use_counter_doc_mls_groupjoin,
+        use_counter_doc_mls_groupmembers,
+        use_counter_doc_mls_groupproposeadd,
+        use_counter_doc_mls_groupproposeremove,
+        use_counter_doc_mls_groupremove,
+        use_counter_doc_mls_receive,
+        use_counter_doc_mls_send,
+        use_counter_doc_mls_statedelete,
+        use_counter_doc_mls_statedeletegroup,
+        use_counter_page_mls_deriveexporter,
+        use_counter_page_mls_generatecredentialbasic,
+        use_counter_page_mls_generatekeypackage,
+        use_counter_page_mls_generatesignaturekeypair,
+        use_counter_page_mls_groupadd,
+        use_counter_page_mls_groupclose,
+        use_counter_page_mls_groupcreate,
+        use_counter_page_mls_groupjoin,
+        use_counter_page_mls_groupmembers,
+        use_counter_page_mls_groupproposeadd,
+        use_counter_page_mls_groupproposeremove,
+        use_counter_page_mls_groupremove,
+        use_counter_page_mls_receive,
+        use_counter_page_mls_send,
+        use_counter_page_mls_statedelete,
+        use_counter_page_mls_statedeletegroup,
+        use_counter_worker_dedicated_mls_deriveexporter,
+        use_counter_worker_dedicated_mls_generatecredentialbasic,
+        use_counter_worker_dedicated_mls_generatekeypackage,
+        use_counter_worker_dedicated_mls_generatesignaturekeypair,
+        use_counter_worker_dedicated_mls_groupadd,
+        use_counter_worker_dedicated_mls_groupclose,
+        use_counter_worker_dedicated_mls_groupcreate,
+        use_counter_worker_dedicated_mls_groupjoin,
+        use_counter_worker_dedicated_mls_groupmembers,
+        use_counter_worker_dedicated_mls_groupproposeadd,
+        use_counter_worker_dedicated_mls_groupproposeremove,
+        use_counter_worker_dedicated_mls_groupremove,
+        use_counter_worker_dedicated_mls_receive,
+        use_counter_worker_dedicated_mls_send,
+        use_counter_worker_dedicated_mls_statedelete,
+        use_counter_worker_dedicated_mls_statedeletegroup,
+        use_counter_worker_service_mls_deriveexporter,
+        use_counter_worker_service_mls_generatecredentialbasic,
+        use_counter_worker_service_mls_generatekeypackage,
+        use_counter_worker_service_mls_generatesignaturekeypair,
+        use_counter_worker_service_mls_groupadd,
+        use_counter_worker_service_mls_groupclose,
+        use_counter_worker_service_mls_groupcreate,
+        use_counter_worker_service_mls_groupjoin,
+        use_counter_worker_service_mls_groupmembers,
+        use_counter_worker_service_mls_groupproposeadd,
+        use_counter_worker_service_mls_groupproposeremove,
+        use_counter_worker_service_mls_groupremove,
+        use_counter_worker_service_mls_receive,
+        use_counter_worker_service_mls_send,
+        use_counter_worker_service_mls_statedelete,
+        use_counter_worker_service_mls_statedeletegroup,
+        use_counter_worker_shared_mls_deriveexporter,
+        use_counter_worker_shared_mls_generatecredentialbasic,
+        use_counter_worker_shared_mls_generatekeypackage,
+        use_counter_worker_shared_mls_generatesignaturekeypair,
+        use_counter_worker_shared_mls_groupadd,
+        use_counter_worker_shared_mls_groupclose,
+        use_counter_worker_shared_mls_groupcreate,
+        use_counter_worker_shared_mls_groupjoin,
+        use_counter_worker_shared_mls_groupmembers,
+        use_counter_worker_shared_mls_groupproposeadd,
+        use_counter_worker_shared_mls_groupproposeremove,
+        use_counter_worker_shared_mls_groupremove,
+        use_counter_worker_shared_mls_receive,
+        use_counter_worker_shared_mls_send,
+        use_counter_worker_shared_mls_statedelete,
+        use_counter_worker_shared_mls_statedeletegroup,
+        use_counter_doc_components_shim_resolved,
+        use_counter_page_components_shim_resolved,
+        use_counter_doc_js_thenable,
+        use_counter_doc_js_thenable_proto,
+        use_counter_doc_js_thenable_standard_proto,
+        use_counter_page_js_thenable,
+        use_counter_page_js_thenable_proto,
+        use_counter_page_js_thenable_standard_proto,
+        use_counter_doc_js_legacy_lang_subtag,
+        use_counter_page_js_legacy_lang_subtag,
+        use_counter_doc_js_ic_stub_oom,
+        use_counter_doc_js_ic_stub_too_large,
+        use_counter_page_js_ic_stub_oom,
+        use_counter_page_js_ic_stub_too_large,
+        use_counter_doc_cookiestore_delete,
+        use_counter_doc_cookiestore_get,
+        use_counter_doc_cookiestore_getall,
+        use_counter_doc_cookiestore_set,
+        use_counter_page_cookiestore_delete,
+        use_counter_page_cookiestore_get,
+        use_counter_page_cookiestore_getall,
+        use_counter_page_cookiestore_set,
+        use_counter_worker_dedicated_cookiestore_delete,
+        use_counter_worker_dedicated_cookiestore_get,
+        use_counter_worker_dedicated_cookiestore_getall,
+        use_counter_worker_dedicated_cookiestore_set,
+        use_counter_worker_service_cookiestore_delete,
+        use_counter_worker_service_cookiestore_get,
+        use_counter_worker_service_cookiestore_getall,
+        use_counter_worker_service_cookiestore_set,
+        use_counter_worker_shared_cookiestore_delete,
+        use_counter_worker_shared_cookiestore_get,
+        use_counter_worker_shared_cookiestore_getall,
+        use_counter_worker_shared_cookiestore_set,
+        use_counter_doc_js_errorstack_getter,
+        use_counter_doc_js_errorstack_getter_no_errordata,
+        use_counter_doc_js_errorstack_setter,
+        use_counter_doc_js_errorstack_setter_no_errordata,
+        use_counter_doc_js_errorstack_setter_nonstring,
+        use_counter_page_js_errorstack_getter,
+        use_counter_page_js_errorstack_getter_no_errordata,
+        use_counter_page_js_errorstack_setter,
+        use_counter_page_js_errorstack_setter_no_errordata,
+        use_counter_page_js_errorstack_setter_nonstring,
+        use_counter_doc_sectioning_h1_with_no_font_size_or_margins,
+        use_counter_page_sectioning_h1_with_no_font_size_or_margins,
+        use_counter_css_doc_css_hyphenate_limit_chars,
+        use_counter_css_page_css_hyphenate_limit_chars,
+        use_counter_doc_js_dateparse,
+        use_counter_doc_js_dateparse_impl_def,
+        use_counter_page_js_dateparse,
+        use_counter_page_js_dateparse_impl_def,
+        use_counter_doc_htmldocument_caretrangefrompoint,
+        use_counter_doc_htmldocument_exitpictureinpicture,
+        use_counter_doc_htmldocument_featurepolicy,
+        use_counter_doc_htmldocument_onbeforecopy,
+        use_counter_doc_htmldocument_onbeforecut,
+        use_counter_doc_htmldocument_onbeforepaste,
+        use_counter_doc_htmldocument_oncancel,
+        use_counter_doc_htmldocument_onfreeze,
+        use_counter_doc_htmldocument_onmousewheel,
+        use_counter_doc_htmldocument_onresume,
+        use_counter_doc_htmldocument_onsearch,
+        use_counter_doc_htmldocument_onwebkitfullscreenchange,
+        use_counter_doc_htmldocument_onwebkitfullscreenerror,
+        use_counter_doc_htmldocument_pictureinpictureelement,
+        use_counter_doc_htmldocument_pictureinpictureenabled,
+        use_counter_doc_htmldocument_registerelement,
+        use_counter_doc_htmldocument_wasdiscarded,
+        use_counter_doc_htmldocument_webkitcancelfullscreen,
+        use_counter_doc_htmldocument_webkitcurrentfullscreenelement,
+        use_counter_doc_htmldocument_webkitexitfullscreen,
+        use_counter_doc_htmldocument_webkitfullscreenelement,
+        use_counter_doc_htmldocument_webkitfullscreenenabled,
+        use_counter_doc_htmldocument_webkithidden,
+        use_counter_doc_htmldocument_webkitisfullscreen,
+        use_counter_doc_htmldocument_webkitvisibilitystate,
+        use_counter_doc_htmldocument_xmlencoding,
+        use_counter_doc_htmldocument_xmlstandalone,
+        use_counter_doc_htmldocument_xmlversion,
+        use_counter_page_htmldocument_caretrangefrompoint,
+        use_counter_page_htmldocument_exitpictureinpicture,
+        use_counter_page_htmldocument_featurepolicy,
+        use_counter_page_htmldocument_onbeforecopy,
+        use_counter_page_htmldocument_onbeforecut,
+        use_counter_page_htmldocument_onbeforepaste,
+        use_counter_page_htmldocument_oncancel,
+        use_counter_page_htmldocument_onfreeze,
+        use_counter_page_htmldocument_onmousewheel,
+        use_counter_page_htmldocument_onresume,
+        use_counter_page_htmldocument_onsearch,
+        use_counter_page_htmldocument_onwebkitfullscreenchange,
+        use_counter_page_htmldocument_onwebkitfullscreenerror,
+        use_counter_page_htmldocument_pictureinpictureelement,
+        use_counter_page_htmldocument_pictureinpictureenabled,
+        use_counter_page_htmldocument_registerelement,
+        use_counter_page_htmldocument_wasdiscarded,
+        use_counter_page_htmldocument_webkitcancelfullscreen,
+        use_counter_page_htmldocument_webkitcurrentfullscreenelement,
+        use_counter_page_htmldocument_webkitexitfullscreen,
+        use_counter_page_htmldocument_webkitfullscreenelement,
+        use_counter_page_htmldocument_webkitfullscreenenabled,
+        use_counter_page_htmldocument_webkithidden,
+        use_counter_page_htmldocument_webkitisfullscreen,
+        use_counter_page_htmldocument_webkitvisibilitystate,
+        use_counter_page_htmldocument_xmlencoding,
+        use_counter_page_htmldocument_xmlstandalone,
+        use_counter_page_htmldocument_xmlversion,
+        use_counter_deprecated_ops_doc_after_script_execute_event,
+        use_counter_deprecated_ops_doc_before_script_execute_event,
+        use_counter_deprecated_ops_page_after_script_execute_event,
+        use_counter_deprecated_ops_page_before_script_execute_event,
+        use_counter_doc_js_optimize_array_species_fuse,
+        use_counter_doc_js_thenable_object_proto,
+        use_counter_page_js_optimize_array_species_fuse,
+        use_counter_page_js_thenable_object_proto,
+        use_counter_doc_js_optimize_promise_lookup_fuse,
+        use_counter_page_js_optimize_promise_lookup_fuse
       )
     )
 ),

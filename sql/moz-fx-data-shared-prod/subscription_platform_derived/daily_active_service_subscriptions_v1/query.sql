@@ -10,7 +10,7 @@ WITH dates AS (
             SELECT
               DATE(MIN(started_at))
             FROM
-              `moz-fx-data-shared-prod.subscription_platform.service_subscriptions`
+              `moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_v1`
           ),
           CURRENT_DATE() - 1
         )
@@ -49,6 +49,7 @@ daily_active_subscriptions_history AS (
 SELECT
   id,
   `date`,
+  latest_subscription_history.subscription.service.id AS service_id,
   latest_subscription_history.id AS service_subscriptions_history_id,
   latest_subscription_history.subscription,
   (

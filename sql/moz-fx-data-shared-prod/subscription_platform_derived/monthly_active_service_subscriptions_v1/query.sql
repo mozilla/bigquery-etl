@@ -11,7 +11,7 @@ WITH months AS (
             SELECT
               DATE_TRUNC(DATE(MIN(started_at)), MONTH)
             FROM
-              `moz-fx-data-shared-prod.subscription_platform.service_subscriptions`
+              `moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_v1`
           ),
           CURRENT_DATE() - 1,
           INTERVAL 1 MONTH
@@ -59,6 +59,7 @@ SELECT
   id,
   month_start_date,
   month_end_date,
+  latest_subscription_history.subscription.service.id AS service_id,
   latest_subscription_history.id AS service_subscriptions_history_id,
   latest_subscription_history.subscription,
   (

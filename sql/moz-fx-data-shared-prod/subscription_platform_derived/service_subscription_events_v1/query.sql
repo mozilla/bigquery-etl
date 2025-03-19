@@ -184,6 +184,12 @@ SELECT
     '-',
     REPLACE(type, ' ', '-')
   ) AS id,
-  *
+  `timestamp`,
+  subscription.service.id AS service_id,
+  type,
+  reason,
+  service_subscriptions_history_id,
+  subscription,
+  old_subscription
 FROM
   all_events

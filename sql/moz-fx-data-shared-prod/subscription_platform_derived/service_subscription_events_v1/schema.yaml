@@ -5,6 +5,9 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+- name: service_id
+  type: STRING
+  mode: NULLABLE
 - name: type
   type: STRING
   mode: NULLABLE

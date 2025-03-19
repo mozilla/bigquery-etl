@@ -1,0 +1,18 @@
+friendly_name: Service subscriptions
+description: |-
+  Service subscriptions, which are a continuous active period for a specific service by a particular provider subscription.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  clustering:
+    fields:
+    - service_id
+references: {}

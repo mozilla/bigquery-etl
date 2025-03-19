@@ -19,6 +19,7 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
+    - service_id
     - type
     - reason
 references: {}

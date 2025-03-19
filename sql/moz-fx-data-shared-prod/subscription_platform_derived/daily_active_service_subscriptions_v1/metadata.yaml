@@ -18,5 +18,7 @@ bigquery:
     field: date
     require_partition_filter: false
     expiration_days: null
-  clustering: null
+  clustering:
+    fields:
+    - service_id
 references: {}

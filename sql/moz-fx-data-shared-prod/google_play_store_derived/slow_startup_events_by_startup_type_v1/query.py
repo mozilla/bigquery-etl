@@ -20,7 +20,7 @@ APP_NAMES = [
     "org.mozilla.firefox_beta",
     "org.mozilla.fenix",
     "org.mozilla.klar",
-    "org.mozilla.firefox.vpn"
+    "org.mozilla.firefox.vpn",
 ]
 
 
@@ -108,8 +108,6 @@ def main():
 
     # Calculate the request payload
     payload_for_api_call = create_request_payload_using_logical_dag_date(data_pull_date)
-    print("payload_for_api_call")
-    print(payload_for_api_call)
 
     # Initialize a dataframe to store the data
     final_df = pd.DataFrame(
@@ -135,17 +133,13 @@ def main():
 
         # Get the data from the result
         result_json = api_call_result.json()
-        print("result_json")
-        print(result_json)
 
+        # Initialize as none until we find them for each app
         pct_users_w_slow_start_during_cold_start = None
         pct_users_w_slow_start_during_warm_start = None
         pct_users_w_slow_start_during_hot_start = None
 
         for row in result_json["rows"]:
-            print("row")
-            print(row)
-
             startup_type = row["dimensions"][0]["stringValue"]
             if startup_type == "COLD":
                 pct_users_w_slow_start_during_cold_start = row["metrics"][0][

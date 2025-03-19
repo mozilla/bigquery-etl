@@ -1,0 +1,10 @@
+friendly_name: Google Play Store
+description: |-
+  Data from the Google Play Store developer reporting API
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

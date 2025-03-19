@@ -1,0 +1,20 @@
+friendly_name: Slow Startups by Startup Type V1
+description: |-
+  Pulls slow startup data from Google Play Store API
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_google_play_store_developer_reporting_api_data
+  arguments: ["--date", "{{ds}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

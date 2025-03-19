@@ -15,7 +15,6 @@ GENERATOR_ROOT = Path(path.dirname(__file__))
 
 HEADER = f"Generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
-
 TEMPLATES_LOCATION = "templates"
 
 CHANNEL_TEMPLATES = (
@@ -47,13 +46,18 @@ def get_generation_config():
     return ConfigLoader.get("generate", "usage_reporting", "apps", fallback=[])
 
 
-def generate_usage_reporting(target_project, output_dir):
-    """Generate usage_reporting queries and views."""
-    usage_reporting_apps = get_generation_config()
+def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
+    """Retrieve app_info from probe scraper app definitions \
+    and return only the info of apps defined in the generator configuration.
+
+    The app info returned includes app_name, and bq namespaces containing data \
+    for specific app channels.
+    """
+    probe_scraper_app_info = get_app_info()
 
     app_info_filtered = dict()
 
-    for app_name, app_info in get_app_info().items():
+    for app_name, app_info in probe_scraper_app_info.items():
         if app_name not in usage_reporting_apps:
             continue
 
@@ -70,16 +74,26 @@ def generate_usage_reporting(target_project, output_dir):
 
                 app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
 
-    output_dir = Path(output_dir) / target_project
+    return app_info_filtered
 
+
+def generate_usage_reporting(target_project, output_dir):
+    """Generate usage_reporting queries and views."""
+    usage_reporting_apps = get_generation_config()
+    generator_apps_info = get_specific_apps_app_info_from_probe_scraper(
+        usage_reporting_apps
+    )
+
+    output_dir = Path(output_dir) / target_project
     jinja_env = Environment(loader=FileSystemLoader(str(GENERATOR_ROOT / "templates")))
+
     default_template_args = {
         "project_id": target_project,
         "usage_reporting_stable_table_name": "usage_reporting_v1",
         "header": HEADER,
     }
 
-    for app_name, app_channels in app_info_filtered.items():
+    for app_name, app_channels in generator_apps_info.items():
         app_template_args = {
             "app_name": app_name,
             **default_template_args,

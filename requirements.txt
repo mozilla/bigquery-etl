@@ -109,9 +109,9 @@ annotated-types==0.7.0 \
     --hash=sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53 \
     --hash=sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89
     # via pydantic
-attrs==25.1.0 \
-    --hash=sha256:1c97078a80c814273a76b2a298a932eb681c87415c11dee0a6921de7f1b02c3e \
-    --hash=sha256:c75a69e28a550a7e93789579c22aa26b0f5b83b75dc4e08fe092980051e1090a
+attrs==25.3.0 \
+    --hash=sha256:427318ce031701fea540783410126f03899a97ffc6f61596ad581ac2e40e3bc3 \
+    --hash=sha256:75d7cefc7fb576747b2c81b4442d4d4a1ce0900973527c011d1030fd3bf4af1b
     # via
     #   -r requirements.in
     #   aiohttp
@@ -956,9 +956,9 @@ mkdocs-get-deps==0.2.0 \
     --hash=sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c \
     --hash=sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134
     # via mkdocs
-mkdocs-material==9.6.7 \
-    --hash=sha256:3e2c1fceb9410056c2d91f334a00cdea3215c28750e00c691c1e46b2a33309b4 \
-    --hash=sha256:8a159e45e80fcaadd9fbeef62cbf928569b93df954d4dc5ba76d46820caf7b47
+mkdocs-material==9.6.8 \
+    --hash=sha256:0a51532dd8aa80b232546c073fe3ef60dfaef1b1b12196ac7191ee01702d1cf8 \
+    --hash=sha256:8de31bb7566379802532b248bd56d9c4bc834afc4625884bf5769f9412c6a354
     # via -r requirements.in
 mkdocs-material-extensions==1.3 \
     --hash=sha256:0297cc48ba68a9fdd1ef3780a3b41b534b0d0df1d1181a44676fda5f464eeadc \
@@ -2412,9 +2412,9 @@ wrapt==1.16.0 \
     --hash=sha256:f8212564d49c50eb4565e502814f694e240c55551a5f1bc841d4fcaabb0a9b8a \
     --hash=sha256:ffa565331890b90056c01db69c0fe634a776f8019c143a5ae265f9c6bc4bd6d4
     # via deprecated
-yamllint==1.36.0 \
-    --hash=sha256:22ab6a7db9d5f0954bd7a50ef70a41c1465c61f955893070b0767c0ec6693b7b \
-    --hash=sha256:3835a65994858679ea06fd998dd968c3f71935cd93742990405999d888e21130
+yamllint==1.36.1 \
+    --hash=sha256:3e2ccd47ea12449837adf6b2c56fd9e31172ce42bc1470380806be461f25df66 \
+    --hash=sha256:a287689daaafc301a80549b2d0170452ebfdcabd826e3fe3b4c66e322d4851fa
     # via -r requirements.in
 yarl==1.17.2 \
     --hash=sha256:0c8e589379ef0407b10bed16cc26e7392ef8f86961a706ade0a22309a45414d7 \
@@ -2510,9 +2510,9 @@ pip==23.3.2 \
     --hash=sha256:5052d7889c1f9d05224cd41741acb7c5d6fa735ab34e339624a614eaaa7e7d76 \
     --hash=sha256:7fd9972f96db22c8077a1ee2691b172c8089b17a5652a44494a9ecb0d78f9149
     # via pip-tools
-setuptools==76.0.0 \
-    --hash=sha256:199466a166ff664970d0ee145839f5582cb9bca7a0a3a2e795b6a9cb2308e9c6 \
-    --hash=sha256:43b4ee60e10b0d0ee98ad11918e114c70701bc6051662a9a675a0496c1a158f4
+setuptools==76.1.0 \
+    --hash=sha256:34750dcb17d046929f545dec9b8349fe42bf4ba13ddffee78428aec422dbfb73 \
+    --hash=sha256:4959b9ad482ada2ba2320c8f1a8d8481d4d8d668908a7a1b84d987375cd7f5bd
     # via
     #   bigeye-sdk
     #   nodeenv

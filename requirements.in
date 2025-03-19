@@ -1,4 +1,4 @@
-attrs==25.1.0
+attrs==25.3.0
 authlib==1.5.1
 beautifulsoup4==4.13.3
 bigeye-sdk==0.4.99
@@ -23,7 +23,7 @@ looker-sdk==25.4.0
 markdown-include==0.8.1
 mdx_truly_sane_lists==1.3
 mkdocs==1.6.1
-mkdocs-material==9.6.7
+mkdocs-material==9.6.8
 mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2024.11.1
 mozilla-schema-generator==0.5.1
@@ -55,6 +55,6 @@ types-requests==2.32.0.20250306
 types-ujson==5.10.0.20240515
 typing==3.7.4.3
 ujson==5.10.0
-yamllint==1.36.0
+yamllint==1.36.1
 requests==2.32.3
 responses==0.25.7

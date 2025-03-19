@@ -20,6 +20,7 @@ APP_NAMES = [
     "org.mozilla.firefox_beta",
     "org.mozilla.fenix",
     "org.mozilla.klar",
+    "org.mozilla.firefox.vpn"
 ]
 
 

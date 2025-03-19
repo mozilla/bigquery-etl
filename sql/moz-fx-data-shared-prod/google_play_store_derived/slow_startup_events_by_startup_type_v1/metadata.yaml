@@ -15,6 +15,9 @@ labels:
 scheduling:
   dag_name: bqetl_google_play_store_developer_reporting_api_data
   arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: GOOGLE_PLAY_STORE_SRVC_ACCT_INFO
+    key: bqetl_google_play_store_developer_reporting_api_data_boxwood
 bigquery:
   time_partitioning:
     type: day

@@ -15,12 +15,9 @@ scheduling:
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:
-  time_partitioning:
-    type: day
-    field: valid_to
-    require_partition_filter: false
-    expiration_days: null
+  time_partitioning: null
   clustering:
     fields:
+    - valid_to
     - valid_from
 references: {}

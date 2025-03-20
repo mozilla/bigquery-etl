@@ -31,7 +31,7 @@ _previous AS (
     usage_profile_id,
     app_channel,
   FROM
-    `{{ project_id }}.{{ channel_dataset }}.{{ view_name }}`
+    `{{ project_id }}.{{ channel_dataset }}_derived.{{ view_name }}_v1`
   WHERE
     {% raw %}
     {% if is_init() %}

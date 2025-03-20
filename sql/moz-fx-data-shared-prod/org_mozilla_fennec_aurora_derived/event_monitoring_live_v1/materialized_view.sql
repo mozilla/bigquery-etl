@@ -10,6 +10,103 @@ IF
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 60)
   AS
+  WITH base_events_v1 AS (
+    SELECT
+      submission_timestamp,
+      event.category AS event_category,
+      event.name AS event_name,
+      event_extra.key AS event_extra_key,
+      normalized_country_code AS country,
+      'Firefox for Android' AS normalized_app_name,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+      COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+      COALESCE(
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+        '*'
+      ) AS experiment_branch,
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.events_v1`
+    CROSS JOIN
+      UNNEST(events) AS event
+    CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+      UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+    LEFT JOIN
+      UNNEST(event.extra) AS event_extra
+  ),
+  base_home_v1 AS (
+    SELECT
+      submission_timestamp,
+      event.category AS event_category,
+      event.name AS event_name,
+      event_extra.key AS event_extra_key,
+      normalized_country_code AS country,
+      'Firefox for Android' AS normalized_app_name,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+      COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+      COALESCE(
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+        '*'
+      ) AS experiment_branch,
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.home_v1`
+    CROSS JOIN
+      UNNEST(events) AS event
+    CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+      UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+    LEFT JOIN
+      UNNEST(event.extra) AS event_extra
+  ),
+  base_metrics_v1 AS (
+    SELECT
+      submission_timestamp,
+      event.category AS event_category,
+      event.name AS event_name,
+      event_extra.key AS event_extra_key,
+      normalized_country_code AS country,
+      'Firefox for Android' AS normalized_app_name,
+      client_info.app_channel AS channel,
+      client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+      COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+      COALESCE(
+        ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+        '*'
+      ) AS experiment_branch,
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.metrics_v1`
+    CROSS JOIN
+      UNNEST(events) AS event
+    CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+      UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+    LEFT JOIN
+      UNNEST(event.extra) AS event_extra
+  ),
+  combined AS (
+    SELECT
+      *
+    FROM
+      base_events_v1
+    UNION ALL
+    SELECT
+      *
+    FROM
+      base_home_v1
+    UNION ALL
+    SELECT
+      *
+    FROM
+      base_metrics_v1
+  )
   SELECT
       -- used for partitioning, only allows TIMESTAMP columns
     TIMESTAMP_TRUNC(submission_timestamp, DAY) AS submission_date,
@@ -22,118 +119,10 @@ IF
       TIMESTAMP_TRUNC(submission_timestamp, HOUR),
       INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
     ) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    'Firefox for Android' AS normalized_app_name,
-    channel,
-    version,
-      -- Access experiment information.
-      -- Additional iteration is necessary to aggregate total event count across experiments
-      -- which is denoted with "*".
-      -- Some clients are enrolled in multiple experiments, so simply summing up the totals
-      -- across all the experiments would double count events.
-    CASE
-      experiment_index
-      WHEN ARRAY_LENGTH(ping_info.experiments)
-        THEN "*"
-      ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].key
-    END AS experiment,
-    CASE
-      experiment_index
-      WHEN ARRAY_LENGTH(ping_info.experiments)
-        THEN "*"
-      ELSE ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch
-    END AS experiment_branch,
-    COUNT(*) AS total_events
+    * EXCEPT (submission_timestamp),
+    COUNT(*) AS total_events,
   FROM
-    (
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        STRUCT(
-          ping_info.end_time,
-          ARRAY(
-            SELECT AS STRUCT
-              key,
-              STRUCT(
-                value.branch,
-                STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
-              ) AS value
-            FROM
-              UNNEST(ping_info.experiments)
-          ) AS experiments,
-          ping_info.ping_type,
-          ping_info.seq,
-          ping_info.start_time,
-          ping_info.reason
-        ) AS ping_info,
-      FROM
-        `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.events_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        STRUCT(
-          ping_info.end_time,
-          ARRAY(
-            SELECT AS STRUCT
-              key,
-              STRUCT(
-                value.branch,
-                STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
-              ) AS value
-            FROM
-              UNNEST(ping_info.experiments)
-          ) AS experiments,
-          ping_info.ping_type,
-          ping_info.seq,
-          ping_info.start_time,
-          ping_info.reason
-        ) AS ping_info,
-      FROM
-        `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.home_v1`
-      UNION ALL
-      SELECT
-        submission_timestamp,
-        events,
-        normalized_country_code,
-        client_info.app_channel AS channel,
-        client_info.app_display_version AS version,
-        STRUCT(
-          ping_info.end_time,
-          ARRAY(
-            SELECT AS STRUCT
-              key,
-              STRUCT(
-                value.branch,
-                STRUCT(value.extra.type, value.extra.enrollment_id) AS extra
-              ) AS value
-            FROM
-              UNNEST(ping_info.experiments)
-          ) AS experiments,
-          ping_info.ping_type,
-          ping_info.seq,
-          ping_info.start_time,
-          ping_info.reason
-        ) AS ping_info,
-      FROM
-        `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.metrics_v1`
-    )
-  CROSS JOIN
-    UNNEST(events) AS event,
-      -- Iterator for accessing experiments.
-      -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+    combined
   WHERE
     DATE(submission_timestamp) >= "2025-03-20"
   GROUP BY

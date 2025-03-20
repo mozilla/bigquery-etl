@@ -19,3 +19,7 @@ fields:
   type: NUMERIC
   mode: NULLABLE
   description: The percent of unique users with a slow start event during a hot app start
+- name: nbr_distinct_users
+  type: NUMBERIC
+  mode: NULLABLE
+  description: Number of Distinct Users

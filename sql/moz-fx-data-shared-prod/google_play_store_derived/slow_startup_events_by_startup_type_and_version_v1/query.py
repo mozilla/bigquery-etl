@@ -139,6 +139,7 @@ def main():
         # Get the data from the result
         result_json = api_call_result.json()
 
+        # Code only set to handle 1 page, error out if more than 1 so it can be fixed
         if "nextPageToken" in result_json:
             print("next page found, not parsed")
             raise KeyError

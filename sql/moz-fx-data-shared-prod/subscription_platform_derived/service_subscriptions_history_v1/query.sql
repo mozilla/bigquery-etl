@@ -18,10 +18,17 @@ WITH subscription_starts AS (
     subscription.provider_subscription_id,
     IF(
       valid_from = subscription.started_at,
-      STRUCT(subscription.initial_discount_name, subscription.initial_discount_promotion_code),
+      STRUCT(
+        subscription.initial_discount_name,
+        subscription.initial_discount_promotion_code,
+        subscription.first_touch_attribution,
+        subscription.last_touch_attribution
+      ),
       STRUCT(
         subscription.current_period_discount_name AS initial_discount_name,
-        subscription.current_period_discount_promotion_code AS initial_discount_promotion_code
+        subscription.current_period_discount_promotion_code AS initial_discount_promotion_code,
+        NULL AS first_touch_attribution,
+        NULL AS last_touch_attribution
       )
     ).*
   FROM
@@ -58,7 +65,9 @@ subscriptions_history_periods AS (
         subscription_id
     ) AS customer_service_subscription_number,
     initial_discount_name,
-    initial_discount_promotion_code
+    initial_discount_promotion_code,
+    first_touch_attribution,
+    last_touch_attribution
   FROM
     subscription_starts
 ),
@@ -224,8 +233,14 @@ subscriptions_history AS (
       history.subscription.ongoing_discount_ends_at,
       history.subscription.has_refunds,
       history.subscription.has_fraudulent_charges,
-      subscription_attributions.first_touch_attribution,
-      subscription_attributions.last_touch_attribution
+      COALESCE(
+        subscriptions_history_periods.first_touch_attribution,
+        subscription_attributions.first_touch_attribution
+      ) AS first_touch_attribution,
+      COALESCE(
+        subscriptions_history_periods.last_touch_attribution,
+        subscription_attributions.last_touch_attribution
+      ) AS last_touch_attribution
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history

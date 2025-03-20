@@ -14,6 +14,7 @@ GENERATOR_ROOT = Path(path.dirname(__file__))
 
 HEADER = f"Generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
+
 TEMPLATES_LOCATION = "templates"
 
 CHANNEL_TEMPLATES = (
@@ -38,6 +39,7 @@ ACTIVE_USERS_AGGREGATES_TEMPLATE = (
 ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
     "usage_reporting_active_users_aggregates.view.sql.jinja"
 )
+
 COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
     "composite_active_users_aggregates.view.sql.jinja"
 )

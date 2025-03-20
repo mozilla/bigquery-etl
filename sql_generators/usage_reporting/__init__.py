@@ -18,18 +18,33 @@ HEADER = f"Generated via `{GENERATOR_ROOT.name}` SQL generator."
 VERSION = "v1"
 
 TEMPLATES_LOCATION = "templates"
+
 CHANNEL_TEMPLATES = (
     "usage_reporting_clients_daily_v1.query.sql.jinja",
     "usage_reporting_clients_first_seen_v1.query.sql.jinja",
     "usage_reporting_clients_last_seen_v1.query.sql.jinja",
 )
 CHANNEL_VIEW_TEMPLATE = "channel.view.sql.jinja"
+
 ARTIFACT_TEMPLATES = (
     "metadata.yaml.jinja",
     "schema.yaml.jinja",
 )
 APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
+
 ACTIVE_USERS_VIEW_TEMPLATE = "usage_reporting_active_users.view.sql.jinja"
+COMPOSITE_ACTIVE_USERS_TEMPLATE = "composite_active_users.view.sql.jinja"
+
+ACTIVE_USERS_AGGREGATES_TEMPLATE = (
+    "usage_reporting_active_users_aggregates_v1.query.sql.jinja"
+)
+ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
+    "usage_reporting_active_users_aggregates.view.sql.jinja"
+)
+
+COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
+    "composite_active_users_aggregates.view.sql.jinja"
+)
 
 
 @click.command()
@@ -74,6 +89,7 @@ def generate(
     target_project, output_dir, parallelism, exclude, only, app_name, use_cloud_function
 ):
     """Generate usage_reporting queries and views."""
+    # TODO: add validation of the usage_reporting config.
     usage_reporting_apps = ConfigLoader.get(
         "generate", "usage_reporting", "apps", fallback=[]
     )
@@ -86,16 +102,20 @@ def generate(
 
         app_info_filtered[app_name] = dict()
 
-        if len(app_info) == 1:
+        # If channels is set to None it means data from multiple channels exists in the same table.
+        if usage_reporting_apps[app_name]["channels"] is None:
             app_info_filtered[app_name]["multichannel"] = app_info[0]
-        else:
-            for index, channel_info in enumerate(app_info):
-                if (
-                    channel := channel_info.get("app_channel")
-                ) not in usage_reporting_apps[app_name]["channels"]:
-                    continue
+            continue
 
-                app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
+        for index, channel_info in enumerate(app_info):
+            if (
+                # this assumes that if no channel defined for an app in probe scraper
+                # then the channel is "release".
+                channel := channel_info.get("app_channel", "release")
+            ) not in usage_reporting_apps[app_name]["channels"]:
+                continue
+
+            app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
 
     output_dir = Path(output_dir) / target_project
 
@@ -185,7 +205,7 @@ def generate(
             channels_info = [
                 {
                     "channel_dataset": channel_info["bq_dataset_family"],
-                    "channel_name": channel_info.get("app_channel"),
+                    "channel_name": channel_info.get("app_channel", "release"),
                 }
                 for channel_info in app_channels.values()
             ]
@@ -218,5 +238,107 @@ def generate(
             full_table_id=f"{target_project}.{app_name}.{active_users_dataset_name}",
             basename="view.sql",
             sql=reformat(rendered_active_users_view),
+            skip_existing=False,
+        )
+
+        composite_active_users_dataset_name = COMPOSITE_ACTIVE_USERS_TEMPLATE.split(
+            "."
+        )[0]
+        composite_active_users_view_template = jinja_env.get_template(
+            COMPOSITE_ACTIVE_USERS_TEMPLATE
+        )
+        rendered_composite_active_users_view = (
+            composite_active_users_view_template.render(
+                **app_template_args,
+                view_name=composite_active_users_dataset_name,
+            )
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{composite_active_users_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_composite_active_users_view),
+            skip_existing=False,
+        )
+
+        active_users_aggregates_dataset_name = (
+            ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE.split(".")[0]
+        )
+        active_users_aggregates_view_template = jinja_env.get_template(
+            ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE
+        )
+        rendered_active_users_aggregates_view = (
+            active_users_aggregates_view_template.render(
+                **app_template_args,
+                view_name=active_users_aggregates_dataset_name,
+            )
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{active_users_aggregates_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_active_users_aggregates_view),
+            skip_existing=False,
+        )
+
+        active_users_aggregates_dataset_name = ACTIVE_USERS_AGGREGATES_TEMPLATE.split(
+            "."
+        )[0]
+        active_users_aggregates_template = jinja_env.get_template(
+            ACTIVE_USERS_AGGREGATES_TEMPLATE
+        )
+        rendered_active_users_aggregates = active_users_aggregates_template.render(
+            **app_template_args,
+            view_name=active_users_aggregates_dataset_name,
+        )
+
+        active_users_aggregates_table_id = f"{target_project}.{app_name}_derived.{active_users_aggregates_dataset_name}"
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}_derived.{active_users_aggregates_dataset_name}",
+            basename="query.sql",
+            sql=reformat(rendered_active_users_aggregates),
+            skip_existing=False,
+        )
+
+        for query_artifact_template in ARTIFACT_TEMPLATES:
+            _artifact_template = jinja_env.get_template(
+                f"{active_users_aggregates_dataset_name}.{query_artifact_template}"
+            )
+            rendered_artifact = _artifact_template.render(
+                **channel_args,
+                format=False,
+            )
+
+            write_sql(
+                output_dir=output_dir,
+                full_table_id=active_users_aggregates_table_id,
+                basename=".".join(query_artifact_template.split(".")[:-1]),
+                sql=rendered_artifact,
+                skip_existing=False,
+            )
+
+        # composite active users aggregates
+        composite_active_users_aggregates_dataset_name = (
+            COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE.split(".")[0]
+        )
+        composite_active_users_aggregates_view_template = jinja_env.get_template(
+            COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE
+        )
+        rendered_composite_active_users_aggregates_view = (
+            composite_active_users_aggregates_view_template.render(
+                **app_template_args,
+                view_name=composite_active_users_aggregates_dataset_name,
+            )
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{composite_active_users_aggregates_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_composite_active_users_aggregates_view),
             skip_existing=False,
         )

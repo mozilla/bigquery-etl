@@ -86,6 +86,23 @@ bqetl_mobile_search:
   tags:
     - impact/tier_1
 
+bqetl_google_play_store:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-03-18'
+  description: Schedules daily level google play store export data
+  schedule_interval: 10 18 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
   description: |
@@ -2116,6 +2133,24 @@ bqetl_ltv:
   tags:
     - impact/tier_1
 
+bqetl_imf_exchange_rates:
+  description: |
+    This DAG pulls exchange rate data from the International Monetary Fund API
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-01-01"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 23 0 18 * *
+
 bqetl_imf_cpi_data:
   description: |
     This DAG pulls inflation data from the International Monetary Fund CPI API
@@ -2244,3 +2279,38 @@ bqetl_un_population:
   schedule_interval: 0 13 15 2 *
   tags:
     - impact/tier_3
+
+bqetl_chrome_extensions_scraper:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-03-01'
+  description: Pulls info about Chrome extensions from the Chrome webstore
+  schedule_interval: 40 21 * * 1
+  tags:
+    - impact/tier_3
+
+bqetl_usage_reporting:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 1
+    retry_delay: 30m
+    start_date: '2025-03-19'
+  description: DAG for updating usage_reporting related datasets.
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1

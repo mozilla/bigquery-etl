@@ -7,15 +7,39 @@ from google.cloud import bigquery
 # Set variables
 countries = [
     "AUS",
+    "BEL",
+    "BOL",
+    "BRA",
+    "BLZ",
     "CAN",
     "CHE",
+    "CHN",
+    "COL",
+    "CRI",
     "DEU",
+    "DNK",
     "ESP",
+    "FIN",
     "FRA",
     "GBR",
+    "GRC",
+    "GRL",
+    "IDN",
+    "IND",
+    "IRL",
     "ITA",
+    "ISL",
     "JPN",
+    "KEN",
+    "MEX",
+    "NGA",
+    "NLD",
+    "NOR",
     "POL",
+    "SRB",
+    "SWE",
+    "SGP",
+    "TUR",
     "USA",
 ]
 LOOKBACK_YEARS = 5
@@ -45,12 +69,6 @@ def pull_yearly_gdp_data_from_imf(country_query, start_year, end_year):
     response = requests.get(api_url, timeout=10)
     gdp_data = response.json()
     gdp_data = gdp_data[1]
-
-    # TEMP BELOW
-    print("gdp_data")
-    print(gdp_data)
-
-    # TEMP ABOVE
 
     # Initialize a results data frame
     results_df = pd.DataFrame(

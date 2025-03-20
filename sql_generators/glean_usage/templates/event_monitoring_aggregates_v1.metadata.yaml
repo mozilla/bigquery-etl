@@ -9,9 +9,9 @@ labels:
   incremental: true 
 scheduling:
   dag_name: bqetl_monitoring
-  # Use backfill-2 project for on-demand query billing
+  # Use backfill-3 project for on-demand query billing
   arguments: [
-    "--billing-project", "moz-fx-data-backfill-2"
+    "--billing-project", "moz-fx-data-backfill-3"
   ]
 bigquery:
   time_partitioning:

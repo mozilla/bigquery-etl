@@ -161,6 +161,20 @@ class TestBackfill:
         ) as f:
             f.write(yaml.dump(TABLE_METADATA_CONF))
 
+    @pytest.fixture
+    def mock_date(self):
+        """Use fixed date.today() for tests."""
+        base_date = date(2021, 5, 4)
+        with (
+            patch("bigquery_etl.backfill.validate.datetime.date") as validate_date,
+            patch("bigquery_etl.backfill.utils.date") as util_date,
+        ):
+            validate_date.today.return_value = base_date
+            validate_date.side_effect = lambda *args, **kw: date(*args, **kw)
+            util_date.today.return_value = base_date
+            util_date.side_effect = lambda *args, **kw: date(*args, **kw)
+            yield
+
     def test_create_backfill(self, runner):
         result = runner.invoke(
             create,
@@ -405,7 +419,7 @@ class TestBackfill:
             in str(result.exception)
         )
 
-    def test_validate_backfill(self, runner):
+    def test_validate_backfill(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
         assert BACKFILL_FILE in os.listdir(QUERY_DIR)
@@ -418,7 +432,7 @@ class TestBackfill:
         )
         assert result.exit_code == 0
 
-    def test_validate_backfill_with_billing_project(self, runner):
+    def test_validate_backfill_with_billing_project(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_text = (
             BACKFILL_YAML_TEMPLATE + f"  billing_project: {VALID_BILLING_PROJECT}"
@@ -434,7 +448,9 @@ class TestBackfill:
         )
         assert result.exit_code == 0
 
-    def test_validate_backfill_with_invalid_billing_project_should_fail(self, runner):
+    def test_validate_backfill_with_invalid_billing_project_should_fail(
+        self, mock_date, runner
+    ):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_text = (
             BACKFILL_YAML_TEMPLATE + f"  billing_project: {INVALID_BILLING_PROJECT}"
@@ -794,7 +810,7 @@ class TestBackfill:
         assert result.exit_code == 1
         assert "excluded dates not sorted" in result.exception.args[0]
 
-    def test_validate_backfill_entries_not_sorted(self, runner):
+    def test_validate_backfill_entries_not_sorted(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_file.write_text(
             BACKFILL_YAML_TEMPLATE + "\n"
@@ -1294,6 +1310,43 @@ class TestBackfill:
 
         assert result.exit_code == 0
         assert "1 backfill(s) require processing." in result.output
+
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    def test_backfill_scheduled_process_recent_entries(
+        self, should_initiate, mock_date, runner
+    ):
+        should_initiate.return_value = True
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
+
+        result = runner.invoke(
+            scheduled,
+            ["--status=Initiate", "--ignore-old-entries"],
+        )
+
+        assert result.exit_code == 0
+        assert "1 backfill(s) require processing." in result.output
+
+    @patch("bigquery_etl.backfill.utils._should_initiate")
+    @patch("bigquery_etl.backfill.utils.date")
+    def test_backfill_scheduled_skip_old_entries(
+        self, mock_date, should_initiate, runner
+    ):
+        should_initiate.return_value = True
+        mock_date.today.return_value = date(2021, 6, 10)
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
+
+        result = runner.invoke(
+            scheduled,
+            ["--status=Initiate", "--ignore-old-entries"],
+        )
+
+        assert result.exit_code == 0
+        assert "0 backfill(s) require processing." in result.output
+        assert "because entry date is too old" in result.output
 
     @patch("google.cloud.bigquery.Client.get_table")
     @patch("google.cloud.bigquery.Client.copy_table")

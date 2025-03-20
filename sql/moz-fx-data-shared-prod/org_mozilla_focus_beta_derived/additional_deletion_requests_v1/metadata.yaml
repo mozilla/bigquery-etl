@@ -8,6 +8,7 @@ owners:
 - akomar@mozilla.com
 labels:
   schedule: daily
+  table_type: client_level
 scheduling:
   dag_name: bqetl_org_mozilla_focus_derived
   depends_on_past: false
@@ -16,3 +17,4 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: false
+    expiration_days: 775

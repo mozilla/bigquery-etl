@@ -1,0 +1,26 @@
+# {{ header }}
+friendly_name: Usage Reporting Active Users Aggregates
+description: |-
+  Builds active_users_aggregates using the usage_reporting ping.
+
+  Cluster by: `channel`, `country`, `os`
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_usage_reporting
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - channel
+    - country
+    - os

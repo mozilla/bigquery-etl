@@ -206,6 +206,7 @@ class Product:
     friendly_name: str
     search_join_key: str
     is_mobile_kpi: bool = False
+    enable_monitoring: bool = False
     attribution_groups: list[AttributionFieldGroup] = field(
         default_factory=list[AttributionFields.empty]  # type: ignore[valid-type]
     )
@@ -249,6 +250,7 @@ class MobileProducts(Enum):
         friendly_name="Fenix",
         search_join_key="Firefox Android",
         is_mobile_kpi=True,
+        enable_monitoring=True,
         attribution_groups=[
             AttributionFields.play_store,
             AttributionFields.meta,
@@ -270,6 +272,7 @@ class MobileProducts(Enum):
         friendly_name="Firefox iOS",
         search_join_key="Firefox iOS",
         is_mobile_kpi=True,
+        enable_monitoring=True,
         attribution_groups=[
             AttributionFields.is_suspicious_device_client,
             AttributionFields.adjust,
@@ -382,6 +385,12 @@ def generate(target_project, output_dir, use_cloud_function):
                 continue
 
             for query_support_config in query_support_configs:
+                if (
+                    query_support_config == "bigconfig.yml"
+                    and not product.value.enable_monitoring
+                ):
+                    continue
+
                 support_config_template = env.get_template(
                     f"{target_name}.{query_support_config}"
                 )

@@ -2,7 +2,7 @@
 
 import re
 import sys
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -29,6 +29,9 @@ BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 # currently only supporting backfilling tables with workgroup access: mozilla-confidential.
 VALID_WORKGROUP_MEMBER = ["workgroup:mozilla-confidential"]
+
+# Backfills older than this will not run due to staging table expiration
+MAX_BACKFILL_ENTRY_AGE_DAYS = 28
 
 
 def get_entries_from_qualified_table_name(
@@ -104,8 +107,21 @@ def get_backfill_backup_table_name(qualified_table_name: str, entry_date: date) 
     return f"{BACKFILL_DESTINATION_PROJECT}.{BACKFILL_DESTINATION_DATASET}.{cloned_table_id}"
 
 
-def validate_table_metadata(sql_dir: str, qualified_table_name: str) -> List[str]:
+def validate_table_metadata(
+    sql_dir: str, qualified_table_name: str, ignore_missing_metadata: bool
+) -> List[str]:
     """Run all metadata.yaml validation checks and return list of error strings."""
+    if ignore_missing_metadata:
+        project, dataset, table = qualified_table_name_matching(qualified_table_name)
+        metadata_exists = (
+            Path(sql_dir) / project / dataset / table / METADATA_FILE
+        ).exists()
+        if not metadata_exists:
+            print(
+                f"Skipping {qualified_table_name} validation because of missing metadata.yaml"
+            )
+            return []
+
     errors = []
     if not validate_depends_on_past(sql_dir, qualified_table_name):
         errors.append(
@@ -254,6 +270,8 @@ def get_scheduled_backfills(
     project: str,
     qualified_table_name: Optional[str] = None,
     status: Optional[str] = None,
+    ignore_old_entries: bool = False,
+    ignore_missing_metadata: bool = False,
 ) -> Dict[str, Backfill]:
     """Return backfill entries to initiate or complete."""
     client = bigquery.Client(project=project)
@@ -269,12 +287,28 @@ def get_scheduled_backfills(
             sql_dir, project, status
         )
 
+    if ignore_old_entries:
+        min_backfill_date = date.today() - timedelta(days=MAX_BACKFILL_ENTRY_AGE_DAYS)
+    else:
+        min_backfill_date = None
+
     backfills_to_process_dict = {}
 
     for qualified_table_name, entries in backfills_dict.items():
         # do not return backfill if not mozilla-confidential
-        if not validate_metadata_workgroups(sql_dir, qualified_table_name):
-            continue
+        try:
+            if not validate_metadata_workgroups(sql_dir, qualified_table_name):
+                print(
+                    f"Skipping backfill for {qualified_table_name} because of unsupported metadata workgroups."
+                )
+                continue
+        except FileNotFoundError:
+            if ignore_missing_metadata:
+                print(
+                    f"Skipping backfill for {qualified_table_name} because table metadata is missing."
+                )
+            else:
+                raise
 
         if not entries:
             continue
@@ -285,6 +319,14 @@ def get_scheduled_backfills(
             )
 
         entry_to_process = entries[0]
+        if (
+            min_backfill_date is not None
+            and entry_to_process.entry_date < min_backfill_date
+        ):
+            print(
+                f"Skipping backfill for {qualified_table_name} because entry date is too old."
+            )
+            continue
 
         if (
             BackfillStatus.INITIATE.value == status

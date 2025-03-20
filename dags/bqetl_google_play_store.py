@@ -11,9 +11,9 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 
 docs = """
-### bqetl_google_play_store_developer_reporting_api_data
+### bqetl_google_play_store
 
-Built from bigquery-etl repo, [`dags/bqetl_google_play_store_developer_reporting_api_data.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_google_play_store_developer_reporting_api_data.py)
+Built from bigquery-etl repo, [`dags/bqetl_google_play_store.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_google_play_store.py)
 
 #### Description
 
@@ -28,18 +28,6 @@ kwindau@mozilla.com
 * repo/bigquery-etl
 """
 
-checks__fail_google_play_store_derived__slow_startup_events_by_startup_type__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood = Secret(
-    deploy_type="env",
-    deploy_target="GOOGLE_PLAY_STORE_SRVC_ACCT_INFO",
-    secret="airflow-gke-secrets",
-    key="bqetl_google_play_store_developer_reporting_api_data_boxwood",
-)
-checks__fail_google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood = Secret(
-    deploy_type="env",
-    deploy_target="GOOGLE_PLAY_STORE_SRVC_ACCT_INFO",
-    secret="airflow-gke-secrets",
-    key="bqetl_google_play_store_developer_reporting_api_data_boxwood",
-)
 google_play_store_derived__slow_startup_events_by_startup_type__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood = Secret(
     deploy_type="env",
     deploy_target="GOOGLE_PLAY_STORE_SRVC_ACCT_INFO",
@@ -69,41 +57,13 @@ default_args = {
 tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_google_play_store_developer_reporting_api_data",
+    "bqetl_google_play_store",
     default_args=default_args,
     schedule_interval="10 18 * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,
 ) as dag:
-
-    checks__fail_google_play_store_derived__slow_startup_events_by_startup_type__v1 = bigquery_dq_check(
-        task_id="checks__fail_google_play_store_derived__slow_startup_events_by_startup_type__v1",
-        source_table="slow_startup_events_by_startup_type_v1",
-        dataset_id="google_play_store_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
-        depends_on_past=False,
-        arguments=["--date", "{{ds}}"],
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__fail_google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1 = bigquery_dq_check(
-        task_id="checks__fail_google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1",
-        source_table="slow_startup_events_by_startup_type_and_version_v1",
-        dataset_id="google_play_store_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com"],
-        depends_on_past=False,
-        arguments=["--date", "{{ds}}"],
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
 
     google_play_store_derived__slow_startup_events_by_startup_type__v1 = GKEPodOperator(
         task_id="google_play_store_derived__slow_startup_events_by_startup_type__v1",
@@ -133,12 +93,4 @@ with DAG(
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
-    )
-
-    checks__fail_google_play_store_derived__slow_startup_events_by_startup_type__v1.set_upstream(
-        google_play_store_derived__slow_startup_events_by_startup_type__v1
-    )
-
-    checks__fail_google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1.set_upstream(
-        google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1
     )

@@ -12,9 +12,9 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
-  dag: bqetl_google_play_store_developer_reporting_api_data
+  dag: bqetl_google_play_store
 scheduling:
-  dag_name: bqetl_google_play_store_developer_reporting_api_data
+  dag_name: bqetl_google_play_store
   arguments:
   - --date
   - '{{ds}}'

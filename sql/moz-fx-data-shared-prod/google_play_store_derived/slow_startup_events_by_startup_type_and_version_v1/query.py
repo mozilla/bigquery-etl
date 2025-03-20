@@ -150,6 +150,7 @@ def main():
             version_code = None
             startup_type = None
             distinct_users = None
+            slow_startup_pct = None
 
             for dimension in row["dimensions"]:
                 if dimension["dimension"] == "startType":

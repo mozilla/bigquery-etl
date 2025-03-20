@@ -85,6 +85,7 @@ def generate(
     target_project, output_dir, parallelism, exclude, only, app_name, use_cloud_function
 ):
     """Generate usage_reporting queries and views."""
+    # TODO: add validation of the usage_reporting config.
     usage_reporting_apps = ConfigLoader.get(
         "generate", "usage_reporting", "apps", fallback=[]
     )
@@ -97,16 +98,20 @@ def generate(
 
         app_info_filtered[app_name] = dict()
 
-        if len(app_info) == 1:
+        # If channels is set to None it means data from multiple channels exists in the same table.
+        if usage_reporting_apps[app_name]["channels"] is None:
             app_info_filtered[app_name]["multichannel"] = app_info[0]
-        else:
-            for index, channel_info in enumerate(app_info):
-                if (
-                    channel := channel_info.get("app_channel")
-                ) not in usage_reporting_apps[app_name]["channels"]:
-                    continue
+            continue
 
-                app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
+        for index, channel_info in enumerate(app_info):
+            if (
+                # this assumes that if no channel defined for an app in probe scraper
+                # then the channel is "release".
+                channel := channel_info.get("app_channel", "release")
+            ) not in usage_reporting_apps[app_name]["channels"]:
+                continue
+
+            app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
 
     output_dir = Path(output_dir) / target_project
 
@@ -196,7 +201,7 @@ def generate(
             channels_info = [
                 {
                     "channel_dataset": channel_info["bq_dataset_family"],
-                    "channel_name": channel_info.get("app_channel"),
+                    "channel_name": channel_info.get("app_channel", "release"),
                 }
                 for channel_info in app_channels.values()
             ]

@@ -1,0 +1,123 @@
+CREATE OR REPLACE VIEW
+  `{{ project_id }}.{{ app_name }}.{{ view_name }}`
+AS
+SELECT
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
+  app_version_is_major_release,
+  country,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  {% if app_name == "firefox_desktop" %}
+  os_version_build,
+  activity_segment,
+  {% else %}
+  segment AS activity_segment,
+  {% endif %}
+  distribution_id,
+  is_default_browser,
+  SUM(dau) AS dau,
+  SUM(wau) AS wau,
+  SUM(mau) AS mau,
+  SUM(daily_users) AS daily_users,
+  SUM(weekly_users) AS weekly_users,
+  SUM(monthly_users) AS monthly_users,
+FROM
+  {% if app_name == "firefox_desktop" %}
+  `{{ project_id }}.{{ app_name }}.baseline_active_users_aggregates`
+  {% else %}
+  `{{ project_id }}.{{ app_name }}.active_users_aggregates`
+  {% endif %}
+WHERE
+  {% if app_name == "fenix" %}
+  app_version_major < 137
+  {% else %}
+  app_version_major < 136
+  {% endif %}
+GROUP BY
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
+  app_version_is_major_release,
+  country,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  {% if app_name == "firefox_desktop" %}
+  os_version_build,
+  {% endif %}
+  activity_segment,
+  distribution_id,
+  is_default_browser
+
+UNION ALL
+SELECT
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
+  app_version_is_major_release,
+  country,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  {% if app_name == "firefox_desktop" %}
+  os_version_build,
+  {% endif %}
+  activity_segment,
+  distribution_id,
+  is_default_browser,
+  SUM(dau) AS dau,
+  SUM(wau) AS wau,
+  SUM(mau) AS mau,
+  SUM(daily_users) AS daily_users,
+  SUM(weekly_users) AS weekly_users,
+  SUM(monthly_users) AS monthly_users,
+FROM
+  `{{ project_id }}.{{ app_name }}.usage_reporting_active_users_aggregates`
+WHERE
+  {% if app_name == "fenix" %}
+  app_version_major >= 137
+  {% else %}
+  app_version_major >= 136
+  {% endif %}
+GROUP BY
+  submission_date,
+  first_seen_year,
+  channel,
+  app_name,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
+  app_version_is_major_release,
+  country,
+  os,
+  os_version,
+  os_version_major,
+  os_version_minor,
+  {% if app_name == "firefox_desktop" %}
+  os_version_build,
+  {% endif %}
+  activity_segment,
+  distribution_id,
+  is_default_browser

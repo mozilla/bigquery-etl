@@ -1,0 +1,24 @@
+friendly_name: Service subscriptions
+description: |-
+  Service subscriptions, which are a continuous active period for a specific service by a particular provider subscription.
+owners:
+- srose@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - service_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

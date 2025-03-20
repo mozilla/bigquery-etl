@@ -1117,6 +1117,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    subscription_platform_derived__daily_active_service_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__daily_active_service_subscriptions__v1",
+        destination_table="daily_active_service_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
     subscription_platform_derived__google_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__google_subscriptions__v1",
         destination_table="google_subscriptions_v1",
@@ -1166,6 +1177,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    subscription_platform_derived__monthly_active_service_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__monthly_active_service_subscriptions__v1",
+        destination_table="monthly_active_service_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
+        depends_on_past=False,
+    )
+
     subscription_platform_derived__nonprod_apple_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__nonprod_apple_subscriptions__v1",
         destination_table="nonprod_apple_subscriptions_v1",
@@ -1182,6 +1205,43 @@ with DAG(
         bigquery_etl_query(
             task_id="subscription_platform_derived__nonprod_google_subscriptions__v1",
             destination_table="nonprod_google_subscriptions_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
+    subscription_platform_derived__service_subscription_events__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__service_subscription_events__v1",
+        destination_table="service_subscription_events_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
+    subscription_platform_derived__service_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__service_subscriptions__v1",
+        destination_table="service_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__service_subscriptions_history__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__service_subscriptions_history__v1",
+            destination_table="service_subscriptions_history_v1",
             dataset_id="subscription_platform_derived",
             project_id="moz-fx-data-shared-prod",
             owner="srose@mozilla.com",
@@ -1715,6 +1775,10 @@ with DAG(
         subscription_platform_derived__logical_subscriptions_history__v1
     )
 
+    subscription_platform_derived__daily_active_service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
+    )
+
     subscription_platform_derived__logical_subscription_events__v1.set_upstream(
         subscription_platform_derived__logical_subscriptions_history__v1
     )
@@ -1735,8 +1799,32 @@ with DAG(
         subscription_platform_derived__logical_subscriptions_history__v1
     )
 
+    subscription_platform_derived__monthly_active_service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
+    )
+
     subscription_platform_derived__nonprod_apple_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__guardian_apple_events__v1
+    )
+
+    subscription_platform_derived__service_subscription_events__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
+        mozilla_vpn_derived__users__v1
+    )
+
+    subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__subplat_attribution_impressions__v1
     )
 
     subscription_platform_derived__services__v1.set_upstream(

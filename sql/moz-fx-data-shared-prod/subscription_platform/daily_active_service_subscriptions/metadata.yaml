@@ -1,0 +1,14 @@
+friendly_name: Daily Active Service Subscriptions
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.daily_active_service_subscriptions_v1
+require_column_descriptions: false

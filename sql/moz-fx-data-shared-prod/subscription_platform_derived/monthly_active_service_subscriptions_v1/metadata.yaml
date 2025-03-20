@@ -1,0 +1,32 @@
+friendly_name: Monthly active service subscriptions
+description: |-
+  Monthly snapshots of service subscriptions that were active at any point during each month.
+  The latest state of the subscription during the month is saved.
+
+  Service subscriptions are a continuous active period for a specific service by a particular provider subscription.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: month
+    field: month_start_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - service_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

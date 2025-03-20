@@ -3,7 +3,6 @@
 from os import path
 from pathlib import Path
 
-# import click
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.config import ConfigLoader
@@ -39,6 +38,9 @@ ACTIVE_USERS_AGGREGATES_TEMPLATE = (
 ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
     "usage_reporting_active_users_aggregates.view.sql.jinja"
 )
+COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
+    "composite_active_users_aggregates.view.sql.jinja"
+)
 
 
 def get_generation_config():
@@ -63,29 +65,33 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
 
         app_info_filtered[app_name] = dict()
 
-        if len(app_info) == 1:
+        # If channels is set to None it means data from multiple channels exists in the same table.
+        if usage_reporting_apps[app_name]["channels"] is None:
             app_info_filtered[app_name]["multichannel"] = {
-                "app_channel": "release",
+                "app_channel": None,
                 "app_name": app_info[0]["app_name"],
                 "bq_dataset_family": app_info[0]["bq_dataset_family"],
             }
-        else:
-            for index, channel_info in enumerate(app_info):
-                if (
-                    channel := channel_info.get("app_channel")
-                ) not in usage_reporting_apps[app_name]["channels"]:
-                    continue
+            continue
 
-                app_info_filtered[app_name][f"{channel}__{index}"] = {
-                    "app_channel": channel_info["app_channel"],
-                    "app_name": channel_info["app_name"],
-                    "bq_dataset_family": channel_info["bq_dataset_family"],
-                }
+        for index, channel_info in enumerate(app_info):
+            if (
+                # this assumes that if no channel defined for an app in probe scraper
+                # then the channel is "release".
+                channel := channel_info.get("app_channel", "release")
+            ) not in usage_reporting_apps[app_name]["channels"]:
+                continue
+
+            app_info_filtered[app_name][f"{channel}__{index}"] = {
+                "app_channel": channel,
+                "app_name": channel_info["app_name"],
+                "bq_dataset_family": channel_info["bq_dataset_family"],
+            }
 
     return app_info_filtered
 
 
-def generate_usage_reporting(target_project, output_dir):
+def generate_usage_reporting(target_project: str, output_dir: Path):
     """Generate usage_reporting queries and views."""
     usage_reporting_apps = get_generation_config()
     generator_apps_info = get_specific_apps_app_info_from_probe_scraper(
@@ -180,7 +186,7 @@ def generate_usage_reporting(target_project, output_dir):
             channels_info = [
                 {
                     "channel_dataset": channel_info["bq_dataset_family"],
-                    "channel_name": channel_info.get("app_channel"),
+                    "channel_name": channel_info["app_channel"],
                 }
                 for channel_info in app_channels.values()
             ]
@@ -295,3 +301,37 @@ def generate_usage_reporting(target_project, output_dir):
                 sql=rendered_artifact,
                 skip_existing=False,
             )
+
+        # composite active users aggregates
+        composite_active_users_aggregates_dataset_name = (
+            COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE.split(".")[0]
+        )
+        composite_active_users_aggregates_view_template = jinja_env.get_template(
+            COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE
+        )
+        rendered_composite_active_users_aggregates_view = (
+            composite_active_users_aggregates_view_template.render(
+                **app_template_args,
+                view_name=composite_active_users_aggregates_dataset_name,
+            )
+        )
+
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}.{composite_active_users_aggregates_dataset_name}",
+            basename="view.sql",
+            sql=reformat(rendered_composite_active_users_aggregates_view),
+            skip_existing=False,
+        )
+
+
+# TODO: resolve this later, getting an import error right now when trying to run the script directly.
+# if __name__ == "__main__":
+#     from argparse import ArgumentParser
+
+#     parser = ArgumentParser(description=__doc__)
+#     parser.add_argument("--project", default="moz-fx-data-shared-prod")
+#     parser.add_argument("--dataset", default="sql")
+#     args = parser.parse_args()
+
+#     generate_usage_reporting(args.project, args.output_dir)

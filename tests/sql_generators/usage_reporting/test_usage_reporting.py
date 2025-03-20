@@ -190,7 +190,7 @@ def test_get_specific_apps_app_info_from_probe_scraper(mock_get_app_info):
     expected = {
         "firefox_desktop": {
             "multichannel": {
-                "app_channel": "release",
+                "app_channel": None,
                 "app_name": "firefox_desktop",
                 "bq_dataset_family": "firefox_desktop",
             }
@@ -240,7 +240,7 @@ def test_get_specific_apps_app_info_from_probe_scraper(mock_get_app_info):
             },
         },
         "focus_ios": {
-            "multichannel": {
+            "release__0": {
                 "app_channel": "release",
                 "app_name": "focus_ios",
                 "bq_dataset_family": "org_mozilla_ios_focus",
@@ -286,7 +286,7 @@ def test_get_specific_apps_app_info_from_probe_scraper_filtered(mock_get_app_inf
     expected = {
         "firefox_desktop": {
             "multichannel": {
-                "app_channel": "release",
+                "app_channel": None,
                 "app_name": "firefox_desktop",
                 "bq_dataset_family": "firefox_desktop",
             }

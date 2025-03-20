@@ -7,10 +7,10 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  dag: bqetl_glean_usage
+  dag: bqetl_usage_reporting
   owner1: kik
 scheduling:
-  dag_name: bqetl_glean_usage
+  dag_name: bqetl_usage_reporting
   task_group: focus_android
 bigquery:
   time_partitioning:

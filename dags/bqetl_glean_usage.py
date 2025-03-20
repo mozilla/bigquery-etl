@@ -1926,22 +1926,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    fenix_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
-        task_id="fenix_derived__usage_reporting_active_users_aggregates__v1",
-        destination_table="usage_reporting_active_users_aggregates_v1",
-        dataset_id="fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
     firefox_crashreporter_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_crashreporter_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -2325,72 +2309,6 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__usage_reporting_active_users_aggregates__v1",
-        destination_table="usage_reporting_active_users_aggregates_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_desktop,
-    )
-
-    firefox_desktop_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_desktop,
-    )
-
-    firefox_desktop_derived__usage_reporting_clients_first_seen__v1 = (
-        bigquery_etl_query(
-            task_id="firefox_desktop_derived__usage_reporting_clients_first_seen__v1",
-            destination_table="usage_reporting_clients_first_seen_v1",
-            dataset_id="firefox_desktop_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_firefox_desktop,
-        )
-    )
-
-    firefox_desktop_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_desktop,
-    )
-
     firefox_echo_show_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="firefox_echo_show_derived__clients_last_seen_joined__v1",
         destination_table="clients_last_seen_joined_v1",
@@ -2497,24 +2415,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_firefox_ios,
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1 = (
-        bigquery_etl_query(
-            task_id="firefox_ios_derived__usage_reporting_active_users_aggregates__v1",
-            destination_table="usage_reporting_active_users_aggregates_v1",
-            dataset_id="firefox_ios_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_firefox_ios,
-        )
     )
 
     firefox_reality_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -2643,22 +2543,6 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
-    focus_android_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
-        task_id="focus_android_derived__usage_reporting_active_users_aggregates__v1",
-        destination_table="usage_reporting_active_users_aggregates_v1",
-        dataset_id="focus_android_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
     focus_ios_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
         task_id="focus_ios_derived__clients_last_seen_joined__v1",
         destination_table="clients_last_seen_joined_v1",
@@ -2690,22 +2574,6 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_ios,
-    )
-
-    focus_ios_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
-        task_id="focus_ios_derived__usage_reporting_active_users_aggregates__v1",
-        destination_table="usage_reporting_active_users_aggregates_v1",
-        dataset_id="focus_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_focus_ios,
@@ -3724,58 +3592,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    org_mozilla_fenix_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fenix_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_fenix_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1",
-            destination_table="usage_reporting_clients_first_seen_v1",
-            dataset_id="org_mozilla_fenix_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_fenix,
-        )
-    )
-
-    org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1",
-            destination_table="usage_reporting_clients_last_seen_v1",
-            dataset_id="org_mozilla_fenix_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_fenix,
-        )
-    )
-
     org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -3833,54 +3649,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_fenix_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_fenix_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_fenix_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
     org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -3935,54 +3703,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_fennec_aurora_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_fennec_aurora_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_fennec_aurora_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
         task_group=task_group_fenix,
     )
 
@@ -4045,54 +3765,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_firefox_beta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_firefox_beta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_firefox_beta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
     org_mozilla_firefox_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_firefox_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -4145,54 +3817,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_firefox_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_fenix,
-    )
-
-    org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
         task_group=task_group_fenix,
     )
 
@@ -4367,56 +3991,6 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
-    org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1",
-            destination_table="usage_reporting_clients_daily_v1",
-            dataset_id="org_mozilla_focus_beta_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_focus_android,
-        )
-    )
-
-    org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_focus_beta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
-    org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_focus_beta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
     org_mozilla_focus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_focus_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -4470,58 +4044,6 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_focus_android,
-    )
-
-    org_mozilla_focus_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_focus_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_focus_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
-    org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1",
-            destination_table="usage_reporting_clients_first_seen_v1",
-            dataset_id="org_mozilla_focus_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_focus_android,
-        )
-    )
-
-    org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1",
-            destination_table="usage_reporting_clients_last_seen_v1",
-            dataset_id="org_mozilla_focus_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_focus_android,
-        )
     )
 
     org_mozilla_focus_nightly_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -4581,54 +4103,6 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
-    org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_focus_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
-    org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_focus_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
-    org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_focus_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_android,
-    )
-
     org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -4683,56 +4157,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1",
-            destination_table="usage_reporting_clients_daily_v1",
-            dataset_id="org_mozilla_ios_fennec_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_firefox_ios,
-        )
-    )
-
-    org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_ios_fennec_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_ios_fennec_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
         task_group=task_group_firefox_ios,
     )
 
@@ -4795,54 +4219,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_ios_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_ios_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_ios_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_ios,
-    )
-
     org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1 = (
         bigquery_etl_query(
             task_id="org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1",
@@ -4897,54 +4273,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1",
-        destination_table="usage_reporting_clients_daily_v1",
-        dataset_id="org_mozilla_ios_firefoxbeta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_ios_firefoxbeta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_ios,
-    )
-
-    org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_ios_firefoxbeta_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
         task_group=task_group_firefox_ios,
     )
 
@@ -5110,56 +4438,6 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_focus_ios,
-    )
-
-    org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1",
-            destination_table="usage_reporting_clients_daily_v1",
-            dataset_id="org_mozilla_ios_focus_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="kik@mozilla.com",
-            email=[
-                "ascholtz@mozilla.com",
-                "kik@mozilla.com",
-                "telemetry-alerts@mozilla.com",
-            ],
-            date_partition_parameter="submission_date",
-            depends_on_past=False,
-            task_group=task_group_focus_ios,
-        )
-    )
-
-    org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1",
-        destination_table="usage_reporting_clients_first_seen_v1",
-        dataset_id="org_mozilla_ios_focus_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_focus_ios,
-    )
-
-    org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1",
-        destination_table="usage_reporting_clients_last_seen_v1",
-        dataset_id="org_mozilla_ios_focus_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "kik@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
         task_group=task_group_focus_ios,
     )
 
@@ -6455,66 +5733,6 @@ with DAG(
         bigeye__fenix_derived__metrics_clients_daily__v1
     )
 
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1
-    )
-
     firefox_crashreporter_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -6679,30 +5897,6 @@ with DAG(
         bigeye__firefox_desktop_derived__metrics_clients_daily__v1
     )
 
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    firefox_desktop_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    firefox_desktop_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_desktop_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_daily__v1
-    )
-
     firefox_echo_show_derived__clients_last_seen_joined__v1.set_upstream(
         checks__fail_org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1
     )
@@ -6757,42 +5951,6 @@ with DAG(
 
     firefox_ios_derived__metrics_clients_last_seen__v1.set_upstream(
         bigeye__firefox_ios_derived__metrics_clients_daily__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1
     )
 
     firefox_reality_derived__clients_last_seen_joined__v1.set_upstream(
@@ -6855,42 +6013,6 @@ with DAG(
         bigeye__focus_android_derived__metrics_clients_daily__v1
     )
 
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1
-    )
-
     focus_ios_derived__clients_last_seen_joined__v1.set_upstream(
         bigeye__focus_ios_derived__metrics_clients_last_seen__v1
     )
@@ -6905,18 +6027,6 @@ with DAG(
 
     focus_ios_derived__metrics_clients_last_seen__v1.set_upstream(
         bigeye__focus_ios_derived__metrics_clients_daily__v1
-    )
-
-    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
-    )
-
-    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1
     )
 
     glean_dictionary_derived__events_stream__v1.set_upstream(
@@ -7319,18 +6429,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_fenix_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
-    )
-
     org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_first_seen__v1
     )
@@ -7353,18 +6451,6 @@ with DAG(
 
     org_mozilla_fenix_nightly_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1.set_upstream(
@@ -7391,18 +6477,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
-    )
-
     org_mozilla_firefox_beta_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_firefox_beta_derived__baseline_clients_first_seen__v1
     )
@@ -7427,18 +6501,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
-    )
-
     org_mozilla_firefox_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_firefox_derived__baseline_clients_first_seen__v1
     )
@@ -7461,18 +6523,6 @@ with DAG(
 
     org_mozilla_firefox_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_firefox_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1.set_upstream(
@@ -7547,18 +6597,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
-    )
-
     org_mozilla_focus_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_focus_derived__baseline_clients_first_seen__v1
     )
@@ -7581,18 +6619,6 @@ with DAG(
 
     org_mozilla_focus_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_focus_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_nightly_derived__baseline_clients_daily__v1.set_upstream(
@@ -7619,18 +6645,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
     org_mozilla_ios_fennec_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_ios_fennec_derived__baseline_clients_first_seen__v1
     )
@@ -7653,18 +6667,6 @@ with DAG(
 
     org_mozilla_ios_fennec_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_firefox_derived__baseline_clients_daily__v1.set_upstream(
@@ -7691,18 +6693,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
     org_mozilla_ios_firefoxbeta_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_first_seen__v1
     )
@@ -7725,18 +6715,6 @@ with DAG(
 
     org_mozilla_ios_firefoxbeta_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1.set_upstream(
@@ -7809,18 +6787,6 @@ with DAG(
 
     org_mozilla_ios_focus_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
-    )
-
-    org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_klar_derived__baseline_clients_daily__v1.set_upstream(

@@ -152,7 +152,6 @@ def main():
             distinct_users = None
 
             for dimension in row["dimensions"]:
-
                 if dimension["dimension"] == "startType":
                     startup_type = dimension["stringValue"]
                 if dimension["dimension"] == "versionCode":

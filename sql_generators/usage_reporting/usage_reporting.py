@@ -57,7 +57,7 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
     """
     probe_scraper_app_info = get_app_info()
 
-    app_info_filtered = dict()
+    app_info_filtered: dict = dict()
 
     for app_name, app_info in probe_scraper_app_info.items():
         if app_name not in usage_reporting_apps:

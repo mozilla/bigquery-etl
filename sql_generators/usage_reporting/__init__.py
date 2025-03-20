@@ -5,10 +5,6 @@ import click
 from bigquery_etl.cli.utils import is_valid_project, use_cloud_function_option
 from sql_generators.usage_reporting.usage_reporting import generate_usage_reporting
 
-COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
-    "composite_active_users_aggregates.view.sql.jinja"
-)
-
 
 @click.command()
 @click.option(

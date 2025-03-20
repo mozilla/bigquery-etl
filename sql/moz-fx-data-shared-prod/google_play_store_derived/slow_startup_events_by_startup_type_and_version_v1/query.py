@@ -56,7 +56,7 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for, pg_size
                 "day": day_after_date_to_pull_data_for_day,
             },
         },
-        "metrics": ["slowStartRate"],
+        "metrics": ["slowStartRate", "distinctUsers"],
         "dimensions": ["startType", "versionCode"],
         "pageSize": pg_size_limit,
     }
@@ -101,7 +101,7 @@ def main():
     print("data_pull_date_string")
     print(data_pull_date_string)
 
-    # Get credentials ###NOTE: temporary, need to replace before movimg to Airflow
+    # Get credentials
     service_account_info = json.loads(os.getenv("GOOGLE_PLAY_STORE_SRVC_ACCT_INFO"))
     credentials = service_account.Credentials.from_service_account_info(
         service_account_info, scopes=SCOPES
@@ -149,6 +149,7 @@ def main():
             # Initialize as none until we find them for each app
             version_code = None
             startup_type = None
+            distinct_users = None
 
             for dimension in row["dimensions"]:
 
@@ -157,7 +158,13 @@ def main():
                 if dimension["dimension"] == "versionCode":
                     version_code = dimension["stringValue"]
 
-            slow_startup_pct = row["metrics"][0]["decimalValue"]["value"]
+            for metric in row["metrics"]:
+                if metric["metric"] == "slowStartRate":
+                    slow_startup_pct = row["metrics"][0]["decimalValue"][
+                        "value"
+                    ]  ## FIX
+                if metric["metric"] == "distinctUsers":
+                    distinct_users = metric["decimalValue"]["value"]
 
             # Parse the result into a dataframe
             new_df = pd.DataFrame(
@@ -167,6 +174,7 @@ def main():
                     "app_version_code": [version_code],
                     "startup_type": [startup_type],
                     "pct_users_with_slow_start_during_startup_type": [slow_startup_pct],
+                    "nbr_distinct_users": [distinct_users],
                 }
             )
 
@@ -214,6 +222,11 @@ def main():
                 {
                     "name": "pct_users_with_slow_start_during_startup_type",
                     "type": "NUMERIC",
+                    "mode": "NULLABLE",
+                },
+                {
+                    "name": "nbr_distinct_users",
+                    "type": "INTEGER",
                     "mode": "NULLABLE",
                 },
             ],

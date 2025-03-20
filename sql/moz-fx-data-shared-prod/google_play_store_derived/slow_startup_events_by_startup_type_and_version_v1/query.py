@@ -160,9 +160,7 @@ def main():
 
             for metric in row["metrics"]:
                 if metric["metric"] == "slowStartRate":
-                    slow_startup_pct = row["metrics"][0]["decimalValue"][
-                        "value"
-                    ]  ## FIX
+                    slow_startup_pct = metric["decimalValue"]["value"]
                 if metric["metric"] == "distinctUsers":
                     distinct_users = metric["decimalValue"]["value"]
 

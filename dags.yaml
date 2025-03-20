@@ -86,6 +86,23 @@ bqetl_mobile_search:
   tags:
     - impact/tier_1
 
+bqetl_google_play_store:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-03-18'
+  description: Schedules daily level google play store export data
+  schedule_interval: 10 18 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
   description: |
@@ -2279,3 +2296,21 @@ bqetl_chrome_extensions_scraper:
   schedule_interval: 40 21 * * 1
   tags:
     - impact/tier_3
+
+bqetl_usage_reporting:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 1
+    retry_delay: 30m
+    start_date: '2025-03-19'
+  description: DAG for updating usage_reporting related datasets.
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1

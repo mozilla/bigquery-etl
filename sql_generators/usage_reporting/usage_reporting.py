@@ -45,16 +45,23 @@ COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
 )
 
 
-def generate_usage_reporting(target_project: str, output_dir: Path):
-    """Generate usage_reporting queries and views."""
-    # TODO: add validation of the usage_reporting config.
-    usage_reporting_apps = ConfigLoader.get(
-        "generate", "usage_reporting", "apps", fallback=[]
-    )
+def get_generation_config():
+    """Retrieve external configuration for this generator."""
+    return ConfigLoader.get("generate", "usage_reporting", "apps", fallback=[])
+
+
+def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
+    """Retrieve app_info from probe scraper app definitions \
+    and return only the info of apps defined in the generator configuration.
+
+    The app info returned includes app_name, and bq namespaces containing data \
+    for specific app channels.
+    """
+    probe_scraper_app_info = get_app_info()
 
     app_info_filtered: dict = dict()
 
-    for app_name, app_info in get_app_info().items():
+    for app_name, app_info in probe_scraper_app_info.items():
         if app_name not in usage_reporting_apps:
             continue
 
@@ -62,7 +69,11 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
 
         # If channels is set to None it means data from multiple channels exists in the same table.
         if usage_reporting_apps[app_name]["channels"] is None:
-            app_info_filtered[app_name]["multichannel"] = app_info[0]
+            app_info_filtered[app_name]["multichannel"] = {
+                "app_channel": None,
+                "app_name": app_info[0]["app_name"],
+                "bq_dataset_family": app_info[0]["bq_dataset_family"],
+            }
             continue
 
         for index, channel_info in enumerate(app_info):
@@ -73,18 +84,32 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
             ) not in usage_reporting_apps[app_name]["channels"]:
                 continue
 
-            app_info_filtered[app_name][f"{channel}__{index}"] = channel_info
+            app_info_filtered[app_name][f"{channel}__{index}"] = {
+                "app_channel": channel,
+                "app_name": channel_info["app_name"],
+                "bq_dataset_family": channel_info["bq_dataset_family"],
+            }
+
+    return app_info_filtered
+
+
+def generate_usage_reporting(target_project: str, output_dir: Path):
+    """Generate usage_reporting queries and views."""
+    usage_reporting_apps = get_generation_config()
+    generator_apps_info = get_specific_apps_app_info_from_probe_scraper(
+        usage_reporting_apps
+    )
 
     output_dir = Path(output_dir) / target_project
-
     jinja_env = Environment(loader=FileSystemLoader(str(GENERATOR_ROOT / "templates")))
+
     default_template_args = {
         "project_id": target_project,
         "usage_reporting_stable_table_name": "usage_reporting_v1",
         "header": HEADER,
     }
 
-    for app_name, app_channels in app_info_filtered.items():
+    for app_name, app_channels in generator_apps_info.items():
         app_template_args = {
             "app_name": app_name,
             **default_template_args,
@@ -163,7 +188,7 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
             channels_info = [
                 {
                     "channel_dataset": channel_info["bq_dataset_family"],
-                    "channel_name": channel_info.get("app_channel", "release"),
+                    "channel_name": channel_info["app_channel"],
                 }
                 for channel_info in app_channels.values()
             ]
@@ -300,3 +325,15 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
             sql=reformat(rendered_composite_active_users_aggregates_view),
             skip_existing=False,
         )
+
+
+# TODO: resolve this later, getting an import error right now when trying to run the script directly.
+# if __name__ == "__main__":
+#     from argparse import ArgumentParser
+
+#     parser = ArgumentParser(description=__doc__)
+#     parser.add_argument("--project", default="moz-fx-data-shared-prod")
+#     parser.add_argument("--dataset", default="sql")
+#     args = parser.parse_args()
+
+#     generate_usage_reporting(args.project, args.output_dir)

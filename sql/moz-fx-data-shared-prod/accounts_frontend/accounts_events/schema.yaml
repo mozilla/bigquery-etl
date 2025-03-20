@@ -464,6 +464,12 @@ fields:
       description: 'The firefox/mozilla account id
 
         '
+    - name: event_nimbus_user_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The name of the client ID for Nimbus experiments.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

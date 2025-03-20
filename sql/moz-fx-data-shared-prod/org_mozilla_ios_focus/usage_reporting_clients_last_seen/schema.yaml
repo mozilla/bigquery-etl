@@ -1,10 +1,4 @@
 fields:
-- name: normalized_app_id
-  type: STRING
-  mode: NULLABLE
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
 - name: submission_date
   type: DATE
   mode: NULLABLE

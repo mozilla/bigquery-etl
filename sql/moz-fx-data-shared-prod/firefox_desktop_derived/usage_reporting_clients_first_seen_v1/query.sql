@@ -26,7 +26,7 @@ _previous AS (
     usage_profile_id,
     app_channel,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.usage_reporting_clients_first_seen`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_first_seen_v1`
   WHERE
     {% if is_init() %}
       FALSE

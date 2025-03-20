@@ -3129,8 +3129,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -7619,6 +7618,22 @@ fields:
         mode: NULLABLE
       description: 'The count of detected input fields that a website plans on splitting
         the cc number digits across
+
+        '
+    - name: mozstorage_sqlitejsm_transaction_timeout
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Collection of javascript modules that created a Sqlite.sys.mjs
+        transaction taking too long and timing out. This can be used to identify and
+        optimize those modules transactions. This metric was generated to correspond
+        to the Legacy Telemetry scalar mozstorage.sqlitejsm_transaction_timeout.
 
         '
   - name: string
@@ -25904,6 +25919,142 @@ fields:
         See Bug 1947604 for more information.
 
         '
+    - name: region_fetch_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) it takes to fetch the country code
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SEARCH_SERVICE_COUNTRY_FETCH_TIME_MS.
+
+        '
+    - name: screenwakelock_held_duration
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How long a screen wake lock was held in ms
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SCREENWAKELOCK_HELD_DURATION_MS.
+
+        '
+    - name: wr_shaderload_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent blocking on the shader compilation for LazilyCompiled
+        shaders created with ASYNC_COMPILE or FULL_COMPILE.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -33574,6 +33725,63 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry linear histogram
         DEVTOOLS_HEAP_SNAPSHOT_NODE_COUNT.
+
+        '
+    - name: region_fetch_result
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Result of XHR request fetching the country-code. 0=SUCCESS, 1=SUCCESS_WITHOUT_DATA,
+        2=XHRTIMEOUT, 3=ERROR (rest reserved for finer-grained error codes later)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SEARCH_SERVICE_COUNTRY_FETCH_RESULT.
+
+        '
+    - name: screenwakelock_release_battery_level_discharging
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Battery level when discharging and the wake lock was released
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        SCREENWAKELOCK_RELEASE_BATTERY_LEVEL_DISCHARGING.
 
         '
   - name: quantity

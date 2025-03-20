@@ -600,7 +600,9 @@ SELECT
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
       metrics.custom_distribution.devtools_toolbox_host,
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
-      metrics.custom_distribution.devtools_heap_snapshot_node_count
+      metrics.custom_distribution.devtools_heap_snapshot_node_count,
+      metrics.custom_distribution.region_fetch_result,
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -920,7 +922,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
-      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1435,7 +1438,10 @@ SELECT
       metrics.timing_distribution.glam_experiment_largest_contentful_paint,
       metrics.timing_distribution.glam_experiment_protect_time,
       metrics.timing_distribution.glam_experiment_sub_complete_load_net,
-      metrics.timing_distribution.glam_experiment_time
+      metrics.timing_distribution.glam_experiment_time,
+      metrics.timing_distribution.region_fetch_time,
+      metrics.timing_distribution.screenwakelock_held_duration,
+      metrics.timing_distribution.wr_shaderload_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -2263,7 +2269,9 @@ SELECT
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
       metrics.custom_distribution.devtools_toolbox_host,
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
-      metrics.custom_distribution.devtools_heap_snapshot_node_count
+      metrics.custom_distribution.devtools_heap_snapshot_node_count,
+      metrics.custom_distribution.region_fetch_result,
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2583,7 +2591,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
-      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3098,7 +3107,10 @@ SELECT
       metrics.timing_distribution.glam_experiment_largest_contentful_paint,
       metrics.timing_distribution.glam_experiment_protect_time,
       metrics.timing_distribution.glam_experiment_sub_complete_load_net,
-      metrics.timing_distribution.glam_experiment_time
+      metrics.timing_distribution.glam_experiment_time,
+      metrics.timing_distribution.region_fetch_time,
+      metrics.timing_distribution.screenwakelock_held_duration,
+      metrics.timing_distribution.wr_shaderload_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3944,7 +3956,9 @@ SELECT
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
       metrics.custom_distribution.devtools_toolbox_host,
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
-      metrics.custom_distribution.devtools_heap_snapshot_node_count
+      metrics.custom_distribution.devtools_heap_snapshot_node_count,
+      metrics.custom_distribution.region_fetch_result,
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4264,7 +4278,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
-      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4779,7 +4794,10 @@ SELECT
       metrics.timing_distribution.glam_experiment_largest_contentful_paint,
       metrics.timing_distribution.glam_experiment_protect_time,
       metrics.timing_distribution.glam_experiment_sub_complete_load_net,
-      metrics.timing_distribution.glam_experiment_time
+      metrics.timing_distribution.glam_experiment_time,
+      metrics.timing_distribution.region_fetch_time,
+      metrics.timing_distribution.screenwakelock_held_duration,
+      metrics.timing_distribution.wr_shaderload_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5634,7 +5652,9 @@ SELECT
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
       metrics.custom_distribution.devtools_toolbox_host,
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
-      metrics.custom_distribution.devtools_heap_snapshot_node_count
+      metrics.custom_distribution.devtools_heap_snapshot_node_count,
+      metrics.custom_distribution.region_fetch_result,
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5954,7 +5974,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
-      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6469,7 +6490,10 @@ SELECT
       metrics.timing_distribution.glam_experiment_largest_contentful_paint,
       metrics.timing_distribution.glam_experiment_protect_time,
       metrics.timing_distribution.glam_experiment_sub_complete_load_net,
-      metrics.timing_distribution.glam_experiment_time
+      metrics.timing_distribution.glam_experiment_time,
+      metrics.timing_distribution.region_fetch_time,
+      metrics.timing_distribution.screenwakelock_held_duration,
+      metrics.timing_distribution.wr_shaderload_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -7306,7 +7330,9 @@ SELECT
       metrics.custom_distribution.devtools_inspector_number_of_css_grids_in_a_page,
       metrics.custom_distribution.devtools_toolbox_host,
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
-      metrics.custom_distribution.devtools_heap_snapshot_node_count
+      metrics.custom_distribution.devtools_heap_snapshot_node_count,
+      metrics.custom_distribution.region_fetch_result,
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -7626,7 +7652,8 @@ SELECT
       metrics.labeled_counter.htmleditors_with_mutation_observers_without_beforeinput_listeners,
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
-      metrics.labeled_counter.creditcard_detected_cc_number_fields_count
+      metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -8141,7 +8168,10 @@ SELECT
       metrics.timing_distribution.glam_experiment_largest_contentful_paint,
       metrics.timing_distribution.glam_experiment_protect_time,
       metrics.timing_distribution.glam_experiment_sub_complete_load_net,
-      metrics.timing_distribution.glam_experiment_time
+      metrics.timing_distribution.glam_experiment_time,
+      metrics.timing_distribution.region_fetch_time,
+      metrics.timing_distribution.screenwakelock_held_duration,
+      metrics.timing_distribution.wr_shaderload_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

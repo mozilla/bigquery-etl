@@ -7815,6 +7815,14 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+    )
+
+    org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+    )
+
     org_mozilla_ios_klar_derived__baseline_clients_daily__v1.set_upstream(
         bigeye__org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1
     )

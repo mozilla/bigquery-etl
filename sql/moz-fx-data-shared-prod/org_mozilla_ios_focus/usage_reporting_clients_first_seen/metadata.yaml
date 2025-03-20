@@ -1,4 +1,4 @@
-friendly_name: Usage Reporting Clients Daily
+friendly_name: Usage Reporting Clients First Seen
 description: |-
   Please provide a description for the query
 owners: []
@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.org_mozilla_ios_focus.usage_reporting_clients_daily
+  - moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_first_seen_v1
 require_column_descriptions: false

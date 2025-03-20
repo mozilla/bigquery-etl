@@ -25,7 +25,7 @@ _previous AS (
     days_active_bits,
     days_created_profile_bits,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_fennec.usage_reporting_clients_last_seen`
+    `moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.usage_reporting_clients_last_seen_v1`
   WHERE
     submission_date = DATE_SUB(@submission_date, INTERVAL 1 DAY)
     -- Filter out rows from yesterday that have now fallen outside the 28-day window.

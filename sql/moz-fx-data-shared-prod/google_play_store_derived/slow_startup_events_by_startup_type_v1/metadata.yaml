@@ -13,7 +13,7 @@ labels:
   incremental: true
   owner1: kwindau
 scheduling:
-  dag_name: bqetl_google_play_store_developer_reporting_api_data
+  dag_name: bqetl_google_play_store
   arguments: ["--date", "{{ds}}"]
   secrets:
   - deploy_target: GOOGLE_PLAY_STORE_SRVC_ACCT_INFO

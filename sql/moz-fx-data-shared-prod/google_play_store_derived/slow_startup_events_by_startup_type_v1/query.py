@@ -234,7 +234,7 @@ def main():
                 },
                 {
                     "name": "nbr_distinct_users",
-                    "type": "NUMERIC",
+                    "type": "INTEGER",
                     "mode": "NULLABLE",
                 },
             ],

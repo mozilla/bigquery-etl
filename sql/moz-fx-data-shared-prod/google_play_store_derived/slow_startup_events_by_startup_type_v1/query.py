@@ -139,8 +139,7 @@ def main():
 
         # Code only set to handle 1 page, error out if more than 1 so it can be fixed
         if "nextPageToken" in result_json:
-            print("next page found, not parsed")
-            raise KeyError
+            raise NotImplementedError("Parsing for next page is not implemented yet.")
 
         # Initialize as none until we find them for each app
         pct_users_w_slow_start_during_cold_start = None

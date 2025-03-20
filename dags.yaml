@@ -2296,3 +2296,21 @@ bqetl_chrome_extensions_scraper:
   schedule_interval: 40 21 * * 1
   tags:
     - impact/tier_3
+
+bqetl_usage_reporting:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 1
+    retry_delay: 30m
+    start_date: '2025-03-19'
+  description: DAG for updating usage_reporting related datasets.
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1

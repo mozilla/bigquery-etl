@@ -55,7 +55,7 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
                 "day": day_after_date_to_pull_data_for_day,
             },
         },
-        "metrics": ["slowStartRate"],
+        "metrics": ["slowStartRate", "distinctUsers"],
         "dimensions": ["startType"],
         "pageSize": 100,
     }
@@ -119,6 +119,7 @@ def main():
             "pct_users_with_slow_start_event_during_cold_app_start": [],
             "pct_users_with_slow_start_event_during_warm_app_start": [],
             "pct_users_with_slow_start_event_during_hot_app_start": [],
+            "nbr_distinct_users": [],
         }
     )
 
@@ -136,27 +137,36 @@ def main():
         # Get the data from the result
         result_json = api_call_result.json()
 
+        # Code only set to handle 1 page, error out if more than 1 so it can be fixed
+        if "nextPageToken" in result_json:
+            raise NotImplementedError("Parsing for next page is not implemented yet.")
+
         # Initialize as none until we find them for each app
         pct_users_w_slow_start_during_cold_start = None
         pct_users_w_slow_start_during_warm_start = None
         pct_users_w_slow_start_during_hot_start = None
+        distinct_users = None
 
         for row in result_json["rows"]:
             startup_type = row["dimensions"][0]["stringValue"]
-            if startup_type == "COLD":
-                pct_users_w_slow_start_during_cold_start = row["metrics"][0][
-                    "decimalValue"
-                ]["value"]
+            for metric in row["metrics"]:
+                if metric["metric"] == "slowStartRate":
+                    if startup_type == "COLD":
+                        pct_users_w_slow_start_during_cold_start = metric[
+                            "decimalValue"
+                        ]["value"]
 
-            if startup_type == "WARM":
-                pct_users_w_slow_start_during_warm_start = row["metrics"][0][
-                    "decimalValue"
-                ]["value"]
+                    if startup_type == "WARM":
+                        pct_users_w_slow_start_during_warm_start = metric[
+                            "decimalValue"
+                        ]["value"]
 
-            if startup_type == "HOT":
-                pct_users_w_slow_start_during_hot_start = row["metrics"][0][
-                    "decimalValue"
-                ]["value"]
+                    if startup_type == "HOT":
+                        pct_users_w_slow_start_during_hot_start = metric[
+                            "decimalValue"
+                        ]["value"]
+                if metric["metric"] == "distinctUsers":
+                    distinct_users = metric["decimalValue"]["value"]
 
         # Parse the result into a dataframe
         new_df = pd.DataFrame(
@@ -172,6 +182,7 @@ def main():
                 "pct_users_with_slow_start_event_during_hot_app_start": [
                     pct_users_w_slow_start_during_hot_start
                 ],
+                "nbr_distinct_users": [distinct_users],
             }
         )
 
@@ -219,6 +230,11 @@ def main():
                 {
                     "name": "pct_users_with_slow_start_event_during_hot_app_start",
                     "type": "NUMERIC",
+                    "mode": "NULLABLE",
+                },
+                {
+                    "name": "nbr_distinct_users",
+                    "type": "INTEGER",
                     "mode": "NULLABLE",
                 },
             ],

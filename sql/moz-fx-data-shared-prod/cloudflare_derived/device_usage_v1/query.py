@@ -139,15 +139,15 @@ def make_device_usage_result_df(
     return pd.DataFrame(
         {
             "Timestamp": timestamps,
-            "UserType": [user_type] * len(timestamps),
-            "Location": [location] * len(timestamps),
+            "UserType": [user_type],
+            "Location": [location],
             "DesktopUsagePct": desktop,
             "MobileUsagePct": mobile,
             "OtherUsagePct": other,
-            "ConfLevel": [conf] * len(timestamps),
-            "AggInterval": [agg_interval] * len(timestamps),
-            "NormalizationType": [norm] * len(timestamps),
-            "LastUpdated": [last_upd] * len(timestamps),
+            "ConfLevel": [conf],
+            "AggInterval": [agg_interval],
+            "NormalizationType": [norm],
+            "LastUpdated": [last_upd],
         }
     )
 
@@ -200,6 +200,7 @@ def get_device_usage_data(date_of_interest, auth_token):
                 timeout=device_usg_configs["timeout_limit"],
             )
             response_json = json.loads(response.text)
+
             # If response was successful, get the result
             if response_json["success"] is True:
 

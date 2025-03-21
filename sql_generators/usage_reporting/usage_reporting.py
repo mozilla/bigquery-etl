@@ -9,18 +9,6 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
 
-if __name__ == "__main__":
-    import importlib.util
-    import sys
-
-    sql_generators_dir = "sql_generators"
-    spec = importlib.util.spec_from_file_location(
-        sql_generators_dir, (f"{sql_generators_dir}/__init__.py")
-    )
-    module = importlib.util.module_from_spec(spec)
-    sys.modules["sql_generators"] = module
-from sql_generators.glean_usage.common import get_app_info
-
 GENERATOR_ROOT = Path(path.dirname(__file__))
 
 HEADER = f"Generated via `{GENERATOR_ROOT.name}` SQL generator."
@@ -76,6 +64,8 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
     The app info returned includes app_name, and bq namespaces containing data \
     for specific app channels.
     """
+    from sql_generators.glean_usage.common import get_app_info
+
     probe_scraper_app_info = get_app_info()
 
     app_info_filtered: dict = dict()
@@ -360,5 +350,17 @@ if __name__ == "__main__":
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--output_dir", default="sql")
     args = parser.parse_args()
+
+    # Something is wrong with how modules are managed, we need to do this when calling the module directly.
+    # Otherwise, the cli module does this.
+    import importlib.util
+    import sys
+
+    sql_generators_dir = "sql_generators"
+    spec = importlib.util.spec_from_file_location(
+        sql_generators_dir, (f"{sql_generators_dir}/__init__.py")
+    )
+    module = importlib.util.module_from_spec(spec)  # type: ignore
+    sys.modules["sql_generators"] = module
 
     generate_usage_reporting(args.project, args.output_dir)

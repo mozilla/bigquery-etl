@@ -372,6 +372,10 @@ generate:
       - moso_mastodon_backend
       - mozphab
       - mozregression
+      - focus_android
+      - klar_android
+      - focus_ios
+      - klar_ios
       skip_app_metrics:
       - thunderbird_desktop
     bqetl_checks:

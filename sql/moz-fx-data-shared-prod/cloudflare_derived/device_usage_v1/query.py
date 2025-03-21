@@ -282,8 +282,8 @@ def get_device_usage_data(date_of_interest, auth_token):
     # Print a summary to the console
     len_results = str(len(results_df))
     len_errors = str(len(errors_df))
-    result_summary = f"# Result Rows: {len_results}; # of Error Rows: {len_errors}"
-    return result_summary
+    results_summary = [len_results, len_errors]
+    return results_summary
 
 
 def main():
@@ -299,7 +299,10 @@ def main():
     print(args.date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    results_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    nbr_successful = results_summary[0]
+    nbr_errors = results_summary[1]
+    result_summary = f"# Result Rows: {nbr_successful}; # of Error Rows: {nbr_errors}"
     print("result_summary")
     print(result_summary)
 
@@ -439,6 +442,10 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         device_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
+    # Lastly, if # errors > 3, fail with error
+    if int(nbr_errors) > 4:
+        raise Exception("5 or more errors, check for issues")
 
 
 if __name__ == "__main__":

@@ -64,8 +64,9 @@ device_usg_configs = {
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg",
 }
 
-#Load the Cloudflare API Token
+# Load the Cloudflare API Token
 cloudflare_api_token = os.getenv("CLOUDFLARE_AUTH_TOKEN")
+
 
 # Define a function to move a GCS object then delete the original
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
@@ -353,8 +354,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartTime", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
             ],
             skip_leading_rows=1,

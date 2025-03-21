@@ -1,6 +1,6 @@
 """Usage Reporting ETL."""
 
-from os import getcwd, path
+from os import path
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
@@ -9,8 +9,16 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
 
-print(getcwd())
+if __name__ == "__main__":
+    import importlib.util
+    import sys
 
+    sql_generators_dir = "sql_generators"
+    spec = importlib.util.spec_from_file_location(
+        sql_generators_dir, (f"{sql_generators_dir}/__init__.py")
+    )
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["sql_generators"] = module
 from sql_generators.glean_usage.common import get_app_info
 
 GENERATOR_ROOT = Path(path.dirname(__file__))
@@ -350,7 +358,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
-    parser.add_argument("--dataset", default="sql")
+    parser.add_argument("--output_dir", default="sql")
     args = parser.parse_args()
 
     generate_usage_reporting(args.project, args.output_dir)

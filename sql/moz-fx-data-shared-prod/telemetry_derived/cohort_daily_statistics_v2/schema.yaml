@@ -135,3 +135,7 @@ fields:
   name: num_clients_active_on_day
   type: INTEGER
   description: Number of Clients Active on Day
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Install Referrer Response

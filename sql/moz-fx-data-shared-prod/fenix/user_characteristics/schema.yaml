@@ -942,6 +942,9 @@ fields:
     - name: characteristics_canvas_dpr
       type: STRING
       mode: NULLABLE
+    - name: characteristics_machine_model_name
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

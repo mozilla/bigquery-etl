@@ -334,6 +334,33 @@ fields:
     - name: captcha_detection_pages_visited_pbm
       type: INTEGER
       mode: NULLABLE
+    - name: captcha_detection_arkoselabs_oc
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_arkoselabs_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_cloudflare_turnstile_oc
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_cloudflare_turnstile_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_datadome_oc
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_google_recaptcha_v2_oc
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_google_recaptcha_v2_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_hcaptcha_oc
+      type: INTEGER
+      mode: NULLABLE
+    - name: captcha_detection_hcaptcha_oc_pbm
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

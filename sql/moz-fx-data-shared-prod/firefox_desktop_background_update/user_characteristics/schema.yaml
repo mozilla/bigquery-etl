@@ -1787,6 +1787,12 @@ fields:
       description: 'The device pixel ratio of the canvas rendering context
 
         '
+    - name: characteristics_machine_model_name
+      type: STRING
+      mode: NULLABLE
+      description: 'Machine model name
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

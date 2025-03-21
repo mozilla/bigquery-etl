@@ -271,7 +271,8 @@ SELECT
       metrics.string.characteristics_mathml7,
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
-      metrics.string.characteristics_canvas_dpr
+      metrics.string.characteristics_canvas_dpr,
+      metrics.string.characteristics_machine_model_name
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -619,7 +620,8 @@ SELECT
       metrics.string.characteristics_mathml7,
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
-      metrics.string.characteristics_canvas_dpr
+      metrics.string.characteristics_canvas_dpr,
+      metrics.string.characteristics_machine_model_name
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -967,7 +969,8 @@ SELECT
       metrics.string.characteristics_mathml7,
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
-      metrics.string.characteristics_canvas_dpr
+      metrics.string.characteristics_canvas_dpr,
+      metrics.string.characteristics_machine_model_name
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(

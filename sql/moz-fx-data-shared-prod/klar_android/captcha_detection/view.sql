@@ -59,7 +59,16 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_ps,
       metrics.counter.captcha_detection_hcaptcha_ps_pbm,
       metrics.counter.captcha_detection_pages_visited,
-      metrics.counter.captcha_detection_pages_visited_pbm
+      metrics.counter.captcha_detection_pages_visited_pbm,
+      metrics.counter.captcha_detection_arkoselabs_oc,
+      metrics.counter.captcha_detection_arkoselabs_oc_pbm,
+      metrics.counter.captcha_detection_cloudflare_turnstile_oc,
+      metrics.counter.captcha_detection_cloudflare_turnstile_oc_pbm,
+      metrics.counter.captcha_detection_datadome_oc,
+      metrics.counter.captcha_detection_google_recaptcha_v2_oc,
+      metrics.counter.captcha_detection_google_recaptcha_v2_oc_pbm,
+      metrics.counter.captcha_detection_hcaptcha_oc,
+      metrics.counter.captcha_detection_hcaptcha_oc_pbm
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,

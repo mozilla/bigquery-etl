@@ -585,102 +585,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__focus_android_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__focus_android_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.focus_android_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__focus_android_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__focus_android_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.focus_android_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__focus_ios_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__focus_ios_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.focus_ios_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_ios,
-    )
-
-    bigeye__focus_ios_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__focus_ios_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.focus_ios_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_ios,
-    )
-
-    bigeye__klar_android_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__klar_android_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.klar_android_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_android,
-    )
-
-    bigeye__klar_android_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__klar_android_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.klar_android_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_android,
-    )
-
-    bigeye__klar_ios_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__klar_ios_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.klar_ios_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_ios,
-    )
-
-    bigeye__klar_ios_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__klar_ios_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.klar_ios_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_ios,
-    )
-
     bigeye__lockwise_ios_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
         task_id="bigeye__lockwise_ios_derived__metrics_clients_daily__v1",
         table_id="moz-fx-data-shared-prod.lockwise_ios_derived.metrics_clients_daily_v1",
@@ -885,114 +789,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
-    bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_android,
-    )
-
     bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
         task_id="bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
         table_id="moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.baseline_clients_daily_v1",
@@ -1101,30 +897,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_ios,
-    )
-
-    bigeye__org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_focus_ios,
-    )
-
     bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
         task_id="bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
         table_id="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.baseline_clients_last_seen_v1",
@@ -1135,42 +907,6 @@ with DAG(
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
         task_group=task_group_focus_ios,
-    )
-
-    bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_ios,
-    )
-
-    bigeye__org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_ios,
-    )
-
-    bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_ios,
     )
 
     bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
@@ -1207,42 +943,6 @@ with DAG(
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
         task_group=task_group_lockwise_ios,
-    )
-
-    bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_klar_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_android,
-    )
-
-    bigeye__org_mozilla_klar_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_klar_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_klar_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_android,
-    )
-
-    bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_klar_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_klar_android,
     )
 
     bigeye__org_mozilla_reference_browser_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
@@ -5273,38 +4973,6 @@ with DAG(
         firefox_ios_derived__metrics_clients_last_seen__v1
     )
 
-    bigeye__focus_android_derived__metrics_clients_daily__v1.set_upstream(
-        focus_android_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__focus_android_derived__metrics_clients_last_seen__v1.set_upstream(
-        focus_android_derived__metrics_clients_last_seen__v1
-    )
-
-    bigeye__focus_ios_derived__metrics_clients_daily__v1.set_upstream(
-        focus_ios_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__focus_ios_derived__metrics_clients_last_seen__v1.set_upstream(
-        focus_ios_derived__metrics_clients_last_seen__v1
-    )
-
-    bigeye__klar_android_derived__metrics_clients_daily__v1.set_upstream(
-        klar_android_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__klar_android_derived__metrics_clients_last_seen__v1.set_upstream(
-        klar_android_derived__metrics_clients_last_seen__v1
-    )
-
-    bigeye__klar_ios_derived__metrics_clients_daily__v1.set_upstream(
-        klar_ios_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__klar_ios_derived__metrics_clients_last_seen__v1.set_upstream(
-        klar_ios_derived__metrics_clients_last_seen__v1
-    )
-
     bigeye__lockwise_ios_derived__metrics_clients_daily__v1.set_upstream(
         lockwise_ios_derived__metrics_clients_daily__v1
     )
@@ -5373,42 +5041,6 @@ with DAG(
         org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_focus_beta_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_focus_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_focus_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
-    )
-
     bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1.set_upstream(
         org_mozilla_ios_fennec_derived__baseline_clients_daily__v1
     )
@@ -5445,28 +5077,8 @@ with DAG(
         org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
-    bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_ios_focus_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1
-    )
-
     bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_ios_klar_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )
 
     bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1.set_upstream(
@@ -5479,18 +5091,6 @@ with DAG(
 
     bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_klar_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_klar_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_klar_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
     bigeye__org_mozilla_reference_browser_derived__baseline_clients_daily__v1.set_upstream(
@@ -5990,19 +5590,19 @@ with DAG(
     )
 
     focus_android_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__focus_android_derived__metrics_clients_last_seen__v1
+        checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
     )
 
     focus_android_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+        checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
     )
 
     focus_android_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_focus_derived__baseline_clients_last_seen__v1
+        checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
     )
 
     focus_android_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+        focus_android_derived__metrics_clients_last_seen__v1
     )
 
     focus_android_derived__metrics_clients_daily__v1.set_upstream(
@@ -6010,15 +5610,15 @@ with DAG(
     )
 
     focus_android_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__focus_android_derived__metrics_clients_daily__v1
-    )
-
-    focus_ios_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__focus_ios_derived__metrics_clients_last_seen__v1
+        focus_android_derived__metrics_clients_daily__v1
     )
 
     focus_ios_derived__clients_last_seen_joined__v1.set_upstream(
         bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    focus_ios_derived__clients_last_seen_joined__v1.set_upstream(
+        focus_ios_derived__metrics_clients_last_seen__v1
     )
 
     focus_ios_derived__metrics_clients_daily__v1.set_upstream(
@@ -6026,7 +5626,7 @@ with DAG(
     )
 
     focus_ios_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__focus_ios_derived__metrics_clients_daily__v1
+        focus_ios_derived__metrics_clients_daily__v1
     )
 
     glean_dictionary_derived__events_stream__v1.set_upstream(
@@ -6036,11 +5636,11 @@ with DAG(
     gleanjs_docs_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     klar_android_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__klar_android_derived__metrics_clients_last_seen__v1
+        checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
     klar_android_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_klar_derived__baseline_clients_last_seen__v1
+        klar_android_derived__metrics_clients_last_seen__v1
     )
 
     klar_android_derived__metrics_clients_daily__v1.set_upstream(
@@ -6048,15 +5648,15 @@ with DAG(
     )
 
     klar_android_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__klar_android_derived__metrics_clients_daily__v1
+        klar_android_derived__metrics_clients_daily__v1
     )
 
     klar_ios_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__klar_ios_derived__metrics_clients_last_seen__v1
+        checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )
 
     klar_ios_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+        klar_ios_derived__metrics_clients_last_seen__v1
     )
 
     klar_ios_derived__metrics_clients_daily__v1.set_upstream(
@@ -6064,7 +5664,7 @@ with DAG(
     )
 
     klar_ios_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__klar_ios_derived__metrics_clients_daily__v1
+        klar_ios_derived__metrics_clients_daily__v1
     )
 
     lockwise_android_derived__clients_last_seen_joined__v1.set_upstream(
@@ -6574,11 +6174,11 @@ with DAG(
     )
 
     org_mozilla_focus_beta_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_focus_beta_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_focus_beta_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6590,7 +6190,7 @@ with DAG(
     )
 
     org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_focus_beta_derived__baseline_clients_daily__v1
+        org_mozilla_focus_beta_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_focus_beta_derived__events_stream__v1.set_upstream(
@@ -6598,11 +6198,11 @@ with DAG(
     )
 
     org_mozilla_focus_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_focus_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_focus_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_focus_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_focus_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6614,7 +6214,7 @@ with DAG(
     )
 
     org_mozilla_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_focus_derived__baseline_clients_daily__v1
+        org_mozilla_focus_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_focus_derived__events_stream__v1.set_upstream(
@@ -6622,11 +6222,11 @@ with DAG(
     )
 
     org_mozilla_focus_nightly_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_focus_nightly_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_focus_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6638,7 +6238,7 @@ with DAG(
     )
 
     org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
+        org_mozilla_focus_nightly_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_focus_nightly_derived__events_stream__v1.set_upstream(
@@ -6766,11 +6366,11 @@ with DAG(
     )
 
     org_mozilla_ios_focus_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_ios_focus_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_ios_focus_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6782,7 +6382,7 @@ with DAG(
     )
 
     org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_ios_focus_derived__baseline_clients_daily__v1
+        org_mozilla_ios_focus_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_ios_focus_derived__events_stream__v1.set_upstream(
@@ -6790,11 +6390,11 @@ with DAG(
     )
 
     org_mozilla_ios_klar_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_ios_klar_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_ios_klar_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6806,7 +6406,7 @@ with DAG(
     )
 
     org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_ios_klar_derived__baseline_clients_daily__v1
+        org_mozilla_ios_klar_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_ios_klar_derived__events_stream__v1.set_upstream(
@@ -6838,11 +6438,11 @@ with DAG(
     )
 
     org_mozilla_klar_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_klar_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_klar_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_klar_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_klar_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6854,7 +6454,7 @@ with DAG(
     )
 
     org_mozilla_klar_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_klar_derived__baseline_clients_daily__v1
+        org_mozilla_klar_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_klar_derived__events_stream__v1.set_upstream(

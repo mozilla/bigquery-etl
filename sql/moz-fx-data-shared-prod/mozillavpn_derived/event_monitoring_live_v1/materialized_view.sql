@@ -188,7 +188,7 @@ IF
   FROM
     combined
   WHERE
-    DATE(submission_timestamp) >= "2025-03-20"
+    DATE(submission_timestamp) >= "2025-03-21"
   GROUP BY
     submission_date,
     window_start,

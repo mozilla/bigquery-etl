@@ -130,4 +130,4 @@ fields:
 - name: play_store_attribution_install_referrer_response
   type: STRING
   mode: NULLABLE
-  description: Flag indicating source - i.e. Desktop or Mobile
+  description: Play Store Attribution Install Referrer Response

@@ -273,12 +273,12 @@ SELECT
   uwgc.play_store_attribution_source,
   uwgc.play_store_attribution_content,
   uwgc.play_store_attribution_term,
-  uwgc.play_store_attribution_install_referrer_response,
   uwgc.cohort_date_week,
   uwgc.nbr_clients_in_cohort,
   uwgc.activity_date_week,
   DATE_DIFF(uwgc.activity_date_week, uwgc.cohort_date_week, WEEK) AS weeks_after_first_seen_week,
-  COALESCE(waa.nbr_active_clients, 0) AS nbr_active_clients
+  COALESCE(waa.nbr_active_clients, 0) AS nbr_active_clients,
+  uwgc.play_store_attribution_install_referrer_response,
 FROM
   unique_week_group_combos uwgc
 LEFT JOIN

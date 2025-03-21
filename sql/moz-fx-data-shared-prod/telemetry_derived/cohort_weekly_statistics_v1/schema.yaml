@@ -119,3 +119,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of Active Clients
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Install Referrer Response

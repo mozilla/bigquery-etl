@@ -26,6 +26,7 @@ WITH clients_first_seen AS (
     play_store_attribution_source,
     play_store_attribution_content,
     play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
     DATE_TRUNC(cohort_date, WEEK) AS cohort_date_week,
     client_id
   FROM
@@ -109,6 +110,7 @@ initial_cohort_counts AS (
     play_store_attribution_source,
     play_store_attribution_content,
     play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
     cohort_date_week,
     COUNT(DISTINCT(client_id)) AS nbr_clients_in_cohort
   FROM
@@ -139,6 +141,7 @@ initial_cohort_counts AS (
     play_store_attribution_source,
     play_store_attribution_content,
     play_store_attribution_term,
+    play_store_attribution_install_referrer_response,
     cohort_date_week
 ),
 unique_week_group_combos AS (
@@ -168,6 +171,7 @@ unique_week_group_combos AS (
     i.play_store_attribution_source,
     i.play_store_attribution_content,
     i.play_store_attribution_term,
+    i.play_store_attribution_install_referrer_response,
     i.cohort_date_week,
     i.nbr_clients_in_cohort,
     w.activity_date_week
@@ -203,6 +207,7 @@ weekly_active_agg AS (
     cfs.play_store_attribution_source,
     cfs.play_store_attribution_content,
     cfs.play_store_attribution_term,
+    cfs.play_store_attribution_install_referrer_response,
     cfs.cohort_date_week,
     wac.activity_date_week,
     COUNT(DISTINCT(wac.client_id)) AS nbr_active_clients
@@ -238,6 +243,7 @@ weekly_active_agg AS (
     cfs.play_store_attribution_source,
     cfs.play_store_attribution_content,
     cfs.play_store_attribution_term,
+    cfs.play_store_attribution_install_referrer_response,
     cfs.cohort_date_week,
     wac.activity_date_week
 )
@@ -267,6 +273,7 @@ SELECT
   uwgc.play_store_attribution_source,
   uwgc.play_store_attribution_content,
   uwgc.play_store_attribution_term,
+  uwgc.play_store_attribution_install_referrer_response,
   uwgc.cohort_date_week,
   uwgc.nbr_clients_in_cohort,
   uwgc.activity_date_week,
@@ -317,6 +324,10 @@ LEFT JOIN
   )
   AND COALESCE(uwgc.play_store_attribution_term, 'NULL') = COALESCE(
     waa.play_store_attribution_term,
+    'NULL'
+  )
+  AND COALESCE(uwgc.play_store_attribution_install_referrer_response, 'NULL') = COALESCE(
+    waa.play_store_attribution_install_referrer_response,
     'NULL'
   )
   AND uwgc.cohort_date_week = waa.cohort_date_week

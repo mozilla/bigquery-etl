@@ -443,7 +443,7 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         error_archive_fpath,
     )
 
-    # Lastly, if # errors > 3, fail with error
+    # Lastly, if # errors > 4, fail with error
     if int(nbr_errors) > 4:
         raise Exception("5 or more errors, check for issues")
 

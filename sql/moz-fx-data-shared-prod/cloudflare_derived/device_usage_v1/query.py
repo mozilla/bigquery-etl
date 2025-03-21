@@ -64,8 +64,9 @@ device_usg_configs = {
     "errors_bq_stg_table": "moz-fx-data-shared-prod.cloudflare_derived.device_errors_stg",
 }
 
-#Load the Cloudflare API Token
+# Load the Cloudflare API Token
 cloudflare_api_token = os.getenv("CLOUDFLARE_AUTH_TOKEN")
+
 
 # Define a function to move a GCS object then delete the original
 def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_name):
@@ -97,27 +98,27 @@ def move_blob(bucket_name, blob_name, destination_bucket_name, destination_blob_
 def generate_device_type_timeseries_api_call(strt_dt, end_dt, agg_int, location):
     """Calculate API to call based on given parameters."""
     if location == "ALL":
-        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
+        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&format=json&aggInterval={agg_int}"
     else:
-        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
+        device_usage_api_url = f"https://api.cloudflare.com/client/v4/radar/http/timeseries_groups/device_type?name=human&botClass=LIKELY_HUMAN&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&name=bot&botClass=LIKELY_AUTOMATED&dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z&location={location}&format=json&aggInterval={agg_int}"
     return device_usage_api_url
 
 
 def parse_device_type_timeseries_response_human(result):
     """Take the response JSON and returns parsed human traffic information."""
-    human_timestamps = result["human"]["timestamps"]
-    human_desktop = result["human"]["desktop"]
-    human_mobile = result["human"]["mobile"]
-    human_other = result["human"]["other"]
+    human_timestamps = result["human"]["timestamps"][0]
+    human_desktop = result["human"]["desktop"][0]
+    human_mobile = result["human"]["mobile"][0]
+    human_other = result["human"]["other"][0]
     return human_timestamps, human_desktop, human_mobile, human_other
 
 
 def parse_device_type_timeseries_response_bot(result):
     """Take the response JSON and returns parsed bot traffic information."""
-    bot_timestamps = result["bot"]["timestamps"]
-    bot_desktop = result["bot"]["desktop"]
-    bot_mobile = result["bot"]["mobile"]
-    bot_other = result["bot"]["other"]
+    bot_timestamps = result["bot"]["timestamps"][0]
+    bot_desktop = result["bot"]["desktop"][0]
+    bot_mobile = result["bot"]["mobile"][0]
+    bot_other = result["bot"]["other"][0]
     return bot_timestamps, bot_desktop, bot_mobile, bot_other
 
 
@@ -281,8 +282,8 @@ def get_device_usage_data(date_of_interest, auth_token):
     # Print a summary to the console
     len_results = str(len(results_df))
     len_errors = str(len(errors_df))
-    result_summary = f"# Result Rows: {len_results}; # of Error Rows: {len_errors}"
-    return result_summary
+    results_summary = [len_results, len_errors]
+    return results_summary
 
 
 def main():
@@ -298,7 +299,10 @@ def main():
     print(args.date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    results_summary = get_device_usage_data(args.date, args.cloudflare_api_token)
+    nbr_successful = results_summary[0]
+    nbr_errors = results_summary[1]
+    result_summary = f"# Result Rows: {nbr_successful}; # of Error Rows: {nbr_errors}"
     print("result_summary")
     print(result_summary)
 
@@ -353,8 +357,8 @@ def main():
             create_disposition="CREATE_IF_NEEDED",
             write_disposition="WRITE_TRUNCATE",
             schema=[
-                {"name": "StartTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
-                {"name": "EndTime", "type": "TIMESTAMP", "mode": "REQUIRED"},
+                {"name": "StartTime", "type": "DATE", "mode": "REQUIRED"},
+                {"name": "EndTime", "type": "DATE", "mode": "REQUIRED"},
                 {"name": "Location", "type": "STRING", "mode": "NULLABLE"},
             ],
             skip_leading_rows=1,
@@ -438,6 +442,10 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         device_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
+    # Lastly, if # errors > 4, fail with error
+    if int(nbr_errors) > 4:
+        raise Exception("5 or more errors, check for issues")
 
 
 if __name__ == "__main__":

@@ -507,6 +507,9 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.user_characteristics_v1",
         field=USER_CHARACTERISTICS_ID,
     ): USER_CHARACTERISTICS_SRC,
+    client_id_target(table="ads_derived.android_pocket_spocs_v1"): DeleteSource(
+        table="fenix.deletion_request", field=GLEAN_CLIENT_ID
+    ),
     # tables in Glean derived datasets that use different sources than the find_glean_targets defaults
     client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,

@@ -67,6 +67,7 @@ legacy_summary AS (
     CAST(NULL AS STRING) AS recommendation_id,
     tile_id,
     position,
+    CAST(NULL AS STRING) AS product,
     CAST(NULL AS STRING) AS placement,
     CAST(NULL AS STRING) AS os,
     SUM(impressions) AS impression_count,
@@ -81,6 +82,7 @@ legacy_summary AS (
     submission_date,
     tile_id,
     position,
+    product,
     placement,
     os
 ),
@@ -134,6 +136,7 @@ glean_summary AS (
     recommendation_id,
     COALESCE(SAFE_CAST(tile_id AS int), -1) AS tile_id,
     COALESCE(SAFE_CAST(position AS int), -1) AS position,
+    CAST(NULL AS STRING) AS product,
     CAST(NULL AS STRING) AS placement,
     CAST(NULL AS STRING) AS os,
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
@@ -150,6 +153,7 @@ glean_summary AS (
     recommendation_id,
     tile_id,
     position,
+    product,
     placement,
     os
 ),
@@ -161,6 +165,7 @@ uapi_summary AS (
     CAST(NULL AS STRING) AS recommendation_id,
     ad_id AS tile_id,
     position,
+    product,
     placement,
     os,
     SUM(CASE WHEN interaction_type = 'impression' THEN interaction_count ELSE 0 END) AS impression_count,
@@ -182,6 +187,7 @@ uapi_summary AS (
     submission_date,
     ad_id,
     position,
+    product,
     placement,
     os
 )

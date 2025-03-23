@@ -14,11 +14,18 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: 0-indexed position of the content in the grid of content.
+  - name: product
+    type: STRING
+    mode: NULLABLE
+    description: The product purchased by the ad partner for ad placement (e.g. billboard, leaderboard, rectangle, spoc, tile).
   - name: placement
     type: STRING
     mode: NULLABLE
-    description:
-      The location of the ad on the page within a grid of space (e.g. newtab_spocs, newtab_rectangle, newtab_billboard).
+    description: The location of the ad within a product.
+
+      For example, within the tile product there could be a placement of one of the following
+      newtab_tile_1, newtab_tile_2, newtab_tile_3, newtab_mobile_tile_1, etc.
+
       This field is only populated for data coming in from the UAPI.
 
       A full list of placements can be found at https://github.com/mozilla-services/mars/blob/main/unified_ads_api/models/constants.go

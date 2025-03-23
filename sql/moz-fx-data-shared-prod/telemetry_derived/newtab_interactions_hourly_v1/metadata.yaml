@@ -1,6 +1,9 @@
 friendly_name: Newtab Interactions Hourly
 description: |-
-  Interactions on Newtab desktop across all territories and release channels.
+  Interactions on Newtab desktop across all territories and release channels. The addition
+  of the Unified API (UAPI) includes mobile data in addition to desktop.
+
+  For any downstream jobs specific to desktop, filter on the os column
 
   This job runs hourly and is aggregated by day, tile ID, and position.
 owners:

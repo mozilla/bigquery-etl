@@ -1,32 +1,46 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-  description: Client-side date in Firefox for when the indicated engagement happened.
-- name: recommendation_id
-  type: STRING
-  mode: NULLABLE
-- name: tile_id
-  type: INTEGER
-  mode: NULLABLE
-  description: A content identifier specific to the Firefox Newtab. May not uniquely identify the same piece of content if it is run multiple times.
-- name: position
-  type: INTEGER
-  mode: NULLABLE
-  description: 0-indexed position of the content in the grid of content.
-- name: impression_count
-  type: INTEGER
-  mode: NULLABLE
-  description: The number of impressions of this piece of content on this day in this position.
-- name: click_count
-  type: INTEGER
-  mode: NULLABLE
-  description: The number of clicks on this piece of content on this day in this position.
-- name: save_count
-  type: INTEGER
-  mode: NULLABLE
-  description: The number of saves of this piece of content on this day in this position via the "..." menu on the tile.
-- name: dismiss_count
-  type: INTEGER
-  mode: NULLABLE
-  description: The number of dismisses of this piece of content on this day in this position via the "..." menu on the tile.
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+    description: Client-side date in Firefox for when the indicated engagement happened.
+  - name: recommendation_id
+    type: STRING
+    mode: NULLABLE
+  - name: tile_id
+    type: INTEGER
+    mode: NULLABLE
+    description: A content identifier specific to the Firefox Newtab. May not uniquely identify the same piece of content if it is run multiple times.
+  - name: position
+    type: INTEGER
+    mode: NULLABLE
+    description: 0-indexed position of the content in the grid of content.
+  - name: placement
+    type: STRING
+    mode: NULLABLE
+    description:
+      The location of the ad on the page within a grid of space (e.g. newtab_spocs, newtab_rectangle, newtab_billboard).
+      This field is only populated for data coming in from the UAPI.
+
+      A full list of placements can be found at https://github.com/mozilla-services/mars/blob/main/unified_ads_api/models/constants.go
+  - name: os
+    type: STRING
+    mode: NULLABLE
+    description:
+      The operating system that the ad was served on (e.g. windows, macos, linux, andriod, ios)
+      This field is only populated for data coming in from the UAPI.
+  - name: impression_count
+    type: INTEGER
+    mode: NULLABLE
+    description: The number of impressions of this piece of content on this day in this position.
+  - name: click_count
+    type: INTEGER
+    mode: NULLABLE
+    description: The number of clicks on this piece of content on this day in this position.
+  - name: save_count
+    type: INTEGER
+    mode: NULLABLE
+    description: The number of saves of this piece of content on this day in this position via the "..." menu on the tile.
+  - name: dismiss_count
+    type: INTEGER
+    mode: NULLABLE
+    description: The number of dismisses of this piece of content on this day in this position via the "..." menu on the tile.

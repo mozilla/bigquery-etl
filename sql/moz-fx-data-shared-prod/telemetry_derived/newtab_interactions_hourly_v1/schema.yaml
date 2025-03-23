@@ -17,7 +17,10 @@ fields:
   - name: product
     type: STRING
     mode: NULLABLE
-    description: The product purchased by the ad partner for ad placement (e.g. billboard, leaderboard, rectangle, spoc, tile).
+    description:
+      The product purchased by the ad partner for ad placement (e.g. billboard, leaderboard, rectangle, spoc, tile).
+
+      This field is only populated for data coming in from the UAPI.
   - name: placement
     type: STRING
     mode: NULLABLE

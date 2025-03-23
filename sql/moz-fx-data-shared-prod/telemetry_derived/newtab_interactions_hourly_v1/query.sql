@@ -144,14 +144,46 @@ glean_summary AS (
     recommendation_id,
     tile_id,
     position
+),
+
+uapi_summary AS (
+  SELECT
+    DATE(submission_hour) AS happened_at,
+    CAST(NULL AS STRING) AS recommendation_id,
+    ad_id,
+    position,
+    SUM(CASE WHEN interaction_type = 'impression' THEN interaction_count ELSE 0 END) AS impression_count,
+    SUM(CASE WHEN interaction_type = 'click' THEN interaction_count ELSE 0 END) AS click_count,
+    0 AS save_count,
+    0 AS dismiss_count,
+  FROM
+    `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
+  WHERE
+    DATE(submission_hour) = @submission_date
+    AND form_factor = 'desktop'
+    AND placement IN (
+      'newtab_spocs',
+      'newtab_rectangle',
+      'newtab_billboard',
+      'newtab_leaderboard'
+    )
+  GROUP BY
+    happened_at,
+    ad_id,
+    position
 )
 -- union legacy and glean telemetry
 SELECT
   *
 FROM
-  legacy_summary AS l
+  legacy_summary
 UNION ALL
 SELECT
   *
 FROM
-  glean_summary AS g
+  glean_summary
+UNION ALL
+SELECT
+*
+FROM
+  uapi_summary

@@ -184,6 +184,6 @@ FROM
   glean_summary
 UNION ALL
 SELECT
-*
+  *
 FROM
   uapi_summary

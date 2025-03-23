@@ -157,7 +157,6 @@ glean_summary AS (
     placement,
     os
 ),
-
 --with the addition of the unified api, we are bringing in data from the ads backend
 uapi_summary AS (
   SELECT
@@ -168,7 +167,13 @@ uapi_summary AS (
     product,
     placement,
     os,
-    SUM(CASE WHEN interaction_type = 'impression' THEN interaction_count ELSE 0 END) AS impression_count,
+    SUM(
+      CASE
+        WHEN interaction_type = 'impression'
+          THEN interaction_count
+        ELSE 0
+      END
+    ) AS impression_count,
     SUM(CASE WHEN interaction_type = 'click' THEN interaction_count ELSE 0 END) AS click_count,
     0 AS save_count,
     0 AS dismiss_count,
@@ -177,12 +182,7 @@ uapi_summary AS (
   WHERE
     DATE(submission_hour) = @submission_date
     AND form_factor = 'desktop'
-    AND placement IN (
-      'newtab_spocs',
-      'newtab_rectangle',
-      'newtab_billboard',
-      'newtab_leaderboard'
-    )
+    AND placement IN ('newtab_spocs', 'newtab_rectangle', 'newtab_billboard', 'newtab_leaderboard')
   GROUP BY
     submission_date,
     ad_id,

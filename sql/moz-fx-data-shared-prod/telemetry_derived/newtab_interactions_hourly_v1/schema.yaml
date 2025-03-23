@@ -37,6 +37,7 @@ fields:
     mode: NULLABLE
     description:
       The operating system that the ad was served on (e.g. windows, macos, linux, andriod, ios)
+
       This field is only populated for data coming in from the UAPI.
   - name: impression_count
     type: INTEGER

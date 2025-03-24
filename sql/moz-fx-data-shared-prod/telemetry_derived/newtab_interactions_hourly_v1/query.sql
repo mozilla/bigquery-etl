@@ -67,6 +67,9 @@ legacy_summary AS (
     CAST(NULL AS STRING) AS recommendation_id,
     tile_id,
     position,
+    CAST(NULL AS STRING) AS product,
+    CAST(NULL AS STRING) AS placement,
+    CAST(NULL AS STRING) AS os,
     SUM(impressions) AS impression_count,
     SUM(clicks) AS click_count,
     SUM(pocketed) AS save_count,
@@ -78,7 +81,10 @@ legacy_summary AS (
   GROUP BY
     submission_date,
     tile_id,
-    position
+    position,
+    product,
+    placement,
+    os
 ),
   -- GLEAN Query
 glean_deduplicated_pings AS (
@@ -130,6 +136,9 @@ glean_summary AS (
     recommendation_id,
     COALESCE(SAFE_CAST(tile_id AS int), -1) AS tile_id,
     COALESCE(SAFE_CAST(position AS int), -1) AS position,
+    CAST(NULL AS STRING) AS product,
+    CAST(NULL AS STRING) AS placement,
+    CAST(NULL AS STRING) AS os,
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
     SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
     SUM(CASE WHEN event_name = 'save' THEN 1 ELSE 0 END) AS save_count,
@@ -143,15 +152,57 @@ glean_summary AS (
     submission_date,
     recommendation_id,
     tile_id,
-    position
+    position,
+    product,
+    placement,
+    os
+),
+--with the addition of the unified api, we are bringing in data from the ads backend
+uapi_summary AS (
+  SELECT
+    DATE(submission_hour) AS submission_date,
+    CAST(NULL AS STRING) AS recommendation_id,
+    ad_id AS tile_id,
+    position,
+    product,
+    placement,
+    os,
+    SUM(
+      CASE
+        WHEN interaction_type = 'impression'
+          THEN interaction_count
+        ELSE 0
+      END
+    ) AS impression_count,
+    SUM(CASE WHEN interaction_type = 'click' THEN interaction_count ELSE 0 END) AS click_count,
+    0 AS save_count,
+    0 AS dismiss_count,
+  FROM
+    `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
+  WHERE
+    DATE(submission_hour) = @submission_date
+    AND form_factor = 'desktop'
+    AND placement IN ('newtab_spocs', 'newtab_rectangle', 'newtab_billboard', 'newtab_leaderboard')
+  GROUP BY
+    submission_date,
+    ad_id,
+    position,
+    product,
+    placement,
+    os
 )
 -- union legacy and glean telemetry
 SELECT
   *
 FROM
-  legacy_summary AS l
+  legacy_summary
 UNION ALL
 SELECT
   *
 FROM
-  glean_summary AS g
+  glean_summary
+UNION ALL
+SELECT
+  *
+FROM
+  uapi_summary

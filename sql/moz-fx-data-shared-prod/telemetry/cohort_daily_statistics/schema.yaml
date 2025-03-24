@@ -126,6 +126,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Play Store Attribution Term - Available for Mobile Only
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: Play Store Attribution Install Referrer Response
 - name: num_clients_in_cohort
   type: INTEGER
   mode: NULLABLE

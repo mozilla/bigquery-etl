@@ -194,9 +194,9 @@ uapi_summary AS (
     `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
   WHERE
     {% if is_init() %}
-      submission_timestamp >= '2025-01-01'
+      submission_hour >= '2025-01-01'
     {% else %}
-      DATE(submission_timestamp) = @submission_date
+      DATE(submission_hour) = @submission_date
     {% endif %}
     AND placement IN ('newtab_spocs', 'newtab_rectangle', 'newtab_billboard', 'newtab_leaderboard')
   GROUP BY

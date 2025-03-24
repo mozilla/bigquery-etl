@@ -562,7 +562,11 @@ SELECT
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
       metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
-      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout,
+      metrics.labeled_counter.browser_engagement_total_top_visits,
+      metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
+      metrics.labeled_counter.pwmgr_is_username_only_form,
+      metrics.labeled_counter.pwmgr_num_improved_generated_passwords
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -598,7 +602,18 @@ SELECT
       metrics.memory_distribution.spdy_settings_iw,
       metrics.memory_distribution.spdy_syn_reply_size,
       metrics.memory_distribution.spdy_syn_size,
-      metrics.memory_distribution.ssl_bytes_before_cert_callback
+      metrics.memory_distribution.ssl_bytes_before_cert_callback,
+      metrics.memory_distribution.memory_heap_allocated,
+      metrics.memory_distribution.memory_images_content_used_uncompressed,
+      metrics.memory_distribution.memory_js_gc_heap,
+      metrics.memory_distribution.memory_resident_fast,
+      metrics.memory_distribution.memory_resident_peak,
+      metrics.memory_distribution.memory_storage_sqlite,
+      metrics.memory_distribution.memory_total,
+      metrics.memory_distribution.memory_unique,
+      metrics.memory_distribution.memory_unique_content_startup,
+      metrics.memory_distribution.memory_vsize,
+      metrics.memory_distribution.memory_vsize_max_contiguous
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -941,7 +956,18 @@ SELECT
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
       metrics.custom_distribution.devtools_heap_snapshot_node_count,
       metrics.custom_distribution.region_fetch_result,
-      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging,
+      metrics.custom_distribution.memory_ghost_windows,
+      metrics.custom_distribution.memory_heap_overhead_fraction,
+      metrics.custom_distribution.memory_js_compartments_system,
+      metrics.custom_distribution.memory_js_compartments_user,
+      metrics.custom_distribution.memory_js_realms_system,
+      metrics.custom_distribution.memory_js_realms_user,
+      metrics.custom_distribution.memory_low_memory_events_physical,
+      metrics.custom_distribution.memory_page_faults_hard,
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -1290,7 +1316,19 @@ SELECT
       metrics.timing_distribution.glam_experiment_time,
       metrics.timing_distribution.region_fetch_time,
       metrics.timing_distribution.screenwakelock_held_duration,
-      metrics.timing_distribution.wr_shaderload_time
+      metrics.timing_distribution.wr_shaderload_time,
+      metrics.timing_distribution.memory_collection_time,
+      metrics.timing_distribution.memory_free_purged_pages,
+      metrics.timing_distribution.widget_notify_idle,
+      metrics.timing_distribution.browser_timings_new_window,
+      metrics.timing_distribution.browser_timings_page_load,
+      metrics.timing_distribution.browser_timings_page_reload_normal,
+      metrics.timing_distribution.browser_timings_page_reload_skip_cache,
+      metrics.timing_distribution.browser_timings_tab_click,
+      metrics.timing_distribution.network_cookies_sqlite_open_readahead,
+      metrics.timing_distribution.pwmgr_signup_form_detection,
+      metrics.timing_distribution.dom_textfragment_create_directive,
+      metrics.timing_distribution.dom_textfragment_find_directives
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1429,7 +1467,8 @@ SELECT
       metrics.labeled_custom_distribution.http3_ech_outcome,
       metrics.labeled_custom_distribution.http3_late_ack,
       metrics.labeled_custom_distribution.http3_late_ack_ratio,
-      metrics.labeled_custom_distribution.http3_received_sent_dgrams
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams,
+      metrics.labeled_custom_distribution.memory_distribution_among_content
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`
@@ -2007,7 +2046,11 @@ SELECT
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
       metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
-      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout,
+      metrics.labeled_counter.browser_engagement_total_top_visits,
+      metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
+      metrics.labeled_counter.pwmgr_is_username_only_form,
+      metrics.labeled_counter.pwmgr_num_improved_generated_passwords
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2043,7 +2086,18 @@ SELECT
       metrics.memory_distribution.spdy_settings_iw,
       metrics.memory_distribution.spdy_syn_reply_size,
       metrics.memory_distribution.spdy_syn_size,
-      metrics.memory_distribution.ssl_bytes_before_cert_callback
+      metrics.memory_distribution.ssl_bytes_before_cert_callback,
+      metrics.memory_distribution.memory_heap_allocated,
+      metrics.memory_distribution.memory_images_content_used_uncompressed,
+      metrics.memory_distribution.memory_js_gc_heap,
+      metrics.memory_distribution.memory_resident_fast,
+      metrics.memory_distribution.memory_resident_peak,
+      metrics.memory_distribution.memory_storage_sqlite,
+      metrics.memory_distribution.memory_total,
+      metrics.memory_distribution.memory_unique,
+      metrics.memory_distribution.memory_unique_content_startup,
+      metrics.memory_distribution.memory_vsize,
+      metrics.memory_distribution.memory_vsize_max_contiguous
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -2386,7 +2440,18 @@ SELECT
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
       metrics.custom_distribution.devtools_heap_snapshot_node_count,
       metrics.custom_distribution.region_fetch_result,
-      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging,
+      metrics.custom_distribution.memory_ghost_windows,
+      metrics.custom_distribution.memory_heap_overhead_fraction,
+      metrics.custom_distribution.memory_js_compartments_system,
+      metrics.custom_distribution.memory_js_compartments_user,
+      metrics.custom_distribution.memory_js_realms_system,
+      metrics.custom_distribution.memory_js_realms_user,
+      metrics.custom_distribution.memory_low_memory_events_physical,
+      metrics.custom_distribution.memory_page_faults_hard,
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -2735,7 +2800,19 @@ SELECT
       metrics.timing_distribution.glam_experiment_time,
       metrics.timing_distribution.region_fetch_time,
       metrics.timing_distribution.screenwakelock_held_duration,
-      metrics.timing_distribution.wr_shaderload_time
+      metrics.timing_distribution.wr_shaderload_time,
+      metrics.timing_distribution.memory_collection_time,
+      metrics.timing_distribution.memory_free_purged_pages,
+      metrics.timing_distribution.widget_notify_idle,
+      metrics.timing_distribution.browser_timings_new_window,
+      metrics.timing_distribution.browser_timings_page_load,
+      metrics.timing_distribution.browser_timings_page_reload_normal,
+      metrics.timing_distribution.browser_timings_page_reload_skip_cache,
+      metrics.timing_distribution.browser_timings_tab_click,
+      metrics.timing_distribution.network_cookies_sqlite_open_readahead,
+      metrics.timing_distribution.pwmgr_signup_form_detection,
+      metrics.timing_distribution.dom_textfragment_create_directive,
+      metrics.timing_distribution.dom_textfragment_find_directives
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -2874,7 +2951,8 @@ SELECT
       metrics.labeled_custom_distribution.http3_ech_outcome,
       metrics.labeled_custom_distribution.http3_late_ack,
       metrics.labeled_custom_distribution.http3_late_ack_ratio,
-      metrics.labeled_custom_distribution.http3_received_sent_dgrams
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams,
+      metrics.labeled_custom_distribution.memory_distribution_among_content
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`
@@ -3452,7 +3530,11 @@ SELECT
       metrics.labeled_counter.pdfjs_signature_clear,
       metrics.labeled_counter.pdfjs_signature_edit_description,
       metrics.labeled_counter.creditcard_detected_cc_number_fields_count,
-      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout
+      metrics.labeled_counter.mozstorage_sqlitejsm_transaction_timeout,
+      metrics.labeled_counter.browser_engagement_total_top_visits,
+      metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
+      metrics.labeled_counter.pwmgr_is_username_only_form,
+      metrics.labeled_counter.pwmgr_num_improved_generated_passwords
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -3488,7 +3570,18 @@ SELECT
       metrics.memory_distribution.spdy_settings_iw,
       metrics.memory_distribution.spdy_syn_reply_size,
       metrics.memory_distribution.spdy_syn_size,
-      metrics.memory_distribution.ssl_bytes_before_cert_callback
+      metrics.memory_distribution.ssl_bytes_before_cert_callback,
+      metrics.memory_distribution.memory_heap_allocated,
+      metrics.memory_distribution.memory_images_content_used_uncompressed,
+      metrics.memory_distribution.memory_js_gc_heap,
+      metrics.memory_distribution.memory_resident_fast,
+      metrics.memory_distribution.memory_resident_peak,
+      metrics.memory_distribution.memory_storage_sqlite,
+      metrics.memory_distribution.memory_total,
+      metrics.memory_distribution.memory_unique,
+      metrics.memory_distribution.memory_unique_content_startup,
+      metrics.memory_distribution.memory_vsize,
+      metrics.memory_distribution.memory_vsize_max_contiguous
     ) AS `memory_distribution`,
     STRUCT(
       metrics.string.browser_default_search_engine,
@@ -3831,7 +3924,18 @@ SELECT
       metrics.custom_distribution.devtools_heap_snapshot_edge_count,
       metrics.custom_distribution.devtools_heap_snapshot_node_count,
       metrics.custom_distribution.region_fetch_result,
-      metrics.custom_distribution.screenwakelock_release_battery_level_discharging
+      metrics.custom_distribution.screenwakelock_release_battery_level_discharging,
+      metrics.custom_distribution.memory_ghost_windows,
+      metrics.custom_distribution.memory_heap_overhead_fraction,
+      metrics.custom_distribution.memory_js_compartments_system,
+      metrics.custom_distribution.memory_js_compartments_user,
+      metrics.custom_distribution.memory_js_realms_system,
+      metrics.custom_distribution.memory_js_realms_user,
+      metrics.custom_distribution.memory_low_memory_events_physical,
+      metrics.custom_distribution.memory_page_faults_hard,
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,
@@ -4180,7 +4284,19 @@ SELECT
       metrics.timing_distribution.glam_experiment_time,
       metrics.timing_distribution.region_fetch_time,
       metrics.timing_distribution.screenwakelock_held_duration,
-      metrics.timing_distribution.wr_shaderload_time
+      metrics.timing_distribution.wr_shaderload_time,
+      metrics.timing_distribution.memory_collection_time,
+      metrics.timing_distribution.memory_free_purged_pages,
+      metrics.timing_distribution.widget_notify_idle,
+      metrics.timing_distribution.browser_timings_new_window,
+      metrics.timing_distribution.browser_timings_page_load,
+      metrics.timing_distribution.browser_timings_page_reload_normal,
+      metrics.timing_distribution.browser_timings_page_reload_skip_cache,
+      metrics.timing_distribution.browser_timings_tab_click,
+      metrics.timing_distribution.network_cookies_sqlite_open_readahead,
+      metrics.timing_distribution.pwmgr_signup_form_detection,
+      metrics.timing_distribution.dom_textfragment_create_directive,
+      metrics.timing_distribution.dom_textfragment_find_directives
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -4319,7 +4435,8 @@ SELECT
       metrics.labeled_custom_distribution.http3_ech_outcome,
       metrics.labeled_custom_distribution.http3_late_ack,
       metrics.labeled_custom_distribution.http3_late_ack_ratio,
-      metrics.labeled_custom_distribution.http3_received_sent_dgrams
+      metrics.labeled_custom_distribution.http3_received_sent_dgrams,
+      metrics.labeled_custom_distribution.memory_distribution_among_content
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
     STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`

@@ -69,6 +69,10 @@ SELECT
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
+      metrics.object.broken_site_report_browser_info_addons,
+      metrics.object.broken_site_report_browser_info_experiments
+    ) AS `object`,
+    STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_browser_info_graphics_devices_json,
       metrics.text.broken_site_report_browser_info_graphics_drivers_json,
@@ -158,6 +162,10 @@ SELECT
       metrics.text2.broken_site_report_tab_info_useragent_string
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(
+      metrics.object.broken_site_report_browser_info_addons,
+      metrics.object.broken_site_report_browser_info_experiments
+    ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_browser_info_graphics_devices_json,
@@ -249,6 +257,10 @@ SELECT
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
+      metrics.object.broken_site_report_browser_info_addons,
+      metrics.object.broken_site_report_browser_info_experiments
+    ) AS `object`,
+    STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_browser_info_graphics_devices_json,
       metrics.text.broken_site_report_browser_info_graphics_drivers_json,
@@ -339,6 +351,10 @@ SELECT
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
     STRUCT(
+      metrics.object.broken_site_report_browser_info_addons,
+      metrics.object.broken_site_report_browser_info_experiments
+    ) AS `object`,
+    STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_browser_info_graphics_devices_json,
       metrics.text.broken_site_report_browser_info_graphics_drivers_json,
@@ -428,6 +444,10 @@ SELECT
       metrics.text2.broken_site_report_tab_info_useragent_string
     ) AS `text2`,
     STRUCT(metrics.url2.broken_site_report_url) AS `url2`,
+    STRUCT(
+      metrics.object.broken_site_report_browser_info_addons,
+      metrics.object.broken_site_report_browser_info_experiments
+    ) AS `object`,
     STRUCT(
       metrics.text.broken_site_report_browser_info_app_default_useragent_string,
       metrics.text.broken_site_report_browser_info_graphics_devices_json,

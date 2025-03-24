@@ -19532,6 +19532,26 @@ fields:
         to calculate the rate.
 
         '
+    - name: use_counter_page_invalid_text_directives
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Amount of pages where a text directive could be found after loading
+        has finished
+
+        '
+    - name: use_counter_page_text_directive_not_created
+      type: INTEGER
+      mode: NULLABLE
+      description: 'How often does FragmentDirective::CreateTextDirective() not find
+        a text fragment
+
+        '
+    - name: use_counter_page_text_directive_pages
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of opened pages using text-fragments.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

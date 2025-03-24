@@ -370,6 +370,16 @@ fields:
     - name: broken_site_report_url
       type: STRING
       mode: NULLABLE
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_browser_info_addons
+      type: JSON
+      mode: NULLABLE
+    - name: broken_site_report_browser_info_experiments
+      type: JSON
+      mode: NULLABLE
   - name: text
     type: RECORD
     mode: NULLABLE

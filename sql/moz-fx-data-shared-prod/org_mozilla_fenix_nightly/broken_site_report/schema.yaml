@@ -549,6 +549,26 @@ fields:
       description: 'The URL of the site being reported. May contain PII.
 
         '
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: broken_site_report_browser_info_addons
+      type: JSON
+      mode: NULLABLE
+      description: 'Active user-installed addons (not themes). List of objects with
+        `id`, `name`, `temporary`, and `version`. For instance, `[{"id":"addon-name@email.org",
+        "name":"My Addon", "temporary":false, "version":"0.1.0"}]`
+
+        '
+    - name: broken_site_report_browser_info_experiments
+      type: JSON
+      mode: NULLABLE
+      description: 'Experiments in which the user is actively enrolled. List of objects
+        with `branch`, `slug`, and `kind`. For instance, `[{"branch":"some-branch",
+        "slug":"some-experiment", "kind":"nimbusExperiment"}]`
+
+        '
   - name: text
     type: RECORD
     mode: NULLABLE

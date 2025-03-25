@@ -56,7 +56,13 @@ def create_request_payload_using_logical_dag_date(date_to_pull_data_for):
             },
         },
         "metrics": ["slowStartRate", "slowStartRate7dUserWeighted", "distinctUsers"],
-        "dimensions": ["startType", "apiLevel", "deviceType", "deviceRamBucket"],
+        "dimensions": [
+            "startType",
+            "apiLevel",
+            "deviceType",
+            "deviceRamBucket",
+            "versionCode",
+        ],
         "pageSize": 5000,
     }
     return request_payload
@@ -120,6 +126,7 @@ def main():
             "api_level_label": [],
             "device_type": [],
             "device_ram_bucket": [],
+            "version_code": [],
             "slow_start_rate": [],
             "slow_start_rate_7_day_user_weighted_avg": [],
             "nbr_distinct_users": [],
@@ -152,6 +159,7 @@ def main():
             api_level_value_label = None
             device_type = None
             device_ram_bucket = None
+            version_code = None
             slow_start_rate = None
             slowStartRate7dUserWeighted = None
             distinct_users = None
@@ -167,6 +175,8 @@ def main():
                     device_type = dim["valueLabel"]
                 if dim["dimension"] == "deviceRamBucket":
                     device_ram_bucket = dim["valueLabel"]
+                if dim["dimension"] == "versionCode":
+                    version_code = dim["stringValue"]
 
             # Parse metric info for this row
             metrics = row["metrics"]
@@ -187,6 +197,7 @@ def main():
                     "api_level_label": [api_level_value_label],
                     "device_type": [device_type],
                     "device_ram_bucket": [device_ram_bucket],
+                    "version_code": [version_code],
                     "slow_start_rate": [slow_start_rate],
                     "slow_start_rate_7_day_user_weighted_avg": [
                         slowStartRate7dUserWeighted
@@ -243,6 +254,11 @@ def main():
                 },
                 {
                     "name": "device_ram_bucket",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                },
+                {
+                    "name": "version_code",
                     "type": "STRING",
                     "mode": "NULLABLE",
                 },

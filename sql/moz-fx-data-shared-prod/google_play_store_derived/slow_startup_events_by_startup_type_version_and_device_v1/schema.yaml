@@ -1,0 +1,37 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: google_play_store_app_name
+  type: STRING
+  mode: NULLABLE
+  description: Google Play Store App Name
+- name: startup_type
+  type: STRING
+  mode: NULLABLE
+  description: Startup Type - Cold Start, Warm Start, or Hot Start
+- name: api_level_label
+  type: STRING
+  mode: NULLABLE
+  description: API Level Label
+- name: device_type
+  type: STRING
+  mode: NULLABLE
+  description: Device Type
+- name: device_ram_bucket
+  type: STRING
+  mode: NULLABLE
+  description: Device Ram Bucket
+- name: slow_start_rate
+  type: NUMERIC
+  mode: NULLABLE
+  description: Percentage of distinct users on the submission date that had a slow start event
+- name: slow_start_rate_7_day_user_weighted_avg
+  type: NUMERIC
+  mode: NULLABLE
+  description: The user-weighted average of the slowStartRate metric in the 7 days up to and including the date
+- name: nbr_distinct_users
+  type: NUMERIC
+  mode: NULLABLE
+  description: Number of Distinct Users

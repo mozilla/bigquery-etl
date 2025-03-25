@@ -23,6 +23,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Device Ram Bucket
+- name: version_code
+  type: STRING
+  mode: NULLABLE
+  description: Version Code
 - name: slow_start_rate
   type: NUMERIC
   mode: NULLABLE

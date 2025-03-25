@@ -40,6 +40,12 @@ google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1_b
     secret="airflow-gke-secrets",
     key="bqetl_google_play_store_developer_reporting_api_data_boxwood",
 )
+google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood = Secret(
+    deploy_type="env",
+    deploy_target="GOOGLE_PLAY_STORE_SRVC_ACCT_INFO",
+    secret="airflow-gke-secrets",
+    key="bqetl_google_play_store_developer_reporting_api_data_boxwood",
+)
 
 
 default_args = {
@@ -92,5 +98,20 @@ with DAG(
         email=["kwindau@mozilla.com"],
         secrets=[
             google_play_store_derived__slow_startup_events_by_startup_type_and_version__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
+        ],
+    )
+
+    google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1 = GKEPodOperator(
+        task_id="google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/google_play_store_derived/slow_startup_events_by_startup_type_version_and_device_v1/query.py",
+        ]
+        + ["--date", "{{ds}}"],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+        secrets=[
+            google_play_store_derived__slow_startup_events_by_startup_type_version_and_device__v1_bqetl_google_play_store_developer_reporting_api_data_boxwood,
         ],
     )

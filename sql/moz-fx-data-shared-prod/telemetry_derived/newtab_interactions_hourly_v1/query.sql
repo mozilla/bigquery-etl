@@ -6,7 +6,11 @@ legacy_deduplicated_pings AS (
   FROM
     `moz-fx-data-shared-prod.activity_stream_live.impression_stats_v1`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      submission_timestamp >= '2025-01-01'
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -97,7 +101,11 @@ glean_deduplicated_pings AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    {% if is_init() %}
+      submission_timestamp >= '2025-01-01'
+    {% else %}
+      DATE(submission_timestamp) = @submission_date
+    {% endif %}
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -115,7 +123,12 @@ glean_flattened_pocket_events AS (
     mozfun.map.get_key(events.extra, 'recommendation_id') AS recommendation_id,
     mozfun.map.get_key(events.extra, 'tile_id') AS tile_id,
     mozfun.map.get_key(events.extra, 'position') AS position,
-    COUNT(1) OVER (PARTITION BY document_id, events.name) AS user_event_count
+    COUNT(1) OVER (
+      PARTITION BY
+        client_info.client_id,
+        DATE(submission_timestamp),
+        events.name
+    ) AS user_event_count
   FROM
     glean_deduplicated_pings,
     UNNEST(events) AS events
@@ -147,7 +160,7 @@ glean_summary AS (
     glean_flattened_pocket_events
   WHERE
     -- exclude suspicious activity
-    NOT (user_event_count > 50)
+    NOT (user_event_count > 50 AND event_name = 'click')
   GROUP BY
     submission_date,
     recommendation_id,
@@ -180,8 +193,11 @@ uapi_summary AS (
   FROM
     `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
   WHERE
-    DATE(submission_hour) = @submission_date
-    AND form_factor = 'desktop'
+    {% if is_init() %}
+      submission_hour >= '2025-01-01'
+    {% else %}
+      DATE(submission_hour) = @submission_date
+    {% endif %}
     AND placement IN ('newtab_spocs', 'newtab_rectangle', 'newtab_billboard', 'newtab_leaderboard')
   GROUP BY
     submission_date,

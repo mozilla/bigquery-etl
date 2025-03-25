@@ -105,6 +105,7 @@ FXA_USER_ID = "jsonPayload.fields.user_id"
 # these must be in the same order as SYNC_SOURCES
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 CONTEXT_ID = "context_id"
+QUICK_SUGGEST_CONTEXT_ID = "metrics.uuid.quick_suggest_context_id"
 USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 
 DESKTOP_SRC = DeleteSource(
@@ -120,6 +121,10 @@ IMPRESSION_SRC = DeleteSource(
 CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_context_id",
+)
+QUICK_SUGGEST_SRC = DeleteSource(
+    table="firefox_desktop_stable.quick_suggest_deletion_request_v1",
+    field=QUICK_SUGGEST_CONTEXT_ID,
 )
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
@@ -408,6 +413,10 @@ DELETE_TARGETS: DeleteIndex = {
     context_id_target(
         table="contextual_services_stable.quicksuggest_impression_v1"
     ): CONTEXTUAL_SERVICES_SRC,
+    DeleteTarget(
+        table="firefox_desktop_stable.quick_suggest_v1",
+        field=QUICK_SUGGEST_CONTEXT_ID,
+    ): QUICK_SUGGEST_SRC,
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",

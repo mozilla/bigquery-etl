@@ -11,7 +11,6 @@ SELECT
   SAFE.TIMESTAMP_MILLIS(SAFE_CAST(updatedAt AS INT)) AS updatedAt,
   couponCode,
   stripeCustomerId,
-  email,
   amount,
   version,
   eligibilityStatus,
@@ -31,7 +30,6 @@ FROM
          updatedAt,
          couponCode,
          stripeCustomerId,
-         email,
          amount,
          version,
          eligibilityStatus

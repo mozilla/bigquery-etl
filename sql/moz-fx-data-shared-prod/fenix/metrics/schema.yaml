@@ -10394,6 +10394,9 @@ fields:
     - name: webcompatreporting_reason_dropdown
       type: STRING
       mode: NULLABLE
+    - name: downloads_filtered
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

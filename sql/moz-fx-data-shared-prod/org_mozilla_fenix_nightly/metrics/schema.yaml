@@ -3129,7 +3129,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -8189,6 +8190,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Record whether the user chooses an option from the dropdown.
+
+        '
+    - name: downloads_filtered
+      type: STRING
+      mode: NULLABLE
+      description: 'A user chose a filter for the downloads page.
+
+        The filter can be All, Image, Video, Document or Other.
 
         '
   - name: string_list

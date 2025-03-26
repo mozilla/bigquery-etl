@@ -292,32 +292,41 @@ DELETE_TARGETS: DeleteIndex = {
         table="fx_quant_user_research_analysis.viewpoint_desktop_telem_current",
         field=CLIENT_ID,
         project=MOZDATA,
-    ): DESKTOP_GLEAN_SRC,
+    ): DESKTOP_SRC,
     DeleteTarget(
         table="fx_quant_user_research_analysis.viewpoint_desktop_telem_old",
         field=CLIENT_ID,
         project=MOZDATA,
-    ): DESKTOP_GLEAN_SRC,
+    ): DESKTOP_SRC,
     DeleteTarget(
         table="fx_quant_user_research_analysis.viewpoint_desktop_telem_temp",
         field=CLIENT_ID,
         project=MOZDATA,
-    ): DESKTOP_GLEAN_SRC,
+    ): DESKTOP_SRC,
     DeleteTarget(
         table="fx_quant_user_research_analysis.viewpoint_mobile_telem_current",
-        field=CLIENT_ID,
+        field=(CLIENT_ID, CLIENT_ID),
         project=MOZDATA,
-    ): DESKTOP_GLEAN_SRC,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     DeleteTarget(
         table="fx_quant_user_research_analysis.viewpoint_mobile_telem_old",
-        field=CLIENT_ID,
+        field=(CLIENT_ID, CLIENT_ID),
         project=MOZDATA,
-    ): DESKTOP_GLEAN_SRC,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     DeleteTarget(
         table="fx_quant_user_research_analysis.viewpoint_mobile_telem_temp",
-        field=CLIENT_ID,
+        field=(CLIENT_ID, CLIENT_ID),
         project=MOZDATA,
-    ): DESKTOP_GLEAN_SRC,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     DeleteTarget(
         table="telemetry_derived.rolling_cohorts_v2",
         field=(CLIENT_ID,) * 15,

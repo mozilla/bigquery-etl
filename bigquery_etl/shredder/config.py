@@ -304,6 +304,11 @@ DELETE_TARGETS: DeleteIndex = {
         project=MOZDATA,
     ): DESKTOP_GLEAN_SRC,
     DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_current",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_GLEAN_SRC,
+    DeleteTarget(
         table="fx_quant_user_research_analysis.viewpoint_mobile_telem_old",
         field=CLIENT_ID,
         project=MOZDATA,

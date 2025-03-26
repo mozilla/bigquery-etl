@@ -15,6 +15,7 @@ from itertools import groupby
 from pathlib import Path
 
 import click
+import yaml
 from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
@@ -329,7 +330,19 @@ def write_view_if_not_exists(
         document_type=schema.document_type,
     )
     metadata_file = target_dir / "metadata.yaml"
-    if not metadata_file.exists():
+    should_write_metadata = False
+    # append metadata if existing metadata doesn't have name and description
+    if metadata_file.exists():
+        with metadata_file.open() as f:
+            existing_metadata = yaml.load(f, Loader=yaml.FullLoader)
+            if (
+                "friendly_name" not in existing_metadata
+                and "description" not in existing_metadata
+            ):
+                should_write_metadata = True
+                metadata_content = metadata_content + yaml.dump(existing_metadata)
+
+    if not metadata_file.exists() or should_write_metadata:
         with metadata_file.open("w") as f:
             f.write(metadata_content)
 
@@ -409,7 +422,9 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
         last
         for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
         if k
-        not in ConfigLoader.get("generate", "stable_views", "skip_datasets", fallback=[])
+        not in ConfigLoader.get(
+            "generate", "stable_views", "skip_datasets", fallback=[]
+        )
     ]
 
     id_token = get_id_token()

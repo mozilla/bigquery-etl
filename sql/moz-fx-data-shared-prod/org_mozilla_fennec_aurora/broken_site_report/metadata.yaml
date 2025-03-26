@@ -10,12 +10,14 @@ description: |-
 
   Clustering fields: `normalized_channel`, `sample_id`
 owners: []
-labels: {}
+labels:
+  authorized: true
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:webcompat/dashboard-service
 references:
   view.sql:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_stable.broken_site_report_v1

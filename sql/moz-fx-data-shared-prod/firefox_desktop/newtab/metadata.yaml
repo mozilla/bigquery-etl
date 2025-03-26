@@ -1,6 +1,14 @@
-friendly_name: Newtab
+friendly_name: Historical Pings for `firefox-desktop/newtab`
 description: |-
-  Please provide a description for the query
+  A historical view of pings sent for the
+  `firefox-desktop/newtab`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
 owners: []
 labels: {}
 bigquery: null

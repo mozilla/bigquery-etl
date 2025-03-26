@@ -945,6 +945,24 @@ fields:
     - name: characteristics_machine_model_name
       type: STRING
       mode: NULLABLE
+    - name: characteristics_fonts_fpjs_allowlisted
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_fonts_fpjs_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_fonts_variant_a_allowlisted
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_fonts_variant_a_nonallowlisted
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_fonts_variant_b_allowlisted
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_fonts_variant_b_nonallowlisted
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

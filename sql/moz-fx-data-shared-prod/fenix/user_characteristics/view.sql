@@ -274,7 +274,13 @@ SELECT
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
       metrics.string.characteristics_canvas_dpr,
-      metrics.string.characteristics_machine_model_name
+      metrics.string.characteristics_machine_model_name,
+      metrics.string.characteristics_fonts_fpjs_allowlisted,
+      metrics.string.characteristics_fonts_fpjs_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_a_allowlisted,
+      metrics.string.characteristics_fonts_variant_a_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_b_allowlisted,
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -625,7 +631,13 @@ SELECT
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
       metrics.string.characteristics_canvas_dpr,
-      metrics.string.characteristics_machine_model_name
+      metrics.string.characteristics_machine_model_name,
+      metrics.string.characteristics_fonts_fpjs_allowlisted,
+      metrics.string.characteristics_fonts_fpjs_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_a_allowlisted,
+      metrics.string.characteristics_fonts_variant_a_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_b_allowlisted,
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -976,7 +988,13 @@ SELECT
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
       metrics.string.characteristics_canvas_dpr,
-      metrics.string.characteristics_machine_model_name
+      metrics.string.characteristics_machine_model_name,
+      metrics.string.characteristics_fonts_fpjs_allowlisted,
+      metrics.string.characteristics_fonts_fpjs_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_a_allowlisted,
+      metrics.string.characteristics_fonts_variant_a_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_b_allowlisted,
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -1327,7 +1345,13 @@ SELECT
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
       metrics.string.characteristics_canvas_dpr,
-      metrics.string.characteristics_machine_model_name
+      metrics.string.characteristics_machine_model_name,
+      metrics.string.characteristics_fonts_fpjs_allowlisted,
+      metrics.string.characteristics_fonts_fpjs_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_a_allowlisted,
+      metrics.string.characteristics_fonts_variant_a_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_b_allowlisted,
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -1678,7 +1702,13 @@ SELECT
       metrics.string.characteristics_mathml8,
       metrics.string.characteristics_mathml9,
       metrics.string.characteristics_canvas_dpr,
-      metrics.string.characteristics_machine_model_name
+      metrics.string.characteristics_machine_model_name,
+      metrics.string.characteristics_fonts_fpjs_allowlisted,
+      metrics.string.characteristics_fonts_fpjs_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_a_allowlisted,
+      metrics.string.characteristics_fonts_variant_a_nonallowlisted,
+      metrics.string.characteristics_fonts_variant_b_allowlisted,
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(

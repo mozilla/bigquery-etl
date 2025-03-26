@@ -585,30 +585,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    bigeye__lockwise_ios_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__lockwise_ios_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.lockwise_ios_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_lockwise_ios,
-    )
-
-    bigeye__lockwise_ios_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__lockwise_ios_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.lockwise_ios_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_lockwise_ios,
-    )
-
     bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
         task_id="bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
         table_id="moz-fx-data-shared-prod.org_mozilla_fenix_derived.baseline_clients_daily_v1",
@@ -907,186 +883,6 @@ with DAG(
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
         task_group=task_group_focus_ios,
-    )
-
-    bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_lockwise_ios,
-    )
-
-    bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_lockwise_ios,
-    )
-
-    bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_lockwise_ios,
-    )
-
-    bigeye__org_mozilla_reference_browser_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_reference_browser_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_reference_browser_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_reference_browser,
-    )
-
-    bigeye__org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_reference_browser_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_reference_browser,
-    )
-
-    bigeye__org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.org_mozilla_reference_browser_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_reference_browser,
-    )
-
-    bigeye__pine_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__pine_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.pine_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_pine,
-    )
-
-    bigeye__pine_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__pine_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.pine_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_pine,
-    )
-
-    bigeye__pine_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__pine_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.pine_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_pine,
-    )
-
-    bigeye__pine_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__pine_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.pine_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_pine,
-    )
-
-    bigeye__reference_browser_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__reference_browser_derived__metrics_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.reference_browser_derived.metrics_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_reference_browser,
-    )
-
-    bigeye__reference_browser_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__reference_browser_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.reference_browser_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_reference_browser,
-    )
-
-    bigeye__thunderbird_desktop_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
-        task_id="bigeye__thunderbird_desktop_derived__baseline_clients_daily__v1",
-        table_id="moz-fx-data-shared-prod.thunderbird_desktop_derived.baseline_clients_daily_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_thunderbird_desktop,
-    )
-
-    bigeye__thunderbird_desktop_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__thunderbird_desktop_derived__baseline_clients_first_seen__v1",
-        table_id="moz-fx-data-shared-prod.thunderbird_desktop_derived.baseline_clients_first_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_thunderbird_desktop,
-    )
-
-    bigeye__thunderbird_desktop_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__thunderbird_desktop_derived__baseline_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.thunderbird_desktop_derived.baseline_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_thunderbird_desktop,
     )
 
     burnham_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -4973,14 +4769,6 @@ with DAG(
         firefox_ios_derived__metrics_clients_last_seen__v1
     )
 
-    bigeye__lockwise_ios_derived__metrics_clients_daily__v1.set_upstream(
-        lockwise_ios_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__lockwise_ios_derived__metrics_clients_last_seen__v1.set_upstream(
-        lockwise_ios_derived__metrics_clients_last_seen__v1
-    )
-
     bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1.set_upstream(
         org_mozilla_fenix_derived__baseline_clients_daily__v1
     )
@@ -5079,66 +4867,6 @@ with DAG(
 
     bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__org_mozilla_reference_browser_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_reference_browser_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1.set_upstream(
-        org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__pine_derived__baseline_clients_daily__v1.set_upstream(
-        pine_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__pine_derived__baseline_clients_first_seen__v1.set_upstream(
-        pine_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__pine_derived__baseline_clients_last_seen__v1.set_upstream(
-        pine_derived__baseline_clients_last_seen__v1
-    )
-
-    bigeye__pine_derived__metrics_clients_daily__v1.set_upstream(
-        pine_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__reference_browser_derived__metrics_clients_daily__v1.set_upstream(
-        reference_browser_derived__metrics_clients_daily__v1
-    )
-
-    bigeye__reference_browser_derived__metrics_clients_last_seen__v1.set_upstream(
-        reference_browser_derived__metrics_clients_last_seen__v1
-    )
-
-    bigeye__thunderbird_desktop_derived__baseline_clients_daily__v1.set_upstream(
-        thunderbird_desktop_derived__baseline_clients_daily__v1
-    )
-
-    bigeye__thunderbird_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
-        thunderbird_desktop_derived__baseline_clients_first_seen__v1
-    )
-
-    bigeye__thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        thunderbird_desktop_derived__baseline_clients_last_seen__v1
     )
 
     burnham_derived__baseline_clients_daily__v1.set_upstream(
@@ -5684,11 +5412,11 @@ with DAG(
     )
 
     lockwise_ios_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__lockwise_ios_derived__metrics_clients_last_seen__v1
+        checks__fail_org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1
     )
 
     lockwise_ios_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1
+        lockwise_ios_derived__metrics_clients_last_seen__v1
     )
 
     lockwise_ios_derived__metrics_clients_daily__v1.set_upstream(
@@ -5696,7 +5424,7 @@ with DAG(
     )
 
     lockwise_ios_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__lockwise_ios_derived__metrics_clients_daily__v1
+        lockwise_ios_derived__metrics_clients_daily__v1
     )
 
     mach_derived__clients_last_seen_joined__v1.set_upstream(
@@ -6414,11 +6142,11 @@ with DAG(
     )
 
     org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_ios_lockbox_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6430,7 +6158,7 @@ with DAG(
     )
 
     org_mozilla_ios_lockbox_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1
+        org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_ios_lockbox_derived__events_stream__v1.set_upstream(
@@ -6486,11 +6214,11 @@ with DAG(
     )
 
     org_mozilla_reference_browser_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_reference_browser_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1
     )
 
     org_mozilla_reference_browser_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6502,7 +6230,7 @@ with DAG(
     )
 
     org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__org_mozilla_reference_browser_derived__baseline_clients_daily__v1
+        org_mozilla_reference_browser_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_reference_browser_derived__events_stream__v1.set_upstream(
@@ -6581,11 +6309,11 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    pine_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__pine_derived__baseline_clients_first_seen__v1
-    )
-
     pine_derived__baseline_clients_daily__v1.set_upstream(wait_for_copy_deduplicate_all)
+
+    pine_derived__baseline_clients_daily__v1.set_upstream(
+        pine_derived__baseline_clients_first_seen__v1
+    )
 
     pine_derived__baseline_clients_first_seen__v1.set_upstream(
         wait_for_copy_deduplicate_all
@@ -6596,7 +6324,7 @@ with DAG(
     )
 
     pine_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__pine_derived__baseline_clients_daily__v1
+        pine_derived__baseline_clients_daily__v1
     )
 
     pine_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
@@ -6604,11 +6332,11 @@ with DAG(
     pine_derived__metrics_clients_daily__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     reference_browser_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
+        org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
     )
 
     reference_browser_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__reference_browser_derived__metrics_clients_last_seen__v1
+        reference_browser_derived__metrics_clients_last_seen__v1
     )
 
     reference_browser_derived__metrics_clients_daily__v1.set_upstream(
@@ -6616,7 +6344,7 @@ with DAG(
     )
 
     reference_browser_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__reference_browser_derived__metrics_clients_daily__v1
+        reference_browser_derived__metrics_clients_daily__v1
     )
 
     relay_backend_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
@@ -6628,11 +6356,11 @@ with DAG(
     )
 
     thunderbird_desktop_derived__baseline_clients_daily__v1.set_upstream(
-        bigeye__thunderbird_desktop_derived__baseline_clients_first_seen__v1
+        wait_for_copy_deduplicate_all
     )
 
     thunderbird_desktop_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
+        thunderbird_desktop_derived__baseline_clients_first_seen__v1
     )
 
     thunderbird_desktop_derived__baseline_clients_first_seen__v1.set_upstream(
@@ -6644,7 +6372,7 @@ with DAG(
     )
 
     thunderbird_desktop_derived__baseline_clients_last_seen__v1.set_upstream(
-        bigeye__thunderbird_desktop_derived__baseline_clients_daily__v1
+        thunderbird_desktop_derived__baseline_clients_daily__v1
     )
 
     thunderbird_desktop_derived__events_stream__v1.set_upstream(

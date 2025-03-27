@@ -1,9 +1,0 @@
-2025-03-24:
-  start_date: 2025-03-20
-  end_date: 2025-03-23
-  reason: Updated logic to include Unified API data
-  watchers:
-  - cmorales@mozilla.com
-  - cbeck@mozilla.com
-  status: Initiate
-  shredder_mitigation: false

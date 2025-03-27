@@ -665,8 +665,7 @@ fields:
     - name: characteristics_pixel_ratio
       type: INTEGER
       mode: NULLABLE
-      description: 'The value of window.devicePixelRatio multiplied by 100 to include
-        some of the decimal places
+      description: 'The value of window.devicePixelRatio
 
         '
     - name: characteristics_pointer_height
@@ -740,7 +739,7 @@ fields:
     - name: characteristics_screen_height
       type: INTEGER
       mode: NULLABLE
-      description: 'Height of the primary screen in pixels.
+      description: 'Screen height from a window.
 
         '
     - name: characteristics_screen_orientation
@@ -752,7 +751,7 @@ fields:
     - name: characteristics_screen_width
       type: INTEGER
       mode: NULLABLE
-      description: 'Width of the primary screen in pixels.
+      description: 'Screen width from a window.
 
         '
     - name: characteristics_size_mode
@@ -1837,6 +1836,12 @@ fields:
       description: 'SHA256 of non-allowlisted fonts queried of variant B
 
         '
+    - name: characteristics_pixel_ratio
+      type: STRING
+      mode: NULLABLE
+      description: 'The value of window.devicePixelRatio
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -2244,6 +2249,12 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Windows only fdlibm math operation results
+
+        '
+    - name: characteristics_screens
+      type: STRING
+      mode: NULLABLE
+      description: 'JSON string of screen properties
 
         '
   - name: uuid

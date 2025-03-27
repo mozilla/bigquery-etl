@@ -17030,6 +17030,25 @@ fields:
         PWMGR_NUM_IMPROVED_GENERATED_PASSWORDS.
 
         '
+    - name: dns_grace_period_renewal
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the amount of times that we get a record that is different
+        (or identical) from the one that was used from the cache after a grace period
+        induced renewal.
+
+        This is to keep track of the amount of possible breakage that is occuring
+        due to the grace period and useful for evaluating experiments increasing the
+        grace period.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -36272,6 +36291,53 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram FX_ABOUTHOME_CACHE_CONSTRUCTION.
+
+        '
+    - name: update_langpack_overtime
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Update: How much longer langpacks took to download than the app
+        update in seconds.
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        UPDATE_LANGPACK_OVERTIME.
 
         '
   - name: uuid

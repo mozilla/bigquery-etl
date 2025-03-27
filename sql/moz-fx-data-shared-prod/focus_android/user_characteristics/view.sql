@@ -278,7 +278,8 @@ SELECT
       metrics.string.characteristics_fonts_variant_a_allowlisted,
       metrics.string.characteristics_fonts_variant_a_nonallowlisted,
       metrics.string.characteristics_fonts_variant_b_allowlisted,
-      metrics.string.characteristics_fonts_variant_b_nonallowlisted
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted,
+      metrics.string.characteristics_pixel_ratio
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -344,7 +345,8 @@ SELECT
       metrics.text2.characteristics_gl2_precision_vertex_software,
       metrics.text2.characteristics_gl_params,
       metrics.text2.characteristics_gl_params_software,
-      metrics.text2.characteristics_math_ops_fdlibm
+      metrics.text2.characteristics_math_ops_fdlibm,
+      metrics.text2.characteristics_screens
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -633,7 +635,8 @@ SELECT
       metrics.string.characteristics_fonts_variant_a_allowlisted,
       metrics.string.characteristics_fonts_variant_a_nonallowlisted,
       metrics.string.characteristics_fonts_variant_b_allowlisted,
-      metrics.string.characteristics_fonts_variant_b_nonallowlisted
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted,
+      metrics.string.characteristics_pixel_ratio
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -699,7 +702,8 @@ SELECT
       metrics.text2.characteristics_gl2_precision_vertex_software,
       metrics.text2.characteristics_gl_params,
       metrics.text2.characteristics_gl_params_software,
-      metrics.text2.characteristics_math_ops_fdlibm
+      metrics.text2.characteristics_math_ops_fdlibm,
+      metrics.text2.characteristics_screens
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,
@@ -988,7 +992,8 @@ SELECT
       metrics.string.characteristics_fonts_variant_a_allowlisted,
       metrics.string.characteristics_fonts_variant_a_nonallowlisted,
       metrics.string.characteristics_fonts_variant_b_allowlisted,
-      metrics.string.characteristics_fonts_variant_b_nonallowlisted
+      metrics.string.characteristics_fonts_variant_b_nonallowlisted,
+      metrics.string.characteristics_pixel_ratio
     ) AS `string`,
     STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
     STRUCT(
@@ -1054,7 +1059,8 @@ SELECT
       metrics.text2.characteristics_gl2_precision_vertex_software,
       metrics.text2.characteristics_gl_params,
       metrics.text2.characteristics_gl_params_software,
-      metrics.text2.characteristics_math_ops_fdlibm
+      metrics.text2.characteristics_math_ops_fdlibm,
+      metrics.text2.characteristics_screens
     ) AS `text2`,
     STRUCT(metrics.uuid.characteristics_client_identifier) AS `uuid`
   ) AS `metrics`,

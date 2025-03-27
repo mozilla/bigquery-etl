@@ -963,6 +963,9 @@ fields:
     - name: characteristics_fonts_variant_b_nonallowlisted
       type: STRING
       mode: NULLABLE
+    - name: characteristics_pixel_ratio
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -1161,6 +1164,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: characteristics_math_ops_fdlibm
+      type: STRING
+      mode: NULLABLE
+    - name: characteristics_screens
       type: STRING
       mode: NULLABLE
   - name: uuid

@@ -234,6 +234,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="telemetry_derived.desktop_retention_clients_v1"
     ): DESKTOP_SRC,
+    client_id_target(
+        table="ltv_derived.firefox_desktop_new_profile_ltv_v1"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.crash_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.downgrade_v4"): DESKTOP_SRC,
@@ -272,6 +275,14 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
     ),
+    DeleteTarget(
+        table="ltv_derived.fenix_new_profile_ltv_v1",
+        field=(CLIENT_ID),
+    ): (DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),),
+    DeleteTarget(
+        table="ltv_derived.firefox_ios_new_profile_ltv_v1",
+        field=(CLIENT_ID),
+    ): (DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),),
     DeleteTarget(
         table="telemetry_derived.fx_accounts_active_daily_clients_v1",
         field=(CLIENT_ID),

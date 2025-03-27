@@ -17,6 +17,7 @@ from google.cloud.exceptions import NotFound
 
 from ..util.bigquery_id import qualified_table_id
 
+MOZDATA = "mozdata"
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
 GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
@@ -287,6 +288,45 @@ DELETE_TARGETS: DeleteIndex = {
         table="telemetry_derived.fx_accounts_linked_clients_ordered_v1",
         field=(CLIENT_ID, "linked_client_id"),
     ): (DESKTOP_GLEAN_SRC, DESKTOP_GLEAN_SRC),
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_desktop_telem_current",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_SRC,
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_desktop_telem_old",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_SRC,
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_desktop_telem_temp",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_SRC,
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_current",
+        field=(CLIENT_ID, CLIENT_ID),
+        project=MOZDATA,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_old",
+        field=(CLIENT_ID, CLIENT_ID),
+        project=MOZDATA,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_temp",
+        field=(CLIENT_ID, CLIENT_ID),
+        project=MOZDATA,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     DeleteTarget(
         table="telemetry_derived.rolling_cohorts_v2",
         field=(CLIENT_ID,) * 15,

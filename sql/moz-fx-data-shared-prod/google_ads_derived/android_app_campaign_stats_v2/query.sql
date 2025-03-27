@@ -50,6 +50,12 @@ revenue AS (
   SELECT
     np.first_seen_date AS `date`,
     np.country,
+    --the desktop_rpcs_v2 table lists UK as GB, so this mapping column is needed to join correctly later on
+    CASE
+      WHEN np.country = 'UK'
+        THEN 'GB'
+      ELSE np.country
+    END AS country_to_match_desktop_rpcs,
     SUM(ltv) AS lifetime_value
   FROM
     `mozdata.telemetry.mobile_new_profile_clients` np
@@ -63,19 +69,20 @@ revenue AS (
     country
 )
 SELECT
-  `date`,
-  country,
-  COALESCE(impressions, 0) AS impressions,
-  COALESCE(clicks, 0) AS clicks,
-  COALESCE(new_profiles, 0) AS new_profiles,
-  COALESCE(activated_profiles, 0) AS activated_profiles,
-  COALESCE(spend, 0) AS spend,
-  COALESCE(lifetime_value, 0) AS lifetime_value,
+  d.`date`,
+  d.country,
+  COALESCE(d.impressions, 0) AS impressions,
+  COALESCE(d.clicks, 0) AS clicks,
+  COALESCE(a.new_profiles, 0) AS new_profiles,
+  COALESCE(a.activated_profiles, 0) AS activated_profiles,
+  COALESCE(d.spend, 0) AS spend,
+  COALESCE(r.lifetime_value, 0) AS lifetime_value,
 FROM
-  daily_stats
+  daily_stats d
 LEFT JOIN
-  activations
+  activations a
   USING (`date`, country)
 LEFT JOIN
-  revenue
-  USING (`date`, country)
+  revenue r
+  ON d.`date` = r.`date`
+  AND d.country = r.country_to_match_desktop_rpcs

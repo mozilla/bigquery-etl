@@ -108,11 +108,11 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
             )
             # recursively add upstream tables
             for upstream_link in upstream_links_result:
-                # remove "bigquery:" and "sharded:" prefixes
+                # possible sources: https://cloud.google.com/dataplex/docs/fully-qualified-names
                 link_parts = upstream_link.source.fully_qualified_name.split(":")
                 source = link_parts[0]
                 parent_table = link_parts[-1]
-                if source == "gcs":
+                if not source.startswith("bigquery"):
                     break
                 upstream_stable_tables[base_table] = upstream_stable_tables[
                     base_table

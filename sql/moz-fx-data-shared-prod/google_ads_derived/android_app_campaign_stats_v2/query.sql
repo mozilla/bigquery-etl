@@ -26,11 +26,6 @@ activations AS (
   SELECT
     np.first_seen_date AS `date`,
     np.country,
-    CASE
-      WHEN np.country = 'GB'
-        THEN 'UK'
-      ELSE np.country
-    END AS country_to_match_desktop_rpcs,
     COUNTIF(is_activated) AS activated_profiles,
     COUNT(*) AS new_profiles,
   FROM
@@ -43,8 +38,7 @@ activations AS (
     AND np.first_seen_date = DATE_SUB(@ltv_recorded_date, INTERVAL 13 DAY)
   GROUP BY
     `date`,
-    country,
-    country_to_match_desktop_rpcs
+    country
 ),
 fenix_new_profile_ltv_at_14_days_after_first_seen_date AS (
   SELECT
@@ -58,6 +52,11 @@ revenue AS (
   SELECT
     np.first_seen_date AS `date`,
     np.country,
+    CASE
+      WHEN np.country = 'GB'
+        THEN 'UK'
+      ELSE np.country
+    END AS country_to_match_desktop_rpcs,
     SUM(ltv) AS lifetime_value
   FROM
     `mozdata.telemetry.mobile_new_profile_clients` np
@@ -68,7 +67,8 @@ revenue AS (
     LOWER(play_store_attribution_install_referrer_response) LIKE "%gclid%"
   GROUP BY
     `date`,
-    country
+    country,
+    country_to_match_desktop_rpcs
 )
 SELECT
   d.`date`,

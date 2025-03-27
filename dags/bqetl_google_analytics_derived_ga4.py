@@ -137,7 +137,7 @@ with DAG(
     wait_for_sumo_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_sumo_events_table",
         project_id="moz-fx-data-marketing-prod",
-        dataset_id="analytics_314403930",
+        dataset_id="analytics_314096102",
         table_id="events_{{ ds_nodash }}",
         gcp_conn_id="google_cloud_shared_prod",
         deferrable=True,

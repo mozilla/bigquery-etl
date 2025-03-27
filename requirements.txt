@@ -2174,9 +2174,9 @@ types-pytz==2025.1.0.20250204 \
     --hash=sha256:00f750132769f1c65a4f7240bc84f13985b4da774bd17dfbe5d9cd442746bd49 \
     --hash=sha256:32ca4a35430e8b94f6603b35beb7f56c32260ddddd4f4bb305fdf8f92358b87e
     # via -r requirements.in
-types-pyyaml==6.0.12.20241230 \
-    --hash=sha256:7f07622dbd34bb9c8b264fe860a17e0efcad00d50b5f27e93984909d9363498c \
-    --hash=sha256:fa4d32565219b68e6dee5f67534c722e53c00d1cfc09c435ef04d7353e1e96e6
+types-pyyaml==6.0.12.20250326 \
+    --hash=sha256:5e2d86d8706697803f361ba0b8188eef2999e1c372cd4faee4ebb0844b8a4190 \
+    --hash=sha256:961871cfbdc1ad8ae3cb6ae3f13007262bcfc168adc513119755a6e4d5d7ed65
     # via
     #   -r requirements.in
     #   bigeye-sdk
@@ -2184,9 +2184,9 @@ types-requests==2.32.0.20250306 \
     --hash=sha256:0962352694ec5b2f95fda877ee60a159abdf84a0fc6fdace599f20acb41a03d1 \
     --hash=sha256:25f2cbb5c8710b2022f8bbee7b2b66f319ef14aeea2f35d80f18c9dbf3b60a0b
     # via -r requirements.in
-types-ujson==5.10.0.20240515 \
-    --hash=sha256:02bafc36b3a93d2511757a64ff88bd505e0a57fba08183a9150fbcfcb2015310 \
-    --hash=sha256:ceae7127f0dafe4af5dd0ecf98ee13e9d75951ef963b5c5a9b7ea92e0d71f0d7
+types-ujson==5.10.0.20250326 \
+    --hash=sha256:5469e05f2c31ecb3c4c0267cc8fe41bcd116826fbb4ded69801a645c687dd014 \
+    --hash=sha256:acc0913f569def62ef6a892c8a47703f65d05669a3252391a97765cf207dca5b
     # via -r requirements.in
 typing==3.7.4.3 \
     --hash=sha256:1187fb9c82fd670d10aa07bbb6cfcfe4bdda42d6fab8d5134f04e8c4d0b71cc9 \

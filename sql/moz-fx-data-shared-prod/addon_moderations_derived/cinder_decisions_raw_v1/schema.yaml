@@ -22,7 +22,7 @@ fields:
 
 - mode: NULLABLE
   name: entity_id
-  type: INTEGER
+  type: STRING
   description: Entity ID
 
 - mode: NULLABLE

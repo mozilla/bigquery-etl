@@ -376,6 +376,10 @@ generate:
       - klar_android
       - focus_ios
       - klar_ios
+      - pine
+      - reference_browser
+      - thunderbird_desktop
+      - lockwise_ios
       skip_app_metrics:
       - thunderbird_desktop
     bqetl_checks:

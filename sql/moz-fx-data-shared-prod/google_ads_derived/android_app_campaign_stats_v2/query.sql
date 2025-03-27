@@ -1,4 +1,5 @@
 --By day and country, get the total spend, clicks, and impressions for the first seen date (where submission date represents)
+--this table calls it UK
 WITH daily_stats AS (
   SELECT
     ad_groups_v1.`date`,
@@ -20,10 +21,16 @@ WITH daily_stats AS (
     country
 ),
 --By day and country, get the # of new profiles with a first seen date on that submission date
+--Country is GB in this table
 activations AS (
   SELECT
     np.first_seen_date AS `date`,
     np.country,
+    CASE
+      WHEN np.country = 'GB'
+        THEN 'UK'
+      ELSE np.country
+    END AS country_to_match_desktop_rpcs,
     COUNTIF(is_activated) AS activated_profiles,
     COUNT(*) AS new_profiles,
   FROM
@@ -36,7 +43,8 @@ activations AS (
     AND np.first_seen_date = DATE_SUB(@ltv_recorded_date, INTERVAL 13 DAY)
   GROUP BY
     `date`,
-    country
+    country,
+    country_to_match_desktop_rpcs
 ),
 fenix_new_profile_ltv_at_14_days_after_first_seen_date AS (
   SELECT
@@ -79,4 +87,4 @@ LEFT JOIN
 LEFT JOIN
   revenue r
   ON d.`date` = r.`date`
-  AND d.country = r.country
+  AND d.country = r.country_to_match_desktop_rpcs

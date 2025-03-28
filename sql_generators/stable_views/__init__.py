@@ -261,6 +261,12 @@ def write_view_if_not_exists(
                         f"metrics.{metrics_field['name']} AS {metrics_2_types_to_rename[metrics_field['name']]}"
                     ]
 
+            # Extended attribution and distribution information should join the rest in client_info.
+            replacements += [
+                "metrics.object.glean_attribution_ext AS client_info.attribution.ext",
+                "metrics.object.glean_distribution_ext AS client_info.distribution.ext",
+            ]
+
         if datetime_replacements_clause or metrics_2_aliases or metrics_2_exclusions:
             except_clause = ""
             if metrics_2_exclusions:

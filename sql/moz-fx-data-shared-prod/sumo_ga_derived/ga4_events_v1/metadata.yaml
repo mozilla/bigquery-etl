@@ -11,7 +11,7 @@ scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
   depends_on_tables_existing:
   - task_id: wait_for_sumo_events_table
-    table_id: moz-fx-data-marketing-prod.analytics_314403930.events_{{ ds_nodash }}
+    table_id: moz-fx-data-marketing-prod.analytics_314096102.events_{{ ds_nodash }}
     poke_interval: 30m
     timeout: 10h
     retries: 1

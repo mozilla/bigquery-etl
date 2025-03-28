@@ -11,4 +11,5 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.google_ads_derived.android_app_campaign_stats_v2
+  - moz-fx-data-shared-prod.static.country_codes_v1
 require_column_descriptions: false

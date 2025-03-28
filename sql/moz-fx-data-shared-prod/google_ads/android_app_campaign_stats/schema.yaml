@@ -2,32 +2,30 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
-  description: Date
-- name: country
+- name: country_code
   type: STRING
   mode: NULLABLE
-  description: Country
 - name: impressions
   type: INTEGER
   mode: NULLABLE
-  description: Google Ad Impressions on Date
 - name: clicks
   type: INTEGER
   mode: NULLABLE
-  description: Google Ad Clicks on Date
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: New Profiles Seen on Date
 - name: activated_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Activated Profiles on Date
 - name: spend
   type: FLOAT
   mode: NULLABLE
-  description: Google Ad Spend
 - name: lifetime_value
   type: FLOAT
   mode: NULLABLE
-  description: Lifetime Value (Estimated after 14 days)
+- name: country
+  type: STRING
+  mode: NULLABLE
+- name: campaign_region
+  type: STRING
+  mode: NULLABLE

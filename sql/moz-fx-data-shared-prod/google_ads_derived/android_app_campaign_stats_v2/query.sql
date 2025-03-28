@@ -3,7 +3,14 @@
 WITH daily_stats AS (
   SELECT
     ad_groups_v1.`date`,
-    UPPER(mozfun.map.get_key(campaigns_v2.campaign_segments, "country_code")) AS country,
+    UPPER(mozfun.map.get_key(campaigns_v2.campaign_segments, "country_code")) AS country, 
+  CASE
+    WHEN LOWER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region")) = "expansion"
+      THEN "Expansion"
+    WHEN UPPER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region")) = "JP"
+      THEN "Expansion"
+    ELSE UPPER(mozfun.map.get_key(campaigns_v2.campaign_segments, "region"))
+  END AS campaign_region,
     SUM(spend) AS spend,
     SUM(clicks) AS clicks,
     SUM(impressions) AS impressions,
@@ -18,7 +25,7 @@ WITH daily_stats AS (
     AND ad_groups_v1.campaign_name NOT LIKE '%iOS%'
   GROUP BY
     `date`,
-    country
+    country, campaign_region
 ),
 --By day and country, get the # of new profiles with a first seen date on that submission date
 activations AS (
@@ -78,6 +85,7 @@ revenue AS (
 SELECT
   d.`date`,
   d.country,
+  d.campaign_region,
   COALESCE(d.impressions, 0) AS impressions,
   COALESCE(d.clicks, 0) AS clicks,
   COALESCE(a.new_profiles, 0) AS new_profiles,

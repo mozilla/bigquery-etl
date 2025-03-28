@@ -12,6 +12,10 @@ fields:
   type: INTEGER
   description: Google Ad Impressions on Date
 - mode: NULLABLE
+  name: campaign_region
+  type: STRING
+  description: "Region the campaign ran in."
+- mode: NULLABLE
   name: clicks
   type: INTEGER
   description: Google Ad Clicks on Date

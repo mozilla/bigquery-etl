@@ -23,6 +23,8 @@ from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.config import ConfigLoader
 
+BOT_GENERATED = 'LOWER(IFNULL(metadata.isp.name, '')) <> "browserstack" AS bot_generated,'
+
 VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
@@ -33,7 +35,8 @@ SELECT
     {replacements}),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') as app_version_major,
   mozfun.norm.extract_version(client_info.app_display_version, 'minor') as app_version_minor,
-  mozfun.norm.extract_version(client_info.app_display_version, 'patch') as app_version_patch
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') as app_version_patch,
+  {bot_generated}
 FROM
   `{target}`
 """
@@ -46,6 +49,7 @@ AS
 SELECT
   * REPLACE(
     {replacements}),
+  {bot_generated}
 FROM
   `{target}`
 """
@@ -66,7 +70,8 @@ SELECT
         distribution_id
     ) AS funnel_derived,
   `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
-  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org
+  `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org,
+  {bot_generated}
 FROM
   `{target}`
 """
@@ -298,6 +303,7 @@ def write_view_if_not_exists(
                 target=full_source_id,
                 replacements=replacements_str,
                 full_view_id=full_view_id,
+                bot_generated=BOT_GENERATED,
             ),
             trailing_newline=True,
         )
@@ -308,6 +314,7 @@ def write_view_if_not_exists(
                 target=full_source_id,
                 replacements=replacements_str,
                 full_view_id=full_view_id,
+                bot_generated=BOT_GENERATED,
             ),
             trailing_newline=True,
         )
@@ -318,6 +325,7 @@ def write_view_if_not_exists(
                 target=full_source_id,
                 replacements=replacements_str,
                 full_view_id=full_view_id,
+                bot_generated=BOT_GENERATED,
             ),
             trailing_newline=True,
         )

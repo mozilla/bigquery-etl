@@ -3,7 +3,7 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   aacs.`date`,
-  aacs.country,
+  aacs.country AS country_code,
   aacs.impressions,
   aacs.clicks,
   aacs.new_profiles,

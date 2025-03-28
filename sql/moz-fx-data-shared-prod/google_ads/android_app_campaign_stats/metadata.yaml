@@ -10,5 +10,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.google_ads_derived.android_app_campaign_stats_v1
+  - moz-fx-data-shared-prod.google_ads_derived.android_app_campaign_stats_v2
 require_column_descriptions: false

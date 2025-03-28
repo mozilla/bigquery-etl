@@ -249,6 +249,9 @@ fields:
     - name: broken_site_report_tab_info_antitracking_btp_has_purged_site
       type: BOOLEAN
       mode: NULLABLE
+    - name: broken_site_report_browser_info_prefs_h1_in_section_useragent_styles_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

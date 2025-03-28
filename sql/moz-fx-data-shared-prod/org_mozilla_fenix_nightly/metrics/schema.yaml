@@ -3129,7 +3129,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -7721,6 +7722,23 @@ fields:
         This is to keep track of the amount of possible breakage that is occuring
         due to the grace period and useful for evaluating experiments increasing the
         grace period.
+
+        '
+    - name: extensions_data_migrate_result_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'The number of times a storage.local backend data migration has
+        been completed and results in one of the categories.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram WEBEXT_STORAGE_LOCAL_IDB_MIGRATE_RESULT_COUNT.
 
         '
   - name: string
@@ -39725,6 +39743,440 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram QM_SHUTDOWN_TIME_V0.
+
+        '
+    - name: extensions_timing_background_page_load_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes to load a WebExtensions background
+        page, from when the build function is called to when the page has finished
+        processing the onload event, keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_BACKGROUND_PAGE_LOAD_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_browser_action_popup_open_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes for a BrowserAction popup to open,
+        keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_BROWSERACTION_POPUP_OPEN_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_content_script_injection_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes for content scripts from a WebExtension
+        to be injected into a window, keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_CONTENT_SCRIPT_INJECTION_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_event_page_running_time_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time (keyed by addon id) that an event page has
+        been running before being suspended, or the entire addon shutdown.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_EVENTPAGE_RUNNING_TIME_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_extension_startup_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes for a WebExtension to start up, from
+        when the startup function is called to when the startup promise resolves,
+        keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_EXTENSION_STARTUP_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_page_action_popup_open_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes for a PageAction popup to open, keyed
+        by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_PAGEACTION_POPUP_OPEN_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_storage_local_get_idb_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes to perform a get via storage.local
+        using the IndexedDB backend, keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_STORAGE_LOCAL_IDB_GET_MS_BY_ADDONID.
+
+        '
+    - name: extensions_timing_storage_local_set_idb_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The amount of time it takes to perform a set via storage.local
+        using the IndexedDB backend, keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBEXT_STORAGE_LOCAL_IDB_SET_MS_BY_ADDONID.
 
         '
   - name: labeled_custom_distribution

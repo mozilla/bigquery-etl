@@ -45,6 +45,7 @@ references:
   - moz-fx-data-shared-prod.firefox_installer_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_launcher_process_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_translations_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.glam_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.glean_dictionary_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.gleanjs_docs_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mdn_yari_stable.INFORMATION_SCHEMA.PARTITIONS

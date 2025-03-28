@@ -544,6 +544,32 @@ first_non_empty_partition_firefox_translations_stable AS (
   GROUP BY
     table_name
 ),
+first_partition_glam_stable AS (
+  SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
+    total_rows AS first_partition_row_count,
+  FROM
+    `moz-fx-data-shared-prod.glam_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+  QUALIFY
+    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
+),
+first_non_empty_partition_glam_stable AS (
+  SELECT
+    table_name,
+    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
+  FROM
+    `moz-fx-data-shared-prod.glam_stable.INFORMATION_SCHEMA.PARTITIONS`
+  WHERE
+    partition_id != "__NULL__"
+    AND total_rows > 0
+  GROUP BY
+    table_name
+),
 first_partition_glean_dictionary_stable AS (
   SELECT
     table_catalog,
@@ -2429,6 +2455,24 @@ current_partitions AS (
     first_partition_firefox_translations_stable
   LEFT JOIN
     first_non_empty_partition_firefox_translations_stable
+    USING (table_name)
+  UNION ALL
+  SELECT
+    {% if is_init() %}
+      CURRENT_DATE() - 1
+    {% else %}
+      DATE(@submission_date)
+    {% endif %} AS run_date,
+    table_catalog AS project_id,
+    table_schema AS dataset_id,
+    table_name AS table_id,
+    first_partition_current,
+    first_non_empty_partition_current,
+    first_partition_row_count,
+  FROM
+    first_partition_glam_stable
+  LEFT JOIN
+    first_non_empty_partition_glam_stable
     USING (table_name)
   UNION ALL
   SELECT

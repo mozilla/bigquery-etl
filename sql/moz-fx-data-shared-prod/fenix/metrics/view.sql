@@ -939,7 +939,8 @@ SELECT
       metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
-      metrics.labeled_counter.dns_grace_period_renewal
+      metrics.labeled_counter.dns_grace_period_renewal,
+      metrics.labeled_counter.extensions_data_migrate_result_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1652,7 +1653,15 @@ SELECT
       metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
       metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success,
       metrics.labeled_timing_distribution.dom_quota_info_load_time,
-      metrics.labeled_timing_distribution.dom_quota_shutdown_time
+      metrics.labeled_timing_distribution.dom_quota_shutdown_time,
+      metrics.labeled_timing_distribution.extensions_timing_background_page_load_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_browser_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_content_script_injection_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_event_page_running_time_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_extension_startup_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_page_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_get_idb_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_set_idb_by_addonid
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -2650,7 +2659,8 @@ SELECT
       metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
-      metrics.labeled_counter.dns_grace_period_renewal
+      metrics.labeled_counter.dns_grace_period_renewal,
+      metrics.labeled_counter.extensions_data_migrate_result_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3363,7 +3373,15 @@ SELECT
       metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
       metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success,
       metrics.labeled_timing_distribution.dom_quota_info_load_time,
-      metrics.labeled_timing_distribution.dom_quota_shutdown_time
+      metrics.labeled_timing_distribution.dom_quota_shutdown_time,
+      metrics.labeled_timing_distribution.extensions_timing_background_page_load_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_browser_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_content_script_injection_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_event_page_running_time_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_extension_startup_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_page_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_get_idb_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_set_idb_by_addonid
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -4379,7 +4397,8 @@ SELECT
       metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
-      metrics.labeled_counter.dns_grace_period_renewal
+      metrics.labeled_counter.dns_grace_period_renewal,
+      metrics.labeled_counter.extensions_data_migrate_result_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5092,7 +5111,15 @@ SELECT
       metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
       metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success,
       metrics.labeled_timing_distribution.dom_quota_info_load_time,
-      metrics.labeled_timing_distribution.dom_quota_shutdown_time
+      metrics.labeled_timing_distribution.dom_quota_shutdown_time,
+      metrics.labeled_timing_distribution.extensions_timing_background_page_load_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_browser_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_content_script_injection_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_event_page_running_time_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_extension_startup_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_page_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_get_idb_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_set_idb_by_addonid
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -6117,7 +6144,8 @@ SELECT
       metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
-      metrics.labeled_counter.dns_grace_period_renewal
+      metrics.labeled_counter.dns_grace_period_renewal,
+      metrics.labeled_counter.extensions_data_migrate_result_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6830,7 +6858,15 @@ SELECT
       metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
       metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success,
       metrics.labeled_timing_distribution.dom_quota_info_load_time,
-      metrics.labeled_timing_distribution.dom_quota_shutdown_time
+      metrics.labeled_timing_distribution.dom_quota_shutdown_time,
+      metrics.labeled_timing_distribution.extensions_timing_background_page_load_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_browser_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_content_script_injection_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_event_page_running_time_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_extension_startup_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_page_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_get_idb_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_set_idb_by_addonid
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -7837,7 +7873,8 @@ SELECT
       metrics.labeled_counter.pwmgr_import_logins_from_file_categorical,
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
-      metrics.labeled_counter.dns_grace_period_renewal
+      metrics.labeled_counter.dns_grace_period_renewal,
+      metrics.labeled_counter.extensions_data_migrate_result_count
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -8550,7 +8587,15 @@ SELECT
       metrics.labeled_timing_distribution.firefox_ai_runtime_engine_creation_success,
       metrics.labeled_timing_distribution.firefox_ai_runtime_run_inference_success,
       metrics.labeled_timing_distribution.dom_quota_info_load_time,
-      metrics.labeled_timing_distribution.dom_quota_shutdown_time
+      metrics.labeled_timing_distribution.dom_quota_shutdown_time,
+      metrics.labeled_timing_distribution.extensions_timing_background_page_load_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_browser_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_content_script_injection_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_event_page_running_time_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_extension_startup_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_page_action_popup_open_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_get_idb_by_addonid,
+      metrics.labeled_timing_distribution.extensions_timing_storage_local_set_idb_by_addonid
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,

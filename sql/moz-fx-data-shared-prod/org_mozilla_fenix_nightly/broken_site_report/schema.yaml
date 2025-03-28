@@ -359,6 +359,12 @@ fields:
         Bounce Tracking Protection.
 
         '
+    - name: broken_site_report_browser_info_prefs_h1_in_section_useragent_styles_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Value of `layout.css.h1-in-section-ua-styles.enabled`
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

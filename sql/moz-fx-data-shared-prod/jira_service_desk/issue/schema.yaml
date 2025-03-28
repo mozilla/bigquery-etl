@@ -101,6 +101,9 @@ fields:
 - name: work_ratio
   type: FLOAT
   mode: NULLABLE
+- name: status_category
+  type: STRING
+  mode: NULLABLE
 - name: link
   type: STRING
   mode: NULLABLE

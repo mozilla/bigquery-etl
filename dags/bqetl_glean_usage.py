@@ -98,6 +98,8 @@ with DAG(
 
     task_group_focus_ios = TaskGroup("focus_ios")
 
+    task_group_glam = TaskGroup("glam")
+
     task_group_glean_dictionary = TaskGroup("glean_dictionary")
 
     task_group_gleanjs_docs = TaskGroup("gleanjs_docs")
@@ -2073,6 +2075,24 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         task_group=task_group_focus_ios,
+    )
+
+    glam_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="glam_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="glam_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_glam,
     )
 
     glean_dictionary_derived__events_stream__v1 = bigquery_etl_query(
@@ -5356,6 +5376,8 @@ with DAG(
     focus_ios_derived__metrics_clients_last_seen__v1.set_upstream(
         focus_ios_derived__metrics_clients_daily__v1
     )
+
+    glam_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     glean_dictionary_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all

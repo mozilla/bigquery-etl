@@ -903,6 +903,25 @@ CREATE TEMP TABLE
       WHERE
         DATE(submission_timestamp) = @submission_date
         AND ext.key = "flow_id"
+      UNION ALL
+      SELECT DISTINCT
+        @submission_date AS submission_date,
+        ext.value AS flow_id,
+        event_category AS category,
+        event_name AS name,
+        TIMESTAMP_ADD(
+          submission_timestamp,
+          -- limit event.timestamp, otherwise this will cause an overflow
+          INTERVAL LEAST(event_timestamp, 20000000000000) MILLISECOND
+        ) AS timestamp,
+        "GLAM" AS normalized_app_name,
+        client_info.app_channel AS channel
+      FROM
+        `moz-fx-data-shared-prod.glam.events_unnested`,
+        UNNEST(event_extra) AS ext
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        AND ext.key = "flow_id"
     ),
     -- determine events that belong to the same flow
     new_event_flows AS (

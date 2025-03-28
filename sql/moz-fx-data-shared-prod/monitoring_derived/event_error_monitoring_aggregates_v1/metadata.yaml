@@ -40,6 +40,7 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.events_v1
   - moz-fx-data-shared-prod.firefox_translations_stable.events_v1
+  - moz-fx-data-shared-prod.glam_stable.events_v1
   - moz-fx-data-shared-prod.glean_dictionary_stable.events_v1
   - moz-fx-data-shared-prod.gleanjs_docs_stable.events_v1
   - moz-fx-data-shared-prod.mdn_yari_stable.events_v1

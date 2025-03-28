@@ -2,82 +2,32 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
-  description: Date on which ad spend is attributed, and user were considered new
-    profiles.
-- name: campaign
+  description: Date
+- name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the campaign.
-- name: campaign_region
-  type: STRING
-  mode: NULLABLE
-  description: Region the campaign ran in.
-- name: campaign_country_code
-  type: STRING
-  mode: NULLABLE
-  description: Country the campaign ran in.
-- name: campaign_language
-  type: STRING
-  mode: NULLABLE
-  description: Language the campaign ran in.
-- name: campaign_segments
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
-  description: null
-- name: ad_group
-  type: STRING
-  mode: NULLABLE
-  description: Name of the Ad Group.
-- name: ad_group_segments
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
-  description: null
+  description: Country
 - name: impressions
   type: INTEGER
   mode: NULLABLE
-  description: Ad impressions, as reported by Google Ads, for this ad group on this
-    day.
+  description: Google Ad Impressions on Date
 - name: clicks
   type: INTEGER
   mode: NULLABLE
-  description: Clicks on our ads, only occurs after an impression, as reported by
-    Google Ads, for this ad group on this day.
+  description: Google Ad Clicks on Date
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of new profiles reported for this ad group on this day.
+  description: New Profiles Seen on Date
 - name: activated_profiles
   type: INTEGER
   mode: NULLABLE
-  description: Number of activated profiles for this ad group on this day.
-- name: repeat_users
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of repeat users on this day.
-- name: week_4_retained_users
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of week 4 retained users on this day.
+  description: Activated Profiles on Date
 - name: spend
   type: FLOAT
   mode: NULLABLE
-  description: Spend in US dollars attributed to this ad group on this day.
+  description: Google Ad Spend
 - name: lifetime_value
   type: FLOAT
   mode: NULLABLE
-  description: Lifetime Value (LTV) of the users acquired by this ad group on this
-    day.
+  description: Lifetime Value (Estimated after 14 days)

@@ -8,3 +8,9 @@ fields:
 - name: name
   type: STRING
   mode: NULLABLE
+- name: color_name
+  type: STRING
+  mode: NULLABLE
+- name: key
+  type: STRING
+  mode: NULLABLE

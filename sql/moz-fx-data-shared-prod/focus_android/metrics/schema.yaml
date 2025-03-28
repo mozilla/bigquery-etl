@@ -4017,6 +4017,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: extensions_data_migrate_result_count
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -26686,6 +26696,366 @@ fields:
             type: INTEGER
             mode: NULLABLE
     - name: dom_quota_shutdown_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_background_page_load_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_browser_action_popup_open_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_content_script_injection_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_event_page_running_time_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_extension_startup_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_page_action_popup_open_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_storage_local_get_idb_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: extensions_timing_storage_local_set_idb_by_addonid
       type: RECORD
       mode: REPEATED
       fields:

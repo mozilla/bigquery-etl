@@ -1,0 +1,42 @@
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+  Clients that don't send events on a particular day
+  won't be included on that day.
+owners:
+- jrediger@mozilla.com
+- wstuckey@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_glean_usage
+  owner1: jrediger
+  owner2: wstuckey
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: glam
+  arguments:
+  - --billing-project
+  - moz-fx-data-backfill-2
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+    - event_category
+    - client_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - glam.events
+require_column_descriptions: false

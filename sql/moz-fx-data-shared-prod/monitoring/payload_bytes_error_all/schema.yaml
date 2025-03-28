@@ -2,6 +2,9 @@ fields:
 - name: pipeline_family
   type: STRING
   mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
 - name: args
   type: STRING
   mode: NULLABLE

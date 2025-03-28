@@ -2412,9 +2412,9 @@ wrapt==1.16.0 \
     --hash=sha256:f8212564d49c50eb4565e502814f694e240c55551a5f1bc841d4fcaabb0a9b8a \
     --hash=sha256:ffa565331890b90056c01db69c0fe634a776f8019c143a5ae265f9c6bc4bd6d4
     # via deprecated
-yamllint==1.36.1 \
-    --hash=sha256:3e2ccd47ea12449837adf6b2c56fd9e31172ce42bc1470380806be461f25df66 \
-    --hash=sha256:a287689daaafc301a80549b2d0170452ebfdcabd826e3fe3b4c66e322d4851fa
+yamllint==1.37.0 \
+    --hash=sha256:c03ab4e79ab4af964c8eb16ac9746880fc76a3bb0ffb14925b9a55220ae7dda0 \
+    --hash=sha256:ead81921d4d87216b2528b7a055664708f9fb8267beb0c427cb706ac6ab93580
     # via -r requirements.in
 yarl==1.17.2 \
     --hash=sha256:0c8e589379ef0407b10bed16cc26e7392ef8f86961a706ade0a22309a45414d7 \

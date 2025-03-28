@@ -69,13 +69,15 @@ function write_clients_daily_aggregates {
         select(.type == "TABLE") |
         select(.tableReference.tableId | test("^use_counters.*") | not) |
         "\(.tableReference.tableId)"')
-    # generate all of the schemas in parallel
+    # generate schemas in parallel
     for table in $tables; do
+        # 2 tables at a time to limit concurrent python processes
+        i=$((i % 2))
+        ((i++==0)) && wait
         write_scalars "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
         write_histograms "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
     done
 
-    # wait for all of the processes before continuing
     wait
 }
 

@@ -110,7 +110,7 @@ def initialize_results_df():
             "developer_email",
             "developer_website",
             "developer_phone",
-            "extension_updated_date"
+            "extension_updated_date",
         ]
     )
     return results_df
@@ -195,7 +195,7 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
             "developer_email": [developer_email],
             "developer_website": [developer_website],
             "developer_phone": [developer_phone],
-            "extension_updated_date": [extension_updated_date]
+            "extension_updated_date": [extension_updated_date],
         }
     )
 
@@ -312,6 +312,18 @@ def main():
                 {"name": "star_rating", "type": "NUMERIC", "mode": "NULLABLE"},
                 {"name": "number_of_ratings", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "number_of_users", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "extension_version", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "extension_size", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "extension_languages", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_desc", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_email", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_website", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_phone", "type": "STRING", "mode": "NULLABLE"},
+                {
+                    "name": "extension_updated_date",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                },
             ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,

@@ -103,6 +103,14 @@ def initialize_results_df():
             "star_rating",
             "number_of_ratings",
             "number_of_users",
+            "extension_version",
+            "extension_size",
+            "extension_languages",
+            "developer_desc",
+            "developer_email",
+            "developer_website",
+            "developer_phone",
+            "extension_updated_date"
         ]
     )
     return results_df
@@ -124,6 +132,14 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
     chrome_extension_name = "NOT FOUND"
     star_rating = "NOT FOUND"
     number_of_users = "NOT FOUND"
+    extension_version = "NOT FOUND"
+    extension_size = "NOT FOUND"
+    extension_languages = "NOT FOUND"
+    developer_desc = "NOT FOUND"
+    developer_email = "NOT FOUND"
+    developer_website = "NOT FOUND"
+    developer_phone = "NOT FOUND"
+    extension_updated_date = "NOT FOUND"
 
     # Get the soup from the current link
     current_link_soup = get_soup_from_webpage(
@@ -172,6 +188,14 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
             "star_rating": [star_rating],
             "number_of_ratings": [number_of_ratings],
             "number_of_users": [number_of_users],
+            "extension_version": [extension_version],
+            "extension_size": [extension_size],
+            "extension_languages": [extension_languages],
+            "developer_desc": [developer_desc],
+            "developer_email": [developer_email],
+            "developer_website": [developer_website],
+            "developer_phone": [developer_phone],
+            "extension_updated_date": [extension_updated_date]
         }
     )
 
@@ -235,7 +259,6 @@ def main():
             # Loop through each link on this page
             for link_on_page in unique_links_on_non_detail_page:
 
-
                 # Check if it's a detail page link or not
                 is_detail_page = check_if_detail_or_non_detail_page(link_on_page)
 
@@ -256,6 +279,9 @@ def main():
 
         # Add the top level link to already processed
         links_already_processed.append(current_link)
+
+    # Remove duplicates
+    results_df = results_df.drop_duplicates()
 
     # Write data to CSV in GCS
     final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string)

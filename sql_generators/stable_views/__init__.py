@@ -23,7 +23,7 @@ from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table
 from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.config import ConfigLoader
 
-BOT_GENERATED = 'LOWER(IFNULL(metadata.isp.name, '')) <> "browserstack" AS bot_generated,'
+BOT_GENERATED = 'LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS bot_generated,'
 
 VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views

@@ -369,6 +369,7 @@ generate:
       - mach
       - monitor_backend
       - monitor_cirrus
+      - accounts_cirrus
       - moso_mastodon_backend
       - mozphab
       - mozregression
@@ -396,6 +397,7 @@ generate:
       - mach
       - monitor_backend
       - monitor_cirrus
+      - accounts_cirrus
       - moso_mastodon_backend
       - mozphab
       - mozregression
@@ -444,6 +446,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/ltv_derived/fenix_client_ltv_v1
 - sql/moz-fx-data-shared-prod/monitor_cirrus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/accounts_cirrus_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/moso_mastodon_backend_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/mozilla_lockbox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/mozilla_mach_derived/baseline_clients_first_seen_v1

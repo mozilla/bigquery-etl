@@ -71,7 +71,7 @@ SELECT
     ) AS funnel_derived,
   `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
   `moz-fx-data-shared-prod`.udf.partner_org_installs(distribution_id) AS partner_org,
-  {bot_generated}
+  {bot_generated},
 FROM
   `{target}`
 """

@@ -171,13 +171,30 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
             if match:
                 star_rating = match.group(0).split(" ")[0]
 
-    # Get the number of users
+    # Loop through the divs
     for div in divs_from_current_link_soup:
+        # Get the number of users
         if " users" in div:
             pattern = r"(\d{1,3}(?:,\d{3})*|\d+) (?=users)"
             match = re.search(pattern, div)
             if match:
                 number_of_users = match.group(0).split(" ")[0].replace(",", "")
+
+    # Loop through divs
+    for index, div in enumerate(divs_from_current_link_soup):
+        # If you see updated in div and it's not the last div found
+        if "Updated" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have the extension_updated_date
+            extension_updated_date = divs_from_current_link_soup[index + 1]
+        if "Version" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have the extension version
+            extension_version = divs_from_current_link_soup[index + 1]
+        if "Size" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have the extension size
+            extension_size = divs_from_current_link_soup[index + 1]
+        if "Languages" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have language info
+            extension_languages = divs_from_current_link_soup[index + 1]
 
     # Put the results into a dataframe
     curr_link_results_df = pd.DataFrame(

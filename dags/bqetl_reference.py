@@ -51,6 +51,22 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    external_derived__macroeconomic_indices__v1 = GKEPodOperator(
+        task_id="external_derived__macroeconomic_indices__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/external_derived/macroeconomic_indices_v1/query.py",
+        ]
+        + ["--market-date={{ ds }}", "--api-key={{ var.value.fmp_api_key }}"],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="cmorales@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "cmorales@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+    )
+
     reference_derived__macroeconomic_indices__v1 = GKEPodOperator(
         task_id="reference_derived__macroeconomic_indices__v1",
         arguments=[

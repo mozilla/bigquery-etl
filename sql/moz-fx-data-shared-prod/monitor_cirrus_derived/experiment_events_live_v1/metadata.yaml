@@ -1,0 +1,8 @@
+friendly_name: Experiment Events Live
+description: |-
+  Materialized view of experimentation related events
+  coming from monitor_cirrus.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true

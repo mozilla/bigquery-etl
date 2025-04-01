@@ -1,0 +1,8 @@
+friendly_name: Experiment Search Events Live
+description: |-
+  Materialized view of experimentation related search events
+  coming from monitor_cirrus clients.
+owners:
+- ascholtz@mozilla.com
+labels:
+  materialized_view: true

@@ -2,6 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: Date when client action took place
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -17,42 +18,62 @@ fields:
 - name: scheduled_surface_id
   type: STRING
   mode: NULLABLE
+  description: >
+    A content identifier. For organic Newtab recommendations it is an opaque id produced
+    by Newtab's recommendation systems that corresponds uniquely to a piece of content
+    scheduled for a specific day on a specific surface. This is the replacement for tile_id.
 - name: corpus_item_id
   type: STRING
   mode: NULLABLE
+  description: >
+    A content identifier. For organic Newtab recommendations it is an opaque id produced
+    by Newtab's recommendation systems that corresponds uniquely to the URL.
+    This is the replacement for tile_id and scheduled_corpus_item_id.
 - name: position
   type: INTEGER
   mode: NULLABLE
+  description: The position (0-index) of the pocket tile.
 - name: is_sponsored
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the pocket tile was sponsored (has an ad callback).
 - name: is_secton_followed
   type: BOOLEAN
   mode: NULLABLE
+  description: If click belongs in a section, if that section is followed
 - name: matches_selected_topic
   type: STRING
   mode: NULLABLE
+  description: Returns value based on if a the topic of the pocket recommendation matches one of the user-selected topic categories
 - name: received_rank
   type: INTEGER
   mode: NULLABLE
+  description: The rank or order of the recommendation at the time it was sent to the client.
 - name: section
   type: STRING
   mode: NULLABLE
+  description: If click belongs in a section, the name of the section
 - name: section_position
   type: INTEGER
   mode: NULLABLE
+  description: If click belongs in a section, the numberic position of the section
 - name: topic
   type: STRING
   mode: NULLABLE
+  description: The topic of the recommendation. Like "entertainment".
 - name: impression_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of articles impressed on Newtab
 - name: click_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of articles clicked on Newtab
 - name: save_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of article saves (Pocket) on Newtab
 - name: dismiss_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of articles dismissed on Newtab

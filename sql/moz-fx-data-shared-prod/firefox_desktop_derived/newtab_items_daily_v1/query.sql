@@ -1,14 +1,4 @@
-WITH events_dedupe AS (
-  SELECT
-    *
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) = 1
-),
-events_unnested AS (
+WITH events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS app_version,
@@ -20,10 +10,11 @@ events_unnested AS (
     name AS event_name,
     extra AS event_details,
   FROM
-    events_dedupe,
+    `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE
-    category IN ('pocket')
+    DATE(submission_timestamp) = @submission_date
+    AND category IN ('pocket')
     AND name IN ('impression', 'click', 'save', 'dismiss')
     AND mozfun.norm.browser_version_info(client_info.app_display_version).major_version >= 121
 ),

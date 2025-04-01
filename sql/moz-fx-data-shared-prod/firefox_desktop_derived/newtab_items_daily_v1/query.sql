@@ -30,7 +30,7 @@ events_unnested AS (
 flattened_events AS (
   SELECT
     submission_date,
-    app_version,
+    SAFE_CAST(app_version AS INT64) AS app_version,
     channel,
     locale,
     country,
@@ -46,7 +46,7 @@ flattened_events AS (
     mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, 'received_rank') AS INT64) AS received_rank,
     mozfun.map.get_key(event_details, 'section') AS section,
-    mozfun.map.get_key(event_details, 'section_position') AS section_position,
+    SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT64) AS section_position,
     mozfun.map.get_key(event_details, 'topic') AS topic,
   FROM
     events_unnested

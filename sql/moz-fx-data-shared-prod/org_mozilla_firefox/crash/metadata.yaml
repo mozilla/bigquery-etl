@@ -1,0 +1,7 @@
+labels:
+  authorized: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  # https://mozilla-hub.atlassian.net/browse/DENG-8189
+  - workgroup:dataops-managed/crash-ping-ingest

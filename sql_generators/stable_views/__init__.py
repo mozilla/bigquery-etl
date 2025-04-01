@@ -36,7 +36,7 @@ SELECT
   mozfun.norm.extract_version(client_info.app_display_version, 'major') as app_version_major,
   mozfun.norm.extract_version(client_info.app_display_version, 'minor') as app_version_minor,
   mozfun.norm.extract_version(client_info.app_display_version, 'patch') as app_version_patch,
-  {bot_generated}
+  {bot_generated},
 FROM
   `{target}`
 """

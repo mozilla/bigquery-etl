@@ -11,6 +11,7 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataops-managed/crash-ping-ingest
   - workgroup:mozilla-confidential
 references:
   view.sql:

@@ -16,9 +16,12 @@ SELECT
   normalized_os_version,
   ping_info,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_stable.crash_v1`
+  `moz-fx-data-shared-prod.firefox_desktop.crash`
 UNION ALL
 SELECT
   additional_properties,
@@ -105,9 +108,14 @@ SELECT
     ping_info.ping_type,
     ping_info.reason,
     ping_info.seq,
-    ping_info.start_time
+    ping_info.start_time,
+    ping_info.parsed_start_time,
+    ping_info.parsed_end_time
   ) AS `ping_info`,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  app_version_major,
+  app_version_minor,
+  app_version_patch
 FROM
-  `moz-fx-data-shared-prod.firefox_crashreporter_stable.crash_v1`
+  `moz-fx-data-shared-prod.firefox_crashreporter.crash`

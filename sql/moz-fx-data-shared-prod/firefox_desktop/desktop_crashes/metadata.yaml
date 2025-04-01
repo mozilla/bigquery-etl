@@ -9,9 +9,10 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataops-managed/crash-ping-ingest
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefox_crashreporter_stable.crash_v1
-  - moz-fx-data-shared-prod.firefox_desktop_stable.crash_v1
+  - moz-fx-data-shared-prod.firefox_crashreporter.crash
+  - moz-fx-data-shared-prod.firefox_desktop.crash
 require_column_descriptions: false

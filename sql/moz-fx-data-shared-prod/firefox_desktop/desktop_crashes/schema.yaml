@@ -160,6 +160,22 @@ fields:
     - name: x_telemetry_agent
       type: STRING
       mode: NULLABLE
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -261,6 +277,9 @@ fields:
     mode: NULLABLE
     fields:
     - name: crash_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_crash_time
       type: STRING
       mode: NULLABLE
   - name: string
@@ -472,9 +491,24 @@ fields:
   - name: start_time
     type: STRING
     mode: NULLABLE
+  - name: parsed_start_time
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: parsed_end_time
+    type: TIMESTAMP
+    mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
 - name: submission_timestamp
   type: TIMESTAMP
+  mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch
+  type: NUMERIC
   mode: NULLABLE

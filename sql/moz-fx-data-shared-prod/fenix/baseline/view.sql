@@ -138,7 +138,9 @@ SELECT
     client_info.build_date,
     client_info.windows_build_number,
     client_info.session_count,
-    client_info.session_id
+    client_info.session_id,
+    client_info.attribution,
+    client_info.distribution
   ) AS `client_info`,
   document_id,
   events,
@@ -221,7 +223,9 @@ SELECT
     client_info.build_date,
     client_info.windows_build_number,
     client_info.session_count,
-    client_info.session_id
+    client_info.session_id,
+    client_info.attribution,
+    client_info.distribution
   ) AS `client_info`,
   document_id,
   events,

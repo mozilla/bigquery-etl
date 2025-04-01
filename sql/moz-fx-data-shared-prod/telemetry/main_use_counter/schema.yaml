@@ -11286,11 +11286,11 @@ fields:
     - name: use_counter2_js_ic_stub_oom_document
       type: STRING
       mode: NULLABLE
-      description: 'Whether a document OOMed while creating IC stub '
+      description: Whether a document OOMed while creating IC stub
     - name: use_counter2_js_ic_stub_oom_page
       type: STRING
       mode: NULLABLE
-      description: 'Whether a page OOMed while creating IC stub '
+      description: Whether a page OOMed while creating IC stub
     - name: use_counter2_js_ic_stub_too_large_document
       type: STRING
       mode: NULLABLE
@@ -22585,11 +22585,11 @@ fields:
         - name: use_counter2_js_ic_stub_oom_document
           type: STRING
           mode: NULLABLE
-          description: 'Whether a document OOMed while creating IC stub '
+          description: Whether a document OOMed while creating IC stub
         - name: use_counter2_js_ic_stub_oom_page
           type: STRING
           mode: NULLABLE
-          description: 'Whether a page OOMed while creating IC stub '
+          description: Whether a page OOMed while creating IC stub
         - name: use_counter2_js_ic_stub_too_large_document
           type: STRING
           mode: NULLABLE

@@ -49,7 +49,7 @@ AS
 SELECT
   * REPLACE(
     {replacements}),
-  {bot_generated}
+  {bot_generated},
 FROM
   `{target}`
 """

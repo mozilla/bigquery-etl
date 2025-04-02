@@ -359,7 +359,7 @@ fields:
   - name: medium
     type: STRING
     mode: NULLABLE
-    desription: The atttribution medium (e.g. 'organic' for a search engine).
+    description: The atttribution medium (e.g. 'organic' for a search engine).
   - name: source
     type: STRING
     mode: NULLABLE

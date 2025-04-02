@@ -32,7 +32,7 @@ flattened_events AS (
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     SAFE_CAST(
       mozfun.map.get_key(event_details, 'is_secton_followed') AS BOOLEAN
-    ) AS is_secton_followed,
+    ) AS is_section_followed,
     mozfun.map.get_key(event_details, 'matches_selected_topic') AS matches_selected_topic,
     mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, 'received_rank') AS INT64) AS received_rank,

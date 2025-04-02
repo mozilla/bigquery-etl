@@ -16,7 +16,7 @@ WITH events_unnested AS (
     DATE(submission_timestamp) = @submission_date
     AND category IN ('pocket')
     AND name IN ('impression', 'click', 'save', 'dismiss')
-    AND mozfun.norm.browser_version_info(client_info.app_display_version).major_version >= 121
+    AND mozfun.norm.browser_version_info(client_info.app_display_version).major_version >= 121 -- the [Pocket team started using Glean](https://github.com/Pocket/dbt-snowflake/pull/459) from this version on. This prevents duplicates for previous releases.
 ),
 flattened_events AS (
   SELECT

@@ -1,6 +1,6 @@
 friendly_name: Newtab Items Daily
 description: |-
-  A daily aggregation of newtab actions on content/items
+  A daily aggregation of newtab actions on content/items (example: impressions, clicks, dismissals)
   for Firefox desktop, partitioned by day.
 owners:
   - gkatre@mozilla.com

@@ -50,26 +50,7 @@ SELECT
   channel,
   locale,
   country,
-  CASE
-    WHEN SPLIT(locale, '-')[0] = 'de'
-      THEN 'NEW_TAB_DE_DE'
-    WHEN SPLIT(locale, '-')[0] = 'es'
-      THEN 'NEW_TAB_ES_ES'
-    WHEN SPLIT(locale, '-')[0] = 'fr'
-      THEN 'NEW_TAB_FR_FR'
-    WHEN SPLIT(locale, '-')[0] = 'it'
-      THEN 'NEW_TAB_IT_IT'
-    WHEN SPLIT(locale, '-')[0] = 'en'
-      AND (SPLIT(locale, '-')[1] IN ('GB', 'IE') OR country IN ('GB', 'IE'))
-      THEN 'NEW_TAB_EN_GB'
-    WHEN SPLIT(locale, '-')[0] = 'en'
-      AND (SPLIT(locale, '-')[1] = 'IN' OR country = 'IN')
-      THEN 'NEW_TAB_EN_INTL'
-    WHEN SPLIT(locale, '-')[0] = 'en'
-      AND (SPLIT(locale, '-')[1] IN ('US', 'CA') OR country IN ('US', 'CA'))
-      THEN 'NEW_TAB_EN_US'
-    ELSE 'NEW_TAB_EN_US'
-  END AS scheduled_surface_id,
+  mozfun.newtab.scheduled_surface_id_v1(country, locale) AS scheduled_surface_id,
   corpus_item_id,
   position,
   is_sponsored,

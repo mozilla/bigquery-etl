@@ -95,8 +95,8 @@ def get_divs_from_soup(webpage_soup):
 
 def get_website_url_from_soup(webpage_soup):
     """Input: Webpage Soup
-    Output: Website URL (str) if found, otherwise string "NOT FOUND" """
-    website_url = "NOT FOUND"
+    Output: Website URL (str) if found, otherwise return None """
+    website_url = None
     website_links = webpage_soup.find_all("a")
     for website_link in website_links:
         if website_link.has_attr("href") and "Website" in website_link.text:
@@ -140,18 +140,18 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
     """Input: URL, timeout limit (integer), and current date"""
 
     # Initialize as empty strings
-    number_of_ratings = "NOT FOUND"
-    chrome_extension_name = "NOT FOUND"
-    star_rating = "NOT FOUND"
-    number_of_users = "NOT FOUND"
-    extension_version = "NOT FOUND"
-    extension_size = "NOT FOUND"
-    extension_languages = "NOT FOUND"
-    developer_desc = "NOT FOUND"
-    developer_email = "NOT FOUND"
-    developer_website = "NOT FOUND"
-    developer_phone = "NOT FOUND"
-    extension_updated_date = "NOT FOUND"
+    number_of_ratings = None
+    chrome_extension_name = None
+    star_rating = None
+    number_of_users = None
+    extension_version = None
+    extension_size = None
+    extension_languages = None
+    developer_desc = None
+    developer_email = None
+    developer_website = None
+    developer_phone = None
+    extension_updated_date = None
 
     # Get the soup from the current link
     current_link_soup = get_soup_from_webpage(

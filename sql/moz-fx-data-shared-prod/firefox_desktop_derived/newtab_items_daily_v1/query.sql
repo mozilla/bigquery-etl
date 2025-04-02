@@ -78,7 +78,7 @@ SELECT
   section_position,
   topic,
   COUNTIF(event_name = 'impression') AS impression_count,
-  SUM(IF(event_name = 'click', 1, 0)) AS click_count,
+  COUNTIF(event_name = 'click'') AS click_count,
   SUM(IF(event_name = 'save', 1, 0)) AS save_count,
   SUM(IF(event_name = 'dismiss', 1, 0)) AS dismiss_count,
 FROM

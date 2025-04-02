@@ -16,7 +16,9 @@ WITH events_unnested AS (
     DATE(submission_timestamp) = @submission_date
     AND category IN ('pocket')
     AND name IN ('impression', 'click', 'save', 'dismiss')
-    AND mozfun.norm.browser_version_info(client_info.app_display_version).major_version >= 121 -- the [Pocket team started using Glean](https://github.com/Pocket/dbt-snowflake/pull/459) from this version on. This prevents duplicates for previous releases.
+    AND mozfun.norm.browser_version_info(
+      client_info.app_display_version
+    ).major_version >= 121 -- the [Pocket team started using Glean](https://github.com/Pocket/dbt-snowflake/pull/459) from this version on. This prevents duplicates for previous releases.
 ),
 flattened_events AS (
   SELECT
@@ -71,16 +73,16 @@ SELECT
   corpus_item_id,
   position,
   is_sponsored,
-  is_secton_followed,
+  is_section_followed,
   matches_selected_topic,
   received_rank,
   section,
   section_position,
   topic,
   COUNTIF(event_name = 'impression') AS impression_count,
-  COUNTIF(event_name = 'click'') AS click_count,
+  COUNTIF(event_name = 'click') AS click_count,
   COUNTIF(event_name = 'save') AS save_count,
-  COUNTIF(event_name = 'dismiss') AS dismiss_count,
+  COUNTIF(event_name = 'dismiss') AS dismiss_count
 FROM
   flattened_events
 WHERE
@@ -95,7 +97,7 @@ GROUP BY
   corpus_item_id,
   position,
   is_sponsored,
-  is_secton_followed,
+  is_section_followed,
   matches_selected_topic,
   received_rank,
   section,

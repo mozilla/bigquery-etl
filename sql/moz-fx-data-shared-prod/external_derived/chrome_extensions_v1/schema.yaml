@@ -23,3 +23,35 @@ fields:
   mode: NULLABLE
   type: STRING
   description: Number of Users
+- name: extension_version
+  mode: NULLABLE
+  type: STRING
+  description: Extension Version
+- name: extension_size
+  mode: NULLABLE
+  type: STRING
+  description: Extension Size
+- name: extension_languages
+  mode: NULLABLE
+  type: STRING
+  description: Extension Languages
+- name: developer_desc
+  mode: NULLABLE
+  type: STRING
+  description: Developer Description
+- name: developer_email
+  mode: NULLABLE
+  type: STRING
+  description: Developer Email
+- name: developer_website
+  mode: NULLABLE
+  type: STRING
+  description: Developer Website
+- name: developer_phone
+  mode: NULLABLE
+  type: STRING
+  description: Developer Phone
+- name: extension_updated_date
+  mode: NULLABLE
+  type: STRING
+  description: Extension Updated Date

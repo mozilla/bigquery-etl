@@ -127,6 +127,10 @@ def check_if_detail_or_non_detail_page(url):
 
 def pull_data_from_detail_page(url, timeout_limit, current_date):
     """Input: URL, timeout limit (integer), and current date"""
+    ### BELOW IS TEMPORARY FOR TESTING
+    print("CURRENT URL: ", url)
+    ### ABOVE IS TEMPORARY FOR TESTING
+
     # Initialize as empty strings
     number_of_ratings = "NOT FOUND"
     chrome_extension_name = "NOT FOUND"
@@ -195,6 +199,45 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
         if "Languages" in div and index + 1 < len(divs_from_current_link_soup):
             # The next div should have language info
             extension_languages = divs_from_current_link_soup[index + 1]
+
+    # Get all divs
+    all_divs = current_link_soup.find_all("div")
+    # Loop through each div
+    for idx, div in enumerate(all_divs):
+        developer_info = None
+        # If the div is developer and it's not the last div
+        if div.text.strip() == "Developer" and idx + 1 < len(all_divs):
+            # Get the next div after Developer
+            next_div = all_divs[idx + 1]
+            # Find the first nested tag
+            first_nested_tag = next_div.find()
+            # If there is a first nested tag
+            if first_nested_tag:
+                # Get developer info as all the text from that first nested tag
+                developer_info = first_nested_tag.get_text(separator="\n", strip=True)
+
+                # If website is in developer info
+                if "Website" in developer_info:
+                    # Split on website and take the part before website as the developer description
+                    developer_desc = developer_info.split("Website")[0].replace(
+                        "\n", " "
+                    )
+
+                # If email is in developer info
+                if "Email" in developer_info:
+                    developer_email_and_phone = (
+                        developer_info.split("Email")[1].replace("\n", " ").strip()
+                    )
+                    # If phone is there, get developer email and phone
+                    if "Phone" in developer_email_and_phone:
+                        developer_email_and_phone_list = (
+                            developer_email_and_phone.split("Phone")
+                        )
+                        developer_email = developer_email_and_phone_list[0]
+                        developer_phone = developer_email_and_phone_list[1]
+                    # If phone is not there, only get developer email
+                    else:
+                        developer_email = developer_email_and_phone
 
     # Put the results into a dataframe
     curr_link_results_df = pd.DataFrame(
@@ -301,7 +344,8 @@ def main():
     results_df = results_df.drop_duplicates()
 
     # Write data to CSV in GCS
-    final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string)
+    # final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string) #TEMP
+    final_results_fpath = "katie_temp.csv"
     results_df.to_csv(final_results_fpath, index=False)
     print("Results written to: ", str(final_results_fpath))
 

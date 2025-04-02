@@ -6683,6 +6683,90 @@ fields:
         PROCESS_CRASH_SUBMIT_ATTEMPT.
 
         '
+    - name: ipc_transaction_cancel
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'True when an IPC transaction is canceled
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        IPC_TRANSACTION_CANCEL.
+
+        '
+    - name: subprocess_abnormal_abort
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts of plugin/content process abnormal shutdown, whether or
+        not a crash report was available.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SUBPROCESS_ABNORMAL_ABORT.
+
+        '
+    - name: subprocess_crashes_with_dump
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts of plugin and content process crashes which are reported
+        with a crash dump.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SUBPROCESS_CRASHES_WITH_DUMP.
+
+        '
+    - name: subprocess_kill_hard
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a subprocess was forcibly killed, and
+        the reason.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SUBPROCESS_KILL_HARD.
+
+        '
+    - name: subprocess_launch_failure
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times launching a subprocess fails. Counts
+        are by subprocess-type using the GeckoProcessType enum.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SUBPROCESS_LAUNCH_FAILURE.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -32792,6 +32876,99 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry linear histogram
         UPDATE_LANGPACK_OVERTIME.
+
+        '
+    - name: process_child_launch
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent in the generic child process launching code, which
+        is run off-main-thread and used by all child process types
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram CHILD_PROCESS_LAUNCH_MS.
+
+        '
+    - name: process_lifetime
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Average lifetime of a content process in seconds
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PROCESS_LIFETIME.
 
         '
   - name: quantity

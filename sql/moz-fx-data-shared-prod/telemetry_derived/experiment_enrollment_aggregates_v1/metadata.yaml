@@ -16,6 +16,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
+  - moz-fx-data-shared-prod.accounts_cirrus.enrollment
   - moz-fx-data-shared-prod.monitor_cirrus.enrollment
   - moz-fx-data-shared-prod.org_mozilla_fenix.events
   - moz-fx-data-shared-prod.org_mozilla_firefox.events

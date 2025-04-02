@@ -37,7 +37,7 @@ IF
   WHERE
     -- Limit the amount of data the materialized view is going to backfill when created.
     -- This date can be moved forward whenever new changes of the materialized views need to be deployed.
-    DATE(submission_timestamp) > '2023-10-10'
+    DATE(submission_timestamp) > '2025-03-30'
   GROUP BY
     partition_date,
     submission_date,

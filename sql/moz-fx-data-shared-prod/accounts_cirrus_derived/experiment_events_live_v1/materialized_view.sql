@@ -1,27 +1,20 @@
 -- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.experiment_events_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.accounts_cirrus_derived.experiment_events_live_v1`
   PARTITION BY
     DATE(partition_date)
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)
   AS
-  -- Glean apps use Nimbus for experimentation
+  -- Cirrus apps uses specialized Glean structure per events
   WITH all_events AS (
     SELECT
       submission_timestamp,
       events,
-      -- Before version 109 (in desktop), clients evaluated schema
-      -- before targeting, so validation_errors are invalid
-      IF(
-        mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109
-        OR normalized_app_name != 'firefox_desktop',
-        TRUE,
-        FALSE
-      ) AS validation_errors_valid
+      TRUE AS validation_errors_valid
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_focus_nightly_live.events_v1`
+      `moz-fx-data-shared-prod.accounts_cirrus_live.enrollment_v1`
   ),
   experiment_events AS (
     SELECT
@@ -40,7 +33,7 @@ IF
       UNNEST(GENERATE_ARRAY(0, 50)) AS i,
       UNNEST(GENERATE_ARRAY(0, 51)) AS j
     WHERE
-      event.category = 'nimbus_events'
+      event.category = 'cirrus_events'
       AND CAST(event.extra[SAFE_OFFSET(i)].key AS STRING) = 'branch'
       AND CAST(event.extra[SAFE_OFFSET(j)].key AS STRING) = 'experiment'
   )

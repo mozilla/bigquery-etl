@@ -370,6 +370,23 @@ monitor_cirrus AS (
     experiment,
     branch
 ),
+accounts_cirrus AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(0) AS ad_clicks_count,
+    SUM(0) AS search_with_ads_count,
+    SUM(0) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.accounts_cirrus_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
 all_events AS (
   SELECT
     *
@@ -440,6 +457,11 @@ all_events AS (
     *
   FROM
     monitor_cirrus
+  UNION ALL
+  SELECT
+    *
+  FROM
+    accounts_cirrus
 )
 SELECT
   experiment,

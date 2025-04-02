@@ -1,7 +1,7 @@
 -- Generated via ./bqetl generate experiment_monitoring
 CREATE MATERIALIZED VIEW
 IF
-  NOT EXISTS `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.experiment_search_events_live_v1`
+  NOT EXISTS `moz-fx-data-shared-prod.accounts_cirrus_derived.experiment_search_events_live_v1`
   PARTITION BY
     DATE(partition_date)
   OPTIONS
@@ -25,17 +25,12 @@ IF
     -- Materialized views don't support COALESCE or IFNULL
     SUM(0) AS ad_clicks_count,
     SUM(0) AS search_with_ads_count,
-    SUM(
-      CAST(
-        ARRAY_CONCAT(metrics.labeled_counter.search_counts, [('', 0)])[
-          SAFE_OFFSET(i)
-        ].value AS INT64
-      )
-    ) AS search_count,
+    SUM(0) AS search_count,
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.metrics_v1`
+    `moz-fx-data-shared-prod.accounts_cirrus_live.enrollment_v1`
   LEFT JOIN
     UNNEST(ping_info.experiments) AS experiment
+      -- We don't expect cirrus events to be search events
   CROSS JOIN
     -- Max. number of entries is around 10
     UNNEST(GENERATE_ARRAY(0, 50)) AS i

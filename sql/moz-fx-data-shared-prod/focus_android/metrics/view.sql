@@ -568,7 +568,12 @@ SELECT
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
       metrics.labeled_counter.dns_grace_period_renewal,
-      metrics.labeled_counter.extensions_data_migrate_result_count
+      metrics.labeled_counter.extensions_data_migrate_result_count,
+      metrics.labeled_counter.ipc_transaction_cancel,
+      metrics.labeled_counter.subprocess_abnormal_abort,
+      metrics.labeled_counter.subprocess_crashes_with_dump,
+      metrics.labeled_counter.subprocess_kill_hard,
+      metrics.labeled_counter.subprocess_launch_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1331,7 +1336,9 @@ SELECT
       metrics.timing_distribution.pwmgr_signup_form_detection,
       metrics.timing_distribution.dom_textfragment_create_directive,
       metrics.timing_distribution.dom_textfragment_find_directives,
-      metrics.timing_distribution.update_langpack_overtime
+      metrics.timing_distribution.update_langpack_overtime,
+      metrics.timing_distribution.process_child_launch,
+      metrics.timing_distribution.process_lifetime
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -2063,7 +2070,12 @@ SELECT
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
       metrics.labeled_counter.dns_grace_period_renewal,
-      metrics.labeled_counter.extensions_data_migrate_result_count
+      metrics.labeled_counter.extensions_data_migrate_result_count,
+      metrics.labeled_counter.ipc_transaction_cancel,
+      metrics.labeled_counter.subprocess_abnormal_abort,
+      metrics.labeled_counter.subprocess_crashes_with_dump,
+      metrics.labeled_counter.subprocess_kill_hard,
+      metrics.labeled_counter.subprocess_launch_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2826,7 +2838,9 @@ SELECT
       metrics.timing_distribution.pwmgr_signup_form_detection,
       metrics.timing_distribution.dom_textfragment_create_directive,
       metrics.timing_distribution.dom_textfragment_find_directives,
-      metrics.timing_distribution.update_langpack_overtime
+      metrics.timing_distribution.update_langpack_overtime,
+      metrics.timing_distribution.process_child_launch,
+      metrics.timing_distribution.process_lifetime
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -3558,7 +3572,12 @@ SELECT
       metrics.labeled_counter.pwmgr_is_username_only_form,
       metrics.labeled_counter.pwmgr_num_improved_generated_passwords,
       metrics.labeled_counter.dns_grace_period_renewal,
-      metrics.labeled_counter.extensions_data_migrate_result_count
+      metrics.labeled_counter.extensions_data_migrate_result_count,
+      metrics.labeled_counter.ipc_transaction_cancel,
+      metrics.labeled_counter.subprocess_abnormal_abort,
+      metrics.labeled_counter.subprocess_crashes_with_dump,
+      metrics.labeled_counter.subprocess_kill_hard,
+      metrics.labeled_counter.subprocess_launch_failure
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4321,7 +4340,9 @@ SELECT
       metrics.timing_distribution.pwmgr_signup_form_detection,
       metrics.timing_distribution.dom_textfragment_create_directive,
       metrics.timing_distribution.dom_textfragment_find_directives,
-      metrics.timing_distribution.update_langpack_overtime
+      metrics.timing_distribution.update_langpack_overtime,
+      metrics.timing_distribution.process_child_launch,
+      metrics.timing_distribution.process_lifetime
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

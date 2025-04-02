@@ -2180,9 +2180,9 @@ types-pyyaml==6.0.12.20250402 \
     # via
     #   -r requirements.in
     #   bigeye-sdk
-types-requests==2.32.0.20250306 \
-    --hash=sha256:0962352694ec5b2f95fda877ee60a159abdf84a0fc6fdace599f20acb41a03d1 \
-    --hash=sha256:25f2cbb5c8710b2022f8bbee7b2b66f319ef14aeea2f35d80f18c9dbf3b60a0b
+types-requests==2.32.0.20250328 \
+    --hash=sha256:72ff80f84b15eb3aa7a8e2625fffb6a93f2ad5a0c20215fc1dcfa61117bcb2a2 \
+    --hash=sha256:c9e67228ea103bd811c96984fac36ed2ae8da87a36a633964a21f199d60baf32
     # via -r requirements.in
 types-ujson==5.10.0.20250326 \
     --hash=sha256:5469e05f2c31ecb3c4c0267cc8fe41bcd116826fbb4ded69801a645c687dd014 \

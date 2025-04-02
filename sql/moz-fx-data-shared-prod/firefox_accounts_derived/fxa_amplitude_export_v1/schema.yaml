@@ -27,12 +27,12 @@ fields:
   name: fxa_services_used
   type: STRING
 - fields:
-    - mode: NULLABLE
-      name: key
-      type: STRING
-    - mode: NULLABLE
-      name: value
-      type: INTEGER
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: INTEGER
   mode: REPEATED
   name: os_used_month
   type: RECORD

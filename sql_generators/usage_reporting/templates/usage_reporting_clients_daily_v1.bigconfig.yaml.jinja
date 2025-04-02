@@ -7,15 +7,15 @@ tag_deployments:
         - slack: '{{ bigeye_notification_slack_channel }}'
     deployments:
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.first_seen_date
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.app_name
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.is_mobile
+        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.submission_date
+        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.usage_profile_id
+        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.is_active
         metrics:
           - saved_metric_id: is_not_null
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.normalized_channel
+        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.normalized_country_code
         metrics:
-          - saved_metric_id: is_valid_channel
+          - saved_metric_id: is_2_char_len
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.*
         metrics:

@@ -8,15 +8,12 @@ tag_deployments:
     deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.first_seen_date
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.app_name
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.is_mobile
+        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.usage_profile_id
         metrics:
           - saved_metric_id: is_not_null
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.normalized_channel
-        metrics:
-          - saved_metric_id: is_valid_channel
-      - column_selectors:
+            rct_overrides:
+              - first_seen_date
+      - column_selecfirst_seen_datetors:
         - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.*
         metrics:
           - saved_metric_id: volume

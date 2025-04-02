@@ -98,6 +98,23 @@ saved_metric_definitions:
           interval_value: 0
       rct_overrides:
         - submission_date
+    - saved_metric_id: is_28_char_len
+      metric_type:
+        predefined_metric: STRING_LENGTH_MIN
+      threshold:
+        type: CONSTANT
+        lower_bound: 28
+        upper_bound: 28
+      schedule_frequency:
+        interval_type: MINUTES
+        interval_value: 0
+      lookback:
+        lookback_type: DATA_TIME
+        lookback_window:
+          interval_type: DAYS
+          interval_value: 0
+      rct_overrides:
+        - submission_date
     - saved_metric_id: is_valid_client_id
       metric_type:
         predefined_metric: PERCENT_UUID

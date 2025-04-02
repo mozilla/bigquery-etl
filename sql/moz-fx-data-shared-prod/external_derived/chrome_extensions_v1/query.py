@@ -156,9 +156,6 @@ def check_if_detail_or_non_detail_page(url):
 
 def pull_data_from_detail_page(url, timeout_limit, current_date):
     """Input: URL, timeout limit (integer), and current date"""
-    # TEMP FOR TESTING
-    print("Current URL: ", url)
-    # TEMP FOR TESTING
 
     # Initialize as empty strings
     number_of_ratings = None

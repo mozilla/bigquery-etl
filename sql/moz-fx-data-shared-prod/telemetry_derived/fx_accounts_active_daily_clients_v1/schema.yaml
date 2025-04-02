@@ -351,7 +351,7 @@ fields:
   - name: campaign
     type: STRING
     mode: NULLABLE
-    description: The attribution campaign (e.g. 'mozilla-org'). 
+    description: The attribution campaign (e.g. 'mozilla-org').
   - name: content
     type: STRING
     mode: NULLABLE

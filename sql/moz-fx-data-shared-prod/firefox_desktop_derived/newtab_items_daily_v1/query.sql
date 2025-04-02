@@ -79,8 +79,8 @@ SELECT
   topic,
   COUNTIF(event_name = 'impression') AS impression_count,
   COUNTIF(event_name = 'click'') AS click_count,
-  SUM(IF(event_name = 'save', 1, 0)) AS save_count,
-  SUM(IF(event_name = 'dismiss', 1, 0)) AS dismiss_count,
+  COUNTIF(event_name = 'save') AS save_count,
+  COUNTIF(event_name = 'dismiss') AS dismiss_count,
 FROM
   flattened_events
 WHERE

@@ -93,6 +93,17 @@ def get_divs_from_soup(webpage_soup):
     return divs
 
 
+def get_website_url_from_soup(webpage_soup):
+    """Input: Webpage Soup
+    Output: Website URL (str) if found, otherwise string "NOT FOUND" """
+    website_url = "NOT FOUND"
+    website_links = webpage_soup.find_all("a")
+    for website_link in website_links:
+        if website_link.has_attr("href") and "Website" in website_link.text:
+            website_url = website_link["href"]
+    return website_url
+
+
 def initialize_results_df():
     """Returns a dataframe with 0 rows with the desired format"""
     results_df = pd.DataFrame(
@@ -127,9 +138,6 @@ def check_if_detail_or_non_detail_page(url):
 
 def pull_data_from_detail_page(url, timeout_limit, current_date):
     """Input: URL, timeout limit (integer), and current date"""
-    ### BELOW IS TEMPORARY FOR TESTING
-    print("CURRENT URL: ", url)
-    ### ABOVE IS TEMPORARY FOR TESTING
 
     # Initialize as empty strings
     number_of_ratings = "NOT FOUND"
@@ -155,6 +163,9 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
     headers_from_current_link_soup = get_h1_headers_from_soup(current_link_soup)
     h2_headers_from_current_link_soup = get_h2_headers_from_soup(current_link_soup)
     divs_from_current_link_soup = get_divs_from_soup(current_link_soup)
+
+    # Get the developer website URL
+    developer_website = get_website_url_from_soup(current_link_soup)
 
     # Get the number of ratings
     for paragraph in paragraphs_from_current_link_soup:
@@ -344,8 +355,7 @@ def main():
     results_df = results_df.drop_duplicates()
 
     # Write data to CSV in GCS
-    # final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string) #TEMP
-    final_results_fpath = "katie_temp.csv"
+    final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string)
     results_df.to_csv(final_results_fpath, index=False)
     print("Results written to: ", str(final_results_fpath))
 

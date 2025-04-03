@@ -28,4 +28,9 @@ references:
   query.sql:
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.usage_reporting_clients_daily
   - moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_first_seen_v1
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: true
 require_column_descriptions: false

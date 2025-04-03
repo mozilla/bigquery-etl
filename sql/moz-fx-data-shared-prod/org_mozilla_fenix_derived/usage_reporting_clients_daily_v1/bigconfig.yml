@@ -1,0 +1,20 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fenix_derived.usage_reporting_clients_daily_v1.*
+    metrics:
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: FRESHNESS
+      metric_name: FRESHNESS
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC
+    - metric_type:
+        type: PREDEFINED
+        predefined_metric: VOLUME
+      metric_name: VOLUME [fail]
+      metric_schedule:
+        named_schedule:
+          name: Default Schedule - 13:00 UTC

@@ -74,6 +74,534 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    bigeye__fenix_derived__usage_reporting_active_users_aggregates__v1 = bigquery_bigeye_check(
+        task_id="bigeye__fenix_derived__usage_reporting_active_users_aggregates__v1",
+        table_id="moz-fx-data-shared-prod.fenix_derived.usage_reporting_active_users_aggregates_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__firefox_desktop_derived__usage_reporting_active_users_aggregates__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_desktop_derived__usage_reporting_active_users_aggregates__v1",
+        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_active_users_aggregates_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_desktop,
+    )
+
+    bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_desktop,
+    )
+
+    bigeye__firefox_desktop_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_desktop_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_desktop,
+    )
+
+    bigeye__firefox_desktop_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_desktop_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_desktop,
+    )
+
+    bigeye__firefox_ios_derived__usage_reporting_active_users_aggregates__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_ios_derived__usage_reporting_active_users_aggregates__v1",
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.usage_reporting_active_users_aggregates_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1 = bigquery_bigeye_check(
+        task_id="bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        table_id="moz-fx-data-shared-prod.focus_android_derived.usage_reporting_active_users_aggregates_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1 = bigquery_bigeye_check(
+        task_id="bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        table_id="moz-fx-data-shared-prod.focus_ios_derived.usage_reporting_active_users_aggregates_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_ios,
+    )
+
+    bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_firefox_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_firefox_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_firefox_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
+    )
+
+    bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_android,
+    )
+
+    bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
+    bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_daily_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_ios,
+    )
+
+    bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_ios,
+    )
+
+    bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_focus_ios,
+    )
+
     fenix_derived__usage_reporting_active_users_aggregates__v1 = bigquery_etl_query(
         task_id="fenix_derived__usage_reporting_active_users_aggregates__v1",
         destination_table="usage_reporting_active_users_aggregates_v1",
@@ -620,76 +1148,252 @@ with DAG(
         task_group=task_group_focus_ios,
     )
 
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
+    bigeye__fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        fenix_derived__usage_reporting_active_users_aggregates__v1
     )
 
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1
+    bigeye__firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        firefox_desktop_derived__usage_reporting_active_users_aggregates__v1
     )
 
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+    bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1.set_upstream(
         firefox_desktop_derived__usage_reporting_clients_daily__v1
     )
 
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+    bigeye__firefox_desktop_derived__usage_reporting_clients_first_seen__v1.set_upstream(
         firefox_desktop_derived__usage_reporting_clients_first_seen__v1
     )
 
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+    bigeye__firefox_desktop_derived__usage_reporting_clients_last_seen__v1.set_upstream(
         firefox_desktop_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        firefox_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        focus_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+    )
+
+    bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
+        org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1
+    )
+
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1
+    )
+
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__firefox_desktop_derived__usage_reporting_clients_first_seen__v1
+    )
+
+    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
+        bigeye__firefox_desktop_derived__usage_reporting_clients_last_seen__v1
     )
 
     firefox_desktop_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -697,95 +1401,95 @@ with DAG(
     )
 
     firefox_desktop_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_daily__v1
+        bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_desktop_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        firefox_desktop_derived__usage_reporting_clients_daily__v1
+        bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1
     )
 
     focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
     )
 
     focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1
+        bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1
     )
 
     focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1
+        bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1
     )
 
     org_mozilla_fenix_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -793,11 +1497,11 @@ with DAG(
     )
 
     org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -805,11 +1509,11 @@ with DAG(
     )
 
     org_mozilla_fenix_nightly_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_fenix_nightly_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -817,11 +1521,11 @@ with DAG(
     )
 
     org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -829,11 +1533,11 @@ with DAG(
     )
 
     org_mozilla_firefox_beta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_firefox_beta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_firefox_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -841,11 +1545,11 @@ with DAG(
     )
 
     org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -853,11 +1557,11 @@ with DAG(
     )
 
     org_mozilla_focus_beta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_beta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -865,11 +1569,11 @@ with DAG(
     )
 
     org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -877,11 +1581,11 @@ with DAG(
     )
 
     org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -889,11 +1593,11 @@ with DAG(
     )
 
     org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -901,11 +1605,11 @@ with DAG(
     )
 
     org_mozilla_ios_firefox_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_firefox_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -913,11 +1617,11 @@ with DAG(
     )
 
     org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1.set_upstream(
@@ -925,9 +1629,9 @@ with DAG(
     )
 
     org_mozilla_ios_focus_derived__usage_reporting_clients_first_seen__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
     )
 
     org_mozilla_ios_focus_derived__usage_reporting_clients_last_seen__v1.set_upstream(
-        org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
+        bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
     )

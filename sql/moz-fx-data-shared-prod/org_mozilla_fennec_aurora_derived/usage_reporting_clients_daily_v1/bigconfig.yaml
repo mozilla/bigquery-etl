@@ -1,0 +1,23 @@
+type: BIGCONFIG_FILE
+
+tag_deployments:
+  - collection:
+      name: Operational Checks
+      notification_channels:
+        - slack: '#de-bigeye-triage'
+    deployments:
+      - column_selectors:
+        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_daily_v1.submission_date
+        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_daily_v1.usage_profile_id
+        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_daily_v1.is_active
+        metrics:
+          - saved_metric_id: is_not_null
+      - column_selectors:
+        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_daily_v1.normalized_country_code
+        metrics:
+          - saved_metric_id: is_2_char_len
+      - column_selectors:
+        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.usage_reporting_clients_daily_v1.*
+        metrics:
+          - saved_metric_id: volume
+          - saved_metric_id: freshness

@@ -10,6 +10,7 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
   - workgroup:regrets-reporter
 references:

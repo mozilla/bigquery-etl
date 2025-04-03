@@ -15,6 +15,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ci-and-quality-tools/taskcluster
+  - workgroup:dataops-managed/external-fides
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
 references:

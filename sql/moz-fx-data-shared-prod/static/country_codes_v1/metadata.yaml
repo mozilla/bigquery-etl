@@ -11,6 +11,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-census
+  - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
   - workgroup:mozilla-confidential

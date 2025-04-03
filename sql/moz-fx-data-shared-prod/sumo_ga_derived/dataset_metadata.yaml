@@ -9,3 +9,4 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:data-sumo/automation
+  - workgroup:dataops-managed/external-fides

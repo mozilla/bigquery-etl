@@ -2293,7 +2293,7 @@ bqetl_chrome_extensions_scraper:
     retry_delay: 30m
     start_date: '2025-03-01'
   description: Pulls info about Chrome extensions from the Chrome webstore
-  schedule_interval: 40 21 * * 1
+  schedule_interval: 40 21 * * *
   tags:
     - impact/tier_3
 

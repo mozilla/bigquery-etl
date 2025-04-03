@@ -93,6 +93,34 @@ def get_divs_from_soup(webpage_soup):
     return divs
 
 
+def get_website_url_from_soup(webpage_soup):
+    """Input: Webpage Soup
+    Output: Website URL (str) if found, otherwise return None"""
+    website_url = None
+    website_links = webpage_soup.find_all("a")
+    for website_link in website_links:
+        if website_link.has_attr("href") and "Website" in website_link.text:
+            website_url = website_link["href"]
+    return website_url
+
+
+def get_category_from_soup(webpage_soup):
+    """Input: Webpage Soup
+    Output: Category of the extension if found, otherwise return None"""
+    category = None
+    website_links = webpage_soup.find_all("a")
+    for link_nbr, website_link in enumerate(website_links):
+        if (
+            website_link.has_attr("href")
+            and "Extension" in website_link.text
+            and link_nbr + 1 < len(website_links)
+        ):
+            # Get the next link text
+            category = website_links[link_nbr + 1].text.strip()
+
+    return category
+
+
 def initialize_results_df():
     """Returns a dataframe with 0 rows with the desired format"""
     results_df = pd.DataFrame(
@@ -103,6 +131,15 @@ def initialize_results_df():
             "star_rating",
             "number_of_ratings",
             "number_of_users",
+            "extension_version",
+            "extension_size",
+            "extension_languages",
+            "developer_desc",
+            "developer_email",
+            "developer_website",
+            "developer_phone",
+            "extension_updated_date",
+            "category",
         ]
     )
     return results_df
@@ -119,11 +156,20 @@ def check_if_detail_or_non_detail_page(url):
 
 def pull_data_from_detail_page(url, timeout_limit, current_date):
     """Input: URL, timeout limit (integer), and current date"""
+
     # Initialize as empty strings
-    number_of_ratings = "NOT FOUND"
-    chrome_extension_name = "NOT FOUND"
-    star_rating = "NOT FOUND"
-    number_of_users = "NOT FOUND"
+    number_of_ratings = None
+    chrome_extension_name = None
+    star_rating = None
+    number_of_users = None
+    extension_version = None
+    extension_size = None
+    extension_languages = None
+    developer_desc = None
+    developer_email = None
+    developer_website = None
+    developer_phone = None
+    extension_updated_date = None
 
     # Get the soup from the current link
     current_link_soup = get_soup_from_webpage(
@@ -135,6 +181,9 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
     headers_from_current_link_soup = get_h1_headers_from_soup(current_link_soup)
     h2_headers_from_current_link_soup = get_h2_headers_from_soup(current_link_soup)
     divs_from_current_link_soup = get_divs_from_soup(current_link_soup)
+
+    # Get the developer website URL
+    developer_website = get_website_url_from_soup(current_link_soup)
 
     # Get the number of ratings
     for paragraph in paragraphs_from_current_link_soup:
@@ -155,13 +204,71 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
             if match:
                 star_rating = match.group(0).split(" ")[0]
 
-    # Get the number of users
+    # Loop through the divs
     for div in divs_from_current_link_soup:
+        # Get the number of users
         if " users" in div:
             pattern = r"(\d{1,3}(?:,\d{3})*|\d+) (?=users)"
             match = re.search(pattern, div)
             if match:
                 number_of_users = match.group(0).split(" ")[0].replace(",", "")
+
+    # Loop through divs
+    for index, div in enumerate(divs_from_current_link_soup):
+        # If you see updated in div and it's not the last div found
+        if "Updated" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have the extension_updated_date
+            extension_updated_date = divs_from_current_link_soup[index + 1]
+        if "Version" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have the extension version
+            extension_version = divs_from_current_link_soup[index + 1]
+        if "Size" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have the extension size
+            extension_size = divs_from_current_link_soup[index + 1]
+        if "Languages" in div and index + 1 < len(divs_from_current_link_soup):
+            # The next div should have language info
+            extension_languages = divs_from_current_link_soup[index + 1]
+
+    # Get all divs
+    all_divs = current_link_soup.find_all("div")
+    # Loop through each div
+    for idx, div in enumerate(all_divs):
+        developer_info = None
+        # If the div is developer and it's not the last div
+        if div.text.strip() == "Developer" and idx + 1 < len(all_divs):
+            # Get the next div after Developer
+            next_div = all_divs[idx + 1]
+            # Find the first nested tag
+            first_nested_tag = next_div.find()
+            # If there is a first nested tag
+            if first_nested_tag:
+                # Get developer info as all the text from that first nested tag
+                developer_info = first_nested_tag.get_text(separator="\n", strip=True)
+
+                # If website is in developer info
+                if "Website" in developer_info:
+                    # Split on website and take the part before website as the developer description
+                    developer_desc = developer_info.split("Website")[0].replace(
+                        "\n", " "
+                    )
+
+                # If email is in developer info
+                if "Email" in developer_info:
+                    developer_email_and_phone = (
+                        developer_info.split("Email")[1].replace("\n", " ").strip()
+                    )
+                    # If phone is there, get developer email and phone
+                    if "Phone" in developer_email_and_phone:
+                        developer_email_and_phone_list = (
+                            developer_email_and_phone.split("Phone")
+                        )
+                        developer_email = developer_email_and_phone_list[0]
+                        developer_phone = developer_email_and_phone_list[1]
+                    # If phone is not there, only get developer email
+                    else:
+                        developer_email = developer_email_and_phone
+
+    category = get_category_from_soup(current_link_soup)
 
     # Put the results into a dataframe
     curr_link_results_df = pd.DataFrame(
@@ -172,6 +279,15 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
             "star_rating": [star_rating],
             "number_of_ratings": [number_of_ratings],
             "number_of_users": [number_of_users],
+            "extension_version": [extension_version],
+            "extension_size": [extension_size],
+            "extension_languages": [extension_languages],
+            "developer_desc": [developer_desc],
+            "developer_email": [developer_email],
+            "developer_website": [developer_website],
+            "developer_phone": [developer_phone],
+            "extension_updated_date": [extension_updated_date],
+            "category": [category],
         }
     )
 
@@ -235,7 +351,6 @@ def main():
             # Loop through each link on this page
             for link_on_page in unique_links_on_non_detail_page:
 
-
                 # Check if it's a detail page link or not
                 is_detail_page = check_if_detail_or_non_detail_page(link_on_page)
 
@@ -256,6 +371,9 @@ def main():
 
         # Add the top level link to already processed
         links_already_processed.append(current_link)
+
+    # Remove duplicates
+    results_df = results_df.drop_duplicates()
 
     # Write data to CSV in GCS
     final_results_fpath = GCS_BUCKET + RESULTS_FPATH % (logical_dag_date_string)
@@ -286,6 +404,23 @@ def main():
                 {"name": "star_rating", "type": "NUMERIC", "mode": "NULLABLE"},
                 {"name": "number_of_ratings", "type": "STRING", "mode": "NULLABLE"},
                 {"name": "number_of_users", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "extension_version", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "extension_size", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "extension_languages", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_desc", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_email", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_website", "type": "STRING", "mode": "NULLABLE"},
+                {"name": "developer_phone", "type": "STRING", "mode": "NULLABLE"},
+                {
+                    "name": "extension_updated_date",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                },
+                {
+                    "name": "category",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                },
             ],
             skip_leading_rows=1,
             source_format=bigquery.SourceFormat.CSV,

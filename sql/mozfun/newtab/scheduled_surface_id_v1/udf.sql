@@ -1,8 +1,8 @@
 
-                -- The value returned by newtab.scheduled_surface_id_v1 represents the Content teams reference for the
-                -- surface where an article is published on the Newtab.
-                -- This UDF is composed based on the merino backend implementation here:
-                -- https://github.com/mozilla-services/merino-py/blob/main/merino/curated_recommendations/provider.py#L66-L103
+-- The value returned by newtab.scheduled_surface_id_v1 represents the Content teams reference for the
+-- surface where an article is published on the Newtab.
+-- This UDF is composed based on the merino backend implementation here:
+-- https://github.com/mozilla-services/merino-py/blob/main/merino/curated_recommendations/provider.py#L66-L103
 CREATE OR REPLACE FUNCTION newtab.scheduled_surface_id_v1(country STRING, locale STRING)
 RETURNS STRING AS (
   CASE

@@ -37,7 +37,7 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Whether the pocket tile was sponsored (has an ad callback).
-- name: is_secton_followed
+- name: is_section_followed
   type: BOOLEAN
   mode: NULLABLE
   description: If click belongs in a section, if that section is followed

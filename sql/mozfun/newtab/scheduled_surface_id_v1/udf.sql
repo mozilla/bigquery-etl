@@ -27,7 +27,7 @@ RETURNS STRING AS (
   END
 );
 
-                -- Tests
+-- Tests
 SELECT
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-US')),
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en-IE')),

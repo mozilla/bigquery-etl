@@ -58,3 +58,4 @@ fields:
 - name: category
   type: STRING
   mode: NULLABLE
+  description: Extension Category

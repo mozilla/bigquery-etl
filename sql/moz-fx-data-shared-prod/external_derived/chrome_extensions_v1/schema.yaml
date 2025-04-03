@@ -55,3 +55,7 @@ fields:
   mode: NULLABLE
   type: STRING
   description: Extension Updated Date
+- name: category
+  mode: NULLABLE
+  type: STRING
+  description: Extension Category

@@ -45,7 +45,7 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_chrome_extensions_scraper",
     default_args=default_args,
-    schedule_interval="40 21 * * 1",
+    schedule_interval="40 21 * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,

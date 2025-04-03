@@ -95,13 +95,30 @@ def get_divs_from_soup(webpage_soup):
 
 def get_website_url_from_soup(webpage_soup):
     """Input: Webpage Soup
-    Output: Website URL (str) if found, otherwise return None """
+    Output: Website URL (str) if found, otherwise return None"""
     website_url = None
     website_links = webpage_soup.find_all("a")
     for website_link in website_links:
         if website_link.has_attr("href") and "Website" in website_link.text:
             website_url = website_link["href"]
     return website_url
+
+
+def get_category_from_soup(webpage_soup):
+    """Input: Webpage Soup
+    Output: Category of the extension if found, otherwise return None"""
+    category = None
+    website_links = webpage_soup.find_all("a")
+    for link_nbr, website_link in enumerate(website_links):
+        if (
+            website_link.has_attr("href")
+            and "Extension" in website_link.text
+            and link_nbr + 1 < len(website_links)
+        ):
+            # Get the next link text
+            category = website_links[link_nbr + 1].text.strip()
+
+    return category
 
 
 def initialize_results_df():
@@ -122,6 +139,7 @@ def initialize_results_df():
             "developer_website",
             "developer_phone",
             "extension_updated_date",
+            "category",
         ]
     )
     return results_df
@@ -250,6 +268,8 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
                     else:
                         developer_email = developer_email_and_phone
 
+    category = get_category_from_soup(current_link_soup)
+
     # Put the results into a dataframe
     curr_link_results_df = pd.DataFrame(
         {
@@ -267,6 +287,7 @@ def pull_data_from_detail_page(url, timeout_limit, current_date):
             "developer_website": [developer_website],
             "developer_phone": [developer_phone],
             "extension_updated_date": [extension_updated_date],
+            "category": [category],
         }
     )
 
@@ -392,6 +413,11 @@ def main():
                 {"name": "developer_phone", "type": "STRING", "mode": "NULLABLE"},
                 {
                     "name": "extension_updated_date",
+                    "type": "STRING",
+                    "mode": "NULLABLE",
+                },
+                {
+                    "name": "category",
                     "type": "STRING",
                     "mode": "NULLABLE",
                 },

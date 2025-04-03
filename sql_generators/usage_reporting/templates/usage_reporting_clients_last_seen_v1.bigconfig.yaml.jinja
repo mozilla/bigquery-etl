@@ -15,12 +15,6 @@ tag_deployments:
         metrics:
           - saved_metric_id: is_not_null
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.days_seen_bits
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.days_active_bits
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.days_created_profile_bits
-        metrics:
-          - saved_metric_id: is_28_char_len
-      - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.*
         metrics:
           - saved_metric_id: volume

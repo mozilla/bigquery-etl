@@ -7,19 +7,19 @@ tag_deployments:
         - slack: '{{ bigeye_notification_slack_channel }}'
     deployments:
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.submission_date
+        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.submission_date
         metrics:
           - saved_metric_id: is_not_null
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.country
+        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.country
         metrics:
           - saved_metric_id: is_2_char_len
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.channel
+        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.channel
         metrics:
           - saved_metric_id: is_valid_channel
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.*
+        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.*
         metrics:
           - saved_metric_id: volume
           - saved_metric_id: freshness

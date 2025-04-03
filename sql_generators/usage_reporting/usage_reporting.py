@@ -299,7 +299,8 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
                 f"{active_users_aggregates_dataset_name}.{query_artifact_template}"
             )
             rendered_artifact = _artifact_template.render(
-                **channel_args,
+                **app_template_args,
+                table_name=active_users_aggregates_dataset_name,
                 format=False,
             )
 

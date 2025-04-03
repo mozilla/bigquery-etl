@@ -27,7 +27,12 @@ CHANNEL_VIEW_TEMPLATE = "channel.view.sql.jinja"
 ARTIFACT_TEMPLATES = (
     "metadata.yaml.jinja",
     "schema.yaml.jinja",
+    "bigconfig.yaml.jinja",
 )
+
+BIGEYE_COLLECTION = "Operational Checks"
+BIGEYE_NOTIFICATION_SLACK_CHANNEL = "#de-bigeye-triage"
+
 APP_UNION_VIEW_TEMPLATE = "app_union.view.sql.jinja"
 
 ACTIVE_USERS_VIEW_TEMPLATE = "usage_reporting_active_users.view.sql.jinja"
@@ -104,9 +109,11 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
     jinja_env = Environment(loader=FileSystemLoader(str(GENERATOR_ROOT / "templates")))
 
     default_template_args = {
+        "header": HEADER,
         "project_id": target_project,
         "usage_reporting_stable_table_name": "usage_reporting_v1",
-        "header": HEADER,
+        "bigeye_collection": BIGEYE_COLLECTION,
+        "bigeye_notification_slack_channel": BIGEYE_NOTIFICATION_SLACK_CHANNEL,
     }
 
     for app_name, app_channels in generator_apps_info.items():
@@ -292,7 +299,8 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
                 f"{active_users_aggregates_dataset_name}.{query_artifact_template}"
             )
             rendered_artifact = _artifact_template.render(
-                **channel_args,
+                **app_template_args,
+                table_name=active_users_aggregates_dataset_name,
                 format=False,
             )
 

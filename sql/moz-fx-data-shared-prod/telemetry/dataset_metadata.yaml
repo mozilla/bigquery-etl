@@ -10,3 +10,4 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
+  - workgroup:dataops-managed/external-fides

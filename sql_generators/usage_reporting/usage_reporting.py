@@ -8,7 +8,6 @@ from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
-from sql_generators.glean_usage.common import get_app_info
 
 GENERATOR_ROOT = Path(path.dirname(__file__))
 
@@ -17,6 +16,7 @@ VERSION = "v1"
 
 TEMPLATES_LOCATION = "templates"
 
+# TODO: can we have the templates picked up in some way automatically?
 CHANNEL_TEMPLATES = (
     "usage_reporting_clients_daily_v1.query.sql.jinja",
     "usage_reporting_clients_first_seen_v1.query.sql.jinja",
@@ -52,6 +52,8 @@ COMPOSITE_ACTIVE_USERS_AGGREGATES_VIEW_TEMPLATE = (
 
 def get_generation_config():
     """Retrieve external configuration for this generator."""
+    # TODO: maybe we should have a data structure defined for this config and
+    #       do validation as part of it.
     return ConfigLoader.get("generate", "usage_reporting", "apps", fallback=[])
 
 
@@ -62,6 +64,8 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
     The app info returned includes app_name, and bq namespaces containing data \
     for specific app channels.
     """
+    from sql_generators.glean_usage.common import get_app_info
+
     probe_scraper_app_info = get_app_info()
 
     app_info_filtered: dict = dict()
@@ -70,9 +74,11 @@ def get_specific_apps_app_info_from_probe_scraper(usage_reporting_apps):
         if app_name not in usage_reporting_apps:
             continue
 
+        # TODO: turn the generatic dict into a custom app data structure.
         app_info_filtered[app_name] = dict()
 
         # If channels is set to None it means data from multiple channels exists in the same table.
+        # TODO: should we use "multichannel" instead of None as an indicator of this in the config file?
         if usage_reporting_apps[app_name]["channels"] is None:
             app_info_filtered[app_name]["multichannel"] = {
                 "app_channel": None,
@@ -105,6 +111,7 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
         usage_reporting_apps
     )
 
+    # TODO: should we check the two system paths exist here?
     output_dir = Path(output_dir) / target_project
     jinja_env = Environment(loader=FileSystemLoader(str(GENERATOR_ROOT / "templates")))
 
@@ -336,12 +343,24 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
 
 
 # TODO: resolve this later, getting an import error right now when trying to run the script directly.
-# if __name__ == "__main__":
-#     from argparse import ArgumentParser
+if __name__ == "__main__":
+    from argparse import ArgumentParser
 
-#     parser = ArgumentParser(description=__doc__)
-#     parser.add_argument("--project", default="moz-fx-data-shared-prod")
-#     parser.add_argument("--dataset", default="sql")
-#     args = parser.parse_args()
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--project", default="moz-fx-data-shared-prod")
+    parser.add_argument("--output_dir", default="sql")
+    args = parser.parse_args()
 
-#     generate_usage_reporting(args.project, args.output_dir)
+    # Something is wrong with how modules are managed, we need to do this when calling the module directly.
+    # Otherwise, the cli module does this.
+    import importlib.util
+    import sys
+
+    sql_generators_dir = "sql_generators"
+    spec = importlib.util.spec_from_file_location(
+        sql_generators_dir, (f"{sql_generators_dir}/__init__.py")
+    )
+    module = importlib.util.module_from_spec(spec)  # type: ignore
+    sys.modules["sql_generators"] = module
+
+    generate_usage_reporting(args.project, args.output_dir)

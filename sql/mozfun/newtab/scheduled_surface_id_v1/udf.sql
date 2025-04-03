@@ -33,3 +33,7 @@ SELECT
   assert.equals('NEW_TAB_EN_GB', newtab.scheduled_surface_id_v1('IE', 'en-IE')),
   assert.equals('NEW_TAB_EN_INTL', newtab.scheduled_surface_id_v1('IN', 'en-US')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en-US'));
+  -- Any other country - locale combination of country-locale will be classified as NEW_TAB_EN_US, including NULL values.
+  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('DE', 'arch')),
+  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('DE', NULL))
+  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, NULL))

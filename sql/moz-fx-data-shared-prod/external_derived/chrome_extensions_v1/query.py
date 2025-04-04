@@ -8,6 +8,17 @@ from argparse import ArgumentParser
 from google.cloud import bigquery
 from urllib.parse import urljoin
 
+#NEW PACKAGES BELOW TO USE SELENIUM TO CLICK THE BUTTON 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
+#Set up web driver
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
 # Main website for Chrome Webstore
 CHROME_WEBSTORE_URL = "https://chromewebstore.google.com"
 
@@ -52,6 +63,25 @@ def get_unique_links_from_webpage(
             unique_links.append(link)
     return unique_links
 
+
+def get_unique_links_from_html(
+    html, base_url, links_to_ignore, links_to_not_process
+):
+    """Input: Raw HTML string, base URL, links to ignore, and links already processed
+    Output: List of unique, absolute links on that page"""
+
+    soup = BeautifulSoup(html, "html.parser")
+
+    links = [urljoin(base_url, a["href"]) for a in soup.find_all("a", href=True)]
+    unique_links = []
+    for link in links:
+        if (
+            link not in unique_links
+            and link not in links_to_ignore
+            and link not in links_to_not_process
+        ):
+            unique_links.append(link)
+    return unique_links
 
 # Function to get the soup returned from a given page
 def get_soup_from_webpage(webpage_url, timeout_seconds):
@@ -152,6 +182,16 @@ def check_if_detail_or_non_detail_page(url):
     if "/detail/" in url:
         detail_page = True
     return detail_page
+
+
+def check_if_load_more_button_present(webpage_soup):
+    """Input: Webpage Soup
+    Output: Boolean indicating if load more button is on the page """
+    buttons = webpage_soup.find_all('button')
+    for button in buttons:
+        if 'Load more' in button.get_text(strip=True):
+            return True
+    return False
 
 
 def pull_data_from_detail_page(url, timeout_limit, current_date):
@@ -321,6 +361,12 @@ def main():
 
     # Loop through the links found on the main page of the Chrome Webstore
     for idx, current_link in enumerate(unique_links_on_chrome_webstore_page):
+        #Initialize final html as none
+        final_html = None
+
+        #TEMP FOR TESTING
+        print('Current link: ', current_link)
+        #TEMP FOR TESTING
 
         # Check if the link is a "detail page" or a "non detail page"
         is_detail_page = check_if_detail_or_non_detail_page(current_link)
@@ -339,14 +385,48 @@ def main():
 
         # If this link is not a detail page
         else:
-            # Get the links on this page
-            unique_links_on_non_detail_page = get_unique_links_from_webpage(
-                url=current_link,
-                base_url=CHROME_WEBSTORE_URL,
-                timeout_seconds=TIMEOUT_IN_SECONDS,
-                links_to_ignore=LIST_OF_LINKS_TO_IGNORE,
-                links_to_not_process=links_already_processed,
-            )
+            #Check if there is a load more button present
+            current_non_detail_page_soup = get_soup_from_webpage(current_link, TIMEOUT_IN_SECONDS)
+            load_more_button_present = check_if_load_more_button_present(current_non_detail_page_soup)
+            print('load_more_button_present: ', str(load_more_button_present))
+
+            if load_more_button_present:
+                driver.get(current_link)
+
+                # Wait until the button is present and clickable
+                try:
+                    wait = WebDriverWait(driver, 10)
+                    load_more_button = wait.until(EC.element_to_be_clickable(
+                        (By.XPATH, '//button[.//span[contains(text(), "Load more")]]')
+                    ))
+
+                    load_more_button.click()
+                    print("Clicked 'Load more' button!")
+
+                except Exception as e:
+                    print("Could not find or click 'Load more' button:", e)
+
+                final_html = driver.page_source
+                #driver.quit()
+
+            ## IF the load more button was present and clicked, use the HTML to get links
+            if final_html:
+                unique_links_on_non_detail_page = get_unique_links_from_html(
+                    html=final_html,
+                    base_url = CHROME_WEBSTORE_URL,
+                    links_to_ignore = LIST_OF_LINKS_TO_IGNORE,
+                    links_to_not_process=links_already_processed,
+                )
+            ## ELSE just use the current link to get links
+            else:
+                # Get the links on this page
+                unique_links_on_non_detail_page = get_unique_links_from_webpage(
+                    url=current_link,
+                    base_url=CHROME_WEBSTORE_URL,
+                    timeout_seconds=TIMEOUT_IN_SECONDS,
+                    links_to_ignore=LIST_OF_LINKS_TO_IGNORE,
+                    links_to_not_process=links_already_processed,
+                )
 
             # Loop through each link on this page
             for link_on_page in unique_links_on_non_detail_page:

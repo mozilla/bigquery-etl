@@ -48,10 +48,9 @@ SELECT
   -- Any other country - locale combination of country-locale will be classified as NEW_TAB_EN_US, including NULL values.
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('DE', 'arch')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('DE', NULL)),
-  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, NULL)) assert.equals(
-    'NEW_TAB_EN_US',
-    newtab.scheduled_surface_id_v1('US', 'en-CA')
-  ),
+  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1(NULL, NULL)),
+  -- Tests from merino (https://github.com/mozilla-services/merino-py/blob/main/tests/unit/curated_recommendations/test_provider.py#L160-L225)
+  assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-CA')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-GB')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('US', 'en-US')),
   assert.equals('NEW_TAB_EN_US', newtab.scheduled_surface_id_v1('CA', 'en-CA')),

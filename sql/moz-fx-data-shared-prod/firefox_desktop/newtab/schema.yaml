@@ -348,11 +348,14 @@ fields:
       mode: NULLABLE
       description: 'The telemetry id of the search engine.
 
-        For application provided engines, this is either supplied by the
+        For example: "engine1"
 
-        configuration or from the first part of the associated WebExtension Id.
 
-        For other engines, this is `other-<extensionName>`.
+        For application-provided engines, this is the identifier plus telemetry
+
+        suffix supplied by the configuration.
+
+        For other engines, this is `other-<engineName>`.
 
         '
     - name: search_engine_private_engine_id
@@ -360,11 +363,15 @@ fields:
       mode: NULLABLE
       description: 'The telemetry id of the search engine.
 
-        For application provided engines, this is either supplied by the
+        For example: "engine1"
 
-        configuration or from the first part of the associated WebExtension Id.
 
-        For other engines, this is `other-<extensionName>`.
+        For application-provided engines, this is the identifier plus telemetry
+
+        suffix supplied by the configuration.
+
+        For other engines, this is `other-<engineName>`.
+
 
         If this string is an empty string (`""`), this means that one or both of
 

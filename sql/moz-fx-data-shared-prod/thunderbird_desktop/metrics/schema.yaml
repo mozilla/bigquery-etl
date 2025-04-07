@@ -1936,6 +1936,61 @@ fields:
         See Bug 1947604 for more information.
 
         '
+    - name: dom_slow_script_notice_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count slow script notices
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SLOW_SCRIPT_NOTICE_COUNT.
+
+        '
+    - name: dom_slow_script_page_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of pages that trigger slow script notices
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SLOW_SCRIPT_PAGE_COUNT.
+
+        '
+    - name: permissions_defective_sql_removed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the removal of defective permissions.sqlite
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        DEFECTIVE_PERMISSIONS_SQL_REMOVED.
+
+        '
+    - name: permissions_sql_corrupted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Record the permissions.sqlite init failure
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        PERMISSIONS_SQL_CORRUPTED.
+
+        '
+    - name: web_push_api_notify
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of push messages that were successfully decrypted and delivered
+        to a ServiceWorker.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        PUSH_API_NOTIFY.
+
+        '
+    - name: webfont_per_page
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Number of fonts loaded at page load
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        WEBFONT_PER_PAGE.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -9856,6 +9911,697 @@ fields:
         histogram PWMGR_PROMPT_UPDATE_ACTION.
 
         '
+    - name: apz_zoom_pinchsource
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Input device that triggered the zoom gesture (InputData::PinchGestureSource)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram APZ_ZOOM_PINCHSOURCE.
+
+        '
+    - name: dom_forget_skippable_during_idle
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percent of the cycle collector''s forget skippable done during
+        idle time
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        FORGET_SKIPPABLE_DURING_IDLE.
+
+        '
+    - name: dom_forget_skippable_frequency
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of forget skippables occurred during a minute
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        FORGET_SKIPPABLE_FREQUENCY.
+
+        '
+    - name: dom_gc_slice_during_idle
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Percent of GC slice done during idle time
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        GC_SLICE_DURING_IDLE.
+
+        '
+    - name: gecko_safe_mode_usage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Whether the user is in safe mode (No, Yes, Forced)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SAFE_MODE_USAGE.
+
+        '
+    - name: gfx_composite_swap_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time to do swap/present/commit in 100 microseconds
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram COMPOSITE_SWAP_TIME.
+
+        '
+    - name: gfx_content_failed_to_acquire_device
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Failed to create a gfx content device. 0=content d3d11, 1=image
+        d3d11, 2=d2d1.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram GFX_CONTENT_FAILED_TO_ACQUIRE_DEVICE.
+
+        '
+    - name: gfx_crash
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Graphics Crash Reason (...)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram GFX_CRASH.
+
+        '
+    - name: gfx_device_reset_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'GPU Device Reset Reason (ok, hung, removed, reset, internal error,
+        invalid call, out of memory)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DEVICE_RESET_REASON.
+
+        '
+    - name: gfx_display_scaling
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Scaling percentage for the display where the first window is opened
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        DISPLAY_SCALING.
+
+        '
+    - name: gfx_forced_device_reset_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'GPU Forced Device Reset Reason (OpenSharedHandle)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram FORCED_DEVICE_RESET_REASON.
+
+        '
+    - name: gfx_graphics_driver_startup_test
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Reports whether or not graphics drivers crashed during startup.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram GRAPHICS_DRIVER_STARTUP_TEST.
+
+        '
+    - name: gfx_sanity_test
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Reports results from the graphics sanity test to track which drivers
+        are having problems (0=TEST_PASSED, 1=TEST_FAILED_RENDER, 2=TEST_FAILED_VIDEO,
+        3=TEST_CRASHED)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram GRAPHICS_SANITY_TEST.
+
+        '
+    - name: security_addon_signature_verification_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Records the result of App Signature Verification. See the comments
+        in OpenSignedAppFile.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram ADDON_SIGNATURE_VERIFICATION_STATUS.
+
+        '
+    - name: security_content_signature_verification_status
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'What was the result of the content signature verification? 0=valid,
+        1=invalid, 2=noCertChain, 3=createContextFailedWithOtherError, 4=expiredCert,
+        5=certNotValidYet, 6=buildCertChainFailed, 7=eeCertForWrongHost, 8=extractKeyError,
+        9=vfyContextError
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram CONTENT_SIGNATURE_VERIFICATION_STATUS.
+
+        '
+    - name: security_ntlm_module_used
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The module used for the NTLM protocol (Windows_API, Kerberos,
+        Samba_auth or Generic) and whether or not the authentication was used to connect
+        to a proxy server. This data is collected only once per session (at first
+        NTLM authentification) ; fixed version.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NTLM_MODULE_USED_2.
+
+        '
+    - name: security_referrer_policy_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The counter of each referrer policy which has been computed for
+        a referrer. The buckets (0-8) are for same-site requests and buckets (9-17)
+        are for cross-site requests. Note that the index matches to the order in ReferrerPolicy.webidl
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram REFERRER_POLICY_COUNT.
+
+        '
+    - name: security_ui_events
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Security-related UI events (addons, form submission, TLS certs,
+        Safe Browsing, updates and geolocation). See /security/manager/ssl/nsISecurityUITelemetry.idl
+        for the specific values.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SECURITY_UI.
+
+        '
+    - name: sync_device_count_desktop
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of desktop devices (including this device) associated with
+        this Sync account. Recorded each time Sync successfully completes the ''clients''
+        engine.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEAVE_DEVICE_COUNT_DESKTOP.
+
+        '
+    - name: sync_device_count_mobile
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of mobile devices associated with this Sync account. Recorded
+        each time Sync successfully completes the ''clients'' engine.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEAVE_DEVICE_COUNT_MOBILE.
+
+        '
+    - name: webfont_compression_woff
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Compression ratio of WOFF data (%)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBFONT_COMPRESSION_WOFF.
+
+        '
+    - name: webfont_compression_woff2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Compression ratio of WOFF2 data (%)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBFONT_COMPRESSION_WOFF2.
+
+        '
+    - name: webfont_fonttype
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Font format type (woff/woff2/ttf/...)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBFONT_FONTTYPE.
+
+        '
+    - name: webfont_srctype
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Font src type loaded (1 = local, 2 = url, 3 = data)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBFONT_SRCTYPE.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -14899,6 +15645,220 @@ fields:
         SUBPROCESS_LAUNCH_FAILURE.
 
         '
+    - name: apz_zoom_activity
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether non-RDM page had user-triggered zooming activity
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        APZ_ZOOM_ACTIVITY.
+
+        '
+    - name: dom_blink_filesystem_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Webkit/Blink filesystem used
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        BLINK_FILESYSTEM_USED.
+
+        '
+    - name: dom_innerwindows_with_mutation_listeners
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Deleted or to-be-reused innerwindow which has had mutation event
+        listeners.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        INNERWINDOWS_WITH_MUTATION_LISTENERS.
+
+        '
+    - name: dom_script_loading_source
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Record the input from which the bytes are coming from, for each
+        script in a document.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram DOM_SCRIPT_LOADING_SOURCE.
+
+        '
+    - name: dom_storage_access_api_ui
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Storage Access API UI events.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram STORAGE_ACCESS_API_UI.
+
+        '
+    - name: dom_webkit_directory_used
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'HTMLInputElement.webkitdirectory attribute used
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        WEBKIT_DIRECTORY_USED.
+
+        '
+    - name: dom_xmlhttprequest_async_or_sync
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Type of XMLHttpRequest, async or sync
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        XMLHTTPREQUEST_ASYNC_OR_SYNC.
+
+        '
+    - name: gfx_macos_video_low_power
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'MacOS video low power state achieved when enqueueing a video frame.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram GFX_MACOS_VIDEO_LOW_POWER.
+
+        '
+    - name: layout_long_reflow_interruptible
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Long running reflow, interruptible or not
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        LONG_REFLOW_INTERRUPTIBLE.
+
+        '
+    - name: sandbox_has_user_namespaces
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether our process succedeed in creating a user namespace
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        SANDBOX_HAS_USER_NAMESPACES.
+
+        '
+    - name: sandbox_rejected_syscalls
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'System calls blocked by a seccomp-bpf sandbox policy; limited
+        to syscalls where we would crash on Nightly.  The key is generally the architecture
+        and syscall ID but in some cases we include non-personally-identifying information
+        from the syscall arguments; see the function SubmitToTelemetry in security/sandbox/linux/reporter/SandboxReporter.cpp
+        for details.
+
+        This metric was generated to correspond to the Legacy Telemetry count histogram
+        SANDBOX_REJECTED_SYSCALLS.
+
+        '
+    - name: script_preloader_requests
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Record hits and misses to the script preloader, with categories.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram SCRIPT_PRELOADER_REQUESTS.
+
+        '
+    - name: startup_cache_requests
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Record hits and misses to the startup cache, with categories.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram STARTUP_CACHE_REQUESTS.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -16318,6 +17278,62 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_VSIZE_MAX_CONTIGUOUS.
+
+        '
+    - name: webfont_size
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Size of font loaded (kb)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBFONT_SIZE.
+
+        '
+    - name: webfont_size_per_page
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Size of all fonts loaded at page load (kb)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBFONT_SIZE_PER_PAGE.
 
         '
   - name: object
@@ -33455,6 +34471,1001 @@ fields:
         histogram PROCESS_LIFETIME.
 
         '
+    - name: cycle_collector_forget_skippable_max
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Max time spent on one forget skippable (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FORGET_SKIPPABLE_MAX.
+
+        '
+    - name: dom_fullscreen_transition_black
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time spent in the fully-black screen in fullscreen transition
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FULLSCREEN_TRANSITION_BLACK_MS.
+
+        '
+    - name: dom_gc_in_progress
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from the beginning of the first slice to the end of the last
+        slice (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram GC_IN_PROGRESS_MS.
+
+        '
+    - name: gfx_composite_frame_roundtrip_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time from vsync to finishing a composite in milliseconds.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram COMPOSITE_FRAME_ROUNDTRIP_TIME.
+
+        '
+    - name: layout_input_event_queued_click
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) for the mouse up/down event to dispatch, but before
+        handlers executing.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram INPUT_EVENT_QUEUED_CLICK_MS.
+
+        '
+    - name: layout_input_event_queued_keyboard
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) for the keyboard event to dispatch, but before handlers
+        executing.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram INPUT_EVENT_QUEUED_KEYBOARD_MS.
+
+        '
+    - name: layout_input_event_response
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) from the Input event being created to the end of it
+        being handled
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram INPUT_EVENT_RESPONSE_MS.
+
+        '
+    - name: layout_input_event_response_coalesced
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) from the Input event being created to the end of it
+        being handled, but with overlapping events coalesced.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram INPUT_EVENT_RESPONSE_COALESCED_MS.
+
+        '
+    - name: layout_load_input_event_response
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time (ms) from the Input event being created to the end of it
+        being handled for events handling during page load only
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram LOAD_INPUT_EVENT_RESPONSE_MS.
+
+        '
+    - name: layout_paint_rasterize_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent rasterizing each frame in milliseconds
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram PAINT_RASTERIZE_TIME.
+
+        '
+    - name: layout_refresh_driver_chrome_frame_delay
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Delay in ms between the target and the actual handling time of
+        the frame at refresh driver in the chrome process.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_REFRESH_DRIVER_CHROME_FRAME_DELAY_MS.
+
+        '
+    - name: layout_refresh_driver_content_frame_delay
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Delay in ms between the target and the actual handling time of
+        the frame at refresh driver in the content process.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram FX_REFRESH_DRIVER_CONTENT_FRAME_DELAY_MS.
+
+        '
+    - name: layout_refresh_driver_tick
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Total time spent ticking the refresh driver in milliseconds
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram REFRESH_DRIVER_TICK.
+
+        '
+    - name: layout_time_to_first_interaction
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in milliseconds from the first non-blank paint to the creation
+        time of the next click, key, mouse or scroll event per top-level content browsing
+        context.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TIME_TO_FIRST_INTERACTION_MS.
+
+        '
+    - name: performance_time_to_dom_loading
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time in milliseconds from navigationStart to domLoading.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TIME_TO_DOM_LOADING_MS.
+
+        '
+    - name: performance_time_to_first_contentful_paint
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The time between navigation start and the first contentful paint
+        of a foreground root content document, in milliseconds. This only records
+        documents that were in an active docshell throughout the whole time between
+        navigation start and contentful paint. The contentful paint timestamp is taken
+        during display list building and does not include rasterization or compositing
+        of that paint.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram TIME_TO_FIRST_CONTENTFUL_PAINT_MS.
+
+        '
+    - name: quotamanager_initialize_temporarystorage_total_time_excluding_suspend
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'This metric logs the total time required to initialize temporary
+        storage within the QuotaManager after startup on the I/O thread. The duration
+        excludes any periods when the system was suspended (e.g. system sleep or hibernation),
+        to better reflect actual time spent performing temporary storage initialization.
+        The primary goal is to measure the actual runtime cost of temporary storage
+        initialization under typical conditions, without distortion from system-level
+        suspension delays. This data can help detect performance regressions or improvements
+        during startup-related phases, particularly for users with significant amounts
+        of temporary storage data on disk.
+
+        '
+    - name: quotamanager_shutdown_total_time_excluding_suspend
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'This metric logs the total time required to shut down the QuotaManager
+        instance on the PBackground thread. The duration excludes any periods when
+        the system was suspended (system sleep or hibernation), to better reflect
+        actual time spent performing shutdown. While the shutdown process is measured
+        on the PBackground thread, it involves spinning the event loop and thus waiting
+        for operations on other threads (especially I/O threads) to complete. The
+        primary goal is to measure the actual runtime cost of shutdown under typical
+        conditions, without distortion from system-level suspension delays. This data
+        can help detect performance regressions or improvements related to QuotaManager
+        shutdown behavior, especially in scenarios involving large amounts of user
+        storage data.
+
+        '
+    - name: script_preloader_wait_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time spent waiting for off-thread compiles in the script preloader.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SCRIPT_PRELOADER_WAIT_TIME.
+
+        '
+    - name: slow_script_warning_notify_delay
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The difference between the js slow script timeout for content
+        set in prefs and the actual time we waited before displaying the notification
+        (msec).
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram SLOW_SCRIPT_NOTIFY_DELAY.
+
+        '
+    - name: webfont_download_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time to download a webfont (ms)
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram WEBFONT_DOWNLOAD_TIME.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -36212,6 +38223,606 @@ fields:
         histogram WEBEXT_STORAGE_LOCAL_IDB_SET_MS_BY_ADDONID.
 
         '
+    - name: event_longtask
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'LongTask events for parent process (keys: event name): time the
+        event ran in ms
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram EVENT_LONGTASK.
+
+        '
+    - name: network_trr_idle_close_time_h1
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in seconds) that it takes for an idle TRR connection to
+        be closed by the server (HTTP/1.1)
+
+        '
+    - name: network_trr_idle_close_time_h2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in seconds) that it takes for an idle TRR connection to
+        be closed by the server (HTTP/2)
+
+        '
+    - name: network_trr_idle_close_time_h3
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time (in seconds) that it takes for an idle TRR connection to
+        be closed by the server (HTTP/3)
+
+        '
+    - name: perf_dns_first_byte
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time from a top-level document''s HTTP channel open to the
+        first byte of the reply is received (ms). Keyed by TRR domain for DoH or ''Native''
+        otherwise
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_PERF_FIRST_BYTE_MS.
+
+        '
+    - name: perf_dns_first_contentful_paint
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. Keyed by TRR domain
+        for DoH or ''Native'' otherwise
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram DNS_PERF_FIRST_CONTENTFUL_PAINT_MS.
+
+        '
+    - name: perf_h3p_first_contentful_paint
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        only on page load where the main document uses HTTP3. It is keyed based on
+        whether a "priority" header has been received.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram H3P_PERF_FIRST_CONTENTFUL_PAINT_MS.
+
+        '
+    - name: perf_h3p_page_load_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time in milliseconds from navigationStart to loadEventStart for
+        the foreground http or https root content document. This is collected only
+        on page load where the main document uses HTTP3. It is keyed based on whether
+        a "priority" header has been received.
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram H3P_PERF_PAGE_LOAD_TIME_MS.
+
+        '
+    - name: perf_http3_first_contentful_paint
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The time between navigationStart and the first contentful paint
+        of a foreground http or https root content document, in milliseconds. The
+        contentful paint timestamp is taken during display list building and does
+        not include rasterization or compositing of that paint. This is collected
+        only on page load where the main document uses or suppports HTTP3
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_PERF_FIRST_CONTENTFUL_PAINT_MS.
+
+        '
+    - name: perf_http3_page_load_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time in milliseconds from navigationStart to loadEventStart for
+        the foreground http or https root content document. This is collected only
+        on page load where the main document uses or suppports HTTP3
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTP3_PERF_PAGE_LOAD_TIME_MS.
+
+        '
+    - name: security_https_only_mode_upgrade_time
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Time it takes for a request that has been upgraded with HTTPS-Only
+        Mode to complete, broken down by top-level (top) / sub-resource (sub) and
+        status
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram HTTPS_ONLY_MODE_UPGRADE_TIME_MS.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -37678,6 +40289,193 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry linear histogram
         MEMORY_DISTRIBUTION_AMONG_CONTENT.
+
+        '
+    - name: gfx_content_large_paint_phase_weight_full
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentages of times for phases in an expensive content paint
+        relative to the time spent in the entire expensive paint. ("dl" = Display
+        list, "wrdl" = WebRender display list, "sb" = Scene building, "fb" = Frame
+        building)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        CONTENT_LARGE_PAINT_PHASE_WEIGHT_FULL.
+
+        '
+    - name: gfx_content_large_paint_phase_weight_partial
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentages of times for phases in an expensive content paint
+        relative to the time spent in the entire expensive paint. ("dl" = Display
+        list, "wrdl" = WebRender display list, "sb" = Scene building, "fb" = Frame
+        building)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        CONTENT_LARGE_PAINT_PHASE_WEIGHT_PARTIAL.
+
+        '
+    - name: gfx_content_small_paint_phase_weight_full
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentages of times for phases in a normal content paint relative
+        to the time spent in the entire normal paint. ("dl" = Display list, "wrdl"
+        = WebRender display list, "sb" = Scene building, "fb" = Frame building)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        CONTENT_SMALL_PAINT_PHASE_WEIGHT_FULL.
+
+        '
+    - name: gfx_content_small_paint_phase_weight_partial
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Percentages of times for phases in a normal content paint relative
+        to the time spent in the entire normal paint. ("dl" = Display list, "wrdl"
+        = WebRender display list, "sb" = Scene building, "fb" = Frame building)
+
+        This metric was generated to correspond to the Legacy Telemetry linear histogram
+        CONTENT_SMALL_PAINT_PHASE_WEIGHT_PARTIAL.
+
+        '
+    - name: sandbox_failed_launch_keyed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Error code when a Windows sandboxed process fails to launch, keyed
+        by process type and Windows error code. See https://searchfox.org/mozilla-central/search?q=ResultCode++path%3Asandbox_types.h&redirect=true
+        for definitions of the error codes.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram SANDBOX_FAILED_LAUNCH_KEYED.
 
         '
   - name: labeled_quantity

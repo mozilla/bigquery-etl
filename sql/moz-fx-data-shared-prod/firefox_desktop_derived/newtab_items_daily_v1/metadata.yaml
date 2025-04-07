@@ -1,0 +1,32 @@
+friendly_name: Newtab Items Daily
+description: |-
+  A daily aggregation of newtab actions on content/items (example: impressions, clicks, dismissals)
+  for Firefox desktop, partitioned by day.
+owners:
+- gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - channel
+    - country
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

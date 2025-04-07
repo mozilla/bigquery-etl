@@ -27,7 +27,7 @@ FOREX_TICKERS = [
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--api-key", required=True)
 parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
-parser.add_argument("--destination_dataset", default="reference_derived")
+parser.add_argument("--destination_dataset", default="external_derived")
 parser.add_argument("--destination_table", default="macroeconomic_indices_v1")
 parser.add_argument("--market-date")
 parser.add_argument("--backfill", action="store_true")

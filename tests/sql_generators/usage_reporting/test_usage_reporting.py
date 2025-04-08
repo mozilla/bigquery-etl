@@ -281,7 +281,6 @@ def test_get_specific_apps_app_info_from_probe_scraper_filtered(mock_get_app_inf
         "firefox_desktop": {"channels": None},
     }
     actual = get_specific_apps_app_info_from_probe_scraper(input)
-    assert mock_get_app_info.called
 
     expected = {
         "firefox_desktop": {
@@ -300,4 +299,5 @@ def test_get_specific_apps_app_info_from_probe_scraper_filtered(mock_get_app_inf
         },
     }
 
+    assert mock_get_app_info.called
     assert expected == actual

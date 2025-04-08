@@ -230,13 +230,6 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
         )
 
-        ExternalTaskMarker(
-            task_id="taar_daily__wait_for_clients_last_seen",
-            external_dag_id="taar_daily",
-            external_task_id="wait_for_clients_last_seen",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
         checks__fail_telemetry_derived__clients_last_seen__v2_external.set_upstream(
             checks__fail_telemetry_derived__clients_last_seen__v2
         )
@@ -254,20 +247,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
-
-    with TaskGroup(
-        "checks__warn_telemetry_derived__clients_last_seen__v2_external",
-    ) as checks__warn_telemetry_derived__clients_last_seen__v2_external:
-        ExternalTaskMarker(
-            task_id="taar_daily__wait_for_clients_last_seen",
-            external_dag_id="taar_daily",
-            external_task_id="wait_for_clients_last_seen",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        checks__warn_telemetry_derived__clients_last_seen__v2_external.set_upstream(
-            checks__warn_telemetry_derived__clients_last_seen__v2
-        )
 
     client_probe_processes__v1 = bigquery_etl_query(
         task_id="client_probe_processes__v1",
@@ -584,13 +563,6 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
         )
 
-        ExternalTaskMarker(
-            task_id="taar_daily__wait_for_clients_last_seen",
-            external_dag_id="taar_daily",
-            external_task_id="wait_for_clients_last_seen",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
         telemetry_derived__clients_last_seen__v1_external.set_upstream(
             telemetry_derived__clients_last_seen__v1
         )
@@ -607,20 +579,6 @@ with DAG(
         depends_on_past=True,
         priority_weight=85,
     )
-
-    with TaskGroup(
-        "telemetry_derived__clients_last_seen__v2_external",
-    ) as telemetry_derived__clients_last_seen__v2_external:
-        ExternalTaskMarker(
-            task_id="taar_daily__wait_for_clients_last_seen",
-            external_dag_id="taar_daily",
-            external_task_id="wait_for_clients_last_seen",
-            execution_date="{{ (execution_date + macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        telemetry_derived__clients_last_seen__v2_external.set_upstream(
-            telemetry_derived__clients_last_seen__v2
-        )
 
     telemetry_derived__clients_last_seen_event__v1 = bigquery_etl_query(
         task_id="telemetry_derived__clients_last_seen_event__v1",

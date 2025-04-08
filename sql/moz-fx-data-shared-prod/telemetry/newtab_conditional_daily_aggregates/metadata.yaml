@@ -10,7 +10,6 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:dataops-managed/external-fides
-  - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
 references:
   view.sql:

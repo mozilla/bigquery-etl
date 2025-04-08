@@ -21,10 +21,6 @@ scheduling:
   priority: 85
   start_date: '2019-04-15'
   depends_on_past: true
-  external_downstream_tasks:
-  - task_id: wait_for_clients_last_seen
-    dag_name: taar_daily
-    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day
@@ -46,7 +42,6 @@ schema:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/taar
   - workgroup:mozilla-confidential
 references: {}
 require_column_descriptions: false

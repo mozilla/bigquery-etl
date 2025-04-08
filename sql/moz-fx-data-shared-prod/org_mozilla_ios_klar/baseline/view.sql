@@ -6,7 +6,6 @@ SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
     mozfun.norm.glean_ping_info(ping_info) AS ping_info,
-    mozfun.norm.glean_baseline_client_info(client_info, metrics) AS client_info,
     (
       SELECT AS STRUCT
         metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
@@ -17,7 +16,12 @@ SELECT
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour
           ) AS datetime
         )
-    ) AS metrics
+    ) AS metrics,
+    mozfun.norm.glean_client_info_attribution(
+      mozfun.norm.glean_baseline_client_info(client_info, metrics),
+      CAST(NULL AS JSON),
+      CAST(NULL AS JSON)
+    ) AS client_info
   ),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,
   mozfun.norm.extract_version(client_info.app_display_version, 'minor') AS app_version_minor,

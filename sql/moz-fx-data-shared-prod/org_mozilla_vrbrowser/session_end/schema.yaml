@@ -115,6 +115,9 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The attribution term (e.g. 'browser with developer tools for android').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
   - name: distribution
     type: RECORD
     mode: NULLABLE
@@ -123,6 +126,9 @@ fields:
       type: STRING
       mode: NULLABLE
       description: The distribution name (e.g. 'MozillaOnline').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE

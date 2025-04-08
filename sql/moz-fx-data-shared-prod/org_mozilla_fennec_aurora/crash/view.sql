@@ -14,7 +14,12 @@ SELECT
             metrics.datetime.crash_time AS raw_crash_time
           ) AS datetime
         )
-    ) AS metrics
+    ) AS metrics,
+    mozfun.norm.glean_client_info_attribution(
+      client_info,
+      CAST(NULL AS JSON),
+      CAST(NULL AS JSON)
+    ) AS client_info
   ),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,
   mozfun.norm.extract_version(client_info.app_display_version, 'minor') AS app_version_minor,

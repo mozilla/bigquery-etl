@@ -161,7 +161,7 @@ PROBE_SCRAPER_APP_INFO_MOCK_VALUE = {
 
 
 # TODO: update the test_get_specific_apps_app_info_from_probe_scraper tests to use paremetisation.
-@patch("sql_generators.glean_usage.common.get_app_info")
+@patch("sql_generators.usage_reporting.usage_reporting.get_app_info")
 def test_get_specific_apps_app_info_from_probe_scraper_empty(mock_get_app_info):
     mock_get_app_info.return_value = PROBE_SCRAPER_APP_INFO_MOCK_VALUE
 
@@ -175,7 +175,7 @@ def test_get_specific_apps_app_info_from_probe_scraper_empty(mock_get_app_info):
 
 
 # TODO: we should mock the response from probe scraper API in this test.
-@patch("sql_generators.glean_usage.common.get_app_info")
+@patch("sql_generators.usage_reporting.usage_reporting.get_app_info")
 def test_get_specific_apps_app_info_from_probe_scraper(mock_get_app_info):
     mock_get_app_info.return_value = PROBE_SCRAPER_APP_INFO_MOCK_VALUE
 
@@ -271,7 +271,7 @@ def test_get_specific_apps_app_info_from_probe_scraper(mock_get_app_info):
     assert expected == actual
 
 
-@patch("sql_generators.glean_usage.common.get_app_info")
+@patch("sql_generators.usage_reporting.usage_reporting.get_app_info")
 def test_get_specific_apps_app_info_from_probe_scraper_filtered(mock_get_app_info):
     mock_get_app_info.return_value = PROBE_SCRAPER_APP_INFO_MOCK_VALUE
 

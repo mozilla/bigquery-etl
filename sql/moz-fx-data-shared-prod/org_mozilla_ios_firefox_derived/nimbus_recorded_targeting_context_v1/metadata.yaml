@@ -1,0 +1,15 @@
+friendly_name: Nimbus Recorded Targeting Context (iOS)
+description: |-
+  Please provide a description for the query
+owners:
+- chumphreys@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null

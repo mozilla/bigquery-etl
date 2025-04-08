@@ -5,13 +5,15 @@ SELECT
   m.*
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_recorded_targeting_context_v1` m
-INNER JOIN (
-  SELECT
-    client_id,
-    MAX(submission_date) as latest_date
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_recorded_targeting_context_v1`
-  GROUP BY client_id
-) ld
-ON
-  m.client_id = ld.client_id AND m.submission_date = ld.latest_date
+INNER JOIN
+  (
+    SELECT
+      client_id,
+      MAX(submission_date) AS latest_date
+    FROM
+      `moz-fx-data-shared-prod.org_mozilla_ios_firefox_derived.nimbus_recorded_targeting_context_v1`
+    GROUP BY
+      client_id
+  ) ld
+  ON m.client_id = ld.client_id
+  AND m.submission_date = ld.latest_date

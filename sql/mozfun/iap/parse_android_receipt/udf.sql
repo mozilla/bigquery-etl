@@ -85,7 +85,7 @@ CREATE OR REPLACE FUNCTION iap.parse_android_receipt(input STRING) AS (
     CAST(JSON_VALUE(input, "$.replacedByAnotherPurchase") AS BOOL) AS replaced_by_another_purchase,
     JSON_VALUE(input, "$.sku") AS sku,
     JSON_VALUE(input, "$.skuType") AS sku_type,
-    TO_HEX(SHA256(JSON_VALUE(input, "$.userId"))) AS user_id,
+    JSON_VALUE(input, "$.userId") AS user_id,
     TIMESTAMP_MILLIS(CAST(JSON_VALUE(input, "$.verifiedAt") AS INT64)) AS verified_at
   )
 );
@@ -138,7 +138,7 @@ SELECT
       FALSE AS replaced_by_another_purchase,
       "org.mozilla.gps.mozillavpn.product.1_month_subscription" AS sku,
       "subs" AS sku_type,
-      TO_HEX(SHA256("user id")) AS user_id,
+      "user id" AS user_id,
       TIMESTAMP "1970-01-01 00:00:03 UTC" AS verified_at
     ),
     actual => iap.parse_android_receipt(

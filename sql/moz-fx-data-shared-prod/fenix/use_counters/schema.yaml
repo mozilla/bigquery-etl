@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -84,12 +84,18 @@ fields:
     - name: term
       type: STRING
       mode: NULLABLE
+    - name: ext
+      type: JSON
+      mode: NULLABLE
   - name: distribution
     type: RECORD
     mode: NULLABLE
     fields:
     - name: name
       type: STRING
+      mode: NULLABLE
+    - name: ext
+      type: JSON
       mode: NULLABLE
 - name: document_id
   type: STRING

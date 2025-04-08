@@ -66,8 +66,6 @@ SELECT
   COUNTIF(event_name = 'dismiss') AS dismiss_count
 FROM
   flattened_events
-WHERE
-  section IS NOT NULL
 GROUP BY
   submission_date,
   app_version,

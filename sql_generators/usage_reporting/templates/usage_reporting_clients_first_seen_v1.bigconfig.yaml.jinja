@@ -1,20 +1,23 @@
 type: BIGCONFIG_FILE
-
-tag_deployments:
+table_deployments:
   - collection:
       name: {{ bigeye_collection }}
       notification_channels:
         - slack: '{{ bigeye_notification_slack_channel }}'
+
     deployments:
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.first_seen_date
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.usage_profile_id
-        metrics:
-          - saved_metric_id: is_not_null
-            rct_overrides:
-              - first_seen_date
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}.*
-        metrics:
+      - fq_table_name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}
+        table_metrics:
           - saved_metric_id: volume
           - saved_metric_id: freshness
+        columns:
+          - column_name: first_seen_date
+            metrics:
+              - saved_metric_id: is_not_null
+                rct_overrides:
+                  - first_seen_date
+          - column_name: usage_profile_id
+            metrics:
+              - saved_metric_id: is_not_null
+                rct_overrides:
+                  - first_seen_date

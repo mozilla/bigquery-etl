@@ -1,5 +1,4 @@
 type: BIGCONFIG_FILE
-
 saved_metric_definitions:
   metrics:
     - saved_metric_id: is_not_null

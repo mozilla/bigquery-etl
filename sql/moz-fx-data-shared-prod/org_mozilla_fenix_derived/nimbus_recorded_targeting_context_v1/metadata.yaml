@@ -1,6 +1,6 @@
 friendly_name: Nimbus Recorded Targeting Context (Fenix)
 description: |-
-  A query to obtain the
+  A query to obtain the previous day's recorded Nimbus targeting context values for each client.
 owners:
 - chumphreys@mozilla.com
 labels:

@@ -643,7 +643,14 @@ SELECT
       metrics.custom_distribution.webfont_compression_woff,
       metrics.custom_distribution.webfont_compression_woff2,
       metrics.custom_distribution.webfont_fonttype,
-      metrics.custom_distribution.webfont_srctype
+      metrics.custom_distribution.webfont_srctype,
+      metrics.custom_distribution.http_dns_httpssvc_connection_failed_reason,
+      metrics.custom_distribution.http_dns_httpssvc_record_receiving_stage,
+      metrics.custom_distribution.http_dnt_usage,
+      metrics.custom_distribution.http_tls_early_data_negotiated,
+      metrics.custom_distribution.network_backgroundfilesaver_thread_count,
+      metrics.custom_distribution.network_id,
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -988,7 +995,14 @@ SELECT
       metrics.labeled_counter.sandbox_has_user_namespaces,
       metrics.labeled_counter.sandbox_rejected_syscalls,
       metrics.labeled_counter.script_preloader_requests,
-      metrics.labeled_counter.startup_cache_requests
+      metrics.labeled_counter.startup_cache_requests,
+      metrics.labeled_counter.http_cache_lm_inconsistent,
+      metrics.labeled_counter.http_echconfig_success_rate,
+      metrics.labeled_counter.http_http2_fail_before_settings,
+      metrics.labeled_counter.http_script_block_incorrect_mime,
+      metrics.labeled_counter.http_tls_early_data_accepted,
+      metrics.labeled_counter.network_id_online,
+      metrics.labeled_counter.network_rel_preload_miss_ratio
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2452,7 +2466,14 @@ SELECT
       metrics.custom_distribution.webfont_compression_woff,
       metrics.custom_distribution.webfont_compression_woff2,
       metrics.custom_distribution.webfont_fonttype,
-      metrics.custom_distribution.webfont_srctype
+      metrics.custom_distribution.webfont_srctype,
+      metrics.custom_distribution.http_dns_httpssvc_connection_failed_reason,
+      metrics.custom_distribution.http_dns_httpssvc_record_receiving_stage,
+      metrics.custom_distribution.http_dnt_usage,
+      metrics.custom_distribution.http_tls_early_data_negotiated,
+      metrics.custom_distribution.network_backgroundfilesaver_thread_count,
+      metrics.custom_distribution.network_id,
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2797,7 +2818,14 @@ SELECT
       metrics.labeled_counter.sandbox_has_user_namespaces,
       metrics.labeled_counter.sandbox_rejected_syscalls,
       metrics.labeled_counter.script_preloader_requests,
-      metrics.labeled_counter.startup_cache_requests
+      metrics.labeled_counter.startup_cache_requests,
+      metrics.labeled_counter.http_cache_lm_inconsistent,
+      metrics.labeled_counter.http_echconfig_success_rate,
+      metrics.labeled_counter.http_http2_fail_before_settings,
+      metrics.labeled_counter.http_script_block_incorrect_mime,
+      metrics.labeled_counter.http_tls_early_data_accepted,
+      metrics.labeled_counter.network_id_online,
+      metrics.labeled_counter.network_rel_preload_miss_ratio
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4281,7 +4309,14 @@ SELECT
       metrics.custom_distribution.webfont_compression_woff,
       metrics.custom_distribution.webfont_compression_woff2,
       metrics.custom_distribution.webfont_fonttype,
-      metrics.custom_distribution.webfont_srctype
+      metrics.custom_distribution.webfont_srctype,
+      metrics.custom_distribution.http_dns_httpssvc_connection_failed_reason,
+      metrics.custom_distribution.http_dns_httpssvc_record_receiving_stage,
+      metrics.custom_distribution.http_dnt_usage,
+      metrics.custom_distribution.http_tls_early_data_negotiated,
+      metrics.custom_distribution.network_backgroundfilesaver_thread_count,
+      metrics.custom_distribution.network_id,
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4626,7 +4661,14 @@ SELECT
       metrics.labeled_counter.sandbox_has_user_namespaces,
       metrics.labeled_counter.sandbox_rejected_syscalls,
       metrics.labeled_counter.script_preloader_requests,
-      metrics.labeled_counter.startup_cache_requests
+      metrics.labeled_counter.startup_cache_requests,
+      metrics.labeled_counter.http_cache_lm_inconsistent,
+      metrics.labeled_counter.http_echconfig_success_rate,
+      metrics.labeled_counter.http_http2_fail_before_settings,
+      metrics.labeled_counter.http_script_block_incorrect_mime,
+      metrics.labeled_counter.http_tls_early_data_accepted,
+      metrics.labeled_counter.network_id_online,
+      metrics.labeled_counter.network_rel_preload_miss_ratio
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6119,7 +6161,14 @@ SELECT
       metrics.custom_distribution.webfont_compression_woff,
       metrics.custom_distribution.webfont_compression_woff2,
       metrics.custom_distribution.webfont_fonttype,
-      metrics.custom_distribution.webfont_srctype
+      metrics.custom_distribution.webfont_srctype,
+      metrics.custom_distribution.http_dns_httpssvc_connection_failed_reason,
+      metrics.custom_distribution.http_dns_httpssvc_record_receiving_stage,
+      metrics.custom_distribution.http_dnt_usage,
+      metrics.custom_distribution.http_tls_early_data_negotiated,
+      metrics.custom_distribution.network_backgroundfilesaver_thread_count,
+      metrics.custom_distribution.network_id,
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -6464,7 +6513,14 @@ SELECT
       metrics.labeled_counter.sandbox_has_user_namespaces,
       metrics.labeled_counter.sandbox_rejected_syscalls,
       metrics.labeled_counter.script_preloader_requests,
-      metrics.labeled_counter.startup_cache_requests
+      metrics.labeled_counter.startup_cache_requests,
+      metrics.labeled_counter.http_cache_lm_inconsistent,
+      metrics.labeled_counter.http_echconfig_success_rate,
+      metrics.labeled_counter.http_http2_fail_before_settings,
+      metrics.labeled_counter.http_script_block_incorrect_mime,
+      metrics.labeled_counter.http_tls_early_data_accepted,
+      metrics.labeled_counter.network_id_online,
+      metrics.labeled_counter.network_rel_preload_miss_ratio
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -7937,7 +7993,14 @@ SELECT
       metrics.custom_distribution.webfont_compression_woff,
       metrics.custom_distribution.webfont_compression_woff2,
       metrics.custom_distribution.webfont_fonttype,
-      metrics.custom_distribution.webfont_srctype
+      metrics.custom_distribution.webfont_srctype,
+      metrics.custom_distribution.http_dns_httpssvc_connection_failed_reason,
+      metrics.custom_distribution.http_dns_httpssvc_record_receiving_stage,
+      metrics.custom_distribution.http_dnt_usage,
+      metrics.custom_distribution.http_tls_early_data_negotiated,
+      metrics.custom_distribution.network_backgroundfilesaver_thread_count,
+      metrics.custom_distribution.network_id,
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -8282,7 +8345,14 @@ SELECT
       metrics.labeled_counter.sandbox_has_user_namespaces,
       metrics.labeled_counter.sandbox_rejected_syscalls,
       metrics.labeled_counter.script_preloader_requests,
-      metrics.labeled_counter.startup_cache_requests
+      metrics.labeled_counter.startup_cache_requests,
+      metrics.labeled_counter.http_cache_lm_inconsistent,
+      metrics.labeled_counter.http_echconfig_success_rate,
+      metrics.labeled_counter.http_http2_fail_before_settings,
+      metrics.labeled_counter.http_script_block_incorrect_mime,
+      metrics.labeled_counter.http_tls_early_data_accepted,
+      metrics.labeled_counter.network_id_online,
+      metrics.labeled_counter.network_rel_preload_miss_ratio
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

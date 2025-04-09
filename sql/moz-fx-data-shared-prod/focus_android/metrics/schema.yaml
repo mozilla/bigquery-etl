@@ -4257,6 +4257,76 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: http_cache_lm_inconsistent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: http_echconfig_success_rate
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: http_http2_fail_before_settings
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: http_script_block_incorrect_mime
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: http_tls_early_data_accepted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_id_online
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: network_rel_preload_miss_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -11529,6 +11599,146 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: webfont_srctype
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: http_dns_httpssvc_connection_failed_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: http_dns_httpssvc_record_receiving_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: http_dnt_usage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: http_tls_early_data_negotiated
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: network_backgroundfilesaver_thread_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: network_id
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: network_ipv4_and_ipv6_address_connectivity
       type: RECORD
       mode: NULLABLE
       fields:

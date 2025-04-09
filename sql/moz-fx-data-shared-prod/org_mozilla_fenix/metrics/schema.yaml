@@ -8131,6 +8131,126 @@ fields:
         histogram STARTUP_CACHE_REQUESTS.
 
         '
+    - name: http_cache_lm_inconsistent
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Cache discovered inconsistent last-modified entry
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        CACHE_LM_INCONSISTENT.
+
+        '
+    - name: http_echconfig_success_rate
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'TLS handshake with and without EchConfig success rate.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram ECHCONFIG_SUCCESS_RATE.
+
+        '
+    - name: http_http2_fail_before_settings
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether an HTTP/2 session failed because the peer did not handshake
+        properly
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP2_FAIL_BEFORE_SETTINGS.
+
+        '
+    - name: http_script_block_incorrect_mime
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the script load has a MIME type of ...?  (unknown, javaScript,
+        image, audio, video, text_plain, text_csv, text_xml, app_octet_stream, app_xml,
+        app_json, text_json, text_html, empty). Whether the script load is from ...?  (serviceworker_load,
+        worker_load, importSript_load, script_load). Whether the script load is of
+        ...?  (same_origin, CORS_origin, cross_origin)
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram SCRIPT_BLOCK_INCORRECT_MIME_3.
+
+        '
+    - name: http_tls_early_data_accepted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'TLS early data was used and it was accepted (true) or rejected
+        (false) by the remote host.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        TLS_EARLY_DATA_ACCEPTED.
+
+        '
+    - name: network_id_online
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Network ID presence when the network connectivity checker reports
+        that we have connectivity
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram NETWORK_ID_ONLINE.
+
+        '
+    - name: network_rel_preload_miss_ratio
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Ratio of used and unused resources preloaded with link rel=preload
+        tag or response header, broken down by supported resource type.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram REL_PRELOAD_MISS_RATIO.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -17428,6 +17548,207 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram WEBFONT_SRCTYPE.
+
+        '
+    - name: http_dns_httpssvc_connection_failed_reason
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The reason why we failed to connect with an HTTPSSVC record
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DNS_HTTPSSVC_CONNECTION_FAILED_REASON.
+
+        '
+    - name: http_dns_httpssvc_record_receiving_stage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Record at which stage an HTTPSSVC record is received
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DNS_HTTPSSVC_RECORD_RECEIVING_STAGE.
+
+        '
+    - name: http_dnt_usage
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'I want to be tracked, I do NOT want to be tracked, DNT unset
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram DNT_USAGE.
+
+        '
+    - name: http_tls_early_data_negotiated
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Sending TLS early data was possible: 0 - not possible, 1 - possible
+        but not used, 2 - possible and used.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram TLS_EARLY_DATA_NEGOTIATED.
+
+        '
+    - name: network_backgroundfilesaver_thread_count
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Maximum number of concurrent threads reached during a given download
+        session
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram BACKGROUNDFILESAVER_THREAD_COUNT.
+
+        '
+    - name: network_id
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Network identification (0=None, 1=New Ipv4, 2=Same, 3=New IPv6,
+        4=New dual)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram NETWORK_ID2.
+
+        '
+    - name: network_ipv4_and_ipv6_address_connectivity
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Count the number of 0) successful connections to an ipv4 address,
+        1) failed connection an ipv4 address, 2) successful connection to an ipv6
+        address and 3) failed connections to an ipv6 address.
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram IPV4_AND_IPV6_ADDRESS_CONNECTIVITY.
 
         '
   - name: quantity

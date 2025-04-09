@@ -1,25 +1,22 @@
 type: BIGCONFIG_FILE
-
-tag_deployments:
+table_deployments:
   - collection:
       name: {{ bigeye_collection }}
       notification_channels:
         - slack: '{{ bigeye_notification_slack_channel }}'
+
     deployments:
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.submission_date
-        metrics:
-          - saved_metric_id: is_not_null
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.country
-        metrics:
-          - saved_metric_id: is_2_char_len
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.channel
-        metrics:
-          - saved_metric_id: is_valid_channel
-      - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}.*
-        metrics:
+      - fq_table_name: {{ project_id }}.{{ project_id }}.{{ app_name }}_derived.{{ table_name }}
+        table_metrics:
           - saved_metric_id: volume
           - saved_metric_id: freshness
+        columns:
+          - column_name: submission_date
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: country
+            metrics:
+              - saved_metric_id: is_2_char_len
+          - column_name: channel
+            metrics:
+              - saved_metric_id: is_valid_channel

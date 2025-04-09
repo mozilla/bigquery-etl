@@ -1,21 +1,28 @@
 type: BIGCONFIG_FILE
-
-tag_deployments:
+table_deployments:
   - collection:
       name: Operational Checks
       notification_channels:
         - slack: '#de-bigeye-triage'
+
     deployments:
-      - column_selectors:
-        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1.submission_date
-        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1.usage_profile_id
-        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1.days_seen_bits
-        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1.days_active_bits
-        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1.days_created_profile_bits
-        metrics:
-          - saved_metric_id: is_not_null
-      - column_selectors:
-        - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1.*
-        metrics:
+      - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_focus_derived.usage_reporting_clients_last_seen_v1
+        table_metrics:
           - saved_metric_id: volume
           - saved_metric_id: freshness
+        columns:
+          - column_name: submission_date
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: usage_profile_id
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: days_seen_bits
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: days_active_bits
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: days_created_profile_bits
+            metrics:
+              - saved_metric_id: is_not_null

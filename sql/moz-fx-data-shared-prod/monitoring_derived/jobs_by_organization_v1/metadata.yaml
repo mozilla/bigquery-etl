@@ -8,7 +8,7 @@ labels:
   incremental: true
   owner1: mhirose
 scheduling:
-  dag_name: bqetl_monitoring
+  dag_name: bqetl_monitoring_hourly
   arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:

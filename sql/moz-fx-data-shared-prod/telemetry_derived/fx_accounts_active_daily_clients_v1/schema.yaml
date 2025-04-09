@@ -371,6 +371,7 @@ fields:
   - name: ext
     type: JSON
     mode: NULLABLE
+    description: EXT
 - name: distribution
   type: RECORD
   mode: NULLABLE
@@ -383,3 +384,4 @@ fields:
   - name: ext
     type: JSON
     mode: NULLABLE
+    description: EXT

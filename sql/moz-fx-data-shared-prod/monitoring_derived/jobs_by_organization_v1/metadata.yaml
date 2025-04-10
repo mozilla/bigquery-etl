@@ -1,12 +1,13 @@
 friendly_name: Jobs By Organization
 description: |-
-  Table built from:
-    region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION,
+  Table containing subset of jobs region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION.
+  Any job that is executed in, reads from, or writes to a project in the list
+  in the code is included. The query string is omitted from the columns.
 owners:
-- mhirose@mozilla.com
+- bewu@mozilla.com
 labels:
   incremental: true
-  owner1: mhirose
+  owner1: bewu
 scheduling:
   dag_name: bqetl_monitoring_hourly
   arguments: ["--date", "{{ ds }}"]

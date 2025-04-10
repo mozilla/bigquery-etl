@@ -134,7 +134,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/acoustic_external/**/query.sql
   - sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql
   - sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql
@@ -507,5 +506,4 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
-- sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1

@@ -1,0 +1,11 @@
+2025-02-25:
+  start_date: 2025-02-16
+  end_date: 2025-02-23
+  reason: Need data in table to start building ToS dashboards.
+  watchers:
+  - dberry@mozilla.com
+  - mwilliams@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false

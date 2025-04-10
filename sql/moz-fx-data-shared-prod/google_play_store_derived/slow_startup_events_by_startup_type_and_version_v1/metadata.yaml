@@ -1,0 +1,29 @@
+friendly_name: Slow Startup Events By Startup Type And Version
+description: |-
+  Pulls slow startup data from Google Play Store API for
+  * org.mozilla.firefox
+  * org.mozilla.firefox_beta
+  * org.mozilla.fenix
+  * org.mozilla.klar
+  * org.mozilla.firefox.vpn
+  * org.mozilla.focus
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_google_play_store
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: GOOGLE_PLAY_STORE_SRVC_ACCT_INFO
+    key: bqetl_google_play_store_developer_reporting_api_data_boxwood
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

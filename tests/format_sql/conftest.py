@@ -48,3 +48,7 @@ class FormatTest(pytest.Item, pytest.File):
         except FileNotFoundError:
             query = expect
         assert reformat(query) + "\n" == expect
+
+    def collect(self):
+        """Collect files to test."""
+        return super().collect()

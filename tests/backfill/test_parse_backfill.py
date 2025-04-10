@@ -44,10 +44,11 @@ TEST_BACKFILL_3 = Backfill(
     DEFAULT_REASON,
     [DEFAULT_WATCHER],
     DEFAULT_STATUS,
-    "custom_query.sql",
-    False,
-    False,
-    DEFAULT_BILLING_PROJECT,
+    custom_query_path="custom_query.sql",
+    shredder_mitigation=False,
+    override_retention_limit=False,
+    override_depends_on_past_end_date=False,
+    billing_project=DEFAULT_BILLING_PROJECT,
 )
 
 
@@ -93,10 +94,10 @@ class TestParseBackfill(object):
                 TEST_BACKFILL_1.reason,
                 TEST_BACKFILL_1.watchers,
                 TEST_BACKFILL_1.status,
-                None,
-                None,
-                False,
-                invalid_billing_project,
+                custom_query_path=None,
+                shredder_mitigation=None,
+                override_retention_limit=False,
+                billing_project=invalid_billing_project,
             )
 
         assert "Invalid billing project" in str(e.value)
@@ -451,6 +452,7 @@ class TestParseBackfill(object):
             "  status: Initiate\n"
             "  shredder_mitigation: false\n"
             "  override_retention_limit: false\n"
+            "  override_depends_on_past_end_date: false\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()
@@ -470,6 +472,8 @@ class TestParseBackfill(object):
             custom_query_path = None
             shredder_mitigation = False
             override_retention_limit = False
+            override_depends_on_past_end_date = False
+            billing_project = None
             """
 
         assert actual_backfill_str == expected_backfill_str
@@ -487,6 +491,7 @@ class TestParseBackfill(object):
             "  status: Initiate\n"
             "  shredder_mitigation: false\n"
             "  override_retention_limit: false\n"
+            "  override_depends_on_past_end_date: false\n"
         )
 
         TEST_BACKFILL_1.excluded_dates = []

@@ -1,0 +1,17 @@
+friendly_name: 'FxA DB Counts Monitoring: Recovery Phones Segmentation'
+description: |-
+  A breakdown of Recovery Phone fields, counted daily.
+owners:
+- wclouser@mozilla.com
+labels:
+  incremental: true
+  owner1: wclouser@mozilla.com
+scheduling:
+  dag_name: bqetl_accounts_derived
+  date_partition_parameter: as_of_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: as_of_date
+    require_partition_filter: false
+    expiration_days: null

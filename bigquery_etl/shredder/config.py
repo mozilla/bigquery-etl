@@ -17,6 +17,7 @@ from google.cloud.exceptions import NotFound
 
 from ..util.bigquery_id import qualified_table_id
 
+MOZDATA = "mozdata"
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
 GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
@@ -105,6 +106,7 @@ FXA_USER_ID = "jsonPayload.fields.user_id"
 # these must be in the same order as SYNC_SOURCES
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 CONTEXT_ID = "context_id"
+QUICK_SUGGEST_CONTEXT_ID = "metrics.uuid.quick_suggest_context_id"
 USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 
 DESKTOP_SRC = DeleteSource(
@@ -120,6 +122,10 @@ IMPRESSION_SRC = DeleteSource(
 CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_context_id",
+)
+QUICK_SUGGEST_SRC = DeleteSource(
+    table="firefox_desktop_stable.quick_suggest_deletion_request_v1",
+    field=QUICK_SUGGEST_CONTEXT_ID,
 )
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
@@ -158,6 +164,17 @@ LEGACY_MOBILE_SOURCES = tuple(
         "org_mozilla_ios_firefoxbeta",
         "org_mozilla_tv_firefox",
         "mozilla_lockbox",
+    )
+)
+FOCUS_ADDITIONAL_DELETIONS = tuple(
+    DeleteSource(
+        table=f"{product}_derived.additional_deletion_requests_v1",
+        field="client_id",
+    )
+    for product in (
+        "org_mozilla_focus",
+        "org_mozilla_focus_beta",
+        "org_mozilla_focus_nightly",
     )
 )
 USER_CHARACTERISTICS_SRC = DeleteSource(
@@ -217,6 +234,9 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(
         table="telemetry_derived.desktop_retention_clients_v1"
     ): DESKTOP_SRC,
+    client_id_target(
+        table="ltv_derived.firefox_desktop_new_profile_ltv_v1"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.crash_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.downgrade_v4"): DESKTOP_SRC,
@@ -254,6 +274,83 @@ DELETE_TARGETS: DeleteIndex = {
     ): (
         DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="ltv_derived.fenix_new_profile_ltv_v1",
+        field=(CLIENT_ID),
+    ): (DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID)),
+    DeleteTarget(
+        table="ltv_derived.firefox_ios_new_profile_ltv_v1",
+        field=(CLIENT_ID),
+    ): (DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID)),
+    DeleteTarget(
+        table="telemetry_derived.fx_accounts_active_daily_clients_v1",
+        field=(CLIENT_ID),
+    ): (DESKTOP_GLEAN_SRC),
+    DeleteTarget(
+        table="telemetry_derived.fx_accounts_linked_clients_staging_v1",
+        field=(CLIENT_ID, "linked_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_GLEAN_SRC),
+    DeleteTarget(
+        table="telemetry_derived.fx_accounts_linked_clients_v1",
+        field=(CLIENT_ID, "linked_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_GLEAN_SRC),
+    DeleteTarget(
+        table="telemetry_derived.fx_accounts_linked_clients_ordered_v1",
+        field=(CLIENT_ID, "linked_client_id"),
+    ): (DESKTOP_GLEAN_SRC, DESKTOP_GLEAN_SRC),
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_desktop_telem_current",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_SRC,
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_desktop_telem_old",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_SRC,
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_desktop_telem_temp",
+        field=CLIENT_ID,
+        project=MOZDATA,
+    ): DESKTOP_SRC,
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_current",
+        field=(CLIENT_ID, CLIENT_ID),
+        project=MOZDATA,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_old",
+        field=(CLIENT_ID, CLIENT_ID),
+        project=MOZDATA,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="fx_quant_user_research_analysis.viewpoint_mobile_telem_temp",
+        field=(CLIENT_ID, CLIENT_ID),
+        project=MOZDATA,
+    ): (
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
+    DeleteTarget(
+        table="telemetry_derived.rolling_cohorts_v2",
+        field=(CLIENT_ID,) * 15,
+    ): (
+        DESKTOP_SRC,
+        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
+        *FOCUS_ADDITIONAL_DELETIONS,
+        *LEGACY_MOBILE_SOURCES,
     ),
     # activity stream
     DeleteTarget(
@@ -367,6 +464,10 @@ DELETE_TARGETS: DeleteIndex = {
     context_id_target(
         table="contextual_services_stable.quicksuggest_impression_v1"
     ): CONTEXTUAL_SERVICES_SRC,
+    DeleteTarget(
+        table="firefox_desktop_stable.quick_suggest_v1",
+        field=QUICK_SUGGEST_CONTEXT_ID,
+    ): QUICK_SUGGEST_SRC,
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",
@@ -405,6 +506,14 @@ DELETE_TARGETS: DeleteIndex = {
         table="accounts_frontend_derived.events_stream_v1",
         field=("metrics.string.account_user_id_sha256", CLIENT_ID),
     ): (FXA_SRC, FXA_FRONTEND_GLEAN_SRC),
+    DeleteTarget(
+        table="relay_backend_stable.events_v1",
+        # Temporary workaround for identifier nested in event extras
+        # This triggers custom query override in `delete.py`
+        # We'll be able to remove this once fxa_id is migrated to string metric
+        # See https://mozilla-hub.atlassian.net/browse/DENG-7965 and 7964
+        field="events[*].extra.fxa_id",
+    ): FXA_SRC,
     # legacy mobile
     DeleteTarget(
         table="telemetry_stable.core_v1",

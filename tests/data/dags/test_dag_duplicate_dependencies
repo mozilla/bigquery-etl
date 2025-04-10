@@ -45,6 +45,7 @@ with DAG(
     schedule_interval="@daily",
     doc_md=docs,
     tags=tags,
+    catchup=False,
 ) as dag:
 
     wait_for_task1 = ExternalTaskSensor(

@@ -5,10 +5,6 @@ description: |-
 dataset_base_acl: derived_restricted
 user_facing: false
 labels: {}
-default_table_workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:data-science/duet
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -1,0 +1,58 @@
+fields:
+- mode: NULLABLE
+  name: total_runtime
+  type: FLOAT
+  description: Total dashboard run time in seconds
+- mode: NULLABLE
+  name: seconds_until_controller_initialized
+  type: FLOAT
+  description: The number of seconds that passed before the last query results were
+    returned to the dashboard
+- mode: NULLABLE
+  name: seconds_until_dom_content_loaded
+  type: FLOAT
+  description: The number of seconds that passed before the document object model
+    (DOM) was loaded on the dashboard page
+- mode: NULLABLE
+  name: seconds_until_metadata_loaded
+  type: FLOAT
+  description: The number of seconds that passed before metadata was loaded on the
+    dashboard page
+- mode: NULLABLE
+  name: seconds_until_dashboard_run_start
+  type: FLOAT
+  description: The number of seconds that passed before the dashboard loaded and the
+    'Run' button was clicked
+- mode: NULLABLE
+  name: seconds_until_first_data_received
+  type: FLOAT
+  description: The number of seconds that passed before the first query results were
+    returned to the dashboard
+- mode: NULLABLE
+  name: seconds_until_first_tile_finished_rendering
+  type: FLOAT
+  description: The number of seconds that passed before the first dashboard tile was
+    displayed with query results
+- mode: NULLABLE
+  name: seconds_until_last_data_received
+  type: FLOAT
+  description: The number of seconds that passed before the last query results were
+    returned to the dashboard
+- mode: NULLABLE
+  name: seconds_until_last_tile_finished_rendering
+  type: FLOAT
+  description: The number of seconds that passed before the last dashboard tile was
+    displayed with query results
+- mode: NULLABLE
+  name: dash_id
+  type: STRING
+  description: Dashboard ID
+- mode: NULLABLE
+  name: dashboard_page_session
+  type: STRING
+  description: A unique string identifier assigned to a particular dashboard each
+    time a dashboard page is loaded
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The first occurrence of a particular dashboard being run

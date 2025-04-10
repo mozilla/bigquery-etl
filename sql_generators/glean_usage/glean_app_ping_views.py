@@ -12,6 +12,7 @@ import os
 from copy import deepcopy
 from pathlib import Path
 
+import yaml
 from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
 from pathos.multiprocessing import ThreadingPool
@@ -199,15 +200,30 @@ class GleanAppPingViews(GleanTable):
                     in skip_existing,
                 )
 
+                metadata_content = VIEW_METADATA_TEMPLATE.format(
+                    ping_name=ping_name,
+                    app_name=release_app["canonical_app_name"],
+                    app_channels=", ".join(included_channel_views),
+                )
+                metadata_file = Path(
+                    get_table_dir(output_dir, full_view_id) / "metadata.yaml"
+                )
+                if metadata_file.exists():
+                    with metadata_file.open() as f:
+                        existing_metadata = yaml.load(f, Loader=yaml.FullLoader)
+                        if (
+                            "friendly_name" not in existing_metadata
+                            and "description" not in existing_metadata
+                        ):
+                            metadata_content = metadata_content + yaml.dump(
+                                existing_metadata
+                            )
+
                 write_sql(
                     output_dir,
                     full_view_id,
                     "metadata.yaml",
-                    VIEW_METADATA_TEMPLATE.format(
-                        ping_name=ping_name,
-                        app_name=release_app["canonical_app_name"],
-                        app_channels=", ".join(included_channel_views),
-                    ),
+                    metadata_content,
                     skip_existing=str(
                         get_table_dir(output_dir, full_view_id) / "metadata.yaml"
                     )

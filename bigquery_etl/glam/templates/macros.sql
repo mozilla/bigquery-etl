@@ -26,31 +26,37 @@ static_combos AS (
             ]
         ) as combos
 ),
-{{ output_table }} AS (
+sampled_source AS (
     SELECT
-        table.* EXCEPT(
-            {{ cubed_attributes | join(",") }}
-        ),
+        *,
         {% if add_windows_release_sample %}
     -- Logic to count clients based on sampled windows release data, which started in v119.
     -- If you're changing this, then you'll also need to change
     -- clients_daily_[scalar | histogram]_aggregates
-            table.os = 'Windows' AND app_version >= 119 AS sampled,
+            os = 'Windows' AND app_version >= 119 AS sampled,
         {% endif %}
-        {% for attribute in cubed_attributes %}
-            COALESCE(combo.{{ attribute }}, table.{{ attribute }}) as {{ attribute }}
-            {% if not loop.last %}
-                ,
-            {% endif %}
-        {% endfor %}
     FROM
-        {{ source_table }} table
-    CROSS JOIN
-        static_combos combo
+        {{ source_table }}
     {% if use_sample_id %}
         WHERE
             sample_id >= @min_sample_id
             AND sample_id <= @max_sample_id
     {% endif %}
+),
+{{ output_table }} AS (
+  SELECT
+      * EXCEPT(
+          {{ cubed_attributes | join(",") }}
+      ),
+      {% for attribute in cubed_attributes %}
+          COALESCE(combo.{{ attribute }}, table.{{ attribute }}) as {{ attribute }}
+          {% if not loop.last %}
+              ,
+          {% endif %}
+      {% endfor %}
+  FROM
+    sampled_source AS table
+  CROSS JOIN
+    static_combos AS combo
 )
 {% endmacro %}

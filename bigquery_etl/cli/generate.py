@@ -2,6 +2,7 @@
 
 import importlib.util
 import sys
+import time
 from inspect import getmembers
 from pathlib import Path
 
@@ -114,11 +115,27 @@ def generate_all(ctx, output_dir, target_project, ignore, use_cloud_function):
             case _:
                 return (3, command.name)
 
+    global_start_time = time.time()
     for cmd in sorted(generate.commands.values(), key=generator_command_sort_key):
         if cmd.name != "all" and cmd.name not in ignore:
+            click.echo(
+                click.style(
+                    f"Running sql generator: {cmd.name}",
+                    fg="green",
+                )
+            )
+            step_start_time = time.time()
             ctx.invoke(
                 cmd,
                 output_dir=output_dir,
                 target_project=target_project,
                 use_cloud_function=use_cloud_function,
+            )
+            step_end_time = time.time()
+            click.echo(
+                click.style(
+                    f"sql generator {cmd.name} finished, took {step_end_time - step_start_time}s, "
+                    f"total time: {step_end_time - global_start_time}s",
+                    fg="green",
+                )
             )

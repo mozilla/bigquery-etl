@@ -1,0 +1,28 @@
+type: BIGCONFIG_FILE
+table_deployments:
+  - collection:
+      name: {{ bigeye_collection }}
+      notification_channels:
+        - slack: '{{ bigeye_notification_slack_channel }}'
+
+    deployments:
+      - fq_table_name: {{ project_id }}.{{ project_id }}.{{ channel_dataset }}_derived.{{ table_name }}
+        table_metrics:
+          - saved_metric_id: volume
+          - saved_metric_id: freshness
+        columns:
+          - column_name: submission_date
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: usage_profile_id
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: days_seen_bits
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: days_active_bits
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: days_created_profile_bits
+            metrics:
+              - saved_metric_id: is_not_null

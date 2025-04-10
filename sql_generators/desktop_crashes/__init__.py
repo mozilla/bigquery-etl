@@ -9,8 +9,8 @@ from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import write_sql
 
 CRASH_TABLES = [
-    ("moz-fx-data-shared-prod", "firefox_desktop_stable", "crash_v1"),
-    ("moz-fx-data-shared-prod", "firefox_crashreporter_stable", "crash_v1"),
+    ("moz-fx-data-shared-prod", "firefox_desktop", "crash"),
+    ("moz-fx-data-shared-prod", "firefox_crashreporter", "crash"),
 ]
 
 

@@ -1,0 +1,7 @@
+friendly_name: Missing namespaces and document types
+description: |-
+  This view provides aggregated counts over the last 7 days of missing namespaces and document types,
+  identified through SchemaNotFoundExceptions during data ingestion.
+  This view is used for data platform health checks.
+owners:
+  - ascholtz@mozilla.com

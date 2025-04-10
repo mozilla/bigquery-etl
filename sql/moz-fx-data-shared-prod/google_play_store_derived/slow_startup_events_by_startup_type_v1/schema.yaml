@@ -1,0 +1,25 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: google_play_store_app_name
+  type: STRING
+  mode: NULLABLE
+  description: Google Play Store App Name
+- name: pct_users_with_slow_start_event_during_cold_app_start
+  type: NUMERIC
+  mode: NULLABLE
+  description: The percent of unique users with a slow start event during a cold app start
+- name: pct_users_with_slow_start_event_during_warm_app_start
+  type: NUMERIC
+  mode: NULLABLE
+  description: The percent of unique users with a slow start event during a warm app start
+- name: pct_users_with_slow_start_event_during_hot_app_start
+  type: NUMERIC
+  mode: NULLABLE
+  description: The percent of unique users with a slow start event during a hot app start
+- name: nbr_distinct_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Distinct Users

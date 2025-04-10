@@ -116,7 +116,7 @@ def generate_browser_api_call(
     location_string = "" if location == "ALL" else f"&location={location}"
     op_system_string = "" if op_system == "ALL" else f"&os={op_system}"
     device_type_string = "" if device_type == "ALL" else f"&deviceType={device_type}"
-    browser_api_url = f"https://api.cloudflare.com/client/v4/radar/http/top/browsers?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z{device_type_string}{location_string}{op_system_string}{user_type_string}&limit={limit}&format=json"
+    browser_api_url = f"https://api.cloudflare.com/client/v4/radar/http/top/browser?dateStart={strt_dt}T00:00:00.000Z&dateEnd={end_dt}T00:00:00.000Z{device_type_string}{location_string}{op_system_string}{user_type_string}&limit={limit}&format=json"
     return browser_api_url
 
 
@@ -265,7 +265,7 @@ def get_browser_data(date_of_interest, auth_token):
     # Return a summary to the console
     len_results = str(len(browser_results_df))
     len_errors = str(len(browser_errors_df))
-    result_summary = f"# Result Rows: {len_results}; # of Error Rows: {len_errors}"
+    result_summary = [len_results, len_errors]
     return result_summary
 
 
@@ -282,7 +282,10 @@ def main():
     print(args.date)
 
     # STEP 1 - Pull the data from the API, save results & errors to GCS staging area
-    result_summary = get_browser_data(args.date, args.cloudflare_api_token)
+    results = get_browser_data(args.date, args.cloudflare_api_token)
+    nbr_successful = results[0]
+    nbr_errors = results[1]
+    result_summary = f"# Result Rows: {nbr_successful}; # of Error Rows: {nbr_errors}"
     print("result_summary")
     print(result_summary)
 
@@ -428,6 +431,10 @@ WHERE CAST(StartTime as date) = DATE_SUB('{args.date}', INTERVAL 4 DAY) """
         brwsr_usg_configs["bucket_no_gs"],
         error_archive_fpath,
     )
+
+    #If # errors > 200 (more than 10%), fail with error
+    if int(nbr_errors) > 200:
+        raise Exception("200 or more errors, check for issues")
 
 
 if __name__ == "__main__":

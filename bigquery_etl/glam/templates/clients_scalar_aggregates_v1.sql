@@ -14,7 +14,7 @@
       -- only keep builds from the last year
       AND {{ build_date_udf }}(app_build_id) > DATE_SUB(@submission_date, INTERVAL 365 day)
       {% if filter_version %}
-      AND app_version BETWEEN (latest_version - {{ num_versions_to_keep }}) AND latest_version
+      AND app_version BETWEEN (latest_version - {{ num_versions_to_keep }} + 1) AND latest_version
       {% endif %}
 {% endset %}
 

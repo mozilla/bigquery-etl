@@ -24,8 +24,10 @@ SELECT
   calendar_month AS `month`,
   calendar_quarter AS `quarter`,
   EXTRACT(WEEK FROM submission_date) AS week_number,
+  DATE_TRUNC(submission_date, WEEK) AS first_date_of_week,
   first_date_of_month,
   first_date_of_quarter,
+  DATE_TRUNC(submission_date, YEAR) AS first_date_of_year,
   EXTRACT(DAYOFYEAR FROM submission_date) AS day_of_year
 FROM
   `moz-fx-data-shared-prod.external_derived.calendar_v1`

@@ -50,6 +50,10 @@ class SqlTest(pytest.Item, pytest.File):
         self._nodeid += "::SQL"
         self.add_marker("sql")
 
+    def collect(self):
+        """Collect files to test."""
+        return super().collect()
+
     def reportinfo(self):
         """Set report title to `{dataset}.{table}:{test}`."""
         project, dataset, table, test = self.fspath.strpath.split(os.path.sep)[-4:]

@@ -1,0 +1,33 @@
+friendly_name: United Nations Population Data
+description: |-
+  Contains world population data from the United Nations API
+  The primary key is made up of:
+  * location_id
+  * source_id
+  * indicator_id
+  * time_id
+  * revision
+  * sex_id
+  * variant_id
+  * estimate_method_id
+  * category_id
+  * estimate_type_id
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_un_population
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: UN_POPULATION_BEARER_TOKEN
+    key: bqetl_un_population__un_population_bearer_token
+bigquery:
+  range_partitioning: null
+  clustering:
+    fields:
+    - location_id
+references: {}
+require_column_descriptions: true

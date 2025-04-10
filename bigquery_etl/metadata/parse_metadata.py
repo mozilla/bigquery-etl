@@ -184,6 +184,7 @@ class Metadata:
     deprecated: bool = attr.ib(False)
     deletion_date: Optional[date] = attr.ib(None)
     monitoring: Optional[MonitoringMetadata] = attr.ib(None)
+    require_column_descriptions: bool = attr.ib(False)
 
     @owners.validator
     def validate_owners(self, attribute, value):
@@ -261,6 +262,7 @@ class Metadata:
         deprecated = False
         deletion_date = None
         monitoring = None
+        require_column_descriptions = False
 
         with open(metadata_file, "r") as yaml_stream:
             try:
@@ -343,6 +345,11 @@ class Metadata:
                         # column needs to be set explicitly
                         monitoring.partition_column_set = True
 
+                if "require_column_descriptions" in metadata:
+                    require_column_descriptions = metadata[
+                        "require_column_descriptions"
+                    ]
+
                 return cls(
                     friendly_name,
                     description,
@@ -357,6 +364,7 @@ class Metadata:
                     deprecated,
                     deletion_date,
                     monitoring,
+                    require_column_descriptions,
                 )
             except yaml.YAMLError as e:
                 raise e

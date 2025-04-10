@@ -166,7 +166,7 @@ overactive_android_clients AS (
   GROUP BY
     client_id
   HAVING
-    COUNT(*) > 1500000
+    COUNT(*) > 1400000
 ),
 --- ANDROID SPONSORED TILES
 android_events AS (

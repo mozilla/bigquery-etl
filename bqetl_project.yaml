@@ -46,6 +46,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
   # uses time travel, will error on dates prior to the time travel window
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
+  - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_db_external/**/*.sql
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
@@ -174,6 +175,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/fog_decision_support_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql
   # Query parameter not found
@@ -296,6 +298,11 @@ render:
   # uses {%s} which results in unknown tag exception
   - sql/mozfun/hist/string_to_json/udf.sql
 
+metadata:
+  validation:
+    skip:
+    - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
+
 generate:
   glean_usage:
     skip_existing: # Skip automatically updating the following artifacts
@@ -334,6 +341,7 @@ generate:
       metrics_as_struct:
       - accounts_frontend
       - accounts_backend
+      - subscription_platform_backend
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view
@@ -365,6 +373,14 @@ generate:
       - moso_mastodon_backend
       - mozphab
       - mozregression
+      - focus_android
+      - klar_android
+      - focus_ios
+      - klar_ios
+      - pine
+      - reference_browser
+      - thunderbird_desktop
+      - lockwise_ios
       skip_app_metrics:
       - thunderbird_desktop
     bqetl_checks:
@@ -387,6 +403,30 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+  usage_reporting:
+    apps:
+      fenix:
+        channels:
+        - nightly
+        - beta
+        - release
+      firefox_ios:
+        channels:
+        - nightly
+        - beta
+        - release
+      firefox_desktop:
+        # firefox_desktop is a single app containing multiple channels hence why set to null.
+        channels: null
+      focus_android:
+        channels:
+        - release
+        - beta
+        - nightly
+      focus_ios:
+        channels:
+        - release
+
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
@@ -405,6 +445,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/ltv_derived/fenix_client_ltv_v1
 - sql/moz-fx-data-shared-prod/monitor_cirrus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/accounts_cirrus_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/moso_mastodon_backend_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/mozilla_lockbox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/mozilla_mach_derived/baseline_clients_first_seen_v1
@@ -467,3 +508,4 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
 - sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1
+- sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1

@@ -108,9 +108,12 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
             )
             # recursively add upstream tables
             for upstream_link in upstream_links_result:
-                # remove "bigquery:" and "sharded:" prefixes
-                parent_table = upstream_link.source.fully_qualified_name.split(":")[-1]
-
+                # possible sources: https://cloud.google.com/dataplex/docs/fully-qualified-names
+                link_parts = upstream_link.source.fully_qualified_name.split(":")
+                source = link_parts[0]
+                parent_table = link_parts[-1]
+                if not source.startswith("bigquery"):
+                    break
                 upstream_stable_tables[base_table] = upstream_stable_tables[
                     base_table
                 ].union(traverse_upstream(parent_table))
@@ -138,8 +141,7 @@ def table_exists(client: bigquery.Client, table_name: str) -> bool:
 
 
 def get_associated_deletions(
-    project: str,
-    upstream_stable_tables: Dict[str, Set[str]]
+    project: str, upstream_stable_tables: Dict[str, Set[str]]
 ) -> Dict[str, Set[DeleteSource]]:
     """Get a list of associated deletion requests tables per table based on the stable tables."""
     client = bigquery.Client(project=project)

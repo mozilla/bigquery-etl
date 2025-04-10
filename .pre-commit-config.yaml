@@ -30,13 +30,22 @@ repos:
   - id: pydocstyle
     exclude: dags/|(.*/)?test_.*\.py|setup.py
 - repo: https://github.com/pre-commit/mirrors-mypy
-  # Using commit hash corresponding to tag v1.9.0, using the tag directly was resulting in cannot resolve error.
-  rev: '9db9854'
+  rev: v0.991
   hooks:
   - id: mypy
     exclude: sql/.+/.+/.+/query\.py$
-    additional_dependencies: [types-pytz==2024.2.0.20241221,
-                              types-ujson==5.10.0.20240515,
-                              types-python-dateutil==2.9.0.20241206,
-                              types-requests==2.32.0.20241016,
-                              types-PyYAML==6.0.12.20240917]
+    additional_dependencies:
+    - attrs==25.1.0,
+    - types-pytz==2025.1.0.20250204,
+    - types-ujson==5.10.0.20240515,
+    - types-python-dateutil==2.9.0.20241206,
+    - types-requests==2.32.0.20241016,
+    - types-PyYAML==6.0.12.20241230
+- repo: local
+  hooks:
+  - id: bqetl_format
+    name: bqetl_format
+    language: script
+    entry: ./bqetl
+    args: [format, --check]
+    types: [sql]

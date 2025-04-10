@@ -86,6 +86,23 @@ bqetl_mobile_search:
   tags:
     - impact/tier_1
 
+bqetl_google_play_store:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-03-18'
+  description: Schedules daily level google play store export data
+  schedule_interval: 10 18 * * *
+  tags:
+    - impact/tier_2
+
 bqetl_fxa_events:
   schedule_interval: 30 1 * * *
   description: |
@@ -313,6 +330,9 @@ bqetl_public_data_json:
 
     Depends on the results of several upstream DAGs, the latest of which
     runs at 04:00 UTC.
+
+    As long as the most recent DAG run is successful this job can be considered healthy.
+    In such case, past DAG failures can be ignored.
   default_args:
     owner: ascholtz@mozilla.com
     start_date: "2020-04-14"
@@ -2113,6 +2133,24 @@ bqetl_ltv:
   tags:
     - impact/tier_1
 
+bqetl_imf_exchange_rates:
+  description: |
+    This DAG pulls exchange rate data from the International Monetary Fund API
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-01-01"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 23 0 18 * *
+
 bqetl_imf_cpi_data:
   description: |
     This DAG pulls inflation data from the International Monetary Fund CPI API
@@ -2149,3 +2187,151 @@ bqetl_marketing_analysis:
     - impact/tier_3
   repo: bigquery-etl
   schedule_interval: 0 12 * * *
+
+bqetl_alchemer:
+  description: |
+    DAG for scheduling queries pulling survey data from Alchemer.
+  default_args:
+    depends_on_past: false
+    owner: ago@mozilla.com
+    email:
+      - ago@mozilla.com
+      - eshallal@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2023-06-01"
+    retries: 1
+    retry_delay: 1h
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 0 12 * * *
+  catchup: true
+
+bqetl_cohort_retention:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-02-12'
+  description: Schedules daily level retention queries
+  schedule_interval: 40 19 * * *
+  tags:
+    - impact/tier_2
+
+bqetl_glean_dictionary:
+  default_args:
+    depends_on_past: false
+    email:
+      - efilho@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: efilho@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-02-05'
+  description: Extracts Glean auto-event metadata used by Glean Dictionary
+  repo: bigquery-etl
+  schedule_interval: 0 2 * * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+
+bqetl_client_attributes:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-02-20'
+  description: Schedules daily level retention queries
+  schedule_interval: 40 19 * * *
+  tags:
+    - impact/tier_2
+
+bqetl_un_population:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2024-01-01'
+  description: Pulls world population data from United Nations API
+  schedule_interval: 0 13 15 2 *
+  tags:
+    - impact/tier_3
+
+bqetl_chrome_extensions_scraper:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-03-01'
+  description: Pulls info about Chrome extensions from the Chrome webstore
+  schedule_interval: 40 21 * * *
+  tags:
+    - impact/tier_3
+
+bqetl_usage_reporting:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 1
+    retry_delay: 30m
+    start_date: '2025-03-19'
+  description: DAG for updating usage_reporting related datasets.
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1
+
+bqetl_materialized_view_refresh:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - bewu@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: bewu@mozilla.com
+    retries: 1
+    retry_delay: 5m
+    start_date: '2025-03-21'
+  description: Manual refreshes of materialized views.  See https://mozilla-hub.atlassian.net/browse/DENG-6990
+  repo: bigquery-etl
+  schedule_interval: 45 * * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

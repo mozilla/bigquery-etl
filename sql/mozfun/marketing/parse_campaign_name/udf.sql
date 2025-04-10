@@ -164,6 +164,15 @@ RETURNS ARRAY<STRUCT<key STRING, value STRING>> AS (
             ).campaign_language AS value
           )
         ]
+    WHEN ARRAY_LENGTH(SPLIT(campaign_name, "_")) = 16
+      THEN [
+          STRUCT("ad_network" AS key, SPLIT(campaign_name, "_")[0] AS value),
+          STRUCT("version" AS key, SPLIT(campaign_name, "_")[1] AS value),
+          STRUCT("product" AS key, SPLIT(campaign_name, "_")[2] AS value),
+          STRUCT("initiative" AS key, SPLIT(campaign_name, "_")[3] AS value),
+          STRUCT("region" AS key, SPLIT(campaign_name, "_")[4] AS value),
+          STRUCT("country_code" AS key, SPLIT(campaign_name, "_")[5] AS value)
+        ]
     ELSE NULL
   END
 );
@@ -255,3 +264,17 @@ SELECT
   ),
   -- Test - NULL
   mozfun.assert.null(marketing.parse_campaign_name(NULL)),
+  -- Test - parse up to country code if there are 15 underscores only
+  mozfun.assert.map_equals(
+    marketing.parse_campaign_name(
+      "gads_v1_firefox_test_na_us_national-test_en_desktop_all_search_conversion_nonbrand_cpc_install_adgap"
+    ),
+    [
+      STRUCT("ad_network" AS key, "gads" AS value),
+      STRUCT("version" AS key, "v1" AS value),
+      STRUCT("product" AS key, "firefox" AS value),
+      STRUCT("initiative" AS key, "test" AS value),
+      STRUCT("region" AS key, "na" AS value),
+      STRUCT("country_code" AS key, "us" AS value)
+    ]
+  )

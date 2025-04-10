@@ -12,11 +12,16 @@ if [ "$PWD" != "$SCRIPT_PATH" ]; then
 fi
 
 if ! command -v python3 &> /dev/null; then
-    echo "Please install python (version 3.8 or greater)"
+    echo "Please install Python (version 3.11)"
     exit 1
 fi
 
 if [ "$CMD" == "bootstrap" ]; then
+    if [[ ! $(python3 --version) =~ Python\ 3\.11 ]]; then
+        echo "bqetl currently only works with Python 3.11 (you can use pyenv to install different versions of Python)"
+        exit 1
+    fi
+
     if [ -d "venv" ]; then
         echo 'venv subdirectory already exists, execute "rm -rf venv" and re-run this command if you want to recreate it'
         exit 1

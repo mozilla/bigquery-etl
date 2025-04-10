@@ -16,6 +16,11 @@ from bigquery_etl.metadata.parse_metadata import (
     WorkgroupAccessMetadata,
 )
 from bigquery_etl.metadata.publish_metadata import publish_metadata
+from bigquery_etl.metadata.validate_metadata import (
+    MetadataValidationError,
+    validate_default_table_workgroup_access,
+    validate_workgroup_access,
+)
 
 from ..cli.utils import (
     parallelism_option,
@@ -233,3 +238,48 @@ def deprecate(
 
     if not table_metadata_files:
         raise FileNotFoundError(f"No metadata file(s) were found for: {name}")
+
+
+@metadata.command(
+    help="""
+    Validate workgroup_access and default_table_workgroup_access configurations.
+
+    Example:
+     ./bqetl metadata validate-workgroups ga_derived.downloads_with_attribution_v2
+    """
+)
+@click.argument("name")
+@project_id_option(
+    ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod")
+)
+@sql_dir_option
+def validate_workgroups(
+    name: str,
+    sql_dir: str,
+    project_id: str,
+):
+    """Validate workgroup_access and default_table_workgroup_access configuration."""
+    failed_files = set()
+
+    table_metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    )
+    skip_validation = ConfigLoader.get("metadata", "validation", "skip", fallback=[])
+
+    for file in table_metadata_files:
+        if str(file) not in skip_validation:
+            if Metadata.is_metadata_file(file):
+                metadata = Metadata.from_file(file)
+                if not validate_workgroup_access(metadata, file):
+                    failed_files.add(file)
+
+                if not validate_default_table_workgroup_access(file):
+                    failed_files.add(file)
+
+    if len(failed_files) > 0:
+        click.echo(click.style("Metadata workgroup validation failed for:", fg="red"))
+        for file in failed_files:
+            click.echo(click.style(str(file), fg="red"))
+        raise MetadataValidationError(
+            f"Metadata workgroup validation failed for: {failed_files}"
+        )

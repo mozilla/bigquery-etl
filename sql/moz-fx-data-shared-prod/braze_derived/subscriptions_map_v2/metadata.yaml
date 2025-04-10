@@ -17,7 +17,3 @@ external_data:
   - https://docs.google.com/spreadsheets/d/1ilLz0THm5gzzqaBqfzIa_83b74Y-ElykPed_bOLoy9s
   options:
     skip_leading_rows: 1
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:braze

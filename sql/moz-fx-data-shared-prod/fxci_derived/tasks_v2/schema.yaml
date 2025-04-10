@@ -1,0 +1,44 @@
+fields:
+  - name: scheduler_id
+    type: STRING
+    mode: REQUIRED
+  - name: submission_date
+    type: DATE
+    mode: REQUIRED
+  - name: task_group_id
+    type: STRING
+    mode: REQUIRED
+  - name: task_id
+    type: STRING
+    mode: REQUIRED
+  - name: task_queue_id
+    type: STRING
+    mode: REQUIRED
+  - name: tags
+    type: RECORD
+    mode: REQUIRED
+    fields:
+      - name: created_for_user
+        type: STRING
+        mode: NULLABLE
+      - name: kind
+        type: STRING
+        mode: NULLABLE
+      - name: label
+        type: STRING
+        mode: NULLABLE
+      - name: os
+        type: STRING
+        mode: NULLABLE
+      - name: owned_by
+        type: STRING
+        mode: NULLABLE
+      - name: project
+        type: STRING
+        mode: NULLABLE
+      - name: trust_domain
+        type: STRING
+        mode: NULLABLE
+      - name: worker_implementation
+        type: STRING
+        mode: NULLABLE

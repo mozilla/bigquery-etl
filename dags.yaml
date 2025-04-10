@@ -2280,23 +2280,6 @@ bqetl_un_population:
   tags:
     - impact/tier_3
 
-bqetl_chrome_extensions_scraper:
-  default_args:
-    depends_on_past: false
-    email:
-      - kwindau@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    end_date: null
-    owner: kwindau@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2025-03-01'
-  description: Pulls info about Chrome extensions from the Chrome webstore
-  schedule_interval: 40 21 * * *
-  tags:
-    - impact/tier_3
-
 bqetl_usage_reporting:
   default_args:
     depends_on_past: false

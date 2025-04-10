@@ -6,12 +6,6 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
-  dag: bqetl_chrome_extensions_scraper
-scheduling:
-  dag_name: bqetl_chrome_extensions_scraper
-  arguments:
-  - --date
-  - '{{ds}}'
 bigquery:
   time_partitioning:
     type: day

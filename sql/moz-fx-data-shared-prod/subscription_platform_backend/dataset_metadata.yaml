@@ -1,0 +1,16 @@
+friendly_name: subscription-platform-backend
+description: |-
+  User-facing views related to document namespace subscription-platform-backend; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/subscription-platform-backend
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

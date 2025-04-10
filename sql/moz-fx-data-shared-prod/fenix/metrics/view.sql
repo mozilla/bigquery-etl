@@ -650,7 +650,8 @@ SELECT
       metrics.custom_distribution.http_tls_early_data_negotiated,
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
-      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
+      metrics.custom_distribution.websockets_handshake_type
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1002,7 +1003,8 @@ SELECT
       metrics.labeled_counter.http_script_block_incorrect_mime,
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
-      metrics.labeled_counter.network_rel_preload_miss_ratio
+      metrics.labeled_counter.network_rel_preload_miss_ratio,
+      metrics.labeled_counter.region_store_region_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1809,7 +1811,11 @@ SELECT
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
-    STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.labeled_memory_distribution.network_cache_size,
+      metrics.labeled_memory_distribution.networking_trr_request_size,
+      metrics.labeled_memory_distribution.networking_trr_response_size
+    ) AS `labeled_memory_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -2473,7 +2479,8 @@ SELECT
       metrics.custom_distribution.http_tls_early_data_negotiated,
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
-      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
+      metrics.custom_distribution.websockets_handshake_type
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2825,7 +2832,8 @@ SELECT
       metrics.labeled_counter.http_script_block_incorrect_mime,
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
-      metrics.labeled_counter.network_rel_preload_miss_ratio
+      metrics.labeled_counter.network_rel_preload_miss_ratio,
+      metrics.labeled_counter.region_store_region_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3632,7 +3640,11 @@ SELECT
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
-    STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.labeled_memory_distribution.network_cache_size,
+      metrics.labeled_memory_distribution.networking_trr_request_size,
+      metrics.labeled_memory_distribution.networking_trr_response_size
+    ) AS `labeled_memory_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -4316,7 +4328,8 @@ SELECT
       metrics.custom_distribution.http_tls_early_data_negotiated,
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
-      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
+      metrics.custom_distribution.websockets_handshake_type
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4668,7 +4681,8 @@ SELECT
       metrics.labeled_counter.http_script_block_incorrect_mime,
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
-      metrics.labeled_counter.network_rel_preload_miss_ratio
+      metrics.labeled_counter.network_rel_preload_miss_ratio,
+      metrics.labeled_counter.region_store_region_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5475,7 +5489,11 @@ SELECT
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
-    STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.labeled_memory_distribution.network_cache_size,
+      metrics.labeled_memory_distribution.networking_trr_request_size,
+      metrics.labeled_memory_distribution.networking_trr_response_size
+    ) AS `labeled_memory_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -6168,7 +6186,8 @@ SELECT
       metrics.custom_distribution.http_tls_early_data_negotiated,
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
-      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
+      metrics.custom_distribution.websockets_handshake_type
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -6520,7 +6539,8 @@ SELECT
       metrics.labeled_counter.http_script_block_incorrect_mime,
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
-      metrics.labeled_counter.network_rel_preload_miss_ratio
+      metrics.labeled_counter.network_rel_preload_miss_ratio,
+      metrics.labeled_counter.region_store_region_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -7327,7 +7347,11 @@ SELECT
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
-    STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.labeled_memory_distribution.network_cache_size,
+      metrics.labeled_memory_distribution.networking_trr_request_size,
+      metrics.labeled_memory_distribution.networking_trr_response_size
+    ) AS `labeled_memory_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -8000,7 +8024,8 @@ SELECT
       metrics.custom_distribution.http_tls_early_data_negotiated,
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
-      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity
+      metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
+      metrics.custom_distribution.websockets_handshake_type
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -8352,7 +8377,8 @@ SELECT
       metrics.labeled_counter.http_script_block_incorrect_mime,
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
-      metrics.labeled_counter.network_rel_preload_miss_ratio
+      metrics.labeled_counter.network_rel_preload_miss_ratio,
+      metrics.labeled_counter.region_store_region_result
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -9159,7 +9185,11 @@ SELECT
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
     STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
-    STRUCT(metrics.labeled_memory_distribution.network_cache_size) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.labeled_memory_distribution.network_cache_size,
+      metrics.labeled_memory_distribution.networking_trr_request_size,
+      metrics.labeled_memory_distribution.networking_trr_response_size
+    ) AS `labeled_memory_distribution`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,

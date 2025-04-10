@@ -10809,6 +10809,35 @@ fields:
         histogram IPV4_AND_IPV6_ADDRESS_CONNECTIVITY.
 
         '
+    - name: websockets_handshake_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Websockets Handshake Results (ws-ok-plain, ws-ok-proxy, ws-failed-plain,
+        ws-failed-proxy, wss-ok-plain, wss-ok-proxy, wss-failed-plain, wss-failed-proxy)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBSOCKETS_HANDSHAKE_TYPE.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -16184,6 +16213,34 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram REL_PRELOAD_MISS_RATIO.
+
+        '
+    - name: mail_notification_used_actions
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'A count of how many times each new mail notification action is
+        used. Labels identify the actions, as defined in MailNotificationManager.sys.mjs.
+
+        '
+    - name: region_store_region_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records if a detected region value was stored or ignored. A region
+        might be ignored if it is the US but the set timezone is not the US.
 
         '
   - name: labeled_string
@@ -35800,6 +35857,9 @@ fields:
     - name: mail_ui_configuration_folder_tree_modes
       type: STRING
       mode: REPEATED
+    - name: mail_notification_enabled_actions
+      type: STRING
+      mode: REPEATED
   - name: labeled_timing_distribution
     type: RECORD
     mode: NULLABLE
@@ -40862,6 +40922,70 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry linear histogram
         NETWORK_CACHE_SIZE.
+
+        '
+    - name: networking_trr_request_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'In TRR channel, the size of the HTTP request.
+
+        '
+    - name: networking_trr_response_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'In TRR channel, the size of the HTTP response.
 
         '
 - name: normalized_app_name

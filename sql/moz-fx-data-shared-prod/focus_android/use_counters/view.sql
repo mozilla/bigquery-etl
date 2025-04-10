@@ -2596,7 +2596,10 @@ SELECT
       metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse,
       metrics.counter.use_counter_page_invalid_text_directives,
       metrics.counter.use_counter_page_text_directive_not_created,
-      metrics.counter.use_counter_page_text_directive_pages
+      metrics.counter.use_counter_page_text_directive_pages,
+      metrics.counter.use_counter_doc_invalid_text_directives,
+      metrics.counter.use_counter_doc_text_directive_not_created,
+      metrics.counter.use_counter_doc_text_directive_pages
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5214,7 +5217,10 @@ SELECT
       metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse,
       metrics.counter.use_counter_page_invalid_text_directives,
       metrics.counter.use_counter_page_text_directive_not_created,
-      metrics.counter.use_counter_page_text_directive_pages
+      metrics.counter.use_counter_page_text_directive_pages,
+      metrics.counter.use_counter_doc_invalid_text_directives,
+      metrics.counter.use_counter_doc_text_directive_not_created,
+      metrics.counter.use_counter_doc_text_directive_pages
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7832,7 +7838,10 @@ SELECT
       metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse,
       metrics.counter.use_counter_page_invalid_text_directives,
       metrics.counter.use_counter_page_text_directive_not_created,
-      metrics.counter.use_counter_page_text_directive_pages
+      metrics.counter.use_counter_page_text_directive_pages,
+      metrics.counter.use_counter_doc_invalid_text_directives,
+      metrics.counter.use_counter_doc_text_directive_not_created,
+      metrics.counter.use_counter_doc_text_directive_pages
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

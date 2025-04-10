@@ -7979,6 +7979,15 @@ fields:
     - name: use_counter_page_text_directive_pages
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_invalid_text_directives
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_text_directive_not_created
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_text_directive_pages
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

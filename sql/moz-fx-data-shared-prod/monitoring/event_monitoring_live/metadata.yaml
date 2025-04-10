@@ -70,6 +70,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_vrbrowser_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.pine_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.relay_backend_derived.event_monitoring_live_v1
+  - moz-fx-data-shared-prod.subscription_platform_backend_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.syncstorage_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.thunderbird_desktop_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.treeherder_derived.event_monitoring_live_v1

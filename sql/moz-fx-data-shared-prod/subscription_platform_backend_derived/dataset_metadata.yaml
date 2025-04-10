@@ -1,0 +1,16 @@
+friendly_name: subscription-platform-backend Derived
+description: |-
+  Derived tables related to document namespace subscription-platform-backend, usually populated via queries defined in https://github.com/mozilla/bigquery-etl and managed by Airflow
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

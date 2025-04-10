@@ -11576,6 +11576,35 @@ fields:
         histogram IPV4_AND_IPV6_ADDRESS_CONNECTIVITY.
 
         '
+    - name: websockets_handshake_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Websockets Handshake Results (ws-ok-plain, ws-ok-proxy, ws-failed-plain,
+        ws-failed-proxy, wss-ok-plain, wss-ok-proxy, wss-failed-plain, wss-failed-proxy)
+
+        This metric was generated to correspond to the Legacy Telemetry enumerated
+        histogram WEBSOCKETS_HANDSHAKE_TYPE.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -18606,6 +18635,65 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram REL_PRELOAD_MISS_RATIO.
+
+        '
+    - name: region_store_region_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records if a detected region value was stored or ignored. A region
+        might be ignored if it is the US but the set timezone is not the US.
+
+        '
+    - name: search_suggestions_aborted_requests
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of aborted search suggestion fetches per search
+        engine. Only records app provided engines using their short IDs (''id'', not
+        ''identifier'') as labels.
+
+        '
+    - name: search_suggestions_failed_requests
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of failed search suggestion fetches per search
+        engine. Only records app provided engines using their short IDs (''id'', not
+        ''identifier'') as labels.
+
+        '
+    - name: search_suggestions_successful_requests
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of successful search suggestion fetches per
+        search engine. Only records app provided engines using their short IDs (''id'',
+        not ''identifier'') as labels.
 
         '
   - name: memory_distribution
@@ -41878,8 +41966,8 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine. Keys in this histogram are search engine IDs for built-in search engines
-        and ''other'' for non-built-in search engines.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
@@ -44758,6 +44846,70 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry linear histogram
         NETWORK_CACHE_SIZE.
+
+        '
+    - name: networking_trr_request_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'In TRR channel, the size of the HTTP request.
+
+        '
+    - name: networking_trr_response_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'In TRR channel, the size of the HTTP response.
 
         '
   - name: url

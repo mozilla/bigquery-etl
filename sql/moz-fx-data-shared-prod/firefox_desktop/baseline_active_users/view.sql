@@ -47,14 +47,18 @@ SELECT
   normalized_os AS os,
   normalized_os_version AS os_version,
   COALESCE(
-    `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
-    os_version
+    `mozfun.norm.windows_version_info`(normalized_os, normalized_os_version, windows_build_number),
+    normalized_os_version
   ) AS os_version_build,
   CAST(
     `mozfun.norm.extract_version`(
       COALESCE(
-        `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
-        os_version
+        `mozfun.norm.windows_version_info`(
+          normalized_os,
+          normalized_os_version,
+          windows_build_number
+        ),
+        normalized_os_version
       ),
       "major"
     ) AS INTEGER
@@ -62,8 +66,12 @@ SELECT
   CAST(
     `mozfun.norm.extract_version`(
       COALESCE(
-        `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
-        os_version
+        `mozfun.norm.windows_version_info`(
+          normalized_os,
+          normalized_os_version,
+          windows_build_number
+        ),
+        normalized_os_version
       ),
       "minor"
     ) AS INTEGER

@@ -122,9 +122,9 @@ attrs==25.3.0 \
     #   mozilla-metric-config-parser
     #   pytest-mypy
     #   referencing
-authlib==1.5.1 \
-    --hash=sha256:5cbc85ecb0667312c1cdc2f9095680bb735883b123fb509fde1e65b1c5df972e \
-    --hash=sha256:8408861cbd9b4ea2ff759b00b6f02fd7d81ac5a56d0b2b22c08606c6049aae11
+authlib==1.5.2 \
+    --hash=sha256:8804dd4402ac5e4a0435ac49e0b6e19e395357cfa632a3f624dcb4f6df13b4b1 \
+    --hash=sha256:fe85ec7e50c5f86f1e2603518bb3b4f632985eb4a355e52256530790e326c512
     # via -r requirements.in
 babel==2.12.1 \
     --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
@@ -968,8 +968,8 @@ more-itertools==10.4.0 \
     --hash=sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27 \
     --hash=sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923
     # via jaraco-classes
-mozilla-metric-config-parser==2024.11.1 \
-    --hash=sha256:4f972b669cdaefc1ff5e7372a93bbd23151d7bbdf8f3dbe2b4c3ff4ab61b33bb
+mozilla-metric-config-parser==2025.3.1 \
+    --hash=sha256:15f2fd9c092a4a1a127e8ff970ef20b9862ff706da02e5d0e0d49b48bb2ab126
     # via -r requirements.in
 mozilla-nimbus-schemas==2024.9.3 \
     --hash=sha256:5e1196637308fb0241a209eee027a436e986fc6220ad416eebb06b7162e226bc \

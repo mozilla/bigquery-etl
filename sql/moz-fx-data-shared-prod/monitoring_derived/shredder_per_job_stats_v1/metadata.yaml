@@ -1,12 +1,17 @@
 friendly_name: Shredder Per Job Stats
 description: Runtime and compute stats for shredder jobs.
 owners:
-  - bewu@mozilla.com
+- bewu@mozilla.com
 labels:
   incremental: false
   schedule: daily
 scheduling:
   dag_name: bqetl_monitoring
+  depends_on:
+  - dag_name: bqetl_monitoring_hourly
+    task_id: monitoring_derived__jobs_by_organization__v1
+    # wait for run at 6:00 UTC
+    execution_delta: -4h
 bigquery:
   time_partitioning:
     type: day

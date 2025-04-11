@@ -1,0 +1,21 @@
+friendly_name: Accounts Health Twilio
+description: |
+  Tracks Twilio usage for Firefox Accounts.
+owners:
+- wclouser@mozilla.com
+labels:
+  owner1: wclouser
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/1uGHOS-cY_OUqicbBkS2Z20EK0hLq3PDw28TZcxP5RHI/edit
+  options:
+    skip_leading_rows: 1
+    range: Twilio
+require_column_descriptions: false

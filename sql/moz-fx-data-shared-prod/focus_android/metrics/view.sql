@@ -682,7 +682,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -2286,7 +2287,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -3890,7 +3892,8 @@ SELECT
       metrics.string.a11y_instantiators,
       metrics.string.gfx_linux_window_protocol,
       metrics.string.startup_profile_database_version,
-      metrics.string.startup_profile_selection_reason
+      metrics.string.startup_profile_selection_reason,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,

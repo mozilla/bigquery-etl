@@ -1105,7 +1105,8 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.webcompatreporting_reason_dropdown,
-      metrics.string.downloads_filtered
+      metrics.string.downloads_filtered,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -2934,7 +2935,8 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.webcompatreporting_reason_dropdown,
-      metrics.string.downloads_filtered
+      metrics.string.downloads_filtered,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -4783,7 +4785,8 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.webcompatreporting_reason_dropdown,
-      metrics.string.downloads_filtered
+      metrics.string.downloads_filtered,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -6641,7 +6644,8 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.webcompatreporting_reason_dropdown,
-      metrics.string.downloads_filtered
+      metrics.string.downloads_filtered,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -8479,7 +8483,8 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.webcompatreporting_reason_dropdown,
-      metrics.string.downloads_filtered
+      metrics.string.downloads_filtered,
+      metrics.string.region_home_region
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

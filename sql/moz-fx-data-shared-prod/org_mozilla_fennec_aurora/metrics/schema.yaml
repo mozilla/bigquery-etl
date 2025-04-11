@@ -12186,8 +12186,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -18031,6 +18030,19 @@ fields:
       description: 'A user chose a filter for the downloads page.
 
         The filter can be All, Image, Video, Document or Other.
+
+        '
+    - name: region_home_region
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the detected home region of the user. This is the general
+        region of the user''s machine.
+
+        If a machine moves location, there is a minimum 2-week delay before this will
+        be updated.
+
+        See the [Region documentation](https://firefox-source-docs.mozilla.org/toolkit/modules/toolkit_modules/Region.html)
+        for more information about updates.
 
         '
   - name: string_list

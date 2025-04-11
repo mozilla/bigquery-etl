@@ -11447,6 +11447,32 @@ fields:
       mode: NULLABLE
       description: Whether a page has modified builtin Promise objects such that the
         PromiseLookup fuse is popped
+    - name: use_counter2_invalidtextdirectives_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document had a text fragment that could not be found
+        after loading has finished
+    - name: use_counter2_invalidtextdirectives_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page had a text fragment that could not be found after
+        loading has finished
+    - name: use_counter2_textdirectivenotcreated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has not succeeded in creating a text fragment
+    - name: use_counter2_textdirectivenotcreated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has not succeeded in creating a text fragment
+    - name: use_counter2_textdirectivepages_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used text fragments
+    - name: use_counter2_textdirectivepages_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used text fragments
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22750,6 +22776,32 @@ fields:
           mode: NULLABLE
           description: Whether a page has modified builtin Promise objects such that
             the PromiseLookup fuse is popped
+        - name: use_counter2_invalidtextdirectives_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document had a text fragment that could not be found
+            after loading has finished
+        - name: use_counter2_invalidtextdirectives_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page had a text fragment that could not be found
+            after loading has finished
+        - name: use_counter2_textdirectivenotcreated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has not succeeded in creating a text fragment
+        - name: use_counter2_textdirectivenotcreated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has not succeeded in creating a text fragment
+        - name: use_counter2_textdirectivepages_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used text fragments
+        - name: use_counter2_textdirectivepages_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used text fragments
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

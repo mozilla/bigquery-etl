@@ -8444,6 +8444,24 @@ fields:
     - name: use_counter2_js_optimizepromiselookup_fuse_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_invalidtextdirectives_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_invalidtextdirectives_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_textdirectivenotcreated_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_textdirectivenotcreated_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_textdirectivepages_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_textdirectivepages_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16755,6 +16773,24 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_optimizepromiselookup_fuse_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_invalidtextdirectives_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_invalidtextdirectives_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_textdirectivenotcreated_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_textdirectivenotcreated_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_textdirectivepages_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_textdirectivepages_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

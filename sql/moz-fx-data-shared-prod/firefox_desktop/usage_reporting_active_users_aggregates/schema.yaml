@@ -139,12 +139,12 @@ fields:
 - name: app_version_is_major_release
   type: BOOLEAN
   mode: NULLABLE
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
 - name: os_version_minor
   type: INTEGER
-  mode: NULLABLE
-- name: os_version_build
-  type: STRING
   mode: NULLABLE

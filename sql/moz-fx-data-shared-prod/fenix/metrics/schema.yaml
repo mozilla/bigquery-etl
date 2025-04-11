@@ -11367,6 +11367,9 @@ fields:
     - name: downloads_filtered
       type: STRING
       mode: NULLABLE
+    - name: region_home_region
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

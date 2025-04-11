@@ -5378,6 +5378,9 @@ fields:
     - name: startup_profile_selection_reason
       type: STRING
       mode: NULLABLE
+    - name: region_home_region
+      type: STRING
+      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE

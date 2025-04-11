@@ -32,12 +32,28 @@ SELECT
       THEN "core_user"
     ELSE "other"
   END AS activity_segment,
-  CAST(`mozfun.norm.truncate_version`(os_version, "major") AS INTEGER) AS os_version_major,
-  CAST(`mozfun.norm.truncate_version`(os_version, "minor") AS INTEGER) AS os_version_minor,
   COALESCE(
     `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
     os_version
   ) AS os_version_build,
+  CAST(
+    `mozfun.norm.extract_version`(
+      COALESCE(
+        `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
+        os_version
+      ),
+      "major"
+    ) AS INTEGER
+  ) AS os_version_major,
+  CAST(
+    `mozfun.norm.extract_version`(
+      COALESCE(
+        `mozfun.norm.windows_version_info`(os, os_version, windows_build_number),
+        os_version
+      ),
+      "minor"
+    ) AS INTEGER
+  ) AS os_version_minor,
   app_display_version AS app_version,
   `mozfun.norm.browser_version_info`(app_display_version).major_version AS app_version_major,
   `mozfun.norm.browser_version_info`(app_display_version).minor_version AS app_version_minor,

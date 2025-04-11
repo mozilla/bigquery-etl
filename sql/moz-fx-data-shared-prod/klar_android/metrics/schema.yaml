@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -8985,6 +8985,19 @@ fields:
         \ of a dedicated profiles build skipped over the old default\n    profile\
         \ and created a new profile.\n  restart-claimed-default:\n    A first run\
         \ of a dedicate"
+    - name: region_home_region
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the detected home region of the user. This is the general
+        region of the user''s machine.
+
+        If a machine moves location, there is a minimum 2-week delay before this will
+        be updated.
+
+        See the [Region documentation](https://firefox-source-docs.mozilla.org/toolkit/modules/toolkit_modules/Region.html)
+        for more information about updates.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

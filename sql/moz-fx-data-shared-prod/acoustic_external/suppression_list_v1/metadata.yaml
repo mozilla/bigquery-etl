@@ -1,12 +1,10 @@
-friendly_name: Suppression List
+friendly_name: (DEPRECATED) Suppression List
 description: >
   Suppression List from Acoustic
-  The suppression list was pruned in April 2024 -- https://mozilla-hub.atlassian.net/browse/CTMS-163
-  Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 owners:
   - cbeck@mozilla.com
-scheduling:
-  dag_name: bqetl_acoustic_suppression_list
-  date_partition_parameter: null
+
 bigquery: null
 references: {}
+
+deprecated: true

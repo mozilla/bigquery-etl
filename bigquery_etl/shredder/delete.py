@@ -622,7 +622,7 @@ def delete_from_table(
         table = client.get_table(sql_table_id(target))
     except NotFound:
         logging.warning(f"Skipping {sql_table_id(target)} due to NotFound exception")
-        return ()
+        return ()  # type: ignore
     partition_expr = get_partition_expr(table)
     for partition in list_partitions(
         client, table, partition_expr, end_date, max_single_dml_bytes, partition_limit

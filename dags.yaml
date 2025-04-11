@@ -2332,7 +2332,7 @@ bqetl_monitoring_hourly:
     owner: bewu@mozilla.com
     retries: 2
     retry_delay: 10m
-    start_date: '2025-04-09'
+    start_date: '2025-04-11'
   description: Data platform monitoring queries running hourly
   repo: bigquery-etl
   schedule_interval: hourly

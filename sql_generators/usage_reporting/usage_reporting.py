@@ -28,7 +28,7 @@ CHANNEL_VIEW_TEMPLATE = "channel.view.sql.jinja"
 ARTIFACT_TEMPLATES = (
     "metadata.yaml.jinja",
     "schema.yaml.jinja",
-    "bigconfig.yaml.jinja",
+    "bigconfig.yml.jinja",
 )
 
 BIGEYE_COLLECTION = "Operational Checks"

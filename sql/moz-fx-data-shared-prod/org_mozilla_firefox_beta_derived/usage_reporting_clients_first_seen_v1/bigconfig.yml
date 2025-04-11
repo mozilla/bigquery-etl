@@ -18,3 +18,24 @@ tag_deployments:
       metric_schedule:
         named_schedule:
           name: Default Schedule - 13:00 UTC
+table_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_firefox_beta_derived.usage_reporting_clients_first_seen_v1
+    columns:
+    - column_name: first_seen_date
+      metrics:
+      - saved_metric_id: is_not_null
+        rct_overrides:
+        - first_seen_date
+    - column_name: usage_profile_id
+      metrics:
+      - saved_metric_id: is_not_null
+        rct_overrides:
+        - first_seen_date
+    table_metrics:
+    - saved_metric_id: volume
+    - saved_metric_id: freshness

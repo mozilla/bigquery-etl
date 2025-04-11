@@ -180,3 +180,40 @@ fields:
   name: creation_date
   type: DATE
   description: Date of the creation_time
+
+- mode: NULLABLE
+  name: materialized_view_statistics
+  type: RECORD
+  description: Statistics of materialized views considered in a query job.
+  fields:
+  - mode: REPEATED
+    name: materialized_view
+    type: RECORD
+    description: A materialized view considered for a query job.
+    fields:
+    - mode: NULLABLE
+      name: table_reference
+      type: RECORD
+      description: The candidate materialized view.
+      fields:
+      - mode: NULLABLE
+        name: project_id
+        type: STRING
+      - mode: NULLABLE
+        name: dataset_id
+        type: STRING
+      - mode: NULLABLE
+        name: table_id
+        type: STRING
+    - mode: NULLABLE
+      name: chosen
+      type: BOOLEAN
+      description: Whether the materialized view is chosen for the query.
+    - mode: NULLABLE
+      name: estimated_bytes_saved
+      type: INTEGER
+      description: If present, specifies a best-effort estimation of the bytes saved by using the materialized view rather than its base tables.
+    - mode: NULLABLE
+      name: rejected_reason
+      type: STRING
+      description: If present, specifies the reason why the materialized view was not chosen for the query.

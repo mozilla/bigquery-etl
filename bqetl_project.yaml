@@ -341,6 +341,7 @@ generate:
       metrics_as_struct:
       - accounts_frontend
       - accounts_backend
+      - subscription_platform_backend
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view
@@ -444,6 +445,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/ltv_derived/fenix_client_ltv_v1
 - sql/moz-fx-data-shared-prod/monitor_cirrus_derived/baseline_clients_first_seen_v1
+- sql/moz-fx-data-shared-prod/accounts_cirrus_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/moso_mastodon_backend_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/mozilla_lockbox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/mozilla_mach_derived/baseline_clients_first_seen_v1

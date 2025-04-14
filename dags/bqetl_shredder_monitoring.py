@@ -80,9 +80,9 @@ with DAG(
 
     wait_for_monitoring_derived__jobs_by_organization__v1 = ExternalTaskSensor(
         task_id="wait_for_monitoring_derived__jobs_by_organization__v1",
-        external_dag_id="bqetl_monitoring",
+        external_dag_id="bqetl_monitoring_hourly",
         external_task_id="monitoring_derived__jobs_by_organization__v1",
-        execution_delta=datetime.timedelta(seconds=36000),
+        execution_delta=datetime.timedelta(seconds=43200),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),

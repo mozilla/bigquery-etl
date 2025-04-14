@@ -331,7 +331,7 @@ fields:
     - name: subscription_offering_id
       type: STRING
       mode: NULLABLE
-      description: ID of the offering a customer subscribed to
+      description: The API ID of the offering a customer subscribed to
     - name: subscription_payment_provider
       type: STRING
       mode: NULLABLE
@@ -344,7 +344,7 @@ fields:
     - name: subscription_product_id
       type: STRING
       mode: NULLABLE
-      description: Product ID of a subscription.
+      description: Stripe product ID of a subscription.
     - name: subscription_promotion_code
       type: STRING
       mode: NULLABLE
@@ -439,6 +439,19 @@ fields:
         . (period), % (percentage sign), and - (hyphen) in the allowed set of
 
         characters.
+
+        '
+    - name: subscription_provider_event_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A unique identifier for the subscription notification from a payment
+        provider.
+
+        For Stripe and Stripe-managed providers like PayPal, this is the Stripe webhook
+        event id.
+
+        This will be used to deduplicate notifications that may have been sent multiple
+        times by the payment provider.
 
         '
 - name: normalized_app_name

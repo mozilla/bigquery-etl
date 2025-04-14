@@ -9,6 +9,10 @@ labels:
   owner1: bewu
 scheduling:
   dag_name: bqetl_monitoring
+  depends_on:
+  - dag_name: bqetl_monitoring_hourly
+    task_id: monitoring_derived__jobs_by_organization__v1
+    execution_delta: -4h
 bigquery:
   time_partitioning:
     type: day

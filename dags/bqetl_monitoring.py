@@ -79,6 +79,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_monitoring_derived__jobs_by_organization__v1 = ExternalTaskSensor(
+        task_id="wait_for_monitoring_derived__jobs_by_organization__v1",
+        external_dag_id="bqetl_monitoring_hourly",
+        external_task_id="monitoring_derived__jobs_by_organization__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=72000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -268,32 +281,6 @@ with DAG(
         arguments=["--billing-project", "moz-fx-data-backfill-3"],
     )
 
-    monitoring_derived__jobs_by_organization__v1 = GKEPodOperator(
-        task_id="monitoring_derived__jobs_by_organization__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/jobs_by_organization_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="mhirose@mozilla.com",
-        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "mhirose@mozilla.com"],
-    )
-
-    with TaskGroup(
-        "monitoring_derived__jobs_by_organization__v1_external",
-    ) as monitoring_derived__jobs_by_organization__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_shredder_monitoring__wait_for_monitoring_derived__jobs_by_organization__v1",
-            external_dag_id="bqetl_shredder_monitoring",
-            external_task_id="wait_for_monitoring_derived__jobs_by_organization__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
-        )
-
-        monitoring_derived__jobs_by_organization__v1_external.set_upstream(
-            monitoring_derived__jobs_by_organization__v1
-        )
-
     monitoring_derived__looker_dashboard_load_times__v1 = GKEPodOperator(
         task_id="monitoring_derived__looker_dashboard_load_times__v1",
         arguments=[
@@ -455,7 +442,7 @@ with DAG(
     )
 
     monitoring_derived__bigquery_usage__v2.set_upstream(
-        monitoring_derived__jobs_by_organization__v1
+        wait_for_monitoring_derived__jobs_by_organization__v1
     )
 
     monitoring_derived__column_size__v1.set_upstream(
@@ -479,7 +466,7 @@ with DAG(
     )
 
     monitoring_derived__shredder_per_job_stats__v1.set_upstream(
-        monitoring_derived__jobs_by_organization__v1
+        wait_for_monitoring_derived__jobs_by_organization__v1
     )
 
     monitoring_derived__shredder_per_job_stats__v1.set_upstream(

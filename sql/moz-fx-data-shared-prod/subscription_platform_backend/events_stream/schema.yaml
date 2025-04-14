@@ -218,6 +218,9 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
+    - name: subscription_provider_event_id
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

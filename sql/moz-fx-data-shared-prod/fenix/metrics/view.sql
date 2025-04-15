@@ -101,11 +101,11 @@ SELECT
       metrics.boolean.formautofill_os_auth_enabled,
       metrics.boolean.pwmgr_os_auth_enabled,
       metrics.boolean.pwmgr_saving_enabled,
-      CAST(NULL AS BOOLEAN) AS `addons_manager_compatibility_check_enabled`,
-      CAST(NULL AS BOOLEAN) AS `blocklist_enabled`,
-      CAST(NULL AS BOOLEAN) AS `e10s_enabled`,
-      CAST(NULL AS BOOLEAN) AS `fission_enabled`,
-      CAST(NULL AS BOOLEAN) AS `updater_available`
+      metrics.boolean.addons_manager_compatibility_check_enabled,
+      metrics.boolean.blocklist_enabled,
+      metrics.boolean.e10s_enabled,
+      metrics.boolean.fission_enabled,
+      metrics.boolean.updater_available
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1054,8 +1054,8 @@ SELECT
       metrics.quantity.timestamps_first_paint,
       metrics.quantity.timestamps_first_paint_two,
       metrics.quantity.pwmgr_num_saved_passwords,
-      CAST(NULL AS INTEGER) AS `e10s_multi_processes`,
-      CAST(NULL AS INTEGER) AS `launcher_process_state`
+      metrics.quantity.e10s_multi_processes,
+      metrics.quantity.launcher_process_state
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1114,7 +1114,7 @@ SELECT
       metrics.string.webcompatreporting_reason_dropdown,
       metrics.string.downloads_filtered,
       metrics.string.region_home_region,
-      CAST(NULL AS STRING) AS `xpcom_abi`
+      metrics.string.xpcom_abi
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1705,7 +1705,7 @@ SELECT
     STRUCT(
       metrics.object.fog_validation_some_object,
       metrics.object.nimbus_system_recorded_nimbus_context,
-      CAST(NULL AS JSON) AS `preferences_user_prefs`
+      metrics.object.preferences_user_prefs
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(

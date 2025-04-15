@@ -619,6 +619,49 @@ fields:
         Tracks the pref `signon.rememberSignons`.
 
         '
+    - name: addons_manager_compatibility_check_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether application compatibility is enforced for add-ons.
+
+        '
+    - name: blocklist_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the extension blocklist is enabled.
+
+        Corresponds to the `extensions.blocklist.enabled` pref.
+
+        '
+    - name: e10s_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether e10s is on, i.e. browser tabs open by default in a different
+
+        process.
+
+        See `nsIXULRuntime.browserTabsRemoteAutostart`
+
+        '
+    - name: fission_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether fission is enabled this session, and subframes can load
+        in a
+
+        different process.
+
+        See `nsIXULRuntime.fissionAutostart`
+
+        '
+    - name: updater_available
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the app was built with the updater binary.
+
+        Corresponds to the value of the `MOZ_UPDATER` define.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -8990,6 +9033,15 @@ fields:
         for more information about updates.
 
         '
+    - name: xpcom_abi
+      type: STRING
+      mode: NULLABLE
+      description: "A string tag identifying the binary ABI of the current processor\
+        \ and\ncompiler vtable. This is taken from the TARGET_XPCOM_ABI configure\n\
+        variable. It may not be available on all platforms, especially\nunusual processor\
+        \ or compiler combinations.\n\nThe result takes the form <processor>-<compilerABI>,\
+        \ for example:\n  - x86-msvc\n  - ppc-gcc3\n\nThis value should almost always\
+        \ be used in combination with the\noperating system.\n"
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -9237,6 +9289,24 @@ fields:
       description: 'The number of saved logins, including those that cannot be decrypted.
 
         Similar to the legacy telemetry histogram PWMGR_NUM_SAVED_PASSWORDS.
+
+        '
+    - name: e10s_multi_processes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Maximum number of processes that will be launched for regular
+        web content.
+
+        See `nsIXULRuntime.maxWebProcessCount`
+
+        '
+    - name: launcher_process_state
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether, and in what mode, the launcher process is enabled (or
+        not).
+
+        See `nsIXULRuntime.launcherProcessState`
 
         '
   - name: custom_distribution
@@ -35974,6 +36044,24 @@ fields:
       type: JSON
       mode: NULLABLE
       description: 'Static data recorded to verify the new object metric type end-to-end.
+
+        '
+    - name: preferences_user_prefs
+      type: JSON
+      mode: NULLABLE
+      description: 'The fossilized remains of the Legacy Telemetry Environment''s
+
+        `settings.userPrefs` structure.
+
+        A list of pref names and values.
+
+        Some values will be the string "<user-set>" to obscure the value.
+
+        Do not add more prefs to this list.
+
+        Prefer instead to instrument your prefs directly with individual metrics.
+
+        See Environment.sys.mjs'' `DEFAULT_ENVIRONMENT_PREFS`.
 
         '
   - name: labeled_string

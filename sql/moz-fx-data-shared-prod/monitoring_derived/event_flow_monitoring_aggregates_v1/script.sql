@@ -1005,7 +1005,7 @@ CREATE TEMP TABLE
       flow_id,
       normalized_app_name,
       channel,
-      ARRAY_AGG(event ORDER BY event.source.timestamp) AS events,
+      ARRAY_AGG(event ORDER BY event.source.timestamp LIMIT 10000) AS events,
       -- create a flow hash that concats all the events that are part of the flow
       -- <event_category>.<event_name> -> <event_category>.<event_name> -> ...
       ARRAY_TO_STRING(
@@ -1017,6 +1017,8 @@ CREATE TEMP TABLE
             )
             ORDER BY
               event.source.timestamp
+            LIMIT
+              10000
           ),
           [
             ARRAY_REVERSE(
@@ -1027,6 +1029,8 @@ CREATE TEMP TABLE
                 )
                 ORDER BY
                   event.source.timestamp
+                LIMIT
+                  10000
               )
             )[SAFE_OFFSET(0)]
           ]

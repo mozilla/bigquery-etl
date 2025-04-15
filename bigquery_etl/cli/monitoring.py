@@ -376,11 +376,9 @@ def _update_bigconfig(
             "saved_metric_id": (
                 metric.saved_metric_id.upper().removesuffix("_FAIL")
                 if metric.saved_metric_id
-                else metric.saved_metric_id
+                else None
             ),
-            "metric_name": (
-                metric.metric_name.upper() if metric.metric_name else metric.metric_name
-            ),
+            "metric_name": (metric.metric_name.upper() if metric.metric_name else None),
         }
         for collection in bigconfig.tag_deployments
         for deployment in collection.deployments
@@ -397,12 +395,10 @@ def _update_bigconfig(
             "saved_metric_id": (
                 table_metric.saved_metric_id.upper().removesuffix("_FAIL")
                 if table_metric.saved_metric_id
-                else table_metric.saved_metric_id
+                else None
             ),
             "metric_name": (
-                table_metric.metric_name.upper()
-                if table_metric.metric_name
-                else table_metric.metric_name
+                table_metric.metric_name.upper() if table_metric.metric_name else None
             ),
         }
         for collection in bigconfig.table_deployments
@@ -410,15 +406,15 @@ def _update_bigconfig(
         for table_metric in deployment.table_metrics
     ]
 
-    for metric in tag_deployment_metrics + table_deployment_metrics:
-        default_metric = (
-            metric.get("predefined_metric")
-            or metric.get("saved_metric_id")
-            or metric.get("metric_name")
+    for deployment_metric in tag_deployment_metrics + table_deployment_metrics:
+        config_metric = (
+            deployment_metric["predefined_metric"]
+            or deployment_metric["saved_metric_id"]
+            or deployment_metric["metric_name"]
         )
 
-        if default_metric in default_metrics:
-            default_metrics.remove(default_metric)
+        if config_metric in default_metrics:
+            default_metrics.remove(config_metric)
 
     if len(default_metrics) > 0:
         deployments = [

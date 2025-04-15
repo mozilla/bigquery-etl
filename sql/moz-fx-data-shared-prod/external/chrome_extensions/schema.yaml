@@ -11,18 +11,24 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Chrome Extension Name
-- name: star_rating
+- name: star_rating_raw
   type: NUMERIC
   mode: NULLABLE
-  description: Star Rating
-- name: number_of_ratings
+- name: star_rating_numeric
+  type: NUMERIC
+  mode: NULLABLE
+- name: number_of_ratings_raw
   type: STRING
   mode: NULLABLE
-  description: Number of Ratings
-- name: number_of_users
+- name: number_of_ratings_numeric
+  type: FLOAT
+  mode: NULLABLE
+- name: number_of_users_raw
   type: STRING
   mode: NULLABLE
-  description: Number of Users
+- name: number_of_users_numeric
+  type: INTEGER
+  mode: NULLABLE
 - name: extension_version
   type: STRING
   mode: NULLABLE

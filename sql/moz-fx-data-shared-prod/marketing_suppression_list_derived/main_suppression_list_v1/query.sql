@@ -1,5 +1,14 @@
 WITH suppressions AS (
+  -- Acoustic Suppression List
+  SELECT DISTINCT
+    LOWER(email) AS email,
+    suppressed_timestamp,
+    suppression_reason,
+    "Acoustic" AS suppression_source,
+  FROM
+    `moz-fx-data-shared-prod.acoustic_external.suppression_list_v1`
   -- braze unsubscribes from Firefox workspace
+  UNION DISTINCT
   SELECT
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,

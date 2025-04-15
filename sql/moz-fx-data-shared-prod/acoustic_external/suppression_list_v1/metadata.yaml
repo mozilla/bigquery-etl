@@ -1,10 +1,8 @@
-friendly_name: (DEPRECATED) Suppression List
+friendly_name: Suppression List
 description: >
-  Suppression List from Acoustic
+  Suppression List from Acoustic.
+  As of 2025-04-15 no longer updated, but still required for main_suppression_list_v1.
 owners:
   - cbeck@mozilla.com
-
 bigquery: null
 references: {}
-
-deprecated: true

@@ -1,7 +1,8 @@
 friendly_name: (DEPRECATED) Contact Database (Acoustic data)
 
 description: >
-  Import Contacts file exported from Acoustic (CSV data)
+  Import Contacts file exported from Acoustic (CSV data).
+  Deprecated as of 2025-04-15.
 
 labels:
   incremental: true

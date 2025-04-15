@@ -272,6 +272,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: usage_is_managed_device
+      type: BOOLEAN
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -28,7 +28,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
     STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.boolean.usage_is_managed_device) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -65,7 +66,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
     STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.boolean.usage_is_managed_device) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -102,7 +104,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
     STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.boolean.usage_is_managed_device) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

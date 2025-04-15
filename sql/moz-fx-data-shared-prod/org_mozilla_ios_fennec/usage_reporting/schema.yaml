@@ -367,6 +367,16 @@ fields:
       description: 'The duration of the last foreground session.
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: usage_is_managed_device
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Was the app installed using MDM software.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

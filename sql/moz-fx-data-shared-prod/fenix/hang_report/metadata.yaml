@@ -1,0 +1,22 @@
+friendly_name: App-specific view for Glean ping "hang-report"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.hang_report, org_mozilla_firefox_beta.hang_report, org_mozilla_fenix.hang_report, org_mozilla_fenix_nightly.hang_report, org_mozilla_fennec_aurora.hang_report).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.hang_report
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.hang_report
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.hang_report
+  - moz-fx-data-shared-prod.org_mozilla_firefox.hang_report
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.hang_report
+require_column_descriptions: false

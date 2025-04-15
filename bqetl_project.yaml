@@ -32,7 +32,6 @@ dry_run:
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
-  - sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_completeness_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql

@@ -850,6 +850,61 @@ fields:
       description: 'Records if the user has link previews enabled
 
         '
+    - name: addons_manager_compatibility_check_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether application compatibility is enforced for add-ons.
+
+        '
+    - name: blocklist_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the extension blocklist is enabled.
+
+        Corresponds to the `extensions.blocklist.enabled` pref.
+
+        '
+    - name: browser_default_at_launch
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the shell service identified this app as the default browser.
+
+        Checked once near startup.
+
+        On Windows, this is operationalized as whether Firefox is the default
+
+        HTTP protocol handler and the default HTML file handler.
+
+        '
+    - name: e10s_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether e10s is on, i.e. browser tabs open by default in a different
+
+        process.
+
+        See `nsIXULRuntime.browserTabsRemoteAutostart`
+
+        '
+    - name: fission_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether fission is enabled this session, and subframes can load
+        in a
+
+        different process.
+
+        See `nsIXULRuntime.fissionAutostart`
+
+        '
+    - name: updater_available
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the app was built with the updater binary.
+
+        Corresponds to the value of the `MOZ_UPDATER` define.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -12977,6 +13032,15 @@ fields:
         for more information about updates.
 
         '
+    - name: xpcom_abi
+      type: STRING
+      mode: NULLABLE
+      description: "A string tag identifying the binary ABI of the current processor\
+        \ and\ncompiler vtable. This is taken from the TARGET_XPCOM_ABI configure\n\
+        variable. It may not be available on all platforms, especially\nunusual processor\
+        \ or compiler combinations.\n\nThe result takes the form <processor>-<compilerABI>,\
+        \ for example:\n  - x86-msvc\n  - ppc-gcc3\n\nThis value should almost always\
+        \ be used in combination with the\noperating system.\n"
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -33843,6 +33907,31 @@ fields:
         Similar to the legacy telemetry histogram PWMGR_NUM_SAVED_PASSWORDS.
 
         '
+    - name: e10s_multi_processes
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Maximum number of processes that will be launched for regular
+        web content.
+
+        See `nsIXULRuntime.maxWebProcessCount`
+
+        '
+    - name: launcher_process_state
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether, and in what mode, the launcher process is enabled (or
+        not).
+
+        See `nsIXULRuntime.launcherProcessState`
+
+        '
+    - name: tabgroup_saved_groups
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of saved tab groups present in the user''s
+        session
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -44484,6 +44573,24 @@ fields:
         for how widget ids and positions are determined.
 
         '
+    - name: preferences_user_prefs
+      type: JSON
+      mode: NULLABLE
+      description: 'The fossilized remains of the Legacy Telemetry Environment''s
+
+        `settings.userPrefs` structure.
+
+        A list of pref names and values.
+
+        Some values will be the string "<user-set>" to obscure the value.
+
+        Do not add more prefs to this list.
+
+        Prefer instead to instrument your prefs directly with individual metrics.
+
+        See Environment.sys.mjs'' `DEFAULT_ENVIRONMENT_PREFS`.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -50234,6 +50341,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Records statistics about the number of tabs per active group:
+        max, median, average and min.
+
+        '
+    - name: tabgroup_tabs_per_saved_group
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records statistics about the number of tabs per saved tab group:
         max, median, average and min.
 
         '

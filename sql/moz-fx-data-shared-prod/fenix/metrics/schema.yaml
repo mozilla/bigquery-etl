@@ -482,6 +482,21 @@ fields:
     - name: pwmgr_saving_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: addons_manager_compatibility_check_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: blocklist_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: e10s_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: fission_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: updater_available
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11198,6 +11213,12 @@ fields:
     - name: pwmgr_num_saved_passwords
       type: INTEGER
       mode: NULLABLE
+    - name: e10s_multi_processes
+      type: INTEGER
+      mode: NULLABLE
+    - name: launcher_process_state
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -11368,6 +11389,9 @@ fields:
       type: STRING
       mode: NULLABLE
     - name: region_home_region
+      type: STRING
+      mode: NULLABLE
+    - name: xpcom_abi
       type: STRING
       mode: NULLABLE
   - name: string_list
@@ -29376,6 +29400,9 @@ fields:
       type: JSON
       mode: NULLABLE
     - name: nimbus_system_recorded_nimbus_context
+      type: JSON
+      mode: NULLABLE
+    - name: preferences_user_prefs
       type: JSON
       mode: NULLABLE
   - name: labeled_string

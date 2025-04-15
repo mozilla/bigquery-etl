@@ -10,7 +10,7 @@ SELECT
   number_of_ratings AS number_of_ratings_raw,
   CASE
     WHEN REGEXP_CONTAINS(LOWER(number_of_ratings), r'^\d+(\.\d+)?k$')
-      THEN CAST(REGEXP_EXTRACT(LOWER(number_of_ratings), r'^(\d+(\.\d+)?)') AS FLOAT64) * 1000
+      THEN CAST(REGEXP_EXTRACT(LOWER(number_of_ratings), r'^(\d+(?:\.\d+)?)') AS FLOAT64) * 1000
     WHEN REGEXP_CONTAINS(number_of_ratings, r'^\d+$')
       THEN CAST(number_of_ratings AS INT64)
     ELSE NULL

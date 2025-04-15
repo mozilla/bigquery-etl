@@ -2,7 +2,7 @@ friendly_name: (DEPRECATED) Contact Database (Acoustic data)
 
 description: >
   This table represents the current snapshot of contacts inside Acoustic.
-  Every 24 hours this table is fully reloaded.
+  Deprecated as of 2025-04-15.
 
 owners:
   - cbeck@mozilla.com

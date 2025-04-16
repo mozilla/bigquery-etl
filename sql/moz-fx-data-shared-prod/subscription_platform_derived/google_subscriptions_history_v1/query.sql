@@ -67,41 +67,64 @@ replaced_subscriptions AS (
     linked_purchase_token IS NOT NULL
   GROUP BY
     linked_purchase_token
-)
-SELECT
-  CONCAT(
-    original_purchase_tokens.original_purchase_token,
-    '-',
-    FORMAT_TIMESTAMP('%FT%H:%M:%E6S', changelog.timestamp)
-  ) AS id,
-  changelog.timestamp AS valid_from,
-  COALESCE(
-    LEAD(changelog.timestamp) OVER (
+),
+subscriptions_revised_changelog AS (
+  SELECT
+    changelog.*,
+    original_purchase_tokens.original_purchase_token AS original_subscription_purchase_token
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1` AS changelog
+  JOIN
+    original_purchase_tokens
+    ON changelog.subscription.metadata.purchase_token = original_purchase_tokens.purchase_token
+  LEFT JOIN
+    replaced_subscriptions
+    ON changelog.subscription.metadata.purchase_token = replaced_subscriptions.purchase_token
+  WHERE
+    -- Exclude subscription changelog records where it has been replaced by a subsequent purchase,
+    -- because we'll use the subsequent purchase's records for the subscription from that point on.
+    changelog.subscription.metadata.replaced_by_another_purchase IS NOT TRUE
+    AND changelog.subscription.cancel_reason IS DISTINCT FROM 2
+    AND (
+      changelog.timestamp < replaced_subscriptions.replaced_at
+      OR replaced_subscriptions.replaced_at IS NULL
+    )
+  QUALIFY
+    -- Exclude records for suspected expirations when it later turned out the subscription hadn't expired.
+    (
+      changelog.type = 'synthetic_subscription_suspected_expiration'
+      AND LEAD(changelog.subscription.expiry_time) OVER subscription_changes_asc > (
+        LEAD(changelog.timestamp) OVER subscription_changes_asc
+      )
+    ) IS NOT TRUE
+  WINDOW
+    subscription_changes_asc AS (
       PARTITION BY
         original_purchase_tokens.original_purchase_token
       ORDER BY
         changelog.timestamp,
         changelog.id
+    )
+)
+SELECT
+  CONCAT(
+    original_subscription_purchase_token,
+    '-',
+    FORMAT_TIMESTAMP('%FT%H:%M:%E6S', `timestamp`)
+  ) AS id,
+  `timestamp` AS valid_from,
+  COALESCE(
+    LEAD(`timestamp`) OVER (
+      PARTITION BY
+        original_subscription_purchase_token
+      ORDER BY
+        `timestamp`,
+        id
     ),
     '9999-12-31 23:59:59.999999'
   ) AS valid_to,
-  changelog.id AS google_subscriptions_revised_changelog_id,
-  original_purchase_tokens.original_purchase_token AS original_subscription_purchase_token,
-  changelog.subscription
+  id AS google_subscriptions_revised_changelog_id,
+  original_subscription_purchase_token,
+  subscription
 FROM
-  `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1` AS changelog
-JOIN
-  original_purchase_tokens
-  ON changelog.subscription.metadata.purchase_token = original_purchase_tokens.purchase_token
-LEFT JOIN
-  replaced_subscriptions
-  ON changelog.subscription.metadata.purchase_token = replaced_subscriptions.purchase_token
-WHERE
-  -- Exclude subscription changelog records where it has been replaced by a subsequent purchase,
-  -- because we'll use the subsequent purchase's records for the subscription from that point on.
-  changelog.subscription.metadata.replaced_by_another_purchase IS NOT TRUE
-  AND changelog.subscription.cancel_reason IS DISTINCT FROM 2
-  AND (
-    changelog.timestamp < replaced_subscriptions.replaced_at
-    OR replaced_subscriptions.replaced_at IS NULL
-  )
+  subscriptions_revised_changelog

@@ -30,7 +30,12 @@ original_changelog AS (
             original_changelog.id
         )
       )
-    ) AS subscription_change_number
+    ) AS subscription_change_number,
+    (
+      COALESCE(existing_revised_changelog.subscription_change_count, 0) + (
+        COUNT(*) OVER (PARTITION BY original_changelog.subscription.metadata.purchase_token)
+      )
+    ) AS subscription_change_count
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_changelog_v1` AS original_changelog
   LEFT JOIN
@@ -104,6 +109,35 @@ synthetic_subscription_start_changelog AS (
     subscription_change_number = 1
     AND subscription.start_time < `timestamp`
 ),
+synthetic_subscription_suspected_expiration_changelog AS (
+  -- SubPlat hasn't consistently recorded Google subscription expirations, so we synthesize changelog
+  -- records for expirations which seem to have occurred after the subscription's latest changelog.
+  SELECT
+    'synthetic_subscription_suspected_expiration' AS type,
+    original_id,
+    firestore_export_event_id,
+    firestore_export_operation,
+    subscription.expiry_time AS `timestamp`,
+    (
+      SELECT AS STRUCT
+        subscription.* REPLACE (
+          (SELECT AS STRUCT subscription.metadata.* REPLACE (FALSE AS is_mutable)) AS metadata,
+          CAST(NULL AS INTEGER) AS payment_state
+        )
+    ) AS subscription
+  FROM
+    adjusted_original_changelog
+  WHERE
+    subscription_change_number = subscription_change_count
+    AND subscription.expiry_time > `timestamp`
+    -- Wait at least 12 hours before assuming the subscription has expired, which will hopefully
+    -- allow the majority of late-arriving changelog data to arrive (based on late-arriving data
+    -- seen prior to 2025-04-16, waiting 12 hours would have covered ~86% of such cases).
+    AND subscription.expiry_time < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 12 HOUR)
+    -- Ignore suspected expirations during the current day, as these ETLs run daily and are
+    -- primarily intended to process the previous day's data.
+    AND subscription.expiry_time < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY)
+),
 changelog_union AS (
   SELECT
     `timestamp`,
@@ -124,6 +158,16 @@ changelog_union AS (
     subscription
   FROM
     synthetic_subscription_start_changelog
+  UNION ALL
+  SELECT
+    `timestamp`,
+    type,
+    original_id,
+    firestore_export_event_id,
+    firestore_export_operation,
+    subscription
+  FROM
+    synthetic_subscription_suspected_expiration_changelog
 )
 SELECT
   CONCAT(

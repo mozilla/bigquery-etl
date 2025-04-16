@@ -68,3 +68,7 @@ fields:
   type: BOOLEAN
   description: |-
     Featured - Indicates if the featured badge is present, which indicates the extension follows recommended practices for Chrome extensions.
+- name: verified_domain
+  mode: NULLABLE
+  type: STRING
+  description: Verified Domain

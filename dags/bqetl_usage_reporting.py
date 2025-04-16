@@ -38,6 +38,7 @@ default_args = {
     "email_on_failure": True,
     "email_on_retry": False,
     "retries": 1,
+    "max_active_tis_per_dag": None,
 }
 
 tags = ["impact/tier_1", "repo/bigquery-etl"]

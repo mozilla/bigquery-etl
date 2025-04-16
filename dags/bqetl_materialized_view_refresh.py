@@ -17,6 +17,11 @@ Built from bigquery-etl repo, [`dags/bqetl_materialized_view_refresh.py`](https:
 #### Description
 
 Manual refreshes of materialized views.  See https://mozilla-hub.atlassian.net/browse/DENG-6990
+
+*Triage notes*
+
+Transient errors may occur.  The DAG is fine long as the latest run worked.
+
 #### Owner
 
 bewu@mozilla.com
@@ -38,6 +43,7 @@ default_args = {
     "email_on_failure": True,
     "email_on_retry": True,
     "retries": 1,
+    "max_active_tis_per_dag": 1,
 }
 
 tags = ["impact/tier_1", "repo/bigquery-etl"]

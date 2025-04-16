@@ -4,7 +4,7 @@ Real implementation is in private-bigquery-etl
 */
 CREATE OR REPLACE FUNCTION udf.hr_cost_center_to_steering_committee(cost_center STRING)
 RETURNS STRING AS (
-  'cost_center_group'
+  'steering_committee'
 );
 
 SELECT

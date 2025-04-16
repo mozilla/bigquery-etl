@@ -69,6 +69,7 @@ class DagDefaultArgs:
     email_on_failure: bool = attr.ib(True)
     email_on_retry: bool = attr.ib(True)
     retries: int = attr.ib(2)
+    max_active_tis_per_dag: Optional[int] = attr.ib(None)
 
     @owner.validator
     def validate_owner(self, attribute, value):

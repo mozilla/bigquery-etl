@@ -2308,11 +2308,18 @@ bqetl_materialized_view_refresh:
     email_on_failure: true
     email_on_retry: true
     end_date: null
+    # prevent concurrent refreshes of the same view
+    max_active_tis_per_dag: 1
     owner: bewu@mozilla.com
     retries: 1
     retry_delay: 5m
     start_date: '2025-03-21'
-  description: Manual refreshes of materialized views.  See https://mozilla-hub.atlassian.net/browse/DENG-6990
+  description: |
+    Manual refreshes of materialized views.  See https://mozilla-hub.atlassian.net/browse/DENG-6990
+
+    *Triage notes*
+
+    Transient errors may occur.  The DAG is fine long as the latest run worked.
   repo: bigquery-etl
   schedule_interval: 45 * * * *
   tags:

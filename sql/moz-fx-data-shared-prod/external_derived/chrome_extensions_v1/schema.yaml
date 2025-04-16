@@ -71,4 +71,5 @@ fields:
 - name: verified_domain
   mode: NULLABLE
   type: STRING
-  description: Verified Domain
+  description: |-
+    This extension is created by the owner of the listed website. The publisher has a good record with no history of violations.

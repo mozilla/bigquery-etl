@@ -304,6 +304,38 @@ with DAG(
         depends_on_past=False,
     )
 
+    org_mozilla_fenix_derived__nimbus_recorded_targeting_context__v1 = (
+        bigquery_etl_query(
+            task_id="org_mozilla_fenix_derived__nimbus_recorded_targeting_context__v1",
+            destination_table="nimbus_recorded_targeting_context_v1",
+            dataset_id="org_mozilla_fenix_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="chumphreys@mozilla.com",
+            email=[
+                "ascholtz@mozilla.com",
+                "chumphreys@mozilla.com",
+                "telemetry-alerts@mozilla.com",
+            ],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
+    org_mozilla_ios_firefox_derived__nimbus_recorded_targeting_context__v1 = bigquery_etl_query(
+        task_id="org_mozilla_ios_firefox_derived__nimbus_recorded_targeting_context__v1",
+        destination_table="nimbus_recorded_targeting_context_v1",
+        dataset_id="org_mozilla_ios_firefox_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="chumphreys@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "chumphreys@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__experiment_crash_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__experiment_crash_aggregates__v1",
         destination_table="experiment_crash_aggregates_v1",
@@ -386,6 +418,14 @@ with DAG(
 
     firefox_ios_derived__tos_rollout_enrollments__v1.set_upstream(
         wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1
+    )
+
+    org_mozilla_fenix_derived__nimbus_recorded_targeting_context__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    org_mozilla_ios_firefox_derived__nimbus_recorded_targeting_context__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__experiment_crash_aggregates__v1.set_upstream(

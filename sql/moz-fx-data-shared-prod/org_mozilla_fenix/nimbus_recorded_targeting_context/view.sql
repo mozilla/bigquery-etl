@@ -1,17 +1,17 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.org_mozilla_fenix.recorded_targeting_context`
+  `moz-fx-data-shared-prod.org_mozilla_fenix.nimbus_recorded_targeting_context`
 AS
 SELECT
   m.*
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_derived.recorded_targeting_context_v1` m
+  `moz-fx-data-shared-prod.org_mozilla_fenix_derived.nimbus_recorded_targeting_context_v1` m
 INNER JOIN
   (
     SELECT
       client_id,
       MAX(submission_date) AS latest_date
     FROM
-      `moz-fx-data-shared-prod.org_mozilla_fenix_derived.recorded_targeting_context_v1`
+      `moz-fx-data-shared-prod.org_mozilla_fenix_derived.nimbus_recorded_targeting_context_v1`
     GROUP BY
       client_id
   ) ld

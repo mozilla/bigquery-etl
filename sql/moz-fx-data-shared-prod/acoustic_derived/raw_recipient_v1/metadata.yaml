@@ -1,9 +1,8 @@
-friendly_name: (DEPRECATED) Raw Recipient (Acoustic data)
+friendly_name: Raw Recipient (Acoustic data)
 
 description: >
   Import Raw Recipient file exported from Acoustic (CSV data).
   This includes metrics around email performance (clicks, opens, etc).
-  Deprecated as of 2025-04-15.
 
 labels:
   incremental: true
@@ -22,5 +21,3 @@ bigquery:
       - event_type
       - recipient_type
       - body_type
-
-deprecated: true

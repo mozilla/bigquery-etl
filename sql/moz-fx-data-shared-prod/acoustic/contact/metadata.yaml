@@ -1,7 +1,6 @@
-friendly_name: (DEPRECATED) Adjust contact data
+friendly_name: Adjust contact data
 description: |-
   Adjust contact data.
-  Deprecated as of 2025-04-15.
 
 labels:
-  authorized: false
+  authorized: true

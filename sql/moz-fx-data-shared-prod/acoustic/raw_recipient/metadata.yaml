@@ -1,7 +1,6 @@
-friendly_name: (DEPRECATED) Adjust raw recipient
+friendly_name: Adjust raw recipient
 description: |-
   Adjust raw recipient data. This includes information related to email events such as "clicked" and "opened".
-  Deprecated as of 2025-04-15.
 
 labels:
-  authorized: false
+  authorized: true

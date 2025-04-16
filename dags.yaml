@@ -2280,23 +2280,6 @@ bqetl_un_population:
   tags:
     - impact/tier_3
 
-bqetl_chrome_extensions_scraper:
-  default_args:
-    depends_on_past: false
-    email:
-      - kwindau@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    end_date: null
-    owner: kwindau@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2025-03-01'
-  description: Pulls info about Chrome extensions from the Chrome webstore
-  schedule_interval: 40 21 * * *
-  tags:
-    - impact/tier_3
-
 bqetl_usage_reporting:
   default_args:
     depends_on_past: false
@@ -2332,6 +2315,27 @@ bqetl_materialized_view_refresh:
   description: Manual refreshes of materialized views.  See https://mozilla-hub.atlassian.net/browse/DENG-6990
   repo: bigquery-etl
   schedule_interval: 45 * * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl
+
+bqetl_monitoring_hourly:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - bewu@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: bewu@mozilla.com
+    retries: 2
+    retry_delay: 10m
+    start_date: '2025-04-11'
+  description: Data platform monitoring queries running hourly
+  repo: bigquery-etl
+  schedule_interval: hourly
   tags:
     - impact/tier_1
     - repo/bigquery-etl

@@ -46,16 +46,36 @@ SELECT
   END AS distribution_id_source,
   normalized_os AS os,
   normalized_os_version AS os_version,
-  CAST(
-    `mozfun.norm.truncate_version`(normalized_os_version, "major") AS INTEGER
-  ) AS os_version_major,
-  CAST(
-    `mozfun.norm.truncate_version`(normalized_os_version, "minor") AS INTEGER
-  ) AS os_version_minor,
   COALESCE(
     `mozfun.norm.windows_version_info`(normalized_os, normalized_os_version, windows_build_number),
     normalized_os_version
   ) AS os_version_build,
+  CAST(
+    `mozfun.norm.extract_version`(
+      COALESCE(
+        `mozfun.norm.windows_version_info`(
+          normalized_os,
+          normalized_os_version,
+          windows_build_number
+        ),
+        normalized_os_version
+      ),
+      "major"
+    ) AS INTEGER
+  ) AS os_version_major,
+  CAST(
+    `mozfun.norm.extract_version`(
+      COALESCE(
+        `mozfun.norm.windows_version_info`(
+          normalized_os,
+          normalized_os_version,
+          windows_build_number
+        ),
+        normalized_os_version
+      ),
+      "minor"
+    ) AS INTEGER
+  ) AS os_version_minor,
   CASE
     WHEN BIT_COUNT(days_desktop_active_bits)
       BETWEEN 1

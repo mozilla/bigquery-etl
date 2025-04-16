@@ -186,10 +186,11 @@ def write_view_if_not_exists(
     if schema.schema_id == "moz://mozilla.org/schemas/glean/ping/1":
         replacements += ["mozfun.norm.glean_ping_info(ping_info) AS ping_info"]
         if schema.bq_table == "baseline_v1":
-            replacements += [
-                "mozfun.norm.glean_baseline_client_info"
-                "(client_info, metrics) AS client_info"
-            ]
+            client_info_field = (
+                "mozfun.norm.glean_baseline_client_info(client_info, metrics)"
+            )
+        else:
+            client_info_field = "client_info"
         if (
             schema.bq_dataset_family == "org_mozilla_fenix"
             and schema.bq_table == "metrics_v1"
@@ -205,6 +206,8 @@ def write_view_if_not_exists(
         datetime_replacements_clause = ""
         metrics_2_aliases = []
         metrics_2_exclusions = []
+        attribution_ext_defined = False
+        distribution_ext_defined = False
 
         if metrics_struct := next(
             (field for field in schema.schema if field["name"] == "metrics"), None
@@ -261,6 +264,15 @@ def write_view_if_not_exists(
                         f"metrics.{metrics_field['name']} AS {metrics_2_types_to_rename[metrics_field['name']]}"
                     ]
 
+                # If they exist, application-defined attribution metrics are mirrored to client_info
+                # See doc linked in https://bugzilla.mozilla.org/show_bug.cgi?id=1930762
+                if metrics_field["name"] == "object":
+                    for object_metric in metrics_field["fields"]:
+                        if object_metric["name"] == "glean_attribution_ext":
+                            attribution_ext_defined = True
+                        elif object_metric["name"] == "glean_distribution_ext":
+                            distribution_ext_defined = True
+
         if datetime_replacements_clause or metrics_2_aliases or metrics_2_exclusions:
             except_clause = ""
             if metrics_2_exclusions:
@@ -282,6 +294,23 @@ def write_view_if_not_exists(
             replacements += [
                 "'Firefox' AS normalized_app_name",
             ]
+
+        attribution_ext_value = (
+            "metrics.object.glean_attribution_ext"
+            if attribution_ext_defined
+            else "CAST(NULL AS JSON)"
+        )
+        distribution_ext_value = (
+            "metrics.object.glean_distribution_ext"
+            if distribution_ext_defined
+            else "CAST(NULL AS JSON)"
+        )
+        replacements += [
+            "mozfun.norm.glean_client_info_attribution("
+            f"{client_info_field}, {attribution_ext_value}, {distribution_ext_value}"
+            ") AS client_info"
+        ]
+
     elif (
         schema.schema_id.startswith("moz://mozilla.org/schemas/main/ping/")
         and "_use_counter_" not in schema.stable_table

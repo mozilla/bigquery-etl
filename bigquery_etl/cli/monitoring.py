@@ -366,24 +366,55 @@ def _update_bigconfig(
     default_metrics,
 ):
     """Update the BigConfig file to monitor a view."""
-    for collection in bigconfig.tag_deployments:
-        for deployment in collection.deployments:
-            for metric in deployment.metrics:
-                if (
-                    metric.metric_type is not None
-                    and metric.metric_type.predefined_metric in default_metrics
-                ):
-                    default_metrics.remove(metric.metric_type.predefined_metric)
-                elif (
-                    metric.saved_metric_id is not None
-                    and (metric_id := metric.saved_metric_id.upper()) in default_metrics
-                ):
-                    default_metrics.remove(metric_id)
+    tag_deployment_metrics = [
+        {
+            "predefined_metric": (
+                metric.metric_type.predefined_metric.upper()
+                if metric.metric_type
+                else None
+            ),
+            "saved_metric_id": (
+                metric.saved_metric_id.upper().removesuffix("_FAIL")
+                if metric.saved_metric_id
+                else None
+            ),
+            "metric_name": (metric.metric_name.upper() if metric.metric_name else None),
+        }
+        for collection in bigconfig.tag_deployments
+        for deployment in collection.deployments
+        for metric in deployment.metrics
+    ]
 
-        if metadata.monitoring.collection and collection.collection is None:
-            collection.collection = SimpleCollection(
-                name=metadata.monitoring.collection
-            )
+    table_deployment_metrics = [
+        {
+            "predefined_metric": (
+                table_metric.metric_type.predefined_metric.upper()
+                if table_metric.metric_type
+                else None
+            ),
+            "saved_metric_id": (
+                table_metric.saved_metric_id.upper().removesuffix("_FAIL")
+                if table_metric.saved_metric_id
+                else None
+            ),
+            "metric_name": (
+                table_metric.metric_name.upper() if table_metric.metric_name else None
+            ),
+        }
+        for collection in bigconfig.table_deployments
+        for deployment in collection.deployments
+        for table_metric in deployment.table_metrics
+    ]
+
+    for deployment_metric in tag_deployment_metrics + table_deployment_metrics:
+        config_metric = (
+            deployment_metric["predefined_metric"]
+            or deployment_metric["saved_metric_id"]
+            or deployment_metric["metric_name"]
+        )
+
+        if config_metric in default_metrics:
+            default_metrics.remove(config_metric)
 
     if len(default_metrics) > 0:
         deployments = [

@@ -281,12 +281,14 @@ class EventMonitoringLive(GleanTable):
             format=False,
             **render_kwargs,
         )
+        schema = (PATH / "templates" / "event_monitoring_aggregates_v1.schema.yaml").read_text()
 
         view = f"{project_id}.{TARGET_DATASET_CROSS_APP}.{target_view_name}"
         if output_dir:
             artifacts = [
                 Artifact(table, "metadata.yaml", metadata),
                 Artifact(table, "query.sql", query_sql),
+                Artifact(table, "schema.yaml", schema),
                 Artifact(view, "metadata.yaml", view_metadata),
                 Artifact(view, "view.sql", view_sql),
             ]

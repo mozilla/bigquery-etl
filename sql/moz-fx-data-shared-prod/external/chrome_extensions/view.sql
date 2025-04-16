@@ -25,6 +25,8 @@ SELECT
   developer_website,
   developer_phone,
   extension_updated_date,
-  category
+  category,
+  trader_status,
+  featured
 FROM
   `moz-fx-data-shared-prod.external_derived.chrome_extensions_v1`

@@ -1,0 +1,12 @@
+friendly_name: HR Cost Center to Steering Committee
+description: |-
+  This is a stub implementation for use with tests; real implementation is in private-bigquery-etl
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

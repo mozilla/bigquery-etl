@@ -27,6 +27,7 @@ SELECT
   extension_updated_date,
   category,
   trader_status,
-  featured
+  featured,
+  verified_domain
 FROM
   `moz-fx-data-shared-prod.external_derived.chrome_extensions_v1`

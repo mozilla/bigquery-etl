@@ -160,12 +160,12 @@ bqetl_accounts_derived:
     - repo/bigquery-etl
 
 bqetl_subplat:
-  schedule_interval: 45 1 * * *
+  schedule_interval: 0 12 * * *
   description: |
-    Daily imports for Subscription Platform data from Stripe and the Mozilla VPN
+    Daily imports for Subscription Platform data from Stripe, Firestore, and the Mozilla VPN
     operational DB as well as derived tables based on that data.
 
-    Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
+    Scheduled mid-day to allow more time for late-arriving data from the previous day.
 
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
@@ -177,7 +177,7 @@ bqetl_subplat:
 
   default_args:
     owner: srose@mozilla.com
-    start_date: "2021-07-20"
+    start_date: "2025-04-17"
     email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m

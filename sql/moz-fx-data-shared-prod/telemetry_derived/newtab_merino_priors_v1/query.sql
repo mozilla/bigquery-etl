@@ -5,32 +5,38 @@ params AS (
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) AS end_timestamp,
     TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 7 DAY AS start_timestamp
 ),
+newtab_events AS (
+  SELECT
+    submission_timestamp,
+    normalized_country_code AS region,
+    event.name AS event_name,
+    SAFE_CAST(
+      mozfun.map.get_key(event.extra, 'scheduled_corpus_item_id') AS STRING
+    ) AS scheduled_corpus_item_id,
+    SAFE_CAST(mozfun.map.get_key(event.extra, 'recommended_at') AS INT64) AS recommended_at
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop.newtab`,
+    UNNEST(events) AS event,
+    params
+  WHERE
+    submission_timestamp >= params.start_timestamp
+    AND submission_timestamp < params.end_timestamp
+    AND event.category = 'pocket'
+    AND event.name IN ('impression', 'click')
+    AND mozfun.map.get_key(event.extra, 'scheduled_corpus_item_id') IS NOT NULL
+    AND SAFE_CAST(mozfun.map.get_key(event.extra, 'recommended_at') AS INT64) IS NOT NULL
+    AND SAFE_CAST(mozfun.map.get_key(event.extra, 'recommended_at') AS INT64)
+    BETWEEN 946684800000
+    AND UNIX_MILLIS(
+      CURRENT_TIMESTAMP()
+    )  -- This ensures recommended_at is between Jan 1, 2000, and the current time to remain within BQ limits for dates
+),
 -- Flatten events and filter relevant data
 flattened_newtab_events AS (
   SELECT
-    sub.*
+    *
   FROM
-    (
-      SELECT
-        submission_timestamp,
-        normalized_country_code AS region,
-        event.name AS event_name,
-        SAFE_CAST(
-          mozfun.map.get_key(event.extra, 'scheduled_corpus_item_id') AS STRING
-        ) AS scheduled_corpus_item_id,
-        SAFE_CAST(mozfun.map.get_key(event.extra, 'recommended_at') AS INT64) AS recommended_at
-      FROM
-        `moz-fx-data-shared-prod.firefox_desktop.newtab`,
-        UNNEST(events) AS event,
-        params
-      WHERE
-        submission_timestamp >= params.start_timestamp
-        AND submission_timestamp < params.end_timestamp
-        AND event.category = 'pocket'
-        AND event.name IN ('impression', 'click')
-        AND mozfun.map.get_key(event.extra, 'scheduled_corpus_item_id') IS NOT NULL
-        AND SAFE_CAST(mozfun.map.get_key(event.extra, 'recommended_at') AS INT64) IS NOT NULL
-    ) AS sub,
+    newtab_events,
     params
   WHERE
     TIMESTAMP_MILLIS(recommended_at) >= params.start_timestamp

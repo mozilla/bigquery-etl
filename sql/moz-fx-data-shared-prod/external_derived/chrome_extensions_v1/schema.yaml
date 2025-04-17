@@ -59,3 +59,17 @@ fields:
   mode: NULLABLE
   type: STRING
   description: Extension Category
+- name: trader_status
+  mode: NULLABLE
+  type: STRING
+  description: Trader Status
+- name: featured
+  mode: NULLABLE
+  type: BOOLEAN
+  description: |-
+    Featured - Indicates if the featured badge is present, which indicates the extension follows recommended practices for Chrome extensions.
+- name: verified_domain
+  mode: NULLABLE
+  type: STRING
+  description: |-
+    This extension is created by the owner of the listed website. The publisher has a good record with no history of violations.

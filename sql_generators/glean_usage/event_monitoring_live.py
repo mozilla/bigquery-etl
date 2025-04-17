@@ -25,7 +25,9 @@ TARGET_TABLE_ID = "event_monitoring_live_v1"
 TARGET_DATASET_CROSS_APP = "monitoring"
 PREFIX = "event_monitoring"
 PATH = Path(os.path.dirname(__file__))
-METRICS_INFO_URL = "https://probeinfo.telemetry.mozilla.org/glean/{app_name}/metrics"
+GLEAN_APP_BASE_URL = "https://probeinfo.telemetry.mozilla.org/glean/{app_name}"
+METRICS_INFO_URL = f"{GLEAN_APP_BASE_URL}/metrics"
+PING_INFO_URL = f"{GLEAN_APP_BASE_URL}/pings"
 
 
 class EventMonitoringLive(GleanTable):
@@ -50,12 +52,25 @@ class EventMonitoringLive(GleanTable):
             and s.bq_table == "events_v1"
         ]
 
-    def _get_tables_with_events(self, v1_name: str, bq_dataset_name: str) -> Set[str]:
+    def _get_tables_with_events(
+        self, v1_name: str, bq_dataset_name: str, skip_min_ping: bool
+    ) -> Set[str]:
         """Get tables for the given app that receive event type metrics."""
         pings = set()
-        resp = requests.get(METRICS_INFO_URL.format(app_name=v1_name))
-        resp.raise_for_status()
-        metrics_json = resp.json()
+        metrics_resp = requests.get(METRICS_INFO_URL.format(app_name=v1_name))
+        metrics_resp.raise_for_status()
+        metrics_json = metrics_resp.json()
+
+        min_pings = set()
+        if skip_min_ping:
+            ping_resp = requests.get(PING_INFO_URL.format(app_name=v1_name))
+            ping_resp.raise_for_status()
+            ping_json = ping_resp.json()
+            min_pings = {
+                name
+                for name, info in ping_json.items()
+                if not info["history"][-1].get("include_info_sections", True)
+            }
 
         for _, metric in metrics_json.items():
             if metric.get("type", None) == "event":
@@ -64,6 +79,8 @@ class EventMonitoringLive(GleanTable):
 
         if bq_dataset_name in self._get_prod_datasets_with_event():
             pings.add("events")
+
+        pings = pings.difference(min_pings)
 
         return pings
 
@@ -116,7 +133,9 @@ class EventMonitoringLive(GleanTable):
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0]
-            events_tables = self._get_tables_with_events(v1_name, dataset)
+            events_tables = self._get_tables_with_events(
+                v1_name, dataset, skip_min_ping=True
+            )
             events_tables = [
                 f"{ping.replace('-', '_')}_v1"
                 for ping in events_tables
@@ -230,7 +249,9 @@ class EventMonitoringLive(GleanTable):
                     event_tables = [
                         f"{ping.replace('-', '_')}_v1"
                         for ping in self._get_tables_with_events(
-                            v1_name, app_dataset["bq_dataset_family"]
+                            v1_name,
+                            app_dataset["bq_dataset_family"],
+                            skip_min_ping=True,
                         )
                         if ping
                         not in ConfigLoader.get(
@@ -281,12 +302,16 @@ class EventMonitoringLive(GleanTable):
             format=False,
             **render_kwargs,
         )
+        schema = (
+            PATH / "templates" / "event_monitoring_aggregates_v1.schema.yaml"
+        ).read_text()
 
         view = f"{project_id}.{TARGET_DATASET_CROSS_APP}.{target_view_name}"
         if output_dir:
             artifacts = [
                 Artifact(table, "metadata.yaml", metadata),
                 Artifact(table, "query.sql", query_sql),
+                Artifact(table, "schema.yaml", schema),
                 Artifact(view, "metadata.yaml", view_metadata),
                 Artifact(view, "view.sql", view_sql),
             ]

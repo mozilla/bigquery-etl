@@ -342,6 +342,7 @@ generate:
       metrics_as_struct:
       - accounts_frontend
       - accounts_backend
+      - subscription_platform_backend
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view

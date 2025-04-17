@@ -73,3 +73,7 @@ fields:
   type: STRING
   description: |-
     This extension is created by the owner of the listed website. The publisher has a good record with no history of violations.
+- name: manifest_json
+  mode: NULLABLE
+  type: JSON
+  description: Manifest JSON

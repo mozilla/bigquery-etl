@@ -47,7 +47,6 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_update_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.events_v1
-  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_content_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1

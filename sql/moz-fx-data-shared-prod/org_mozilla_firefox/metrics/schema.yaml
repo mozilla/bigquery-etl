@@ -12229,8 +12229,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -17599,6 +17598,72 @@ fields:
         See `nsIXULRuntime.launcherProcessState`
 
         '
+    - name: system_cpu_big_cores
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Big (or Performance) CPU cores.
+
+        '
+    - name: system_cpu_family
+      type: INTEGER
+      mode: NULLABLE
+      description: 'CPU family.
+
+        '
+    - name: system_cpu_l2_cache
+      type: INTEGER
+      mode: NULLABLE
+      description: 'L2 cache size (only on Windows and Mac).
+
+        '
+    - name: system_cpu_l3_cache
+      type: INTEGER
+      mode: NULLABLE
+      description: 'L3 cache size.
+
+        '
+    - name: system_cpu_little_cores
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Little (or Efficient) CPU cores.
+
+        '
+    - name: system_cpu_logical_cores
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Logical CPU cores.
+
+        '
+    - name: system_cpu_medium_cores
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Medium CPU cores.
+
+        '
+    - name: system_cpu_model
+      type: INTEGER
+      mode: NULLABLE
+      description: 'CPU model.
+
+        '
+    - name: system_cpu_physical_cores
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Physical CPU cores.
+
+        '
+    - name: system_cpu_speed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'CPU speed in MHz.
+
+        '
+    - name: system_cpu_stepping
+      type: INTEGER
+      mode: NULLABLE
+      description: 'CPU stepping.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -18116,6 +18181,19 @@ fields:
         \ or compiler combinations.\n\nThe result takes the form <processor>-<compilerABI>,\
         \ for example:\n  - x86-msvc\n  - ppc-gcc3\n\nThis value should almost always\
         \ be used in combination with the\noperating system.\n"
+    - name: system_cpu_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The user readable CPU name. (e.g. "Intel(R) Core(TM) i9-8950HK
+        CPU @ 2.90GHz")
+
+        '
+    - name: system_cpu_vendor
+      type: STRING
+      mode: NULLABLE
+      description: 'The CPU vendor (e.g. "GenuineIntel").
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

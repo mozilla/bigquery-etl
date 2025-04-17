@@ -416,6 +416,12 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: newtab_content_surface_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Surface id sent to the client from merino api
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

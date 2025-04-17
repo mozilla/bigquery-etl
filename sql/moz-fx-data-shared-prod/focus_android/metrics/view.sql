@@ -689,7 +689,9 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.region_home_region,
-      metrics.string.xpcom_abi
+      metrics.string.xpcom_abi,
+      metrics.string.system_cpu_name,
+      metrics.string.system_cpu_vendor
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -727,7 +729,18 @@ SELECT
       metrics.quantity.timestamps_first_paint_two,
       metrics.quantity.pwmgr_num_saved_passwords,
       metrics.quantity.e10s_multi_processes,
-      metrics.quantity.launcher_process_state
+      metrics.quantity.launcher_process_state,
+      metrics.quantity.system_cpu_big_cores,
+      metrics.quantity.system_cpu_family,
+      metrics.quantity.system_cpu_l2_cache,
+      metrics.quantity.system_cpu_l3_cache,
+      metrics.quantity.system_cpu_little_cores,
+      metrics.quantity.system_cpu_logical_cores,
+      metrics.quantity.system_cpu_medium_cores,
+      metrics.quantity.system_cpu_model,
+      metrics.quantity.system_cpu_physical_cores,
+      metrics.quantity.system_cpu_speed,
+      metrics.quantity.system_cpu_stepping
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -2305,7 +2318,9 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.region_home_region,
-      metrics.string.xpcom_abi
+      metrics.string.xpcom_abi,
+      metrics.string.system_cpu_name,
+      metrics.string.system_cpu_vendor
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -2343,7 +2358,18 @@ SELECT
       metrics.quantity.timestamps_first_paint_two,
       metrics.quantity.pwmgr_num_saved_passwords,
       metrics.quantity.e10s_multi_processes,
-      metrics.quantity.launcher_process_state
+      metrics.quantity.launcher_process_state,
+      metrics.quantity.system_cpu_big_cores,
+      metrics.quantity.system_cpu_family,
+      metrics.quantity.system_cpu_l2_cache,
+      metrics.quantity.system_cpu_l3_cache,
+      metrics.quantity.system_cpu_little_cores,
+      metrics.quantity.system_cpu_logical_cores,
+      metrics.quantity.system_cpu_medium_cores,
+      metrics.quantity.system_cpu_model,
+      metrics.quantity.system_cpu_physical_cores,
+      metrics.quantity.system_cpu_speed,
+      metrics.quantity.system_cpu_stepping
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -3921,7 +3947,9 @@ SELECT
       metrics.string.startup_profile_database_version,
       metrics.string.startup_profile_selection_reason,
       metrics.string.region_home_region,
-      metrics.string.xpcom_abi
+      metrics.string.xpcom_abi,
+      metrics.string.system_cpu_name,
+      metrics.string.system_cpu_vendor
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -3959,7 +3987,18 @@ SELECT
       metrics.quantity.timestamps_first_paint_two,
       metrics.quantity.pwmgr_num_saved_passwords,
       metrics.quantity.e10s_multi_processes,
-      metrics.quantity.launcher_process_state
+      metrics.quantity.launcher_process_state,
+      metrics.quantity.system_cpu_big_cores,
+      metrics.quantity.system_cpu_family,
+      metrics.quantity.system_cpu_l2_cache,
+      metrics.quantity.system_cpu_l3_cache,
+      metrics.quantity.system_cpu_little_cores,
+      metrics.quantity.system_cpu_logical_cores,
+      metrics.quantity.system_cpu_medium_cores,
+      metrics.quantity.system_cpu_model,
+      metrics.quantity.system_cpu_physical_cores,
+      metrics.quantity.system_cpu_speed,
+      metrics.quantity.system_cpu_stepping
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,

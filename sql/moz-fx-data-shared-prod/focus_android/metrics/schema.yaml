@@ -5399,6 +5399,12 @@ fields:
     - name: xpcom_abi
       type: STRING
       mode: NULLABLE
+    - name: system_cpu_name
+      type: STRING
+      mode: NULLABLE
+    - name: system_cpu_vendor
+      type: STRING
+      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -5509,6 +5515,39 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: launcher_process_state
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_big_cores
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_family
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_l2_cache
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_l3_cache
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_little_cores
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_logical_cores
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_medium_cores
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_model
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_physical_cores
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_speed
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_cpu_stepping
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution

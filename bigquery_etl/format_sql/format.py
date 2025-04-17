@@ -54,8 +54,8 @@ def _format_path(check: bool, path: str) -> Tuple[int, int]:
             fully_referenced_query = query
     except NotImplementedError:
         fully_referenced_query = query  # not implemented for scripts
-    except ParseError:
-        print(f"Invalid syntax found for: {path}")
+    except ParseError as e:
+        print(f"Invalid syntax found for {path}: {e}")
         return 0, 1
 
     formatted = reformat(fully_referenced_query, trailing_newline=True)

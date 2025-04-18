@@ -203,7 +203,6 @@ uapi_summary AS (
     {% else %}
       DATE(submission_hour) = @submission_date
     {% endif %}
-    AND placement IN ('newtab_spocs', 'newtab_rectangle', 'newtab_billboard', 'newtab_leaderboard')
   GROUP BY
     submission_date,
     ad_id,

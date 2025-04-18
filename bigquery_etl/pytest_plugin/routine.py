@@ -54,7 +54,7 @@ class RoutineFile(pytest.File):
     def collect(self):
         """Collect."""
         self.add_marker("routine")
-        base_path = self.parent.parent.parent.parent.parent.path
+        base_path = self.path.parent.parent.parent.parent.parent
         path = str(self.path.relative_to(base_path))
         self.routine = parsed_routines()[path]
 

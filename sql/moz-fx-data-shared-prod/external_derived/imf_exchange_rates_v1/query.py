@@ -16,7 +16,6 @@ country_codes = [
     "CA",
     "CN",
     "CO",
-    "GB",
     "IN",
     "IS",
     "JP",

@@ -8462,6 +8462,12 @@ fields:
     - name: use_counter2_textdirectivepages_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_mathmlused_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_mathmlused_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16791,6 +16797,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_textdirectivepages_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mathmlused_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_mathmlused_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

@@ -11473,6 +11473,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used text fragments
+    - name: use_counter2_mathmlused_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has used MathML
+    - name: use_counter2_mathmlused_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has used MathML
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22802,6 +22810,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used text fragments
+        - name: use_counter2_mathmlused_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has used MathML
+        - name: use_counter2_mathmlused_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has used MathML
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

@@ -1,12 +1,7 @@
-friendly_name: Adjust contact data (current snapshot)
+friendly_name: (DEPRECATED) Adjust contact data (current snapshot)
 description: |-
   Adjust contact data. This specific view accesses the most recent record corresponding to each client.
-
-  The source data is an ETL defined in Airflow here:
-  https://github.com/mozilla/telemetry-airflow/blob/main/dags/fivetran_acoustic.py
-
-  and here:
-  https://github.com/mozilla/bigquery-etl/tree/main/sql/moz-fx-data-marketing-prod/acoustic
+  Deprecated as of 2025-04-15.
 
 labels:
-  authorized: true
+  authorized: false

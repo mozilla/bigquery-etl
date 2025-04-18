@@ -23,9 +23,7 @@ UDF_FILE = "udf.sql"
 PROCEDURE_FILE = "stored_procedure.sql"
 ROUTINE_FILES = (UDF_FILE, PROCEDURE_FILE)
 TEMP_UDF_RE = re.compile(f"(?:udf|assert)_{UDF_CHAR}+")
-PERSISTENT_UDF_PREFIX_RE_STR = (
-    r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
-)
+PERSISTENT_UDF_PREFIX_RE_STR = r"CREATE\s+(?:OR\s+REPLACE\s+)?(?:(?:AGGREGATE\s+|TABLE\s+)?FUNCTION|PROCEDURE)(?:\s+IF\s+NOT\s+EXISTS)?"
 PERSISTENT_UDF_PREFIX = re.compile(PERSISTENT_UDF_PREFIX_RE_STR, re.IGNORECASE)
 PERSISTENT_UDF_RE = re.compile(
     rf"{PERSISTENT_UDF_PREFIX_RE_STR}\s+(?:`?[a-zA-Z0-9_-]+`?\.)?`?({UDF_CHAR}+)`?\.`?({UDF_CHAR}+)`?",
@@ -155,7 +153,13 @@ class RawRoutine:
 
         for i, s in enumerate(statements):
             normalized_statement = " ".join(s.lower().split())
-            if normalized_statement.startswith("create or replace function"):
+            if (
+                normalized_statement.startswith("create or replace function")
+                or normalized_statement.startswith(
+                    "create or replace aggregate function"
+                )
+                or normalized_statement.startswith("create or replace table function")
+            ):
                 definitions.append(s)
                 if re.search(persistent_name_re, normalized_statement):
                     internal_name = persistent_name

@@ -1,0 +1,3 @@
+friendly_name: To JSON from map JSON
+description: |-
+  Converts a `[{"key": ..., "value": ...}, ...]` serialized map data structure into a JSON object value.

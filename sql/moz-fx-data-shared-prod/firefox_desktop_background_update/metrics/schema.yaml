@@ -568,6 +568,10 @@ fields:
         Corresponds to the value of the `MOZ_UPDATER` define.
 
         '
+    - name: pkcs11_external_trust_anchor_module_loaded
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether or not an external trust anchor module was loaded.
   - name: counter
     type: RECORD
     mode: NULLABLE

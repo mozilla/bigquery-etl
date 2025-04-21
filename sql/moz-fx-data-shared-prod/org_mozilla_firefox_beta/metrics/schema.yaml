@@ -958,6 +958,10 @@ fields:
         Corresponds to the value of the `MOZ_UPDATER` define.
 
         '
+    - name: pkcs11_external_trust_anchor_module_loaded
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether or not an external trust anchor module was loaded.
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -12229,7 +12233,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

@@ -105,7 +105,8 @@ SELECT
       metrics.boolean.blocklist_enabled,
       metrics.boolean.e10s_enabled,
       metrics.boolean.fission_enabled,
-      metrics.boolean.updater_available
+      metrics.boolean.updater_available,
+      metrics.boolean.pkcs11_external_trust_anchor_module_loaded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1957,7 +1958,8 @@ SELECT
       metrics.boolean.blocklist_enabled,
       metrics.boolean.e10s_enabled,
       metrics.boolean.fission_enabled,
-      metrics.boolean.updater_available
+      metrics.boolean.updater_available,
+      metrics.boolean.pkcs11_external_trust_anchor_module_loaded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3829,7 +3831,8 @@ SELECT
       metrics.boolean.blocklist_enabled,
       metrics.boolean.e10s_enabled,
       metrics.boolean.fission_enabled,
-      metrics.boolean.updater_available
+      metrics.boolean.updater_available,
+      metrics.boolean.pkcs11_external_trust_anchor_module_loaded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5710,7 +5713,8 @@ SELECT
       metrics.boolean.blocklist_enabled,
       metrics.boolean.e10s_enabled,
       metrics.boolean.fission_enabled,
-      metrics.boolean.updater_available
+      metrics.boolean.updater_available,
+      metrics.boolean.pkcs11_external_trust_anchor_module_loaded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -7571,7 +7575,8 @@ SELECT
       metrics.boolean.blocklist_enabled,
       metrics.boolean.e10s_enabled,
       metrics.boolean.fission_enabled,
-      metrics.boolean.updater_available
+      metrics.boolean.updater_available,
+      metrics.boolean.pkcs11_external_trust_anchor_module_loaded
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,

@@ -497,6 +497,9 @@ fields:
     - name: updater_available
       type: BOOLEAN
       mode: NULLABLE
+    - name: pkcs11_external_trust_anchor_module_loaded
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

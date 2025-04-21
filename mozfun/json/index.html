@@ -840,6 +840,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#from_map_json-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      from_map_json (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="from_map_json (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from_nested_map-udf" class="md-nav__link">
     <span class="md-ellipsis">
       from_nested_map (UDF)
@@ -850,7 +874,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -874,7 +898,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -898,7 +922,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1707,6 +1731,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#from_map_json-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      from_map_json (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="from_map_json (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#from_nested_map-udf" class="md-nav__link">
     <span class="md-ellipsis">
       from_nested_map (UDF)
@@ -1717,7 +1765,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_2" class="md-nav__link">
+  <a href="#parameters_3" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1741,7 +1789,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_3" class="md-nav__link">
+  <a href="#parameters_4" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1765,7 +1813,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_4" class="md-nav__link">
+  <a href="#parameters_5" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1810,18 +1858,26 @@ JSON representation.</p>
 <p>Converts a standard  "map" like datastructure <code>array&lt;struct&lt;key, value&gt;&gt;</code> into a JSON value.</p>
 <p>Convert the standard <code>Array&lt;Struct&lt;key, value&gt;&gt;</code> style maps to <code>JSON</code> values.</p>
 <h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>input JSON
-</code></pre></div>
 <p><strong>OUTPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>json
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/from_map">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/from_map/metadata.yaml">Edit</a></p>
+<h2 id="from_map_json-udf">from_map_json (UDF)</h2>
+<p>Converts a <code>[{"key": ..., "value": ...}, ...]</code> serialized map data structure into a JSON object value.</p>
+<p>Converts a <code>[{"key": ..., "value": ...}, ...]</code> serialized map data structure into a JSON object value.</p>
+<h3 id="parameters_2">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>input JSON
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>JSON
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/from_map_json">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/from_map_json/metadata.yaml">Edit</a></p>
 <h2 id="from_nested_map-udf">from_nested_map (UDF)</h2>
 <p>Converts a nested JSON object with repeated key/value pairs into a nested JSON object.</p>
 <p>Convert a JSON object like <code>{ "metric": [ {"key": "extra", "value": 2 } ] }</code> to a <code>JSON</code> object like <code>{ "metric": { "key": 2 } }</code>.</p>
 <p>This only works on JSON types.</p>
-<h3 id="parameters_2">Parameters</h3>
+<h3 id="parameters_3">Parameters</h3>
 <p><strong>OUTPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>json
 </code></pre></div>
@@ -1832,7 +1888,7 @@ JSON representation.</p>
 function, so JS is being used and it may not perform well with large or
 numerous inputs.</p>
 <p>Non-string non-null values are encoded as json.</p>
-<h3 id="parameters_3">Parameters</h3>
+<h3 id="parameters_4">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>input STRING
 </code></pre></div>
@@ -1842,7 +1898,7 @@ numerous inputs.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/json/js_extract_string_map">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/json/js_extract_string_map/metadata.yaml">Edit</a></p>
 <h2 id="mode_last-udf">mode_last (UDF)</h2>
 <p>Returns the most frequently occuring element in an array of json-compatible elements. In the case of multiple values tied for the highest count, it returns the value that appears latest in the array. Nulls are ignored.</p>
-<h3 id="parameters_4">Parameters</h3>
+<h3 id="parameters_5">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>list ANY TYPE
 </code></pre></div>

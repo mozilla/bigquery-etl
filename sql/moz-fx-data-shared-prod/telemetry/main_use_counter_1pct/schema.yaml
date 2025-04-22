@@ -8468,6 +8468,18 @@ fields:
     - name: use_counter2_mathmlused_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_animation_commitstyles_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_animation_commitstyles_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_commitstylesnonfillingfinalvalue_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_commitstylesnonfillingfinalvalue_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16803,6 +16815,18 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_mathmlused_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_animation_commitstyles_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_animation_commitstyles_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_commitstylesnonfillingfinalvalue_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_commitstylesnonfillingfinalvalue_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

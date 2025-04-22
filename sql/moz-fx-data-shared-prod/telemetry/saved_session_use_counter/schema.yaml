@@ -11481,6 +11481,24 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page has used MathML
+    - name: use_counter2_animation_commitstyles_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Animation.commitStyles
+    - name: use_counter2_animation_commitstyles_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Animation.commitStyles
+    - name: use_counter2_commitstylesnonfillingfinalvalue_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document calls commitStyles and its result differs depending
+        on whether the endpoint-inclusive pref is enabled or not
+    - name: use_counter2_commitstylesnonfillingfinalvalue_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page calls commitStyles and its result differs depending
+        on whether the endpoint-inclusive pref is enabled or not
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22818,6 +22836,24 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page has used MathML
+        - name: use_counter2_animation_commitstyles_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Animation.commitStyles
+        - name: use_counter2_animation_commitstyles_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Animation.commitStyles
+        - name: use_counter2_commitstylesnonfillingfinalvalue_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document calls commitStyles and its result differs
+            depending on whether the endpoint-inclusive pref is enabled or not
+        - name: use_counter2_commitstylesnonfillingfinalvalue_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page calls commitStyles and its result differs depending
+            on whether the endpoint-inclusive pref is enabled or not
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

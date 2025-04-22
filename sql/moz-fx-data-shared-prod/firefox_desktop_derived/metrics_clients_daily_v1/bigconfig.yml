@@ -16,7 +16,7 @@ tag_deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.normalized_channel
     metrics:
-    - saved_metric_id: is_valid_channel
+    - saved_metric_id: is_99_percent_valid_normalized_channel
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod..firefox_desktop_derived.metrics_clients_daily_v1.*
     metrics:

@@ -2604,7 +2604,11 @@ SELECT
       metrics.counter.use_counter_doc_text_directive_not_created,
       metrics.counter.use_counter_doc_text_directive_pages,
       metrics.counter.use_counter_doc_math_mlused,
-      metrics.counter.use_counter_page_math_mlused
+      metrics.counter.use_counter_page_math_mlused,
+      metrics.counter.use_counter_doc_animation_commitstyles,
+      metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_page_animation_commitstyles,
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5230,7 +5234,11 @@ SELECT
       metrics.counter.use_counter_doc_text_directive_not_created,
       metrics.counter.use_counter_doc_text_directive_pages,
       metrics.counter.use_counter_doc_math_mlused,
-      metrics.counter.use_counter_page_math_mlused
+      metrics.counter.use_counter_page_math_mlused,
+      metrics.counter.use_counter_doc_animation_commitstyles,
+      metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_page_animation_commitstyles,
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7856,7 +7864,11 @@ SELECT
       metrics.counter.use_counter_doc_text_directive_not_created,
       metrics.counter.use_counter_doc_text_directive_pages,
       metrics.counter.use_counter_doc_math_mlused,
-      metrics.counter.use_counter_page_math_mlused
+      metrics.counter.use_counter_page_math_mlused,
+      metrics.counter.use_counter_doc_animation_commitstyles,
+      metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_page_animation_commitstyles,
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10482,7 +10494,11 @@ SELECT
       metrics.counter.use_counter_doc_text_directive_not_created,
       metrics.counter.use_counter_doc_text_directive_pages,
       metrics.counter.use_counter_doc_math_mlused,
-      metrics.counter.use_counter_page_math_mlused
+      metrics.counter.use_counter_page_math_mlused,
+      metrics.counter.use_counter_doc_animation_commitstyles,
+      metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_page_animation_commitstyles,
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13108,7 +13124,11 @@ SELECT
       metrics.counter.use_counter_doc_text_directive_not_created,
       metrics.counter.use_counter_doc_text_directive_pages,
       metrics.counter.use_counter_doc_math_mlused,
-      metrics.counter.use_counter_page_math_mlused
+      metrics.counter.use_counter_page_math_mlused,
+      metrics.counter.use_counter_doc_animation_commitstyles,
+      metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_page_animation_commitstyles,
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

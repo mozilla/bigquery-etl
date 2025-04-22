@@ -19,6 +19,42 @@ WITH live_reports AS (
     `moz-fx-data-shared-prod.org_mozilla_fenix_live.broken_site_report_v1`
   WHERE
     DATE(submission_timestamp) > "2025-01-01"
+  UNION ALL
+  SELECT
+    *,
+    "Fenix" AS app_name,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ASC) AS rn
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_live.broken_site_report_v1`
+  WHERE
+    DATE(submission_timestamp) > "2025-01-01"
+  UNION ALL
+  SELECT
+    *,
+    "Fenix" AS app_name,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ASC) AS rn
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_live.broken_site_report_v1`
+  WHERE
+    DATE(submission_timestamp) > "2025-01-01"
+  UNION ALL
+  SELECT
+    *,
+    "Fenix" AS app_name,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ASC) AS rn
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_beta_live.broken_site_report_v1`
+  WHERE
+    DATE(submission_timestamp) > "2025-01-01"
+  UNION ALL
+  SELECT
+    *,
+    "Fenix" AS app_name,
+    ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ASC) AS rn
+  FROM
+    `moz-fx-data-shared-prod.org_mozilla_firefox_live.broken_site_report_v1`
+  WHERE
+    DATE(submission_timestamp) > "2025-01-01"
 )
 SELECT
   document_id AS uuid,

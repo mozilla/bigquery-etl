@@ -11,15 +11,18 @@ tag_deployments:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.submission_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.client_id
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.sample_id
+        metrics:
+          - saved_metric_id: is_not_null
+      - column_selectors:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.first_seen_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.first_run_date
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.durations
         metrics:
-          - saved_metric_id: is_not_null
+          - saved_metric_id: is_99_percent_not_null
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
         metrics:
-          - saved_metric_id: is_valid_channel
+          - saved_metric_id: is_99_percent_valid_normalized_channel
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

@@ -16,7 +16,7 @@ tag_deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
         metrics:
-          - saved_metric_id: is_valid_channel
+          - saved_metric_id: is_99_percent_valid_normalized_channel
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:

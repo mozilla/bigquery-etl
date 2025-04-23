@@ -18,10 +18,6 @@ tag_deployments:
     metrics:
     - saved_metric_id: is_99_percent_not_null
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.baseline_clients_daily_v1.normalized_channel
-    metrics:
-    - saved_metric_id: is_99_percent_valid_normalized_channel
-  - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_fennec_derived.baseline_clients_daily_v1.*
     metrics:
     - saved_metric_id: freshness

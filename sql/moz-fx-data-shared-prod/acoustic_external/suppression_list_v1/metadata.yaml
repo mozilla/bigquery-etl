@@ -1,14 +1,10 @@
 friendly_name: Suppression List
 description: |
-  Suppression List from Acoustic The suppression list was pruned in April 2024 -- https://mozilla-hub.atlassian.net/browse/CTMS-163 Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
+  Suppression List from Acoustic. As of 2025-04-15 no longer updated, but still required for main_suppression_list_v1.
 owners:
 - cbeck@mozilla.com
 labels:
-  dag: bqetl_acoustic_suppression_list
   owner1: cbeck
-scheduling:
-  dag_name: bqetl_acoustic_suppression_list
-  date_partition_parameter: null
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

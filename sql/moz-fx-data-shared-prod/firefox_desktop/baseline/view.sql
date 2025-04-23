@@ -20,8 +20,8 @@ SELECT
     'Firefox' AS normalized_app_name,
     mozfun.norm.glean_client_info_attribution(
       mozfun.norm.glean_baseline_client_info(client_info, metrics),
-      CAST(NULL AS JSON),
-      CAST(NULL AS JSON)
+      metrics.object.glean_attribution_ext,
+      metrics.object.glean_distribution_ext
     ) AS client_info
   ),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,

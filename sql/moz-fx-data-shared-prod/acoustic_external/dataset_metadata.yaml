@@ -5,10 +5,16 @@ description: |-
 dataset_base_acl: restricted
 user_facing: false
 labels: {}
-workgroup_access:
+default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:braze
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/writers
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/writers
+syndication: {}

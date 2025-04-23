@@ -1,23 +1,12 @@
-friendly_name: Raw Recipient (Acoustic data)
+friendly_name: (DEPRECATED) Raw Recipient (Acoustic data)
 description: |
   Import Raw Recipient file exported from Acoustic (CSV data). This includes metrics around email performance (clicks, opens, etc).
-  Each partition represents CSV data that was provided Acoustic for the date correponding to Airflow's execution date
-  NOTE: raw_recipient_raw_[VERSION] - raw appears twice as the first "raw" is part of the original Acoustic object type/name, the second raw represents raw data as served by Acoustic.
-  Data source: https://developer.goacoustic.com/acoustic-campaign/reference/rawrecipientdataexport Jira: https://mozilla-hub.atlassian.net/browse/DENG-17 Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
 owners:
 - cbeck@mozilla.com
 labels:
   incremental: true
   table_type: client_level
-  dag: bqetl_acoustic_raw_recipient_export
   owner1: cbeck
-scheduling:
-  dag_name: bqetl_acoustic_raw_recipient_export
-  date_partition_parameter: submission_date
-  depends_on:
-  - task_id: fivetran_load_completed
-    dag_name: fivetran_acoustic_raw_recipient_export
-    execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day
@@ -30,14 +19,7 @@ bigquery:
     - event_type
     - recipient_type
     - body_type
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:braze
-- role: roles/bigquery.dataEditor
-  members:
-  - workgroup:braze/writers
-references:
-  query.sql:
-  - moz-fx-data-bq-fivetran.acoustic_sftp.raw_recipient_export_v_1
+workgroup_access: []
+references: {}
+deprecated: true
 require_column_descriptions: false

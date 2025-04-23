@@ -44689,6 +44689,39 @@ fields:
         See Environment.sys.mjs'' `DEFAULT_ENVIRONMENT_PREFS`.
 
         '
+    - name: glean_attribution_ext
+      type: JSON
+      mode: NULLABLE
+      description: "Extended attribution information.\nMapped to client_info.attribution.ext\
+        \ in datasets.\n* `experiment`: name/id of the enrolled funnel experiment\n\
+        * `variation`: name/id of the variation cohort used in the enrolled funnel\
+        \ experiment\n* `ua`: identifier derived from the user agent downloading the\
+        \ installer\n        e.g. chrome, Google Chrome 123\n* `dltoken`: Unique token\
+        \ created at Firefox download time.\n             e.g. c18f86a3-f228-4d98-91bb-f90135c0aa9c\n\
+        * `msstoresignedin`: only present if the installation was done through the\
+        \ Microsoft Store,\n                     and was able to retrieve the \"campaign\
+        \ ID\" it was first installed with.\n                     This value is \"\
+        true\" if the user was signed into the Microsoft Store\n                 \
+        \    when they first installed, and false otherwise.\n* `dlsource`: identifier\
+        \ that indicate where installations of Firefox originate\n"
+    - name: glean_distribution_ext
+      type: JSON
+      mode: NULLABLE
+      description: 'Extended distribution information.
+
+        Mapped to client_info.distribution.ext in datasets.
+
+        * `distributionVersion`: pref `distribution.version`, `null` on failure
+
+        * `partnerId`: pref `mozilla.partner.id`, `null` on failure
+
+        * `distributor`:  pref `app.distributor`, `null` on failure
+
+        * `distributorChannel`: pref `app.distributor.channel`, `null` on failure
+
+        * `partnerNames`: list from prefs `app.partner.<name>=<name>`
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

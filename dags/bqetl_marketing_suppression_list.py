@@ -53,19 +53,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_acoustic_external__suppression_list__v1 = ExternalTaskSensor(
-        task_id="wait_for_acoustic_external__suppression_list__v1",
-        external_dag_id="bqetl_acoustic_suppression_list",
-        external_task_id="acoustic_external__suppression_list__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=64800),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_braze_external__braze_currents_firefox_hard_bounces__v1 = (
         ExternalTaskSensor(
             task_id="wait_for_braze_external__braze_currents_firefox_hard_bounces__v1",
@@ -185,10 +172,6 @@ with DAG(
 
     checks__warn_marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
         marketing_suppression_list_derived__main_suppression_list__v1
-    )
-
-    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
-        wait_for_acoustic_external__suppression_list__v1
     )
 
     marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(

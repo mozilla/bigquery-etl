@@ -27,7 +27,7 @@ workgroup_access:
   - workgroup:braze/ingestion-mozilla-dev
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:braze/writers
+  - workgroup:braze/data-developers
 references:
   checks.sql:
   - ..

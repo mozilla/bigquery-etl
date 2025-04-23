@@ -11,10 +11,10 @@ default_table_workgroup_access:
   - workgroup:braze
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:braze/writers
+  - workgroup:braze/data-developers
 default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:braze/writers
+  - workgroup:braze/data-developers
 syndication: {}

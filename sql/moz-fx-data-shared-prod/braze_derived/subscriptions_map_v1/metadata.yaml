@@ -26,7 +26,7 @@ workgroup_access:
   - workgroup:braze
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:braze/writers
+  - workgroup:braze/data-developers
 references:
   checks.sql:
   - ..

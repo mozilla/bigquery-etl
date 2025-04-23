@@ -33,6 +33,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 - role: roles/bigquery.dataEditor
   members:
-  - workgroup:ads/writers
+  - workgroup:ads/data-developers
 references: {}
 require_column_descriptions: false

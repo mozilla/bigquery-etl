@@ -1,7 +1,0 @@
-friendly_name: (DEPRECATED) Adjust contact data (current snapshot)
-description: |-
-  Adjust contact data. This specific view accesses the most recent record corresponding to each client.
-  Deprecated as of 2025-04-15.
-
-labels:
-  authorized: false

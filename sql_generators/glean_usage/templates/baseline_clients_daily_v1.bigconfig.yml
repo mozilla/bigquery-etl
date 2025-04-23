@@ -19,10 +19,13 @@ tag_deployments:
           - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.durations
         metrics:
           - saved_metric_id: is_99_percent_not_null
+      {#- Excluding ios nightly channel as normalized_channel contains mostly null values causing the metric to fail. -#}
+      {% if not (app_name == "firefox_ios" and derived_dataset == "org_mozilla_ios_fennec_derived") %}
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
         metrics:
           - saved_metric_id: is_99_percent_valid_normalized_channel
+      {% endif %}
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.*
         metrics:

@@ -127,6 +127,13 @@ def test_get_specific_apps_app_info_from_probe_scraper(mock_get_app_info):
     assert expected == actual
 
 
+def helper_get_list_delta(_list: list, other_list: list) -> list:
+    list_set = set(_list)
+    other_list_set = set(other_list)
+
+    return list(other_list_set.symmetric_difference(list_set))
+
+
 @patch("sql_generators.usage_reporting.usage_reporting.get_app_info")
 def test_get_specific_apps_app_info_from_probe_scraper_filtered(mock_get_app_info):
     mock_get_app_info.return_value = PROBE_SCRAPER_APP_INFO_MOCK_VALUE
@@ -178,8 +185,8 @@ def test_content_generated_as_expected(mock_get_app_info, mock_generation_config
         expected_folder_structure = listdir(f"{TEST_DIR}/expected/{project_id}")
         generated_folder_structure = listdir(f"{temp_dir}/{project_id}")
 
-        directory_delta = list(
-            set(generated_folder_structure) ^ set(expected_folder_structure)
+        directory_delta = helper_get_list_delta(
+            expected_folder_structure, generated_folder_structure
         )
 
         assert len(directory_delta) == 0
@@ -192,8 +199,8 @@ def test_content_generated_as_expected(mock_get_app_info, mock_generation_config
                 f"{temp_dir}/{project_id}/{expected_folder}"
             )
 
-            sql_directories_delta = list(
-                set(expected_sql_directories) ^ set(generated_sql_directories)
+            sql_directories_delta = helper_get_list_delta(
+                expected_sql_directories, generated_sql_directories
             )
 
             assert len(sql_directories_delta) == 0
@@ -206,7 +213,9 @@ def test_content_generated_as_expected(mock_get_app_info, mock_generation_config
                     f"{temp_dir}/{project_id}/{expected_folder}/{sql_directory}"
                 )
 
-                generated_files_delta = list(set(expected_files) ^ set(generated_files))
+                generated_files_delta = helper_get_list_delta(
+                    expected_files, generated_files
+                )
 
                 assert len(generated_files_delta) == 0
 

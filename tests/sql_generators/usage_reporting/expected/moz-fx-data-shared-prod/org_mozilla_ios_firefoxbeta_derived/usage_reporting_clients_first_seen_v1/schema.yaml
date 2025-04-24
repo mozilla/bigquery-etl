@@ -1,0 +1,19 @@
+# Generated via `usage_reporting` SQL generator.
+fields:
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: |
+    Logical date of when we observed the client for the first time in our warehouse.
+
+- mode: NULLABLE
+  name: usage_profile_id
+  type: STRING
+  description: |
+    A UUID of the usage_profile.
+
+- mode: NULLABLE
+  name: app_channel
+  type: STRING
+  description: |
+    The channel the application is being distributed on.

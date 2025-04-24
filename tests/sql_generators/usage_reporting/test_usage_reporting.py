@@ -1,9 +1,13 @@
+from filecmp import cmp
+from os import listdir
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 import yaml
 
 from sql_generators.usage_reporting.usage_reporting import (
+    generate_usage_reporting,
     get_specific_apps_app_info_from_probe_scraper,
 )
 
@@ -153,3 +157,64 @@ def test_get_specific_apps_app_info_from_probe_scraper_filtered(mock_get_app_inf
 
     assert mock_get_app_info.called
     assert expected == actual
+
+
+@patch("sql_generators.usage_reporting.usage_reporting.get_generation_config")
+@patch("sql_generators.usage_reporting.usage_reporting.get_app_info")
+def test_content_generated_as_expected(mock_get_app_info, mock_generation_config):
+    project_id = "moz-fx-data-shared-prod"
+    test_generate_input = {
+        "fenix": {"channels": ["beta", "release"]},
+        "firefox_ios": {"channels": ["beta"]},
+        "firefox_desktop": {"channels": None},
+    }
+
+    mock_get_app_info.return_value = PROBE_SCRAPER_APP_INFO_MOCK_VALUE
+    mock_generation_config.return_value = test_generate_input
+
+    with TemporaryDirectory() as temp_dir:
+        generate_usage_reporting(target_project=project_id, output_dir=temp_dir)
+
+        expected_folder_structure = listdir(f"{TEST_DIR}/expected/{project_id}")
+        generated_folder_structure = listdir(f"{temp_dir}/{project_id}")
+
+        directory_delta = list(
+            set(generated_folder_structure) ^ set(expected_folder_structure)
+        )
+
+        assert len(directory_delta) == 0
+
+        for expected_folder in expected_folder_structure:
+            expected_sql_directories = listdir(
+                f"{TEST_DIR}/expected/{project_id}/{expected_folder}"
+            )
+            generated_sql_directories = listdir(
+                f"{temp_dir}/{project_id}/{expected_folder}"
+            )
+
+            sql_directories_delta = list(
+                set(expected_sql_directories) ^ set(generated_sql_directories)
+            )
+
+            assert len(sql_directories_delta) == 0
+
+            for sql_directory in expected_sql_directories:
+                expected_files = listdir(
+                    f"{TEST_DIR}/expected/{project_id}/{expected_folder}/{sql_directory}"
+                )
+                generated_files = listdir(
+                    f"{temp_dir}/{project_id}/{expected_folder}/{sql_directory}"
+                )
+
+                generated_files_delta = list(set(expected_files) ^ set(generated_files))
+
+                assert len(generated_files_delta) == 0
+
+                for _file in expected_files:
+                    expected_file = f"{TEST_DIR}/expected/{project_id}/{expected_folder}/{sql_directory}/{_file}"
+                    generated_file = f"{temp_dir}/{project_id}/{expected_folder}/{sql_directory}/{_file}"
+
+                    assert cmp(expected_file, generated_file)
+
+    assert mock_get_app_info.called
+    assert mock_generation_config.called

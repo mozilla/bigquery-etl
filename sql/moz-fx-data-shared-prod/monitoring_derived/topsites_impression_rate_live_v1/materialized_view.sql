@@ -1,4 +1,5 @@
-CREATE MATERIALIZED VIEW `moz-fx-data-shared-prod.monitoring_derived.topsites_impression_rate_live_v1`
+CREATE MATERIALIZED VIEW
+  `moz-fx-data-shared-prod.monitoring_derived.topsites_impression_rate_live_v1`
 OPTIONS
   (enable_refresh = TRUE, refresh_interval_minutes = 5)
 AS

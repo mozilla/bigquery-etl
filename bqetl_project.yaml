@@ -135,7 +135,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_suggest_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/request_payload_tiles_v2/query.sql
   - sql/moz-fx-data-shared-prod/contextual_services_derived/suggest_revenue_levers_daily_v1/query.sql
-  - sql/moz-fx-data-shared-prod/acoustic_external/**/query.sql
   - sql/moz-fx-data-marketing-prod/adjust_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/airflow_*/*.sql
   - sql/moz-fx-data-shared-prod/google_ads_derived/**/*.sql

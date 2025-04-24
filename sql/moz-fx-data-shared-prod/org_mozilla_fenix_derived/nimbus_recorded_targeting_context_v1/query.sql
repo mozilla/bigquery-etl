@@ -19,7 +19,7 @@ SELECT
   m.client_id,
   DATE(m.submission_timestamp) AS submission_date,
   CAST(JSON_VALUE(context, '$.androidSdkVersion') AS int) AS androidSdkVersion,
-  CAST(JSON_VALUE(context, '$.appVersion') AS string) AS androidSdkVersion,
+  CAST(JSON_VALUE(context, '$.appVersion') AS string) AS appVersion,
   CAST(JSON_VALUE(context, '$.daysSinceInstall') AS int) AS daysSinceInstall,
   CAST(JSON_VALUE(context, '$.daysSinceUpdate') AS int) AS daysSinceUpdate,
   CAST(JSON_VALUE(context, '$.deviceManufacturer') AS string) AS deviceManufacturer,

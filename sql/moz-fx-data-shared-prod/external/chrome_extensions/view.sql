@@ -29,6 +29,7 @@ SELECT
   trader_status,
   featured,
   verified_domain,
-  IF(verified_domain IS NOT NULL, TRUE, FALSE) AS has_verified_domain
+  IF(verified_domain IS NOT NULL, TRUE, FALSE) AS has_verified_domain,
+  manifest_json
 FROM
   `moz-fx-data-shared-prod.external_derived.chrome_extensions_v1`

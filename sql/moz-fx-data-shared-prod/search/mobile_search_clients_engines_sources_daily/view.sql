@@ -141,4 +141,4 @@ WHERE
       AND submission_date >= '2023-01-01'
     )
     OR (app_name IN ('Focus', 'Klar') AND submission_date < '2023-01-01')
-  );
+  )

@@ -4,8 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-import yaml
-
+from bigquery_etl.config import _ConfigLoader
 from sql_generators.usage_reporting.usage_reporting import (
     generate_usage_reporting,
     get_specific_apps_app_info_from_probe_scraper,
@@ -13,9 +12,14 @@ from sql_generators.usage_reporting.usage_reporting import (
 
 TEST_DIR = Path(__file__).parent
 TEST_CONFIG_FILE = "test_config.yaml"
-PROBE_SCRAPER_APP_INFO_MOCK_VALUE = yaml.safe_load(
-    (TEST_DIR / TEST_CONFIG_FILE).read_text()
-)["probe_scraper_app_info_mock_response"]
+
+CONFIG_LOADER = _ConfigLoader()
+CONFIG_LOADER.set_project_dir(TEST_DIR)
+CONFIG_LOADER.set_config_file(TEST_CONFIG_FILE)
+
+PROBE_SCRAPER_APP_INFO_MOCK_VALUE = CONFIG_LOADER.get(
+    "probe_scraper_app_info_mock_response"
+)
 
 
 @patch("sql_generators.usage_reporting.usage_reporting.get_app_info")

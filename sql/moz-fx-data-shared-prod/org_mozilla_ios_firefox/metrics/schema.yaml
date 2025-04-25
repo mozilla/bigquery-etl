@@ -2202,6 +2202,23 @@ fields:
         with a home page origin.
 
         '
+    - name: homepage_section_viewed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records when a section has been viewed on the homepage. See `homepage.viewed`
+        for more details on what is considered a homepage view. This event refers
+        to a section that has been scrolled to or seen on an homepage that has been
+        viewed. The labels matches the values in `HomepageTelemetry.ItemType` under
+        `sectionName`
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

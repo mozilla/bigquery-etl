@@ -254,7 +254,10 @@ SELECT
       metrics.counter.permissions_defective_sql_removed,
       metrics.counter.permissions_sql_corrupted,
       metrics.counter.web_push_api_notify,
-      metrics.counter.webfont_per_page
+      metrics.counter.webfont_per_page,
+      metrics.counter.networking_doh_heuristics_attempts,
+      metrics.counter.networking_doh_heuristics_pass_count,
+      metrics.counter.quotamanager_restore_origin_directory_metadata_counter
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -741,7 +744,8 @@ SELECT
       metrics.quantity.system_cpu_model,
       metrics.quantity.system_cpu_physical_cores,
       metrics.quantity.system_cpu_speed,
-      metrics.quantity.system_cpu_stepping
+      metrics.quantity.system_cpu_stepping,
+      metrics.quantity.networking_doh_heuristics_result
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1458,7 +1462,8 @@ SELECT
       metrics.labeled_boolean.media_video_hd_hardware_decoding_support,
       metrics.labeled_boolean.mediadrm_decryption,
       metrics.labeled_boolean.widget_pointing_devices,
-      metrics.labeled_boolean.devtools_tool_registered
+      metrics.labeled_boolean.devtools_tool_registered,
+      metrics.labeled_boolean.networking_doh_heuristic_ever_tripped
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,
@@ -1497,7 +1502,10 @@ SELECT
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(
       metrics.object.fog_validation_some_object,
-      metrics.object.preferences_user_prefs
+      metrics.object.preferences_user_prefs,
+      metrics.object.addons_active_addons,
+      metrics.object.addons_active_g_m_plugins,
+      metrics.object.addons_theme
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(

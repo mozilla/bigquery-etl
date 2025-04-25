@@ -214,7 +214,8 @@ SELECT
       metrics.labeled_counter.top_sites_pressed_tile_origin,
       metrics.labeled_counter.wallpaper_analytics_themed_wallpaper,
       metrics.labeled_counter.firefox_home_page_synced_tab_opened_origin,
-      metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin
+      metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin,
+      metrics.labeled_counter.homepage_section_viewed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.ping_reason,
@@ -508,7 +509,8 @@ SELECT
       metrics.labeled_counter.top_sites_pressed_tile_origin,
       metrics.labeled_counter.wallpaper_analytics_themed_wallpaper,
       metrics.labeled_counter.firefox_home_page_synced_tab_opened_origin,
-      metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin
+      metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin,
+      metrics.labeled_counter.homepage_section_viewed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.ping_reason,
@@ -802,7 +804,8 @@ SELECT
       metrics.labeled_counter.top_sites_pressed_tile_origin,
       metrics.labeled_counter.wallpaper_analytics_themed_wallpaper,
       metrics.labeled_counter.firefox_home_page_synced_tab_opened_origin,
-      metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin
+      metrics.labeled_counter.firefox_home_page_synced_tab_show_all_origin,
+      metrics.labeled_counter.homepage_section_viewed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.ping_reason,

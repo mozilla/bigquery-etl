@@ -962,6 +962,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether or not an external trust anchor module was loaded.
+    - name: metrics_is_large_device
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True if the device is a large screen device.
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -2895,6 +2899,31 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry count histogram
         WEBFONT_PER_PAGE.
+
+        '
+    - name: networking_doh_heuristics_attempts
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we ran DoH heuristics. This metric was generated
+        to correspond to the Legacy Telemetry scalar networking.doh_heuristics_attempts.
+
+        '
+    - name: networking_doh_heuristics_pass_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times we passed DoH heuristics. This metric was
+        generated to correspond to the Legacy Telemetry scalar networking.doh_heuristics_pass_count.
+
+        '
+    - name: quotamanager_restore_origin_directory_metadata_counter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Increments each time QuotaManager::RestoreDirectoryMetadata2 is
+        called to restore origin directory metadata. This typically occurs when expected
+        directory metadata is missing or needs to be regenerated. The counter is incremented
+        regardless of whether the restoration ultimately succeeds or fails. This can
+        provide insight into the impacts of specific code changes, including potential
+        optimizations or regressions.
 
         '
   - name: labeled_counter
@@ -37818,6 +37847,17 @@ fields:
       description: 'CPU stepping.
 
         '
+    - name: networking_doh_heuristics_result
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The value of this scalar indicates the result of the last heuristic
+        run. 0: "incomplete" 1: "pass" 2: "opt-out" 3: "manually-disabled" 4: "manually-enabled"
+        5: "enterprise-disabled" 6: "enterprise- present" 7: "enterprise-enabled"
+        8: "vpn" 9: "proxy" 10: "nrpt" 11: "parental" 12: "modifiedRoots" 13: "thirdPartyRoots"
+        14: "google" 15: "youtube" 16: "zscaler" 17: "canary" 18: "ignored" This metric
+        was generated to correspond to the Legacy Telemetry scalar networking.doh_heuristics_result.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -39670,6 +39710,20 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar devtools.tool.registered.
 
         '
+    - name: networking_doh_heuristic_ever_tripped
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'True if this heuristic (key) was ever tripped during the session.
+        This metric was generated to correspond to the Legacy Telemetry scalar networking.doh_heuristic_ever_tripped.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE
@@ -40181,6 +40235,80 @@ fields:
         Prefer instead to instrument your prefs directly with individual metrics.
 
         See Environment.sys.mjs'' `DEFAULT_ENVIRONMENT_PREFS`.
+
+        '
+    - name: addons_active_addons
+      type: JSON
+      mode: NULLABLE
+      description: 'The list of currently enabled addons.
+
+
+        Some of the addon fields are not available during startup. The fields
+
+        that will always be present are id, version, addonType, updateDay, scope,
+
+        isSystem, isWebExtension, and multiprocessCompatible. All the other
+
+        fields become present shortly after the `sessionstore-windows-restored`
+
+        observer topic is notified.
+
+
+        This metric is an echo of the Legacy Telemetry Environment field
+
+        addons.activeAddons. Like its counterpart, it will only have data in
+
+        Firefox Desktop and at times and on platforms where the environment would
+
+        have values.
+
+        '
+    - name: addons_active_g_m_plugins
+      type: JSON
+      mode: NULLABLE
+      description: 'The list of currently enabled Gecko Media Plugins.
+
+
+        Some of the addon fields are not available during startup. The fields
+
+        that will always be present are id and version. All the other
+
+        fields become present shortly after the `sessionstore-windows-restored`
+
+        observer topic is notified.
+
+
+        This metric is an echo of the Legacy Telemetry Environment field
+
+        addons.activeGMPlugins. Like its counterpart, it will only have data in
+
+        Firefox Desktop and at times and on platforms where the environment would
+
+        have values.
+
+        '
+    - name: addons_theme
+      type: JSON
+      mode: NULLABLE
+      description: 'The currently active theme.
+
+
+        Some of the addon fields are not available during startup. The fields
+
+        that will always be present are id, version, updateDay, and scope. All
+
+        the other fields become present shortly after the
+
+        `sessionstore-windows-restored` observer topic is notified.
+
+
+        This metric is an echo of the Legacy Telemetry Environment field
+
+        addons.theme. Like its counterpart, it will only have data in Firefox
+
+        Desktop and at times and on platforms where the environment would have
+
+        values.
 
         '
   - name: labeled_string

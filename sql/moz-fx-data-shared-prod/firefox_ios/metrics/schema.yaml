@@ -1123,6 +1123,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: homepage_section_viewed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE

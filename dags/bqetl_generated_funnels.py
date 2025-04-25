@@ -237,25 +237,23 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_firefox_ios_derived__clients_activation__v1 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_firefox_ios_derived__clients_activation__v1",
-            external_dag_id="bqetl_firefox_ios",
-            external_task_id="checks__fail_firefox_ios_derived__clients_activation__v1",
-            execution_delta=datetime.timedelta(seconds=3600),
-            check_existence=True,
-            mode="reschedule",
-            poke_interval=datetime.timedelta(minutes=5),
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
     wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
         external_dag_id="bqetl_firefox_ios",
         external_task_id="checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_ios_derived__clients_activation__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_ios_derived__clients_activation__v1",
+        external_dag_id="bqetl_firefox_ios",
+        external_task_id="firefox_ios_derived__clients_activation__v1",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -672,11 +670,11 @@ with DAG(
     )
 
     firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
+        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
     firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
+        wait_for_firefox_ios_derived__clients_activation__v1
     )
 
     firefox_ios_derived__ios_onboarding_main__v1.set_upstream(
@@ -720,15 +718,15 @@ with DAG(
     )
 
     firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
-        wait_for_checks__fail_firefox_ios_derived__clients_activation__v1
-    )
-
-    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
         wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1
     )
 
     firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__ios_onboarding_multiple_choice__v1.set_upstream(
+        wait_for_firefox_ios_derived__clients_activation__v1
     )
 
     monitor_frontend_derived__monitor_dashboard_user_journey_funnels__v1.set_upstream(

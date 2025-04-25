@@ -500,6 +500,9 @@ fields:
     - name: pkcs11_external_trust_anchor_module_loaded
       type: BOOLEAN
       mode: NULLABLE
+    - name: metrics_is_large_device
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1186,6 +1189,15 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: webfont_per_page
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_doh_heuristics_attempts
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_doh_heuristics_pass_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: quotamanager_restore_origin_directory_metadata_counter
       type: INTEGER
       mode: NULLABLE
   - name: custom_distribution
@@ -11253,6 +11265,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: system_cpu_stepping
+      type: INTEGER
+      mode: NULLABLE
+    - name: networking_doh_heuristics_result
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -29103,6 +29118,16 @@ fields:
       - name: value
         type: BOOLEAN
         mode: NULLABLE
+    - name: networking_doh_heuristic_ever_tripped
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
   - name: rate
     type: RECORD
     mode: NULLABLE
@@ -29445,6 +29470,15 @@ fields:
       type: JSON
       mode: NULLABLE
     - name: preferences_user_prefs
+      type: JSON
+      mode: NULLABLE
+    - name: addons_active_addons
+      type: JSON
+      mode: NULLABLE
+    - name: addons_active_g_m_plugins
+      type: JSON
+      mode: NULLABLE
+    - name: addons_theme
       type: JSON
       mode: NULLABLE
   - name: labeled_string

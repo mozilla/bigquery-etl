@@ -352,7 +352,12 @@ fields:
     - name: search_engine_default_engine_id
       type: STRING
       mode: NULLABLE
-      description: 'The telemetry id of the search engine.
+      description: 'Deprecated in Fx139, please use provider_id, partner_code,
+
+        overridden_by_third_party and display_name instead.
+
+
+        The telemetry id of the search engine.
 
         For example: "engine1"
 
@@ -367,7 +372,12 @@ fields:
     - name: search_engine_private_engine_id
       type: STRING
       mode: NULLABLE
-      description: 'The telemetry id of the search engine.
+      description: 'Deprecated in Fx139, please use provider_id, partner_code,
+
+        overridden_by_third_party and display_name instead.
+
+
+        The telemetry id of the search engine.
 
         For example: "engine1"
 
@@ -420,6 +430,58 @@ fields:
       type: STRING
       mode: NULLABLE
       description: 'Surface id sent to the client from merino api
+
+        '
+    - name: search_engine_default_partner_code
+      type: STRING
+      mode: NULLABLE
+      description: 'The partner code of the user''s default search engine, if defined/known,
+
+        that is being used for the search. Not all search engines have partner
+
+        codes.
+
+
+        May be empty for engines that are overridden by a third-party add-on or
+
+        OpenSearch engine.
+
+        '
+    - name: search_engine_default_provider_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The identifier of the user''s default search engine if the search
+        engine is
+
+        an application provided engine. For user installed engines, this value will
+
+        be `other`.
+
+        '
+    - name: search_engine_private_partner_code
+      type: STRING
+      mode: NULLABLE
+      description: 'The partner code of the user''s default search engine, if defined/known,
+
+        that is being used for the search. Not all search engines have partner
+
+        codes.
+
+
+        May be empty for engines that are overridden by a third-party add-on or
+
+        OpenSearch engine.
+
+        '
+    - name: search_engine_private_provider_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The identifier of the user''s default search engine if the search
+        engine is
+
+        an application provided engine. For user installed engines, this value will
+
+        be `other`.
 
         '
   - name: uuid
@@ -514,6 +576,24 @@ fields:
       mode: NULLABLE
       description: 'Whether the weather widget is enabled on the newtab. Corresponds
         to the value of the `browser.newtabpage.activity-stream.showWeather` pref.
+
+        '
+    - name: search_engine_default_overridden_by_third_party
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true if the user''s default search engine has been allowed
+        to be
+
+        overridden by a third-party add-on or OpenSearch engine.
+
+        '
+    - name: search_engine_private_overridden_by_third_party
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Set to true if the user''s default search engine has been allowed
+        to be
+
+        overridden by a third-party add-on or OpenSearch engine.
 
         '
   - name: quantity

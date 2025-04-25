@@ -25,3 +25,4 @@ scheduling:
   dag_name: bqetl_firefox_ios
   date_partition_parameter: submission_date
   depends_on_past: false
+deprecated: true

@@ -3,11 +3,35 @@
   submission_date: 2021-03-01
   first_seen_date: 2021-03-01
   sample_id: 0
+  attribution:
+  - campaign: FIRST_CAMPAIGN
+  - content: FIRST_CONTENT
+  - medium: FIRST_MEDIUM
+  - source: FIRST_SOURCE
+  - term: FIRST_TERM
+  distribution:
+  - name: MOZILLA_ONLINE
 - client_id: new-instance
   submission_date: 2021-03-02
   first_seen_date: 2021-03-02
   # sample_id is null because we're testing with a non-UUID client_id
+  attribution:
+  - campaign: FIRST_CAMPAIGN
+  - content: FIRST_CONTENT
+  - medium: FIRST_MEDIUM
+  - source: FIRST_SOURCE
+  - term: FIRST_TERM
+  distribution:
+  - name: MOZILLA_ONLINE
 - client_id: updated-existing-instance
   submission_date: 2021-03-01
   first_seen_date: 2021-02-02
   sample_id: 0
+  attribution:
+  - campaign: FIRST_CAMPAIGN
+  - content: FIRST_CONTENT
+  - medium: FIRST_MEDIUM
+  - source: FIRST_SOURCE
+  - term: FIRST_TERM
+  distribution:
+  - name: MOZILLA_ONLINE

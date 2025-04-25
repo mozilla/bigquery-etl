@@ -2,9 +2,33 @@
 - client_id: single-instance
   submission_date: 2021-03-01
   first_seen_date: 2021-03-01
+  attribution:
+  - campaign: FIRST_CAMPAIGN
+  - content: FIRST_CONTENT
+  - medium: FIRST_MEDIUM
+  - source: FIRST_SOURCE
+  - term: FIRST_TERM
+  distribution:
+  - name: MOZILLA_ONLINE
 - client_id: multiple-instances
   submission_date: 2021-03-01
   first_seen_date: 2021-03-01
+  attribution:
+  - campaign: FIRST_CAMPAIGN
+  - content: FIRST_CONTENT
+  - medium: FIRST_MEDIUM
+  - source: FIRST_SOURCE
+  - term: FIRST_TERM
+  distribution:
+  - name: MOZILLA_ONLINE
 - client_id: core-first-seen
   submission_date: 2021-03-01
   first_seen_date: 2021-02-01
+  attribution:
+  - campaign: FIRST_CAMPAIGN
+  - content: FIRST_CONTENT
+  - medium: FIRST_MEDIUM
+  - source: FIRST_SOURCE
+  - term: FIRST_TERM
+  distribution:
+  - name: MOZILLA_ONLINE

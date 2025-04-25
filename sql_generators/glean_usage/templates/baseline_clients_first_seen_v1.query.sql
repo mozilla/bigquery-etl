@@ -120,8 +120,14 @@ _current AS (
     @submission_date as first_seen_date,
     sample_id,
     client_info.client_id,
-    client_info.attribution,
-    client_info.distribution
+    ARRAY_AGG(
+      client_info.attribution 
+      ORDER BY submission_timestamp ASC LIMIT 1
+    )[OFFSET(0)] AS attribution,
+    ARRAY_AGG(
+      client_info.distribution 
+      ORDER BY submission_timestamp ASC LIMIT 1
+    )[OFFSET(0)] AS `distribution`
   FROM
     `{{ baseline_table }}`
   WHERE

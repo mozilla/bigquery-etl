@@ -13,6 +13,14 @@ WITH
       udf.safe_sample_id(client_info.client_id) AS sample_id,
       DATE(MIN(submission_timestamp)) as submission_date,
       DATE(MIN(submission_timestamp)) as first_seen_date,
+      ARRAY_AGG(
+        client_info.attribution 
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS attribution,
+      ARRAY_AGG(
+        client_info.distribution 
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS `distribution`
     FROM
       `{{ baseline_table }}`
     -- initialize by looking over all of history
@@ -30,6 +38,8 @@ WITH
     submission_date,
     COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
     sample_id,
+    attribution,
+    `distribution`
   FROM baseline
   LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
@@ -62,7 +72,9 @@ _current AS (
     @submission_date as submission_date,
     COALESCE(first_seen_date, @submission_date) as first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     _baseline
   LEFT JOIN
@@ -78,7 +90,9 @@ _previous AS (
       fs.first_seen_date
     ) AS first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     `{{ first_seen_table }}` fs
   LEFT JOIN
@@ -94,7 +108,9 @@ _current AS (
     @submission_date as submission_date,
     @submission_date as first_seen_date,
     sample_id,
-    client_info.client_id
+    client_info.client_id,
+    client_info.attribution,
+    client_info.distribution
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -107,7 +123,9 @@ _previous AS (
     submission_date,
     first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     `{{ first_seen_table }}`
   WHERE
@@ -136,7 +154,9 @@ SELECT
   submission_date,
   first_seen_date,
   sample_id,
-  client_id
+  client_id,
+  attribution,
+  `distribution`
 FROM _joined
 QUALIFY
   IF(

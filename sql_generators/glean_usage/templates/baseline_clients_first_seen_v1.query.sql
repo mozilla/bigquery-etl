@@ -61,6 +61,12 @@ _baseline AS (
     -- Some Glean data from 2019 contains incorrect sample_id, so we
     -- recalculate here; see bug 1707640
     udf.safe_sample_id(client_info.client_id) AS sample_id,
+    ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp ASC LIMIT 1)[
+      OFFSET(0)
+    ] AS attribution,
+    ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp ASC LIMIT 1)[
+      OFFSET(0)
+    ] AS `distribution`
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -68,29 +74,18 @@ _baseline AS (
     AND client_info.client_id IS NOT NULL -- Bug 1896455
 ),
 _current AS (
-  SELECT 
+  SELECT
     @submission_date as submission_date,
     COALESCE(first_seen_date, @submission_date) as first_seen_date,
     sample_id,
     client_id,
-    ARRAY_AGG(
-      client_info.attribution 
-      ORDER BY submission_timestamp ASC LIMIT 1
-    )[OFFSET(0)] AS attribution,
-    ARRAY_AGG(
-      client_info.distribution 
-      ORDER BY submission_timestamp ASC LIMIT 1
-    )[OFFSET(0)] AS `distribution`
+    attribution,
+    `distribution`
   FROM
     _baseline
   LEFT JOIN
     _core_clients_first_seen
     USING (client_id)
-  GROUP BY 
-    submission_date,
-    first_seen_date,
-    sample_id,
-    client_id
 ),
 _previous AS (
   SELECT

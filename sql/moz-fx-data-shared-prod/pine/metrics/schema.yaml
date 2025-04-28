@@ -12021,6 +12021,34 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar networking.doh_heuristic_ever_tripped.
 
         '
+    - name: newtab_metric_registered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Records technical data about whether the metric registration at
+        runtime succeeded
+
+        '
+    - name: newtab_ping_registered
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Records technical data about whether the ping registration at
+        runtime succeeded
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -2608,7 +2608,9 @@ SELECT
       metrics.counter.use_counter_doc_animation_commitstyles,
       metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_page_animation_commitstyles,
-      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5238,7 +5240,9 @@ SELECT
       metrics.counter.use_counter_doc_animation_commitstyles,
       metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_page_animation_commitstyles,
-      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7868,7 +7872,9 @@ SELECT
       metrics.counter.use_counter_doc_animation_commitstyles,
       metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_page_animation_commitstyles,
-      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10498,7 +10504,9 @@ SELECT
       metrics.counter.use_counter_doc_animation_commitstyles,
       metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_page_animation_commitstyles,
-      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13128,7 +13136,9 @@ SELECT
       metrics.counter.use_counter_doc_animation_commitstyles,
       metrics.counter.use_counter_doc_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_page_animation_commitstyles,
-      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
+      metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

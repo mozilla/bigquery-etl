@@ -12,10 +12,14 @@ tag_deployments:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.is_mobile
         metrics:
           - saved_metric_id: is_not_null
+            rct_overrides:
+              - first_seen_date
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
         metrics:
           - saved_metric_id: is_99_percent_valid_normalized_channel
+            rct_overrides:
+              - first_seen_date
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:

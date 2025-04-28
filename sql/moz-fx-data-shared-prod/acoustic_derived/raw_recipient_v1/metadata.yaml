@@ -4,22 +4,11 @@ description: >
   Import Raw Recipient file exported from Acoustic (CSV data).
   This includes metrics around email performance (clicks, opens, etc).
 
-  Each partition represents CSV data that was provided Acoustic
-  for the date correponding to Airflow's execution date
-
-  Data source: https://developer.goacoustic.com/acoustic-campaign/reference/rawrecipientdataexport
-  Jira: https://mozilla-hub.atlassian.net/browse/DENG-17
-  Moved from moz-fx-data-marketing-prod to moz-fx-data-shared-prod in https://mozilla-hub.atlassian.net/browse/DENG-3287
-
 labels:
   incremental: true
   table_type: client_level
 owners:
   - cbeck@mozilla.com
-
-scheduling:
-  dag_name: bqetl_acoustic_raw_recipient_export
-  date_partition_parameter: submission_date
 
 bigquery:
   time_partitioning:

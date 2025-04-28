@@ -15,15 +15,18 @@ tag_deployments:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.days_active_bits
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.days_created_profile_bits
         metrics:
-          - saved_metric_id: is_99_percent_not_null
+          - saved_metric_id: is_not_null
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.first_seen_date
         metrics:
           - saved_metric_id: is_99_percent_not_null
+      {#- Excluding ios nightly channel as normalized_channel contains mostly null values causing the metric to fail. -#}
+      {% if not (app_name == "firefox_ios" and derived_dataset == "org_mozilla_ios_fennec_derived") %}
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ derived_dataset }}.{{ target_table }}.normalized_channel
         metrics:
           - saved_metric_id: is_99_percent_valid_normalized_channel
+      {% endif %}
       # For now being commented out due to a bug in the predefined metric (wrong regex being used) resulting in 0 matches.
       # Will uncomment once the underlaying issue has been fixed.
       # - column_selectors:

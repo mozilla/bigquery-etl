@@ -110,7 +110,7 @@ _previous AS (
 )
 {% else %}
 _current AS (
-  SELECT DISTINCT
+  SELECT
     @submission_date as submission_date,
     @submission_date as first_seen_date,
     sample_id,
@@ -128,6 +128,11 @@ _current AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
+  GROUP BY 
+    submission_date,
+    first_seen_date,
+    sample_id,
+    client_info.client_id
 ),
   -- query over all of history to see whether the client_id has shown up before
 _previous AS (

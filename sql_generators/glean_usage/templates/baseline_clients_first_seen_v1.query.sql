@@ -56,7 +56,7 @@ WITH
 {{ core_clients_first_seen(migration_table) }},
 _baseline AS (
   -- extract the client_id into the top level for the `USING` clause
-  SELECT DISTINCT
+  SELECT
     client_info.client_id,
     -- Some Glean data from 2019 contains incorrect sample_id, so we
     -- recalculate here; see bug 1707640
@@ -72,6 +72,9 @@ _baseline AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
+  GROUP BY 
+    client_id,
+    sample_id
 ),
 _current AS (
   SELECT

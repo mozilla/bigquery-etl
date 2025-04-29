@@ -25,13 +25,13 @@ mdx_truly_sane_lists==1.3
 mkdocs==1.6.1
 mkdocs-material==9.6.12
 mkdocs-awesome-pages-plugin==2.10.1
-mozilla-metric-config-parser==2025.3.1
+mozilla-metric-config-parser==2025.4.1
 mozilla-schema-generator==0.5.1
 pandas==2.2.3
 pathos==0.3.4
 pip-tools==7.4.1
 pre-commit==4.2.0
-pyarrow==19.0.1
+pyarrow==20.0.0
 pytest-black==0.6.0
 pytest-flake8==1.3.0
 pytest-isort==4.0.0
@@ -45,7 +45,7 @@ smart_open==6.4.0
 sqlglot==25.28.0
 sqlparse==0.5.3
 stripe==6.4.0
-symbolic==12.15.3
+symbolic==12.15.4
 siggen==2.2.20241029
 tomli==2.2.1 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20241206

@@ -1,0 +1,102 @@
+fields:
+- mode: NULLABLE
+  type: STRING
+  name: prospect_id
+  description: Unique identifier for prospects
+- mode: NULLABLE
+  type: STRING
+  name: url
+  description: The url of the prospects item
+- mode: NULLABLE
+  type: STRING
+  name: scheduled_surface_id
+  description:  Recommended destination where the prospect item is expected to appear (NEW_TAB_EN_INTL, NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB).
+- mode: NULLABLE
+  type: STRING
+  name: prospect_source
+  description: Source identified by the ML process for the prospect (SYNDICATED, ORGANIC_TIMESPENT, GLOBAL).
+- mode: NULLABLE
+  type: TIMESTAMP
+  name: created_at
+  description: timestamp when the prospect was first created
+- mode: NULLABLE
+  type: TIMESTAMP
+  name: reviewed_at
+  description: timestamp when the prospect was reviewed by the curator. It is also the timestamp that caused this event action
+- mode: NULLABLE
+  type: STRING
+  name: prospect_review_status
+  description: The curator's review status for the prospect
+- mode: NULLABLE
+  type: ARRAY
+  name: status_reasons
+  description: The list (array) of curator review status reasons
+- mode: NULLABLE
+  type: STRING
+  name: status_reason_comment
+  description: Curator review status reason comment
+- mode: NULLABLE
+  type: STRING
+  name: reviewed_by
+  description: The curator who reviewed the prospect
+- mode: NULLABLE
+  type: STRING
+  name: title
+  description: The title of the reviewed corpus item
+- mode: NULLABLE
+  type: STRING
+  name: excerpt
+  description: The excerpt for the reviewed corpus item
+- mode: NULLABLE
+  type: STRING
+  name: image_url
+  description: The url of the main image of the reviewed corpus item
+- mode: NULLABLE
+  type: STRING
+  name: language
+  description: The language of the reviewed_corpus_item
+- mode: NULLABLE
+  type: STRING
+  name: topic
+  description: The topic of the reviewed_corpus_item
+- mode: NULLABLE
+  type: ARRAY
+  name: authors
+  description: The list of authors of the reviewed_corpus_item
+- mode: NULLABLE
+  type: STRING
+  name: publisher
+  description: The name of the online publication that published this story.
+- mode: NULLABLE
+  type: BOOLEAN
+  name: is_collection
+  description: Indicates whether the reviewed_corpus_item is a collection
+- mode: NULLABLE
+  type: BOOLEAN
+  name: is_syndicated
+  description: Indicates whether the reviewed_corpus_item is a syndicated article
+- mode: NULLABLE
+  type: RECORD
+  name: features
+  description: >
+    ML features for the prospect item. 
+    Note: These features are being passed through for ML use and will not be engineered in the warehouse
+- mode: NULLABLE
+  type: RECORD
+  name: run_details
+  description: >
+    Details about the run, including the flow name and run ID. 
+    Note: The ML team could include additional debug properties about the run, but these properties will not be engineered in the warehouse
+- mode: NULLABLE
+  type: STRING
+  name: schema_version
+  description: Snowplow version identifier. 
+- mode: NULLABLE
+  type: TIMESTAMP
+  name: happened_at
+  description: Event creation timestamp
+- mode: NULLABLE
+  type: STRING
+  name: prospect_id_object_update_trigger_key
+  description: >
+    A combination of the prospect_id and object_update_trigger columns to create a unique event identifier

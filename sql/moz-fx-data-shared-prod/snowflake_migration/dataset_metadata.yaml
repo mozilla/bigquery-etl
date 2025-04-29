@@ -1,0 +1,10 @@
+friendly_name: Snowflake Migration
+description: |-
+  https://mozilla-hub.atlassian.net/browse/DSRE-1682
+
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

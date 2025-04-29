@@ -1,0 +1,23 @@
+friendly_name: Prospects Staging
+description: Model prospective article options for the Fx New Tab from raw Snowplow data
+owners:
+  - skamath@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  owner1: skamath
+scheduling:
+  dag_name: bqetl_content_ml_daily
+  # destination is the whole table, not a single partition,
+  # so don't use date_partition_parameter
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+  # TODO: Select Clustering Fields
+    fields:
+      - 

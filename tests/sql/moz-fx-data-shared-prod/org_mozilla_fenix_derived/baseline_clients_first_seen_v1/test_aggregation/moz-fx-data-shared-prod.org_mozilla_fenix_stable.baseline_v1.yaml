@@ -2,12 +2,12 @@
 - sample_id: 0
   client_info:
     client_id: new-instance
+    attribution:
+    - campaign: FIRST_CAMPAIGN
+    - content: FIRST_CONTENT
+    - medium: FIRST_MEDIUM
+    - source: FIRST_SOURCE
+    - term: FIRST_TERM
+    distribution:
+    - name: MOZILLA_ONLINE
   submission_timestamp: 2021-03-02T00:00:00
-  attribution:
-  - campaign: FIRST_CAMPAIGN
-  - content: FIRST_CONTENT
-  - medium: FIRST_MEDIUM
-  - source: FIRST_SOURCE
-  - term: FIRST_TERM
-  distribution:
-  - name: MOZILLA_ONLINE

@@ -2315,5 +2315,3 @@ bqetl_content_ml_daily:
     retry_delay: 30m
   tags:
     - impact/tier_2
-
-

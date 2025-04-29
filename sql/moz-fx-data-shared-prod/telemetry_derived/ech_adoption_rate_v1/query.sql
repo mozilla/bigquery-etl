@@ -1,14 +1,14 @@
 WITH unioned AS (
   /* ---------- http3_ech_outcome ---------- */
   SELECT
-    DATE(submission_timestamp) AS day,
+    DATE(submission_timestamp) AS submission_date,
     'http3_ech_outcome' AS metric,
-    h.key AS key,
+    h.key AS label,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
-    END AS country,
+    END AS country_code,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.isp.name
@@ -26,21 +26,21 @@ WITH unioned AS (
     AND client_info.app_channel = 'release'
     AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
   GROUP BY
-    day,
-    key,
+    submission_date,
+    label,
     metadata.geo.country,
     metadata.isp.name
   UNION ALL
   /* ---------- ssl_handshake_result_ech ---------- */
   SELECT
-    DATE(submission_timestamp) AS day,
+    DATE(submission_timestamp) AS submission_date,
     'ssl_handshake_result_ech' AS metric,
-    "" AS key,
+    "" AS label,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
-    END AS country,
+    END AS country_code,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.isp.name
@@ -58,21 +58,21 @@ WITH unioned AS (
     AND client_info.app_channel = 'release'
     AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
   GROUP BY
-    day,
-    key,
+    submission_date,
+    label,
     metadata.geo.country,
     metadata.isp.name
   UNION ALL
   /* ---------- ssl_handshake_result_ech_grease ---------- */
   SELECT
-    DATE(submission_timestamp) AS day,
+    DATE(submission_timestamp) AS submission_date,
     'ssl_handshake_result_ech_grease' AS metric,
-    "" AS key,
+    "" AS label,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
-    END AS country,
+    END AS country_code,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.isp.name
@@ -90,21 +90,21 @@ WITH unioned AS (
     AND client_info.app_channel = 'release'
     AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
   GROUP BY
-    day,
-    key,
+    submission_date,
+    label,
     metadata.geo.country,
     metadata.isp.name
   UNION ALL
   /* ---------- ssl_handshake_privacy ---------- */
   SELECT
-    DATE(submission_timestamp) AS day,
+    DATE(submission_timestamp) AS submission_date,
     'ssl_handshake_privacy' AS metric,
-    "" AS key,
+    "" AS label,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
-    END AS country,
+    END AS country_code,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.isp.name
@@ -122,29 +122,29 @@ WITH unioned AS (
     AND client_info.app_channel = 'release'
     AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
   GROUP BY
-    day,
-    key,
+    submission_date,
+    label,
     metadata.geo.country,
     metadata.isp.name
 )
 SELECT
-  day,
+  submission_date,
   metric,
-  key,
-  country,
+  label,
+  country_code,
   isp_name,
   SUM(client_count) AS total_client_count
 FROM
   unioned
 GROUP BY
-  day AS date,
-  metric,
-  key AS label,
-  country AS coutry_code,
-  isp_name
-ORDER BY
-  date DESC,
+  submission_date,
   metric,
   label,
-  coutry_code,
+  country_code,
+  isp_name
+ORDER BY
+  submission_date DESC,
+  metric,
+  label,
+  country_code,
   isp_name;

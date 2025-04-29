@@ -13,6 +13,14 @@ WITH
       udf.safe_sample_id(client_info.client_id) AS sample_id,
       DATE(MIN(submission_timestamp)) as submission_date,
       DATE(MIN(submission_timestamp)) as first_seen_date,
+      ARRAY_AGG(
+        client_info.attribution 
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS attribution,
+      ARRAY_AGG(
+        client_info.distribution 
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS `distribution`
     FROM
       `{{ baseline_table }}`
     -- initialize by looking over all of history
@@ -30,6 +38,8 @@ WITH
     submission_date,
     COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
     sample_id,
+    attribution,
+    `distribution`
   FROM baseline
   LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
@@ -46,23 +56,34 @@ WITH
 {{ core_clients_first_seen(migration_table) }},
 _baseline AS (
   -- extract the client_id into the top level for the `USING` clause
-  SELECT DISTINCT
+  SELECT
     client_info.client_id,
     -- Some Glean data from 2019 contains incorrect sample_id, so we
     -- recalculate here; see bug 1707640
     udf.safe_sample_id(client_info.client_id) AS sample_id,
+    ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp ASC LIMIT 1)[
+      OFFSET(0)
+    ] AS attribution,
+    ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp ASC LIMIT 1)[
+      OFFSET(0)
+    ] AS `distribution`
   FROM
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
+  GROUP BY 
+    client_id,
+    sample_id
 ),
 _current AS (
-  SELECT DISTINCT
+  SELECT
     @submission_date as submission_date,
     COALESCE(first_seen_date, @submission_date) as first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     _baseline
   LEFT JOIN
@@ -78,7 +99,9 @@ _previous AS (
       fs.first_seen_date
     ) AS first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     `{{ first_seen_table }}` fs
   LEFT JOIN
@@ -90,16 +113,29 @@ _previous AS (
 )
 {% else %}
 _current AS (
-  SELECT DISTINCT
+  SELECT
     @submission_date as submission_date,
     @submission_date as first_seen_date,
     sample_id,
-    client_info.client_id
+    client_info.client_id,
+    ARRAY_AGG(
+      client_info.attribution 
+      ORDER BY submission_timestamp ASC LIMIT 1
+    )[OFFSET(0)] AS attribution,
+    ARRAY_AGG(
+      client_info.distribution 
+      ORDER BY submission_timestamp ASC LIMIT 1
+    )[OFFSET(0)] AS `distribution`
   FROM
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
+  GROUP BY 
+    submission_date,
+    first_seen_date,
+    sample_id,
+    client_info.client_id
 ),
   -- query over all of history to see whether the client_id has shown up before
 _previous AS (
@@ -107,7 +143,9 @@ _previous AS (
     submission_date,
     first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     `{{ first_seen_table }}`
   WHERE
@@ -136,7 +174,9 @@ SELECT
   submission_date,
   first_seen_date,
   sample_id,
-  client_id
+  client_id,
+  attribution,
+  `distribution`
 FROM _joined
 QUALIFY
   IF(

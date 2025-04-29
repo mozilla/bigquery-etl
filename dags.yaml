@@ -2283,3 +2283,23 @@ bqetl_monitoring_hourly:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_ech_adoption_rate:
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - efilho@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: '2025-10-31'
+    owner: efilho@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-04-28'
+  description: Tracks ECH adoption across countries and ISPs over time
+  repo: bigquery-etl
+  schedule_interval: daily
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

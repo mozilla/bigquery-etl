@@ -14,7 +14,8 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: submission_date
+  # TODO: confirm
+    field: derived_tstamp
     require_partition_filter: true
     expiration_days: 775
   clustering:

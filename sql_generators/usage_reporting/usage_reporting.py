@@ -113,7 +113,7 @@ def render_and_write_to_file(
     table_id: str,
     basename: str,
     format: bool = True,
-) -> str:
+) -> None:
     """Render a Jinja template and write it to file."""
     rendered = jinja_env.get_template(template).render(**template_args)
 
@@ -124,7 +124,16 @@ def render_and_write_to_file(
         basename=basename,
         sql=reformat(rendered) if format else rendered,
     )
-    return table_id
+    return None
+
+
+def remove_table_version_suffix(table_id: str) -> str:
+    """Remove version suffix from table_name.
+
+    Example input: 'TABLE_NAME_v1'
+    Return: 'TABLE_NAME'
+    """
+    return ("_").join(table_id.split("_")[:-1])
 
 
 def generate_usage_reporting(target_project: str, output_dir: Path):
@@ -164,7 +173,7 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
                     "channel_name": channel_name.split("__")[0],
                     "channel_dataset": channel_dataset,
                     "table_name": table_name,
-                    "view_name": ("_").join(table_name.split("_")[:-1]),
+                    "view_name": remove_table_version_suffix(table_name),
                     **app_template_args,
                 }
 
@@ -194,8 +203,8 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
                 if channel_name == "multichannel":
                     continue
 
-                channel_view_id = (
-                    f"{target_project}.{channel_dataset}.{table_name[:-3]}"
+                channel_view_id = remove_table_version_suffix(
+                    f"{target_project}.{channel_dataset}.{table_name}"
                 )
 
                 render_and_write_to_file_partial(
@@ -219,9 +228,11 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
                     "channels_info": channels_info,
                     **app_template_args,
                     "table_name": table_name,
-                    "view_name": table_name[:-3],
+                    "view_name": remove_table_version_suffix(table_name),
                 },
-                table_id=f"{target_project}.{app_name}.{table_name[:-3]}",
+                table_id=remove_table_version_suffix(
+                    f"{target_project}.{app_name}.{table_name}"
+                ),
                 basename="view.sql",
             )
 

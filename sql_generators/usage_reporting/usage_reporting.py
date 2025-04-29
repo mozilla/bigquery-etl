@@ -1,5 +1,6 @@
 """Usage Reporting ETL."""
 
+import re
 from functools import partial
 from os import path
 from pathlib import Path
@@ -133,7 +134,9 @@ def remove_table_version_suffix(table_id: str) -> str:
     Example input: 'TABLE_NAME_v1'
     Return: 'TABLE_NAME'
     """
-    return ("_").join(table_id.split("_")[:-1])
+    version_suffix_regex = r"(_v|_)?([0-9]+)?$"
+
+    return re.sub(version_suffix_regex, "", table_id)
 
 
 def generate_usage_reporting(target_project: str, output_dir: Path):

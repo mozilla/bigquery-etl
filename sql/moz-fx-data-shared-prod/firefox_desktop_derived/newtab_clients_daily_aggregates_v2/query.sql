@@ -9,7 +9,7 @@ SELECT
   newtab_homepage_category,
   newtab_newtab_category,
   organic_content_enabled,
-  sponsored_ads_enabled,
+  sponsored_content_enabled,
   sponsored_topsites_enabled,
   organic_topsites_enabled,
   newtab_search_enabled,
@@ -78,7 +78,7 @@ GROUP BY
   newtab_homepage_category,
   newtab_newtab_category,
   organic_content_enabled,
-  sponsored_ads_enabled,
+  sponsored_content_enabled,
   sponsored_topsites_enabled,
   organic_topsites_enabled,
   newtab_search_enabled

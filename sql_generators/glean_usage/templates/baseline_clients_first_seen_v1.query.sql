@@ -15,11 +15,11 @@ WITH
       DATE(MIN(submission_timestamp)) as first_seen_date,
       ARRAY_AGG(
         client_info.attribution 
-        ORDER BY submission_timestamp ASC LIMIT 1
+        ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS attribution,
       ARRAY_AGG(
         client_info.distribution 
-        ORDER BY submission_timestamp ASC LIMIT 1
+        ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS `distribution`
     FROM
       `{{ baseline_table }}`
@@ -61,10 +61,10 @@ _baseline AS (
     -- Some Glean data from 2019 contains incorrect sample_id, so we
     -- recalculate here; see bug 1707640
     udf.safe_sample_id(client_info.client_id) AS sample_id,
-    ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp ASC LIMIT 1)[
+    ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp DESC LIMIT 1)[
       OFFSET(0)
     ] AS attribution,
-    ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp ASC LIMIT 1)[
+    ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
       OFFSET(0)
     ] AS `distribution`
   FROM
@@ -120,11 +120,11 @@ _current AS (
     client_info.client_id,
     ARRAY_AGG(
       client_info.attribution 
-      ORDER BY submission_timestamp ASC LIMIT 1
+      ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS attribution,
     ARRAY_AGG(
       client_info.distribution 
-      ORDER BY submission_timestamp ASC LIMIT 1
+      ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS `distribution`
   FROM
     `{{ baseline_table }}`

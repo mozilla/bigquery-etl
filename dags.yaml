@@ -2304,12 +2304,12 @@ bqetl_monitoring_hourly:
     - repo/bigquery-etl
 
 bqetl_content_ml_daily:
-  schedule_interval: 0 15 * * * #TODO: Ask Matt Cooper
+  schedule_interval: 0 4 * * * 
   description: |
     Daily extracts for corpus item data to be evaluated for new tab presentation.
   default_args:
     owner: skamath@mozilla.com
-    start_date: "2025-04-30" #TODO: Change to merge datae
+    start_date: "2025-05-05" #TODO: Change to merge date
     email: ["skamath@mozilla.com", "mcooper@mozilla.com"]
     retries: 2
     retry_delay: 30m

@@ -569,9 +569,9 @@ google-cloud-bigquery==3.31.0 \
     --hash=sha256:97f4a3219854ff01d6a3a57312feecb0b6e13062226b823f867e2d3619c4787b \
     --hash=sha256:b89dc716dbe4abdb7a4f873f7050100287bc98514e0614c5d54cd6a8e9fb0991
     # via -r requirements.in
-google-cloud-bigquery-storage[fastavro]==2.30.0 \
-    --hash=sha256:41ac83fa9eddbc820102177984ab92f8b7bbdfa7d90ea64b3a0af5ecb4fca3f2 \
-    --hash=sha256:c4cea1a2969bf46d1cc3fda644552dcf301b33378f3a1c7de945e1603edffadd
+google-cloud-bigquery-storage[fastavro]==2.31.0 \
+    --hash=sha256:1721792f39f5ecb49b8503cf197ee8ab79f7deebf17fc4a4a44585959336365b \
+    --hash=sha256:e4b42df3374dbc9575268c89d5dec47fced075c44904c463b12aed2b01be6790
     # via -r requirements.in
 google-cloud-core==2.4.2 \
     --hash=sha256:7459c3e83de7cb8b9ecfec9babc910efb4314030c56dd798eaad12c426f7d180 \
@@ -2527,9 +2527,9 @@ pip==23.3.2 \
     --hash=sha256:5052d7889c1f9d05224cd41741acb7c5d6fa735ab34e339624a614eaaa7e7d76 \
     --hash=sha256:7fd9972f96db22c8077a1ee2691b172c8089b17a5652a44494a9ecb0d78f9149
     # via pip-tools
-setuptools==80.0.0 \
-    --hash=sha256:a38f898dcd6e5380f4da4381a87ec90bd0a7eec23d204a5552e80ee3cab6bd27 \
-    --hash=sha256:c40a5b3729d58dd749c0f08f1a07d134fb8a0a3d7f87dc33e7c5e1f762138650
+setuptools==80.0.1 \
+    --hash=sha256:20fe373a22ef9f3925512650d1db90b1b8de01cdb6df91ab1788263139cbf9a2 \
+    --hash=sha256:f4b49d457765b3aae7cbbeb1c71f6633a61b729408c2d1a837dae064cca82ef2
     # via
     #   bigeye-sdk
     #   nodeenv

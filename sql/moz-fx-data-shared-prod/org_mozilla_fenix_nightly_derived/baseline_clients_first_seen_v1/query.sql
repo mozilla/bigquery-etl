@@ -8,6 +8,12 @@
       `moz-fx-data-shared-prod.udf.safe_sample_id`(client_info.client_id) AS sample_id,
       DATE(MIN(submission_timestamp)) AS submission_date,
       DATE(MIN(submission_timestamp)) AS first_seen_date,
+      ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS attribution,
+      ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS `distribution`
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -55,6 +61,8 @@
     submission_date,
     COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
     sample_id,
+    attribution,
+    `distribution`
   FROM
     baseline
   LEFT JOIN
@@ -97,23 +105,34 @@
   ),
   _baseline AS (
   -- extract the client_id into the top level for the `USING` clause
-    SELECT DISTINCT
+    SELECT
       client_info.client_id,
     -- Some Glean data from 2019 contains incorrect sample_id, so we
     -- recalculate here; see bug 1707640
       `moz-fx-data-shared-prod.udf.safe_sample_id`(client_info.client_id) AS sample_id,
+      ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS attribution,
+      ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS `distribution`
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_stable.baseline_v1`
     WHERE
       DATE(submission_timestamp) = @submission_date
       AND client_info.client_id IS NOT NULL -- Bug 1896455
+    GROUP BY
+      client_id,
+      sample_id
   ),
   _current AS (
-    SELECT DISTINCT
+    SELECT
       @submission_date AS submission_date,
       COALESCE(first_seen_date, @submission_date) AS first_seen_date,
       sample_id,
-      client_id
+      client_id,
+      attribution,
+      `distribution`
     FROM
       _baseline
     LEFT JOIN
@@ -130,7 +149,9 @@
         fs.first_seen_date
       ) AS first_seen_date,
       sample_id,
-      client_id
+      client_id,
+      attribution,
+      `distribution`
     FROM
       `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.baseline_clients_first_seen_v1` fs
     LEFT JOIN
@@ -159,7 +180,9 @@
     submission_date,
     first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     _joined
   QUALIFY

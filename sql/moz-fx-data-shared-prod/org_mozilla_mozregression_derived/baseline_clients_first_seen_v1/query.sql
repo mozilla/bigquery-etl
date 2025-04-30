@@ -8,6 +8,12 @@
       `moz-fx-data-shared-prod.udf.safe_sample_id`(client_info.client_id) AS sample_id,
       DATE(MIN(submission_timestamp)) AS submission_date,
       DATE(MIN(submission_timestamp)) AS first_seen_date,
+      ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS attribution,
+      ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS `distribution`
     FROM
       `moz-fx-data-shared-prod.org_mozilla_mozregression_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -23,16 +29,27 @@
     baseline
 {% else %}
   WITH _current AS (
-    SELECT DISTINCT
+    SELECT
       @submission_date AS submission_date,
       @submission_date AS first_seen_date,
       sample_id,
-      client_info.client_id
+      client_info.client_id,
+      ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS attribution,
+      ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
+        OFFSET(0)
+      ] AS `distribution`
     FROM
       `moz-fx-data-shared-prod.org_mozilla_mozregression_stable.baseline_v1`
     WHERE
       DATE(submission_timestamp) = @submission_date
       AND client_info.client_id IS NOT NULL -- Bug 1896455
+    GROUP BY
+      submission_date,
+      first_seen_date,
+      sample_id,
+      client_info.client_id
   ),
   -- query over all of history to see whether the client_id has shown up before
   _previous AS (
@@ -40,7 +57,9 @@
       submission_date,
       first_seen_date,
       sample_id,
-      client_id
+      client_id,
+      attribution,
+      `distribution`
     FROM
       `moz-fx-data-shared-prod.org_mozilla_mozregression_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -66,7 +85,9 @@
     submission_date,
     first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`
   FROM
     _joined
   QUALIFY

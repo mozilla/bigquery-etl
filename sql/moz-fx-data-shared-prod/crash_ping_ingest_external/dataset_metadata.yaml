@@ -2,7 +2,7 @@ friendly_name: Crash Ping Ingest External
 description: >-
   The data in this dataset is written to from a daily taskcluster task in https://github.com/mozilla/crash-ping-ingest.
   It contains derived crash ping data, such as symbolicated stack frames and crash signatures.
-  
+
   See https://mozilla-hub.atlassian.net/browse/DSRE-1900 for more information.
 dataset_base_acl: derived
 user_facing: false

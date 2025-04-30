@@ -2302,3 +2302,16 @@ bqetl_monitoring_hourly:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_mozsoc_ml_prod_replication:
+  schedule_interval: daily
+  description: |
+    Replicates data from moz-fx-mozsoc-ml-prod BigQuery project for Looker access
+  default_args:
+    owner: rrando@mozilla.com
+    start_date: "2025-05-05" #TODO: Change to merge date
+    email: ["rrando@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2

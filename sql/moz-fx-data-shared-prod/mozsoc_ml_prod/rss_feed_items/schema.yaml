@@ -1,0 +1,61 @@
+fields:
+  - mode: NULLABLE
+    type: STRING
+    name: language
+  - mode: NULLABLE
+    type: STRING
+    name: id
+  - mode: NULLABLE
+    type: STRING
+    name: keywords
+  - mode: NULLABLE
+    type: STRING
+    name: origin_url
+  - mode: NULLABLE
+    type: STRING
+    name: origin_title
+  - mode: NULLABLE
+    type: STRING
+    name: content_cleaned
+  - mode: NULLABLE
+    type: STRING
+    name: title
+  - mode: NULLABLE
+    type: STRING
+    name: author
+  - mode: NULLABLE
+    type: STRING
+    name: summary
+  - mode: NULLABLE
+    type: FLOAT
+    name: engagement
+  - mode: NULLABLE
+    type: STRING
+    name: published_date
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: unread
+  - mode: NULLABLE
+    type: STRING
+    name: crawled_date
+  - mode: NULLABLE
+    type: STRING
+    name: canonical_url
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: published_at
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: crawled_at
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: loaded_at
+  - mode: NULLABLE
+    type: INTEGER
+    name: load_count
+  - mode: NULLABLE
+    type: STRING
+    name: category
+  - mode: NULLABLE
+    type: STRING
+    name: surface

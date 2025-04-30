@@ -1,0 +1,43 @@
+fields:
+  - mode: NULLABLE
+    type: STRING
+    name: canonical_url
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_headline
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_description
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_authors
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_mainImage
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_articleBody
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_datePublished
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_datePublishedRaw
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_dateModified
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_canonicalUrl
+  - mode: NULLABLE
+    type: DATETIME
+    name: zyte_cached_at
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_breadcrumbs
+  - mode: NULLABLE
+    type: STRING
+    name: zyte_inLanguage
+  - mode: NULLABLE
+    type: STRING
+    name: canonical_url

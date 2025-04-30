@@ -1,0 +1,10 @@
+friendly_name: Zyte Cache
+description: Metadata cache from Zyte article parsing
+owners:
+  - rrando@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+  owner1: rrando
+scheduling:
+  dag_name: bqetl_content_ml_rss_parsing

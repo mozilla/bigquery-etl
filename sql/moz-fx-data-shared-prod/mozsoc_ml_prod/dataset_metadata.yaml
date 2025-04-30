@@ -1,0 +1,9 @@
+friendly_name: ML Content Ingestion Replication
+description: |-
+  https://mozilla-hub.atlassian.net/browse/DENG-8408
+user_facing: false
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

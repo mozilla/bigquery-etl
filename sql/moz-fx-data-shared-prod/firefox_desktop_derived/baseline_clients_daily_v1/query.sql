@@ -34,6 +34,8 @@ WITH base AS (
     metrics.string.usage_distribution_id AS distribution_id,
     metrics.boolean.usage_is_default_browser AS is_default_browser,
     CAST(NULL AS STRING) AS install_source,
+    client_info.attribution,
+    client_info.distribution,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -150,6 +152,8 @@ windowed AS (
     `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(is_default_browser) OVER w1
     ) AS is_default_browser,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution) OVER w1) AS attribution,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
   FROM
     with_date_offsets
   LEFT JOIN

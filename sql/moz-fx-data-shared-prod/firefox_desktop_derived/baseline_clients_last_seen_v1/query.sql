@@ -10,7 +10,7 @@
   -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
-    * EXCEPT (isp),
+    * EXCEPT (isp, attribution, `distribution`),
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1`
   WHERE
@@ -34,7 +34,7 @@
         browser_engagement_active_ticks > 0 AS INT64
       ) AS days_desktop_active_bits,
       isp,
-      * EXCEPT (submission_date, isp)
+      * EXCEPT (submission_date, isp, attribution, `distribution`)
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1`
     WHERE

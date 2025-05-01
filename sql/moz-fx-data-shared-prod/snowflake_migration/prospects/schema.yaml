@@ -10,7 +10,7 @@ fields:
 - mode: NULLABLE
   type: STRING
   name: scheduled_surface_id
-  description:  Recommended destination where the prospect item is expected to appear (NEW_TAB_EN_INTL, NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB).
+  description: Recommended destination where the prospect item is expected to appear (NEW_TAB_EN_INTL, NEW_TAB_EN_US, NEW_TAB_DE_DE, NEW_TAB_EN_GB).
 - mode: NULLABLE
   type: STRING
   name: prospect_source
@@ -79,18 +79,18 @@ fields:
   type: RECORD
   name: features
   description: >
-    ML features for the prospect item. 
+    ML features for the prospect item.
     Note: These features are being passed through for ML use and will not be engineered in the warehouse
 - mode: NULLABLE
   type: RECORD
   name: run_details
   description: >
-    Details about the run, including the flow name and run ID. 
+    Details about the run, including the flow name and run ID.
     Note: The ML team could include additional debug properties about the run, but these properties will not be engineered in the warehouse
 - mode: NULLABLE
   type: STRING
   name: schema_version
-  description: Snowplow version identifier. 
+  description: Snowplow version identifier.
 - mode: NULLABLE
   type: TIMESTAMP
   name: happened_at

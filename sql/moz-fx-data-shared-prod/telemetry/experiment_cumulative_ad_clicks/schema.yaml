@@ -1,0 +1,13 @@
+fields:
+- name: time
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: experiment
+  type: STRING
+  mode: NULLABLE
+- name: branch
+  type: STRING
+  mode: NULLABLE
+- name: value
+  type: INTEGER
+  mode: NULLABLE

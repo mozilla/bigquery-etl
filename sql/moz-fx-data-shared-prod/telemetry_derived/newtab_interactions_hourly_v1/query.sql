@@ -196,7 +196,7 @@ uapi_summary AS (
     0 AS save_count,
     0 AS dismiss_count,
   FROM
-    `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
+    `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_uapi_hourly_v1`
   WHERE
     {% if is_init() %}
       DATE(submission_hour) >= '2025-01-01'

@@ -16,7 +16,7 @@ SELECT
   -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
-  * EXCEPT(isp, attribution, `distribution`),
+  * EXCEPT(isp),
 FROM
   `{{ daily_table }}`
 WHERE
@@ -48,9 +48,7 @@ WITH _current AS (
     isp,
     * EXCEPT(
         submission_date, 
-        isp, 
-        attribution, 
-        `distribution`
+        isp
       )
   FROM
     `{{ daily_table }}`

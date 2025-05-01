@@ -47,7 +47,7 @@ WITH events_unnested AS (
       OR category = 'newtab'
       AND name IN (
         'weather_change_display',
-        'weather_open_url_provider',
+        'weather_open_provider_url',
         'weather_location_selected'
       )
       OR category = 'newtab'
@@ -253,7 +253,7 @@ SELECT
       event_category = 'newtab'
       AND event_name IN (
         'weather_change_display',
-        'weather_open_url_provider',
+        'weather_open_provider_url',
         'weather_location_selected'
       ),
       TRUE,

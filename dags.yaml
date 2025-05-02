@@ -2310,7 +2310,7 @@ bqetl_content_ml_daily:
   default_args:
     owner: skamath@mozilla.com
     start_date: "2025-05-05" #TODO: Change to merge date
-    email: ["skamath@mozilla.com", "mcooper@mozilla.com"]
+    email: ["skamath@mozilla.com", "mlcooper@mozilla.com"]
     retries: 2
     retry_delay: 30m
   tags:

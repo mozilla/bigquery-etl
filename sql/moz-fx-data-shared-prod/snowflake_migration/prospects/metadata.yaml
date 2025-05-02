@@ -2,12 +2,12 @@ friendly_name: Prospects
 description: Model prospective article options for the Fx New Tab from raw Snowplow data
 owners:
   - skamath@mozilla.com
-  - mcooper@mozilla.com
+  - mlcooper@mozilla.com
 labels:
   schedule: daily
   incremental: true
   owner1: skamath
-  owner2: mcooper
+  owner2: mlcooper
 scheduling:
   dag_name: bqetl_content_ml_daily
   # destination is the whole table, not a single partition,

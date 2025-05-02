@@ -9,7 +9,7 @@
   -- to the daily table we can add those columns in the same order to the end
   -- of this schema, which may be necessary for the daily join query between
   -- the two tables to validate.
-    * EXCEPT (isp, attribution, `distribution`),
+    * EXCEPT (isp),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_vrbrowser_derived.baseline_clients_daily_v1`
   WHERE
@@ -30,7 +30,7 @@
         DATE_DIFF(submission_date, first_run_date, DAY)
       ) AS days_created_profile_bits,
       isp,
-      * EXCEPT (submission_date, isp, attribution, `distribution`)
+      * EXCEPT (submission_date, isp)
     FROM
       `moz-fx-data-shared-prod.org_mozilla_vrbrowser_derived.baseline_clients_daily_v1`
     WHERE

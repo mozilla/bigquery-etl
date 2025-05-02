@@ -113,6 +113,32 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+- name: attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+  - name: content
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: term
+    type: STRING
+    mode: NULLABLE
+- name: distribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: name
+    type: STRING
+    mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

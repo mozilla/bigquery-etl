@@ -2304,7 +2304,7 @@ bqetl_monitoring_hourly:
     - repo/bigquery-etl
 
 bqetl_content_ml_daily:
-  schedule_interval: 0 4 * * * 
+  schedule_interval: 0 4 * * *
   description: |
     Daily extracts for corpus item data to be evaluated for new tab presentation.
   default_args:

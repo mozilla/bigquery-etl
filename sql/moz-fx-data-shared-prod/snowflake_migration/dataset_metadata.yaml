@@ -1,6 +1,6 @@
 friendly_name: Snowflake Migration
 description: |-
-  Queries for modeling raw snowplow data about prospects 
+  Queries for modeling raw snowplow data about prospects
   (candidate links to be curated by ML models and the editorial team for New Tab).
 
 user_facing: false

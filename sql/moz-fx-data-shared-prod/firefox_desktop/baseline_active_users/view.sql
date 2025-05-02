@@ -93,15 +93,20 @@ SELECT
       THEN 'core_user'
     ELSE 'other'
   END AS activity_segment,
-  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
+  EXTRACT(YEAR FROM last_seen.first_seen_date) AS first_seen_year,
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_dau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
+  first_seen.attribution AS first_seen_attribution,
+  first_seen.distribution AS first_seen_distribution
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1` AS distribution_mapping
   USING (submission_date, client_id)
+LEFT JOIN
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
+  ON last_seen.client_id = first_seen.client_id

@@ -94,6 +94,9 @@ non_aggregates AS (
     metrics.string.search_engine_private_display_name AS default_private_search_engine,
     metrics.string.search_engine_private_load_path AS default_private_search_engine_data_load_path,
     metrics.url2.search_engine_private_submission_url AS default_private_search_engine_data_submission_url,
+    ping_info.start_time AS subsession_start_date, -- ping_info.parsed_start_time instead?
+    ping_info.seq AS subsession_counter,
+    (ping_info.end_time - ping_info.start_time) AS subsession_length,
     sample_id,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
@@ -105,6 +108,8 @@ aggregates AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     SUM(metrics.counter.browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
+    SUM((ping_info.end_time - ping_info.start_time) / NUMERIC '3600') AS subsession_hours_sum,
+    COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
     SUM(
       metrics.counter.browser_engagement_tab_open_event_count
     ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
@@ -114,6 +119,9 @@ aggregates AS (
     MAX(
       metrics.quantity.browser_engagement_max_concurrent_tab_count
     ) AS scalar_parent_browser_engagement_max_concurrent_tab_count_max,
+    MAX(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date)))) - MAX(
+      UNIX_DATE(DATE(PARSE_TIMESTAMP('%F%Ez', client_info.first_run_date)))
+    ) AS profile_age_in_days,
     mozfun.map.mode_last(
       ARRAY_CONCAT_AGG(ping_info.experiments ORDER BY submission_timestamp)
     ) AS experiments,
@@ -170,12 +178,10 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_tabhistory)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_unknown)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar)),
-      STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbamer_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar_persisted)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar_searchmode)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_webextension)),
-      -- STRUCT(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.browser_search_ad_clicks)), -- to compute scalar_parent_browser_search_ad_clicks. what's the glean equivalent of payload.processes.parent.keyed_scalars.browser_search_ad_clicks?
-      -- STRUCT(ARRAY_CONCAT_AGG(payload.processes.parent.keyed_scalars.browser_search_with_ads)) -- what's the glean equivalent of payload.processes.parent.keyed_scalars.browser_search_with_ads?
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_is_user_default)),
     ] AS map_sum_aggregates,
   FROM
@@ -259,8 +265,6 @@ clients_daily_v6 AS (
     map_sum_aggregates[OFFSET(50)].map AS search_adclicks_urlbar_searchmode_sum,
     map_sum_aggregates[OFFSET(51)].map AS search_adclicks_webextension_sum,
     map_sum_aggregates[OFFSET(52)].map AS is_default_browser,
-    -- map_sum_aggregates[OFFSET(52)].map AS ad_clicks,
-    -- map_sum_aggregates[OFFSET(53)].map AS search_with_ads
   FROM
     udf_aggregates
 )
@@ -400,7 +404,7 @@ augmented AS (
           value AS count,
           CONCAT('ad-click', IF(REGEXP_CONTAINS(key, ':organic'), ':organic', '')) AS type
         FROM
-          UNNEST(IF(ARRAY_LENGTH(ad_clicks_with_sap) = 0, ad_clicks, ad_clicks_with_sap))
+          UNNEST(ad_clicks_with_sap)
       ),
       ARRAY(
         SELECT AS STRUCT
@@ -409,13 +413,7 @@ augmented AS (
           value AS count,
           CONCAT('search-with-ads', IF(REGEXP_CONTAINS(key, ':organic'), ':organic', '')) AS type
         FROM
-          UNNEST(
-            IF(
-              ARRAY_LENGTH(search_with_ads_with_sap) = 0,
-              search_with_ads,
-              search_with_ads_with_sap
-            )
-          )
+          UNNEST(search_with_ads_with_sap)
       )
     ) AS _searches,
   FROM
@@ -454,7 +452,7 @@ counted AS (
     app_version,
     distribution_id,
     locale,
-    -- user_pref_browser_search_region,
+    metrics.region_home_region AS user_pref_browser_search_region,
     -- search_cohort,
     os,
     os_version,
@@ -470,7 +468,7 @@ counted AS (
     END AS os_version_minor,
     channel,
     is_default_browser,
-    -- UNIX_DATE(DATE(profile_creation_date)) AS profile_creation_date,
+    UNIX_DATE(DATE(PARSE_TIMESTAMP('%F%Ez', client_info.first_run_date))) AS profile_creation_date,
     default_search_engine,
     default_search_engine_data_load_path,
     default_search_engine_data_submission_url,
@@ -478,8 +476,8 @@ counted AS (
     default_private_search_engine_data_load_path,
     default_private_search_engine_data_submission_url,
     sample_id,
-    -- SAFE_CAST(subsession_hours_sum AS FLOAT64) AS subsession_hours_sum,
-    -- sessions_started_on_this_day,
+    SAFE_CAST(subsession_hours_sum AS FLOAT64) AS subsession_hours_sum,
+    sessions_started_on_this_day,
     -- active_addons_count_mean,
     scalar_parent_browser_engagement_max_concurrent_tab_count_max AS max_concurrent_tab_count_max,
     scalar_parent_browser_engagement_tab_open_event_count_sum AS tab_open_event_count_sum,
@@ -499,7 +497,7 @@ counted AS (
     scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
     scalar_parent_urlbar_searchmode_touchbar_sum,
     scalar_parent_urlbar_searchmode_typed_sum,
-    -- profile_age_in_days,
+    profile_age_in_days,
     CAST(
       NULL AS STRING
     ) AS normalized_engine, -- https://github.com/mozilla/bigquery-etl/issues/2462

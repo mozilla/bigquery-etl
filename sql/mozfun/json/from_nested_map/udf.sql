@@ -1,5 +1,5 @@
 -- Definition for json.from_nested_map
-CREATE OR REPLACE function json.from_nested_map(input JSON)
+CREATE OR REPLACE FUNCTION json.from_nested_map(input JSON)
 RETURNS json
 LANGUAGE js
 AS

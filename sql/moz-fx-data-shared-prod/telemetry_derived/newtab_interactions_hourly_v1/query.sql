@@ -74,6 +74,7 @@ legacy_summary AS (
     CAST(NULL AS STRING) AS product,
     CAST(NULL AS STRING) AS placement,
     CAST(NULL AS STRING) AS os,
+    CAST(NULL AS STRING) AS form_factor,
     SUM(impressions) AS impression_count,
     SUM(clicks) AS click_count,
     SUM(pocketed) AS save_count,
@@ -88,7 +89,8 @@ legacy_summary AS (
     position,
     product,
     placement,
-    os
+    os,
+    form_factor
 ),
   -- GLEAN Query
 glean_deduplicated_pings AS (
@@ -152,6 +154,7 @@ glean_summary AS (
     CAST(NULL AS STRING) AS product,
     CAST(NULL AS STRING) AS placement,
     CAST(NULL AS STRING) AS os,
+    CAST(NULL AS STRING) AS form_factor,
     SUM(CASE WHEN event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
     SUM(CASE WHEN event_name = 'click' THEN 1 ELSE 0 END) AS click_count,
     SUM(CASE WHEN event_name = 'save' THEN 1 ELSE 0 END) AS save_count,
@@ -168,7 +171,8 @@ glean_summary AS (
     position,
     product,
     placement,
-    os
+    os,
+    form_factor
 ),
 --with the addition of the unified api, we are bringing in data from the ads backend
 uapi_summary AS (
@@ -180,6 +184,7 @@ uapi_summary AS (
     product,
     placement,
     os,
+    form_factor,
     SUM(
       CASE
         WHEN interaction_type = 'impression'
@@ -194,18 +199,18 @@ uapi_summary AS (
     `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
   WHERE
     {% if is_init() %}
-      submission_hour >= '2025-01-01'
+      DATE(submission_hour) >= '2025-01-01'
     {% else %}
       DATE(submission_hour) = @submission_date
     {% endif %}
-    AND placement IN ('newtab_spocs', 'newtab_rectangle', 'newtab_billboard', 'newtab_leaderboard')
   GROUP BY
     submission_date,
     ad_id,
     position,
     product,
     placement,
-    os
+    os,
+    form_factor
 )
 -- union legacy and glean telemetry
 SELECT

@@ -121,7 +121,8 @@ class TestParseMetadata(object):
         assert metadata.workgroup_access is not None
         assert metadata.workgroup_access[0].role == "roles/bigquery.dataViewer"
         assert (
-            metadata.workgroup_access[0].members[0] == "workgroup:dataops-managed/taar"
+            metadata.workgroup_access[0].members[0]
+            == "workgroup:dataops-managed/external-fides"
         )
 
     def test_of_query_file_no_metadata(self):

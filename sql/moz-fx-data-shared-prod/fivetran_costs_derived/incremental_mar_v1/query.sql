@@ -2,7 +2,7 @@ WITH incremental_mar AS (
   SELECT
     measured_date,
     destination_id,
-    connector_id,
+    connection_name,
     table_name,
     free_type,
     incremental_rows
@@ -13,7 +13,7 @@ SELECT
   measured_date,
   DATE_TRUNC(measured_date, month) AS measured_month,
   destination_id,
-  connector_id AS connector,
+  connection_name AS connector,
   table_name,
   CASE
     WHEN LOWER(free_type) = "paid"

@@ -175,6 +175,19 @@ with DAG(
         )
     )
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=8100),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
         external_dag_id="bqetl_glean_usage",
@@ -1238,6 +1251,10 @@ with DAG(
 
     firefox_desktop_active_users_aggregates_v4.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    firefox_desktop_derived__baseline_active_users_aggregates__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
     )
 
     firefox_desktop_derived__baseline_active_users_aggregates__v1.set_upstream(

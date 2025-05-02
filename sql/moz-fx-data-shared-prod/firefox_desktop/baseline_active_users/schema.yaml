@@ -1,10 +1,4 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-- name: client_id
-  type: STRING
-  mode: NULLABLE
 - name: days_since_desktop_active
   type: INTEGER
   mode: NULLABLE
@@ -28,6 +22,12 @@ fields:
   mode: NULLABLE
 - name: days_created_profile_bits
   type: INTEGER
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: client_id
+  type: STRING
   mode: NULLABLE
 - name: sample_id
   type: INTEGER
@@ -205,3 +205,29 @@ fields:
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
+- name: first_seen_attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+  - name: content
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: term
+    type: STRING
+    mode: NULLABLE
+- name: first_seen_distribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: name
+    type: STRING
+    mode: NULLABLE

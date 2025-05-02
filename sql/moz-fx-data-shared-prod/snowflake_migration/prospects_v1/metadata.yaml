@@ -1,4 +1,4 @@
-friendly_name: Prospects
+friendly_name: Prospects v1
 description: Model prospective article options for the Fx New Tab from raw Snowplow data
 owners:
   - skamath@mozilla.com

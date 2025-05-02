@@ -137,3 +137,29 @@ fields:
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+- name: attribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: campaign
+    type: STRING
+    mode: NULLABLE
+  - name: content
+    type: STRING
+    mode: NULLABLE
+  - name: medium
+    type: STRING
+    mode: NULLABLE
+  - name: source
+    type: STRING
+    mode: NULLABLE
+  - name: term
+    type: STRING
+    mode: NULLABLE
+- name: distribution
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: name
+    type: STRING
+    mode: NULLABLE

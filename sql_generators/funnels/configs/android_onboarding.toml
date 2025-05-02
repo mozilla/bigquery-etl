@@ -55,8 +55,8 @@ friendly_name = "First Card"
 description = "First Onboarding Card Impression"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'impression' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position)  = '1' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'impression' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -66,9 +66,9 @@ friendly_name = "First Card Primary Click"
 description = "First Onboarding Card Primary Button Click"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
-    `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position)  = '1' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'click' AND
+    JSON_EXTRACT_SCALAR(event_extra.element_type) = 'primary_button' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -78,9 +78,9 @@ friendly_name = "First Card Secondary Click"
 description = "First Onboarding Card Secondary Button Click"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
-    `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position)  = '1' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'click' AND
+    JSON_EXTRACT_SCALAR(event_extra.element_type) = 'secondary_button' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -90,8 +90,8 @@ friendly_name = "Second Card"
 description = "Second Onboarding Card Impression"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '2' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'impression' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position) = '2' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'impression' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -101,9 +101,9 @@ friendly_name = "Second Card Primary Click"
 description = "Second Onboarding Card Primary Button Click"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '2' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
-    `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position) = '2' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'click' AND
+    JSON_EXTRACT_SCALAR(event_extra.element_type) = 'primary_button' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -113,9 +113,9 @@ friendly_name = "Second Card secondary Click"
 description = "Second Onboarding Card secondary Button Click"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '2' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
-    `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position) = '2' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'click' AND
+    JSON_EXTRACT_SCALAR(event_extra.element_type) = 'secondary_button' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -125,8 +125,8 @@ friendly_name = "Third Card"
 description = "Third Onboarding Card Impression"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '3' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'impression' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position) = '3' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'impression' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -136,9 +136,9 @@ friendly_name = "Third Card Primary Click"
 description = "Third Onboarding Card Primary Button Click"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '3' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
-    `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position) = '3' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'click' AND
+    JSON_EXTRACT_SCALAR(event_extra.element_type) = 'primary_button' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -148,9 +148,9 @@ friendly_name = "Third Card secondary Click"
 description = "Third Onboarding Card secondary Button Click"
 data_source = "onboarding_events"
 # join_previous_step_on = "ac.client_id"
-select_expression = """CASE WHEN `mozfun.map.get_key`(event_extra, 'sequence_position')= '3' AND
-    `mozfun.map.get_key`(event_extra, 'action') = 'click' AND
-    `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button' AND
+select_expression = """CASE WHEN JSON_EXTRACT_SCALAR(event_extra.sequence_position) = '3' AND
+    JSON_EXTRACT_SCALAR(event_extra.action) = 'click' AND
+    JSON_EXTRACT_SCALAR(event_extra.element_type) = 'secondary_button' AND
     event_name != 'completed' AND
     event_category = 'onboarding' THEN ac.client_id END"""
 aggregation = "count distinct"
@@ -196,13 +196,13 @@ from_expression = """
   ) AS r -- we only new_profile retention
   USING(client_id)
   LEFT JOIN
-    (SELECT * FROM fenix.events_unnested eu WHERE DATE(submission_timestamp) = @submission_date) AS eu
-  ON ac.client_id = eu.client_info.client_id
+    (SELECT * FROM fenix.events_stream eu WHERE DATE(submission_timestamp) = @submission_date) AS eu
+  USING(client_id)
   LEFT JOIN
-    (SELECT client_info.client_id,
-    ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
-    FROM fenix.events_unnested
-    WHERE `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+    (SELECT client_id,
+    JSON_EXTRACT_SCALAR(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
+    FROM fenix.events_stream
+    WHERE JSON_EXTRACT_SCALAR(event_extra.sequence_id) IS NOT NULL
     AND DATE(submission_timestamp) = @submission_date
     GROUP BY 1) funnel_ids
   USING(client_id)

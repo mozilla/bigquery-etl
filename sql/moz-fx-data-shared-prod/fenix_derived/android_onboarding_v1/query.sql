@@ -38,20 +38,20 @@ WITH onboarding_funnel_new_profile AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -80,8 +80,8 @@ onboarding_funnel_first_card_impression AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'impression'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '1'
+        AND JSON_VALUE(event_extra.action) = 'impression'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -105,20 +105,20 @@ onboarding_funnel_first_card_impression AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -147,9 +147,9 @@ onboarding_funnel_first_card_primary_click AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
-        AND `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '1'
+        AND JSON_VALUE(event_extra.action) = 'click'
+        AND JSON_VALUE(event_extra.element_type) = 'primary_button'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -173,20 +173,20 @@ onboarding_funnel_first_card_primary_click AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -215,9 +215,9 @@ onboarding_funnel_first_card_secondary_click AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '1'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
-        AND `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '1'
+        AND JSON_VALUE(event_extra.action) = 'click'
+        AND JSON_VALUE(event_extra.element_type) = 'secondary_button'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -241,20 +241,20 @@ onboarding_funnel_first_card_secondary_click AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -283,8 +283,8 @@ onboarding_funnel_second_card_impression AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'impression'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '2'
+        AND JSON_VALUE(event_extra.action) = 'impression'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -308,20 +308,20 @@ onboarding_funnel_second_card_impression AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -350,9 +350,9 @@ onboarding_funnel_second_card_primary_click AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
-        AND `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '2'
+        AND JSON_VALUE(event_extra.action) = 'click'
+        AND JSON_VALUE(event_extra.element_type) = 'primary_button'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -376,20 +376,20 @@ onboarding_funnel_second_card_primary_click AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -418,9 +418,9 @@ onboarding_funnel_second_card_secondary_click AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '2'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
-        AND `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '2'
+        AND JSON_VALUE(event_extra.action) = 'click'
+        AND JSON_VALUE(event_extra.element_type) = 'secondary_button'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -444,20 +444,20 @@ onboarding_funnel_second_card_secondary_click AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -486,8 +486,8 @@ onboarding_funnel_third_card_impression AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'impression'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '3'
+        AND JSON_VALUE(event_extra.action) = 'impression'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -511,20 +511,20 @@ onboarding_funnel_third_card_impression AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -553,9 +553,9 @@ onboarding_funnel_third_card_primary_click AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
-        AND `mozfun.map.get_key`(event_extra, 'element_type') = 'primary_button'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '3'
+        AND JSON_VALUE(event_extra.action) = 'click'
+        AND JSON_VALUE(event_extra.element_type) = 'primary_button'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -579,20 +579,20 @@ onboarding_funnel_third_card_primary_click AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -621,9 +621,9 @@ onboarding_funnel_third_card_secondary_click AS (
     ac.submission_date AS submission_date,
     ac.client_id AS client_id_column,
     CASE
-      WHEN `mozfun.map.get_key`(event_extra, 'sequence_position') = '3'
-        AND `mozfun.map.get_key`(event_extra, 'action') = 'click'
-        AND `mozfun.map.get_key`(event_extra, 'element_type') = 'secondary_button'
+      WHEN JSON_VALUE(event_extra.sequence_position) = '3'
+        AND JSON_VALUE(event_extra.action) = 'click'
+        AND JSON_VALUE(event_extra.element_type) = 'secondary_button'
         AND event_name != 'completed'
         AND event_category = 'onboarding'
         THEN ac.client_id
@@ -647,20 +647,20 @@ onboarding_funnel_third_card_secondary_click AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -712,20 +712,20 @@ onboarding_funnel_onboarding_completed AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -777,20 +777,20 @@ onboarding_funnel_sync_sign_in AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1
@@ -842,20 +842,20 @@ onboarding_funnel_default_browser AS (
       SELECT
         *
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested` eu
+        `moz-fx-data-shared-prod.fenix.events_stream` eu
       WHERE
         DATE(submission_timestamp) = @submission_date
     ) AS eu
-    ON ac.client_id = eu.client_info.client_id
+    USING (client_id)
   LEFT JOIN
     (
       SELECT
-        client_info.client_id,
-        ANY_VALUE(`mozfun.map.get_key`(event_extra, 'sequence_id')) AS funnel_id
+        client_id,
+        JSON_VALUE(ANY_VALUE(event_extra.sequence_id)) AS funnel_id
       FROM
-        `moz-fx-data-shared-prod.fenix.events_unnested`
+        `moz-fx-data-shared-prod.fenix.events_stream`
       WHERE
-        `mozfun.map.get_key`(event_extra, 'sequence_id') IS NOT NULL
+        JSON_VALUE(event_extra.sequence_id) IS NOT NULL
         AND DATE(submission_timestamp) = @submission_date
       GROUP BY
         1

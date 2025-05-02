@@ -185,11 +185,63 @@ with DAG(
         )
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=14400),
+    wait_for_org_mozilla_fenix_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_beta_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -294,6 +346,19 @@ with DAG(
         external_dag_id="bqetl_glean_usage",
         external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__events_stream__v1",
         execution_delta=datetime.timedelta(seconds=10800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=14400),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -627,7 +692,25 @@ with DAG(
         wait_for_checks__fail_fenix_derived__firefox_android_clients__v1
     )
 
-    fenix_derived__android_onboarding__v1.set_upstream(wait_for_copy_deduplicate_all)
+    fenix_derived__android_onboarding__v1.set_upstream(
+        wait_for_org_mozilla_fenix_derived__events_stream__v1
+    )
+
+    fenix_derived__android_onboarding__v1.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1
+    )
+
+    fenix_derived__android_onboarding__v1.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1
+    )
+
+    fenix_derived__android_onboarding__v1.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__events_stream__v1
+    )
+
+    fenix_derived__android_onboarding__v1.set_upstream(
+        wait_for_org_mozilla_firefox_derived__events_stream__v1
+    )
 
     firefox_accounts_derived__registration_funnels_legacy_events__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1

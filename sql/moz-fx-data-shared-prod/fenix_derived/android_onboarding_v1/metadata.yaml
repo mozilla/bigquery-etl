@@ -24,7 +24,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - fenix.events_unnested
+  - fenix.events_stream
   - fenix.firefox_android_clients
   - moz-fx-data-shared-prod.firefox_ios.retention_clients
 require_column_descriptions: false

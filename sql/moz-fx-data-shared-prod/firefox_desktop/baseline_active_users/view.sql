@@ -7,7 +7,9 @@ SELECT
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    distribution_id
+    distribution_id,
+    attribution,
+    `distribution`
   ) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
@@ -100,8 +102,18 @@ SELECT
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_dau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
-  first_seen.attribution AS first_seen_attribution,
-  first_seen.distribution AS first_seen_distribution
+  last_seen.attribution.campaign AS attribution_campaign,
+  last_seen.attribution.content AS attribution_content,
+  last_seen.attribution.medium AS attribution_medium,
+  last_seen.attribution.source AS attribution_source,
+  last_seen.attribution.term AS attribution_term,
+  last_seen.distribution.name AS distribution_name,
+  first_seen.attribution.campaign AS first_seen_attribution_campaign,
+  first_seen.attribution.content AS first_seen_attribution_content,
+  first_seen.attribution.medium AS first_seen_attribution_medium,
+  first_seen.attribution.source AS first_seen_attribution_source,
+  first_seen.attribution.term AS first_seen_attribution_term,
+  first_seen.distribution.name AS first_seen_distribution_name
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN

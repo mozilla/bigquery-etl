@@ -55,8 +55,6 @@ WITH base AS (
     CAST(NULL AS BOOLEAN) AS is_default_browser,
     CAST(NULL AS STRING) AS install_source,
     {% endif %}
-    client_info.attribution,
-    client_info.distribution,
   FROM
     `{{ baseline_table }}`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -159,8 +157,6 @@ windowed AS (
     SUM(COALESCE(browser_engagement_active_ticks, 0)) OVER w1 AS browser_engagement_active_ticks,
     udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id) OVER w1) AS legacy_telemetry_client_id,
     udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
-    udf.mode_last(ARRAY_AGG(attribution) OVER w1) AS attribution,
-    udf.mode_last(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
   FROM
     with_date_offsets
   LEFT JOIN

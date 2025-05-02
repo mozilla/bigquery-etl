@@ -113,32 +113,6 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-- name: attribution
-  type: RECORD
-  mode: NULLABLE
-  fields:
-  - name: campaign
-    type: STRING
-    mode: NULLABLE
-  - name: content
-    type: STRING
-    mode: NULLABLE
-  - name: medium
-    type: STRING
-    mode: NULLABLE
-  - name: source
-    type: STRING
-    mode: NULLABLE
-  - name: term
-    type: STRING
-    mode: NULLABLE
-- name: distribution
-  type: RECORD
-  mode: NULLABLE
-  fields:
-  - name: name
-    type: STRING
-    mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -205,29 +179,39 @@ fields:
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-- name: first_seen_attribution
-  type: RECORD
+- name: attribution_campaign
+  type: STRING
   mode: NULLABLE
-  fields:
-  - name: campaign
-    type: STRING
-    mode: NULLABLE
-  - name: content
-    type: STRING
-    mode: NULLABLE
-  - name: medium
-    type: STRING
-    mode: NULLABLE
-  - name: source
-    type: STRING
-    mode: NULLABLE
-  - name: term
-    type: STRING
-    mode: NULLABLE
-- name: first_seen_distribution
-  type: RECORD
+- name: attribution_content
+  type: STRING
   mode: NULLABLE
-  fields:
-  - name: name
-    type: STRING
-    mode: NULLABLE
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+- name: attribution_term
+  type: STRING
+  mode: NULLABLE
+- name: distribution_name
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_attribution_campaign
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_attribution_content
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_attribution_medium
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_attribution_source
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_attribution_term
+  type: STRING
+  mode: NULLABLE
+- name: first_seen_distribution_name
+  type: STRING
+  mode: NULLABLE

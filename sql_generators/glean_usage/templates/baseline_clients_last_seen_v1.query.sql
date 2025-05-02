@@ -46,7 +46,10 @@ WITH _current AS (
     CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
     {% endif %}
     isp,
-    * EXCEPT(submission_date, isp)
+    * EXCEPT(
+        submission_date, 
+        isp
+      )
   FROM
     `{{ daily_table }}`
   WHERE

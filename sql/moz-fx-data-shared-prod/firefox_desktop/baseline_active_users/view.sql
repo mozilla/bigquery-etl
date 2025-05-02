@@ -2,13 +2,12 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
 AS
 SELECT
-  * EXCEPT (
+  last_seen.* EXCEPT (
     app_display_version,
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    distribution_id,
-    first_seen_client_id
+    distribution_id
   ) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
@@ -101,18 +100,13 @@ SELECT
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_dau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
+  first_seen.attribution AS first_seen_attribution,
+  first_seen.distribution AS first_seen_distribution
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1` AS distribution_mapping
   USING (submission_date, client_id)
 LEFT JOIN
-  (
-    SELECT
-      client_id AS first_seen_client_id,
-      attribution AS first_seen_attribution,
-      `distribution` AS first_seen_distribution
-    FROM
-      `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
-  ) AS first_seen
-  ON last_seen.client_id = first_seen.first_seen_client_id
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
+  ON last_seen.client_id = first_seen.client_id

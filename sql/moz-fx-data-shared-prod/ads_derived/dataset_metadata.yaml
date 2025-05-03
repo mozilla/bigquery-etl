@@ -7,4 +7,4 @@ labels: {}
 workgroup_access:
   - role: roles/bigquery.dataEditor
     members:
-      - workgroup:ads/writers
+      - workgroup:ads/data-developers

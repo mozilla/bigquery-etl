@@ -16,5 +16,55 @@
     "type": "INTEGER",
     "name": "sample_id",
     "mode": "NULLABLE"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "attribution",
+    "type": "RECORD",
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "campaign",
+        "type": "STRING",
+        "description": "The attribution campaign (e.g. 'mozilla-org')."
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "content",
+        "type": "STRING",
+        "description": "The attribution content (e.g. 'firefoxview')."
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "medium",
+        "type": "STRING",
+        "description": "The attribution medium (e.g. 'organic' for a search engine)."
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "source",
+        "type": "STRING",
+        "description": "The attribution source (e.g. 'google-play')."
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "term",
+        "type": "STRING",
+        "description": "The attribution term (e.g. 'browser with developer tools for android')."
+      }
+    ]
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "distribution",
+    "type": "RECORD",
+    "fields": [
+      {
+        "mode": "NULLABLE",
+        "name": "name",
+        "type": "STRING",
+        "description": "The distribution name (e.g. 'MozillaOnline')."
+      }
+    ]
   }
 ]

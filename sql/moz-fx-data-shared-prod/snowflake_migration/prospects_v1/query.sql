@@ -63,4 +63,4 @@ WHERE
   AND UNIX_MILLIS(CURRENT_TIMESTAMP())
   -- This ensures recommended_at is between Jan 1, 2000, and the current time to remain within BQ limits for dates
 QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY dvce_created_tstamp) = 1
+  ROW_NUMBER() OVER (PARTITION BY happened_at ORDER BY happened_at) = 1

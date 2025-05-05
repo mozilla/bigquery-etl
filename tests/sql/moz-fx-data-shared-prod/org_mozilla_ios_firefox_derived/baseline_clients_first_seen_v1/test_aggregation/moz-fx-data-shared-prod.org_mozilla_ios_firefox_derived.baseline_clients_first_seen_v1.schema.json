@@ -66,5 +66,15 @@
         "description": "The distribution name (e.g. 'MozillaOnline')."
       }
     ]
-  }
+  },
+  {
+    "type": "JSON",
+    "mode": "NULLABLE",
+    "name": "attribution_ext"
+  },
+  {
+    "type": "JSON",
+    "mode": "NULLABLE",
+    "name": "distribution_ext"
+  },
 ]

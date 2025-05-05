@@ -11,7 +11,7 @@ tag_deployments:
     - metric_type:
         type: PREDEFINED
         predefined_metric: FRESHNESS
-      metric_name: FRESHNESS [warn]
+      metric_name: FRESHNESS
       metric_schedule:
         named_schedule:
           name: Default Schedule - 13:00 UTC

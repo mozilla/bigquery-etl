@@ -2,12 +2,14 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
 AS
 SELECT
-  * EXCEPT (
+  last_seen.* EXCEPT (
     app_display_version,
     normalized_channel,
     normalized_os,
     normalized_os_version,
-    distribution_id
+    distribution_id,
+    attribution,
+    `distribution`
   ) REPLACE(
     IFNULL(country, '??') AS country,
     IFNULL(city, '??') AS city,
@@ -46,16 +48,36 @@ SELECT
   END AS distribution_id_source,
   normalized_os AS os,
   normalized_os_version AS os_version,
-  CAST(
-    `mozfun.norm.truncate_version`(normalized_os_version, "major") AS INTEGER
-  ) AS os_version_major,
-  CAST(
-    `mozfun.norm.truncate_version`(normalized_os_version, "minor") AS INTEGER
-  ) AS os_version_minor,
   COALESCE(
     `mozfun.norm.windows_version_info`(normalized_os, normalized_os_version, windows_build_number),
     normalized_os_version
   ) AS os_version_build,
+  CAST(
+    `mozfun.norm.extract_version`(
+      COALESCE(
+        `mozfun.norm.windows_version_info`(
+          normalized_os,
+          normalized_os_version,
+          windows_build_number
+        ),
+        normalized_os_version
+      ),
+      "major"
+    ) AS INTEGER
+  ) AS os_version_major,
+  CAST(
+    `mozfun.norm.extract_version`(
+      COALESCE(
+        `mozfun.norm.windows_version_info`(
+          normalized_os,
+          normalized_os_version,
+          windows_build_number
+        ),
+        normalized_os_version
+      ),
+      "minor"
+    ) AS INTEGER
+  ) AS os_version_minor,
   CASE
     WHEN BIT_COUNT(days_desktop_active_bits)
       BETWEEN 1
@@ -73,15 +95,30 @@ SELECT
       THEN 'core_user'
     ELSE 'other'
   END AS activity_segment,
-  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
+  EXTRACT(YEAR FROM last_seen.first_seen_date) AS first_seen_year,
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) = 0, FALSE) AS is_daily_user,
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   COALESCE(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) = 0, FALSE) AS is_dau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 7, FALSE) AS is_wau,
   COALESCE(mozfun.bits28.days_since_seen(days_desktop_active_bits) < 28, FALSE) AS is_mau,
+  last_seen.attribution.campaign AS attribution_campaign,
+  last_seen.attribution.content AS attribution_content,
+  last_seen.attribution.medium AS attribution_medium,
+  last_seen.attribution.source AS attribution_source,
+  last_seen.attribution.term AS attribution_term,
+  last_seen.distribution.name AS distribution_name,
+  first_seen.attribution.campaign AS first_seen_attribution_campaign,
+  first_seen.attribution.content AS first_seen_attribution_content,
+  first_seen.attribution.medium AS first_seen_attribution_medium,
+  first_seen.attribution.source AS first_seen_attribution_source,
+  first_seen.attribution.term AS first_seen_attribution_term,
+  first_seen.distribution.name AS first_seen_distribution_name
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_desktop_derived.desktop_dau_distribution_id_history_v1` AS distribution_mapping
   USING (submission_date, client_id)
+LEFT JOIN
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1` AS first_seen
+  ON last_seen.client_id = first_seen.client_id

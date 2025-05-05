@@ -3,7 +3,7 @@ description: |-
   Builds active_users_aggregates using the baseline ping.
 owners:
 - kwindau@mozilla.com
-- kik@mozilla.com
+- ago@mozilla.com
 labels:
   incremental: true
   table_type: aggregate

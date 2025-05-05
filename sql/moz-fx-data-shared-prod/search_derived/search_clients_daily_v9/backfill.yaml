@@ -1,9 +1,0 @@
-# 2025-05-01:
-#   start_date: 2025-01-01
-#   end_date: 2025-05-01
-#   reason: https://mozilla-hub.atlassian.net/browse/DENG-8178. Backfill the desktop search clients daily
-#   watchers:
-#   - ago@mozilla.com
-#   - akommasani@mozilla.com
-#   - betling@mozilla.com
-#   status: Initiate

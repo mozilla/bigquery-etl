@@ -1,6 +1,6 @@
 SELECT
   submission_date,
-  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
+  first_seen_year,
   channel,
   app_name,
   country,

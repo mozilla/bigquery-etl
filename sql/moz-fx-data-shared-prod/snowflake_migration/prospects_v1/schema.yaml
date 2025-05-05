@@ -28,9 +28,9 @@ fields:
   name: prospect_review_status
   description: The curator's review status for the prospect
 - mode: NULLABLE
-  type: ARRAY
+  type: STRING
   name: status_reasons
-  description: The list (array) of curator review status reasons
+  description: The list of curator review status reasons
 - mode: NULLABLE
   type: STRING
   name: status_reason_comment
@@ -60,7 +60,7 @@ fields:
   name: topic
   description: The topic of the reviewed_corpus_item
 - mode: NULLABLE
-  type: ARRAY
+  type: STRING
   name: authors
   description: The list of authors of the reviewed_corpus_item
 - mode: NULLABLE

@@ -1,5 +1,5 @@
 -- Return the version of the search addon if it exists, null otherwise
-CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
+CREATE TEMP FUNCTION GET_SEARCH_ADDON_VERSION(active_addons ANY type) AS (
   (
     SELECT
       mozfun.stats.mode_last(ARRAY_AGG(version))
@@ -13,11 +13,31 @@ CREATE TEMP FUNCTION get_search_addon_version(active_addons ANY type) AS (
 );
 
 -- For newer search probes that are based on access point
-CREATE TEMP FUNCTION add_access_point(
+CREATE TEMP FUNCTION ADD_ACCESS_POINT(
   entries ARRAY<STRUCT<key STRING, value INT64>>,
   access_point STRING
 ) AS (
   ARRAY(SELECT AS STRUCT CONCAT(key, '.', access_point) AS key, value, FROM UNNEST(entries))
+);
+
+-- Parse timestamp (with support for different timestamp formats)
+CREATE TEMP FUNCTION SAFE_PARSE_TIMESTAMP(ts STRING) AS (
+    -- Ref for time format elements: https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements
+  CASE
+    -- e.g. "2025-05-01T15:45+03:30"
+    WHEN REGEXP_CONTAINS(ts, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(\-|\+)\d{2}:\d{2}")
+      THEN PARSE_TIMESTAMP("%FT%R%Ez", ts)
+    -- e.g. "2025-05-01+03:30"
+    WHEN REGEXP_CONTAINS(ts, r"\d{4}-\d{2}-\d{2}(\-|\+)\d{2}:\d{2}")
+      THEN PARSE_TIMESTAMP("%F%Ez", ts)
+    -- e.g. "2025-05-01T14:44:20.365-04:00"
+    WHEN REGEXP_CONTAINS(ts, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*(\-|\+)\d{2}:\d{2}")
+      THEN PARSE_TIMESTAMP("%FT%R:%E*S%Ez", ts)
+    WHEN STARTS_WITH(ts, "+")
+      OR CONTAINS_SUBSTR(ts, "+16:39")
+      THEN NULL
+    ELSE NULL
+  END
 );
 
 -- List of Ad Blocking Addons produced using this logic: https://github.com/mozilla/search-adhoc-analysis/tree/master/monetization-blocking-addons
@@ -31,8 +51,9 @@ WITH adblocker_addons AS (
     blocks_monetization
 ),
 clients_with_adblocker_addons AS (
-  -- no glean equivalent as yet for addons
-  -- when it's added we'll update this CTE to pull from the correct glean table
+  -- no glean equivalent as yet for the active_addons field
+  -- is metrics.object.addons_active_addons the correct field?
+  -- when it's added we'll update this CTE to pull from the correct glean table (and field)
   SELECT
     client_id,
     submission_date,
@@ -83,10 +104,9 @@ non_aggregates AS (
     client_info.locale AS locale,
     client_info.os AS os,
     client_info.os_version AS os_version,
+    UNIX_DATE(DATE(SAFE_PARSE_TIMESTAMP(client_info.first_run_date))) AS profile_creation_date,
     client_info.windows_build_number AS windows_build_number,
     metadata.geo.country AS country,
-    -- metrics.boolean.browser_default_at_launch AS is_default_browser,
-    metrics.labeled_counter.browser_is_user_default AS browser_is_user_default,
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     metrics.string.search_engine_default_display_name AS default_search_engine,
     metrics.string.search_engine_default_load_path AS default_search_engine_data_load_path,
@@ -94,9 +114,9 @@ non_aggregates AS (
     metrics.string.search_engine_private_display_name AS default_private_search_engine,
     metrics.string.search_engine_private_load_path AS default_private_search_engine_data_load_path,
     metrics.url2.search_engine_private_submission_url AS default_private_search_engine_data_submission_url,
+    metrics.string.region_home_region AS user_pref_browser_search_region,
     ping_info.start_time AS subsession_start_date, -- ping_info.parsed_start_time instead?
     ping_info.seq AS subsession_counter,
-    (ping_info.end_time - ping_info.start_time) AS subsession_length,
     sample_id,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
@@ -108,8 +128,14 @@ aggregates AS (
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id AS client_id,
     SUM(metrics.counter.browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
-    SUM((ping_info.end_time - ping_info.start_time) / NUMERIC '3600') AS subsession_hours_sum,
-    COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
+    SUM(
+      TIMESTAMP_DIFF(
+        SAFE_PARSE_TIMESTAMP(ping_info.end_time),
+        SAFE_PARSE_TIMESTAMP(ping_info.start_time),
+        SECOND
+      ) / NUMERIC '3600'
+    ) AS subsession_hours_sum,
+    COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
     SUM(
       metrics.counter.browser_engagement_tab_open_event_count
     ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
@@ -119,8 +145,8 @@ aggregates AS (
     MAX(
       metrics.quantity.browser_engagement_max_concurrent_tab_count
     ) AS scalar_parent_browser_engagement_max_concurrent_tab_count_max,
-    MAX(UNIX_DATE(DATE(SAFE.TIMESTAMP(subsession_start_date)))) - MAX(
-      UNIX_DATE(DATE(PARSE_TIMESTAMP('%F%Ez', client_info.first_run_date)))
+    MAX(UNIX_DATE(DATE(SAFE_PARSE_TIMESTAMP(ping_info.start_time)))) - MAX(
+      UNIX_DATE(DATE(SAFE_PARSE_TIMESTAMP(client_info.first_run_date)))
     ) AS profile_age_in_days,
     mozfun.map.mode_last(
       ARRAY_CONCAT_AGG(ping_info.experiments ORDER BY submission_timestamp)
@@ -178,11 +204,11 @@ aggregates AS (
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_tabhistory)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_unknown)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar)),
-      STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbamer_handoff)),
+      STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar_handoff)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar_persisted)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_urlbar_searchmode)),
       STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_search_adclicks_webextension)),
-      STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_is_user_default)),
+      STRUCT(ARRAY_CONCAT_AGG(metrics.labeled_counter.browser_is_user_default))
     ] AS map_sum_aggregates,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
@@ -275,49 +301,49 @@ combined_access_point AS (
     * EXCEPT (has_adblocker_addon),
     COALESCE(has_adblocker_addon, FALSE) AS has_adblocker_addon,
     ARRAY_CONCAT(
-      add_access_point(search_content_about_home_sum, 'about_home'),
-      add_access_point(search_content_about_newtab_sum, 'about_newtab'),
-      add_access_point(search_content_contextmenu_sum, 'contextmenu'),
-      add_access_point(search_content_reload_sum, 'reload'),
-      add_access_point(search_content_searchbar_sum, 'searchbar'),
-      add_access_point(search_content_system_sum, 'system'),
-      add_access_point(search_content_tabhistory_sum, 'tabhistory'),
-      add_access_point(search_content_unknown_sum, 'unknown'),
-      add_access_point(search_content_urlbar_sum, 'urlbar'),
-      add_access_point(search_content_urlbar_handoff_sum, 'urlbar_handoff'),
-      add_access_point(search_content_urlbar_persisted_sum, 'urlbar_persisted'),
-      add_access_point(search_content_urlbar_searchmode_sum, 'urlbar_searchmode'),
-      add_access_point(search_content_webextension_sum, 'webextension')
+      ADD_ACCESS_POINT(search_content_about_home_sum, 'about_home'),
+      ADD_ACCESS_POINT(search_content_about_newtab_sum, 'about_newtab'),
+      ADD_ACCESS_POINT(search_content_contextmenu_sum, 'contextmenu'),
+      ADD_ACCESS_POINT(search_content_reload_sum, 'reload'),
+      ADD_ACCESS_POINT(search_content_searchbar_sum, 'searchbar'),
+      ADD_ACCESS_POINT(search_content_system_sum, 'system'),
+      ADD_ACCESS_POINT(search_content_tabhistory_sum, 'tabhistory'),
+      ADD_ACCESS_POINT(search_content_unknown_sum, 'unknown'),
+      ADD_ACCESS_POINT(search_content_urlbar_sum, 'urlbar'),
+      ADD_ACCESS_POINT(search_content_urlbar_handoff_sum, 'urlbar_handoff'),
+      ADD_ACCESS_POINT(search_content_urlbar_persisted_sum, 'urlbar_persisted'),
+      ADD_ACCESS_POINT(search_content_urlbar_searchmode_sum, 'urlbar_searchmode'),
+      ADD_ACCESS_POINT(search_content_webextension_sum, 'webextension')
     ) AS in_content_with_sap,
     ARRAY_CONCAT(
-      add_access_point(search_withads_about_home_sum, 'about_home'),
-      add_access_point(search_withads_about_newtab_sum, 'about_newtab'),
-      add_access_point(search_withads_contextmenu_sum, 'contextmenu'),
-      add_access_point(search_withads_reload_sum, 'reload'),
-      add_access_point(search_withads_searchbar_sum, 'searchbar'),
-      add_access_point(search_withads_system_sum, 'system'),
-      add_access_point(search_withads_tabhistory_sum, 'tabhistory'),
-      add_access_point(search_withads_unknown_sum, 'unknown'),
-      add_access_point(search_withads_urlbar_sum, 'urlbar'),
-      add_access_point(search_withads_urlbar_handoff_sum, 'urlbar_handoff'),
-      add_access_point(search_withads_urlbar_persisted_sum, 'urlbar_persisted'),
-      add_access_point(search_withads_urlbar_searchmode_sum, 'urlbar_searchmode'),
-      add_access_point(search_withads_webextension_sum, 'webextension')
+      ADD_ACCESS_POINT(search_withads_about_home_sum, 'about_home'),
+      ADD_ACCESS_POINT(search_withads_about_newtab_sum, 'about_newtab'),
+      ADD_ACCESS_POINT(search_withads_contextmenu_sum, 'contextmenu'),
+      ADD_ACCESS_POINT(search_withads_reload_sum, 'reload'),
+      ADD_ACCESS_POINT(search_withads_searchbar_sum, 'searchbar'),
+      ADD_ACCESS_POINT(search_withads_system_sum, 'system'),
+      ADD_ACCESS_POINT(search_withads_tabhistory_sum, 'tabhistory'),
+      ADD_ACCESS_POINT(search_withads_unknown_sum, 'unknown'),
+      ADD_ACCESS_POINT(search_withads_urlbar_sum, 'urlbar'),
+      ADD_ACCESS_POINT(search_withads_urlbar_handoff_sum, 'urlbar_handoff'),
+      ADD_ACCESS_POINT(search_withads_urlbar_persisted_sum, 'urlbar_persisted'),
+      ADD_ACCESS_POINT(search_withads_urlbar_searchmode_sum, 'urlbar_searchmode'),
+      ADD_ACCESS_POINT(search_withads_webextension_sum, 'webextension')
     ) AS search_with_ads_with_sap,
     ARRAY_CONCAT(
-      add_access_point(search_adclicks_about_home_sum, 'about_home'),
-      add_access_point(search_adclicks_about_newtab_sum, 'about_newtab'),
-      add_access_point(search_adclicks_contextmenu_sum, 'contextmenu'),
-      add_access_point(search_adclicks_reload_sum, 'reload'),
-      add_access_point(search_adclicks_searchbar_sum, 'searchbar'),
-      add_access_point(search_adclicks_system_sum, 'system'),
-      add_access_point(search_adclicks_tabhistory_sum, 'tabhistory'),
-      add_access_point(search_adclicks_unknown_sum, 'unknown'),
-      add_access_point(search_adclicks_urlbar_sum, 'urlbar'),
-      add_access_point(search_adclicks_urlbar_handoff_sum, 'urlbar_handoff'),
-      add_access_point(search_adclicks_urlbar_persisted_sum, 'urlbar_persisted'),
-      add_access_point(search_adclicks_urlbar_searchmode_sum, 'urlbar_searchmode'),
-      add_access_point(search_adclicks_webextension_sum, 'webextension')
+      ADD_ACCESS_POINT(search_adclicks_about_home_sum, 'about_home'),
+      ADD_ACCESS_POINT(search_adclicks_about_newtab_sum, 'about_newtab'),
+      ADD_ACCESS_POINT(search_adclicks_contextmenu_sum, 'contextmenu'),
+      ADD_ACCESS_POINT(search_adclicks_reload_sum, 'reload'),
+      ADD_ACCESS_POINT(search_adclicks_searchbar_sum, 'searchbar'),
+      ADD_ACCESS_POINT(search_adclicks_system_sum, 'system'),
+      ADD_ACCESS_POINT(search_adclicks_tabhistory_sum, 'tabhistory'),
+      ADD_ACCESS_POINT(search_adclicks_unknown_sum, 'unknown'),
+      ADD_ACCESS_POINT(search_adclicks_urlbar_sum, 'urlbar'),
+      ADD_ACCESS_POINT(search_adclicks_urlbar_handoff_sum, 'urlbar_handoff'),
+      ADD_ACCESS_POINT(search_adclicks_urlbar_persisted_sum, 'urlbar_persisted'),
+      ADD_ACCESS_POINT(search_adclicks_urlbar_searchmode_sum, 'urlbar_searchmode'),
+      ADD_ACCESS_POINT(search_adclicks_webextension_sum, 'webextension')
     ) AS ad_clicks_with_sap,
   FROM
     clients_daily_v6
@@ -439,36 +465,25 @@ flattened AS (
 -- Get count based on search type
 counted AS (
   SELECT
-    -- use rn to dedupe over window
     ROW_NUMBER() OVER w1 AS rn,
     submission_date,
     client_id,
     engine,
     source,
     country,
-    -- get_search_addon_version(active_addons) AS addon_version,
-    -- has_adblocker_addon,
-    policies_is_enterprise,
+    -- GET_SEARCH_ADDON_VERSION(active_addons) AS addon_version,
     app_version,
     distribution_id,
     locale,
-    metrics.region_home_region AS user_pref_browser_search_region,
+    user_pref_browser_search_region,
     -- search_cohort,
     os,
     os_version,
-    CASE
-      WHEN mozfun.norm.os(os) = "Windows"
-        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
-      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
-    END AS os_version_major,
-    CASE
-      WHEN mozfun.norm.os(os) = "Windows"
-        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
-      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
-    END AS os_version_minor,
     channel,
-    is_default_browser,
-    UNIX_DATE(DATE(PARSE_TIMESTAMP('%F%Ez', client_info.first_run_date))) AS profile_creation_date,
+    CAST(
+      (SELECT key FROM UNNEST(is_default_browser) WHERE key = "true") AS BOOL
+    ) AS is_default_browser,
+    profile_creation_date,
     default_search_engine,
     default_search_engine_data_load_path,
     default_search_engine_data_submission_url,
@@ -498,9 +513,6 @@ counted AS (
     scalar_parent_urlbar_searchmode_touchbar_sum,
     scalar_parent_urlbar_searchmode_typed_sum,
     profile_age_in_days,
-    CAST(
-      NULL AS STRING
-    ) AS normalized_engine, -- https://github.com/mozilla/bigquery-etl/issues/2462
     SUM(IF(type = 'organic', count, 0)) OVER w1 AS organic,
     SUM(IF(type = 'tagged-sap', count, 0)) OVER w1 AS tagged_sap,
     SUM(IF(type = 'tagged-follow-on', count, 0)) OVER w1 AS tagged_follow_on,
@@ -510,6 +522,28 @@ counted AS (
     SUM(IF(type = 'search-with-ads', count, 0)) OVER w1 AS search_with_ads,
     SUM(IF(type = 'search-with-ads:organic', count, 0)) OVER w1 AS search_with_ads_organic,
     SUM(IF(type = 'unknown', count, 0)) OVER w1 AS unknown,
+    CAST(
+      NULL AS STRING
+    ) AS normalized_engine, -- https://github.com/mozilla/bigquery-etl/issues/2462
+    `moz-fx-data-shared-prod.udf.monetized_search`(
+      engine,
+      country,
+      distribution_id,
+      submission_date
+    ) AS is_sap_monetizable,
+    -- has_adblocker_addon,
+    policies_is_enterprise,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
+    END AS os_version_major,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS STRING)
+    END AS os_version_minor,
+    profile_group_id
   FROM
     flattened
   WHERE
@@ -526,15 +560,69 @@ counted AS (
         type
     )
 ),
-clients_daily_v9 AS (
+search_clients_daily_v9 AS (
   SELECT
-    * EXCEPT (rn),
-    `moz-fx-data-shared-prod.udf.monetized_search`(
-      engine,
-      country,
-      distribution_id,
-      submission_date
-    ) AS is_sap_monetizable
+    submission_date,
+    client_id,
+    engine,
+    source,
+    country,
+    -- addon_version,
+    app_version,
+    distribution_id,
+    locale,
+    user_pref_browser_search_region,
+    -- search_cohort,
+    os,
+    os_version,
+    channel,
+    is_default_browser,
+    profile_creation_date,
+    default_search_engine,
+    default_search_engine_data_load_path,
+    default_search_engine_data_submission_url,
+    default_private_search_engine,
+    default_private_search_engine_data_load_path,
+    default_private_search_engine_data_submission_url,
+    sample_id,
+    subsession_hours_sum,
+    sessions_started_on_this_day,
+    -- active_addons_count_mean,
+    max_concurrent_tab_count_max,
+    tab_open_event_count_sum,
+    active_hours_sum,
+    total_uri_count,
+    experiments,
+    scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+    scalar_parent_urlbar_searchmode_handoff_sum,
+    scalar_parent_urlbar_searchmode_keywordoffer_sum,
+    scalar_parent_urlbar_searchmode_oneoff_sum,
+    scalar_parent_urlbar_searchmode_other_sum,
+    scalar_parent_urlbar_searchmode_shortcut_sum,
+    scalar_parent_urlbar_searchmode_tabmenu_sum,
+    scalar_parent_urlbar_searchmode_tabtosearch_sum,
+    scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+    scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+    scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+    scalar_parent_urlbar_searchmode_touchbar_sum,
+    scalar_parent_urlbar_searchmode_typed_sum,
+    profile_age_in_days,
+    organic,
+    tagged_sap,
+    tagged_follow_on,
+    sap,
+    ad_click,
+    ad_click_organic,
+    search_with_ads,
+    search_with_ads_organic,
+    unknown,
+    normalized_engine,
+    is_sap_monetizable,
+    -- has_adblocker_addon,
+    policies_is_enterprise,
+    os_version_major,
+    os_version_minor,
+    profile_group_id
   FROM
     counted
   WHERE
@@ -543,4 +631,4 @@ clients_daily_v9 AS (
 SELECT
   *
 FROM
-  clients_daily_v9
+  search_clients_daily_v9

@@ -21,6 +21,7 @@ WITH
         client_info.distribution 
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS `distribution`,
+      {% if app_name == "firefox_desktop" %}
       ARRAY_AGG(
         metrics.object.glean_attribution_ext 
         ORDER BY submission_timestamp DESC LIMIT 1
@@ -29,6 +30,10 @@ WITH
         metrics.object.glean_distribution_ext 
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS distribution_ext
+      {% else %}
+      CAST(NULL AS JSON) AS attribution_ext,
+      CAST(NULL AS JSON) AS distribution_ext,
+      {% endif %}
     FROM
       `{{ baseline_table }}`
     -- initialize by looking over all of history
@@ -77,6 +82,7 @@ _baseline AS (
     ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
       OFFSET(0)
     ] AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
     ARRAY_AGG(
       metrics.object.glean_attribution_ext 
       ORDER BY submission_timestamp DESC LIMIT 1
@@ -85,6 +91,10 @@ _baseline AS (
       metrics.object.glean_distribution_ext 
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext
+    {% else %}
+    CAST(NULL AS JSON) AS attribution_ext,
+    CAST(NULL AS JSON) AS distribution_ext,
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -148,6 +158,7 @@ _current AS (
       client_info.distribution 
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
     ARRAY_AGG(
       metrics.object.glean_attribution_ext 
       ORDER BY submission_timestamp DESC LIMIT 1
@@ -156,6 +167,10 @@ _current AS (
       metrics.object.glean_distribution_ext 
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext
+    {% else %}
+    CAST(NULL AS JSON) AS attribution_ext,
+    CAST(NULL AS JSON) AS distribution_ext,
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE

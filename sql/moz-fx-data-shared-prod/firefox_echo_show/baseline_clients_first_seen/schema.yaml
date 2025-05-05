@@ -2,30 +2,6 @@ fields:
 - name: normalized_app_id
   type: STRING
   mode: NULLABLE
-- name: days_since_seen
-  type: INTEGER
-  mode: NULLABLE
-- name: days_since_active
-  type: INTEGER
-  mode: NULLABLE
-- name: days_since_created_profile
-  type: INTEGER
-  mode: NULLABLE
-- name: days_since_seen_session_start
-  type: INTEGER
-  mode: NULLABLE
-- name: days_since_seen_session_end
-  type: INTEGER
-  mode: NULLABLE
-- name: days_seen_bits
-  type: INTEGER
-  mode: NULLABLE
-- name: days_active_bits
-  type: INTEGER
-  mode: NULLABLE
-- name: days_created_profile_bits
-  type: INTEGER
-  mode: NULLABLE
 - name: submission_date
   type: DATE
   mode: NULLABLE
@@ -95,6 +71,9 @@ fields:
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -129,18 +108,23 @@ fields:
   - name: campaign
     type: STRING
     mode: NULLABLE
+    description: The attribution campaign (e.g. 'mozilla-org').
   - name: content
     type: STRING
     mode: NULLABLE
+    description: The attribution content (e.g. 'firefoxview').
   - name: medium
     type: STRING
     mode: NULLABLE
+    description: The attribution medium (e.g. 'organic' for a search engine).
   - name: source
     type: STRING
     mode: NULLABLE
+    description: The attribution source (e.g. 'google-play').
   - name: term
     type: STRING
     mode: NULLABLE
+    description: The attribution term (e.g. 'browser with developer tools for android').
 - name: distribution
   type: RECORD
   mode: NULLABLE
@@ -148,69 +132,4 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
-- name: app_name
-  type: STRING
-  mode: NULLABLE
-- name: activity_segment
-  type: STRING
-  mode: NULLABLE
-- name: is_dau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_wau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_mau
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_daily_user
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_weekly_user
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_monthly_user
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_mobile
-  type: BOOLEAN
-  mode: NULLABLE
-- name: isp
-  type: STRING
-  mode: NULLABLE
-- name: device_type
-  type: STRING
-  mode: NULLABLE
-- name: first_seen_year
-  type: INTEGER
-  mode: NULLABLE
-- name: app_version
-  type: STRING
-  mode: NULLABLE
-- name: app_version_major
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_minor
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_patch_revision
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_is_major_release
-  type: BOOLEAN
-  mode: NULLABLE
-- name: os
-  type: STRING
-  mode: NULLABLE
-- name: os_version
-  type: STRING
-  mode: NULLABLE
-- name: os_version_major
-  type: INTEGER
-  mode: NULLABLE
-- name: os_version_minor
-  type: INTEGER
-  mode: NULLABLE
-- name: channel
-  type: STRING
-  mode: NULLABLE
+    description: The distribution name (e.g. 'MozillaOnline').

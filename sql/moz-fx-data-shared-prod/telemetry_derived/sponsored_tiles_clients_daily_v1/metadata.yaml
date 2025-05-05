@@ -10,13 +10,9 @@ owners:
 labels:
   incremental: true
   table_type: client_level
-  dag: bqetl_sponsored_tiles_clients_daily
   owner1: skahmann
   owner2: cmorales
   owner3: akommasani
-scheduling:
-  dag_name: bqetl_sponsored_tiles_clients_daily
-  task_name: sponsored_tiles_clients_daily_v1
 bigquery:
   time_partitioning:
     type: day

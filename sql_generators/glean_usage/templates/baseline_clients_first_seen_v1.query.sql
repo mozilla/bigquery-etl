@@ -20,7 +20,15 @@ WITH
       ARRAY_AGG(
         client_info.distribution 
         ORDER BY submission_timestamp DESC LIMIT 1
-      )[OFFSET(0)] AS `distribution`
+      )[OFFSET(0)] AS `distribution`,
+      ARRAY_AGG(
+        metrics.object.glean_attribution_ext 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS attribution_ext,
+      ARRAY_AGG(
+        metrics.object.glean_distribution_ext 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS distribution_ext
     FROM
       `{{ baseline_table }}`
     -- initialize by looking over all of history
@@ -39,7 +47,9 @@ WITH
     COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
     sample_id,
     attribution,
-    `distribution`
+    `distribution`,
+    attribution_ext,
+    distribution_ext
   FROM baseline
   LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
@@ -66,7 +76,15 @@ _baseline AS (
     ] AS attribution,
     ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
       OFFSET(0)
-    ] AS `distribution`
+    ] AS `distribution`,
+    ARRAY_AGG(
+      metrics.object.glean_attribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution_ext,
+    ARRAY_AGG(
+      metrics.object.glean_distribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS distribution_ext
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -83,7 +101,9 @@ _current AS (
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
+    attribution_ext,
+    distribution_ext
   FROM
     _baseline
   LEFT JOIN
@@ -101,7 +121,9 @@ _previous AS (
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
+    attribution_ext,
+    distribution_ext
   FROM
     `{{ first_seen_table }}` fs
   LEFT JOIN
@@ -125,7 +147,15 @@ _current AS (
     ARRAY_AGG(
       client_info.distribution 
       ORDER BY submission_timestamp DESC LIMIT 1
-    )[OFFSET(0)] AS `distribution`
+    )[OFFSET(0)] AS `distribution`,
+    ARRAY_AGG(
+      metrics.object.glean_attribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution_ext,
+    ARRAY_AGG(
+      metrics.object.glean_distribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS distribution_ext
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -145,7 +175,9 @@ _previous AS (
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
+    attribution_ext,
+    distribution_ext
   FROM
     `{{ first_seen_table }}`
   WHERE
@@ -176,7 +208,9 @@ SELECT
   sample_id,
   client_id,
   attribution,
-  `distribution`
+  `distribution`,
+  attribution_ext,
+  distribution_ext
 FROM _joined
 QUALIFY
   IF(

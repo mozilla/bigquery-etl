@@ -26,16 +26,13 @@ CREATE TEMP FUNCTION SAFE_PARSE_TIMESTAMP(ts STRING) AS (
   CASE
     -- e.g. "2025-05-01T15:45+03:30"
     WHEN REGEXP_CONTAINS(ts, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(\-|\+)\d{2}:\d{2}")
-      THEN PARSE_TIMESTAMP("%FT%R%Ez", ts)
+      THEN SAFE.PARSE_TIMESTAMP("%FT%R%Ez", ts)
     -- e.g. "2025-05-01+03:30"
     WHEN REGEXP_CONTAINS(ts, r"\d{4}-\d{2}-\d{2}(\-|\+)\d{2}:\d{2}")
-      THEN PARSE_TIMESTAMP("%F%Ez", ts)
+      THEN SAFE.PARSE_TIMESTAMP("%F%Ez", ts)
     -- e.g. "2025-05-01T14:44:20.365-04:00"
     WHEN REGEXP_CONTAINS(ts, r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*(\-|\+)\d{2}:\d{2}")
-      THEN PARSE_TIMESTAMP("%FT%R:%E*S%Ez", ts)
-    WHEN STARTS_WITH(ts, "+")
-      OR CONTAINS_SUBSTR(ts, "+16:39")
-      THEN NULL
+      THEN SAFE.PARSE_TIMESTAMP("%FT%R:%E*S%Ez", ts)
     ELSE NULL
   END
 );

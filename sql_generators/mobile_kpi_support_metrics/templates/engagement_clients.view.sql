@@ -8,7 +8,7 @@ WITH active_users AS (
     client_id,
     sample_id,
     first_seen_date,
-    normalized_channel,
+    channel,
     app_name,
     app_display_version,
     country,
@@ -32,6 +32,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    channel
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}
@@ -45,7 +46,7 @@ SELECT
   sample_id,
   first_seen_date,
   app_name,
-  normalized_channel,
+  channel,
   app_display_version AS app_version,
   locale,
   country,
@@ -80,4 +81,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING(client_id, sample_id)
+  USING(client_id, sample_id, channel)

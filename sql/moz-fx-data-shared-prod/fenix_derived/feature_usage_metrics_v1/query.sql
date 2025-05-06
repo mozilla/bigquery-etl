@@ -29,6 +29,7 @@ client_attribution AS (
   SELECT
     client_id,
     adjust_network,
+    channel,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 ),
@@ -296,7 +297,7 @@ INNER JOIN
   USING (ping_date, client_id, channel, country)
 LEFT JOIN
   client_attribution
-  USING (client_id)
+  USING (client_id, channel)
 GROUP BY
   submission_date,
   ping_date,

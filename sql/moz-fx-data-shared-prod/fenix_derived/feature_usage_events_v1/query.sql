@@ -30,6 +30,7 @@ client_attribution AS (
     client_id,
     adjust_network,
     distribution_id,
+    channel,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 ),
@@ -974,7 +975,7 @@ INNER JOIN
   USING (ping_date, client_id, channel, country)
 LEFT JOIN
   client_attribution
-  USING (client_id)
+  USING (client_id, channel)
 LEFT JOIN
   default_browser
   USING (ping_date, client_id, channel, country)

@@ -21,7 +21,7 @@ SELECT
   contexts_com_pocket_prospect_1[0].topic AS topic,
   contexts_com_pocket_prospect_1[0].is_collection AS is_collection,
   contexts_com_pocket_prospect_1[0].is_syndicated AS is_syndicated,
-  contexts_com_pocket_prospect_1[0].authors AS authors,
+  ARRAY_TO_STRING(contexts_com_pocket_prospect_1[0].authors, ",") AS authors,
   contexts_com_pocket_prospect_1[0].publisher AS publisher,
   contexts_com_pocket_prospect_1[0].domain AS domain,
   contexts_com_pocket_prospect_1[0].features AS features,

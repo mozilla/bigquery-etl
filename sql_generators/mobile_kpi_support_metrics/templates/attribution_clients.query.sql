@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    normalized_channel,
     {% if 'distribution_id' in product_attribution_group_names %}
     distribution_id,
     {% endif %}
@@ -24,6 +25,7 @@ WITH new_profiles AS (
 SELECT
     client_info.client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     {% if 'distribution_id' in product_attribution_group_names %}
@@ -62,6 +64,7 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -163,7 +166,8 @@ first_session_ping AS (
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 )
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}
@@ -171,6 +175,7 @@ first_session_ping AS (
   SELECT
     client_info.client_id AS client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     {% if 'distribution_id' in product_attribution_group_names %}
@@ -206,6 +211,7 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% if 'adjust' in product_attribution_group_names %}
     ARRAY_AGG(
       IF(
@@ -264,13 +270,15 @@ metrics_ping AS (
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 )
 {% endif %}
 SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
+  normalized_channel AS channel,
   {% if 'install_source' in product_attribution_group_names %}
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   {% endif %}
@@ -292,8 +300,8 @@ SELECT
 FROM
   new_profiles
 {% if 'first_session' in product_attribution_group_pings %}LEFT JOIN
-  first_session_ping USING(client_id, sample_id)
+  first_session_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}
 {% if 'metrics' in product_attribution_group_pings %}LEFT JOIN
-  metrics_ping USING(client_id, sample_id)
+  metrics_ping USING(client_id, sample_id, normalized_channel)
 {% endif %}

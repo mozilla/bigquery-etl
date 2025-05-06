@@ -10,6 +10,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: os
+  type: STRING
   mode: NULLABLE
 - name: channel
   type: STRING

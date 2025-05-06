@@ -5,5 +5,5 @@
   watchers:
     - kwindau@mozilla.com
     - ago@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false

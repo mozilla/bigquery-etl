@@ -86,17 +86,12 @@ SELECT
   ANY_VALUE(organic_topsites_enabled) AS organic_topsites_enabled,
   ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
   LOGICAL_OR(
-    event_category = 'newtab'
-    AND event_name = 'opened'
-    AND (
-      (
-        mozfun.map.get_key(event_details, 'source') = 'about:home'
-        AND newtab_homepage_category = 'enabled'
-      )
-      OR (
-        mozfun.map.get_key(event_details, 'source') = 'about:newtab'
-        AND newtab_newtab_category = 'enabled'
-      )
+    mozfun.newtab.is_default_ui_v1(
+      event_category,
+      event_name,
+      event_details,
+      newtab_homepage_category,
+      newtab_newtab_category
     )
   ) AS is_default_ui,
   LOGICAL_OR(event_category = 'newtab' AND event_name = 'opened') AS is_newtab_opened,

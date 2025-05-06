@@ -333,6 +333,14 @@ fields:
         not shared with other telemetry data.
 
         '
+    - name: usage_profile_group_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A UUID uniquely identifying the profile group,
+
+        not shared with other telemetry data.
+
+        '
   - name: boolean
     type: RECORD
     mode: NULLABLE

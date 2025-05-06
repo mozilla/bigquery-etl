@@ -503,6 +503,33 @@ fields:
     - name: metrics_is_large_device
       type: BOOLEAN
       mode: NULLABLE
+    - name: gfx_d2d_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: gfx_dwrite_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: gfx_headless
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: system_has_win_package_id
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: system_is_wow_64
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: system_is_wow_arm_64
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: update_settings_auto_download
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: update_settings_background
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: update_settings_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11270,6 +11297,45 @@ fields:
     - name: networking_doh_heuristics_result
       type: INTEGER
       mode: NULLABLE
+    - name: gfx_target_frame_rate
+      type: INTEGER
+      mode: NULLABLE
+    - name: profiles_creation_date
+      type: INTEGER
+      mode: NULLABLE
+    - name: profiles_first_use_date
+      type: INTEGER
+      mode: NULLABLE
+    - name: profiles_recovered_from_backup
+      type: INTEGER
+      mode: NULLABLE
+    - name: profiles_reset_date
+      type: INTEGER
+      mode: NULLABLE
+    - name: sandbox_content_win32k_lockdown_state
+      type: INTEGER
+      mode: NULLABLE
+    - name: sandbox_effective_content_process_level
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_memory
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_service_pack_major
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_service_pack_minor
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_windows_build_number
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_windows_ubr
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_virtual_memory
+      type: INTEGER
+      mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -11451,6 +11517,39 @@ fields:
     - name: system_cpu_vendor
       type: STRING
       mode: NULLABLE
+    - name: gfx_content_backend
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_features_compositor
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_text_scale_factor
+      type: STRING
+      mode: NULLABLE
+    - name: system_apple_model_id
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_distro
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_distro_version
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_locale
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_name
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_version
+      type: STRING
+      mode: NULLABLE
+    - name: system_win_package_family_name
+      type: STRING
+      mode: NULLABLE
+    - name: update_settings_channel
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -11519,6 +11618,27 @@ fields:
       type: STRING
       mode: REPEATED
     - name: logins_store_migration_errors
+      type: STRING
+      mode: REPEATED
+    - name: intl_accept_languages
+      type: STRING
+      mode: REPEATED
+    - name: intl_app_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_available_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_regional_prefs_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_requested_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_system_locales
+      type: STRING
+      mode: REPEATED
+    - name: system_cpu_extensions
       type: STRING
       mode: REPEATED
   - name: timing_distribution
@@ -29481,6 +29601,45 @@ fields:
     - name: addons_theme
       type: JSON
       mode: NULLABLE
+    - name: gfx_adapters
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_d2d
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_d3d11
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_gpu_process
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_hw_compositing
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_omtp
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_opengl_compositing
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_webrender
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_features_wr_compositor
+      type: JSON
+      mode: NULLABLE
+    - name: gfx_monitors
+      type: JSON
+      mode: NULLABLE
+    - name: hdd_binary
+      type: JSON
+      mode: NULLABLE
+    - name: hdd_profile
+      type: JSON
+      mode: NULLABLE
+    - name: hdd_system
+      type: JSON
+      mode: NULLABLE
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -33626,6 +33785,33 @@ fields:
             type: INTEGER
             mode: NULLABLE
     - name: networking_trr_response_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+    - name: network_page_load_size
       type: RECORD
       mode: REPEATED
       fields:

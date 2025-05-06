@@ -927,6 +927,86 @@ fields:
         overridden by a third-party add-on or OpenSearch engine.
 
         '
+    - name: fxa_account_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user''s logged in to an FxA account.
+
+        '
+    - name: fxa_sync_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the weave service is present and enabled.
+
+        Implies `fxa.account_enabled`.
+
+        '
+    - name: gfx_d2d_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether Direct2D is enabled. (Windows-only)
+
+        '
+    - name: gfx_dwrite_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether DirectWrite is enabled. (Windows-only)
+
+        '
+    - name: gfx_headless
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the app''s running in headless mode (e.g. via `MOZ_HEADLESS`).
+
+        '
+    - name: system_has_win_package_id
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the app has a package identity.
+
+        Windows only.
+
+        '
+    - name: system_is_wow_64
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether we''re in Windows32-on-Windows64 mode.
+
+        Windows only.
+
+        '
+    - name: system_is_wow_arm_64
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether we''re in Windows32-on-WindowsForArm64 mode.
+
+        Windows only.
+
+        '
+    - name: tabgroup_smart_tab_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records if the user has smart tab groups enabled
+
+        '
+    - name: update_settings_auto_download
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether app updates are set to auto-download.
+
+        '
+    - name: update_settings_background
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether updates can be delivered in the background.
+
+        '
+    - name: update_settings_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether updates are available.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -13177,6 +13257,114 @@ fields:
         an application provided engine. For user installed engines, this value will
 
         be `other`.
+
+        '
+    - name: gfx_content_backend
+      type: STRING
+      mode: NULLABLE
+      description: 'The content backend (e.g. "Direct2D 1.1", "Skia", "Cairo").
+
+        '
+    - name: gfx_features_compositor
+      type: STRING
+      mode: NULLABLE
+      description: 'Layers backend for compositing.
+
+        One of "d3d9", "d3d11", "opengl", "basic", or "none".
+
+        "none" indicates no compositors have been created.
+
+        '
+    - name: gfx_text_scale_factor
+      type: STRING
+      mode: NULLABLE
+      description: 'The text scale factor.
+
+        '
+    - name: system_apple_model_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The `hw.model` of the hardware running this software.
+
+        Mac only.
+
+        e.g. "MacBookPro14,1"
+
+        '
+    - name: system_os_distro
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s distribution, according to sysinfo.
+
+        Linux only.
+
+        e.g. "Linuxmint"
+
+        '
+    - name: system_os_distro_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s distribution''s version, according to
+        sysinfo.
+
+        Linux only.
+
+        e.g. "22"
+
+        '
+    - name: system_os_locale
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s local, according to ospreferences.
+
+        e.g. "en-US"
+
+        '
+    - name: system_os_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s name, according to sysinfo.
+
+        e.g. "Windows_NT"
+
+        Expected in most cases to be identical to `client_info.os`.
+
+        '
+    - name: system_os_version
+      type: STRING
+      mode: NULLABLE
+      description: 'The Operating System''s version, according to sysinfo.
+
+        e.g. "6.3"
+
+        Expected in most cases to be identical to `client_info.os_version`.
+
+        '
+    - name: system_win_package_family_name
+      type: STRING
+      mode: NULLABLE
+      description: 'The full application package name without any of the components
+        that might change
+
+        during the life cycle of the app (such as the version number or the architecture).
+
+        Uniquely identifies the application within one Windows installation.
+
+        Windows only.
+
+        Only included if it begins with "Mozilla." or "MozillaCorporation.".
+
+        e.g. "Mozilla.Firefox_n80bbvh6b1yt2"
+
+        '
+    - name: update_settings_channel
+      type: STRING
+      mode: NULLABLE
+      description: 'The update channel according to defaults,
+
+        including partner bits.
+
+        e.g. "nightly-cck"
 
         '
   - name: timespan
@@ -34136,6 +34324,148 @@ fields:
       description: 'CPU stepping.
 
         '
+    - name: gfx_target_frame_rate
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The frame rate in Hz, typically 60 or more.
+
+        '
+    - name: profiles_creation_date
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The day the profile was created,
+
+        as determined by checking various file metadata in the profile directory.
+
+        Not considered to be particularly reliable in practice.
+
+        Prefer `client_info.first_run_date` in most cases.
+
+        e.g. 16446
+
+        '
+    - name: profiles_first_use_date
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Optional.
+
+        The day the profile was first used,
+
+        as determined by noticing that `times.json` wasn''t present.
+
+        Prefer `client_info.first_run_date` in most cases.
+
+        e.g. 16446
+
+        '
+    - name: profiles_recovered_from_backup
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Optional.
+
+        The day the profile was recovered from backup,
+
+        persisted in `times.json`.
+
+        e.g. 16446
+
+        '
+    - name: profiles_reset_date
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Optional.
+
+        The day the profile was most recently reset,
+
+        persisted in `times.json`.
+
+        e.g. 16446
+
+        '
+    - name: sandbox_content_win32k_lockdown_state
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The current win32k.sys lockdown state.
+
+        Possible values are defined in the ContentWin32kLockdownState enum.
+
+        Reported even on non-Windows machines.
+
+        '
+    - name: sandbox_effective_content_process_level
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The current sandbox level.
+
+        The "security.sandbox.content.level" preference rounded up to the current
+        minimum allowed level.
+
+        0 if `MOZ_DISABLE_CONTENT_SANDBOX` is set.
+
+        '
+    - name: system_memory
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The physical memory size in MB (2^20 bytes).
+
+        e.g. 32211
+
+        '
+    - name: system_os_service_pack_major
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows service pack''s major version, according to WindowsVersionInfo.
+
+        Windows only.
+
+        e.g. 0
+
+        '
+    - name: system_os_service_pack_minor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows service pack''s minor version, according to WindowsVersionInfo.
+
+        Windows only.
+
+        e.g. 0
+
+        '
+    - name: system_os_windows_build_number
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows build number, according to WindowsVersionInfo.
+
+        Windows only.
+
+        e.g. 26100
+
+        Expected in most cases to be identical to `client_info.windows_build_number`.
+
+        '
+    - name: system_os_windows_ubr
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The Windows update build revision number, according to
+
+        `SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion`.
+
+        Windows only.
+
+        e.g. 3775
+
+        '
+    - name: system_virtual_memory
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The size of the user-mode portion of the virtual address space
+        of the parent process.
+
+        Windows only.
+
+        e.g. 134217728
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -44787,6 +45117,36 @@ fields:
     - name: browser_migration_unmatched_extensions
       type: STRING
       mode: REPEATED
+    - name: intl_accept_languages
+      type: STRING
+      mode: REPEATED
+    - name: intl_app_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_available_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_regional_prefs_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_requested_locales
+      type: STRING
+      mode: REPEATED
+    - name: intl_system_locales
+      type: STRING
+      mode: REPEATED
+    - name: system_cpu_extensions
+      type: STRING
+      mode: REPEATED
+    - name: windows_security_antispyware
+      type: STRING
+      mode: REPEATED
+    - name: windows_security_antivirus
+      type: STRING
+      mode: REPEATED
+    - name: windows_security_firewall
+      type: STRING
+      mode: REPEATED
   - name: object
     type: RECORD
     mode: NULLABLE
@@ -44928,6 +45288,209 @@ fields:
         Desktop and at times and on platforms where the environment would have
 
         values.
+
+        '
+    - name: gfx_adapters
+      type: JSON
+      mode: NULLABLE
+      description: 'Information about the primary (and secondary, if available) graphics
+        adapter.
+
+        * description - e.g. "Intel(R) HD Graphics 4600"
+
+        * vendorID - Hex vendor id
+
+        * deviceID - Hex device id
+
+        * subsysID - Hex subsys id
+
+        * RAM - reported RAM in megabytes.
+
+        * driver - Platform-specific driver information.
+
+        * driverVendor - Driver vendor information.
+
+        * driverVersion - Driver version.
+
+        * driverDate - Driver date.
+
+        * GPUActive - Whether this adapter is active.
+
+        '
+    - name: gfx_features_d2d
+      type: JSON
+      mode: NULLABLE
+      description: "(Windows-only) information about the D2D compositor.\n* status\
+        \ - One of\n  * \"unused\"      - This feature has not been requested.\n \
+        \ * \"unavailable\" - Safe Mode or OS restriction prevents use.\n  * \"blocked\"\
+        \     - An internal condition (such as safe mode) prevents use.\n  * \"blocklisted\"\
+        \ - Blocked due to a blocklist restriction.\n  * \"denied\"      - Blocked\
+        \ due to allowlist restrictions.\n  * \"disabled\"    - User explicitly disabled\
+        \ this default feature.\n  * \"failed\"      - Feature failed to initialize.\n\
+        \  * \"available\"   - User has this feature available by default.\n     \
+        \       optionally including \":\" followed by a reason\n            e.g.\
+        \ \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\".\n* version\
+        \ - The feature version, either \"1.0\" or \"1.1\"\n"
+    - name: gfx_features_d3d11
+      type: JSON
+      mode: NULLABLE
+      description: "(Windows-only) information about the D3D11 compositor.\n* status\
+        \ - One of\n  * \"unused\"      - This feature has not been requested.\n \
+        \ * \"unavailable\" - Safe Mode or OS restriction prevents use.\n  * \"blocked\"\
+        \     - An internal condition (such as safe mode) prevents use.\n  * \"blocklisted\"\
+        \ - Blocked due to a blocklist restriction.\n  * \"denied\"      - Blocked\
+        \ due to allowlist restrictions.\n  * \"disabled\"    - User explicitly disabled\
+        \ this default feature.\n  * \"failed\"      - Feature failed to initialize.\n\
+        \  * \"available\"   - User has this feature available by default.\n     \
+        \       optionally including \":\" followed by a reason\n            e.g.\
+        \ \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\".\n* warp -\
+        \ Software rendering (WARP) mode was chosen.\n* textureSharing - Whether or\
+        \ not texture sharing works.\n* version - The D3D11 device feature level.\n\
+        * blocklisted - Whether D3D11 is blocklisted; use to see whether WARP\n  \
+        \              was blacklist induced or driver-failure induced.\n"
+    - name: gfx_features_gpu_process
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the out-of-process compositing (\"GPU Process\"\
+        ) GFX feature.\n* status - One of\n  * \"unused\"      - This feature has\
+        \ not been requested.\n  * \"unavailable\" - Safe Mode or OS restriction prevents\
+        \ use.\n  * \"blocked\"     - An internal condition (such as safe mode) prevents\
+        \ use.\n  * \"blocklisted\" - Blocked due to a blocklist restriction.\n  *\
+        \ \"denied\"      - Blocked due to allowlist restrictions.\n  * \"disabled\"\
+        \    - User explicitly disabled this default feature.\n  * \"failed\"    \
+        \  - Feature failed to initialize.\n  * \"available\"   - User has this feature\
+        \ available by default and it's in use.\n            optionally including\
+        \ \":\" followed by a reason\n            e.g. \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\"\
+        .\n"
+    - name: gfx_features_hw_compositing
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the hardware acceleration GFX feature.\n(i.e.\
+        \ whether we try using the GPU)\n* status - One of\n  * \"unused\"      -\
+        \ This feature has not been requested.\n  * \"unavailable\" - Safe Mode or\
+        \ OS restriction prevents use.\n  * \"blocked\"     - An internal condition\
+        \ (such as safe mode) prevents use.\n  * \"blocklisted\" - Blocked due to\
+        \ a blocklist restriction.\n  * \"denied\"      - Blocked due to allowlist\
+        \ restrictions.\n  * \"disabled\"    - User explicitly disabled this default\
+        \ feature.\n  * \"failed\"      - Feature failed to initialize.\n  * \"available\"\
+        \   - User has this feature available by default.\n            optionally\
+        \ including \":\" followed by a reason\n            e.g. \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\"\
+        .\n"
+    - name: gfx_features_omtp
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the Off Main Thread Painting GFX feature.\n\
+        * status - One of\n  * \"unused\"      - This feature has not been requested.\n\
+        \  * \"unavailable\" - Safe Mode or OS restriction prevents use.\n  * \"blocked\"\
+        \     - An internal condition (such as safe mode) prevents use.\n  * \"blocklisted\"\
+        \ - Blocked due to a blocklist restriction.\n  * \"denied\"      - Blocked\
+        \ due to allowlist restrictions.\n  * \"disabled\"    - User explicitly disabled\
+        \ this default feature.\n  * \"failed\"      - Feature failed to initialize.\n\
+        \  * \"available\"   - User has this feature available by default.\n     \
+        \       optionally including \":\" followed by a reason\n            e.g.\
+        \ \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\".\n"
+    - name: gfx_features_opengl_compositing
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the OpenGL Compositing GFX feature.\n* status\
+        \ - One of\n  * \"unused\"      - This feature has not been requested.\n \
+        \ * \"unavailable\" - Safe Mode or OS restriction prevents use.\n  * \"blocked\"\
+        \     - An internal condition (such as safe mode) prevents use.\n  * \"blocklisted\"\
+        \ - Blocked due to a blocklist restriction.\n  * \"denied\"      - Blocked\
+        \ due to allowlist restrictions.\n  * \"disabled\"    - User explicitly disabled\
+        \ this default feature.\n  * \"failed\"      - Feature failed to initialize.\n\
+        \  * \"available\"   - User has this feature available by default.\n     \
+        \       optionally including \":\" followed by a reason\n            e.g.\
+        \ \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\".\n"
+    - name: gfx_features_webrender
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the Webrender GFX feature.\n* status - One of\n\
+        \  * \"unused\"      - This feature has not been requested.\n  * \"unavailable\"\
+        \ - Safe Mode or OS restriction prevents use.\n  * \"blocked\"     - An internal\
+        \ condition (such as safe mode) prevents use.\n  * \"blocklisted\" - Blocked\
+        \ due to a blocklist restriction.\n  * \"denied\"      - Blocked due to allowlist\
+        \ restrictions.\n  * \"disabled\"    - User explicitly disabled this default\
+        \ feature.\n  * \"failed\"      - Feature failed to initialize.\n  * \"available\"\
+        \   - User has this feature available by default.\n            optionally\
+        \ including \":\" followed by a reason\n            e.g. \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\"\
+        .\n"
+    - name: gfx_features_wr_compositor
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the native OS compositor (CA, DCamp, etc.).\n\
+        * status - One of\n  * \"unused\"      - This feature has not been requested.\n\
+        \  * \"unavailable\" - Safe Mode or OS restriction prevents use.\n  * \"blocked\"\
+        \     - An internal condition (such as safe mode) prevents use.\n  * \"blocklisted\"\
+        \ - Blocked due to a blocklist restriction.\n  * \"denied\"      - Blocked\
+        \ due to allowlist restrictions.\n  * \"disabled\"    - User explicitly disabled\
+        \ this default feature.\n  * \"failed\"      - Feature failed to initialize.\n\
+        \  * \"available\"   - User has this feature available by default.\n     \
+        \       optionally including \":\" followed by a reason\n            e.g.\
+        \ \"FEATURE_FAILURE_WEBRENDER_VIDEO_CRASH_INTEL_23.20.16.4973\".\n"
+    - name: gfx_monitors
+      type: JSON
+      mode: NULLABLE
+      description: 'Information about connected monitors.
+
+        On Linux only a single monitor is returned for the primary screen.
+
+        * screenWidth - Screen width in pixels
+
+        * screenHeight - Screen height in pixels
+
+        * defaultCSSScaleFactor - The default number of device pixels per unscaled
+        CSS pixel for this screen.
+
+        * contentsScaleFactor - The number of device pixels per desktop pixel for
+        this screen.
+
+        * refreshRate - (Windows only) The target screen refresh rate, in Hz, or 0
+        if unknown.
+
+        * pseudoDislay - (Windows only) Whether the screen is a pseudo display.
+
+        '
+    - name: hdd_binary
+      type: JSON
+      mode: NULLABLE
+      description: 'Information about the disk the application binary is stored on.
+
+        Windows only.
+
+        * model - The disk''s self-reported model string
+
+        * revision - The disk''s self-reported revision string
+
+        * diskType - Either "HDD" or "SSD"
+
+        '
+    - name: hdd_profile
+      type: JSON
+      mode: NULLABLE
+      description: 'Information about the disk the profile is stored on.
+
+        Windows only.
+
+        * model - The disk''s self-reported model string
+
+        * revision - The disk''s self-reported revision string
+
+        * diskType - Either "HDD" or "SSD"
+
+        '
+    - name: hdd_system
+      type: JSON
+      mode: NULLABLE
+      description: 'Information about the disk the system files are stored on.
+
+        Windows only.
+
+        * model - The disk''s self-reported model string
+
+        * revision - The disk''s self-reported revision string
+
+        * diskType - Either "HDD" or "SSD"
 
         '
   - name: labeled_string
@@ -50800,6 +51363,39 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'In TRR channel, the size of the HTTP response.
+
+        '
+    - name: network_page_load_size
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'The size of the HTTP response for a document load, keyed by the
+        page itself or the sum of subresources.
 
         '
   - name: url

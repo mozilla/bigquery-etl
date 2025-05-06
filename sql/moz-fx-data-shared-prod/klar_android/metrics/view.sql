@@ -62,7 +62,16 @@ SELECT
       metrics.boolean.e10s_enabled,
       metrics.boolean.fission_enabled,
       metrics.boolean.updater_available,
-      metrics.boolean.pkcs11_external_trust_anchor_module_loaded
+      metrics.boolean.pkcs11_external_trust_anchor_module_loaded,
+      metrics.boolean.gfx_d2d_enabled,
+      metrics.boolean.gfx_dwrite_enabled,
+      metrics.boolean.gfx_headless,
+      metrics.boolean.system_has_win_package_id,
+      metrics.boolean.system_is_wow_64,
+      metrics.boolean.system_is_wow_arm_64,
+      metrics.boolean.update_settings_auto_download,
+      metrics.boolean.update_settings_background,
+      metrics.boolean.update_settings_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -695,7 +704,18 @@ SELECT
       metrics.string.region_home_region,
       metrics.string.xpcom_abi,
       metrics.string.system_cpu_name,
-      metrics.string.system_cpu_vendor
+      metrics.string.system_cpu_vendor,
+      metrics.string.gfx_content_backend,
+      metrics.string.gfx_features_compositor,
+      metrics.string.gfx_text_scale_factor,
+      metrics.string.system_apple_model_id,
+      metrics.string.system_os_distro,
+      metrics.string.system_os_distro_version,
+      metrics.string.system_os_locale,
+      metrics.string.system_os_name,
+      metrics.string.system_os_version,
+      metrics.string.system_win_package_family_name,
+      metrics.string.update_settings_channel
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -745,7 +765,20 @@ SELECT
       metrics.quantity.system_cpu_physical_cores,
       metrics.quantity.system_cpu_speed,
       metrics.quantity.system_cpu_stepping,
-      metrics.quantity.networking_doh_heuristics_result
+      metrics.quantity.networking_doh_heuristics_result,
+      metrics.quantity.gfx_target_frame_rate,
+      metrics.quantity.profiles_creation_date,
+      metrics.quantity.profiles_first_use_date,
+      metrics.quantity.profiles_recovered_from_backup,
+      metrics.quantity.profiles_reset_date,
+      metrics.quantity.sandbox_content_win32k_lockdown_state,
+      metrics.quantity.sandbox_effective_content_process_level,
+      metrics.quantity.system_memory,
+      metrics.quantity.system_os_service_pack_major,
+      metrics.quantity.system_os_service_pack_minor,
+      metrics.quantity.system_os_windows_build_number,
+      metrics.quantity.system_os_windows_ubr,
+      metrics.quantity.system_virtual_memory
     ) AS `quantity`,
     STRUCT(
       metrics.custom_distribution.tab_count_app_backgrounded,
@@ -1505,7 +1538,20 @@ SELECT
       metrics.object.preferences_user_prefs,
       metrics.object.addons_active_addons,
       metrics.object.addons_active_g_m_plugins,
-      metrics.object.addons_theme
+      metrics.object.addons_theme,
+      metrics.object.gfx_adapters,
+      metrics.object.gfx_features_d2d,
+      metrics.object.gfx_features_d3d11,
+      metrics.object.gfx_features_gpu_process,
+      metrics.object.gfx_features_hw_compositing,
+      metrics.object.gfx_features_omtp,
+      metrics.object.gfx_features_opengl_compositing,
+      metrics.object.gfx_features_webrender,
+      metrics.object.gfx_features_wr_compositor,
+      metrics.object.gfx_monitors,
+      metrics.object.hdd_binary,
+      metrics.object.hdd_profile,
+      metrics.object.hdd_system
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -1624,8 +1670,18 @@ SELECT
     STRUCT(
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
-      metrics.labeled_memory_distribution.networking_trr_response_size
-    ) AS `labeled_memory_distribution`
+      metrics.labeled_memory_distribution.networking_trr_response_size,
+      metrics.labeled_memory_distribution.network_page_load_size
+    ) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.string_list.intl_accept_languages,
+      metrics.string_list.intl_app_locales,
+      metrics.string_list.intl_available_locales,
+      metrics.string_list.intl_regional_prefs_locales,
+      metrics.string_list.intl_requested_locales,
+      metrics.string_list.intl_system_locales,
+      metrics.string_list.system_cpu_extensions
+    ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

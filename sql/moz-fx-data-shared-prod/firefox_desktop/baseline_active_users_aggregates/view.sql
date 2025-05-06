@@ -30,4 +30,4 @@ SELECT
   `mozfun.norm.browser_version_info`(app_version).patch_revision AS app_version_patch_revision,
   `mozfun.norm.browser_version_info`(app_version).is_major_release AS app_version_is_major_release,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_active_users_aggregates_v1`
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_active_users_aggregates_v2`

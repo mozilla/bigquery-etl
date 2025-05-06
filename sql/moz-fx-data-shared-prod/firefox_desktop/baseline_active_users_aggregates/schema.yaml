@@ -96,6 +96,20 @@ fields:
     28 days.
 
     '
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: 'Medium to which the ping should be attributed e.g. referral, firefox
+    desktop.
+
+    '
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: 'Source to which the ping should be attributed e.g. firefox browser,
+    search fox.
+
+    '
 - name: daily_users
   type: INTEGER
   mode: NULLABLE

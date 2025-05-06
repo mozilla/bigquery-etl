@@ -26,7 +26,7 @@ FROM
   `moz-fx-data-shared-prod.fenix.active_users` AS active_users
 LEFT JOIN
   `moz-fx-data-shared-prod.fenix.attribution_clients` AS profile_attribution
-  USING (client_id)
+  USING (client_id, channel)
 WHERE
   active_users.submission_date = @submission_date
   AND is_dau

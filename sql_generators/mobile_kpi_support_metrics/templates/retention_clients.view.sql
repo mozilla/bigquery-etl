@@ -8,7 +8,7 @@ WITH active_users AS (
     client_id,
     sample_id,
     app_name,
-    normalized_channel,
+    normalized_channel AS channel,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_active_bits & days_seen_bits, submission_date) AS retention_active,
     days_seen_bits,
@@ -23,6 +23,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    channel,
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}
@@ -37,7 +38,7 @@ SELECT
   clients_daily.client_id,
   clients_daily.sample_id,
   active_users.app_name,
-  clients_daily.normalized_channel,
+  clients_daily.channel,
   clients_daily.country,
   clients_daily.city,
   clients_daily.geo_subdivision,
@@ -96,10 +97,11 @@ INNER JOIN
   active_users
   ON clients_daily.submission_date = active_users.retention_seen.day_27.metric_date
   AND clients_daily.client_id = active_users.client_id
-  AND clients_daily.normalized_channel = active_users.normalized_channel
+  AND clients_daily.normalized_channel = active_users.channel
 LEFT JOIN
   attribution
   ON clients_daily.client_id = attribution.client_id
   AND clients_daily.sample_id = attribution.sample_id
+  AND clients_daily.normalized_channel = attribution.channel
 WHERE
   active_users.retention_seen.day_27.active_on_metric_date

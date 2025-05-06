@@ -14,6 +14,7 @@ client_attribution AS (
   SELECT
     client_id,
     adjust_network,
+    channel,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 ),
@@ -309,7 +310,7 @@ FROM
   metric_ping_clients_feature_usage
 LEFT JOIN
   client_attribution
-  USING (client_id)
+  USING (client_id, channel)
 WHERE
   dau_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
 GROUP BY

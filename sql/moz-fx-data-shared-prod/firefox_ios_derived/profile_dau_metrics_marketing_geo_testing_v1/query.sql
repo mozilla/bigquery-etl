@@ -1,6 +1,7 @@
 SELECT
   active_users.submission_date,
   active_users.normalized_channel,
+  active_users.channel,
   active_users.app_name,
   active_users.app_display_version AS app_version,
   COALESCE(active_users.country, '??') AS country,
@@ -26,6 +27,7 @@ WHERE
 GROUP BY
   submission_date,
   normalized_channel,
+  channel,
   app_name,
   app_version,
   country,

@@ -26,10 +26,8 @@ WITH events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     -- selecting the events we need to compute on
-    -- Do we need to include any other events for computing "all_visits"?
     AND (
-      (category = 'newtab' AND name IN ('opened'))
-      OR (category = 'newtab.search' AND name IN ('issued'))
+      (category = 'newtab.search' AND name IN ('issued'))
       OR (category = 'newtab.search.ad' AND name IN ('click'))
       OR (
         category = 'pocket'
@@ -45,38 +43,28 @@ WITH events_unnested AS (
       OR (
         category = 'newtab'
         AND name IN (
+          'opened',
+          -- weather
           'weather_change_display',
           'weather_open_provider_url',
-          'weather_location_selected'
-        )
-      )
-      OR (
-        category = 'newtab'
-        AND name IN (
+          'weather_location_selected',
+          -- wallpaper
           'wallpaper_click',
           'wallpaper_category_click',
           'wallpaper_highlight_cta_click',
-          'wallpaper_highlight_dismissed'
-        )
-      )
-      OR (
-        category = 'newtab'
-        AND name IN (
+          'wallpaper_highlight_dismissed',
+          -- topic_selection
           'topic_selection_open',
           'topic_selection_dismiss',
-          'topic_selection_topics_saved'
-        )
-      )
-      OR (
-        category = 'newtab'
-        AND name IN (
+          'topic_selection_topics_saved',
+          -- section
           'sections_block_section',
           'sections_follow_section',
           'sections_unblock_section',
-          'sections_unfollow_section'
+          'sections_unfollow_section',
+          'inline_selection_click'
         )
       )
-      OR (category = 'newtab' AND name IN ('inline_selection_click'))
     )
 )
 SELECT

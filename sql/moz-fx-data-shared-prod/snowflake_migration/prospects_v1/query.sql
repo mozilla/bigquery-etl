@@ -9,15 +9,8 @@ SELECT
   contexts_com_pocket_prospect_1[0].scheduled_surface_id AS scheduled_surface_id,
   contexts_com_pocket_prospect_1[0].prospect_source AS prospect_source,
   contexts_com_pocket_prospect_1[0].created_at,
-  FORMAT_TIMESTAMP(
-    '%Y-%m-%dT%H:%M:%E*SZ',
-    TIMESTAMP_SECONDS(contexts_com_pocket_prospect_1[0].created_at)
-  ) AS created_at,
-  FORMAT_TIMESTAMP(
-    '%Y-%m-%dT%H:%M:%E*SZ',
-      -- reviewed_at is in miliseconds (for some reason), so we need to divide
-    TIMESTAMP_SECONDS(DIV(contexts_com_pocket_prospect_1[0].reviewed_at, 1000))
-  ) AS reviewed_at,
+  TIMESTAMP_SECONDS(contexts_com_pocket_prospect_1[0].created_at) AS created_at,
+  TIMESTAMP_SECONDS(DIV(contexts_com_pocket_prospect_1[0].reviewed_at, 1000)) AS reviewed_at,
   contexts_com_pocket_prospect_1[0].prospect_review_status AS prospect_review_status,
   IFNULL(contexts_com_pocket_prospect_1[0].status_reasons, []) AS status_reasons,
   contexts_com_pocket_prospect_1[0].status_reason_comment AS status_reason_comment,

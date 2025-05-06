@@ -109,6 +109,7 @@ class EventMonitoringLive(GleanTable):
 
         init_filename = f"{self.target_table_id}.materialized_view.sql"
         metadata_filename = f"{self.target_table_id}.metadata.yaml"
+        refresh_script_filename = f"{self.target_table_id}.script.sql"
 
         table = tables[f"{self.prefix}"]
         dataset = tables[self.prefix].split(".")[-2].replace("_derived", "")
@@ -148,6 +149,14 @@ class EventMonitoringLive(GleanTable):
         if len(events_tables) == 0:
             return
 
+        manual_refresh = app_name in ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "manual_refresh",
+            fallback=[],
+        )
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -162,6 +171,7 @@ class EventMonitoringLive(GleanTable):
                 if dataset == app_dataset["bq_dataset_family"]
             ][0],
             events_tables=sorted(events_tables),
+            manual_refresh=manual_refresh,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -181,6 +191,15 @@ class EventMonitoringLive(GleanTable):
             **render_kwargs,
         )
         artifacts.append(Artifact(table, "metadata.yaml", metadata))
+
+        if manual_refresh:
+            refresh_script = render(
+                refresh_script_filename,
+                template_folder=PATH / "templates",
+                format=False,
+                **render_kwargs,
+            )
+            artifacts.append(Artifact(table, "script.sql", refresh_script))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 

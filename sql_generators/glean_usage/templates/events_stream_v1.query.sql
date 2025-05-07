@@ -144,15 +144,15 @@ CROSS JOIN
     ARRAY(
       SELECT event
       FROM UNNEST(events) AS event
-      WHERE NOT (
+      WHERE (
         app_version_major = 138 AND app_version_minor IN (0, 1)
         AND (
           (event.category = 'nimbus_events' AND event.name = 'validation_failed')
           OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
         )
-      )
+      ) IS NOT TRUE
     )
-  )
+  ) AS event
   {% else %}
   UNNEST(events) AS event
   {% endif %}

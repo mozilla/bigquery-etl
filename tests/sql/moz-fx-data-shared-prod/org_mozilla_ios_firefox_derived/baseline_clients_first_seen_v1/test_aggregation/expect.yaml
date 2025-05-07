@@ -25,8 +25,6 @@
     term: FIRST_TERM
   distribution:
     name: MOZILLA_ONLINE
-  attribution_ext: null
-  distribution_ext: null
 - client_id: new-instance
   submission_date: 2021-03-02
   first_seen_date: 2021-03-02
@@ -39,5 +37,3 @@
     term: FIRST_TERM
   distribution:
     name: MOZILLA_ONLINE
-  attribution_ext: null
-  distribution_ext: null

@@ -1,0 +1,9 @@
+2025-05-05:
+  start_date: 2025-04-01
+  end_date: 2025-04-30
+  reason: Initial backfill of the table.
+  watchers:
+    - kwindau@mozilla.com
+    - ago@mozilla.com
+  status: Complete
+  shredder_mitigation: false

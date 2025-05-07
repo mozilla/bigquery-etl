@@ -940,23 +940,6 @@ with DAG(
             firefox_desktop_active_users_aggregates_v4
         )
 
-    firefox_desktop_derived__baseline_active_users_aggregates__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__baseline_active_users_aggregates__v1",
-        destination_table="baseline_active_users_aggregates_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "kik@mozilla.com",
-            "kwindau@mozilla.com",
-            "lvargas@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     firefox_desktop_derived__baseline_active_users_aggregates__v2 = bigquery_etl_query(
         task_id="firefox_desktop_derived__baseline_active_users_aggregates__v2",
         destination_table="baseline_active_users_aggregates_v2",
@@ -1268,18 +1251,6 @@ with DAG(
 
     firefox_desktop_active_users_aggregates_v4.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
-    )
-
-    firefox_desktop_derived__baseline_active_users_aggregates__v1.set_upstream(
-        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
-    )
-
-    firefox_desktop_derived__baseline_active_users_aggregates__v1.set_upstream(
-        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_desktop_derived__baseline_active_users_aggregates__v1.set_upstream(
-        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
     )
 
     firefox_desktop_derived__baseline_active_users_aggregates__v2.set_upstream(

@@ -5,6 +5,7 @@ fields:
   type: DATE
   description: Date of data processed.
 
+# TODO: once we update `channel` with the values from normalized_channel we should remove normalized_channel.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING

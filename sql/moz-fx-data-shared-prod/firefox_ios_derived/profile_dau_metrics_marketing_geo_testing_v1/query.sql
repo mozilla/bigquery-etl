@@ -1,5 +1,6 @@
 SELECT
   active_users.submission_date,
+  -- TODO: once we update `channel` with the values from normalized_channel we should remove normalized_channel.
   active_users.normalized_channel,
   active_users.channel,
   active_users.app_name,

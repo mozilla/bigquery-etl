@@ -3,12 +3,12 @@ description: |-
   Builds active_users_aggregates using the baseline ping.
 owners:
 - kwindau@mozilla.com
-- kik@mozilla.com
+- ago@mozilla.com
 labels:
   incremental: true
   table_type: aggregate
-# scheduling:
-#   dag_name: bqetl_analytics_aggregations
+scheduling:
+  dag_name: bqetl_analytics_aggregations
 bigquery:
   time_partitioning:
     type: day
@@ -21,4 +21,3 @@ bigquery:
     - app_name
     - channel
     - country
-deprecated: true

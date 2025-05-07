@@ -82,7 +82,6 @@ is_enterprise_policies AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND normalized_app_name = 'Firefox'
     AND document_id IS NOT NULL
   GROUP BY
     client_id,

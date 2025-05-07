@@ -202,13 +202,33 @@ _previous AS (
 {% endif %}
 
 , _joined AS (
+  --Switch to using separate if statements instead of 1
+  --because dry run is struggling to validate the final struct
   SELECT
-    IF(
-      _previous.client_id IS NULL
-      OR _previous.first_seen_date >= _current.first_seen_date,
-      _current,
-      _previous
-    ).*
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.submission_date, _previous.submission_date) AS submission_date,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.first_seen_date, _previous.first_seen_date) AS first_seen_date,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.sample_id, _previous.sample_id) AS sample_id,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.client_id, _previous.client_id) AS client_id,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.attribution, _previous.attribution) AS attribution,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.distribution, _previous.distribution) AS `distribution`,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.attribution_ext, _previous.attribution_ext) AS attribution_ext,
+    IF(_previous.client_id IS NULL 
+    OR _previous.first_seen_date >= _current.first_seen_date,
+       _current.distribution_ext, _previous.distribution_ext) AS distribution_ext
   FROM
     _current
   FULL JOIN

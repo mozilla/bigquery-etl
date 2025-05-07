@@ -8,7 +8,7 @@ WITH active_users AS (
     client_id,
     sample_id,
     app_name,
-    normalized_channel AS channel,
+    channel,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_active_bits & days_seen_bits, submission_date) AS retention_active,
     days_seen_bits,

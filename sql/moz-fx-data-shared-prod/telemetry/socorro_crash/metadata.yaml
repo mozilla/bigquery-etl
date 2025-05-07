@@ -15,6 +15,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ci-and-quality-tools/taskcluster
+  - workgroup:dataops-managed/crash-ping-ingest
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
 references:

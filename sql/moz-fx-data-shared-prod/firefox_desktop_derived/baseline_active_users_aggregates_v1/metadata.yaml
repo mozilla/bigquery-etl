@@ -7,8 +7,8 @@ owners:
 labels:
   incremental: true
   table_type: aggregate
-scheduling:
-  dag_name: bqetl_analytics_aggregations
+# scheduling:
+#   dag_name: bqetl_analytics_aggregations
 bigquery:
   time_partitioning:
     type: day
@@ -21,3 +21,4 @@ bigquery:
     - app_name
     - channel
     - country
+deprecated: true

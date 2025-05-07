@@ -9,6 +9,6 @@ RETURNS STRING AS (
 
 SELECT
   mozfun.assert.equals(
-    udf.hr_cost_center_to_steering_committee('employee_id', 'steering_committee'),
+    udf.hr_steering_committee('employee_id', 'steering_committee'),
     'steering_committee'
   );

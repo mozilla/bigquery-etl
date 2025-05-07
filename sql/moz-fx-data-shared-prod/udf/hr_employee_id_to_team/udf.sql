@@ -8,4 +8,4 @@ RETURNS STRING AS (
 );
 
 SELECT
-  mozfun.assert.equals(udf.hr_cost_center_to_steering_committee('employee_id', 'team'), 'team');
+  mozfun.assert.equals(udf.hr_employee_id_to_team('employee_id', 'team'), 'team');

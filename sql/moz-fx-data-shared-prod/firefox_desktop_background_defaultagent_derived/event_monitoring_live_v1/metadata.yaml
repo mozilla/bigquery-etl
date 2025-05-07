@@ -1,7 +1,6 @@
 friendly_name: Event Monitoring Live
 description: |-
-  Materialized view of experimentation related events
-  coming from firefox_desktop_background_defaultagent.
+  Materialized view of experimentation related events coming from firefox_desktop_background_defaultagent.
 owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com

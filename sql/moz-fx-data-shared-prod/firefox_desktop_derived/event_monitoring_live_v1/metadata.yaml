@@ -1,14 +1,21 @@
 friendly_name: Event Monitoring Live
 description: |-
-  Materialized view of experimentation related events
-  coming from firefox_desktop.
+  Materialized view of experimentation related events coming from firefox_desktop.
+  This view is refreshed using manual refreshes scheduled in Airflow to run with on-demand billing.
 owners:
 - ascholtz@mozilla.com
 - akomar@mozilla.com
 labels:
   materialized_view: true
+  dag: bqetl_materialized_view_refresh
   owner1: ascholtz
   owner2: akomar
+scheduling:
+  dag_name: bqetl_materialized_view_refresh
+  query_file_path: sql/moz-fx-data-shared-prod/firefox_desktop_derived/event_monitoring_live_v1/script.sql
+  arguments:
+  - --use_legacy_sql=false
+  - --billing-project=moz-fx-data-backfill-3
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

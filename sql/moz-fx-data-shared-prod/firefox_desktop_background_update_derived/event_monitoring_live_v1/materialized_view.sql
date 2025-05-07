@@ -7,7 +7,7 @@ CLUSTER BY
   event_category,
   event_name
 OPTIONS
-  (enable_refresh = TRUE, refresh_interval_minutes = 60)
+  (enable_refresh = FALSE, refresh_interval_minutes = 60)
 AS
 WITH base_events_v1 AS (
   SELECT

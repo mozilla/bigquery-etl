@@ -122,4 +122,24 @@ SELECT
 FROM
   base
 CROSS JOIN
-  UNNEST(events) AS event
+  -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
+  -- Filtering out nimbus and normandy events that are emitted due to 'invalid-feature'.
+  -- The number of these events is too large to be processed, invalid-feature has also
+  -- been removed in more recent versions.
+  UNNEST(
+    ARRAY(
+      SELECT
+        event
+      FROM
+        UNNEST(events) AS event
+      WHERE
+        (
+          app_version_major = 138
+          AND app_version_minor IN (0, 1)
+          AND (
+            (event.category = 'nimbus_events' AND event.name = 'validation_failed')
+            OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
+          )
+        ) IS NOT TRUE
+    )
+  ) AS event

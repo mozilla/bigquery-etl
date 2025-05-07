@@ -477,6 +477,10 @@ fields:
       type: JSON
       mode: NULLABLE
       description: The resolution of the primary display.
+    - name: nimbus_targeting_context_addons_info
+      type: JSON
+      mode: NULLABLE
+      description: Information about installed addons.
   - name: quantity
     type: RECORD
     mode: NULLABLE

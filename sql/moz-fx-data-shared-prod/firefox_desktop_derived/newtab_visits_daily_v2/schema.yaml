@@ -6,9 +6,11 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: Unique ID for the client installation.
 - name: newtab_visit_id
   type: STRING
   mode: NULLABLE
+  description: The id of newtab visit
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -30,102 +32,139 @@ fields:
 - name: newtab_homepage_category
   type: STRING
   mode: NULLABLE
+  description: Homepage category setting for Newtab
 - name: newtab_newtab_category
   type: STRING
   mode: NULLABLE
+  description: Newtab category setting
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If organic stories are enabled
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If sponsored stories are enabled
 - name: sponsored_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If sponsored topsites are enabled
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If organic topsites are enabled
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If search enabled
 - name: is_default_ui
   type: BOOLEAN
   mode: NULLABLE
+  description: If default ui
 - name: is_newtab_opened
   type: BOOLEAN
   mode: NULLABLE
+  description: If newtab opened
 - name: is_search_issued
   type: BOOLEAN
   mode: NULLABLE
+  description: If search issued
 - name: is_search_ad_click
   type: BOOLEAN
   mode: NULLABLE
+  description: If search Ad clicked
 - name: is_content_interaction
   type: BOOLEAN
   mode: NULLABLE
+  description: If content is interacted upon
 - name: is_content_click
   type: BOOLEAN
   mode: NULLABLE
+  description: If content clicked
 - name: is_content_impression
   type: BOOLEAN
   mode: NULLABLE
+  description: If content is impressed
 - name: is_sponsored_content_interaction
   type: BOOLEAN
   mode: NULLABLE
+  description: If content is interacted upon
 - name: is_sponsored_content_click
   type: BOOLEAN
   mode: NULLABLE
+  description: If sponsored content is interacted upon
 - name: is_sponsored_content_impression
   type: BOOLEAN
   mode: NULLABLE
+  description: If sponsored content is impressed
 - name: any_content_click_count
   type: INTEGER
+  description: Click count
 - name: any_content_impression_count
   type: INTEGER
+  description: Impression count
 - name: organic_content_click_count
   type: INTEGER
+  description: Organic click count
 - name: organic_content_impression_count
   type: INTEGER
+  description: Organic impression count
 - name: sponsored_content_click_count
   type: INTEGER
+  description: sponsored click count
 - name: sponsored_content_impression_count
   type: INTEGER
+  description: sponsored impression count
 - name: is_topsites_interaction
   type: BOOLEAN
   mode: NULLABLE
+  description: If topsites interaction
 - name: is_topsites_click
   type: BOOLEAN
   mode: NULLABLE
+  description: If topsites click
 - name: is_topsites_impression
   type: BOOLEAN
   mode: NULLABLE
+  description: IF topsites impression
 - name: is_sponsored_topsites_interaction
   type: BOOLEAN
   mode: NULLABLE
+  description: IF sponsored topsites interaction
 - name: is_sponsored_topsites_click
   type: BOOLEAN
   mode: NULLABLE
+  description: IF sponsored topsites click
 - name: is_sponsored_topsites_impression
   type: BOOLEAN
   mode: NULLABLE
+  description: IF sponsored topsites click
 - name: any_topsites_click_count
   type: INTEGER
+  description: topsites click count
 - name: any_topsites_impression_count
   type: INTEGER
+  description: topsites impression count
 - name: organic_topsites_click_count
   type: INTEGER
+  description: organic topsites click count
 - name: organic_topsites_impression_count
   type: INTEGER
+  description: organic topsites impression count
 - name: sponsored_topsites_click_count
   type: INTEGER
+  description: sponsored topsites click count
 - name: sponsored_topsites_impression_count
   type: INTEGER
+  description: sponsored topsites impression count
 - name: is_widget_interaction
   type: BOOLEAN
   mode: NULLABLE
+  description: IF widget interaction
 - name: is_wallpaper_interaction
   type: BOOLEAN
   mode: NULLABLE
+  description: IF wallpaper interaction
 - name: is_other_interaction
   type: BOOLEAN
   mode: NULLABLE

@@ -2,6 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: Date of aggregation
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -23,92 +24,133 @@ fields:
 - name: newtab_homepage_category
   type: STRING
   mode: NULLABLE
+  description: Homepage category setting for Newtab
 - name: newtab_newtab_category
   type: STRING
   mode: NULLABLE
+  description: Newtab category setting
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If organic stories are enabled
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If sponsored stories are enabled
 - name: sponsored_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If sponsored topsites are enabled
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If organic topsites are enabled
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: If search enabled
 - name: all_visits
   type: INTEGER
+  description: all visits
 - name: newtab_clients
   type: INTEGER
+  description: newtab clients
 - name: default_ui_visits
   type: INTEGER
+  description: default ui visits
 - name: default_ui_clients
   type: INTEGER
+  description: default ui clients
 - name: any_engagement_visits
   type: INTEGER
+  description: any engagement visits
 - name: any_engagement_clients
   type: INTEGER
+  description: any engagement clients
 - name: nonsearch_engagement_visits
   type: INTEGER
+  description: nonsearch engagement visits
 - name: nonsearch_engagement_clients
   type: INTEGER
+  description: nonsearch engagement clients
 - name: any_content_engagement_visits
   type: INTEGER
+  description: any content engagement visits
 - name: any_content_engagement_clients
   type: INTEGER
+  description: any content engagement clients
 - name: any_content_click_count
   type: INTEGER
+  description: any content click count
 - name: any_content_impression_count
   type: INTEGER
+  description: any content impression count
 - name: organic_content_engagement_visits
   type: INTEGER
+  description: organic content engagement visits
 - name: organic_content_engagement_clients
   type: INTEGER
+  description: organic content engagement clients
 - name: organic_content_click_count
   type: INTEGER
+  description: organic content click count
 - name: organic_content_impression_count
   type: INTEGER
+  description: organic content impression count
 - name: sponsored_content_engagement_visits
   type: INTEGER
+  description: sponsored content engagement visits
 - name: sponsored_content_engagement_clients
   type: INTEGER
+  description: sponsored content engagement clients
 - name: sponsored_content_click_count
   type: INTEGER
+  description: sponsored content click count
 - name: sponsored_content_impression_count
   type: INTEGER
+  description: sponsored content impression count
 - name: any_topsites_engagement_visits
   type: INTEGER
+  description: any topsites engagement visits
 - name: any_topsites_engagement_clients
   type: INTEGER
+  description: any topsites engagement clients
 - name: any_topsites_click_count
   type: INTEGER
+  description: any topsites click count
 - name: any_topsites_impression_count
   type: INTEGER
+  description: any topsites impression count
 - name: organic_topsite_engagement_visits
   type: INTEGER
+  description: organic topsite engagement visits
 - name: organic_topsite_engagement_clients
   type: INTEGER
+  description: organic topsite engagement clients
 - name: organic_topsites_click_count
   type: INTEGER
+  description: organic topsites click count
 - name: organic_topsites_impression_count
   type: INTEGER
+  description: organic topsites impression count
 - name: sponsored_topsite_engagement_visits
   type: INTEGER
+  description: sponsored topsite engagement visits
 - name: sponsored_topsite_engagement_clients
   type: INTEGER
+  description: sponsored topsite engagement clients
 - name: sponsored_topsites_click_count
   type: INTEGER
+  description: sponsored topsites click count
 - name: sponsored_topsites_impression_count
   type: INTEGER
+  description: sponsored topsites impression count
 - name: widget_engagement_visits
   type: INTEGER
+  description: widget engagement visits
 - name: widget_engagement_clients
   type: INTEGER
+  description: widget engagement clients
 - name: others_engagement_visits
   type: INTEGER
   description: Client visits associated with wallpaper, topic_selection, sections

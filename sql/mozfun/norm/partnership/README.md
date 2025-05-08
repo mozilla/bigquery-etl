@@ -1,0 +1,1 @@
+The UDF identifies partnership info based on the distribution ID.

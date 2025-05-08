@@ -43,3 +43,14 @@ fields:
     name: name
     type: STRING
     description: The distribution name (e.g. 'MozillaOnline').
+
+
+- mode: NULLABLE
+  name: attribution_ext
+  type: JSON
+  description: Extended Attribution Information
+- mode: NULLABLE
+  name: distribution_ext
+  type: JSON
+  description: Extended Distribution Information
+

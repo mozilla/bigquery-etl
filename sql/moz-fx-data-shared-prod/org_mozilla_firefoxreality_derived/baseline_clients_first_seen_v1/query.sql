@@ -13,7 +13,7 @@
       ] AS attribution,
       ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
         OFFSET(0)
-      ] AS `distribution`
+      ] AS `distribution`,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -39,7 +39,7 @@
       ] AS attribution,
       ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
         OFFSET(0)
-      ] AS `distribution`
+      ] AS `distribution`,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.baseline_v1`
     WHERE
@@ -59,7 +59,7 @@
       sample_id,
       client_id,
       attribution,
-      `distribution`
+      `distribution`,
     FROM
       `moz-fx-data-shared-prod.org_mozilla_firefoxreality_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -67,6 +67,8 @@
       AND first_seen_date < @submission_date
   ),
   _joined AS (
+  --Switch to using separate if statements instead of 1
+  --because dry run is struggling to validate the final struct
     SELECT
       IF(
         _previous.client_id IS NULL
@@ -87,7 +89,7 @@
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
   FROM
     _joined
   QUALIFY

@@ -43,3 +43,5 @@ fields:
     name: name
     type: STRING
     description: The distribution name (e.g. 'MozillaOnline').
+
+

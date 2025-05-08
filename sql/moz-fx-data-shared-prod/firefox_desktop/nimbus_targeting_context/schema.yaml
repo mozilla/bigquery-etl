@@ -509,6 +509,10 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: The number of bookmarks.
+    - name: nimbus_targeting_context_build_id
+      type: INTEGER
+      mode: NULLABLE
+      description: The Build ID.
   - name: string
     type: RECORD
     mode: NULLABLE

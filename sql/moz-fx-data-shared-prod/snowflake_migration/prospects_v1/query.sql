@@ -1,7 +1,5 @@
-SELECT
+WITH stg_prospects as (SELECT
   event_id,
-  -- object update
-  unstruct_event_com_pocket_object_update_1.object AS object_update_object,
   unstruct_event_com_pocket_object_update_1.trigger AS object_update_trigger,
   -- prospect info
   contexts_com_pocket_prospect_1[0].prospect_id AS prospect_id,
@@ -29,16 +27,6 @@ SELECT
   contexts_com_pocket_prospect_1[0]._schema_version AS schema_version,
   -- event info
   derived_tstamp AS happened_at,
-  geo_country,
-  geo_region,
-  geo_region_name,
-  geo_timezone,
-  app_id AS tracker_app_id,
-  useragent,
-  br_lang,
-  -- pass through any relevant contexts/entities
-  TO_JSON(contexts_com_pocket_prospect_1) AS contexts_com_pocket_prospect_1,
-  TO_JSON(unstruct_event_com_pocket_object_update_1) AS unstruct_event_com_pocket_object_update_1
 FROM
   `moz-fx-data-shared-prod.snowplow_external.events`
 WHERE
@@ -55,4 +43,35 @@ WHERE
   AND UNIX_MILLIS(CURRENT_TIMESTAMP())
   -- This ensures recommended_at is between Jan 1, 2000, and the current time to remain within BQ limits for dates
 QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY happened_at ORDER BY happened_at) = 1
+  ROW_NUMBER() OVER (PARTITION BY happened_at ORDER BY happened_at) = 1)
+SELECT
+  p.prospect_id,
+  p.object_update_trigger,
+  p.url,
+  p.scheduled_surface_id,
+  p.prospect_source,
+  p.created_at,
+  p.reviewed_at,
+  p.prospect_review_status,
+  p.status_reasons,
+  p.status_reason_comment,
+  p.reviewed_by,
+  p.title,
+  p.excerpt,
+  p.image_url,
+  p.language,
+  p.topic,
+  p.authors,
+  p.publisher,
+  p.domain,
+  p.is_collection,
+  p.is_syndicated,
+  p.happened_at,
+  p.features,
+  p.run_details,
+  p.schema_version,
+  SHA256(CONCAT(p.prospect_id, p.object_update_trigger)) AS prospect_id_object_update_trigger_key
+FROM
+  stg_prospects p
+QUALIFY
+  ROW_NUMBER() OVER (PARTITION BY prospect_id, object_update_trigger ORDER BY happened_at DESC) = 1;

@@ -100,3 +100,9 @@ fields:
   name: prospect_id_object_update_trigger_key
   description: >
     A combination of the prospect_id and object_update_trigger columns to create a unique event identifier
+- mode: NULLABLE
+  type: STRING
+  name: object_update_trigger
+- mode: NULLABLE
+  type: STRING
+  name: domain

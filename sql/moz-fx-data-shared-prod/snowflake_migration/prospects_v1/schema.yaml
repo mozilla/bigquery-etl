@@ -76,7 +76,7 @@ fields:
   name: is_syndicated
   description: Indicates whether the reviewed_corpus_item is a syndicated article
 - mode: NULLABLE
-  type: STRING
+  type: JSON
   name: features
   description: >
     ML features for the prospect item.

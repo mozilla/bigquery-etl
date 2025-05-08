@@ -57,6 +57,10 @@ WITH base AS (
     {% endif %}
     client_info.attribution,
     client_info.distribution,
+    {% if app_name == "firefox_desktop" %}
+    metrics.object.glean_attribution_ext AS attribution_ext,
+    metrics.object.glean_distribution_ext AS distribution_ext
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -161,6 +165,10 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
     udf.mode_last(ARRAY_AGG(attribution) OVER w1) AS attribution,
     udf.mode_last(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    udf.mode_last(ARRAY_AGG(attribution_ext) OVER w1) AS attribution_ext,
+    udf.mode_last(ARRAY_AGG(distribution_ext) OVER w1) AS distribution_ext,
+    {% endif %}
   FROM
     with_date_offsets
   LEFT JOIN

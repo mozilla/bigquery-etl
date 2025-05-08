@@ -24,8 +24,8 @@ SELECT
   ARRAY_TO_STRING(contexts_com_pocket_prospect_1[0].authors, ",") AS authors,
   contexts_com_pocket_prospect_1[0].publisher AS publisher,
   contexts_com_pocket_prospect_1[0].domain AS domain,
-  contexts_com_pocket_prospect_1[0].features AS features,
-  contexts_com_pocket_prospect_1[0].run_details AS run_details,
+  TO_JSON(contexts_com_pocket_prospect_1[0].features) AS features,
+  TO_JSON(contexts_com_pocket_prospect_1[0].run_details) AS run_details,
   contexts_com_pocket_prospect_1[0]._schema_version AS schema_version,
   -- event info
   derived_tstamp AS happened_at,
@@ -37,8 +37,8 @@ SELECT
   useragent,
   br_lang,
   -- pass through any relevant contexts/entities
-  contexts_com_pocket_prospect_1,
-  unstruct_event_com_pocket_object_update_1
+  TO_JSON(contexts_com_pocket_prospect_1) AS contexts_com_pocket_prospect_1,
+  TO_JSON(unstruct_event_com_pocket_object_update_1) AS unstruct_event_com_pocket_object_update_1
 FROM
   `moz-fx-data-shared-prod.snowplow_external.events`
 WHERE

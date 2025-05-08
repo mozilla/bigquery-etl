@@ -20,7 +20,17 @@ WITH
       ARRAY_AGG(
         client_info.distribution 
         ORDER BY submission_timestamp DESC LIMIT 1
-      )[OFFSET(0)] AS `distribution`
+      )[OFFSET(0)] AS `distribution`,
+      {% if app_name == "firefox_desktop" %}
+      ARRAY_AGG(
+        metrics.object.glean_attribution_ext 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS attribution_ext,
+      ARRAY_AGG(
+        metrics.object.glean_distribution_ext 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS distribution_ext
+      {% endif %}
     FROM
       `{{ baseline_table }}`
     -- initialize by looking over all of history
@@ -66,7 +76,17 @@ _baseline AS (
     ] AS attribution,
     ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
       OFFSET(0)
-    ] AS `distribution`
+    ] AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    ARRAY_AGG(
+      metrics.object.glean_attribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution_ext,
+    ARRAY_AGG(
+      metrics.object.glean_distribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS distribution_ext
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -83,7 +103,11 @@ _current AS (
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    attribution_ext,
+    distribution_ext
+    {% endif %}
   FROM
     _baseline
   LEFT JOIN
@@ -101,7 +125,11 @@ _previous AS (
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    attribution_ext,
+    distribution_ext
+    {% endif %}
   FROM
     `{{ first_seen_table }}` fs
   LEFT JOIN
@@ -125,7 +153,17 @@ _current AS (
     ARRAY_AGG(
       client_info.distribution 
       ORDER BY submission_timestamp DESC LIMIT 1
-    )[OFFSET(0)] AS `distribution`
+    )[OFFSET(0)] AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    ARRAY_AGG(
+      metrics.object.glean_attribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution_ext,
+    ARRAY_AGG(
+      metrics.object.glean_distribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS distribution_ext
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
@@ -145,7 +183,11 @@ _previous AS (
     sample_id,
     client_id,
     attribution,
-    `distribution`
+    `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    attribution_ext,
+    distribution_ext
+    {% endif %}
   FROM
     `{{ first_seen_table }}`
   WHERE
@@ -155,6 +197,8 @@ _previous AS (
 {% endif %}
 
 , _joined AS (
+  --Switch to using separate if statements instead of 1
+  --because dry run is struggling to validate the final struct
   SELECT
     IF(
       _previous.client_id IS NULL
@@ -176,7 +220,11 @@ SELECT
   sample_id,
   client_id,
   attribution,
-  `distribution`
+  `distribution`,
+  {% if app_name == "firefox_desktop" %}
+  attribution_ext,
+  distribution_ext
+  {% endif %}
 FROM _joined
 QUALIFY
   IF(

@@ -1885,6 +1885,19 @@ bqetl_monitoring_weekly:
   tags:
     - impact/tier_3
 
+bqetl_shredder_impact_measurement:
+  schedule_interval: 40 12 * * 7
+  description: |
+    This DAG populates a table that measures the impact of shredder that only runs weekly
+  default_args:
+    owner: kwindau@mozilla.com
+    email: ["kwindau@mozilla.com"]
+    start_date: "2025-05-01"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_addons_moderations:
   default_args:
     depends_on_past: false

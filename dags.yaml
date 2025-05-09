@@ -2297,7 +2297,10 @@ bqetl_ech_adoption_rate:
     retries: 2
     retry_delay: 30m
     start_date: '2025-04-28'
-  description: Tracks ECH adoption across countries and ISPs over time
+  description: |
+    Tracks ECH adoption across countries and ISPs over time.
+    To be disabled after 2025-10-31.
+    bug 1957082
   repo: bigquery-etl
   schedule_interval: daily
   tags:

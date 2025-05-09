@@ -11,7 +11,8 @@ SELECT
   SUM(CAST(is_monthly_user AS int)) AS monthly_users,
   SUM(CAST(is_desktop AS int)) AS desktop,
   SUM(CAST(is_mobile AS int)) AS mobile,
-  COUNT(DISTINCT(client_id)) AS unique_client_ids
+  COUNT(DISTINCT(client_id)) AS unique_client_ids,
+  COUNT(1) AS row_count
 FROM
   `moz-fx-data-shared-prod.telemetry.active_users`
 WHERE

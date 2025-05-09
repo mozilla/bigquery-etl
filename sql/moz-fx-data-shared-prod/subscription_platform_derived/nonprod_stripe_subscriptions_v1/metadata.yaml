@@ -7,7 +7,7 @@ labels:
   schedule: hourly
   incremental: false
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  dag_name: bqetl_subplat
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null

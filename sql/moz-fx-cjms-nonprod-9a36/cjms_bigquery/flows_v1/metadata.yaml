@@ -1,13 +1,15 @@
 friendly_name: Non-Prod FxA flows by date
-description: >
+description: |-
   Non-Prod FxA flow_id, first seen timestamp, and last seen user id by date
+
+  Deprecated since 2025-05-09.
 owners:
   - srose@mozilla.com
 labels:
   application: cjms
   schedule: hourly
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  #dag_name: bqetl_cjms_nonprod
   query_project: moz-fx-data-shared-prod
   # delay aggregates by 2 hours, to ensure data is complete
   date_partition_parameter: null
@@ -30,3 +32,5 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
+deprecated: true
+deletion_date: 2025-08-09

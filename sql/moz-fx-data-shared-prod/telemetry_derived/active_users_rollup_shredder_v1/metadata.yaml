@@ -1,6 +1,6 @@
 friendly_name: Active Users Rollup Shredder
 description: |-
-  Runs weekly to record the number of clients in telemetry.active_users
+  Records the number of clients in telemetry.active_users over time
   to better understand the impact of shredder over time.
 owners:
 - kwindau@mozilla.com

@@ -2,7 +2,7 @@ SELECT
   submission_date,
   app_name,
   @submission_date AS logical_dag_date,
-  CURRENT_DATE() AS run_date,
+  CURRENT_DATE() AS dag_run_date,
   SUM(CAST(is_dau AS int)) AS dau,
   SUM(CAST(is_wau AS int)) AS wau,
   SUM(CAST(is_mau AS int)) AS mau,
@@ -20,4 +20,4 @@ GROUP BY
   submission_date,
   app_name,
   logical_dag_date,
-  run_date
+  dag_run_date

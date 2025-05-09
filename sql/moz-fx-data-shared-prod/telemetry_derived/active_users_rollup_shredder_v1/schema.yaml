@@ -10,11 +10,11 @@ fields:
 - name: logical_dag_date
   type: DATE
   mode: NULLABLE
-  description: Logical DAG Run Date - does not indicate the actual execution date of the RUN
-- name: run_date
+  description: Logical DAG Run Date; does not indicate the actual execution date of the RUN
+- name: dag_run_date
   type: DATE
   mode: NULLABLE
-  description: Execution date
+  description: Execution date of the DAG
 - name: dau
   type: INTEGER
   mode: NULLABLE

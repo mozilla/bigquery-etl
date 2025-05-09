@@ -1,0 +1,63 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission date recorded from telemetry.active_users
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: App name recorded from telemetry.active_users
+- name: logical_dag_date
+  type: DATE
+  mode: NULLABLE
+  description: Logical DAG Run Date; does not indicate the actual execution date of
+    the DAG
+- name: dag_run_date
+  type: DATE
+  mode: NULLABLE
+  description: Execution date of the DAG
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: DAU (daily active users) recorded from telemetry.active_users for this
+    app name & submission date as of run date
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: WAU (weekly active users) recorded from telemetry.active_users for
+    this app name & submission date as of run date
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: MAU (monthly active users) recorded from telemetry.active_users for
+    this app name & submission date as of run date
+- name: daily_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Daily Users recorded from telemetry.active_users for this app name
+    & submission date as of run date
+- name: weekly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Weekly Users recorded from telemetry.active_users for this app name
+    & submission date as of run date
+- name: monthly_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Monthly users recorded from telemetry.active_users for this app name
+    & submission date as of run date
+- name: desktop
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients qualifying towards the desktop KPI as is_desktop
+    from telemetry.active_users for this app name & submission date as of run date
+- name: mobile
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of clients qualifying towards the mobile KPI as is_mobile from
+    telemetry.active_users for this app name & submission date as of run date
+- name: unique_client_ids
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of unique client IDs from telemetry.active_users for this app
+    name and submission date as of run date

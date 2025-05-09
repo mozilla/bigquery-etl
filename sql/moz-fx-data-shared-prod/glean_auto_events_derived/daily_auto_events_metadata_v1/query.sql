@@ -1,8 +1,7 @@
-WITH events AS (
+WITH click_events AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
-    event,
-    JSON_VALUE(event_extra.id) AS element_id,
+    CONCAT(event, '.', JSON_VALUE(event_extra.id)) AS full_event_name,
     COUNT(*) AS count
   FROM
     `moz-fx-data-shared-prod.accounts_frontend.events_stream` AS e
@@ -12,8 +11,7 @@ WITH events AS (
     AND event_name = 'element_click'
   GROUP BY
     submission_date,
-    event,
-    element_id
+    full_event_name
 )
 SELECT
   submission_date,
@@ -21,4 +19,4 @@ SELECT
   CONCAT(event, '.', events.element_id) AS event_name,
   count
 FROM
-  events
+  click_events

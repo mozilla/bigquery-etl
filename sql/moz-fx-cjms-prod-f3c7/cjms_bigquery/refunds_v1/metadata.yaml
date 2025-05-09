@@ -1,13 +1,18 @@
 friendly_name: Stripe refunds on CJ subscriptions
-description: Stripe refunds on CJ subscriptions
+description: |-
+  Stripe refunds on CJ subscriptions
+
+  Deprecated since 2025-05-09.
 owners:
   - srose@mozilla.com
 labels:
   application: cjms
-  schedule: hourly
+  schedule: daily
 scheduling:
-  dag_name: bqetl_subplat
+  #dag_name: bqetl_subplat
   query_project: moz-fx-data-shared-prod
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null
+deprecated: true
+deletion_date: 2025-08-09

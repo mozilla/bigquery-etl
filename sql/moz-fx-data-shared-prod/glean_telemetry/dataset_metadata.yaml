@@ -1,6 +1,6 @@
-friendly_name: Glean
+friendly_name: Glean Telemetry
 description: |-
-  Contains Glean views for combinations of Glean desktop and mobile apps
+  Contains views of Glean telemetry for desktop and mobile apps
 dataset_base_acl: view
 user_facing: true
 labels: {}

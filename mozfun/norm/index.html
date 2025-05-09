@@ -1332,6 +1332,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#partnership-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      partnership (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="partnership (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     <span class="md-ellipsis">
       product_info (UDF)
@@ -1342,7 +1366,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_14" class="md-nav__link">
+  <a href="#parameters_15" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1366,7 +1390,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_15" class="md-nav__link">
+  <a href="#parameters_16" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1390,7 +1414,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_16" class="md-nav__link">
+  <a href="#parameters_17" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1414,7 +1438,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_17" class="md-nav__link">
+  <a href="#parameters_18" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1438,7 +1462,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_18" class="md-nav__link">
+  <a href="#parameters_19" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -2463,6 +2487,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#partnership-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      partnership (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="partnership (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#product_info-udf" class="md-nav__link">
     <span class="md-ellipsis">
       product_info (UDF)
@@ -2473,7 +2521,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_14" class="md-nav__link">
+  <a href="#parameters_15" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -2497,7 +2545,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_15" class="md-nav__link">
+  <a href="#parameters_16" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -2521,7 +2569,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_16" class="md-nav__link">
+  <a href="#parameters_17" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -2545,7 +2593,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_17" class="md-nav__link">
+  <a href="#parameters_18" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -2569,7 +2617,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters_18" class="md-nav__link">
+  <a href="#parameters_19" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -3057,6 +3105,17 @@ platforms, one of the two major mobile platforms, or "Other".</p>
 <div class="highlight"><pre><span></span><code>os STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/os">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/os/metadata.yaml">Edit</a></p>
+<h2 id="partnership-udf">partnership (UDF)</h2>
+<p>Normalizes partnership based on distribution ID as input</p>
+<p>The UDF identifies partnership info based on the distribution ID.</p>
+<h3 id="parameters_14">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>distribution_id STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>STRING
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/partnership">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/partnership/metadata.yaml">Edit</a></p>
 <h2 id="product_info-udf">product_info (UDF)</h2>
 <p>Returns a normalized <code>app_name</code> and <code>canonical_app_name</code>
 for a product based on <code>legacy_app_name</code> and <code>normalized_os</code> values.
@@ -3272,7 +3331,7 @@ which have thrown away the raw <code>app_name</code> value from legacy pings.</p
 </tr>
 </tbody>
 </table>
-<h3 id="parameters_14">Parameters</h3>
+<h3 id="parameters_15">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>legacy_app_name STRING, normalized_os STRING
 </code></pre></div>
@@ -3283,7 +3342,7 @@ which have thrown away the raw <code>app_name</code> value from legacy pings.</p
 <h2 id="result_type_to_product_name-udf">result_type_to_product_name (UDF)</h2>
 <p>Convert urlbar result types into product-friendly names</p>
 <p>This UDF converts result types from urlbar events (<a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_engagement">engagement</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_impression">impression</a>, <a href="https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/metrics/urlbar_abandonment">abandonment</a>) into <a href="https://docs.google.com/document/d/1kmlAykJR7r7VcWe-mfk5R4MvhMvfUao7VrZP_M2t6nY/edit#heading=h.ksu5pbt3aa6k">product-friendly names</a>.</p>
-<h3 id="parameters_15">Parameters</h3>
+<h3 id="parameters_16">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>res STRING
 </code></pre></div>
@@ -3305,7 +3364,7 @@ function, no matter what the arguments).</p>
 <p>This is useful for grouping Linux and Mac operating system versions inside
 aggregate datasets or queries where there may be many different patch
 releases in the field.</p>
-<h3 id="parameters_16">Parameters</h3>
+<h3 id="parameters_17">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>os_version STRING, truncation_level STRING
 </code></pre></div>
@@ -3315,7 +3374,7 @@ releases in the field.</p>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/norm/truncate_version">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/norm/truncate_version/metadata.yaml">Edit</a></p>
 <h2 id="vpn_attribution-udf">vpn_attribution (UDF)</h2>
 <p>Accepts vpn attribution fields as input and returns a struct of normalized fields.</p>
-<h3 id="parameters_17">Parameters</h3>
+<h3 id="parameters_18">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>utm_campaign STRING, utm_content STRING, utm_medium STRING, utm_source STRING
 </code></pre></div>
@@ -3328,7 +3387,7 @@ releases in the field.</p>
 of the operating system name.</p>
 <p>Requires os, os_version and windows_build_number.</p>
 <p>E.G. from windows_build_number &gt;= 22000 return Windows 11</p>
-<h3 id="parameters_18">Parameters</h3>
+<h3 id="parameters_19">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>os STRING, os_version STRING, windows_build_number INT64
 </code></pre></div>

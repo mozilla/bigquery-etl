@@ -25,6 +25,16 @@ fields:
     type: STRING
     mode: REPEATED
     description: IDs of Stripe plans with any of the tier's SubPlat capabilities.
+  - name: apple_product_ids
+    type: STRING
+    mode: REPEATED
+    description: IDs of Apple products linked to Stripe plans with any of the tier's
+      SubPlat capabilities.
+  - name: google_sku_ids
+    type: STRING
+    mode: REPEATED
+    description: IDs of Google SKUs linked to Stripe plans with any of the tier's
+      SubPlat capabilities.
 - name: subplat_capabilities
   type: STRING
   mode: REPEATED
@@ -52,3 +62,13 @@ fields:
   type: STRING
   mode: REPEATED
   description: IDs of Stripe plans with any of the service's SubPlat capabilities.
+- name: apple_product_ids
+  type: STRING
+  mode: REPEATED
+  description: IDs of Apple products linked to Stripe plans with any of the service's
+    SubPlat capabilities.
+- name: google_sku_ids
+  type: STRING
+  mode: REPEATED
+  description: IDs of Google SKUs linked to Stripe plans with any of the service's
+    SubPlat capabilities.

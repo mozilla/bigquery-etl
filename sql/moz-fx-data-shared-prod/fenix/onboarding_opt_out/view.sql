@@ -25,7 +25,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.onboarding_opt_out`
 UNION ALL
@@ -52,7 +53,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.onboarding_opt_out`
 UNION ALL
@@ -79,7 +81,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.onboarding_opt_out`
 UNION ALL
@@ -106,7 +109,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.onboarding_opt_out`
 UNION ALL
@@ -133,6 +137,7 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.onboarding_opt_out`

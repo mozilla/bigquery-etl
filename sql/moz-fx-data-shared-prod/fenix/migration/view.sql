@@ -175,7 +175,8 @@ SELECT
   submission_timestamp,
   CAST(NULL AS NUMERIC) AS `app_version_major`,
   CAST(NULL AS NUMERIC) AS `app_version_minor`,
-  CAST(NULL AS NUMERIC) AS `app_version_patch`
+  CAST(NULL AS NUMERIC) AS `app_version_patch`,
+  CAST(NULL AS BOOLEAN) AS `is_bot_generated`
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.migration`
 UNION ALL
@@ -305,7 +306,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.migration`
 UNION ALL
@@ -435,7 +437,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.migration`
 UNION ALL
@@ -565,7 +568,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.migration`
 UNION ALL
@@ -695,6 +699,7 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.migration`

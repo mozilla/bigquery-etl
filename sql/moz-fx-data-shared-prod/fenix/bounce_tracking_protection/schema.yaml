@@ -202,3 +202,6 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

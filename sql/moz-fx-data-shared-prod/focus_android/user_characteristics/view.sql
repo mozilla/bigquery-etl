@@ -355,7 +355,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.user_characteristics`
 UNION ALL
@@ -712,7 +713,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.user_characteristics`
 UNION ALL
@@ -1069,6 +1071,7 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly.user_characteristics`

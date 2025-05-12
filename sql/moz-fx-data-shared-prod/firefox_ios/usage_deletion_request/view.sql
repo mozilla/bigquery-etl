@@ -24,7 +24,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefox.usage_deletion_request`
 UNION ALL
@@ -50,7 +51,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.usage_deletion_request`
 UNION ALL
@@ -76,6 +78,7 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_ios_fennec.usage_deletion_request`

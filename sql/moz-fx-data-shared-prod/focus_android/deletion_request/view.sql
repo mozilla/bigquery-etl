@@ -35,7 +35,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus.deletion_request`
 UNION ALL
@@ -72,7 +73,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_beta.deletion_request`
 UNION ALL
@@ -109,6 +111,7 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_nightly.deletion_request`

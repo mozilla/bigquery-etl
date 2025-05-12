@@ -55,6 +55,7 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.mozilla_lockbox.logins_sync`

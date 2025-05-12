@@ -1,0 +1,15 @@
+friendly_name: Us Unemployment
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.external_derived.us_unemployment_v1
+require_column_descriptions: false

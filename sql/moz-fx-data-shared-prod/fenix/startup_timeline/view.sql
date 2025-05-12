@@ -42,7 +42,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.startup_timeline`
 UNION ALL
@@ -86,7 +87,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.startup_timeline`
 UNION ALL
@@ -130,7 +132,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.startup_timeline`
 UNION ALL
@@ -174,7 +177,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.startup_timeline`
 UNION ALL
@@ -218,6 +222,7 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.startup_timeline`

@@ -26,7 +26,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.usage_deletion_request`
 UNION ALL
@@ -54,7 +55,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.usage_deletion_request`
 UNION ALL
@@ -82,7 +84,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.usage_deletion_request`
 UNION ALL
@@ -110,7 +113,8 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.usage_deletion_request`
 UNION ALL
@@ -138,6 +142,7 @@ SELECT
   normalized_os,
   normalized_os_version,
   sample_id,
-  submission_timestamp
+  submission_timestamp,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.usage_deletion_request`

@@ -1,0 +1,12 @@
+fields:
+- name: PeriodStartDate
+  type: DATE
+  mode: NULLABLE
+- name: UnemploymentRate
+  type: NUMERIC
+  mode: NULLABLE
+  description: Unemployment Rate
+- name: LastUpdated
+  type: DATE
+  mode: NULLABLE
+  description: Last Updated Date

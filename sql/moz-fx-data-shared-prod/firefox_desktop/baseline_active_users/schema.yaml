@@ -215,3 +215,6 @@ fields:
 - name: first_seen_distribution_name
   type: STRING
   mode: NULLABLE
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE

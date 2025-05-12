@@ -2120,6 +2120,26 @@ bqetl_imf_cpi_data:
   repo: bigquery-etl
   schedule_interval: 23 0 15 * *
 
+
+bqetl_us_bls_unemployment_data:
+  description: |
+    This DAG pulls US unemployment data from the BLS API
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-04-01"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 17 0 15 * *
+
+
 bqetl_marketing_analysis:
   description: |
     DAG for scheduling marketing queries used for marketing campaign analysis.

@@ -214,3 +214,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: 'Added to reduce validation exceptions: see #1787882'
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

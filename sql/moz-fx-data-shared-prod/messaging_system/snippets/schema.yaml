@@ -206,3 +206,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: A string describing the source of this event
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

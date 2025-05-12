@@ -4,5 +4,6 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   * REPLACE (mozfun.norm.metadata(metadata) AS metadata),
+  LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated,
 FROM
   `moz-fx-data-shared-prod.activity_stream_stable.spoc_fills_v1`

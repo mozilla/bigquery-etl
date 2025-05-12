@@ -248,3 +248,6 @@ fields:
     mode: NULLABLE
     description: Identifier that indicates where installations of Firefox originate,
       see bug 1827238
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

@@ -457,3 +457,6 @@ fields:
 - name: app_version_patch
   type: NUMERIC
   mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

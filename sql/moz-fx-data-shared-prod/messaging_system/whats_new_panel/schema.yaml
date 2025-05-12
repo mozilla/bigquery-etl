@@ -201,3 +201,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: A mirror of the browser sessionId, as defined in https://github.com/mozilla-services/mozilla-pipeline-schemas/blob/main/schemas/telemetry/main/main.4.schema.json
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

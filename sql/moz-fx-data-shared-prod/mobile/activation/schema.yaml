@@ -195,3 +195,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: timezone offset in minutes from UTC
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

@@ -15,6 +15,7 @@ SELECT
   ),
   mozfun.norm.extract_version(client_info.app_display_version, 'major') AS app_version_major,
   mozfun.norm.extract_version(client_info.app_display_version, 'minor') AS app_version_minor,
-  mozfun.norm.extract_version(client_info.app_display_version, 'patch') AS app_version_patch
+  mozfun.norm.extract_version(client_info.app_display_version, 'patch') AS app_version_patch,
+  LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_focus_stable.deletion_request_v1`

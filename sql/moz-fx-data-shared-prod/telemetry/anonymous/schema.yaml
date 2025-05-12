@@ -217,3 +217,6 @@ fields:
 - name: version
   type: INTEGER
   mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

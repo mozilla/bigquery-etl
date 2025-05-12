@@ -315,3 +315,6 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time when the ingestion edge server accepted this message
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

@@ -268,3 +268,6 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: Time at which this event happened
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

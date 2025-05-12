@@ -292,3 +292,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The type of the process which failed to start as a sandboxed process
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

@@ -1303,3 +1303,6 @@ fields:
   mode: NULLABLE
   description: A UUID identifying the profile's group on a single device and allowing
     user-oriented correlation of data
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

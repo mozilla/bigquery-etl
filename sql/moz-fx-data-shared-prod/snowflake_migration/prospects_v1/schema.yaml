@@ -76,13 +76,13 @@ fields:
   name: is_syndicated
   description: Indicates whether the reviewed_corpus_item is a syndicated article
 - mode: NULLABLE
-  type: STRING
+  type: JSON
   name: features
   description: >
     ML features for the prospect item.
     Note: These features are being passed through for ML use and will not be engineered in the warehouse
 - mode: NULLABLE
-  type: STRING
+  type: JSON
   name: run_details
   description: >
     Details about the run, including the flow name and run ID.

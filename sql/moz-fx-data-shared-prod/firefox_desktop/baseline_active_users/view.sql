@@ -113,7 +113,15 @@ SELECT
   first_seen.attribution.medium AS first_seen_attribution_medium,
   first_seen.attribution.source AS first_seen_attribution_source,
   first_seen.attribution.term AS first_seen_attribution_term,
-  first_seen.distribution.name AS first_seen_distribution_name
+  first_seen.distribution.name AS first_seen_distribution_name,
+  IF(
+    LOWER(IFNULL(isp, '')) <> 'browserstack'
+    AND LOWER(
+      IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
+    ) <> 'mozillaonline',
+    TRUE,
+    FALSE
+  ) AS is_desktop
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen` AS last_seen
 LEFT JOIN

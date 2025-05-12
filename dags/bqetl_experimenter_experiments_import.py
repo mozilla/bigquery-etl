@@ -21,6 +21,11 @@ Imports experiments from the Experimenter V4 and V6 API.
 Imported experiment data is used for experiment monitoring in
 [Grafana](https://grafana.telemetry.mozilla.org/d/XspgvdxZz/experiment-enrollment).
 
+*Triage notes*
+
+As long as the most recent DAG run is successful this job can be considered healthy.
+In such case, past DAG failures can be ignored.
+
 #### Owner
 
 ascholtz@mozilla.com

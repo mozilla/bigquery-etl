@@ -5,10 +5,10 @@ owners:
 - srose@mozilla.com
 labels:
   schedule: hourly
-  dag: bqetl_cjms_nonprod
+  dag: bqetl_subplat
   owner1: srose
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  dag_name: bqetl_subplat
   date_partition_parameter: null
 bigquery: null
 workgroup_access:

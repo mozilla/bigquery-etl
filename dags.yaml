@@ -95,8 +95,8 @@ bqetl_google_play_store:
     email_on_retry: false
     end_date: null
     owner: kwindau@mozilla.com
-    retries: 2
-    retry_delay: 30m
+    retries: 4
+    retry_delay: 360m
     start_date: '2025-03-18'
   description: Schedules daily level google play store export data
   schedule_interval: 10 18 * * *

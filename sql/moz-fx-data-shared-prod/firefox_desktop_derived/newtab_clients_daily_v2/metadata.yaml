@@ -1,6 +1,6 @@
 friendly_name: Newtab Clients Daily
 description: |-
-  Daily computation of newtab client metrics.
+  Daily aggregation of client metrics for Newtab.
   one row per Firefox desktop client (client_id) per-day
 owners:
   - gkatre@mozilla.com

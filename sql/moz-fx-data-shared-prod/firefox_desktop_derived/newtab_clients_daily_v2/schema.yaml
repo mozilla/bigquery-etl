@@ -48,7 +48,7 @@ fields:
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If organic topsites are enabled
+  description: TRUE if the user has enabled organic topsites in the browser.
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE

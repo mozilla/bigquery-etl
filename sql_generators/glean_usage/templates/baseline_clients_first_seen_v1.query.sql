@@ -31,9 +31,11 @@ WITH
         ORDER BY submission_timestamp DESC LIMIT 1
       )[OFFSET(0)] AS distribution_ext,
       mozfun.stats.mode_last(
-      ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id 
-      ORDER BY submission_timestamp ASC
-    ) AS profile_group_id
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_profile_group_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS profile_group_id
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -90,10 +92,12 @@ _baseline AS (
       metrics.object.glean_distribution_ext 
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id 
-      ORDER BY submission_timestamp ASC
-    ) AS profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_profile_group_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS profile_group_id
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -174,9 +178,11 @@ _current AS (
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext,
     mozfun.stats.mode_last(
-      ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id 
-      ORDER BY submission_timestamp ASC
-    ) AS profile_group_id,
+      ARRAY_AGG(
+        metrics.uuid.legacy_telemetry_profile_group_id 
+        ORDER BY submission_timestamp ASC
+        )
+    ) AS profile_group_id
     {% endif %}
   FROM
     `{{ baseline_table }}`

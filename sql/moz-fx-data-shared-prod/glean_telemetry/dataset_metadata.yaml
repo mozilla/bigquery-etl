@@ -1,0 +1,11 @@
+friendly_name: Glean Telemetry
+description: |-
+  Contains views of Glean telemetry for desktop and mobile apps
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

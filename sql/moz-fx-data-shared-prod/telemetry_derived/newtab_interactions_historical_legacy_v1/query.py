@@ -20,16 +20,18 @@ from google.cloud import bigquery
 )
 @click.option("--source-bucket", required=True, help="Google Cloud Storage Bucket ")
 @click.option("--source-prefix", required=True, help="Prefix of the path in GSC.")
-def import_braze_current_from_bucket(
+@click.option("--source-file", required=True, help="Name of file to be ingested")
+def import_file_from_bucket(
     destination_project,
     destination_dataset,
     destination_table,
     source_bucket,
     source_prefix,
+    source_file,
 ):
     """Use bigquery client to ingest PARQUET files from bucket in BigQuery."""
     client = bigquery.Client(destination_project)
-    uri = f"gs://{source_bucket}/{source_prefix}/*"
+    uri = f"gs://{source_bucket}/{source_prefix}/{source_file}.PARQUET"
     client.load_table_from_uri(
         uri,
         destination=f"{destination_project}.{destination_dataset}.{destination_table}",
@@ -38,3 +40,7 @@ def import_braze_current_from_bucket(
             source_format=bigquery.job.SourceFormat.PARQUET,
         ),
     ).result()
+
+
+if __name__ == "__main__":
+    import_file_from_bucket()

@@ -65,6 +65,7 @@ with DAG(
             "--destination-table=newtab_interactions_historical_legacy_v1",
             "--source-bucket=moz-fx-data-prod-external-pocket-data",
             "--source-prefix=newtab_interactions_historical",
+            "--source-file=firefox_newtab_legacy_interactions",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="cbeck@mozilla.com",

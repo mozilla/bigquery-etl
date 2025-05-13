@@ -44,7 +44,7 @@ fields:
 - name: sponsored_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If sponsored topsites are enabled
+  description: TRUE if the user has enabled sponsored topsites in the browser.
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE

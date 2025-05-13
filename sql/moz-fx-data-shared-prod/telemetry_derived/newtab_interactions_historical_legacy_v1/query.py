@@ -27,7 +27,7 @@ def import_file_from_bucket(
     destination_table,
     source_bucket,
     source_prefix,
-    source_file
+    source_file,
 ):
     """Use bigquery client to ingest PARQUET files from bucket in BigQuery."""
     client = bigquery.Client(destination_project)
@@ -40,6 +40,7 @@ def import_file_from_bucket(
             source_format=bigquery.job.SourceFormat.PARQUET,
         ),
     ).result()
+
 
 if __name__ == "__main__":
     import_file_from_bucket()

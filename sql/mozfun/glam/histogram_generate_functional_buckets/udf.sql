@@ -42,7 +42,7 @@ SELECT
     ],
     glam.histogram_generate_functional_buckets(2, 8, 305)
   ),
-  -- Check for existance of first 10 keys of a memory distribution
+  -- Check for existence of first 10 keys of a memory distribution
   -- https://mozilla.github.io/glean/book/user/metrics/memory_distribution.html
   -- https://sql.telemetry.mozilla.org/queries/75805/source
   assert.equals(

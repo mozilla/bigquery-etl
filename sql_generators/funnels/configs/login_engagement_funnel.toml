@@ -29,7 +29,7 @@ dimensions = ["service"]
 
 [funnels.login_diff_account_engage]
 
-friendly_name = "Login Funnel Use Different Acccount Engagement"
+friendly_name = "Login Funnel Use Different Account Engagement"
 description = "Click on the use different account link"
 steps = ["login_view", "login_diff_account_engage"]
 dimensions = ["service"]

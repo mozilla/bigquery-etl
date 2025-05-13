@@ -35,7 +35,7 @@ description: |-
 """
 
 # Fields that exist in the source dataset,
-# but are manually overriden in the constructed SQL.
+# but are manually overridden in the constructed SQL.
 # MUST be kept in sync with the query in `app_ping_view.view.sql`
 OVERRIDDEN_FIELDS = {"normalized_channel"}
 

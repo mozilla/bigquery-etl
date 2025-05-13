@@ -55,6 +55,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_org_mozilla_fenix_derived__events_stream__v1 = ExternalTaskSensor(
         task_id="wait_for_org_mozilla_fenix_derived__events_stream__v1",
         external_dag_id="bqetl_glean_usage",
@@ -172,19 +185,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
-        external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_bq_main_events = ExternalTaskSensor(
         task_id="wait_for_bq_main_events",
         external_dag_id="copy_deduplicate",
@@ -247,6 +247,21 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    fenix_derived__nimbus_recorded_targeting_context__v1 = bigquery_etl_query(
+        task_id="fenix_derived__nimbus_recorded_targeting_context__v1",
+        destination_table="nimbus_recorded_targeting_context_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="chumphreys@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "chumphreys@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     fenix_derived__tos_rollout_enrollments__v1 = bigquery_etl_query(
@@ -383,6 +398,10 @@ with DAG(
 
     experiment_enrollment_daily_active_population.set_upstream(
         telemetry_derived__experiments_daily_active_clients__v1
+    )
+
+    fenix_derived__nimbus_recorded_targeting_context__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     fenix_derived__tos_rollout_enrollments__v1.set_upstream(

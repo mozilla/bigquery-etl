@@ -15,7 +15,7 @@ fields:
   description:
 
 - mode: NULLABLE
-  name: channel
+  name: normalized_channel
   type: STRING
   description:
 {% for attribution_group in product_attribution_groups %}

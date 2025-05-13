@@ -278,7 +278,7 @@ SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
-  normalized_channel AS channel,
+  normalized_channel,
   {% if 'install_source' in product_attribution_group_names %}
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   {% endif %}

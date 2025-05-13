@@ -6,7 +6,7 @@ SELECT
   submission_date,
   client_id,
   sample_id,
-  channel,
+  normalized_channel,
   {% for attribution_group in product_attribution_groups if attribution_group.name in ["adjust", "play_store", "meta"] %}
   {% for attribution_field in attribution_group.fields %}
     {% if app_name == "fenix" and attribution_field.name == "adjust_campaign" %}

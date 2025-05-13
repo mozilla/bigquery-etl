@@ -5,7 +5,7 @@ AS
 SELECT
   client_id,
   active_users.submission_date AS first_seen_date,
-  channel,
+  normalized_channel,
   app_name,
   app_display_version AS app_version,
   country,
@@ -27,7 +27,7 @@ FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN
   `{{ project_id }}.{{ dataset }}.attribution_clients` AS attribution
-  USING(client_id, channel)
+  USING(client_id, normalized_channel)
 WHERE
   active_users.submission_date < CURRENT_DATE
   AND is_new_profile

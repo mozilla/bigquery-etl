@@ -44,7 +44,6 @@ GROUP BY
   submission_date,
   first_seen_date,
   normalized_channel,
-  channel,
   app_name,
   app_version,
   country,

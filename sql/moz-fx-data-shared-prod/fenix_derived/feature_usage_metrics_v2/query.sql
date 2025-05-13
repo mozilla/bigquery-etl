@@ -15,7 +15,7 @@ client_attribution AS (
   SELECT
     client_id,
     adjust_network,
-    channel,
+    normalized_channel,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 ),
@@ -194,7 +194,7 @@ SELECT
   @submission_date AS submission_date,
   dau_date AS metric_date,
   COUNT(DISTINCT client_id) AS clients,
-  channel,
+  normalized_channel AS channel,
   country,
   adjust_network,
   is_default_browser,
@@ -337,7 +337,7 @@ FROM
   metric_ping_clients_feature_usage
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id, normalized_channel)
 WHERE
   dau_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
 GROUP BY

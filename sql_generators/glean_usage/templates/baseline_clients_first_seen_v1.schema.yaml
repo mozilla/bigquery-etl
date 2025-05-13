@@ -53,4 +53,8 @@ fields:
   name: distribution_ext
   type: JSON
   description: Extended Distribution Information
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
 {% endif %}

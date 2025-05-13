@@ -48,6 +48,7 @@ check_results AS (
         OR (event_name LIKE 'access_token_%' AND events_new.count_new - events_old.count_old > 50)
       )
     )
+    AND events_new.count_new < events_old.count_old -- we no longer need old events, it's safe to ignore if they're not instrumented
 )
 SELECT
   IF(
@@ -121,6 +122,7 @@ check_results AS (
         events_old.count_old
       ) > 0.15 -- low-volume events can have higher relative discrepancies
     )
+    AND events_new.count_new < events_old.count_old -- we no longer need old events, it's safe to ignore if they're not instrumented
 )
 SELECT
   IF(

@@ -4,8 +4,8 @@ WITH baseline_clients AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country
+    normalized_channel,
+    normalized_country_code,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
@@ -29,7 +29,7 @@ client_attribution AS (
   SELECT
     client_id,
     adjust_network,
-    channel,
+    normalized_channel,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.attribution_clients`
 ),
@@ -41,8 +41,8 @@ metric_ping_clients_feature_usage AS (
       DATETIME(LEAST(ping_info.parsed_start_time, ping_info.parsed_end_time), 'UTC')
     ) AS ping_date,
     client_info.client_id,
-    normalized_channel AS channel,
-    normalized_country_code AS country,
+    normalized_channel,
+    normalized_country_code,
     IF(SUM(metrics.counter.app_opened_as_default_browser) > 0, TRUE, FALSE) AS is_default_browser,
     --Credential Management: Logins
     SUM(COALESCE(metrics.counter.logins_deleted, 0)) AS logins_deleted,
@@ -125,15 +125,15 @@ metric_ping_clients_feature_usage AS (
   GROUP BY
     ping_date,
     client_id,
-    channel,
-    country
+    normalized_channel,
+    normalized_country_code
 )
 -- Aggregated feature usage
 SELECT
   @submission_date AS submission_date,
   ping_date,
-  channel,
-  country,
+  normalized_channel AS channel,
+  normalized_country_code AS country,
   adjust_network,
   is_default_browser,
   /*Logins*/
@@ -298,10 +298,10 @@ FROM
 -- to avoid situation where client count based feature usage is greater than DAU.
 INNER JOIN
   baseline_clients
-  USING (ping_date, client_id, channel, country)
+  USING (ping_date, client_id, normalized_channel, normalized_country_code)
 LEFT JOIN
   client_attribution
-  USING (client_id, channel)
+  USING (client_id, normalized_channel)
 GROUP BY
   submission_date,
   ping_date,

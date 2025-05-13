@@ -1,8 +1,6 @@
 SELECT
   active_users.submission_date,
-  -- TODO: once we update `channel` with the values from normalized_channel we should remove normalized_channel.
   active_users.normalized_channel,
-  active_users.channel,
   active_users.app_name,
   active_users.app_display_version AS app_version,
   COALESCE(active_users.country, '??') AS country,
@@ -21,14 +19,13 @@ FROM
   `moz-fx-data-shared-prod.firefox_ios.active_users` AS active_users
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_ios.attribution_clients` AS profile_attribution
-  USING (client_id, channel)
+  USING (client_id, normalized_channel)
 WHERE
   active_users.submission_date = @submission_date
   AND is_dau
 GROUP BY
   submission_date,
   normalized_channel,
-  channel,
   app_name,
   app_version,
   country,

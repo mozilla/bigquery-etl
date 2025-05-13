@@ -8,7 +8,7 @@ WITH active_users AS (
     client_id,
     sample_id,
     app_name,
-    channel,
+    normalized_channel,
     mozfun.bits28.retention(days_seen_bits, submission_date) AS retention_seen,
     mozfun.bits28.retention(days_active_bits & days_seen_bits, submission_date) AS retention_active,
     days_seen_bits,
@@ -23,7 +23,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
-    channel,
+    normalized_channel,
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}

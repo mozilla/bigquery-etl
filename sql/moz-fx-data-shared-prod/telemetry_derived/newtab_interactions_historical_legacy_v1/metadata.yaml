@@ -1,0 +1,23 @@
+friendly_name: Firefox Newtab Historical Legacy
+description: |-
+  Data imported from Snowflake to bring in historical data from Newtab interactions prior to Glean.
+owners:
+- cbeck@mozilla.com
+labels:
+  owner1: cbeck
+  dag: bqetl_newtab_historical
+scheduling:
+  dag_name: bqetl_newtab_historical
+  arguments:
+  - --destination-project=moz-fx-data-shared-prod
+  - --destination-dataset=telemetry_derived
+  - --destination-table=newtab_interactions_historical_legacy_v1
+  - --source-bucket=moz-fx-data-prod-external-pocket-data
+  - --source-prefix=newtab_interactions_historical
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

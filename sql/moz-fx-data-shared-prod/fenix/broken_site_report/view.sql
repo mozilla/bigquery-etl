@@ -93,7 +93,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox.broken_site_report`
 UNION ALL
@@ -188,7 +189,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.broken_site_report`
 UNION ALL
@@ -283,7 +285,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix.broken_site_report`
 UNION ALL
@@ -378,7 +381,8 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.broken_site_report`
 UNION ALL
@@ -473,6 +477,7 @@ SELECT
   submission_timestamp,
   app_version_major,
   app_version_minor,
-  app_version_patch
+  app_version_patch,
+  is_bot_generated
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fennec_aurora.broken_site_report`

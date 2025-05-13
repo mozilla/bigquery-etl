@@ -1,7 +1,7 @@
 friendly_name: Newtab Clients Daily
 description: |-
   Daily aggregation of client metrics for Newtab.
-  one row per Firefox desktop client (client_id) per-day
+  The granularity is one row per Firefox Desktop client_id per submission_date.
 owners:
   - gkatre@mozilla.com
 labels:

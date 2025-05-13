@@ -2320,3 +2320,17 @@ bqetl_ech_adoption_rate:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_newtab_historical:
+  schedule_interval: 0 2 * * *
+  description: |
+    Load Braze current data from GCS into BigQuery
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2025-05-13'
+    retries: 1
+    retry_delay: 5m
+  tags:
+    - impact/tier_3

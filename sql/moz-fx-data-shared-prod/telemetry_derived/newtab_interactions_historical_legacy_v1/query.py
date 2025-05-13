@@ -20,23 +20,21 @@ from google.cloud import bigquery
 )
 @click.option("--source-bucket", required=True, help="Google Cloud Storage Bucket ")
 @click.option("--source-prefix", required=True, help="Prefix of the path in GSC.")
-@click.option("--event-type", required=True, help="Eventtype for the table.")
 def import_braze_current_from_bucket(
     destination_project,
     destination_dataset,
     destination_table,
     source_bucket,
     source_prefix,
-    event_type,
 ):
-    """Use bigquery client to store AVRO files from bucket in BigQuery."""
+    """Use bigquery client to ingest PARQUET files from bucket in BigQuery."""
     client = bigquery.Client(destination_project)
-    uri = f"gs://{source_bucket}/{source_prefix}/event_type={event_type}/*"
+    uri = f"gs://{source_bucket}/{source_prefix}/*"
     client.load_table_from_uri(
         uri,
         destination=f"{destination_project}.{destination_dataset}.{destination_table}",
         job_config=bigquery.LoadJobConfig(
             write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
-            source_format=bigquery.job.SourceFormat.AVRO,
+            source_format=bigquery.job.SourceFormat.PARQUET,
         ),
     ).result()

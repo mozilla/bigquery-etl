@@ -14,6 +14,11 @@ fields:
   type: STRING
   description: Release channel of the app the profile is using.
 
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: Release channel of the app the profile is using.
+
 - name: app_name
   type: STRING
   mode: NULLABLE

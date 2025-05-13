@@ -22,6 +22,7 @@ WITH device_manufacturer_counts AS (
 SELECT
   first_seen_date,
   normalized_channel,
+  normalized_channel AS channel,
   app_name,
   app_version,
   country,
@@ -52,6 +53,7 @@ WHERE
 GROUP BY
   first_seen_date,
   normalized_channel,
+  channel,
   app_name,
   app_version,
   country,

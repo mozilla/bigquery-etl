@@ -58,6 +58,7 @@ SELECT
   first_seen_date,
   client_id,
   normalized_channel,
+  normalized_channel AS channel,
   app_name,
   app_version,
   country,

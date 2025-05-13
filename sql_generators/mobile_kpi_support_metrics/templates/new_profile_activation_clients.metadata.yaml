@@ -28,7 +28,7 @@ bigquery:
     expiration_days: 775
   clustering:
     fields:
-      - normalized_channel
+      - channel
       - country
 monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}

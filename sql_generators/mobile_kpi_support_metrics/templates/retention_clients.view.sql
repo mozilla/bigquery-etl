@@ -38,7 +38,7 @@ SELECT
   clients_daily.client_id,
   clients_daily.sample_id,
   active_users.app_name,
-  clients_daily.channel,
+  clients_daily.normalized_channel AS channel,
   clients_daily.country,
   clients_daily.city,
   clients_daily.geo_subdivision,

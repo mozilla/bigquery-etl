@@ -12,6 +12,10 @@ tag_deployments:
           - saved_metric_id: is_unique
           - saved_metric_id: is_not_null
       - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.channel
+        metrics:
+          - saved_metric_id: is_99_percent_valid_normalized_channel
+      - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:
           - saved_metric_id: freshness

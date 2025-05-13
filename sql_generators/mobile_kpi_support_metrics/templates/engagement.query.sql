@@ -22,7 +22,8 @@ WITH device_manufacturer_counts AS (
 SELECT
   submission_date,
   first_seen_date,
-  normalized_channel,
+  channel AS normalized_channel,
+  channel,
   app_name,
   app_version,
   country,

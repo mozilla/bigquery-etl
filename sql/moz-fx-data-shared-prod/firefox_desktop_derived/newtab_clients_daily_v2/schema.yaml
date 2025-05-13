@@ -29,7 +29,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Homepage category setting for Newtab
-- name: newtab_newtab_category
+- name: newtab_category
   type: STRING
   mode: NULLABLE
   description: Newtab category setting

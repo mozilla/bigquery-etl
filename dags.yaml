@@ -2349,7 +2349,7 @@ bqetl_ech_adoption_rate:
 bqetl_newtab_historical:
   schedule_interval: 0 2 * * *
   description: |
-    Load Braze current data from GCS into BigQuery
+    Load Newtab historical data from GCS into BigQuery
   default_args:
     owner: cbeck@mozilla.com
     email:

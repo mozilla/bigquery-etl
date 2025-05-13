@@ -72,7 +72,7 @@ SELECT
   p.features,
   p.run_details,
   p.schema_version,
-  SHA256(CONCAT(p.prospect_id, p.object_update_trigger)) AS prospect_id_object_update_trigger_key
+  TO_BASE64(SHA256(CONCAT(p.prospect_id, p.object_update_trigger))) AS prospect_id_object_update_trigger_key
 FROM
   stg_prospects p
 QUALIFY

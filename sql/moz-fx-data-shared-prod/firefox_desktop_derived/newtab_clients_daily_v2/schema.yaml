@@ -36,7 +36,7 @@ fields:
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If organic stories are enabled
+  description: TRUE if the user has enabled organic stories in the browser.
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE

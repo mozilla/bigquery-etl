@@ -40,7 +40,7 @@ fields:
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If sponsored stories are enabled
+  description: TRUE if the user has enabled sponsored stories in the browser.
 - name: sponsored_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE

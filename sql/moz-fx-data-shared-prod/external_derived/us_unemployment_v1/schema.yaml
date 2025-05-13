@@ -1,0 +1,21 @@
+fields:
+- name: Year
+  type: STRING
+  mode: NULLABLE
+  description: Year
+- name: Period
+  type: STRING
+  mode: NULLABLE
+  description: Period
+- name: PeriodName
+  type: STRING
+  mode: NULLABLE
+  description: Period Name
+- name: UnemploymentRate
+  type: NUMERIC
+  mode: NULLABLE
+  description: Unemployment Rate
+- name: LastUpdated
+  type: DATE
+  mode: NULLABLE
+  description: Last Updated Date

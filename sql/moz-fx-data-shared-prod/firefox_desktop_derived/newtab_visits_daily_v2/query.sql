@@ -8,7 +8,6 @@ WITH events_unnested AS (
     normalized_os AS os,
     normalized_channel AS channel,
     client_info.locale AS locale,
-    client_info.app_display_version AS browser_version,
     normalized_country_code AS country,
     metrics.string.newtab_homepage_category AS newtab_homepage_category,
     metrics.string.newtab_newtab_category AS newtab_newtab_category,
@@ -17,6 +16,13 @@ WITH events_unnested AS (
     metrics.boolean.topsites_sponsored_enabled AS sponsored_topsites_enabled,
     metrics.boolean.topsites_enabled AS organic_topsites_enabled,
     metrics.boolean.newtab_search_enabled AS newtab_search_enabled,
+    mozfun.newtab.is_default_ui_v1(
+      category,
+      name,
+      extra,
+      metrics.string.newtab_homepage_category,
+      metrics.string.newtab_newtab_category
+    ) AS is_default_ui,
     category AS event_category,
     name AS event_name,
     extra AS event_details,
@@ -76,7 +82,6 @@ SELECT
   ANY_VALUE(os) AS os,
   ANY_VALUE(channel) AS channel,
   ANY_VALUE(locale) AS locale,
-  ANY_VALUE(browser_version) AS browser_version,
   ANY_VALUE(country) AS country,
   ANY_VALUE(newtab_homepage_category) AS newtab_homepage_category,
   ANY_VALUE(newtab_newtab_category) AS newtab_newtab_category,
@@ -85,112 +90,154 @@ SELECT
   ANY_VALUE(sponsored_topsites_enabled) AS sponsored_topsites_enabled,
   ANY_VALUE(organic_topsites_enabled) AS organic_topsites_enabled,
   ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
-  LOGICAL_OR(
-    mozfun.newtab.is_default_ui_v1(
-      event_category,
-      event_name,
-      event_details,
-      newtab_homepage_category,
-      newtab_newtab_category
-    )
-  ) AS is_default_ui,
+  LOGICAL_OR(is_default_ui) AS is_default_ui,
   LOGICAL_OR(event_category = 'newtab' AND event_name = 'opened') AS is_newtab_opened,
-  LOGICAL_OR(event_category = 'newtab.search' AND event_name = 'issued') AS is_search_issued,
-  LOGICAL_OR(event_category = 'newtab.search.ad' AND event_name = 'click') AS is_search_ad_click,
+  LOGICAL_OR(event_category = 'newtab.search' AND event_name = 'issued')
+  AND LOGICAL_OR(is_default_ui) AS is_search_issued,
+  LOGICAL_OR(event_category = 'newtab.search.ad' AND event_name = 'click')
+  AND LOGICAL_OR(is_default_ui) AS is_search_ad_click,
   LOGICAL_OR(
     event_category = 'pocket'
     AND event_name IN ('click', 'dismiss', 'thumb_voting_interaction', 'thumb_voting_interaction')
-  ) AS is_content_interaction,
-  LOGICAL_OR(event_category = 'pocket' AND event_name IN ('click')) AS is_content_click,
-  LOGICAL_OR(event_category = 'pocket' AND event_name IN ('impression')) AS is_content_impression,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_content_interaction,
+  LOGICAL_OR(event_category = 'pocket' AND event_name IN ('click'))
+  AND LOGICAL_OR(is_default_ui) AS is_content_click,
+  LOGICAL_OR(event_category = 'pocket' AND event_name IN ('impression'))
+  AND LOGICAL_OR(is_default_ui) AS is_content_impression,
   LOGICAL_OR(
     event_category = 'pocket'
     AND event_name IN ('click', 'dismiss')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  ) AS is_sponsored_content_interaction,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_content_interaction,
   LOGICAL_OR(
     event_category = 'pocket'
     AND event_name IN ('click')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  ) AS is_sponsored_content_click,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_content_click,
   LOGICAL_OR(
     event_category = 'pocket'
     AND event_name IN ('impression')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  ) AS is_sponsored_content_impression,
-  COUNTIF(event_category = 'pocket' AND event_name IN ('click')) AS any_content_click_count,
-  COUNTIF(
-    event_category = 'pocket'
-    AND event_name IN ('impression')
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_content_impression,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'pocket' AND event_name IN ('click')),
+    0
+  ) AS any_content_click_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'pocket' AND event_name IN ('impression')),
+    0
   ) AS any_content_impression_count,
-  COUNTIF(
-    event_category = 'pocket'
-    AND event_name IN ('click')
-    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('click')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS organic_content_click_count,
-  COUNTIF(
-    event_category = 'pocket'
-    AND event_name IN ('impression')
-    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('impression')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS organic_content_impression_count,
-  COUNTIF(
-    event_category = 'pocket'
-    AND event_name IN ('click')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('click')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS sponsored_content_click_count,
-  COUNTIF(
-    event_category = 'pocket'
-    AND event_name IN ('impression')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('impression')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS sponsored_content_impression_count,
-  LOGICAL_OR(
-    event_category = 'topsites'
-    AND event_name IN ('click', 'dismiss')
-  ) AS is_topsites_interaction,
-  LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click')) AS is_topsites_click,
-  LOGICAL_OR(
-    event_category = 'topsites'
-    AND event_name IN ('impression')
-  ) AS is_topsites_impression,
+  LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click', 'dismiss'))
+  AND LOGICAL_OR(is_default_ui) AS is_topsites_interaction,
+  LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click'))
+  AND LOGICAL_OR(is_default_ui) AS is_topsites_click,
+  LOGICAL_OR(event_category = 'topsites' AND event_name IN ('impression'))
+  AND LOGICAL_OR(is_default_ui) AS is_topsites_impression,
   LOGICAL_OR(
     event_category = 'topsites'
     AND event_name IN ('click', 'dismiss')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  ) AS is_sponsored_topsites_interaction,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsites_interaction,
   LOGICAL_OR(
     event_category = 'topsites'
     AND event_name IN ('click')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  ) AS is_sponsored_topsites_click,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsites_click,
   LOGICAL_OR(
     event_category = 'topsites'
     AND event_name IN ('impression')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  ) AS is_sponsored_topsites_impression,
-  COUNTIF(event_category = 'topsites' AND event_name IN ('click')) AS any_topsites_click_count,
-  COUNTIF(
-    event_category = 'topsites'
-    AND event_name IN ('impression')
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsites_impression,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'topsites' AND event_name IN ('click')),
+    0
+  ) AS any_topsites_click_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'topsites' AND event_name IN ('impression')),
+    0
   ) AS any_topsites_impression_count,
-  COUNTIF(
-    event_category = 'topsites'
-    AND event_name IN ('click')
-    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('click')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS organic_topsites_click_count,
-  COUNTIF(
-    event_category = 'topsites'
-    AND event_name IN ('impression')
-    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('impression')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS organic_topsites_impression_count,
-  COUNTIF(
-    event_category = 'topsites'
-    AND event_name IN ('click')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('click')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS sponsored_topsites_click_count,
-  COUNTIF(
-    event_category = 'topsites'
-    AND event_name IN ('impression')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('impression')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
   ) AS sponsored_topsites_impression_count,
   LOGICAL_OR(
     event_category = 'newtab'
@@ -199,7 +246,8 @@ SELECT
       'weather_open_provider_url',
       'weather_location_selected'
     )
-  ) AS is_widget_interaction,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_widget_interaction,
   LOGICAL_OR(
     event_category = 'newtab'
     AND event_name IN (
@@ -208,7 +256,8 @@ SELECT
       'wallpaper_highlight_cta_click',
       'wallpaper_highlight_dismissed'
     )
-  ) AS is_wallpaper_interaction,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_wallpaper_interaction,
   LOGICAL_OR(
     event_category = 'newtab'
     AND event_name IN (
@@ -225,7 +274,8 @@ SELECT
       'sections_unfollow_section',
       'inline_selection_click'
     )
-  ) AS is_other_interaction,
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_other_interaction,
 FROM
   events_unnested
 GROUP BY

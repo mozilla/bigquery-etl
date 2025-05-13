@@ -1,6 +1,21 @@
 friendly_name: Newtab Daily Aggregations
 description: |-
   A daily aggregation of newtab metrics.
+  The granularity is one row per day per each of the following dimensions:
+      submission_date
+      app_version
+      os
+      channel
+      locale
+      browser_version
+      country
+      newtab_homepage_category
+      newtab_newtab_category
+      organic_content_enabled
+      sponsored_content_enabled
+      sponsored_topsites_enabled
+      organic_topsites_enabled
+      newtab_search_enabled
 owners:
   - gkatre@mozilla.com
 labels:

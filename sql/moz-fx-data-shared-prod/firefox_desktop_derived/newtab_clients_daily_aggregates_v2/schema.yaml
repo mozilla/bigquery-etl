@@ -15,9 +15,6 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-- name: browser_version
-  type: STRING
-  mode: NULLABLE
 - name: country
   type: STRING
   mode: NULLABLE
@@ -32,23 +29,23 @@ fields:
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If organic stories are enabled
+  description: TRUE if organic stories are enabled
 - name: sponsored_content_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If sponsored stories are enabled
+  description: TRUE if sponsored stories are enabled
 - name: sponsored_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If sponsored topsites are enabled
+  description: TRUE if sponsored topsites are enabled
 - name: organic_topsites_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If organic topsites are enabled
+  description: TRUE if organic topsites are enabled
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If search enabled
+  description: TRUE if search enabled
 - name: all_visits
   type: INTEGER
   description: all visits

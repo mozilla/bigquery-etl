@@ -6,7 +6,6 @@ SELECT
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(os)) AS os,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(channel)) AS channel,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
-  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(browser_version)) AS browser_version,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country)) AS country,
   `moz-fx-data-shared-prod.udf.mode_last`(
     ARRAY_AGG(newtab_homepage_category)
@@ -29,7 +28,7 @@ SELECT
   `moz-fx-data-shared-prod.udf.mode_last`(
     ARRAY_AGG(newtab_search_enabled)
   ) AS newtab_search_enabled,
-  COUNT(DISTINCT newtab_visit_id) AS all_visits,
+  COUNT(DISTINCT IF(is_newtab_opened, newtab_visit_id, NULL)) AS all_visits,
   COUNT(DISTINCT IF(is_default_ui, newtab_visit_id, NULL)) AS default_ui_visits,
   COUNT(
     DISTINCT IF(
@@ -75,14 +74,13 @@ SELECT
   SUM(sponsored_content_click_count) AS sponsored_content_click_count,
   SUM(sponsored_content_impression_count) AS sponsored_content_impression_count,
   COUNT(
-    DISTINCT IF(is_topsites_interaction AND is_default_ui, newtab_visit_id, NULL)
+    DISTINCT IF(is_topsites_interaction, newtab_visit_id, NULL)
   ) AS any_topsites_engagement_visits,
   SUM(any_topsites_click_count) AS any_topsites_click_count,
   SUM(any_topsites_impression_count) AS any_topsites_impression_count,
   COUNT(
     DISTINCT IF(
       is_topsites_interaction
-      AND is_default_ui
       AND NOT is_sponsored_topsites_interaction,
       newtab_visit_id,
       NULL
@@ -91,7 +89,7 @@ SELECT
   SUM(organic_topsites_click_count) AS organic_topsites_click_count,
   SUM(organic_topsites_impression_count) AS organic_topsites_impression_count,
   COUNT(
-    DISTINCT IF(is_sponsored_topsites_interaction AND is_default_ui, newtab_visit_id, NULL)
+    DISTINCT IF(is_sponsored_topsites_interaction, newtab_visit_id, NULL)
   ) AS sponsored_topsite_engagement_visits,
   SUM(sponsored_topsites_click_count) AS sponsored_topsites_click_count,
   SUM(sponsored_topsites_impression_count) AS sponsored_topsites_impression_count,

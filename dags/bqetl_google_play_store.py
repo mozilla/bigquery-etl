@@ -54,10 +54,10 @@ default_args = {
     "end_date": None,
     "email": ["kwindau@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=1800),
+    "retry_delay": datetime.timedelta(seconds=21600),
     "email_on_failure": True,
     "email_on_retry": False,
-    "retries": 2,
+    "retries": 4,
     "max_active_tis_per_dag": None,
 }
 

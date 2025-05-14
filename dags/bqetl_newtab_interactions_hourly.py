@@ -53,6 +53,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1",
+        external_dag_id="bqetl_newtab_historical",
+        external_task_id="telemetry_derived__newtab_interactions_historical_legacy__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     telemetry_derived__newtab_interactions_hourly__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_interactions_hourly__v1",
         destination_table='newtab_interactions_hourly_v1${{ (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d") }}',
@@ -66,4 +79,8 @@ with DAG(
             "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"
         ],
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql",
+    )
+
+    telemetry_derived__newtab_interactions_hourly__v1.set_upstream(
+        wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1
     )

@@ -71,3 +71,17 @@ with DAG(
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
+
+    with TaskGroup(
+        "telemetry_derived__newtab_interactions_historical_legacy__v1_external",
+    ) as telemetry_derived__newtab_interactions_historical_legacy__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_newtab_interactions_hourly__wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1",
+            external_dag_id="bqetl_newtab_interactions_hourly",
+            external_task_id="wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        telemetry_derived__newtab_interactions_historical_legacy__v1_external.set_upstream(
+            telemetry_derived__newtab_interactions_historical_legacy__v1
+        )

@@ -3,9 +3,12 @@ description: |-
   Interactions on Newtab desktop across all territories and release channels. The addition
   of the Unified API (UAPI) includes mobile data in addition to desktop.
 
-  For any downstream jobs specific to desktop, filter on the os column
+  For any downstream jobs specific to desktop, filter on the surface column
 
   This job runs hourly and is aggregated by day, tile ID, and position.
+
+  Anyone doing backfills on this model should be mindful that the legacy data currently has an
+  expiration of 180 days.
 owners:
 - cbeck@mozilla.com
 labels:
@@ -38,4 +41,5 @@ references:
   - moz-fx-data-shared-prod.activity_stream_live.impression_stats_v1
   - moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+  - moz-fx-data-shared-prod.telemetry_derived.newtab_interactions_historical_legacy_v1
 require_column_descriptions: false

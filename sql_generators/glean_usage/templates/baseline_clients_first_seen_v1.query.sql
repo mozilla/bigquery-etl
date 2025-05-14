@@ -35,7 +35,7 @@ WITH
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
-      ) AS profile_group_id
+      ) AS legacy_telemetry_profile_group_id
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -97,7 +97,7 @@ _baseline AS (
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
-      ) AS profile_group_id
+      ) AS legacy_telemetry_profile_group_id
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -119,7 +119,7 @@ _current AS (
     {% if app_name == "firefox_desktop" %}
     attribution_ext,
     distribution_ext,
-    profile_group_id
+    legacy_telemetry_profile_group_id
     {% endif %}
   FROM
     _baseline
@@ -142,7 +142,7 @@ _previous AS (
     {% if app_name == "firefox_desktop" %}
     attribution_ext,
     distribution_ext,
-    profile_group_id,
+    legacy_telemetry_profile_group_id,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -182,7 +182,7 @@ _current AS (
         metrics.uuid.legacy_telemetry_profile_group_id 
         ORDER BY submission_timestamp ASC
         )
-    ) AS profile_group_id
+    ) AS legacy_telemetry_profile_group_id
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -207,7 +207,7 @@ _previous AS (
     {% if app_name == "firefox_desktop" %}
     attribution_ext,
     distribution_ext,
-    profile_group_id,
+    legacy_telemetry_profile_group_id,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -245,7 +245,7 @@ SELECT
   {% if app_name == "firefox_desktop" %}
   attribution_ext,
   distribution_ext,
-  profile_group_id,
+  legacy_telemetry_profile_group_id,
   {% endif %}
 FROM _joined
 QUALIFY

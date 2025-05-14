@@ -1,0 +1,8 @@
+2025-05-14:
+  start_date: 2024-08-20
+  end_date: 2024-10-16
+  reason: install_source missing period
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  override_retention_limit: false

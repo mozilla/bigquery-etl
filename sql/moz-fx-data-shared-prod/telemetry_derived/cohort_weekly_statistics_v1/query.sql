@@ -33,9 +33,9 @@ WITH clients_first_seen AS (
     `moz-fx-data-shared-prod.telemetry_derived.rolling_cohorts_v2`
   WHERE
     cohort_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 180 day),
+      DATE_SUB(@submission_date, INTERVAL 768 day),
       WEEK
-    ) --start of week for date 180 days ago
+    ) --start of week for date 768 days ago
     AND cohort_date <= DATE_SUB(
       DATE_TRUNC(@submission_date, WEEK),
       INTERVAL 1 DAY
@@ -59,9 +59,9 @@ weekly_active_clients AS (
     `moz-fx-data-shared-prod.telemetry.active_users`
   WHERE
     submission_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 180 day),
+      DATE_SUB(@submission_date, INTERVAL 768 day),
       WEEK
-    ) --start of week for date 180 days ago
+    ) --start of week for date 768 days ago
     AND submission_date <= DATE_SUB(
       DATE_TRUNC(@submission_date, WEEK),
       INTERVAL 1 DAY
@@ -75,9 +75,9 @@ unique_weeks AS (
     `mozdata.external.calendar`
   WHERE
     submission_date >= DATE_TRUNC(
-      DATE_SUB(@submission_date, INTERVAL 180 day),
+      DATE_SUB(@submission_date, INTERVAL 768 day),
       WEEK
-    ) --start of week 180 days ago
+    ) --start of week 768 days ago
     AND submission_date <= DATE_SUB(
       DATE_TRUNC(@submission_date, WEEK),
       INTERVAL 1 DAY

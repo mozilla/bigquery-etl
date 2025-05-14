@@ -7,6 +7,7 @@ owners:
 labels:
   incremental: false
   owner1: kwindau
+  table_type: client_level
 scheduling:
   dag_name: bqetl_cohort_retention
   date_partition_parameter: null

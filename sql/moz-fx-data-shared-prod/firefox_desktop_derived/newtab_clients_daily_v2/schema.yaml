@@ -10,6 +10,7 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: Fx major version number
 - name: os
   type: STRING
   mode: NULLABLE
@@ -55,7 +56,7 @@ fields:
   description: Count of newtab open visits
 - name: default_ui_visits
   type: INTEGER
-  description: Count of default ui visits
+  description: Count of default ui open visits
 - name: any_engagement_visits
   type: INTEGER
   description: Count of any engagement visits

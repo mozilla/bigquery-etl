@@ -352,8 +352,8 @@ event_ping_clients_feature_usage AS (
   GROUP BY
     ping_date,
     client_id,
-    channel,
-    country
+    normalized_channel,
+    normalized_country_code
 )
 SELECT
   @submission_date AS submission_date,

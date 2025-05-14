@@ -143,8 +143,8 @@ metric_ping_clients_feature_usage AS (
   GROUP BY
     ping_date,
     client_id,
-    channel,
-    country,
+    normalized_channel,
+    normalized_country_code,
     is_default_browser
 )
 -- Aggregated feature usage

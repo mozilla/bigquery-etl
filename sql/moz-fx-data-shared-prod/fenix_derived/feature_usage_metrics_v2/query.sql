@@ -46,10 +46,12 @@ metric_ping_clients_feature_usage AS (
   SELECT
     dau_date,
     client_info.client_id,
-    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[SAFE_OFFSET(0)] AS channel,
+    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
     ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp DESC)[
       SAFE_OFFSET(0)
-    ] AS country,
+    ] AS normalized_country_code,
     LOGICAL_OR(COALESCE(metrics.boolean.metrics_default_browser, FALSE)) AS is_default_browser,
     --Credential Management: Logins
     SUM(COALESCE(metrics.counter.logins_deleted, 0)) AS logins_deleted,
@@ -195,7 +197,7 @@ SELECT
   dau_date AS metric_date,
   COUNT(DISTINCT client_id) AS clients,
   normalized_channel AS channel,
-  country,
+  normalized_country_code AS country,
   adjust_network,
   is_default_browser,
   /*Logins*/

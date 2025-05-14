@@ -19,7 +19,13 @@
       ] AS attribution_ext,
       ARRAY_AGG(metrics.object.glean_distribution_ext ORDER BY submission_timestamp DESC LIMIT 1)[
         OFFSET(0)
-      ] AS distribution_ext
+      ] AS distribution_ext,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.uuid.legacy_telemetry_client_id ORDER BY submission_timestamp ASC)
+      ) AS legacy_telemetry_client_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id ORDER BY submission_timestamp ASC)
+      ) AS legacy_telemetry_profile_group_id
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -51,7 +57,13 @@
       ] AS attribution_ext,
       ARRAY_AGG(metrics.object.glean_distribution_ext ORDER BY submission_timestamp DESC LIMIT 1)[
         OFFSET(0)
-      ] AS distribution_ext
+      ] AS distribution_ext,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.uuid.legacy_telemetry_client_id ORDER BY submission_timestamp ASC)
+      ) AS legacy_telemetry_client_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id ORDER BY submission_timestamp ASC)
+      ) AS legacy_telemetry_profile_group_id
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -73,7 +85,9 @@
       attribution,
       `distribution`,
       attribution_ext,
-      distribution_ext
+      distribution_ext,
+      legacy_telemetry_client_id,
+      legacy_telemetry_profile_group_id,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -105,7 +119,9 @@
     attribution,
     `distribution`,
     attribution_ext,
-    distribution_ext
+    distribution_ext,
+    legacy_telemetry_client_id,
+    legacy_telemetry_profile_group_id,
   FROM
     _joined
   QUALIFY

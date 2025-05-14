@@ -59,67 +59,67 @@ fields:
   description: Count of default ui open visits
 - name: any_engagement_visits
   type: INTEGER
-  description: Count of any engagement visits
+  description: Count of any engagement visits with newtab opened in default ui
 - name: nonsearch_engagement_visits
   type: INTEGER
-  description: Count of nonsearch engagement visits
+  description: Count of nonsearch engagement visits with newtab opened in default ui
 - name: any_content_engagement_visits
   type: INTEGER
-  description: Count of any content engagement visits
+  description: Count of any content engagement visits with newtab opened in default ui
 - name: any_content_click_count
   type: INTEGER
-  description: Count of clicks on any newtab content
+  description: Count of clicks on any newtab content with newtab opened in default ui
 - name: any_content_impression_count
   type: INTEGER
-  description: Count of impression on any newtab content
+  description: Count of impression on any newtab content with newtab opened in default ui
 - name: organic_content_engagement_visits
   type: INTEGER
-  description: Count of organic content engagement visits
+  description: Count of organic content engagement visits with newtab opened in default ui
 - name: organic_content_click_count
   type: INTEGER
-  description: Count of clicks on Organic content
+  description: Count of clicks on Organic content with newtab opened in default ui
 - name: organic_content_impression_count
   type: INTEGER
-  description: Count of Organic content impressions
+  description: Count of Organic content impressions with newtab opened in default ui
 - name: sponsored_content_engagement_visits
   type: INTEGER
-  description: Count of sponsored content engagement visits
+  description: Count of sponsored content engagement visits with newtab opened in default ui
 - name: sponsored_content_click_count
   type: INTEGER
-  description: Count of clicks on sponsored content
+  description: Count of clicks on sponsored content with newtab opened in default ui
 - name: sponsored_content_impression_count
   type: INTEGER
-  description: Count of sponsored content impressions
+  description: Count of sponsored content impressions with newtab opened in default ui
 - name: any_topsites_engagement_visits
   type: INTEGER
-  description: Count of any topsites engagement visits
+  description: Count of any topsites engagement visits with newtab opened in default ui
 - name: any_topsites_click_count
   type: INTEGER
-  description: Count of clicks on topsites
+  description: Count of clicks on topsites with newtab opened in default ui
 - name: any_topsites_impression_count
   type: INTEGER
-  description: Count of topsites impressions
+  description: Count of topsites impressions with newtab opened in default ui
 - name: organic_topsite_engagement_visits
   type: INTEGER
-  description: Count of organic topsite engagement visits
+  description: Count of organic topsite engagement visits with newtab opened in default ui
 - name: organic_topsites_click_count
   type: INTEGER
-  description: Count of clicks on organic topsites
+  description: Count of clicks on organic topsites with newtab opened in default ui
 - name: organic_topsites_impression_count
   type: INTEGER
-  description: Count of organic topsites impressions
+  description: Count of organic topsites impressions with newtab opened in default ui
 - name: sponsored_topsite_engagement_visits
   type: INTEGER
-  description: Count of sponsored topsite engagement visits
+  description: Count of sponsored topsite engagement visits with newtab opened in default ui
 - name: sponsored_topsites_click_count
   type: INTEGER
-  description: Count of clicks on sponsored topsites
+  description: Count of clicks on sponsored topsites with newtab opened in default ui
 - name: sponsored_topsites_impression_count
   type: INTEGER
-  description: Count of sponsored topsites impressions
+  description: Count of sponsored topsites impressions with newtab opened in default ui
 - name: widget_engagement_visits
   type: INTEGER
-  description: Count of widget engagement visits
+  description: Count of widget engagement visits with newtab opened in default ui
 - name: others_engagement_visits
   type: INTEGER
-  description: Count of visits associated with wallpaper, topic_selection, sections
+  description: Count of visits associated with wallpaper, topic_selection, sections with newtab opened in default ui

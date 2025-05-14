@@ -66,104 +66,104 @@ fields:
 - name: is_search_issued
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user issued search
+  description: TRUE if the user issued search with newtab opened in default ui
 - name: is_search_ad_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked a search Ad
+  description: TRUE if the user clicked a search Ad with newtab opened in default ui
 - name: is_content_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted upon any content
+  description: TRUE if the user interacted upon any content with newtab opened in default ui
 - name: is_content_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked on any content
+  description: TRUE if the user clicked on any content with newtab opened in default ui
 - name: is_content_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if any content was impressed on a newtab
+  description: TRUE if any content was impressed on a newtab with newtab opened in default ui
 - name: is_sponsored_content_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if sponsored content was interacted upon
+  description: TRUE if sponsored content was interacted upon with newtab opened in default ui
 - name: is_sponsored_content_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if sponsored content was clicked
+  description: TRUE if sponsored content was clicked with newtab opened in default ui
 - name: is_sponsored_content_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if sponsored content was impressed
+  description: TRUE if sponsored content was impressed with newtab opened in default ui
 - name: any_content_click_count
   type: INTEGER
-  description: Count of clicks on any newtab content
+  description: Count of clicks on any newtab content with newtab opened in default ui
 - name: any_content_impression_count
   type: INTEGER
-  description: Count of impression on any newtab content
+  description: Count of impression on any newtab content with newtab opened in default ui
 - name: organic_content_click_count
   type: INTEGER
-  description: Count of clicks on Organic content
+  description: Count of clicks on Organic content with newtab opened in default ui
 - name: organic_content_impression_count
   type: INTEGER
-  description: Count of Organic content impressions
+  description: Count of Organic content impressions with newtab opened in default ui
 - name: sponsored_content_click_count
   type: INTEGER
-  description: Count of clicks on sponsored content
+  description: Count of clicks on sponsored content with newtab opened in default ui
 - name: sponsored_content_impression_count
   type: INTEGER
-  description: Count of sponsored content impressions
+  description: Count of sponsored content impressions with newtab opened in default ui
 - name: is_topsites_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted on any topsites
+  description: TRUE if the user interacted on any topsites with newtab opened in default ui
 - name: is_topsites_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked on any topsites
+  description: TRUE if the user clicked on any topsites with newtab opened in default ui
 - name: is_topsites_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if any topsites was impressed upon
+  description: TRUE if any topsites was impressed upon with newtab opened in default ui
 - name: is_sponsored_topsites_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted on a sponsored topsites
+  description: TRUE if the user interacted on a sponsored topsites with newtab opened in default ui
 - name: is_sponsored_topsites_click
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user clicked a sponsored topsites
+  description: TRUE if the user clicked a sponsored topsites with newtab opened in default ui
 - name: is_sponsored_topsites_impression
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if a sponsored topsite was impressed upon
+  description: TRUE if a sponsored topsite was impressed upon with newtab opened in default ui
 - name: any_topsites_click_count
   type: INTEGER
-  description: Count of clicks on topsites
+  description: Count of clicks on topsites with newtab opened in default ui
 - name: any_topsites_impression_count
   type: INTEGER
-  description: Count of topsites impressions
+  description: Count of topsites impressions with newtab opened in default ui
 - name: organic_topsites_click_count
   type: INTEGER
-  description: Count of clicks on organic topsites
+  description: Count of clicks on organic topsites with newtab opened in default ui
 - name: organic_topsites_impression_count
   type: INTEGER
-  description: Count of organic topsites impressions
+  description: Count of organic topsites impressions with newtab opened in default ui
 - name: sponsored_topsites_click_count
   type: INTEGER
-  description: Count of clicks on sponsored topsites
+  description: Count of clicks on sponsored topsites with newtab opened in default ui
 - name: sponsored_topsites_impression_count
   type: INTEGER
-  description: Count of sponsored topsites impressions
+  description: Count of sponsored topsites impressions with newtab opened in default ui
 - name: is_widget_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted on any widget
+  description: TRUE if the user interacted on any widget with newtab opened in default ui
 - name: is_wallpaper_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted with wallpaper
+  description: TRUE if the user interacted with wallpaper with newtab opened in default ui
 - name: is_other_interaction
   type: BOOLEAN
   mode: NULLABLE
-  description: TRUE if the user interacted with wallpaper, topic_selection or sections
+  description: TRUE if the user interacted with wallpaper, topic_selection or sections with newtab opened in default ui

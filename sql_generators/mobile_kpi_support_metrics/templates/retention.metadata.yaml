@@ -7,10 +7,11 @@ description: |-
 
   see: DENG-3183 for more information.
 
+  Notes:
   {% if app_name in ['fenix', 'firefox_ios'] -%}
-  device_type and device_manufacturer fields were added in 2024-03-05.
+  - `device_type` and `device_manufacturer` fields were added in 2024-03-05.
   {%- else -%}
-  device_type and device_manufacturer fields were added on 2025-01-18.
+  - `device_type` and `device_manufacturer` fields were added on 2025-01-18.
   {%- endif %}
 
 owners:

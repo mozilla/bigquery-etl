@@ -362,6 +362,43 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__cohort_weekly_active_clients__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__cohort_weekly_active_clients__v1",
+        destination_table="cohort_weekly_active_clients_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    telemetry_derived__cohort_weekly_active_clients_staging__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__cohort_weekly_active_clients_staging__v1",
+        destination_table="cohort_weekly_active_clients_staging_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    telemetry_derived__cohort_weekly_cfs_staging__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__cohort_weekly_cfs_staging__v1",
+        destination_table="cohort_weekly_cfs_staging_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     telemetry_derived__cohort_weekly_statistics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_weekly_statistics__v1",
         destination_table="cohort_weekly_statistics_v1",
@@ -454,68 +491,80 @@ with DAG(
         checks__fail_telemetry_derived__rolling_cohorts__v2
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients__v1.set_upstream(
+        telemetry_derived__cohort_weekly_active_clients_staging__v1
+    )
+
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
 
-    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+    telemetry_derived__cohort_weekly_cfs_staging__v1.set_upstream(
         checks__fail_telemetry_derived__rolling_cohorts__v2
+    )
+
+    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+        telemetry_derived__cohort_weekly_active_clients__v1
+    )
+
+    telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+        telemetry_derived__cohort_weekly_cfs_staging__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(

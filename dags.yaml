@@ -2359,3 +2359,27 @@ bqetl_newtab_historical:
     retry_delay: 5m
   tags:
     - impact/tier_3
+
+bqetl_remotesettings_cdn_requests:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+    - telemetry-alerts@mozilla.com
+    - mleplatre@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: mleplatre@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-01-01'
+  description: Remote Settings CDN requests analysis
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+  - impact/tier_3
+  - repo/bigquery-etl
+  - triage/no_triage
+

@@ -2,6 +2,6 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-- name: submission_date
+- name: activity_date_week
   type: DATE
   mode: NULLABLE

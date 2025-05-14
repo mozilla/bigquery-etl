@@ -144,7 +144,7 @@ weekly_active_agg AS (
   FROM
     `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_cfs_staging_v1` cfs
   JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_staging_v1` wac
+    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_v1` wac
     ON cfs.client_id = wac.client_id
     AND cfs.cohort_date_week <= wac.activity_date_week
   GROUP BY

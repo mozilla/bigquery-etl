@@ -244,7 +244,8 @@ SELECT
   `distribution`,
   {% if app_name == "firefox_desktop" %}
   attribution_ext,
-  distribution_ext
+  distribution_ext,
+  profile_group_id,
   {% endif %}
 FROM _joined
 QUALIFY

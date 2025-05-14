@@ -1,0 +1,7 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE

@@ -22,14 +22,14 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-- name: newtab_homepage_category
+- name: homepage_category
   type: STRING
   mode: NULLABLE
-  description: Homepage category setting for Newtab
+  description: Setting for home page.
 - name: newtab_category
   type: STRING
   mode: NULLABLE
-  description: Newtab category setting
+  description: Setting of the newtab page
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -49,76 +49,76 @@ fields:
 - name: newtab_search_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: If search enabled
+  description: TRUE if the user has enabled search in the browser.
 - name: all_visits
   type: INTEGER
-  description: all visits
+  description: Count of newtab open visits
 - name: default_ui_visits
   type: INTEGER
-  description: default ui visits
+  description: Count of default ui visits
 - name: any_engagement_visits
   type: INTEGER
-  description: any engagement visits
+  description: Count of any engagement visits
 - name: nonsearch_engagement_visits
   type: INTEGER
-  description: nonsearch engagement visits
+  description: Count of nonsearch engagement visits
 - name: any_content_engagement_visits
   type: INTEGER
-  description: any content engagement visits
+  description: Count of any content engagement visits
 - name: any_content_click_count
   type: INTEGER
-  description: any content click count
+  description: Count of clicks on any newtab content
 - name: any_content_impression_count
   type: INTEGER
-  description: any content impression count
+  description: Count of impression on any newtab content
 - name: organic_content_engagement_visits
   type: INTEGER
-  description: organic content engagement visits
+  description: Count of organic content engagement visits
 - name: organic_content_click_count
   type: INTEGER
-  description: organic content click count
+  description: Count of clicks on Organic content
 - name: organic_content_impression_count
   type: INTEGER
-  description: organic content impression count
+  description: Count of Organic content impressions
 - name: sponsored_content_engagement_visits
   type: INTEGER
-  description: sponsored content engagement visits
+  description: Count of sponsored content engagement visits
 - name: sponsored_content_click_count
   type: INTEGER
-  description: sponsored content click count
+  description: Count of clicks on sponsored content
 - name: sponsored_content_impression_count
   type: INTEGER
-  description: sponsored content impression count
+  description: Count of sponsored content impressions
 - name: any_topsites_engagement_visits
   type: INTEGER
-  description: any topsites engagement visits
+  description: Count of any topsites engagement visits
 - name: any_topsites_click_count
   type: INTEGER
-  description: any topsites click count
+  description: Count of clicks on topsites
 - name: any_topsites_impression_count
   type: INTEGER
-  description: any topsites impression count
+  description: Count of topsites impressions
 - name: organic_topsite_engagement_visits
   type: INTEGER
-  description: organic topsite engagement visits
+  description: Count of organic topsite engagement visits
 - name: organic_topsites_click_count
   type: INTEGER
-  description: organic topsites click count
+  description: Count of clicks on organic topsites
 - name: organic_topsites_impression_count
   type: INTEGER
-  description: organic topsites impression count
+  description: Count of organic topsites impressions
 - name: sponsored_topsite_engagement_visits
   type: INTEGER
-  description: sponsored topsite engagement visits
+  description: Count of sponsored topsite engagement visits
 - name: sponsored_topsites_click_count
   type: INTEGER
-  description: sponsored topsites click count
+  description: Count of clicks on sponsored topsites
 - name: sponsored_topsites_impression_count
   type: INTEGER
-  description: sponsored topsites impression count
+  description: Count of sponsored topsites impressions
 - name: widget_engagement_visits
   type: INTEGER
-  description: widget engagement visits
+  description: Count of widget engagement visits
 - name: others_engagement_visits
   type: INTEGER
-  description: Client visits associated with wallpaper, topic_selection, sections
+  description: Count of visits associated with wallpaper, topic_selection, sections

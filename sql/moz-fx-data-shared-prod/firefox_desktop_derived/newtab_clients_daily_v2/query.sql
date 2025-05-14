@@ -7,12 +7,8 @@ SELECT
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(channel)) AS channel,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(locale)) AS locale,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(country)) AS country,
-  `moz-fx-data-shared-prod.udf.mode_last`(
-    ARRAY_AGG(newtab_homepage_category)
-  ) AS newtab_homepage_category,
-  `moz-fx-data-shared-prod.udf.mode_last`(
-    ARRAY_AGG(newtab_newtab_category)
-  ) AS newtab_newtab_category,
+  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(newtab_homepage_category)) AS homepage_category,
+  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(newtab_newtab_category)) AS newtab_category,
   `moz-fx-data-shared-prod.udf.mode_last`(
     ARRAY_AGG(organic_content_enabled)
   ) AS organic_content_enabled,

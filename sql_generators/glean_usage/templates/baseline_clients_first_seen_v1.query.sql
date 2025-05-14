@@ -32,6 +32,12 @@ WITH
       )[OFFSET(0)] AS distribution_ext,
       mozfun.stats.mode_last(
         ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_client_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_client_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
@@ -94,6 +100,12 @@ _baseline AS (
     )[OFFSET(0)] AS distribution_ext,
       mozfun.stats.mode_last(
         ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_client_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_client_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
@@ -119,6 +131,7 @@ _current AS (
     {% if app_name == "firefox_desktop" %}
     attribution_ext,
     distribution_ext,
+    legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id
     {% endif %}
   FROM
@@ -142,6 +155,7 @@ _previous AS (
     {% if app_name == "firefox_desktop" %}
     attribution_ext,
     distribution_ext,
+    legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
     {% endif %}
   FROM
@@ -177,6 +191,12 @@ _current AS (
       metrics.object.glean_distribution_ext 
       ORDER BY submission_timestamp DESC LIMIT 1
     )[OFFSET(0)] AS distribution_ext,
+          mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_client_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_client_id,
     mozfun.stats.mode_last(
       ARRAY_AGG(
         metrics.uuid.legacy_telemetry_profile_group_id 
@@ -207,6 +227,7 @@ _previous AS (
     {% if app_name == "firefox_desktop" %}
     attribution_ext,
     distribution_ext,
+    legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
     {% endif %}
   FROM
@@ -245,6 +266,7 @@ SELECT
   {% if app_name == "firefox_desktop" %}
   attribution_ext,
   distribution_ext,
+  legacy_telemetry_client_id,
   legacy_telemetry_profile_group_id,
   {% endif %}
 FROM _joined

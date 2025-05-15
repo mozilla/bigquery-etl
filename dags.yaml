@@ -2347,7 +2347,7 @@ bqetl_ech_adoption_rate:
     - repo/bigquery-etl
 
 bqetl_newtab_historical:
-  schedule_interval: 0 2 * * *
+  schedule_interval: once
   description: |
     Load Newtab historical data from GCS into BigQuery
   default_args:

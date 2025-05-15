@@ -318,7 +318,7 @@ WHERE
 GROUP BY
   submission_date,
   metric_date,
-  channel,
-  country,
+  normalized_channel,
+  normalized_country_code,
   adjust_network,
   is_default_browser

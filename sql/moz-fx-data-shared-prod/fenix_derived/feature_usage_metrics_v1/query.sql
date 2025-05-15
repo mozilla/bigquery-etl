@@ -301,7 +301,7 @@ LEFT JOIN
 GROUP BY
   submission_date,
   ping_date,
-  channel,
-  country,
+  normalized_channel,
+  normalized_country_code,
   adjust_network,
   is_default_browser

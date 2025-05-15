@@ -53,11 +53,10 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1",
-        external_dag_id="bqetl_newtab_historical",
-        external_task_id="telemetry_derived__newtab_interactions_historical_legacy__v1",
-        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+    wait_for_ads_derived__interaction_aggregates_hourly__v1 = ExternalTaskSensor(
+        task_id="wait_for_ads_derived__interaction_aggregates_hourly__v1",
+        external_dag_id="private_bqetl_ads_hourly",
+        external_task_id="ads_derived__interaction_aggregates_hourly__v1",
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -82,5 +81,5 @@ with DAG(
     )
 
     telemetry_derived__newtab_interactions_hourly__v1.set_upstream(
-        wait_for_telemetry_derived__newtab_interactions_historical_legacy__v1
+        wait_for_ads_derived__interaction_aggregates_hourly__v1
     )

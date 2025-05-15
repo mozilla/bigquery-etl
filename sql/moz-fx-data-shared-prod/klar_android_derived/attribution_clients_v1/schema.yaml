@@ -14,3 +14,8 @@ fields:
   type: INTEGER
   description:
 
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description:
+

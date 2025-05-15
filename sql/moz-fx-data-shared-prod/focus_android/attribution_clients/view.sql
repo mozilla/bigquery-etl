@@ -6,6 +6,7 @@ SELECT
   submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   "Organic" AS paid_vs_organic,
 FROM
   `moz-fx-data-shared-prod.focus_android_derived.attribution_clients_v1`

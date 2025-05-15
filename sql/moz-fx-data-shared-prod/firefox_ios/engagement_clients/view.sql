@@ -32,6 +32,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     is_suspicious_device_client,
     adjust_ad_group,
     adjust_campaign,
@@ -86,4 +87,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)

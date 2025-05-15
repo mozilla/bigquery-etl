@@ -6,6 +6,7 @@ SELECT
   submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   NULLIF(adjust_info.adjust_ad_group, "") AS adjust_ad_group,
   NULLIF(adjust_info.adjust_campaign, "") AS adjust_campaign,
   NULLIF(adjust_info.adjust_creative, "") AS adjust_creative,

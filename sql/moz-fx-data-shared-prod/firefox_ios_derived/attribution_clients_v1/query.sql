@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    normalized_channel,
     -- field to help us identify suspicious devices on iOS, for more info see: bug-1846554
     (
       app_display_version = '107.2'
@@ -19,6 +20,7 @@ first_session_ping_base AS (
   SELECT
     client_info.client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     NULLIF(metrics.string.adjust_ad_group, "") AS adjust_ad_group,
@@ -35,6 +37,7 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -60,12 +63,14 @@ first_session_ping AS (
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 ),
 metrics_ping_base AS (
   SELECT
     client_info.client_id AS client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     NULLIF(metrics.string.adjust_ad_group, "") AS adjust_ad_group,
@@ -84,6 +89,7 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -109,19 +115,21 @@ metrics_ping AS (
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 )
 SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
   is_suspicious_device_client,
 FROM
   new_profiles
 LEFT JOIN
   first_session_ping
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)
 LEFT JOIN
   metrics_ping
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)

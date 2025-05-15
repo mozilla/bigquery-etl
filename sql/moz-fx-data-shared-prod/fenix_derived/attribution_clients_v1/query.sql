@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    normalized_channel,
     distribution_id,
     install_source,
   FROM
@@ -16,6 +17,7 @@ first_session_ping_base AS (
   SELECT
     client_info.client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     metrics.string.first_session_distribution_id AS distribution_id,
@@ -43,6 +45,7 @@ first_session_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -113,12 +116,14 @@ first_session_ping AS (
     first_session_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 ),
 metrics_ping_base AS (
   SELECT
     client_info.client_id AS client_id,
     sample_id,
+    normalized_channel,
     submission_timestamp,
     ping_info.seq AS ping_seq,
     metrics.string.metrics_distribution_id AS distribution_id,
@@ -139,6 +144,7 @@ metrics_ping AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     ARRAY_AGG(
       IF(
         adjust_ad_group IS NOT NULL
@@ -180,12 +186,14 @@ metrics_ping AS (
     metrics_ping_base
   GROUP BY
     client_id,
-    sample_id
+    sample_id,
+    normalized_channel
 )
 SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   COALESCE(new_profiles.install_source, metrics_ping.install_source) AS install_source,
   COALESCE(first_session_ping.adjust_info, metrics_ping.adjust_info) AS adjust_info,
   first_session_ping.play_store_info,
@@ -199,7 +207,7 @@ FROM
   new_profiles
 LEFT JOIN
   first_session_ping
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)
 LEFT JOIN
   metrics_ping
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)

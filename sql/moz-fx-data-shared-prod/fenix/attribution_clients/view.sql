@@ -6,6 +6,7 @@ SELECT
   submission_date,
   client_id,
   sample_id,
+  normalized_channel,
   NULLIF(play_store_info.play_store_attribution_campaign, "") AS play_store_attribution_campaign,
   NULLIF(play_store_info.play_store_attribution_medium, "") AS play_store_attribution_medium,
   NULLIF(play_store_info.play_store_attribution_source, "") AS play_store_attribution_source,

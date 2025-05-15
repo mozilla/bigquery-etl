@@ -30,7 +30,7 @@ FROM
   `moz-fx-data-shared-prod.firefox_ios.active_users` AS active_users
 LEFT JOIN
   `moz-fx-data-shared-prod.firefox_ios.attribution_clients` AS attribution
-  USING (client_id)
+  USING (client_id, normalized_channel)
 WHERE
   active_users.submission_date < CURRENT_DATE
   AND is_new_profile

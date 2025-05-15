@@ -2,7 +2,10 @@ friendly_name: Activation Clients - Klar Android
 description: |-
   Activation Clients (Klar Android).
 
-  device_type and device_manufacturer fields were added on 2025-01-18.
+  Table grain: submission_date, client_id, normalized_channel
+
+  Notes:
+  - 2025-01-18: `device_type` and `device_manufacturer` fields added
 owners:
 - mozilla/kpi_table_reviewers
 - kik@mozilla.com

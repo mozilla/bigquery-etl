@@ -32,6 +32,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     paid_vs_organic,
   FROM
     `moz-fx-data-shared-prod.focus_ios.attribution_clients`
@@ -74,4 +75,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)

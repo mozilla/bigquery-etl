@@ -488,6 +488,20 @@ fields:
       description: 'The shutdown phase in which the crash occurred.
 
         '
+    - name: memory_js_large_allocation_failure
+      type: STRING
+      mode: NULLABLE
+      description: 'A large allocation couldn''t be satisfied: What was its state
+        when the crash happened.
+
+        '
+    - name: memory_js_out_of_memory
+      type: STRING
+      mode: NULLABLE
+      description: 'A small allocation couldn''t be satisfied: What was its state
+        when the crash happened.
+
+        '
   - name: timespan
     type: RECORD
     mode: NULLABLE

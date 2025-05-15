@@ -32,6 +32,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     play_store_attribution_campaign,
     play_store_attribution_medium,
     play_store_attribution_source,
@@ -106,4 +107,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING (client_id, sample_id)
+  USING (client_id, sample_id, normalized_channel)

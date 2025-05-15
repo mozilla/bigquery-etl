@@ -340,6 +340,12 @@ fields:
     - name: windows_package_family_name
       type: STRING
       mode: NULLABLE
+    - name: memory_js_large_allocation_failure
+      type: STRING
+      mode: NULLABLE
+    - name: memory_js_out_of_memory
+      type: STRING
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

@@ -4,6 +4,7 @@ WITH new_profiles AS (
     submission_date,
     client_id,
     sample_id,
+    normalized_channel,
   FROM
     `moz-fx-data-shared-prod.klar_ios.baseline_clients_first_seen`
   WHERE
@@ -14,5 +15,6 @@ SELECT
   @submission_date AS submission_date,
   client_id,
   sample_id,
+  normalized_channel,
 FROM
   new_profiles

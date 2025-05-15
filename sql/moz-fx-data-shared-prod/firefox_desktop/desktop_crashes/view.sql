@@ -77,7 +77,9 @@ SELECT
       metrics.string.crash_remote_type,
       metrics.string.crash_shutdown_progress,
       metrics.string.crash_windows_file_dialog_error_code,
-      metrics.string.windows_package_family_name
+      metrics.string.windows_package_family_name,
+      metrics.string.memory_js_large_allocation_failure,
+      metrics.string.memory_js_out_of_memory
     ) AS `string`,
     STRUCT(
       CAST(NULL AS STRUCT<`time_unit` STRING, `value` INTEGER>) AS `crash_uptime`,

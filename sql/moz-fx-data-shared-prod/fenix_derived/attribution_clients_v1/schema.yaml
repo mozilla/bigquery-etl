@@ -15,6 +15,11 @@ fields:
   description:
 
 - mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description:
+
+- mode: NULLABLE
   name: play_store_info
   type: RECORD
   description:

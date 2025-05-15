@@ -41,7 +41,9 @@ SELECT
       metrics.string.crash_minidump_sha256_hash,
       metrics.string.crash_moz_crash_reason,
       metrics.string.crash_profiler_child_shutdown_phase,
-      metrics.string.crash_shutdown_progress
+      metrics.string.crash_shutdown_progress,
+      metrics.string.memory_js_large_allocation_failure,
+      metrics.string.memory_js_out_of_memory
     ) AS `string`,
     STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
     STRUCT(
@@ -122,7 +124,9 @@ SELECT
       metrics.string.crash_minidump_sha256_hash,
       metrics.string.crash_moz_crash_reason,
       metrics.string.crash_profiler_child_shutdown_phase,
-      metrics.string.crash_shutdown_progress
+      metrics.string.crash_shutdown_progress,
+      metrics.string.memory_js_large_allocation_failure,
+      metrics.string.memory_js_out_of_memory
     ) AS `string`,
     STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
     STRUCT(
@@ -203,7 +207,9 @@ SELECT
       metrics.string.crash_minidump_sha256_hash,
       metrics.string.crash_moz_crash_reason,
       metrics.string.crash_profiler_child_shutdown_phase,
-      metrics.string.crash_shutdown_progress
+      metrics.string.crash_shutdown_progress,
+      metrics.string.memory_js_large_allocation_failure,
+      metrics.string.memory_js_out_of_memory
     ) AS `string`,
     STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
     STRUCT(
@@ -284,7 +290,9 @@ SELECT
       metrics.string.crash_minidump_sha256_hash,
       metrics.string.crash_moz_crash_reason,
       metrics.string.crash_profiler_child_shutdown_phase,
-      metrics.string.crash_shutdown_progress
+      metrics.string.crash_shutdown_progress,
+      metrics.string.memory_js_large_allocation_failure,
+      metrics.string.memory_js_out_of_memory
     ) AS `string`,
     STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
     STRUCT(
@@ -365,7 +373,9 @@ SELECT
       metrics.string.crash_minidump_sha256_hash,
       metrics.string.crash_moz_crash_reason,
       metrics.string.crash_profiler_child_shutdown_phase,
-      metrics.string.crash_shutdown_progress
+      metrics.string.crash_shutdown_progress,
+      metrics.string.memory_js_large_allocation_failure,
+      metrics.string.memory_js_out_of_memory
     ) AS `string`,
     STRUCT(metrics.timespan.crash_uptime, metrics.timespan.environment_uptime) AS `timespan`,
     STRUCT(

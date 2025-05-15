@@ -7,7 +7,8 @@ description: |-
 
   see: DENG-3183 for more information.
 
-  device_type and device_manufacturer fields were added on 2025-01-18.
+  Notes:
+  - 2025-01-18: `device_type` and `device_manufacturer` fields added
 owners:
 - mozilla/kpi_table_reviewers
 - kik@mozilla.com

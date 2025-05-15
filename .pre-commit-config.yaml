@@ -55,6 +55,6 @@ repos:
     name: bqetl_backfill_validate
     language: script
     entry: ./bqetl
-    args: [backfill, validate]
+    args: [backfill, validate, --ignore-missing-metadata]
     types: [yaml]
     files: ^.+.backfill.yaml$

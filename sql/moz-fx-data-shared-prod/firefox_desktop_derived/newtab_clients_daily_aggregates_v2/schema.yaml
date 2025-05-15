@@ -6,7 +6,7 @@ fields:
 - name: app_version
   type: INTEGER
   mode: NULLABLE
-  description: Fx major version number
+  description: Firefox Desktop major version
 - name: os
   type: STRING
   mode: NULLABLE

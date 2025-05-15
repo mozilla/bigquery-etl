@@ -4,10 +4,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
+from pytest import mark
+
 from bigquery_etl.config import _ConfigLoader
 from sql_generators.usage_reporting.usage_reporting import (
     generate_usage_reporting,
     get_specific_apps_app_info_from_probe_scraper,
+    remove_table_version_suffix,
 )
 
 TEST_DIR = Path(__file__).parent
@@ -231,3 +234,26 @@ def test_content_generated_as_expected(mock_get_app_info, mock_generation_config
 
     assert mock_get_app_info.called
     assert mock_generation_config.called
+
+
+@mark.parametrize(
+    "test_input,expected",
+    [
+        ("my_tiny_dataset_v1", "my_tiny_dataset"),
+        ("my_tiny_dataset_v11", "my_tiny_dataset"),
+        ("my_tiny_dataset_v", "my_tiny_dataset"),
+        ("my_tiny_dataset", "my_tiny_dataset"),
+        (
+            "gcp_project.dataset_id.my_tiny_dataset",
+            "gcp_project.dataset_id.my_tiny_dataset",
+        ),
+        (
+            "gcp_project.dataset_id.my_tiny_dataset_v10",
+            "gcp_project.dataset_id.my_tiny_dataset",
+        ),
+    ],
+)
+def test_remove_table_version_suffix(test_input, expected):
+    actual = remove_table_version_suffix(test_input)
+
+    assert expected == actual

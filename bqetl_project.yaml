@@ -351,6 +351,9 @@ generate:
       events_tables: # overwrite event tables
         pine: # Probe info returns pings that don't have tables, only use events_v1
         - events_v1
+      manual_refresh:  # apps to use manual materialized view refreshes for on-demand billing
+      - firefox_desktop
+      - firefox_desktop_background_update
     bigconfig:
       skip_apps:
       - firefox_echo_show

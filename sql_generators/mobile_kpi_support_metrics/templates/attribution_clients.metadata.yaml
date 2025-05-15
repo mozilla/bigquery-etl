@@ -2,6 +2,11 @@ friendly_name: Profile / Client Attribution - {{ friendly_name }}
 description: |-
   Profile attribution ({{ friendly_name }})
 
+  Table grain: client_id, normalized_channel
+
+  Notes:
+  - 2025-05-14: `normalized_channel` field added
+
 owners:
   - mozilla/kpi_table_reviewers
   - kik@mozilla.com

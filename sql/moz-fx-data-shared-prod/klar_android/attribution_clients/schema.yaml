@@ -1,0 +1,20 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: null
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: null
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: null
+- name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE

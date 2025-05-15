@@ -2,50 +2,50 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
-- name: normalized_channel
+- name: app_name
   type: STRING
   mode: NULLABLE
-- name: app_name
+- name: normalized_channel
   type: STRING
   mode: NULLABLE
 - name: app_version
   type: STRING
   mode: NULLABLE
-- name: country
-  type: STRING
-  mode: NULLABLE
 - name: locale
   type: STRING
   mode: NULLABLE
-- name: os
+- name: country
   type: STRING
   mode: NULLABLE
-- name: os_version
+- name: city
   type: STRING
   mode: NULLABLE
-- name: device_manufacturer
+- name: geo_subdivision
   type: STRING
+  mode: NULLABLE
+- name: isp
+  type: STRING
+  mode: NULLABLE
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_mau
+  type: BOOLEAN
   mode: NULLABLE
 - name: is_mobile
   type: BOOLEAN
-  mode: NULLABLE
-- name: device_type
-  type: STRING
-  mode: NULLABLE
-- name: activations
-  type: INTEGER
-  mode: NULLABLE
-- name: early_engagements
-  type: INTEGER
-  mode: NULLABLE
-- name: channel
-  type: STRING
-  mode: NULLABLE
-- name: paid_vs_organic
-  type: STRING
   mode: NULLABLE
 - name: is_suspicious_device_client
   type: BOOLEAN
@@ -62,24 +62,27 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-- name: play_store_attribution_campaign
+- name: adjust_attribution_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: paid_vs_organic
   type: STRING
   mode: NULLABLE
-- name: play_store_attribution_medium
+- name: lifecycle_stage
   type: STRING
   mode: NULLABLE
-- name: play_store_attribution_source
+- name: device_type
   type: STRING
   mode: NULLABLE
-- name: meta_attribution_app
+- name: device_manufacturer
   type: STRING
   mode: NULLABLE
-- name: install_source
+- name: os
   type: STRING
   mode: NULLABLE
-- name: distribution_id
+- name: os_version
   type: STRING
   mode: NULLABLE
-- name: product_name
+- name: device_model
   type: STRING
   mode: NULLABLE

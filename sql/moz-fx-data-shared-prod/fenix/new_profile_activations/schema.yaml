@@ -99,6 +99,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of early_engagements for the first seen date.
+- name: channel
+  type: STRING
+  mode: NULLABLE
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE

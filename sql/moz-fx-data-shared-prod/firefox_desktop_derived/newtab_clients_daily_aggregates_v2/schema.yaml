@@ -16,7 +16,7 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-- name: country
+- name: country where the newtab event is reported
   type: STRING
   mode: NULLABLE
 - name: homepage_category

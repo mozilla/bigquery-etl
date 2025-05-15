@@ -51,7 +51,7 @@ tomli==2.2.1 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20241206
 types-pytz==2025.2.0.20250326
 types-PyYAML==6.0.12.20250402
-types-requests==2.32.0.20250328
+types-requests==2.32.0.20250515
 types-ujson==5.10.0.20250326
 typing==3.7.4.3
 ujson==5.10.0

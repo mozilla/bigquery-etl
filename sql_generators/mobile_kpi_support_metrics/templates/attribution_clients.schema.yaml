@@ -13,6 +13,11 @@ fields:
   name: sample_id
   type: INTEGER
   description:
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description:
 {% for attribution_group in product_attribution_groups %}
 {% if attribution_group.name in ["meta", "adjust", "play_store"] -%}
 - mode: NULLABLE

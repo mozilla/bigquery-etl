@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Date when the event is received in the newtab ping.
+  description: Day the event was received in the newtab ping
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -10,23 +10,27 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: OS name of the host system
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: Firefox Desktop deployment channel
 - name: locale
   type: STRING
   mode: NULLABLE
-- name: country where the newtab event is reported
+  description: language or country based preferences of the host system
+- name: country
   type: STRING
   mode: NULLABLE
+  description: country where the newtab event is reported
 - name: homepage_category
   type: STRING
   mode: NULLABLE
-  description: Setting for home page.
+  description: user setting for the appearance of homepage or new window during open
 - name: newtab_category
   type: STRING
   mode: NULLABLE
-  description: Setting of the newtab page
+  description: user setting for the appearance of a newtab during open
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE

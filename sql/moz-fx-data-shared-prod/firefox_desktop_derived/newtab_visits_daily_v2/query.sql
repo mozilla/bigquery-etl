@@ -34,7 +34,7 @@ WITH events_unnested AS (
     -- selecting the events we need to compute on
     AND (
       (category = 'newtab.search' AND name IN ('issued'))
-      OR (category = 'newtab.search.ad' AND name IN ('click'))
+      OR (category = 'newtab.search.ad' AND name IN ('click', 'impression'))
       OR (
         category = 'pocket'
         AND name IN (
@@ -54,6 +54,8 @@ WITH events_unnested AS (
           'weather_change_display',
           'weather_open_provider_url',
           'weather_location_selected',
+          'weather_impression',
+          'weather_load_error',
           -- wallpaper
           'wallpaper_click',
           'wallpaper_category_click',

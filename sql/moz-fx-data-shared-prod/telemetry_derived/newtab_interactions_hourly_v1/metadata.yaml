@@ -32,6 +32,8 @@ scheduling:
     # explicit query file path is necessary because the destination table
     # includes a partition identifier that is not in the path
     sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql
+  depends_on:
+    - ["moz-fx-data-shared-prod", "ads_derived", "interaction_aggregates_hourly_v1"]
 bigquery:
   time_partitioning:
     type: day

@@ -1,6 +1,6 @@
 ---
 friendly_name: Addon Names
-description: Addon IDs, names and number of occurences.
+description: Addon IDs, names and number of occurrences.
 owners:
   - kik@mozilla.com
 labels:

@@ -1,0 +1,16 @@
+friendly_name: Gke Remote Settings Prod Log Linked Derived
+description: |-
+  Derived dataset of the Remote Settings requests logs on the GKE load balancer.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

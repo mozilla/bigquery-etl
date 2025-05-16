@@ -1,0 +1,30 @@
+friendly_name: Remote Settings Requests Aggregates by Endpoints
+description: |-
+  The query parses the requests logs on the Remote Settings load balancer and parses the
+  URLs in order to build aggregates by endpoints and collections ids.
+owners:
+- mleplatre@mozilla.com
+- acottner@mozilla.com
+- smarnach@mozilla.com
+- sykim@mozilla.com
+labels:
+  incremental: true
+  owner1: mleplatre
+  dag: bqetl_default
+  owner2: acottner
+  owner3: smarnach
+  owner4: sykim
+scheduling:
+  dag_name: bqetl_remotesettings_cdn_requests
+  task_name: endpoints_aggregates_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}
+require_column_descriptions: true

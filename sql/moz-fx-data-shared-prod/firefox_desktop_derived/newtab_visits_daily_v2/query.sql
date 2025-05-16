@@ -94,6 +94,9 @@ SELECT
   ANY_VALUE(newtab_search_enabled) AS newtab_search_enabled,
   LOGICAL_OR(is_default_ui) AS is_default_ui,
   LOGICAL_OR(event_category = 'newtab' AND event_name = 'opened') AS is_newtab_opened,
+  -- The computations below that use "LOGICAL_OR(is_default_ui)", only includes visits opened in default ui
+  -- Newtab open is an independent event that needs to be aggregated to be aligned with other events within a visit
+  -- The "LOGICAL_OR(is_default_ui)" aggregates the events within a visit to indicate if it's opened in default ui
   LOGICAL_OR(event_category = 'newtab.search' AND event_name = 'issued')
   AND LOGICAL_OR(is_default_ui) AS is_search_issued,
   LOGICAL_OR(event_category = 'newtab.search.ad' AND event_name = 'click')

@@ -7,7 +7,6 @@ import sys
 import tempfile
 from collections import defaultdict
 from datetime import date, datetime, timedelta
-from os.path import exists
 from pathlib import Path
 
 import rich_click as click
@@ -234,26 +233,20 @@ def create(
     ./bqetl backfill validate
     """
 )
-@click.argument("asset_name", required=False)
+@click.argument("qualified_table_name", required=False)
 @sql_dir_option
 @project_id_option()
 @ignore_missing_metadata_option
 @click.pass_context
 def validate(
     ctx,
-    asset_name,
+    qualified_table_name,
     sql_dir,
     project_id,
     ignore_missing_metadata,
 ):
     """Validate backfill.yaml files."""
-    if asset_name:
-        # checking if path instead of "dataset.table_name" format was passed
-        # if yes we convert it to the expected format.
-        qualified_table_name = (
-            ".".join(asset_name.split("/")[-4:-1]) if exists(asset_name) else asset_name
-        )
-
+    if qualified_table_name:
         backfills_dict = {
             qualified_table_name: get_entries_from_qualified_table_name(
                 sql_dir, qualified_table_name

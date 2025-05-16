@@ -51,4 +51,6 @@ FROM
   _current
 FULL JOIN
   _previous
+  -- TODO: should we be using app_channel for join here?
+  -- or are we 100% confident usage_profile_id will always be unique across channels?
   USING (usage_profile_id)

@@ -10,7 +10,9 @@ WITH
       @submission_date AS first_seen_date,
       {% endif %}
       {% endraw %}
+      {% if app_name == "firefox_desktop" %}
       app_channel,
+      {% endif %}
     FROM
       `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
     WHERE
@@ -23,13 +25,17 @@ WITH
       {% endif %}
       {% endraw %}
     GROUP BY
-      usage_profile_id,
-      app_channel
+      usage_profile_id
+      {% if app_name == "firefox_desktop" %}
+      , app_channel
+      {% endif %}
   ),
 _previous AS (
   SELECT
     usage_profile_id,
-    app_channel,
+    {% if app_name == "firefox_desktop" %}
+      app_channel,
+    {% endif %}
   FROM
     `{{ project_id }}.{{ channel_dataset }}_derived.{{ view_name }}_v1`
   WHERE
@@ -45,12 +51,16 @@ _previous AS (
 SELECT
   first_seen_date,
   usage_profile_id,
+  {% if app_name == "firefox_desktop" %}
+  -- app_channel is only needed on desktop as the single namespace
+  -- contains data for all channel unlike the mobile apps.
   app_channel,
+  {% endif %}
 FROM
   _current
 LEFT JOIN
   _previous
-  USING (usage_profile_id, app_channel)
+  USING (usage_profile_id {% if app_name == "firefox_desktop" %}, app_channel{% endif %})
 WHERE
   _previous.usage_profile_id IS NULL
 QUALIFY

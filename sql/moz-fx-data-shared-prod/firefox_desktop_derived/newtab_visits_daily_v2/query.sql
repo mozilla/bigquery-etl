@@ -172,39 +172,39 @@ SELECT
     0
   ) AS sponsored_content_impression_count,
   LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click', 'dismiss'))
-  AND LOGICAL_OR(is_default_ui) AS is_topsites_interaction,
+  AND LOGICAL_OR(is_default_ui) AS is_topsite_interaction,
   LOGICAL_OR(event_category = 'topsites' AND event_name IN ('click'))
-  AND LOGICAL_OR(is_default_ui) AS is_topsites_click,
+  AND LOGICAL_OR(is_default_ui) AS is_topsite_click,
   LOGICAL_OR(event_category = 'topsites' AND event_name IN ('impression'))
-  AND LOGICAL_OR(is_default_ui) AS is_topsites_impression,
+  AND LOGICAL_OR(is_default_ui) AS is_topsite_impression,
   LOGICAL_OR(
     event_category = 'topsites'
     AND event_name IN ('click', 'dismiss')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
   )
-  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsites_interaction,
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsite_interaction,
   LOGICAL_OR(
     event_category = 'topsites'
     AND event_name IN ('click')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
   )
-  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsites_click,
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsite_click,
   LOGICAL_OR(
     event_category = 'topsites'
     AND event_name IN ('impression')
     AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
   )
-  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsites_impression,
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsite_impression,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(event_category = 'topsites' AND event_name IN ('click')),
     0
-  ) AS any_topsites_click_count,
+  ) AS any_topsite_click_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(event_category = 'topsites' AND event_name IN ('impression')),
     0
-  ) AS any_topsites_impression_count,
+  ) AS any_topsite_impression_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(
@@ -213,7 +213,7 @@ SELECT
       AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
     ),
     0
-  ) AS organic_topsites_click_count,
+  ) AS organic_topsite_click_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(
@@ -222,7 +222,7 @@ SELECT
       AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
     ),
     0
-  ) AS organic_topsites_impression_count,
+  ) AS organic_topsite_impression_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(
@@ -231,7 +231,7 @@ SELECT
       AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
     ),
     0
-  ) AS sponsored_topsites_click_count,
+  ) AS sponsored_topsite_click_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(
@@ -240,7 +240,7 @@ SELECT
       AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
     ),
     0
-  ) AS sponsored_topsites_impression_count,
+  ) AS sponsored_topsite_impression_count,
   LOGICAL_OR(
     event_category = 'newtab'
     AND event_name IN (

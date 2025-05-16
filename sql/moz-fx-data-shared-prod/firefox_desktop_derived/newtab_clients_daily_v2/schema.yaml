@@ -94,33 +94,33 @@ fields:
 - name: sponsored_content_impression_count
   type: INTEGER
   description: Count of sponsored content impressions with newtab opened in default ui
-- name: any_topsites_engagement_visits
+- name: any_topsite_engagement_visits
   type: INTEGER
-  description: Count of any topsites engagement visits with newtab opened in default ui
-- name: any_topsites_click_count
+  description: Count of any topsite engagement visits with newtab opened in default ui
+- name: any_topsite_click_count
   type: INTEGER
-  description: Count of clicks on topsites with newtab opened in default ui
-- name: any_topsites_impression_count
+  description: Count of clicks on topsite with newtab opened in default ui
+- name: any_topsite_impression_count
   type: INTEGER
-  description: Count of topsites impressions with newtab opened in default ui
+  description: Count of topsite impressions with newtab opened in default ui
 - name: organic_topsite_engagement_visits
   type: INTEGER
   description: Count of organic topsite engagement visits with newtab opened in default ui
-- name: organic_topsites_click_count
+- name: organic_topsite_click_count
   type: INTEGER
-  description: Count of clicks on organic topsites with newtab opened in default ui
-- name: organic_topsites_impression_count
+  description: Count of clicks on organic topsite with newtab opened in default ui
+- name: organic_topsite_impression_count
   type: INTEGER
-  description: Count of organic topsites impressions with newtab opened in default ui
+  description: Count of organic topsite impressions with newtab opened in default ui
 - name: sponsored_topsite_engagement_visits
   type: INTEGER
   description: Count of sponsored topsite engagement visits with newtab opened in default ui
-- name: sponsored_topsites_click_count
+- name: sponsored_topsite_click_count
   type: INTEGER
-  description: Count of clicks on sponsored topsites with newtab opened in default ui
-- name: sponsored_topsites_impression_count
+  description: Count of clicks on sponsored topsite with newtab opened in default ui
+- name: sponsored_topsite_impression_count
   type: INTEGER
-  description: Count of sponsored topsites impressions with newtab opened in default ui
+  description: Count of sponsored topsite impressions with newtab opened in default ui
 - name: widget_engagement_visits
   type: INTEGER
   description: Count of widget engagement visits with newtab opened in default ui

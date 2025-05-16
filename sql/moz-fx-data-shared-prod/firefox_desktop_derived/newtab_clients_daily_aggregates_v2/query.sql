@@ -40,24 +40,24 @@ SELECT
   ) AS sponsored_content_engagement_clients,
   SUM(sponsored_content_click_count) AS sponsored_content_click_count,
   SUM(sponsored_content_impression_count) AS sponsored_content_impression_count,
-  SUM(any_topsites_engagement_visits) AS any_topsites_engagement_visits,
+  SUM(any_topsite_engagement_visits) AS any_topsite_engagement_visits,
   COUNT(
-    DISTINCT IF(any_topsites_engagement_visits > 0, client_id, NULL)
-  ) AS any_topsites_engagement_clients,
-  SUM(any_topsites_click_count) AS any_topsites_click_count,
-  SUM(any_topsites_impression_count) AS any_topsites_impression_count,
+    DISTINCT IF(any_topsite_engagement_visits > 0, client_id, NULL)
+  ) AS any_topsite_engagement_clients,
+  SUM(any_topsite_click_count) AS any_topsite_click_count,
+  SUM(any_topsite_impression_count) AS any_topsite_impression_count,
   SUM(organic_topsite_engagement_visits) AS organic_topsite_engagement_visits,
   COUNT(
     DISTINCT IF(organic_topsite_engagement_visits > 0, client_id, NULL)
   ) AS organic_topsite_engagement_clients,
-  SUM(organic_topsites_click_count) AS organic_topsites_click_count,
-  SUM(organic_topsites_impression_count) AS organic_topsites_impression_count,
+  SUM(organic_topsite_click_count) AS organic_topsite_click_count,
+  SUM(organic_topsite_impression_count) AS organic_topsite_impression_count,
   SUM(sponsored_topsite_engagement_visits) AS sponsored_topsite_engagement_visits,
   COUNT(
     DISTINCT IF(sponsored_topsite_engagement_visits > 0, client_id, NULL)
   ) AS sponsored_topsite_engagement_clients,
-  SUM(sponsored_topsites_click_count) AS sponsored_topsites_click_count,
-  SUM(sponsored_topsites_impression_count) AS sponsored_topsites_impression_count,
+  SUM(sponsored_topsite_click_count) AS sponsored_topsite_click_count,
+  SUM(sponsored_topsite_impression_count) AS sponsored_topsite_impression_count,
   SUM(widget_engagement_visits) AS widget_engagement_visits,
   COUNT(DISTINCT IF(widget_engagement_visits > 0, client_id, NULL)) AS widget_engagement_clients,
   SUM(others_engagement_visits) AS others_engagement_visits,

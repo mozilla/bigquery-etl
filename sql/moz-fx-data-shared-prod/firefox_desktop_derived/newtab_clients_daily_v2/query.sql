@@ -28,23 +28,27 @@ SELECT
   COUNT(DISTINCT IF(is_default_ui, newtab_visit_id, NULL)) AS default_ui_visits,
   COUNT(
     DISTINCT IF(
-      is_search_issued
-      OR is_content_interaction
-      OR is_topsites_interaction
-      OR is_widget_interaction
-      OR is_wallpaper_interaction
-      OR is_other_interaction,
+      (
+        is_search_issued
+        OR is_content_interaction
+        OR is_topsite_interaction
+        OR is_widget_interaction
+        OR is_wallpaper_interaction
+        OR is_other_interaction
+      ),
       newtab_visit_id,
       NULL
     )
   ) AS any_engagement_visits,
   COUNT(
     DISTINCT IF(
-      is_content_interaction
-      OR is_topsites_interaction
-      OR is_widget_interaction
-      OR is_wallpaper_interaction
-      OR is_other_interaction,
+      (
+        is_content_interaction
+        OR is_topsite_interaction
+        OR is_widget_interaction
+        OR is_wallpaper_interaction
+        OR is_other_interaction
+      ),
       newtab_visit_id,
       NULL
     )
@@ -56,8 +60,7 @@ SELECT
   SUM(any_content_impression_count) AS any_content_impression_count,
   COUNT(
     DISTINCT IF(
-      is_content_interaction
-      AND NOT is_sponsored_content_interaction,
+      (is_content_interaction AND NOT is_sponsored_content_interaction),
       newtab_visit_id,
       NULL
     )
@@ -70,25 +73,24 @@ SELECT
   SUM(sponsored_content_click_count) AS sponsored_content_click_count,
   SUM(sponsored_content_impression_count) AS sponsored_content_impression_count,
   COUNT(
-    DISTINCT IF(is_topsites_interaction, newtab_visit_id, NULL)
-  ) AS any_topsites_engagement_visits,
-  SUM(any_topsites_click_count) AS any_topsites_click_count,
-  SUM(any_topsites_impression_count) AS any_topsites_impression_count,
+    DISTINCT IF(is_topsite_interaction, newtab_visit_id, NULL)
+  ) AS any_topsite_engagement_visits,
+  SUM(any_topsite_click_count) AS any_topsite_click_count,
+  SUM(any_topsite_impression_count) AS any_topsite_impression_count,
   COUNT(
     DISTINCT IF(
-      is_topsites_interaction
-      AND NOT is_sponsored_topsites_interaction,
+      (is_topsite_interaction AND NOT is_sponsored_topsite_interaction),
       newtab_visit_id,
       NULL
     )
   ) AS organic_topsite_engagement_visits,
-  SUM(organic_topsites_click_count) AS organic_topsites_click_count,
-  SUM(organic_topsites_impression_count) AS organic_topsites_impression_count,
+  SUM(organic_topsite_click_count) AS organic_topsite_click_count,
+  SUM(organic_topsite_impression_count) AS organic_topsite_impression_count,
   COUNT(
-    DISTINCT IF(is_sponsored_topsites_interaction, newtab_visit_id, NULL)
+    DISTINCT IF(is_sponsored_topsite_interaction, newtab_visit_id, NULL)
   ) AS sponsored_topsite_engagement_visits,
-  SUM(sponsored_topsites_click_count) AS sponsored_topsites_click_count,
-  SUM(sponsored_topsites_impression_count) AS sponsored_topsites_impression_count,
+  SUM(sponsored_topsite_click_count) AS sponsored_topsite_click_count,
+  SUM(sponsored_topsite_impression_count) AS sponsored_topsite_impression_count,
   COUNT(DISTINCT IF(is_widget_interaction, newtab_visit_id, NULL)) AS widget_engagement_visits,
   COUNT(DISTINCT IF(is_other_interaction, newtab_visit_id, NULL)) AS others_engagement_visits,
 FROM

@@ -12,8 +12,12 @@ fields:
   description: |
     A UUID of the usage_profile.
 
+{% if app_name == "firefox_desktop" %}
+# app_channel is only needed on desktop as the single namespace
+# contains data for all channel unlike the mobile apps.
 - mode: NULLABLE
   name: app_channel
   type: STRING
   description: |
     The channel the application is being distributed on.
+{% endif %}

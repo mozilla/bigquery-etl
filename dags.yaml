@@ -2323,6 +2323,19 @@ bqetl_monitoring_hourly:
     - impact/tier_1
     - repo/bigquery-etl
 
+bqetl_content_ml_daily:
+  schedule_interval: 0 4 * * *
+  description: |
+    Daily extracts for corpus item data to be evaluated for new tab presentation.
+  default_args:
+    owner: skamath@mozilla.com
+    start_date: "2025-05-05" #TODO: Change to merge date
+    email: ["skamath@mozilla.com", "mlcooper@mozilla.com"]
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_ech_adoption_rate:
   default_args:
     depends_on_past: false

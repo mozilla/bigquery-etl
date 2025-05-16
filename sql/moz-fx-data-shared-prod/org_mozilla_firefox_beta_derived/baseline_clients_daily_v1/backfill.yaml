@@ -4,7 +4,7 @@
   reason: install_source missing period
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   override_retention_limit: false
 2025-01-24:
   start_date: 2022-01-01

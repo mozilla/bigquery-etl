@@ -1,0 +1,173 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Day the event was received in the newtab ping
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: Unique ID for the client installation.
+- name: newtab_visit_id
+  type: STRING
+  mode: NULLABLE
+  description: The id of newtab visit
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: Firefox Desktop major version
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: OS name of the host system
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: Firefox Desktop deployment channel
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: language or country based preferences of the host system
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: country where the newtab event is reported
+- name: homepage_category
+  type: STRING
+  mode: NULLABLE
+  description: user setting for the appearance of homepage or new window during open
+- name: newtab_category
+  type: STRING
+  mode: NULLABLE
+  description: user setting for the appearance of a newtab during open
+- name: organic_content_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled organic stories in the browser.
+- name: sponsored_content_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled sponsored stories in the browser.
+- name: sponsored_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled sponsored topsites in the browser.
+- name: organic_topsites_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled organic topsites in the browser.
+- name: newtab_search_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user has enabled search in the browser.
+- name: is_default_ui
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the newtab open was a default ui
+- name: is_newtab_opened
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user opened a newtab
+- name: is_search_issued
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user issued search with newtab opened in default ui
+- name: is_search_ad_click
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user clicked a search Ad with newtab opened in default ui
+- name: is_content_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user interacted upon any content with newtab opened in default ui
+- name: is_content_click
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user clicked on any content with newtab opened in default ui
+- name: is_content_impression
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if any content was impressed on a newtab with newtab opened in default ui
+- name: is_sponsored_content_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if sponsored content was interacted upon with newtab opened in default ui
+- name: is_sponsored_content_click
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if sponsored content was clicked with newtab opened in default ui
+- name: is_sponsored_content_impression
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if sponsored content was impressed with newtab opened in default ui
+- name: any_content_click_count
+  type: INTEGER
+  description: Count of clicks on any newtab content with newtab opened in default ui
+- name: any_content_impression_count
+  type: INTEGER
+  description: Count of impression on any newtab content with newtab opened in default ui
+- name: organic_content_click_count
+  type: INTEGER
+  description: Count of clicks on Organic content with newtab opened in default ui
+- name: organic_content_impression_count
+  type: INTEGER
+  description: Count of Organic content impressions with newtab opened in default ui
+- name: sponsored_content_click_count
+  type: INTEGER
+  description: Count of clicks on sponsored content with newtab opened in default ui
+- name: sponsored_content_impression_count
+  type: INTEGER
+  description: Count of sponsored content impressions with newtab opened in default ui
+- name: is_topsite_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user interacted on any topsite with newtab opened in default ui
+- name: is_topsite_click
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user clicked on any topsite with newtab opened in default ui
+- name: is_topsite_impression
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if any topsite was impressed upon with newtab opened in default ui
+- name: is_sponsored_topsite_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user interacted on a sponsored topsite with newtab opened in default ui
+- name: is_sponsored_topsite_click
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user clicked a sponsored topsite with newtab opened in default ui
+- name: is_sponsored_topsite_impression
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if a sponsored topsite was impressed upon with newtab opened in default ui
+- name: any_topsite_click_count
+  type: INTEGER
+  description: Count of clicks on topsite with newtab opened in default ui
+- name: any_topsite_impression_count
+  type: INTEGER
+  description: Count of topsite impressions with newtab opened in default ui
+- name: organic_topsite_click_count
+  type: INTEGER
+  description: Count of clicks on organic topsite with newtab opened in default ui
+- name: organic_topsite_impression_count
+  type: INTEGER
+  description: Count of organic topsite impressions with newtab opened in default ui
+- name: sponsored_topsite_click_count
+  type: INTEGER
+  description: Count of clicks on sponsored topsite with newtab opened in default ui
+- name: sponsored_topsite_impression_count
+  type: INTEGER
+  description: Count of sponsored topsite impressions with newtab opened in default ui
+- name: is_widget_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user interacted on any widget with newtab opened in default ui
+- name: is_wallpaper_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user interacted with wallpaper with newtab opened in default ui
+- name: is_other_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+  description: TRUE if the user interacted with wallpaper, topic_selection or sections with newtab opened in default ui

@@ -1,0 +1,23 @@
+friendly_name: Newtab Clients Daily
+description: |-
+  Daily aggregation of client metrics for Newtab.
+  The granularity is one row per Firefox Desktop client_id per submission_date.
+owners:
+  - gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775
+  range_partitioning: null
+references: {}

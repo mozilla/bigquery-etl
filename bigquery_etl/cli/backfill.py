@@ -234,24 +234,27 @@ def create(
     ./bqetl backfill validate
     """
 )
-@click.argument("asset_name", required=False)
+@click.argument("qualified_table_name", required=False)
 @sql_dir_option
 @project_id_option()
 @ignore_missing_metadata_option
 @click.pass_context
 def validate(
     ctx,
-    asset_name,
+    qualified_table_name,
     sql_dir,
     project_id,
     ignore_missing_metadata,
 ):
     """Validate backfill.yaml files."""
-    if asset_name:
-        # checking if path instead of "dataset.table_name" format was passed
+    if qualified_table_name:
+        # checking if path string was passed in instead of "dataset.table_name" format
         # if yes we convert it to the expected format.
+        # this is to accommodate pre-commit hook
         qualified_table_name = (
-            ".".join(asset_name.split("/")[-4:-1]) if exists(asset_name) else asset_name
+            ".".join(qualified_table_name.split("/")[-4:-1])
+            if exists(qualified_table_name)
+            else qualified_table_name
         )
 
         backfills_dict = {

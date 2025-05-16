@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION norm.windows_version_info(
 )
 RETURNS STRING AS (
   CASE
-    WHEN os NOT IN ('Windows_NT', 'Windows_95', 'Windows_98')
+    WHEN os NOT LIKE 'Windows%'
       THEN NULL
     WHEN os = 'Windows_95'
       THEN 'Windows 95'
@@ -51,5 +51,8 @@ SELECT
   assert.equals('Windows 10', norm.windows_version_info('Windows_NT', '10.0', 19043)),
   assert.equals('Windows 11', norm.windows_version_info('Windows_NT', '10.0', 22623)),
   assert.equals('Windows 10 or 11', norm.windows_version_info('Windows_NT', '10.0', NULL)),
+  assert.equals('Windows 10', norm.windows_version_info('Windows', '10.0', 19043)),
+  assert.equals('Windows 11', norm.windows_version_info('Windows', '10.0', 22623)),
+  assert.equals('Windows 10 or 11', norm.windows_version_info('Windows', '10.0', NULL)),
   assert.null(norm.windows_version_info('Darwin', '11.4.2', NULL)),
   assert.null(norm.windows_version_info('Windows_NT', '7.7', 19043))

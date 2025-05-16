@@ -95,6 +95,7 @@ dry_run:
   - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/google_subscriptions_v1/query.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_derived/google_subscriptions_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_google_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_stripe_subscriptions_history_v1/query.sql

@@ -9,7 +9,7 @@ description: |-
       locale
       browser_version
       country
-      newtab_homepage_category
+      homepage_category
       newtab_category
       organic_content_enabled
       sponsored_content_enabled

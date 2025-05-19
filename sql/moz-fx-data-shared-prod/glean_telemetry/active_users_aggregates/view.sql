@@ -52,7 +52,7 @@ SELECT
   is_default_browser,
   channel,
   os,
-  os_version_build AS os_version,
+  os_version,
   os_version_major,
   os_version_minor,
   submission_date,
@@ -69,7 +69,7 @@ SELECT
   app_version_minor,
   app_version_patch_revision,
   app_version_is_major_release,
-  os AS os_grouped,
+  os_grouped,
   mozfun.norm.partnership(distribution_id) AS partnership,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users_aggregates`

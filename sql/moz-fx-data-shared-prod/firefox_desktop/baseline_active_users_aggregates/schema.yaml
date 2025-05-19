@@ -42,7 +42,9 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
-  description: ''
+  description: 'City reported by the client.
+
+    '
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -56,10 +58,34 @@ fields:
   description: 'Operating system reported by the client.
 
     '
+- name: os_grouped
+  type: STRING
+  mode: NULLABLE
+  description: 'Operating system group reported by the client.
+
+    '
 - name: os_version
   type: STRING
   mode: NULLABLE
   description: 'OS version reported by the client.
+
+    '
+- name: os_version_major
+  type: INTEGER
+  mode: NULLABLE
+  description: 'OS version major version reported by the client.
+
+    '
+- name: os_version_minor
+  type: INTEGER
+  mode: NULLABLE
+  description: 'OS version minor version reported by the client.
+
+    '
+- name: os_version_build
+  type: STRING
+  mode: NULLABLE
+  description: 'OS version build reported by the client.
 
     '
 - name: windows_build_number
@@ -74,6 +100,32 @@ fields:
   mode: NULLABLE
   description: 'The user visible version string (e.g. "1.0.3"). If the value was not
     provided through configuration, this metric gets set to Unknown.
+
+    '
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'The major version of the application version (e.g. if 123.0, then
+    123)
+
+    '
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'The minor version of the application version (e.g. if 123.0, then
+    0)
+
+    '
+- name: app_version_patch_revision
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'The patch revision number of the app version
+
+    '
+- name: app_version_is_major_release
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Boolean flag indicating if the app version was a major release
 
     '
 - name: is_default_browser
@@ -152,24 +204,3 @@ fields:
     (based on activity).
 
     '
-- name: os_version_build
-  type: STRING
-  mode: NULLABLE
-- name: os_version_major
-  type: INTEGER
-  mode: NULLABLE
-- name: os_version_minor
-  type: INTEGER
-  mode: NULLABLE
-- name: app_version_major
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_minor
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_patch_revision
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_is_major_release
-  type: BOOLEAN
-  mode: NULLABLE

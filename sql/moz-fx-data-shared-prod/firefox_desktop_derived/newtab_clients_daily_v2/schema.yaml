@@ -105,7 +105,7 @@ fields:
   description: Count of topsite impressions with newtab opened in default ui
 - name: organic_topsite_engagement_visits
   type: INTEGER
-  description: Count of organic topsite engagement visits with newtab opened in default ui
+  description: Count of newtab visits with the default UI that have exclusively organic (an no sponsored) topsites engagement
 - name: organic_topsite_click_count
   type: INTEGER
   description: Count of clicks on organic topsite with newtab opened in default ui

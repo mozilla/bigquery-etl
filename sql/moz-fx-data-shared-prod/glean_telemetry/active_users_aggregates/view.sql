@@ -52,7 +52,7 @@ SELECT
   is_default_browser,
   channel,
   os,
-  os_version,
+  os_version_build AS os_version,
   os_version_major,
   os_version_minor,
   submission_date,

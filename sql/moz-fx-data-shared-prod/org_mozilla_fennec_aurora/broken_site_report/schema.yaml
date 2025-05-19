@@ -513,6 +513,12 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: broken_site_report_tab_info_antitracking_etp_category
+      type: STRING
+      mode: NULLABLE
+      description: 'The current ETP category, either `standard`, `strict`, or `custom`.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

@@ -8486,6 +8486,30 @@ fields:
     - name: use_counter2_js_regexp_symbol_protocol_on_primitive_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_large_oom_recovered_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_large_oom_recovered_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_large_oom_reported_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_large_oom_reported_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_small_oom_recovered_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_small_oom_recovered_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_small_oom_reported_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_small_oom_reported_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16839,6 +16863,30 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_regexp_symbol_protocol_on_primitive_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_large_oom_recovered_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_large_oom_recovered_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_large_oom_reported_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_large_oom_reported_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_small_oom_recovered_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_small_oom_recovered_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_small_oom_reported_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_small_oom_reported_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

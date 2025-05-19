@@ -50,7 +50,8 @@ SELECT
       metrics.string.broken_site_report_breakage_category,
       metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
       metrics.string.broken_site_report_tab_info_antitracking_block_list,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
     ) AS `string`,
     STRUCT(
       metrics.string_list.broken_site_report_browser_info_app_default_locales,
@@ -146,7 +147,8 @@ SELECT
       metrics.string.broken_site_report_breakage_category,
       metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
       metrics.string.broken_site_report_tab_info_antitracking_block_list,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
     ) AS `string`,
     STRUCT(
       metrics.string_list.broken_site_report_browser_info_app_default_locales,
@@ -242,7 +244,8 @@ SELECT
       metrics.string.broken_site_report_breakage_category,
       metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
       metrics.string.broken_site_report_tab_info_antitracking_block_list,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
     ) AS `string`,
     STRUCT(
       metrics.string_list.broken_site_report_browser_info_app_default_locales,
@@ -338,7 +341,8 @@ SELECT
       metrics.string.broken_site_report_breakage_category,
       metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
       metrics.string.broken_site_report_tab_info_antitracking_block_list,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
     ) AS `string`,
     STRUCT(
       metrics.string_list.broken_site_report_browser_info_app_default_locales,
@@ -434,7 +438,8 @@ SELECT
       metrics.string.broken_site_report_breakage_category,
       metrics.string.broken_site_report_browser_info_graphics_device_pixel_ratio,
       metrics.string.broken_site_report_tab_info_antitracking_block_list,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.broken_site_report_tab_info_antitracking_etp_category
     ) AS `string`,
     STRUCT(
       metrics.string_list.broken_site_report_browser_info_app_default_locales,

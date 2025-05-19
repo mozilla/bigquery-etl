@@ -143,6 +143,9 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+- name: os_grouped
+  type: STRING
+  mode: NULLABLE
 - name: os_version
   type: STRING
   mode: NULLABLE

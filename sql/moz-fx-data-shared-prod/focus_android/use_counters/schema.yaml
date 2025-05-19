@@ -8012,6 +8012,36 @@ fields:
     - name: use_counter_page_js_regexp_symbol_protocol_on_primitive
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_large_oom_recovered
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_large_oom_reported
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_small_oom_recovered
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_small_oom_reported
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_large_oom_recovered
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_large_oom_reported
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_small_oom_recovered
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_small_oom_reported
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_doc_css_view_transition_class
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_view_transition_class
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

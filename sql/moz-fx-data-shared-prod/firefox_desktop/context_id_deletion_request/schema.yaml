@@ -213,40 +213,6 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
-  - name: object
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: newtab_content_active_experiments
-      type: JSON
-      mode: NULLABLE
-      description: 'slugs of actively enrolled experiments
-
-        '
-    - name: newtab_content_active_rollouts
-      type: JSON
-      mode: NULLABLE
-      description: 'slugs of actively enrolled rollouts
-
-        '
-    - name: newtab_content_enrollments_map
-      type: JSON
-      mode: NULLABLE
-      description: 'Information about historic enrollments, including the branches
-        enrolled.
-
-        '
-  - name: quantity
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: newtab_content_utc_offset
-      type: INTEGER
-      mode: NULLABLE
-      description: '<0-24> positive UTC offset, rounded to the nearest integer number
-        greater than 0. (If less than 0, then add 24.)
-
-        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -259,47 +225,21 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
-    - name: newtab_content_coarse_os
-      type: STRING
-      mode: NULLABLE
-      description: 'The name of the operating system. Possible values: Android, iOS,
-        Linux, Windows, or macOS
-
-        '
-    - name: newtab_content_coarse_os_version
-      type: STRING
-      mode: NULLABLE
-      description: 'The user-visible version of the operating system (e.g. "1.2.3").
-
-        If the version detection fails, this metric gets set to 0.
-
-        '
-    - name: newtab_content_surface_id
-      type: STRING
-      mode: NULLABLE
-      description: 'Surface id sent to the client from merino api
-
-        '
-    - name: newtab_content_country
-      type: STRING
-      mode: NULLABLE
-      description: 'Records the detected home region of the user. This is the general
-        region of the user''s machine.
-
-        If a machine moves location, there is a minimum 2-week delay before this will
-        be updated.
-
-        See the [Region documentation](https://firefox-source-docs.mozilla.org/toolkit/modules/toolkit_modules/Region.html)
-        for more information about updates.
-
-        '
-  - name: string_list
+  - name: uuid
     type: RECORD
     mode: NULLABLE
     fields:
-    - name: newtab_content_followed_sections
+    - name: contextual_services_context_id
       type: STRING
-      mode: REPEATED
+      mode: NULLABLE
+      description: 'An identifier for Contextual Services user interaction pings.
+        This is used internally for counting unique users as well as for anti-fraud.
+        It is shared with other Contextual Services.
+
+        Does not need to be sent in the Glean "deletion-request" ping. It is sent
+        in its own "context-id-deletion-request" ping.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

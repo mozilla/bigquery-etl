@@ -2610,7 +2610,17 @@ SELECT
       metrics.counter.use_counter_page_animation_commitstyles,
       metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
-      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_doc_js_large_oom_recovered,
+      metrics.counter.use_counter_doc_js_large_oom_reported,
+      metrics.counter.use_counter_doc_js_small_oom_recovered,
+      metrics.counter.use_counter_doc_js_small_oom_reported,
+      metrics.counter.use_counter_page_js_large_oom_recovered,
+      metrics.counter.use_counter_page_js_large_oom_reported,
+      metrics.counter.use_counter_page_js_small_oom_recovered,
+      metrics.counter.use_counter_page_js_small_oom_reported,
+      metrics.counter.use_counter_css_doc_css_view_transition_class,
+      metrics.counter.use_counter_css_page_css_view_transition_class
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5243,7 +5253,17 @@ SELECT
       metrics.counter.use_counter_page_animation_commitstyles,
       metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
-      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_doc_js_large_oom_recovered,
+      metrics.counter.use_counter_doc_js_large_oom_reported,
+      metrics.counter.use_counter_doc_js_small_oom_recovered,
+      metrics.counter.use_counter_doc_js_small_oom_reported,
+      metrics.counter.use_counter_page_js_large_oom_recovered,
+      metrics.counter.use_counter_page_js_large_oom_reported,
+      metrics.counter.use_counter_page_js_small_oom_recovered,
+      metrics.counter.use_counter_page_js_small_oom_reported,
+      metrics.counter.use_counter_css_doc_css_view_transition_class,
+      metrics.counter.use_counter_css_page_css_view_transition_class
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7876,7 +7896,17 @@ SELECT
       metrics.counter.use_counter_page_animation_commitstyles,
       metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
-      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_doc_js_large_oom_recovered,
+      metrics.counter.use_counter_doc_js_large_oom_reported,
+      metrics.counter.use_counter_doc_js_small_oom_recovered,
+      metrics.counter.use_counter_doc_js_small_oom_reported,
+      metrics.counter.use_counter_page_js_large_oom_recovered,
+      metrics.counter.use_counter_page_js_large_oom_reported,
+      metrics.counter.use_counter_page_js_small_oom_recovered,
+      metrics.counter.use_counter_page_js_small_oom_reported,
+      metrics.counter.use_counter_css_doc_css_view_transition_class,
+      metrics.counter.use_counter_css_page_css_view_transition_class
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10509,7 +10539,17 @@ SELECT
       metrics.counter.use_counter_page_animation_commitstyles,
       metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
-      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_doc_js_large_oom_recovered,
+      metrics.counter.use_counter_doc_js_large_oom_reported,
+      metrics.counter.use_counter_doc_js_small_oom_recovered,
+      metrics.counter.use_counter_doc_js_small_oom_reported,
+      metrics.counter.use_counter_page_js_large_oom_recovered,
+      metrics.counter.use_counter_page_js_large_oom_reported,
+      metrics.counter.use_counter_page_js_small_oom_recovered,
+      metrics.counter.use_counter_page_js_small_oom_reported,
+      metrics.counter.use_counter_css_doc_css_view_transition_class,
+      metrics.counter.use_counter_css_page_css_view_transition_class
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13142,7 +13182,17 @@ SELECT
       metrics.counter.use_counter_page_animation_commitstyles,
       metrics.counter.use_counter_page_commit_styles_non_filling_final_value,
       metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive,
-      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive,
+      metrics.counter.use_counter_doc_js_large_oom_recovered,
+      metrics.counter.use_counter_doc_js_large_oom_reported,
+      metrics.counter.use_counter_doc_js_small_oom_recovered,
+      metrics.counter.use_counter_doc_js_small_oom_reported,
+      metrics.counter.use_counter_page_js_large_oom_recovered,
+      metrics.counter.use_counter_page_js_large_oom_reported,
+      metrics.counter.use_counter_page_js_small_oom_recovered,
+      metrics.counter.use_counter_page_js_small_oom_reported,
+      metrics.counter.use_counter_css_doc_css_view_transition_class,
+      metrics.counter.use_counter_css_page_css_view_transition_class
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

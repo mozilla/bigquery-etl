@@ -61,6 +61,18 @@ fields:
   description: |
     OS version reported by the client.
 
+- name: os_version_major
+  type: STRING
+  mode: NULLABLE
+  description: |
+    OS version major version reported by the client.
+
+- name: os_version_minor
+  type: STRING
+  mode: NULLABLE
+  description: |
+    OS version minor version reported by the client.
+
 - name: os_version_build
   type: STRING
   mode: NULLABLE

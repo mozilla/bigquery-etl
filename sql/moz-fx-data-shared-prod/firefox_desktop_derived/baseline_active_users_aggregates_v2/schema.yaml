@@ -36,6 +36,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |
+    City reported by the client.
 
 - name: locale
   type: STRING

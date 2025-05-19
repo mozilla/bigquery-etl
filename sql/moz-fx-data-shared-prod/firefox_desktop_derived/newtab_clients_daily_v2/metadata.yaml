@@ -1,0 +1,47 @@
+friendly_name: Newtab Clients Daily
+description: |-
+  Daily aggregation of client metrics for Newtab.
+  The granularity is one row per Firefox Desktop client_id per submission_date.
+  The following columns are aggregated to pick the most common value for the given client using moz-fx-data-shared-prod.udf.mode_last
+      app_version
+      os
+      channel
+      locale
+      browser_version
+      country
+      newtab_homepage_category
+      newtab_category
+      organic_content_enabled
+      sponsored_content_enabled
+      sponsored_topsites_enabled
+      organic_topsites_enabled
+      newtab_search_enabled
+owners:
+- gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - channel
+    - country
+    - newtab_category
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

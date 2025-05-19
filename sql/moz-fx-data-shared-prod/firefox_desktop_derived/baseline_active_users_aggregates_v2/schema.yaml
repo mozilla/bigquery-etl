@@ -62,13 +62,13 @@ fields:
     OS version reported by the client.
 
 - name: os_version_major
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
   description: |
     OS version major version reported by the client.
 
 - name: os_version_minor
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
   description: |
     OS version minor version reported by the client.

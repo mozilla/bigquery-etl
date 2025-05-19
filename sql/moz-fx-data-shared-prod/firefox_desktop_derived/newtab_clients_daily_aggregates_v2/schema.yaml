@@ -74,7 +74,7 @@ fields:
   description: Count of nonsearch engagement visits with newtab opened in default ui
 - name: nonsearch_engagement_clients
   type: INTEGER
-  description: Count of nonsearch engagement clients with newtab opened in default ui
+  description: Count of clients with any newtab visits using the default UI with any nonsearch engagement that day
 - name: any_content_engagement_visits
   type: INTEGER
   description: Count of any content engagement visits with newtab opened in default ui

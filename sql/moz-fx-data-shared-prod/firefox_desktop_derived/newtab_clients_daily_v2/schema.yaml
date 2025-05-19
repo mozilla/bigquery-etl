@@ -78,7 +78,7 @@ fields:
   description: Count of impression on any newtab content with newtab opened in default ui
 - name: organic_content_engagement_visits
   type: INTEGER
-  description: Count of organic content engagement visits with newtab opened in default ui
+  description: Count of newtab visits with the default UI that have exclusively organic (an no sponsored) content engagement
 - name: organic_content_click_count
   type: INTEGER
   description: Count of clicks on Organic content with newtab opened in default ui

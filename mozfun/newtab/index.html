@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#scheduled_surface_id_v1-udf" class="md-skip">
+        <a href="#is_default_ui_v1-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -903,6 +903,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#is_default_ui_v1-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_default_ui_v1 (UDF)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is-default-ui-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is Default UI UDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Is Default UI UDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#scheduled_surface_id_v1-udf" class="md-nav__link">
     <span class="md-ellipsis">
       scheduled_surface_id_v1 (UDF)
@@ -922,7 +955,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1566,6 +1599,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#is_default_ui_v1-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      is_default_ui_v1 (UDF)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#is-default-ui-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is Default UI UDF
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Is Default UI UDF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#scheduled_surface_id_v1-udf" class="md-nav__link">
     <span class="md-ellipsis">
       scheduled_surface_id_v1 (UDF)
@@ -1585,7 +1651,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#parameters_1" class="md-nav__link">
     <span class="md-ellipsis">
       Parameters
     </span>
@@ -1616,6 +1682,25 @@
 
   <h1>Newtab</h1>
 
+<h2 id="is_default_ui_v1-udf">is_default_ui_v1 (UDF)</h2>
+<p>Determine if the newtab open is attributed to default UI</p>
+<h2 id="is-default-ui-udf">Is Default UI UDF</h2>
+<p>This function computes if the newtab opened by the client is attributed to the Default UI.
+<div class="highlight"><pre><span></span><code>Input parameters from the newtab ping:
+       event_category as STRING (category)
+       event_name as STRING (name)
+       event_details as ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt; (extra)
+       newtab_homepage_category as STRING (metrics.string.newtab_homepage_category)
+       newtab_newtab_category as STRING (metrics.string.newtab_newtab_category)
+</code></pre></div></p>
+<h3 id="parameters">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>event_category STRING, event_name STRING, event_details ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;, newtab_homepage_category STRING, newtab_newtab_category STRING
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>BOOLEAN
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/newtab/is_default_ui_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/newtab/is_default_ui_v1/metadata.yaml">Edit</a></p>
 <h2 id="scheduled_surface_id_v1-udf">scheduled_surface_id_v1 (UDF)</h2>
 <p>Content teams reference for the surface where an article is published on Newtab</p>
 <h2 id="scheduled-surface-id-udf">Scheduled Surface Id UDF</h2>
@@ -1626,7 +1711,7 @@ The UDF tries to mimic the backend merino implementation
 (https://github.com/mozilla-services/merino-py/blob/main/merino/curated_recommendations/provider.py#L66-L103) for
 the Scheduled_Surface_Id.
 The UDF is meant to be used temporarily until the backend computed value gets added to the newtab ping</p>
-<h3 id="parameters">Parameters</h3>
+<h3 id="parameters_1">Parameters</h3>
 <p><strong>INPUTS</strong></p>
 <div class="highlight"><pre><span></span><code>country STRING, locale STRING
 </code></pre></div>

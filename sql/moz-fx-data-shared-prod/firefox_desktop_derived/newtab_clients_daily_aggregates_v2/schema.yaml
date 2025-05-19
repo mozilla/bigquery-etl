@@ -158,4 +158,4 @@ fields:
   description: Count of visits associated with wallpaper, topic_selection, sections with newtab opened in default ui
 - name: others_engagement_clients
   type: INTEGER
-  description: Count of clients associated with wallpaper, topic_selection, sections with newtab opened in default ui
+  description: Count of clients with any newtab visits using the default UI with any engagement with wallpaper, topic_selection, sections that day

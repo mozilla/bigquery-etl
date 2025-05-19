@@ -140,7 +140,7 @@ fields:
   description: Count of sponsored topsite engagement visits with newtab opened in default ui
 - name: sponsored_topsite_engagement_clients
   type: INTEGER
-  description: Count of sponsored topsite engagement clients with newtab opened in default ui
+  description: Count of clients with any newtab visits using the default UI with any sponsored topsites engagement that day
 - name: sponsored_topsite_click_count
   type: INTEGER
   description: Count of clicks on sponsored topsite with newtab opened in default ui

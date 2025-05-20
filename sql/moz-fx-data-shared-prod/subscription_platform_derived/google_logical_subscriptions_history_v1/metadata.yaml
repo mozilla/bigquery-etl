@@ -1,0 +1,29 @@
+friendly_name: Google logical subscriptions history
+description: |-
+  History of changes to Google logical subscriptions, which are a continuous active period for a particular subscription.
+
+  To get the historical state at a particular point in time use a condition like the following:
+    valid_from <= {timestamp}
+    AND valid_to > {timestamp}
+owners:
+- srose@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_subplat
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - valid_to
+    - valid_from
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

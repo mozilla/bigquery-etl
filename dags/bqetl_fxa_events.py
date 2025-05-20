@@ -147,7 +147,7 @@ with DAG(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
             external_dag_id="bqetl_subplat",
             external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=48600)).isoformat() }}",
         )
 
         firefox_accounts_derived__fxa_gcp_stderr_events__v1_external.set_upstream(
@@ -181,7 +181,7 @@ with DAG(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
             external_dag_id="bqetl_subplat",
             external_task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=48600)).isoformat() }}",
         )
 
         firefox_accounts_derived__fxa_gcp_stdout_events__v1_external.set_upstream(
@@ -226,7 +226,7 @@ with DAG(
             task_id="bqetl_subplat__wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
             external_dag_id="bqetl_subplat",
             external_task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=48600)).isoformat() }}",
         )
 
         firefox_accounts_derived__fxa_stdout_events__v1_external.set_upstream(

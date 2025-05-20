@@ -18,10 +18,10 @@ Built from bigquery-etl repo, [`dags/bqetl_subplat.py`](https://github.com/mozil
 
 #### Description
 
-Daily imports for Subscription Platform data from Stripe and the Mozilla VPN
+Daily imports for Subscription Platform data from Stripe, Firestore, and the Mozilla VPN
 operational DB as well as derived tables based on that data.
 
-Depends on `bqetl_fxa_events`, so is scheduled to run a bit after that.
+Scheduled mid-day to allow more time for late-arriving data from the previous day.
 
 Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
 task has highly viariable availability timing, so it is possible for it to
@@ -44,7 +44,7 @@ srose@mozilla.com
 
 default_args = {
     "owner": "srose@mozilla.com",
-    "start_date": datetime.datetime(2021, 7, 20, 0, 0),
+    "start_date": datetime.datetime(2025, 5, 20, 0, 0),
     "end_date": None,
     "email": ["telemetry-alerts@mozilla.com", "srose@mozilla.com"],
     "depends_on_past": False,
@@ -60,7 +60,7 @@ tags = ["impact/tier_1", "repo/bigquery-etl"]
 with DAG(
     "bqetl_subplat",
     default_args=default_args,
-    schedule_interval="45 1 * * *",
+    schedule_interval="0 12 * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,
@@ -70,7 +70,7 @@ with DAG(
         task_id="wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1",
         external_dag_id="bqetl_fxa_events",
         external_task_id="firefox_accounts_derived__fxa_gcp_stderr_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
+        execution_delta=datetime.timedelta(seconds=37800),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -83,7 +83,7 @@ with DAG(
         task_id="wait_for_firefox_accounts_derived__fxa_gcp_stdout_events__v1",
         external_dag_id="bqetl_fxa_events",
         external_task_id="firefox_accounts_derived__fxa_gcp_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
+        execution_delta=datetime.timedelta(seconds=37800),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -96,7 +96,7 @@ with DAG(
         task_id="wait_for_firefox_accounts_derived__fxa_stdout_events__v1",
         external_dag_id="bqetl_fxa_events",
         external_task_id="firefox_accounts_derived__fxa_stdout_events__v1",
-        execution_delta=datetime.timedelta(seconds=900),
+        execution_delta=datetime.timedelta(seconds=37800),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -117,6 +117,60 @@ with DAG(
         task_id="fivetran_stripe_nonprod_task",
         deferrable=False,
         task_concurrency=1,
+    )
+
+    checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1",
+        source_table="google_logical_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1",
+        source_table="google_subscriptions_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__google_subscriptions_history__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__google_subscriptions_history__v1",
+        source_table="google_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1",
+        source_table="google_subscriptions_revised_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+        retries=0,
     )
 
     checks__fail_subscription_platform_derived__stripe_customers_history__v1 = bigquery_dq_check(
@@ -273,7 +327,7 @@ with DAG(
             task_id="bqetl_mozilla_vpn_site_metrics__wait_for_mozilla_vpn_derived__all_subscriptions__v1",
             external_dag_id="bqetl_mozilla_vpn_site_metrics",
             external_task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=38700)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
 
         mozilla_vpn_derived__all_subscriptions__v1_external.set_upstream(
@@ -1266,6 +1320,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__google_logical_subscriptions_history__v1",
+        destination_table="google_logical_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     subscription_platform_derived__google_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__google_subscriptions__v1",
         destination_table="google_subscriptions_v1",
@@ -1276,6 +1342,60 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    subscription_platform_derived__google_subscriptions__v2 = bigquery_etl_query(
+        task_id="subscription_platform_derived__google_subscriptions__v2",
+        destination_table="google_subscriptions_v2",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__google_subscriptions_changelog__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__google_subscriptions_changelog__v1",
+            destination_table="google_subscriptions_changelog_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+            arguments=["--append_table", "--noreplace"],
+        )
+    )
+
+    subscription_platform_derived__google_subscriptions_history__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__google_subscriptions_history__v1",
+            destination_table="google_subscriptions_history_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+        )
+    )
+
+    subscription_platform_derived__google_subscriptions_revised_changelog__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__google_subscriptions_revised_changelog__v1",
+        destination_table="google_subscriptions_revised_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
     )
 
     subscription_platform_derived__logical_subscription_events__v1 = bigquery_etl_query(
@@ -1571,6 +1691,22 @@ with DAG(
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
         depends_on_past=True,
+    )
+
+    checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__google_logical_subscriptions_history__v1
+    )
+
+    checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1.set_upstream(
+        subscription_platform_derived__google_subscriptions_changelog__v1
+    )
+
+    checks__fail_subscription_platform_derived__google_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__google_subscriptions_history__v1
+    )
+
+    checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1.set_upstream(
+        subscription_platform_derived__google_subscriptions_revised_changelog__v1
     )
 
     checks__fail_subscription_platform_derived__stripe_customers_history__v1.set_upstream(
@@ -1965,8 +2101,40 @@ with DAG(
         subscription_platform_derived__service_subscriptions_history__v1
     )
 
+    subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
+        checks__fail_subscription_platform_derived__google_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__services__v1
+    )
+
+    subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__stripe_plans__v1
+    )
+
+    subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__stripe_products__v1
+    )
+
+    subscription_platform_derived__google_subscriptions__v2.set_upstream(
+        checks__fail_subscription_platform_derived__google_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__google_subscriptions_history__v1.set_upstream(
+        checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1
+    )
+
+    subscription_platform_derived__google_subscriptions_revised_changelog__v1.set_upstream(
+        checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1
+    )
+
     subscription_platform_derived__logical_subscription_events__v1.set_upstream(
         subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
+        checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(

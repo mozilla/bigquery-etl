@@ -62,7 +62,7 @@ with DAG(
         task_id="wait_for_mozilla_vpn_derived__all_subscriptions__v1",
         external_dag_id="bqetl_subplat",
         external_task_id="mozilla_vpn_derived__all_subscriptions__v1",
-        execution_delta=datetime.timedelta(seconds=47700),
+        execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),

@@ -2,6 +2,9 @@ friendly_name: Logical subscriptions events
 description: |-
   Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
 
+  This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
+  More recent data that is still in flux can be found in `recent_logical_subscription_events_v1`.
+
   Logical subscriptions are a continuous active period for a particular provider subscription.
 owners:
 - srose@mozilla.com
@@ -11,6 +14,7 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
+  date_partition_offset: -7
 bigquery:
   time_partitioning:
     type: day

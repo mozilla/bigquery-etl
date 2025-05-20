@@ -1,0 +1,5 @@
+friendly_name: Logical subscription events
+description: |-
+  Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.

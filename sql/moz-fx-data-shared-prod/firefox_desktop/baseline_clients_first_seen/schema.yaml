@@ -130,3 +130,9 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The distribution name (e.g. 'MozillaOnline').
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+- name: windows_version
+  type: STRING
+  mode: NULLABLE

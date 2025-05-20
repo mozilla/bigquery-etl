@@ -7,6 +7,7 @@ from tempfile import NamedTemporaryFile
 from typing import Any, Dict, Iterable, List, Optional
 
 import attr
+import ujson
 import yaml
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
@@ -265,7 +266,10 @@ class Schema:
             else:
                 if update and add_missing_fields:
                     # node does not exist in schema, add to schema
-                    columns.append(node.copy())
+                    if node["type"] == "RECORD":  # deep copy record fields
+                        columns.append(ujson.loads(ujson.dumps(node)))
+                    else:
+                        columns.append(node.copy())
                     print(f"Field {node_name} added to {prefix}")
                 else:
                     if not ignore_missing_fields:

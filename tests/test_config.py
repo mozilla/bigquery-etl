@@ -1,6 +1,7 @@
 from pathlib import Path
+from unittest.mock import patch
 
-from bigquery_etl.config import ConfigLoader
+from bigquery_etl.config import ConfigLoader, _ConfigLoader
 
 TEST_DIR = Path(__file__).parent
 
@@ -9,6 +10,13 @@ class TestConfig:
     def test_config_loader_set_project(self):
         ConfigLoader.set_project_dir(TEST_DIR / "data")
         assert ConfigLoader.project_dir == TEST_DIR / "data"
+
+    def test_config_loader_set_config_file(self):
+        config_loader = _ConfigLoader()
+        config_loader.set_config_file("config.yaml")
+
+        with patch.object(config_loader, "get", return_value=None):
+            assert config_loader.config_file == "config.yaml"
 
     def test_config_loader_get(self):
         ConfigLoader.set_project_dir(TEST_DIR / "data")

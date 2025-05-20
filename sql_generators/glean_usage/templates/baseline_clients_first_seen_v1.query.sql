@@ -13,6 +13,36 @@ WITH
       udf.safe_sample_id(client_info.client_id) AS sample_id,
       DATE(MIN(submission_timestamp)) as submission_date,
       DATE(MIN(submission_timestamp)) as first_seen_date,
+      ARRAY_AGG(
+        client_info.attribution 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS attribution,
+      ARRAY_AGG(
+        client_info.distribution 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS `distribution`,
+      {% if app_name == "firefox_desktop" %}
+      ARRAY_AGG(
+        metrics.object.glean_attribution_ext 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS attribution_ext,
+      ARRAY_AGG(
+        metrics.object.glean_distribution_ext 
+        ORDER BY submission_timestamp DESC LIMIT 1
+      )[OFFSET(0)] AS distribution_ext,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_client_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_client_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_profile_group_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_profile_group_id
+      {% endif %}
     FROM
       `{{ baseline_table }}`
     -- initialize by looking over all of history
@@ -30,6 +60,8 @@ WITH
     submission_date,
     COALESCE(core.first_seen_date, baseline.first_seen_date) AS first_seen_date,
     sample_id,
+    attribution,
+    `distribution`
   FROM baseline
   LEFT JOIN _core_clients_first_seen AS core
   USING (client_id)
@@ -46,23 +78,62 @@ WITH
 {{ core_clients_first_seen(migration_table) }},
 _baseline AS (
   -- extract the client_id into the top level for the `USING` clause
-  SELECT DISTINCT
+  SELECT
     client_info.client_id,
     -- Some Glean data from 2019 contains incorrect sample_id, so we
     -- recalculate here; see bug 1707640
     udf.safe_sample_id(client_info.client_id) AS sample_id,
+    ARRAY_AGG(client_info.attribution ORDER BY submission_timestamp DESC LIMIT 1)[
+      OFFSET(0)
+    ] AS attribution,
+    ARRAY_AGG(client_info.distribution ORDER BY submission_timestamp DESC LIMIT 1)[
+      OFFSET(0)
+    ] AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    ARRAY_AGG(
+      metrics.object.glean_attribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution_ext,
+    ARRAY_AGG(
+      metrics.object.glean_distribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS distribution_ext,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_client_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_client_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_profile_group_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_profile_group_id
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
+  GROUP BY 
+    client_id,
+    sample_id
 ),
 _current AS (
-  SELECT DISTINCT
+  SELECT
     @submission_date as submission_date,
     COALESCE(first_seen_date, @submission_date) as first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    attribution_ext,
+    distribution_ext,
+    legacy_telemetry_client_id,
+    legacy_telemetry_profile_group_id
+    {% endif %}
   FROM
     _baseline
   LEFT JOIN
@@ -78,7 +149,15 @@ _previous AS (
       fs.first_seen_date
     ) AS first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    attribution_ext,
+    distribution_ext,
+    legacy_telemetry_client_id,
+    legacy_telemetry_profile_group_id,
+    {% endif %}
   FROM
     `{{ first_seen_table }}` fs
   LEFT JOIN
@@ -90,16 +169,51 @@ _previous AS (
 )
 {% else %}
 _current AS (
-  SELECT DISTINCT
+  SELECT
     @submission_date as submission_date,
     @submission_date as first_seen_date,
     sample_id,
-    client_info.client_id
+    client_info.client_id,
+    ARRAY_AGG(
+      client_info.attribution 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution,
+    ARRAY_AGG(
+      client_info.distribution 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    ARRAY_AGG(
+      metrics.object.glean_attribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS attribution_ext,
+    ARRAY_AGG(
+      metrics.object.glean_distribution_ext 
+      ORDER BY submission_timestamp DESC LIMIT 1
+    )[OFFSET(0)] AS distribution_ext,
+          mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.uuid.legacy_telemetry_client_id 
+          ORDER BY submission_timestamp ASC
+          )
+      ) AS legacy_telemetry_client_id,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(
+        metrics.uuid.legacy_telemetry_profile_group_id 
+        ORDER BY submission_timestamp ASC
+        )
+    ) AS legacy_telemetry_profile_group_id
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL -- Bug 1896455
+  GROUP BY 
+    submission_date,
+    first_seen_date,
+    sample_id,
+    client_info.client_id
 ),
   -- query over all of history to see whether the client_id has shown up before
 _previous AS (
@@ -107,7 +221,15 @@ _previous AS (
     submission_date,
     first_seen_date,
     sample_id,
-    client_id
+    client_id,
+    attribution,
+    `distribution`,
+    {% if app_name == "firefox_desktop" %}
+    attribution_ext,
+    distribution_ext,
+    legacy_telemetry_client_id,
+    legacy_telemetry_profile_group_id,
+    {% endif %}
   FROM
     `{{ first_seen_table }}`
   WHERE
@@ -117,6 +239,8 @@ _previous AS (
 {% endif %}
 
 , _joined AS (
+  --Switch to using separate if statements instead of 1
+  --because dry run is struggling to validate the final struct
   SELECT
     IF(
       _previous.client_id IS NULL
@@ -136,7 +260,15 @@ SELECT
   submission_date,
   first_seen_date,
   sample_id,
-  client_id
+  client_id,
+  attribution,
+  `distribution`,
+  {% if app_name == "firefox_desktop" %}
+  attribution_ext,
+  distribution_ext,
+  legacy_telemetry_client_id,
+  legacy_telemetry_profile_group_id,
+  {% endif %}
 FROM _joined
 QUALIFY
   IF(

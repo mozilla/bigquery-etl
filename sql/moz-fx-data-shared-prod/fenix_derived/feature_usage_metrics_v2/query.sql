@@ -15,6 +15,7 @@ client_attribution AS (
   SELECT
     client_id,
     adjust_network,
+    normalized_channel,
   FROM
     `moz-fx-data-shared-prod.fenix.attribution_clients`
 ),
@@ -45,10 +46,12 @@ metric_ping_clients_feature_usage AS (
   SELECT
     dau_date,
     client_info.client_id,
-    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[SAFE_OFFSET(0)] AS channel,
+    ARRAY_AGG(normalized_channel ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS normalized_channel,
     ARRAY_AGG(normalized_country_code ORDER BY submission_timestamp DESC)[
       SAFE_OFFSET(0)
-    ] AS country,
+    ] AS normalized_country_code,
     LOGICAL_OR(COALESCE(metrics.boolean.metrics_default_browser, FALSE)) AS is_default_browser,
     --Credential Management: Logins
     SUM(COALESCE(metrics.counter.logins_deleted, 0)) AS logins_deleted,
@@ -193,8 +196,8 @@ SELECT
   @submission_date AS submission_date,
   dau_date AS metric_date,
   COUNT(DISTINCT client_id) AS clients,
-  channel,
-  country,
+  normalized_channel AS channel,
+  normalized_country_code AS country,
   adjust_network,
   is_default_browser,
   /*Logins*/
@@ -336,13 +339,13 @@ FROM
   metric_ping_clients_feature_usage
 LEFT JOIN
   client_attribution
-  USING (client_id)
+  USING (client_id, normalized_channel)
 WHERE
   dau_date = DATE_SUB(@submission_date, INTERVAL 4 DAY)
 GROUP BY
   submission_date,
   metric_date,
-  channel,
-  country,
+  normalized_channel,
+  normalized_country_code,
   adjust_network,
   is_default_browser

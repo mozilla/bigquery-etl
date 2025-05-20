@@ -1,0 +1,1 @@
+To be used with Glean datasets, helps normalize Windows version information.

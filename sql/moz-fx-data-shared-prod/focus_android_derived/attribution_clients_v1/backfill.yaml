@@ -1,0 +1,8 @@
+2025-05-14:
+  start_date: 2023-04-01
+  end_date: 2025-05-14
+  reason: normalized_channel added, backfill to populate this field historically
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  override_retention_limit: false

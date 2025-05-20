@@ -5,6 +5,15 @@ CREATE OR REPLACE VIEW
 AS
 SELECT
   *
+  {% if app_name == "firefox_desktop" %}
+  , 
+  IF(
+    LOWER(IFNULL(isp, '')) <> "browserstack"
+    AND LOWER(IFNULL(coalesce(distribution_id, distribution.name), '')) <> "mozillaonline",
+    TRUE,
+    FALSE
+  ) AS is_desktop
+  {% endif %}
 FROM
   `{{ project_id }}.{{ daily_table }}`
 WHERE

@@ -109,7 +109,7 @@ WITH probe_counts AS (
 {% if channel == "release" and is_scalar %}
 ,
   -- Fix All OS client counts which were originally calculated taking only 10% of Windows due to sampling.
-  -- This is only relevant for scalars, as histograms are already made right during client normalization.
+ -- This is only relevant for scalars, as histograms are already normalized during client normalization.
   -- See histogram_bucket_counts_v1.sql for details.
   windows_probe_counts AS (
     SELECT

@@ -1,0 +1,5 @@
+friendly_name: Service subscriptions events
+description: |-
+  Service subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
+
+  Service subscriptions are a continuous active period for a specific service by a particular provider subscription.

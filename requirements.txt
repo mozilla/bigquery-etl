@@ -815,9 +815,9 @@ keyring==24.3.1 \
     --hash=sha256:c3327b6ffafc0e8befbdb597cacdb4928ffe5c1212f7645f186e6d9957a898db \
     --hash=sha256:df38a4d7419a6a60fea5cef1e45a948a3e8430dd12ad88b0f423c5c143906218
     # via bigeye-sdk
-looker-sdk==25.6.0 \
-    --hash=sha256:4c3bca04c428e3c0a4fd02a199a2e5237cd05d279f21591e9bd684f9c99fa08f \
-    --hash=sha256:816dce7f181c7b05ab590ed89b2559a8737bad524f8976286a9c024d780da0dd
+looker-sdk==25.8.0 \
+    --hash=sha256:4e9b8e00cab480bd73af8fe10ed7004eb52a875fb4fbd299c3fe3946b8d438c5 \
+    --hash=sha256:4eef55b317d6fa171898335ac95d8d7e26e9f7dd7dd642789f9f899db8c986f7
     # via -r requirements.in
 lz4==4.3.3 \
     --hash=sha256:01fe674ef2889dbb9899d8a67361e0c4a2c833af5aeb37dd505727cf5d2a131e \

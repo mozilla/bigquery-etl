@@ -177,7 +177,7 @@ bqetl_subplat:
 
   default_args:
     owner: srose@mozilla.com
-    start_date: "2025-04-17"
+    start_date: "2025-05-20"
     email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m

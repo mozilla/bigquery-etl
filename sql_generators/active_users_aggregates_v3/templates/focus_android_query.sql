@@ -164,7 +164,8 @@ todays_metrics AS (
     is_wau,
     is_mau,
     CAST(NULL AS STRING) AS adjust_network,
-    CAST(NULL AS STRING) AS install_source
+    CAST(NULL AS STRING) AS install_source,
+    CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response,
   FROM
     unioned
 )
@@ -210,4 +211,5 @@ GROUP BY
   submission_date,
   segment,
   adjust_network,
-  install_source
+  install_source,
+  play_store_attribution_install_referrer_response,

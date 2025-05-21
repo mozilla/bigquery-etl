@@ -33,6 +33,7 @@ SELECT
   app_version_patch_revision,
   app_version_is_major_release,
   os_grouped,
+  play_store_attribution_install_referrer_response,
   CASE
     WHEN STARTS_WITH(distribution_id, "vivo-")
       THEN "vivo"
@@ -76,6 +77,7 @@ SELECT
   app_version_patch_revision,
   app_version_is_major_release,
   os_grouped,
+  CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response,
   CASE
     WHEN STARTS_WITH(distribution_id, "vivo-")
       THEN "vivo"

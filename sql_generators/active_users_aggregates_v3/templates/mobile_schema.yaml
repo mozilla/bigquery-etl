@@ -79,6 +79,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The id of the browser distribution made available in installation sources.
+- name: play_store_attribution_install_referrer_response
+  type: STRING
+  mode: NULLABLE
+  description: The install referrer response recorded from the Google Play Store.
 - name: daily_users
   type: INTEGER
   mode: NULLABLE

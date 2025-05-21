@@ -3,11 +3,22 @@ WITH
 {% if app_name == "fenix"%}
   attribution_data AS (
     SELECT
-      client_id,
-      adjust_network,
-      install_source
+      fac.client_id,
+      fac.adjust_network,
+      fac.install_source,
+      ac.play_store_attribution_install_referrer_response
     FROM
-      fenix.firefox_android_clients
+      fenix.firefox_android_clients fac
+    LEFT JOIN
+    (
+      SELECT 
+      client_id, 
+      submission_date, 
+      play_store_attribution_install_referrer_response
+      FROM fenix.attribution_clients
+      QUALIFY row_number() over(partition by client_id order by submission_date ASC) = 1
+     )  ac
+    ON fac.client_id = ac.client_id
   ),
 {% endif %}
 {% if app_name == "firefox_ios"%}
@@ -15,7 +26,8 @@ WITH
     SELECT
       client_id,
       adjust_network,
-      CAST(NULL AS STRING) install_source
+      CAST(NULL AS STRING) install_source,
+      CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response
     FROM
       firefox_ios.firefox_ios_clients
   ),
@@ -138,10 +150,12 @@ unioned_with_attribution AS (
     unioned.*,
     {% if app_name == "fenix" or  app_name == "firefox_ios" %}
       attribution_data.install_source,
-      attribution_data.adjust_network
+      attribution_data.adjust_network,
+      attribution_data.play_store_attribution_install_referrer_response,
     {% else %}
       CAST(NULL AS STRING) AS install_source,
-      CAST(NULL AS STRING) AS adjust_network
+      CAST(NULL AS STRING) AS adjust_network,
+      CAST(NULL AS STRING) AS play_store_attribution_install_referrer_response,
     {% endif %}
   FROM
     unioned
@@ -177,6 +191,7 @@ todays_metrics AS (
     active_hours_sum,
     adjust_network,
     install_source,
+    play_store_attribution_install_referrer_response,
     is_daily_user,
     is_weekly_user,
     is_monthly_user,
@@ -228,4 +243,5 @@ GROUP BY
     os_version_minor,
     submission_date,
     adjust_network,
-    install_source
+    install_source,
+    play_store_attribution_install_referrer_response

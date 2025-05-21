@@ -44,6 +44,7 @@ CREATE OR REPLACE VIEW
       app_version_patch_revision,
       app_version_is_major_release,
       os_grouped,
+      play_store_attribution_install_referrer_response,
     FROM
       `{{ project_id }}.{{ app_dataset_id }}.active_users_aggregates`
   {% endfor %}

@@ -7,7 +7,6 @@ import sys
 import tempfile
 from collections import defaultdict
 from datetime import date, datetime, timedelta
-from os.path import exists
 from pathlib import Path
 
 import rich_click as click
@@ -248,15 +247,6 @@ def validate(
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
-        # checking if path string was passed in instead of "dataset.table_name" format
-        # if yes we convert it to the expected format.
-        # this is to accommodate pre-commit hook
-        qualified_table_name = (
-            ".".join(qualified_table_name.split("/")[-4:-1])
-            if exists(qualified_table_name)
-            else qualified_table_name
-        )
-
         backfills_dict = {
             qualified_table_name: get_entries_from_qualified_table_name(
                 sql_dir, qualified_table_name

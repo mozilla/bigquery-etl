@@ -11,6 +11,7 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/crash-ping-ingest
   - workgroup:mozilla-confidential
+  - workgroup:remote-settings/gke
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_crashreporter.crash

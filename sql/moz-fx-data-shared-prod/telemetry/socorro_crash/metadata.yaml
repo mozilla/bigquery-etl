@@ -18,6 +18,7 @@ workgroup_access:
   - workgroup:dataops-managed/crash-ping-ingest
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:remote-settings/gke
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry.socorro_crash_v2

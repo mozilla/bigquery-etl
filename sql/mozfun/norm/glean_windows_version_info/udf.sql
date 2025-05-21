@@ -40,7 +40,7 @@ RETURNS STRING AS (
     WHEN os = 'Windows'
       AND os_version = '10.0'
       AND windows_build_number IS NULL
-      THEN 'Windows 10/11 (build unknown)'
+      THEN 'build unknown - likely Windows 10 or 11'
     ELSE NULL
   END
 );
@@ -59,6 +59,6 @@ SELECT
   assert.equals('Windows 10', norm.glean_windows_version_info('Windows', '10.0', 19043)),
   assert.equals('Windows 11', norm.glean_windows_version_info('Windows', '10.0', 22623)),
   assert.equals(
-    'Windows 10/11 (build unknown)',
+    'build unknown - likely Windows 10 or 11',
     norm.glean_windows_version_info('Windows', '10.0', NULL)
   );

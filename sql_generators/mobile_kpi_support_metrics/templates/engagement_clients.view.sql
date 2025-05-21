@@ -32,6 +32,7 @@ attribution AS (
   SELECT
     client_id,
     sample_id,
+    normalized_channel,
     {% for attribution_field in product_attribution_fields %}
     {{ attribution_field }},
     {% endfor %}
@@ -80,4 +81,4 @@ FROM
   active_users
 LEFT JOIN
   attribution
-  USING(client_id, sample_id)
+  USING(client_id, sample_id, normalized_channel)

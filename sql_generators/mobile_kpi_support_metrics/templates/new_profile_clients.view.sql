@@ -27,7 +27,7 @@ FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN
   `{{ project_id }}.{{ dataset }}.attribution_clients` AS attribution
-  USING(client_id)
+  USING(client_id, normalized_channel)
 WHERE
   active_users.submission_date < CURRENT_DATE
   AND is_new_profile

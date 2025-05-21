@@ -1,0 +1,13 @@
+2025-05-16:
+  start_date: 2025-01-01
+  end_date: 2025-05-11
+  reason: >
+    A bug prevented the previous iteration of this table from functioning as expected. This backfills the new,
+    functional table with data that already exists based on metrics that were added to Fenix in 2024.
+    https://mozilla-hub.atlassian.net/browse/EXP-5497
+  watchers:
+  - chumphreys@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false

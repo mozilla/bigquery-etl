@@ -81,7 +81,9 @@ stripe_plans AS (
   SELECT
     id,
     product_id,
-    metadata
+    metadata,
+    apple_product_ids,
+    google_sku_ids
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_plans_v1`
 ),
@@ -138,6 +140,29 @@ service_stripe_plan_ids AS (
   GROUP BY
     service_id
 ),
+service_iap_ids AS (
+  SELECT
+    service_stripe_plan_ids.service_id,
+    ARRAY_AGG(
+      DISTINCT apple_product_id IGNORE NULLS
+      ORDER BY
+        apple_product_id
+    ) AS apple_product_ids,
+    ARRAY_AGG(DISTINCT google_sku_id IGNORE NULLS ORDER BY google_sku_id) AS google_sku_ids
+  FROM
+    service_stripe_plan_ids
+  CROSS JOIN
+    UNNEST(service_stripe_plan_ids.stripe_plan_ids) AS stripe_plan_id
+  JOIN
+    stripe_plans
+    ON stripe_plan_id = stripe_plans.id
+  LEFT JOIN
+    UNNEST(stripe_plans.apple_product_ids) AS apple_product_id
+  LEFT JOIN
+    UNNEST(stripe_plans.google_sku_ids) AS google_sku_id
+  GROUP BY
+    service_stripe_plan_ids.service_id
+),
 service_stripe_plan_tier_names AS (
   SELECT
     service_stripe_plan_capabilities.service_id,
@@ -168,11 +193,40 @@ service_tier_stripe_plan_ids AS (
     service_id,
     tier_name
 ),
+service_tier_iap_ids AS (
+  SELECT
+    service_stripe_plan_tier_names.service_id,
+    service_stripe_plan_tier_names.tier_name,
+    ARRAY_AGG(
+      DISTINCT apple_product_id IGNORE NULLS
+      ORDER BY
+        apple_product_id
+    ) AS apple_product_ids,
+    ARRAY_AGG(DISTINCT google_sku_id IGNORE NULLS ORDER BY google_sku_id) AS google_sku_ids
+  FROM
+    service_stripe_plan_tier_names
+  JOIN
+    stripe_plans
+    ON service_stripe_plan_tier_names.stripe_plan_id = stripe_plans.id
+  LEFT JOIN
+    UNNEST(stripe_plans.apple_product_ids) AS apple_product_id
+  LEFT JOIN
+    UNNEST(stripe_plans.google_sku_ids) AS google_sku_id
+  GROUP BY
+    service_stripe_plan_tier_names.service_id,
+    service_stripe_plan_tier_names.tier_name
+),
 service_tiers AS (
   SELECT
     services.id AS service_id,
     ARRAY_AGG(
-      STRUCT(tier.name, tier.subplat_capabilities, service_tier_stripe_plan_ids.stripe_plan_ids)
+      STRUCT(
+        tier.name,
+        tier.subplat_capabilities,
+        service_tier_stripe_plan_ids.stripe_plan_ids,
+        service_tier_iap_ids.apple_product_ids,
+        service_tier_iap_ids.google_sku_ids
+      )
       ORDER BY
         tier_order
     ) AS tiers
@@ -185,13 +239,19 @@ service_tiers AS (
     service_tier_stripe_plan_ids
     ON services.id = service_tier_stripe_plan_ids.service_id
     AND tier.name = service_tier_stripe_plan_ids.tier_name
+  LEFT JOIN
+    service_tier_iap_ids
+    ON services.id = service_tier_iap_ids.service_id
+    AND tier.name = service_tier_iap_ids.tier_name
   GROUP BY
     service_id
 )
 SELECT
   services.* REPLACE (service_tiers.tiers AS tiers),
   service_stripe_product_ids.stripe_product_ids,
-  service_stripe_plan_ids.stripe_plan_ids
+  service_stripe_plan_ids.stripe_plan_ids,
+  service_iap_ids.apple_product_ids,
+  service_iap_ids.google_sku_ids
 FROM
   services
 LEFT JOIN
@@ -203,3 +263,6 @@ LEFT JOIN
 LEFT JOIN
   service_stripe_plan_ids
   ON services.id = service_stripe_plan_ids.service_id
+LEFT JOIN
+  service_iap_ids
+  ON services.id = service_iap_ids.service_id

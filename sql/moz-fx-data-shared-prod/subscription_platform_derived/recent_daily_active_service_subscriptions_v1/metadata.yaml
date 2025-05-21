@@ -15,11 +15,6 @@ scheduling:
   dag_name: bqetl_subplat
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
-  # Wait for the `daily_active_service_subscriptions_v1` ETL to complete first to avoid missing data
-  # when the `daily_active_service_subscriptions` view unions the two tables.
-  depends_on:
-  - task_id: subscription_platform_derived__daily_active_service_subscriptions__v1
-    dag_name: bqetl_subplat
 bigquery:
   time_partitioning:
     type: day

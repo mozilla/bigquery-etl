@@ -212,4 +212,4 @@ GROUP BY
   segment,
   adjust_network,
   install_source,
-  play_store_attribution_install_referrer_response,
+  play_store_attribution_install_referrer_response

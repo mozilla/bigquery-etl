@@ -5,7 +5,7 @@ description: |-
   Table grain: client_id, normalized_channel
 
   Notes:
-  - 2025-05-14: `normalized_channel` field added
+  - 2025-05-14: `normalized_channel` field added (backfilled up until 2023-04-08)
 
 owners:
   - mozilla/kpi_table_reviewers

@@ -81,3 +81,11 @@ fields:
     either "metered" or "licensed". "licensed" automatically bills the `quantity`
     set when adding it to a subscription. "metered" aggregates the total usage based
     on usage records. Defaults to "licensed".
+- name: apple_product_ids
+  type: STRING
+  mode: REPEATED
+  description: Apple products IDs specified in the plan's metadata.
+- name: google_sku_ids
+  type: STRING
+  mode: REPEATED
+  description: Google SKU IDs specified in the plan's metadata.

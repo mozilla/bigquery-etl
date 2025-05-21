@@ -47,36 +47,23 @@ SELECT
     ELSE CAST(NULL AS STRING)
   END AS distribution_id_source,
   normalized_os AS os,
+  --"os_grouped" is the same as "os", but we are making a choice to include it anyway
+  --to make the switch from legacy sources to Glean easier since the column was in the previous view
+  normalized_os AS os_grouped,
   normalized_os_version AS os_version,
   COALESCE(
-    `mozfun.norm.windows_version_info`(normalized_os, normalized_os_version, windows_build_number),
+    `mozfun.norm.glean_windows_version_info`(
+      normalized_os,
+      normalized_os_version,
+      windows_build_number
+    ),
     normalized_os_version
   ) AS os_version_build,
   CAST(
-    `mozfun.norm.extract_version`(
-      COALESCE(
-        `mozfun.norm.windows_version_info`(
-          normalized_os,
-          normalized_os_version,
-          windows_build_number
-        ),
-        normalized_os_version
-      ),
-      "major"
-    ) AS INTEGER
+    `mozfun.norm.extract_version`(normalized_os_version, "major") AS INTEGER
   ) AS os_version_major,
   CAST(
-    `mozfun.norm.extract_version`(
-      COALESCE(
-        `mozfun.norm.windows_version_info`(
-          normalized_os,
-          normalized_os_version,
-          windows_build_number
-        ),
-        normalized_os_version
-      ),
-      "minor"
-    ) AS INTEGER
+    `mozfun.norm.extract_version`(normalized_os_version, "minor") AS INTEGER
   ) AS os_version_minor,
   CASE
     WHEN BIT_COUNT(days_desktop_active_bits)

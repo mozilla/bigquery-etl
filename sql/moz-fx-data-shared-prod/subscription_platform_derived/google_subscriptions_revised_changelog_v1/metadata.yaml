@@ -1,0 +1,27 @@
+friendly_name: Google subscriptions revised changelog
+description: |-
+  Changes to Google subscriptions as recorded by SubPlat in Firestore, with revisions to improve historical accuracy.
+
+  This table's schema closely mirrors the Google Play `purchases.subscriptions` API
+  (https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions),
+  though we intentionally omit some PII and SubPlat has added some custom metadata.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The table as a whole is appended to each time, not a specific date partition.
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}

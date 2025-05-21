@@ -1,0 +1,41 @@
+friendly_name: Newtab Daily Aggregations
+description: |-
+  A daily aggregation of newtab metrics.
+  The granularity is one row per day per each of the following dimensions:
+      submission_date
+      app_version
+      os
+      channel
+      locale
+      browser_version
+      country
+      homepage_category
+      newtab_category
+      organic_content_enabled
+      sponsored_content_enabled
+      sponsored_topsites_enabled
+      organic_topsites_enabled
+      newtab_search_enabled
+owners:
+  - gkatre@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: gkatre
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+      - channel
+      - country
+references: {}

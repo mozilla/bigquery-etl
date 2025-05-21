@@ -1,10 +1,18 @@
-WITH google_iap_events AS (
+WITH google_iap_receipts AS (
   SELECT
     document_id,
-    NULLIF(`timestamp`, "1970-01-01 00:00:00") AS event_timestamp,
-    mozfun.iap.parse_android_receipt(`data`).*
+    NULLIF(`timestamp`, "1970-01-01 00:00:00") AS `timestamp`,
+    mozfun.iap.parse_android_receipt(`data`) AS receipt
   FROM
     `moz-fx-fxa-prod-0712.firestore_export.iap_google_raw_changelog`
+),
+google_iap_events AS (
+  SELECT
+    document_id,
+    `timestamp` AS event_timestamp,
+    receipt.* REPLACE (TO_HEX(SHA256(receipt.user_id)) AS user_id)
+  FROM
+    google_iap_receipts
 ),
 google_iap_aggregates AS (
   SELECT

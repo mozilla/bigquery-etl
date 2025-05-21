@@ -10,6 +10,7 @@ WITH subscription_starts AS (
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', valid_from)
     ) AS subscription_id,
     subscription.id AS logical_subscription_id,
+    subscription.provider,
     subscription.services,
     service.id AS service_id,
     valid_from AS started_at,
@@ -41,7 +42,8 @@ WITH subscription_starts AS (
         subscription.id,
         service.id
       ORDER BY
-        valid_from
+        valid_from,
+        valid_to
     )
 ),
 subscriptions_history_periods AS (
@@ -161,6 +163,9 @@ subscription_attributions AS (
     ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
     AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
     AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
+  WHERE
+    -- The SubPlat attribution impression events we have access to are only for the Stripe subscription funnel.
+    subscription_starts.provider = 'Stripe'
   GROUP BY
     subscription_id
 ),
@@ -275,7 +280,7 @@ synthetic_subscription_ends_history AS (
   FROM
     subscriptions_history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC)
+    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC, valid_to DESC)
     AND valid_to < '9999-12-31 23:59:59.999999'
 )
 SELECT

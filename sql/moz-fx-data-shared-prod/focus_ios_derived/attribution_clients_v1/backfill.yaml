@@ -1,6 +1,6 @@
-2025-05-14:
-  start_date: 2023-04-01
-  end_date: 2025-05-14
+2025-05-20:
+  start_date: 2023-04-08
+  end_date: 2025-05-20
   reason: normalized_channel added, backfill to populate this field historically
   watchers:
   - kik@mozilla.com

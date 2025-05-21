@@ -49,3 +49,12 @@ repos:
     entry: ./bqetl
     args: [format, --check]
     types: [sql]
+- repo: local
+  hooks:
+  - id: bqetl_backfill_validate
+    name: bqetl_backfill_validate
+    language: script
+    entry: ./bqetl
+    args: [backfill, validate, --ignore-missing-metadata]
+    types: [yaml]
+    files: ^.+.backfill.yaml$

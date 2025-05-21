@@ -1,0 +1,82 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: The date when the ingestion edge server accepted this message.
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: UUID uniquely identifying a client.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: Application Version
+- name: isp
+  type: STRING
+  mode: NULLABLE
+  description: Internet Service Provider Name
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Campaign
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Content
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Medium
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System Version
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating if the client counts towards the Desktop KPI metric
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating client qualifies as a "Daily Active User" on this submission date
+- name: is_wau
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating client qualifies as a "Weekly Active User" on this submission date
+- name: is_mau
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Flag indicating client qualifies as a "Monthly Active User" on this submission date

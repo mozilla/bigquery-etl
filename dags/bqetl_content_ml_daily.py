@@ -53,10 +53,10 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    snowflake_migration__prospects__v1 = bigquery_etl_query(
-        task_id="snowflake_migration__prospects__v1",
+    snowflake_migration_derived__prospects__v1 = bigquery_etl_query(
+        task_id="snowflake_migration_derived__prospects__v1",
         destination_table="prospects_v1",
-        dataset_id="snowflake_migration",
+        dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skamath@mozilla.com",
         email=["mlcooper@mozilla.com", "skamath@mozilla.com"],

@@ -1,20 +1,19 @@
-friendly_name: Service subscriptions events
+friendly_name: Recent service subscriptions events
 description: |-
-  Service subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
+  Service subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End" during the previous 7 days.
 
-  This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
-  More recent data that is still in flux can be found in `recent_service_subscription_events_v1`.
+  This data is considered to still be in flux due to possible late-arriving data.
 
   Service subscriptions are a continuous active period for a specific service by a particular provider subscription.
 owners:
 - srose@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
-  date_partition_offset: -7
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

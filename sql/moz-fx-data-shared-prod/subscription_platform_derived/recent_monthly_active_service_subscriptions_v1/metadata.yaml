@@ -1,21 +1,20 @@
-friendly_name: Monthly active service subscriptions
+friendly_name: Recent monthly active service subscriptions
 description: |-
-  Monthly snapshots of service subscriptions that were active at any point during each month.
+  Monthly snapshots of service subscriptions that were active at any point during the previous 7 days.
   The latest state of the subscription during the month is saved.
 
-  This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
-  More recent data that is still in flux can be found in `recent_monthly_active_service_subscriptions_v1`.
+  This data is considered to still be in flux due to possible late-arriving data.
 
   Service subscriptions are a continuous active period for a specific service by a particular provider subscription.
 owners:
 - srose@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
-  date_partition_offset: -7
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: month

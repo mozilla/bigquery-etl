@@ -1,0 +1,6 @@
+friendly_name: Daily active service subscriptions
+description: |-
+  Daily snapshots of service subscriptions that were active at any point during each day.
+  The latest state of the subscription during the day is saved.
+
+  Service subscriptions are a continuous active period for a specific service by a particular provider subscription.

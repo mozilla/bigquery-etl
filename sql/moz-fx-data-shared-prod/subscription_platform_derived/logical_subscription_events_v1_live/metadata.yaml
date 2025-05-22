@@ -1,0 +1,16 @@
+friendly_name: Logical subscription events
+description: |-
+  Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
+require_column_descriptions: false

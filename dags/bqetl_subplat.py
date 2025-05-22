@@ -1300,24 +1300,26 @@ with DAG(
 
     subscription_platform_derived__daily_active_logical_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__daily_active_logical_subscriptions__v1",
-        destination_table="daily_active_logical_subscriptions_v1",
+        destination_table='daily_active_logical_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
 
     subscription_platform_derived__daily_active_service_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__daily_active_service_subscriptions__v1",
-        destination_table="daily_active_service_subscriptions_v1",
+        destination_table='daily_active_service_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
 
     subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_etl_query(
@@ -1400,13 +1402,14 @@ with DAG(
 
     subscription_platform_derived__logical_subscription_events__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__logical_subscription_events__v1",
-        destination_table="logical_subscription_events_v1",
+        destination_table='logical_subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1 = (
@@ -1425,26 +1428,28 @@ with DAG(
 
     subscription_platform_derived__monthly_active_logical_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__monthly_active_logical_subscriptions__v1",
-        destination_table="monthly_active_logical_subscriptions_v1",
+        destination_table='monthly_active_logical_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
 
     subscription_platform_derived__monthly_active_service_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__monthly_active_service_subscriptions__v1",
-        destination_table="monthly_active_service_subscriptions_v1",
+        destination_table='monthly_active_service_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         table_partition_template='${{ dag_run.logical_date.strftime("%Y%m") }}',
         depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
 
     subscription_platform_derived__nonprod_apple_subscriptions__v1 = bigquery_etl_query(
@@ -1499,15 +1504,88 @@ with DAG(
         task_concurrency=1,
     )
 
-    subscription_platform_derived__service_subscription_events__v1 = bigquery_etl_query(
-        task_id="subscription_platform_derived__service_subscription_events__v1",
-        destination_table="service_subscription_events_v1",
+    subscription_platform_derived__recent_daily_active_logical_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_daily_active_logical_subscriptions__v1",
+        destination_table="recent_daily_active_logical_subscriptions_v1",
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__recent_daily_active_service_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_daily_active_service_subscriptions__v1",
+        destination_table="recent_daily_active_service_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__recent_logical_subscription_events__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_logical_subscription_events__v1",
+        destination_table="recent_logical_subscription_events_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__recent_monthly_active_logical_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_monthly_active_logical_subscriptions__v1",
+        destination_table="recent_monthly_active_logical_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__recent_monthly_active_service_subscriptions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_monthly_active_service_subscriptions__v1",
+        destination_table="recent_monthly_active_service_subscriptions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__recent_service_subscription_events__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_service_subscription_events__v1",
+        destination_table="recent_service_subscription_events_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__service_subscription_events__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__service_subscription_events__v1",
+        destination_table='service_subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
     )
 
     subscription_platform_derived__service_subscriptions__v1 = bigquery_etl_query(
@@ -2207,6 +2285,54 @@ with DAG(
 
     subscription_platform_derived__nonprod_stripe_subscriptions_history__v1.set_upstream(
         stripe_external__nonprod_subscription_item__v1
+    )
+
+    subscription_platform_derived__recent_daily_active_logical_subscriptions__v1.set_upstream(
+        subscription_platform_derived__daily_active_logical_subscriptions__v1
+    )
+
+    subscription_platform_derived__recent_daily_active_logical_subscriptions__v1.set_upstream(
+        subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__recent_daily_active_service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__daily_active_service_subscriptions__v1
+    )
+
+    subscription_platform_derived__recent_daily_active_service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__recent_logical_subscription_events__v1.set_upstream(
+        subscription_platform_derived__logical_subscription_events__v1
+    )
+
+    subscription_platform_derived__recent_logical_subscription_events__v1.set_upstream(
+        subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__recent_monthly_active_logical_subscriptions__v1.set_upstream(
+        subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__recent_monthly_active_logical_subscriptions__v1.set_upstream(
+        subscription_platform_derived__monthly_active_logical_subscriptions__v1
+    )
+
+    subscription_platform_derived__recent_monthly_active_service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__monthly_active_service_subscriptions__v1
+    )
+
+    subscription_platform_derived__recent_monthly_active_service_subscriptions__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__recent_service_subscription_events__v1.set_upstream(
+        subscription_platform_derived__service_subscription_events__v1
+    )
+
+    subscription_platform_derived__recent_service_subscription_events__v1.set_upstream(
+        subscription_platform_derived__service_subscriptions_history__v1
     )
 
     subscription_platform_derived__service_subscription_events__v1.set_upstream(

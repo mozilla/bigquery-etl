@@ -130,33 +130,6 @@ fields:
   - name: auto_renew_disabled_at
     type: TIMESTAMP
     mode: NULLABLE
-  - name: initial_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: initial_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_ends_at
-    type: TIMESTAMP
-    mode: NULLABLE
   - name: has_refunds
     type: BOOLEAN
     mode: NULLABLE
@@ -225,6 +198,33 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
+  - name: initial_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: initial_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_ends_at
+    type: TIMESTAMP
+    mode: NULLABLE
 - name: old_subscription
   type: RECORD
   mode: NULLABLE
@@ -341,33 +341,6 @@ fields:
   - name: auto_renew_disabled_at
     type: TIMESTAMP
     mode: NULLABLE
-  - name: initial_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: initial_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_ends_at
-    type: TIMESTAMP
-    mode: NULLABLE
   - name: has_refunds
     type: BOOLEAN
     mode: NULLABLE
@@ -436,3 +409,30 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
+  - name: initial_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: initial_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_ends_at
+    type: TIMESTAMP
+    mode: NULLABLE

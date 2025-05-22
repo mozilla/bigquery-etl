@@ -11,4 +11,5 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.daily_active_service_subscriptions_v1
+  - moz-fx-data-shared-prod.subscription_platform_derived.recent_daily_active_service_subscriptions_v1
 require_column_descriptions: false

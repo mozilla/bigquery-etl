@@ -16,7 +16,7 @@ WITH stg_prospects AS (
     contexts_com_pocket_prospect_1[0].title AS title,
     contexts_com_pocket_prospect_1[0].excerpt AS excerpt,
     contexts_com_pocket_prospect_1[0].image_url AS image_url,
-    contexts_com_pocket_prospect_1[0].language AS LANGUAGE,
+    contexts_com_pocket_prospect_1[0].language AS language,
     contexts_com_pocket_prospect_1[0].topic AS topic,
     contexts_com_pocket_prospect_1[0].is_collection AS is_collection,
     contexts_com_pocket_prospect_1[0].is_syndicated AS is_syndicated,

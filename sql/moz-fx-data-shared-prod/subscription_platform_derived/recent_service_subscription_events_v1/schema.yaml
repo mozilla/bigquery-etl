@@ -5,13 +5,16 @@ fields:
 - name: timestamp
   type: TIMESTAMP
   mode: NULLABLE
+- name: service_id
+  type: STRING
+  mode: NULLABLE
 - name: type
   type: STRING
   mode: NULLABLE
 - name: reason
   type: STRING
   mode: NULLABLE
-- name: logical_subscriptions_history_id
+- name: service_subscriptions_history_id
   type: STRING
   mode: NULLABLE
 - name: subscription
@@ -27,6 +30,9 @@ fields:
   - name: payment_provider
     type: STRING
     mode: NULLABLE
+  - name: logical_subscription_id
+    type: STRING
+    mode: NULLABLE
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE
@@ -48,7 +54,10 @@ fields:
   - name: mozilla_account_id_sha256
     type: STRING
     mode: NULLABLE
-  - name: customer_subscription_number
+  - name: customer_logical_subscription_number
+    type: INTEGER
+    mode: NULLABLE
+  - name: customer_service_subscription_number
     type: INTEGER
     mode: NULLABLE
   - name: country_code
@@ -57,7 +66,20 @@ fields:
   - name: country_name
     type: STRING
     mode: NULLABLE
-  - name: services
+  - name: service
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: tier
+      type: STRING
+      mode: NULLABLE
+  - name: other_services
     type: RECORD
     mode: REPEATED
     fields:
@@ -112,6 +134,9 @@ fields:
   - name: provider_status
     type: STRING
     mode: NULLABLE
+  - name: logical_subscription_started_at
+    type: TIMESTAMP
+    mode: NULLABLE
   - name: started_at
     type: TIMESTAMP
     mode: NULLABLE
@@ -128,6 +153,33 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
   - name: auto_renew_disabled_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: initial_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: initial_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_ends_at
     type: TIMESTAMP
     mode: NULLABLE
   - name: has_refunds
@@ -198,33 +250,6 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
-  - name: initial_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: initial_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_ends_at
-    type: TIMESTAMP
-    mode: NULLABLE
 - name: old_subscription
   type: RECORD
   mode: NULLABLE
@@ -238,6 +263,9 @@ fields:
   - name: payment_provider
     type: STRING
     mode: NULLABLE
+  - name: logical_subscription_id
+    type: STRING
+    mode: NULLABLE
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE
@@ -259,7 +287,10 @@ fields:
   - name: mozilla_account_id_sha256
     type: STRING
     mode: NULLABLE
-  - name: customer_subscription_number
+  - name: customer_logical_subscription_number
+    type: INTEGER
+    mode: NULLABLE
+  - name: customer_service_subscription_number
     type: INTEGER
     mode: NULLABLE
   - name: country_code
@@ -268,7 +299,20 @@ fields:
   - name: country_name
     type: STRING
     mode: NULLABLE
-  - name: services
+  - name: service
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: tier
+      type: STRING
+      mode: NULLABLE
+  - name: other_services
     type: RECORD
     mode: REPEATED
     fields:
@@ -323,6 +367,9 @@ fields:
   - name: provider_status
     type: STRING
     mode: NULLABLE
+  - name: logical_subscription_started_at
+    type: TIMESTAMP
+    mode: NULLABLE
   - name: started_at
     type: TIMESTAMP
     mode: NULLABLE
@@ -339,6 +386,33 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
   - name: auto_renew_disabled_at
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: initial_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: initial_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: current_period_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_name
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_promotion_code
+    type: STRING
+    mode: NULLABLE
+  - name: ongoing_discount_amount
+    type: NUMERIC
+    mode: NULLABLE
+  - name: ongoing_discount_ends_at
     type: TIMESTAMP
     mode: NULLABLE
   - name: has_refunds
@@ -409,30 +483,3 @@ fields:
     - name: utm_term
       type: STRING
       mode: NULLABLE
-  - name: initial_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: initial_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: current_period_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_name
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_promotion_code
-    type: STRING
-    mode: NULLABLE
-  - name: ongoing_discount_amount
-    type: NUMERIC
-    mode: NULLABLE
-  - name: ongoing_discount_ends_at
-    type: TIMESTAMP
-    mode: NULLABLE

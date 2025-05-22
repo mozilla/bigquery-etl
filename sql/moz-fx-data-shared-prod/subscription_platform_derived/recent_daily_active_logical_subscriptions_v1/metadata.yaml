@@ -1,21 +1,20 @@
-friendly_name: Daily active logical subscriptions
+friendly_name: Recent daily active logical subscriptions
 description: |-
-  Daily snapshots of logical subscriptions that were active at any point during each day.
+  Daily snapshots of logical subscriptions that were active at any point during the previous 7 days.
   The latest state of the subscription during the day is saved.
 
-  This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
-  More recent data that is still in flux can be found in `recent_daily_active_logical_subscriptions_v1`.
+  This data is considered to still be in flux due to possible late-arriving data.
 
   Logical subscriptions are a continuous active period for a particular provider subscription.
 owners:
 - srose@mozilla.com
 labels:
-  incremental: true
+  incremental: false
   schedule: daily
 scheduling:
   dag_name: bqetl_subplat
-  date_partition_parameter: date
-  date_partition_offset: -7
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

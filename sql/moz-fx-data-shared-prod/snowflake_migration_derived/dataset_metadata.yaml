@@ -1,4 +1,4 @@
-friendly_name: Snowflake Migration
+friendly_name: Snowflake Migration Derived
 description: |-
   Queries for modeling raw snowplow data about prospects
   (candidate links to be curated by ML models and the editorial team for New Tab).

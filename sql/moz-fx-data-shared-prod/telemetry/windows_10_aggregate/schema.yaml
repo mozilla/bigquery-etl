@@ -20,7 +20,6 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: null
 - name: count
   type: INTEGER
   mode: NULLABLE

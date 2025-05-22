@@ -119,3 +119,23 @@ fields:
     name: name
     type: STRING
     description: The distribution name (e.g. 'MozillaOnline').
+- mode: NULLABLE
+  name: attribution_dltoken
+  type: STRING
+  description: Attribution Download Token
+- mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+  description: Attribution Download Source
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation
+- mode: NULLABLE
+  name: attribution_ua
+  type: STRING
+  description: Attribution User Agent

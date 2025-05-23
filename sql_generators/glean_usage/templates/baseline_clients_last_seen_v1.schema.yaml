@@ -130,7 +130,7 @@ fields:
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description:Name/id of the enrolled funnel experiment.
+  description: Name/id of the enrolled funnel experiment.
 - mode: NULLABLE
   name: attribution_variation
   type: STRING

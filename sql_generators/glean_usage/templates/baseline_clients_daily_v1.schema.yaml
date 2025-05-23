@@ -137,7 +137,7 @@ fields:
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING
-  description: Identifier that indicate where installations of Firefox originate.
+  description: Identifier that indicates where installations of Firefox originate.
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING

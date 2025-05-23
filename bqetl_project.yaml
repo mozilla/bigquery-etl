@@ -393,6 +393,7 @@ generate:
       - accounts_backend
       - accounts_cirrus
       - burnham
+      - experimenter_cirrus
       - firefox_crashreporter
       - firefox_reality
       - firefox_reality_pc

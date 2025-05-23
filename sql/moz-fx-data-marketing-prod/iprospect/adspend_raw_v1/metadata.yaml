@@ -11,11 +11,12 @@ labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
-scheduling:
-  dag_name: bqetl_iprospect
-  arguments: ["--date", "{{ ds }}"]
+#scheduling:
+#  dag_name: bqetl_iprospect
+#  arguments: ["--date", "{{ ds }}"]
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
+deprecated: true

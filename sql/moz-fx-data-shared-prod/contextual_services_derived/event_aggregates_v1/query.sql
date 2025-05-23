@@ -20,8 +20,19 @@ combined AS (
       "impression"
     ) AS event_type,
     'desktop' AS form_factor,
-    normalized_country_code AS country,
-    metadata.geo.subdivision1 AS subdivision1,
+    -- As of Firefox 140, the quick_suggest ping is sent via OHTTP and now
+    -- receives geo information from the client rather than from Glean ingestion's
+    -- IP geolocation. We no longer send subdivision, only country.
+    IF(
+      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
+      normalized_country_code,
+      metrics.string.country,
+    ) AS country,
+    IF(
+      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
+      metadata.geo.subdivision1,
+      CAST(NULL AS STRING)
+    ) AS subdivision1,
     metrics.string.quick_suggest_advertiser AS advertiser,
     client_info.app_channel AS release_channel,
     metrics.quantity.quick_suggest_position AS position,

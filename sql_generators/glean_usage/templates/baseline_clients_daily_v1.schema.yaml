@@ -149,4 +149,4 @@ fields:
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: Attribution User Agent
+  description: Identifier derived from the user agent downloading the installer.

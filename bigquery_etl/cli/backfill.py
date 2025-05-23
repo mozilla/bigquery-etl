@@ -645,6 +645,10 @@ def _initiate_backfill(
 
         custom_query_path = replaced_ref_query
 
+    scheduling_overrides = "{}"
+    if entry.ignore_date_partition_offset:
+        scheduling_overrides = '{"date_partition_offset": 0}'
+
     override_retention_limit = entry.override_retention_limit
 
     # copy previous partition if depends_on_past
@@ -681,6 +685,7 @@ def _initiate_backfill(
                 }
             ),
             billing_project=billing_project,
+            scheduling_overrides=scheduling_overrides,
             override_retention_range_limit=override_retention_limit,
         )
     except subprocess.CalledProcessError as e:
@@ -726,7 +731,8 @@ def _initialize_previous_partition(
         partition_param = metadata.scheduling.get(
             "date_partition_parameter", partition_param
         )
-        offset = metadata.scheduling.get("date_partition_offset", offset)
+        if not backfill_entry.ignore_date_partition_offset:
+            offset = metadata.scheduling.get("date_partition_offset", offset)
 
     previous_partition_id = get_backfill_partition(
         previous_partition_date,
@@ -858,7 +864,8 @@ def _copy_backfill_staging_to_prod(
             partition_param = table_metadata.scheduling.get(
                 "date_partition_parameter", partition_param
             )
-            offset = table_metadata.scheduling.get("date_partition_offset", offset)
+            if not entry.ignore_date_partition_offset:
+                offset = table_metadata.scheduling.get("date_partition_offset", offset)
 
         for backfill_date in backfill_date_range:
             if (

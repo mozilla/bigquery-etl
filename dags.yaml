@@ -426,24 +426,6 @@ bqetl_org_mozilla_focus_derived:
   tags:
     - impact/tier_1
 
-bqetl_google_analytics_derived:
-  schedule_interval: 0 23 * * *
-  description: |
-    Daily aggregations of data exported from Google Analytics.
-
-    The GA export runs at 15:00 UTC, so there's an effective 2-day delay
-    for user activity to appear in these tables.
-  default_args:
-    owner: kwindau@mozilla.com
-    email:
-      - kwindau@mozilla.com
-      - telemetry-alerts@mozilla.com
-    start_date: "2020-10-31"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_1
-
 bqetl_monitoring:
   schedule_interval: 0 2 * * *
   description: |

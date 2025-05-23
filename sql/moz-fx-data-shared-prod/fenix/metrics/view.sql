@@ -670,7 +670,8 @@ SELECT
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
-      metrics.custom_distribution.websockets_handshake_type
+      metrics.custom_distribution.websockets_handshake_type,
+      metrics.custom_distribution.networking_local_network_access_port
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1023,7 +1024,8 @@ SELECT
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
-      metrics.labeled_counter.region_store_region_result
+      metrics.labeled_counter.region_store_region_result,
+      metrics.labeled_counter.networking_local_network_access
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2587,7 +2589,8 @@ SELECT
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
-      metrics.custom_distribution.websockets_handshake_type
+      metrics.custom_distribution.websockets_handshake_type,
+      metrics.custom_distribution.networking_local_network_access_port
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -2940,7 +2943,8 @@ SELECT
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
-      metrics.labeled_counter.region_store_region_result
+      metrics.labeled_counter.region_store_region_result,
+      metrics.labeled_counter.networking_local_network_access
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4524,7 +4528,8 @@ SELECT
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
-      metrics.custom_distribution.websockets_handshake_type
+      metrics.custom_distribution.websockets_handshake_type,
+      metrics.custom_distribution.networking_local_network_access_port
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -4877,7 +4882,8 @@ SELECT
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
-      metrics.labeled_counter.region_store_region_result
+      metrics.labeled_counter.region_store_region_result,
+      metrics.labeled_counter.networking_local_network_access
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6470,7 +6476,8 @@ SELECT
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
-      metrics.custom_distribution.websockets_handshake_type
+      metrics.custom_distribution.websockets_handshake_type,
+      metrics.custom_distribution.networking_local_network_access_port
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -6823,7 +6830,8 @@ SELECT
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
-      metrics.labeled_counter.region_store_region_result
+      metrics.labeled_counter.region_store_region_result,
+      metrics.labeled_counter.networking_local_network_access
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -8396,7 +8404,8 @@ SELECT
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
-      metrics.custom_distribution.websockets_handshake_type
+      metrics.custom_distribution.websockets_handshake_type,
+      metrics.custom_distribution.networking_local_network_access_port
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -8749,7 +8758,8 @@ SELECT
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
-      metrics.labeled_counter.region_store_region_result
+      metrics.labeled_counter.region_store_region_result,
+      metrics.labeled_counter.networking_local_network_access
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

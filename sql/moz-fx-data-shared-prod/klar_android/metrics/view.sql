@@ -618,7 +618,8 @@ SELECT
       metrics.labeled_counter.http_tls_early_data_accepted,
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
-      metrics.labeled_counter.region_store_region_result
+      metrics.labeled_counter.region_store_region_result,
+      metrics.labeled_counter.networking_local_network_access
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1095,7 +1096,8 @@ SELECT
       metrics.custom_distribution.network_backgroundfilesaver_thread_count,
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
-      metrics.custom_distribution.websockets_handshake_type
+      metrics.custom_distribution.websockets_handshake_type,
+      metrics.custom_distribution.networking_local_network_access_port
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

@@ -1021,6 +1021,12 @@ fields:
         addon readyPromise succeeded.
 
         '
+    - name: browser_startup_kiosk_mode
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True when the browser was started in kiosk mode.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11129,6 +11135,19 @@ fields:
       description: 'Records interactions with tab groups: expand/collapse; rename,
         change color; save/reopen/delete; ungroup tabs; open from tab menu/recent/
         Awesomebar; move to another window
+
+        '
+    - name: networking_local_network_access
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the request is crossing to a more private addresspace
 
         '
   - name: memory_distribution
@@ -44613,6 +44632,31 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram WEBSOCKETS_HANDSHAKE_TYPE.
+
+        '
+    - name: networking_local_network_access_port
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'port used for local network access
 
         '
   - name: url2

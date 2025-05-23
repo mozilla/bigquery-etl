@@ -7611,6 +7611,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: networking_local_network_access_port
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -11116,6 +11136,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: region_store_region_result
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: networking_local_network_access
       type: RECORD
       mode: REPEATED
       fields:

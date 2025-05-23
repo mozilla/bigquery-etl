@@ -4391,6 +4391,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_local_network_access
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -11949,6 +11959,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: websockets_handshake_type
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: networking_local_network_access_port
       type: RECORD
       mode: NULLABLE
       fields:

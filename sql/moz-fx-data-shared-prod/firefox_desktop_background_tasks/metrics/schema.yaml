@@ -429,6 +429,12 @@ fields:
         HTTP protocol handler and the default HTML file handler.
 
         '
+    - name: browser_startup_kiosk_mode
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True when the browser was started in kiosk mode.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

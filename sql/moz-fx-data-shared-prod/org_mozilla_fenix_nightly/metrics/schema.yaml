@@ -8401,6 +8401,19 @@ fields:
         might be ignored if it is the US but the set timezone is not the US.
 
         '
+    - name: networking_local_network_access
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Whether the request is crossing to a more private addresspace
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -37641,6 +37654,31 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry enumerated
         histogram WEBSOCKETS_HANDSHAKE_TYPE.
+
+        '
+    - name: networking_local_network_access_port
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'port used for local network access
 
         '
   - name: quantity

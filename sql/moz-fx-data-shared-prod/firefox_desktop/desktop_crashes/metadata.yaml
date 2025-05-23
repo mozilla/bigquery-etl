@@ -9,3 +9,5 @@ workgroup_access:
   members:
   # https://mozilla-hub.atlassian.net/browse/DENG-8189
   - workgroup:dataops-managed/crash-ping-ingest
+  # https://mozilla-hub.atlassian.net/browse/DENG-8424
+  - workgroup:remote-settings/gke

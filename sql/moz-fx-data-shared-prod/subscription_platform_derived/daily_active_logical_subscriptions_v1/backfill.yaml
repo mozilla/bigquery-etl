@@ -1,3 +1,15 @@
+2025-05-22:
+  start_date: 2021-09-09
+  end_date: 2025-05-14
+  reason: Add records for Google subscriptions, which are now included in these SubPlat
+    consolidated reporting ETLs as of https://github.com/mozilla/bigquery-etl/pull/7333.
+  watchers:
+  - srose@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+
 2024-11-13:
   start_date: 2019-10-10
   end_date: 2024-11-12

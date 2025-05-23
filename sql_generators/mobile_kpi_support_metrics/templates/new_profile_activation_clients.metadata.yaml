@@ -2,10 +2,13 @@ friendly_name: Activation Clients - {{ friendly_name }}
 description: |-
   Activation Clients ({{ friendly_name }}).
 
+  Table grain: submission_date, client_id, normalized_channel
+
+  Notes:
   {% if app_name in ['fenix', 'firefox_ios'] -%}
-  device_type and device_manufacturer fields were added in 2024-03-05.
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
   {%- else -%}
-  device_type and device_manufacturer fields were added on 2025-01-18.
+  - 2025-01-18: `device_type` and `device_manufacturer` fields added
   {%- endif %}
 
 owners:

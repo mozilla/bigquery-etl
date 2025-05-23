@@ -3,6 +3,11 @@ WITH history AS (
     *
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_history_v1`
+  UNION ALL
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.google_logical_subscriptions_history_v1`
 ),
 countries AS (
   SELECT
@@ -62,13 +67,14 @@ customer_attribution_impressions AS (
 subscription_starts AS (
   SELECT
     subscription.id AS subscription_id,
+    subscription.provider,
     subscription.started_at,
     subscription.mozilla_account_id_sha256,
     subscription.services
   FROM
     history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from)
+    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from, valid_to)
 ),
 subscription_attributions AS (
   SELECT
@@ -112,6 +118,9 @@ subscription_attributions AS (
     ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
     AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
     AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
+  WHERE
+    -- The SubPlat attribution impression events we have access to are only for the Stripe subscription funnel.
+    subscription_starts.provider = 'Stripe'
   GROUP BY
     subscription_id
 )

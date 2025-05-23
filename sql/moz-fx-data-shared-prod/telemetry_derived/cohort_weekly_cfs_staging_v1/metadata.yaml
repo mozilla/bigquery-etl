@@ -1,0 +1,24 @@
+friendly_name: Cohort Weekly Clients First Seen Staging
+description: |-
+  This is an intermediate physicalized table
+  used in the build of cohort_weekly_statistics_v1
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_cohort_retention
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: cohort_date_week
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_app_name
+references: {}

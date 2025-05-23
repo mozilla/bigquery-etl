@@ -60,6 +60,7 @@ def create_query(job_date: date, project: str):
           transferred_bytes,
           DATE(creation_time) as creation_date,
           materialized_view_statistics,
+          query_dialect,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE

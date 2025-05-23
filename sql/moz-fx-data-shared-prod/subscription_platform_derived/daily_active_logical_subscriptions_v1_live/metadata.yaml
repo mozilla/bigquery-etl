@@ -1,0 +1,6 @@
+friendly_name: Daily active logical subscriptions
+description: |-
+  Daily snapshots of logical subscriptions that were active at any point during each day.
+  The latest state of the subscription during the day is saved.
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.

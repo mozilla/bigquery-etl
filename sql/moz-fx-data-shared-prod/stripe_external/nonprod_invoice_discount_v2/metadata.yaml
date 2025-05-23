@@ -7,7 +7,7 @@ labels:
   incremental: false
   schedule: hourly
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  dag_name: bqetl_subplat
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:

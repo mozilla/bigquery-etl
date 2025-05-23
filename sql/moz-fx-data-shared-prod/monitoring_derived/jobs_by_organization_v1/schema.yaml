@@ -217,3 +217,8 @@ fields:
       name: rejected_reason
       type: STRING
       description: If present, specifies the reason why the materialized view was not chosen for the query.
+
+- mode: NULLABLE
+  name: query_dialect
+  type: STRING
+  description: The query dialect used for the job.

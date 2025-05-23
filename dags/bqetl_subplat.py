@@ -1428,7 +1428,7 @@ with DAG(
 
     subscription_platform_derived__monthly_active_logical_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__monthly_active_logical_subscriptions__v1",
-        destination_table='monthly_active_logical_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table='monthly_active_logical_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",
@@ -1441,7 +1441,7 @@ with DAG(
 
     subscription_platform_derived__monthly_active_service_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__monthly_active_service_subscriptions__v1",
-        destination_table='monthly_active_service_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        destination_table='monthly_active_service_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m") }}',
         dataset_id="subscription_platform_derived",
         project_id="moz-fx-data-shared-prod",
         owner="srose@mozilla.com",

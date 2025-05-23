@@ -145,7 +145,7 @@ fields:
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation
+  description: Name/id of the variation cohort used in the enrolled funnel experiment.
 - mode: NULLABLE
   name: attribution_ua
   type: STRING

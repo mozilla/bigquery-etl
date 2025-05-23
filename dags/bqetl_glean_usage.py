@@ -65,6 +65,8 @@ with DAG(
 
     task_group_debug_ping_view = TaskGroup("debug_ping_view")
 
+    task_group_experimenter_cirrus = TaskGroup("experimenter_cirrus")
+
     task_group_fenix = TaskGroup("fenix")
 
     task_group_firefox_crashreporter = TaskGroup("firefox_crashreporter")
@@ -326,6 +328,42 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_bedrock,
+    )
+
+    bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.experimenter_cirrus_derived.baseline_clients_daily_v1",
+        warehouse_id="1939",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_experimenter_cirrus,
+    )
+
+    bigeye__experimenter_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__experimenter_cirrus_derived__baseline_clients_first_seen__v1",
+        table_id="moz-fx-data-shared-prod.experimenter_cirrus_derived.baseline_clients_first_seen_v1",
+        warehouse_id="1939",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_experimenter_cirrus,
+    )
+
+    bigeye__experimenter_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_bigeye_check(
+        task_id="bigeye__experimenter_cirrus_derived__baseline_clients_last_seen__v1",
+        table_id="moz-fx-data-shared-prod.experimenter_cirrus_derived.baseline_clients_last_seen_v1",
+        warehouse_id="1939",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_experimenter_cirrus,
     )
 
     bigeye__fenix_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
@@ -983,6 +1021,20 @@ with DAG(
         task_group=task_group_burnham,
     )
 
+    checks__fail_experimenter_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
+        task_id="checks__fail_experimenter_cirrus_derived__baseline_clients_last_seen__v1",
+        source_table="baseline_clients_last_seen_v1",
+        dataset_id="experimenter_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+        task_group=task_group_experimenter_cirrus,
+    )
+
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
         task_id="checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1",
         source_table="baseline_clients_last_seen_v1",
@@ -1391,6 +1443,61 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_debug_ping_view,
+    )
+
+    experimenter_cirrus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
+        task_id="experimenter_cirrus_derived__baseline_clients_daily__v1",
+        destination_table="baseline_clients_daily_v1",
+        dataset_id="experimenter_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_experimenter_cirrus,
+    )
+
+    experimenter_cirrus_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
+        task_id="experimenter_cirrus_derived__baseline_clients_first_seen__v1",
+        destination_table="baseline_clients_first_seen_v1",
+        dataset_id="experimenter_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+        task_group=task_group_experimenter_cirrus,
+    )
+
+    experimenter_cirrus_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
+        task_id="experimenter_cirrus_derived__baseline_clients_last_seen__v1",
+        destination_table="baseline_clients_last_seen_v1",
+        dataset_id="experimenter_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=True,
+        task_group=task_group_experimenter_cirrus,
+    )
+
+    experimenter_cirrus_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="experimenter_cirrus_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="experimenter_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_experimenter_cirrus,
     )
 
     fenix_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
@@ -4729,6 +4836,18 @@ with DAG(
 
     bedrock_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
 
+    bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        experimenter_cirrus_derived__baseline_clients_daily__v1
+    )
+
+    bigeye__experimenter_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+        experimenter_cirrus_derived__baseline_clients_first_seen__v1
+    )
+
+    bigeye__experimenter_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        experimenter_cirrus_derived__baseline_clients_last_seen__v1
+    )
+
     bigeye__fenix_derived__metrics_clients_daily__v1.set_upstream(
         fenix_derived__metrics_clients_daily__v1
     )
@@ -4955,6 +5074,10 @@ with DAG(
         burnham_derived__metrics_clients_daily__v1
     )
 
+    checks__fail_experimenter_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        experimenter_cirrus_derived__baseline_clients_last_seen__v1
+    )
+
     checks__fail_firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1.set_upstream(
         firefox_desktop_background_defaultagent_derived__baseline_clients_last_seen__v1
     )
@@ -5076,6 +5199,30 @@ with DAG(
     )
 
     debug_ping_view_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    experimenter_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        bigeye__experimenter_cirrus_derived__baseline_clients_first_seen__v1
+    )
+
+    experimenter_cirrus_derived__baseline_clients_daily__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    experimenter_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    experimenter_cirrus_derived__baseline_clients_first_seen__v1.set_upstream(
+        wait_for_telemetry_derived__core_clients_first_seen__v1
+    )
+
+    experimenter_cirrus_derived__baseline_clients_last_seen__v1.set_upstream(
+        bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1
+    )
+
+    experimenter_cirrus_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

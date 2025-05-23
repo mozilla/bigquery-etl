@@ -1,0 +1,19 @@
+friendly_name: Events Stream
+description: |-
+  An events stream table, with one row per event.
+
+  Clients that don't send events on a particular day
+  won't be included on that day.
+owners:
+- jrediger@mozilla.com
+- wstuckey@mozilla.com
+labels:
+  owner1: jrediger
+  owner2: wstuckey
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

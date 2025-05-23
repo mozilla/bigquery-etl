@@ -41,6 +41,7 @@ references:
   - moz-fx-data-shared-prod.bedrock_stable.non_interaction_v1
   - moz-fx-data-shared-prod.burnham_stable.events_v1
   - moz-fx-data-shared-prod.debug_ping_view_stable.events_v1
+  - moz-fx-data-shared-prod.experimenter_cirrus_stable.events_v1
   - moz-fx-data-shared-prod.firefox_crashreporter_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.background_tasks_v1

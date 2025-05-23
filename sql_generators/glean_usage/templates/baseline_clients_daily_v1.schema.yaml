@@ -133,7 +133,7 @@ fields:
 - mode: NULLABLE
   name: attribution_dltoken
   type: STRING
-  description: Attribution Download Token
+  description: Unique token created at Firefox download time.
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING

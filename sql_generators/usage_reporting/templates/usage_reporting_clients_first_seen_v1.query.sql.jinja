@@ -10,7 +10,6 @@ WITH
       @submission_date AS first_seen_date,
       {% endif %}
       {% endraw %}
-      app_channel,
     FROM
       `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
     WHERE
@@ -18,18 +17,16 @@ WITH
       {% raw %}
       {% if is_init() %}
       AND submission_date > "2014-10-10"
+      GROUP BY
+        usage_profile_id
       {% else %}
       AND submission_date = @submission_date
       {% endif %}
       {% endraw %}
-    GROUP BY
-      usage_profile_id,
-      app_channel
   ),
 _previous AS (
   SELECT
     usage_profile_id,
-    app_channel,
   FROM
     `{{ project_id }}.{{ channel_dataset }}_derived.{{ view_name }}_v1`
   WHERE
@@ -45,12 +42,11 @@ _previous AS (
 SELECT
   first_seen_date,
   usage_profile_id,
-  app_channel,
 FROM
   _current
 LEFT JOIN
   _previous
-  USING (usage_profile_id, app_channel)
+  USING (usage_profile_id)
 WHERE
   _previous.usage_profile_id IS NULL
 QUALIFY

@@ -47,12 +47,6 @@ labels:
   incremental: true
   schedule: daily
   owner1: gleonard
-  dag: bqetl_download_funnel_attribution
-scheduling:
-  dag_name: bqetl_download_funnel_attribution
-  task_name: mozilla_org_derived__downloads_with_attribution__v2
-  date_partition_parameter: download_date
-  date_partition_offset: -1
 bigquery:
   time_partitioning:
     type: day
@@ -61,13 +55,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-- role: roles/bigquery.metadataViewer
-  members:
-  - workgroup:dataops-managed/external-fides
-  - workgroup:google-managed/external-ads-dataproc
+workgroup_access: []
 references: {}
+deprecated: true
 require_column_descriptions: false

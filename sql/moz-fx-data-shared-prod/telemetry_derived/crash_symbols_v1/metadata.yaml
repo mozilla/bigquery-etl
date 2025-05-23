@@ -6,27 +6,7 @@ owners:
 labels:
   application: firefox
   schedule: daily
-  dag: bqetl_crash
   owner1: dthorn
-scheduling:
-  dag_name: bqetl_crash
-  start_date: '2023-12-10'
-  retry_delay: 5m
-  arguments:
-  - --submission-date
-  - '{{ ds }}'
-  referenced_tables:
-  - - moz-fx-data-shared-prod
-    - telemetry_derived
-    - crash_frames_v1
-  container_resources:
-    requests:
-      memory: 102400Mi
-    limits:
-      memory: 102400Mi
-  node_selector:
-    nodepool: highmem-16
-  startup_timeout_seconds: 360
 bigquery:
   time_partitioning:
     type: day
@@ -35,9 +15,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references: {}
+deprecated: true
 require_column_descriptions: false

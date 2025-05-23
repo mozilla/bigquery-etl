@@ -435,19 +435,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__rolling_cohorts__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__rolling_cohorts__v1",
-        external_dag_id="bqetl_unified",
-        external_task_id="telemetry_derived__rolling_cohorts__v1",
-        execution_delta=datetime.timedelta(seconds=4500),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
@@ -1053,22 +1040,6 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
-    telemetry_derived__cohort_daily_statistics__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__cohort_daily_statistics__v1",
-        destination_table="cohort_daily_statistics_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="mhirose@mozilla.com",
-        email=[
-            "gkaberere@mozilla.com",
-            "lvargas@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="activity_date",
-        depends_on_past=False,
-    )
-
     telemetry_derived__desktop_cohort_daily_retention__v1 = bigquery_etl_query(
         task_id="telemetry_derived__desktop_cohort_daily_retention__v1",
         destination_table="desktop_cohort_daily_retention_v1",
@@ -1335,14 +1306,6 @@ with DAG(
 
     klar_ios_active_users_aggregates_v3.set_upstream(
         wait_for_klar_ios_derived__metrics_clients_last_seen__v1
-    )
-
-    telemetry_derived__cohort_daily_statistics__v1.set_upstream(
-        wait_for_checks__fail_telemetry_derived__unified_metrics__v1
-    )
-
-    telemetry_derived__cohort_daily_statistics__v1.set_upstream(
-        wait_for_telemetry_derived__rolling_cohorts__v1
     )
 
     telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(

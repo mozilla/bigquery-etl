@@ -9,8 +9,6 @@ labels:
   dag: bqetl_google_analytics_derived
   owner1: ascholtz
   table_type: aggregate
-scheduling:
-  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
@@ -24,13 +22,7 @@ bigquery:
     - browser
     - source
     - medium
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-- role: roles/bigquery.metadataViewer
-  members:
-  - workgroup:dataops-managed/external-fides
-  - workgroup:google-managed/external-ads-dataproc
+workgroup_access: []
 references: {}
+deprecated: true
 require_column_descriptions: false

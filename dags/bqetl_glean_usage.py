@@ -366,6 +366,18 @@ with DAG(
         task_group=task_group_experimenter_cirrus,
     )
 
+    bigeye__experimenter_cirrus_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
+        task_id="bigeye__experimenter_cirrus_derived__metrics_clients_daily__v1",
+        table_id="moz-fx-data-shared-prod.experimenter_cirrus_derived.metrics_clients_daily_v1",
+        warehouse_id="1939",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_experimenter_cirrus,
+    )
+
     bigeye__fenix_derived__metrics_clients_daily__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__metrics_clients_daily__v1",
         table_id="moz-fx-data-shared-prod.fenix_derived.metrics_clients_daily_v1",
@@ -1497,6 +1509,18 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_experimenter_cirrus,
+    )
+
+    experimenter_cirrus_derived__metrics_clients_daily__v1 = bigquery_etl_query(
+        task_id="experimenter_cirrus_derived__metrics_clients_daily__v1",
+        destination_table="metrics_clients_daily_v1",
+        dataset_id="experimenter_cirrus_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
         task_group=task_group_experimenter_cirrus,
     )
 
@@ -4848,6 +4872,10 @@ with DAG(
         experimenter_cirrus_derived__baseline_clients_last_seen__v1
     )
 
+    bigeye__experimenter_cirrus_derived__metrics_clients_daily__v1.set_upstream(
+        experimenter_cirrus_derived__metrics_clients_daily__v1
+    )
+
     bigeye__fenix_derived__metrics_clients_daily__v1.set_upstream(
         fenix_derived__metrics_clients_daily__v1
     )
@@ -5223,6 +5251,10 @@ with DAG(
     )
 
     experimenter_cirrus_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    experimenter_cirrus_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

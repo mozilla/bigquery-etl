@@ -11,6 +11,19 @@ owners:
 labels:
   incremental: true
   owner1: lvargas
+scheduling:
+  task_name: klar_ios_active_users_aggregates_for_deletion_requests
+  date_partition_parameter: partition_date
+  parameters:
+  - end_date:DATE:{{macros.ds_add(ds, 27)}}
+  - start_date:DATE:{{macros.ds_add(ds, 27-28*4)}}
+  depends_on:
+  - task_id: copy_deduplicate_all
+    dag_name: copy_deduplicate
+    execution_delta: 1h
+  - task_id: search_derived__mobile_search_clients_daily__v1
+    dag_name: bqetl_mobile_search
+    execution_delta: 0h
 bigquery:
   time_partitioning:
     type: day

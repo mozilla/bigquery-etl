@@ -10,14 +10,15 @@ labels:
   incremental: true
 owners:
   - ascholtz@mozilla.com
-scheduling:
-  dag_name: bqetl_iprospect
-  arguments: ["--date", "{{ ds }}"]
-  referenced_tables:
-    - ['moz-fx-data-marketing-prod', 'iprospect', 'adspend_raw_v1']
+#scheduling:
+#  dag_name: bqetl_iprospect
+#  arguments: ["--date", "{{ ds }}"]
+#  referenced_tables:
+#    - ['moz-fx-data-marketing-prod', 'iprospect', 'adspend_raw_v1']
 
 bigquery:
   time_partitioning:
     type: day
     field: date
     require_partition_filter: false
+deprecated: true

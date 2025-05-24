@@ -109,14 +109,14 @@ fields:
   type: STRING
   description: |
     Marketing campaign search term
-    for the the first flow session.
+    for the first flow session.
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
   name: first_service_flow_utm_medium
   type: STRING
   description: |
-    Marketing campaign medium for the the first flow session.
+    Marketing campaign medium for the first flow session.
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
@@ -132,7 +132,7 @@ fields:
   type: STRING
   description: |
     Marketing campaign identifier
-    for the the first flow session.
+    for the first flow session.
     Not stored if the DNT request header was 1.
 
 - mode: NULLABLE
@@ -140,5 +140,5 @@ fields:
   type: STRING
   description: |
     Marketing campaign content identifier
-    for the the first flow session.
+    for the first flow session.
     Not stored if the DNT request header was 1.

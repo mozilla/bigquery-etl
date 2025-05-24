@@ -6,9 +6,9 @@ SELECT
   * EXCEPT (submission_date, app_channel, normalized_country_code, app_display_version),
   last_seen.submission_date,
   daily.submission_date AS `date`,
-  normalized_channel AS channel,
-  IFNULL(normalized_country_code, "??") AS country,
-  EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
+  daily.normalized_channel AS channel,
+  IFNULL(daily.normalized_country_code, "??") AS country,
+  EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
       THEN CONCAT("fenix", " ", distribution_id)
@@ -54,7 +54,7 @@ FROM
   `moz-fx-data-shared-prod.fenix.usage_reporting_clients_last_seen` AS last_seen
 LEFT JOIN
   `moz-fx-data-shared-prod.fenix.usage_reporting_clients_daily` AS daily
-  USING (submission_date, usage_profile_id, normalized_app_id, normalized_channel)
+  USING (submission_date, usage_profile_id)
 LEFT JOIN
   `moz-fx-data-shared-prod.fenix.usage_reporting_clients_first_seen` AS first_seen
-  USING (usage_profile_id, normalized_app_id, normalized_channel)
+  USING (usage_profile_id)

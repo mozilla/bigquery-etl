@@ -11,9 +11,3 @@ fields:
   type: STRING
   description: |
     A UUID of the usage_profile.
-
-- mode: NULLABLE
-  name: app_channel
-  type: STRING
-  description: |
-    The channel the application is being distributed on.

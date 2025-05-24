@@ -18,21 +18,6 @@ WITH extracted AS (
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
 ),
-sampled_data AS (
-  SELECT
-    *
-  FROM
-    extracted
-  WHERE
-    -- If you're changing this, then you'll also need to change probe_counts_v1,
-    -- where sampling is taken into account for counting clients.
-    channel IN ("nightly", "beta")
-    OR (channel = "release" AND os != "Windows")
-    OR (
-        channel = "release" AND
-        os = "Windows" AND
-        sample_id < 10)
-),
 histograms AS (
   SELECT
     {{ attributes }},
@@ -45,14 +30,50 @@ histograms AS (
       >
     >[{{ histograms }}] AS metadata
   FROM
-    sampled_data
+    extracted
+  WHERE
+    -- If you're changing this, then you'll also need to change probe_counts_v1,
+    -- where sampling is taken into account for counting clients.
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+        channel = "release" AND
+        os = "Windows" AND
+        sample_id < 10)
+),
+{% if client_sampled_histograms %}
+sampled_histograms AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<
+      STRUCT<
+        key STRING,
+        metric STRING,
+        metric_type STRING,
+        value ARRAY<STRUCT<key STRING, value INT64>>
+      >
+    >[{{ client_sampled_histograms }}] AS metadata
+  FROM
+    extracted
+  WHERE
+    channel = "{{ client_sampled_channel}}"
+    AND os = "{{ client_sampled_os}}"
+    AND sample_id < {{ client_sampled_max_sample_id }}
+),
+{% endif %}
+unioned_histograms AS (
+  SELECT * FROM histograms
+  {% if client_sampled_histograms %}
+  UNION ALL
+  SELECT * FROM sampled_histograms
+  {% endif %}
 ),
 flattened_histograms AS (
   SELECT
     {{ attributes }},
     metadata.*
   FROM
-    histograms,
+    unioned_histograms,
     UNNEST(metadata) as metadata
   WHERE
     value IS NOT NULL
@@ -73,7 +94,48 @@ labeled_histograms AS (
       >
     >[{{ labeled_histograms }}] AS metadata
   FROM
-    sampled_data
+    extracted
+  WHERE
+    -- If you're changing this, then you'll also need to change probe_counts_v1,
+    -- where sampling is taken into account for counting clients.
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+      channel = "release" AND
+      os = "Windows" AND
+      sample_id < 10
+    )
+),
+{% if client_sampled_labeled_histograms %}
+sampled_labeled_histograms AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<
+      STRUCT<
+        metric STRING,
+        metric_type STRING,
+        keyed_values ARRAY<
+          STRUCT<
+            key STRING,
+            value ARRAY<STRUCT<key STRING, value INT64>>
+          >
+        >
+      >
+    >[{{ client_sampled_labeled_histograms }}] AS metadata
+  FROM
+    extracted
+  WHERE
+    channel = "{{ client_sampled_channel}}"
+    AND os = "{{ client_sampled_os}}"
+    AND sample_id < {{ client_sampled_max_sample_id }}
+),
+{% endif %}
+unioned_labeled_histograms AS (
+  SELECT * FROM labeled_histograms
+  {% if client_sampled_labeled_histograms %}
+  UNION ALL
+  SELECT * FROM sampled_labeled_histograms
+  {% endif %}
 ),
 flattened_labeled_histograms AS (
   SELECT
@@ -90,7 +152,7 @@ flattened_labeled_histograms AS (
     metric_type,
     value
   FROM
-    labeled_histograms,
+    unioned_labeled_histograms,
     UNNEST(metadata) AS metadata,
     UNNEST(metadata.keyed_values) AS keyed_values
   WHERE

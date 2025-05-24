@@ -303,6 +303,7 @@ class Task:
     depends_on_past: bool = attr.ib(False)
     start_date: Optional[str] = attr.ib(None)
     date_partition_parameter: Optional[str] = "submission_date"
+    table_partition_type: Optional[str] = None
     table_partition_template: Optional[str] = None
     # number of days date partition parameter should be offset
     date_partition_offset: Optional[int] = None
@@ -507,35 +508,40 @@ class Task:
         if metadata.is_public_json():
             task_config["public_json"] = True
 
-        # Override the table_partition_template if there is no `destination_table`
-        # set in the scheduling section of the metadata. If not then pass a jinja
-        # template that reformats the date string used for table partition decorator.
-        # See doc here for formatting conventions:
-        #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
-        if (
-            metadata.bigquery
-            and metadata.bigquery.time_partitioning
-            and metadata.scheduling.get("destination_table") is None
-        ):
-            match metadata.bigquery.time_partitioning.type:
-                case PartitionType.YEAR:
-                    partition_template = '${{ dag_run.logical_date.strftime("%Y") }}'
-                case PartitionType.MONTH:
-                    partition_template = '${{ dag_run.logical_date.strftime("%Y%m") }}'
-                case PartitionType.DAY:
-                    # skip for the default case of daily partitioning
-                    partition_template = None
-                case PartitionType.HOUR:
-                    partition_template = (
-                        '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
-                    )
-                case _:
-                    raise TaskParseException(
-                        f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
-                    )
+        if metadata.bigquery and metadata.bigquery.time_partitioning:
+            task_config["table_partition_type"] = (
+                metadata.bigquery.time_partitioning.type.value
+            )
 
-            if partition_template:
-                task_config["table_partition_template"] = partition_template
+            # Override the table_partition_template if there is no `destination_table`
+            # set in the scheduling section of the metadata. If not then pass a jinja
+            # template that reformats the date string used for table partition decorator.
+            # See doc here for formatting conventions:
+            #  https://cloud.google.com/bigquery/docs/managing-partitioned-table-data#partition_decorators
+            if metadata.scheduling.get("destination_table") is None:
+                match metadata.bigquery.time_partitioning.type:
+                    case PartitionType.YEAR:
+                        partition_template = (
+                            '${{ dag_run.logical_date.strftime("%Y") }}'
+                        )
+                    case PartitionType.MONTH:
+                        partition_template = (
+                            '${{ dag_run.logical_date.strftime("%Y%m") }}'
+                        )
+                    case PartitionType.DAY:
+                        # skip for the default case of daily partitioning
+                        partition_template = None
+                    case PartitionType.HOUR:
+                        partition_template = (
+                            '${{ dag_run.logical_date.strftime("%Y%m%d%H") }}'
+                        )
+                    case _:
+                        raise TaskParseException(
+                            f"Invalid partition type: {metadata.bigquery.time_partitioning.type}"
+                        )
+
+                if partition_template:
+                    task_config["table_partition_template"] = partition_template
 
         try:
             return copy.deepcopy(converter.structure(task_config, cls))

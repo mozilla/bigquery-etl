@@ -432,6 +432,19 @@ class TestBackfill:
         )
         assert result.exit_code == 0
 
+    def test_validate_backfill_with_backfill_path(self, mock_date, runner):
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
+        assert BACKFILL_FILE in os.listdir(QUERY_DIR)
+
+        result = runner.invoke(
+            validate,
+            [
+                str(backfill_file),
+            ],
+        )
+        assert result.exit_code == 0
+
     def test_validate_backfill_with_billing_project(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
         backfill_text = (

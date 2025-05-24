@@ -76,11 +76,13 @@ def store_data_in_bigquery(data, schema, destination_project, destination_table_
 @click.command
 @click.option(
     "--api_key",
+    envvar='CAMPAIGN_MONITOR_API_KEY',
     required=True,
     help="Campaign Monitor API key to use for authentication.",
 )
 @click.option(
     "--client_id",
+    envvar='CAMPAIGN_MONITOR_CLIENT_ID',
     required=True,
     help="Client Id for Campaign Monitor.",
 )

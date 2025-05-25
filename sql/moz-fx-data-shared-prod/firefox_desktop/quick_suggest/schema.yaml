@@ -442,6 +442,13 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: quick_suggest_country
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the home region of the user as determined by `Region.sys.mjs`
+        and the `browser.search.region` pref.
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE

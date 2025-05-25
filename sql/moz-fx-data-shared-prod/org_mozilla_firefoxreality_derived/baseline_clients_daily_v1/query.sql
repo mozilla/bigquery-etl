@@ -36,6 +36,11 @@ WITH base AS (
     CAST(NULL AS STRING) AS install_source,
     client_info.attribution,
     client_info.distribution,
+    CAST(NULL AS STRING) AS attribution_dltoken,
+    CAST(NULL AS STRING) AS attribution_dlsource,
+    CAST(NULL AS STRING) AS attribution_experiment,
+    CAST(NULL AS STRING) AS attribution_variation,
+    CAST(NULL AS STRING) AS attribution_ua,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefoxreality_stable.baseline_v1`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -154,6 +159,19 @@ windowed AS (
     ) AS is_default_browser,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution) OVER w1) AS attribution,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_dltoken) OVER w1
+    ) AS attribution_dltoken,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_dlsource) OVER w1
+    ) AS attribution_dlsource,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_experiment) OVER w1
+    ) AS attribution_experiment,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(attribution_variation) OVER w1
+    ) AS attribution_variation,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
   FROM
     with_date_offsets
   LEFT JOIN

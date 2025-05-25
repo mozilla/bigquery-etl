@@ -9,6 +9,7 @@ from jinja2 import Environment, PackageLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
+from .client_side_sampled_metrics import get as get_sampled_metrics
 from .utils import get_schema, ping_type_from_table
 
 ATTRIBUTES = ",".join(
@@ -110,7 +111,9 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set[scalar_type]:
                 continue
             for field in metric_field["fields"]:
-                if field["name"] not in excluded_metrics:
+                if field["name"] not in excluded_metrics and field[
+                    "name"
+                ] not in get_sampled_metrics("counters"):
                     scalars[metric_type].append(field["name"])
     return scalars
 
@@ -147,9 +150,15 @@ def main():
     schema = get_schema(args.source_table)
     unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
     labeled_metric_names = get_scalar_metrics(schema, "labeled")
+    # Metrics that are already sampled
+    unlabeled_sampled_metric_names = {"counter": get_sampled_metrics("counters")}
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
-
+    client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
+    if args.product == "firefox_desktop":
+        client_sampled_metrics_sql["unlabeled"] = get_unlabeled_metrics_sql(
+            unlabeled_sampled_metric_names
+        ).strip()
     if not unlabeled_metrics and not labeled_metrics:
         print(header)
         print("-- Empty query: no probes found!")
@@ -163,6 +172,11 @@ def main():
             unlabeled_metrics=unlabeled_metrics,
             labeled_metrics=labeled_metrics,
             ping_type=ping_type_from_table(args.source_table),
+            client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
+            client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],
+            client_sampled_channel="release",
+            client_sampled_os="Windows",
+            client_sampled_max_sample_id=100,
         )
     )
 

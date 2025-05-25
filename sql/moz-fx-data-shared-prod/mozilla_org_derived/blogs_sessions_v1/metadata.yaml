@@ -8,8 +8,8 @@ labels:
   schedule: daily
   dag: bqetl_google_analytics_derived
   owner1: ascholtz
-scheduling:
-  dag_name: bqetl_google_analytics_derived
+#scheduling:
+#  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
@@ -18,3 +18,4 @@ bigquery:
     expiration_days: null
   clustering: null
 references: {}
+deprecated: true

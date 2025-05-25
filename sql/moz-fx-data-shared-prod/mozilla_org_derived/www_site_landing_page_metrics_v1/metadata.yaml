@@ -10,8 +10,8 @@ labels:
   owner1: ascholtz
   table_type: aggregate
   shredder_mitigation: false
-scheduling:
-  dag_name: bqetl_google_analytics_derived
+#scheduling:
+#  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:
     type: day
@@ -25,3 +25,4 @@ bigquery:
     - locale
     - medium
 references: {}
+deprecated: true

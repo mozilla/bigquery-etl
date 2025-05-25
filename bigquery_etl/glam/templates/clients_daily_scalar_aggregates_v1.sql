@@ -18,9 +18,12 @@ WITH extracted AS (
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
 ),
-sampled_data AS (
+unlabeled_metrics AS (
   SELECT
-    *
+    {{ attributes }},
+    ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
+        {{ unlabeled_metrics }}
+    ] as scalar_aggregates
   FROM
     extracted
   WHERE
@@ -32,17 +35,34 @@ sampled_data AS (
         channel = "release" AND
         os = "Windows" AND
         sample_id < 10)
+  GROUP BY
+    {{ attributes }}
 ),
-unlabeled_metrics AS (
+{% if client_sampled_unlabeled_metrics %}
+sampled_unlabelled_metrics AS (
   SELECT
     {{ attributes }},
     ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
-        {{ unlabeled_metrics }}
+        {{ client_sampled_unlabeled_metrics }}
     ] as scalar_aggregates
   FROM
-    sampled_data
+    extracted
+  WHERE
+    channel = "{{ client_sampled_channel}}"
+    AND os = "{{ client_sampled_os}}"
+    AND sample_id = {{ client_sampled_max_sample_id }}
   GROUP BY
     {{ attributes }}
+),
+{% endif %}
+unioned_unlabelled_metrics AS (
+  SELECT * FROM
+    unlabeled_metrics
+  {% if client_sampled_unlabeled_metrics %}
+  UNION ALL
+  SELECT * FROM
+    sampled_unlabelled_metrics
+  {% endif %}
 ),
 grouped_labeled_metrics AS (
   SELECT
@@ -51,7 +71,40 @@ grouped_labeled_metrics AS (
         {{ labeled_metrics }}
     ] as metrics
   FROM
-    sampled_data
+    extracted
+  WHERE
+    -- If you're changing this, then you'll also need to change probe_counts_v1,
+    -- where sampling is taken into account for counting clients.
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+      channel = "release" AND
+      os = "Windows" AND
+      sample_id < 10)
+),
+{% if client_sampled_labeled_metrics %}
+grouped_sampled_labeled_metrics AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<STRUCT<name STRING, type STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>[
+        {{ client_sampled_labeled_metrics }}
+    ] as metrics
+  FROM
+    extracted
+  WHERE
+    channel = "{{ client_sampled_channel}}"
+    AND os = "{{ client_sampled_os}}"
+    AND sample_id = {{ client_sampled_max_sample_id }}
+),
+{% endif %}
+unioned_grouped_labeled_metrics AS (
+  SELECT * FROM
+    grouped_labeled_metrics
+  {% if client_sampled_labeled_metrics %}
+  UNION ALL
+  SELECT * FROM
+    grouped_sampled_labeled_metrics
+  {% endif %}
 ),
 flattened_labeled_metrics AS (
   SELECT
@@ -61,7 +114,7 @@ flattened_labeled_metrics AS (
     value.key AS key,
     value.value AS value
   FROM
-    grouped_labeled_metrics
+    unioned_grouped_labeled_metrics
   CROSS JOIN
     UNNEST(metrics) AS metrics,
     UNNEST(metrics.value) AS value
@@ -105,7 +158,7 @@ labeled_metrics AS (
 SELECT
   *
 FROM
-  unlabeled_metrics
+  unioned_unlabelled_metrics
 UNION ALL
 SELECT
   *

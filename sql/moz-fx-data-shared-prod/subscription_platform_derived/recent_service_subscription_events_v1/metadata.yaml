@@ -1,0 +1,28 @@
+friendly_name: Recent service subscriptions events
+description: |-
+  Service subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End" during the previous 7 days.
+
+  This data is considered to still be in flux due to possible late-arriving data.
+
+  Service subscriptions are a continuous active period for a specific service by a particular provider subscription.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+scheduling:
+  dag_name: bqetl_subplat
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - service_id
+    - type
+    - reason
+references: {}

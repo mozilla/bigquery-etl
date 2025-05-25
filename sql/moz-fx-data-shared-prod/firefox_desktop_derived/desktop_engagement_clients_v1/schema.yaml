@@ -44,10 +44,26 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Attribution Content
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Download Source
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
   description: Attribution Medium
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: Attribution User Agent
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Variation
 - name: normalized_channel
   type: STRING
   mode: NULLABLE

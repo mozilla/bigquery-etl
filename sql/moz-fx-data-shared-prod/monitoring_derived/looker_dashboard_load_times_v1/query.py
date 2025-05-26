@@ -43,7 +43,6 @@ def run_query(sdk, date):
             "dashboard_performance.first_event_at_date",
             "dashboard.refresh_interval",
             "dashboard_performance.dashboard_run_session",
-            ""
         ],
         pivots=None,
         fill_fields=None,

@@ -17,7 +17,11 @@ SELECT
     seconds_until_first_tile_finished_rendering - seconds_until_dashboard_run_start,
     0
   ) AS seconds_until_first_tile_finished_rendering,
-  seconds_until_last_data_received - seconds_until_dashboard_run_start AS seconds_until_last_data_received,
+  IF(
+    seconds_until_last_data_received > seconds_until_dashboard_run_start,
+    seconds_until_last_data_received - seconds_until_dashboard_run_start,
+    0
+  ) AS seconds_until_last_data_received,
   IF(
     seconds_until_last_tile_finished_rendering > seconds_until_dashboard_run_start,
     seconds_until_last_tile_finished_rendering - seconds_until_dashboard_run_start,

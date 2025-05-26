@@ -157,3 +157,18 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
+- name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE

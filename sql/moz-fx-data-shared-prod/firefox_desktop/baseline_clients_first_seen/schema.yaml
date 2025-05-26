@@ -130,6 +130,26 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The distribution name (e.g. 'MozillaOnline').
+- name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+  description: Unique token created at Firefox download time.
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: Identifier that indicates where installations of Firefox originate.
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Name/id of the enrolled funnel experiment.
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Name/id of the variation cohort used in the enrolled funnel experiment.
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: Identifier derived from the user agent downloading the installer.
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

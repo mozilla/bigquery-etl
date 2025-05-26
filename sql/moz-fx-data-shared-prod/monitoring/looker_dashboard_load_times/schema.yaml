@@ -56,3 +56,15 @@ fields:
   type: DATE
   mode: NULLABLE
   description: The first occurrence of a particular dashboard being run
+- name: refresh_interval
+  type: STRING
+  mode: NULLABLE
+  description: Indicates that the dashboard is refreshed automatically
+- name: is_auto_refreshed
+  type: BOOLEAN
+  mode: NULLABLE
+- name: dashboard_run_session
+  type: STRING
+  mode: NULLABLE
+  description: A unique string identifier assigned to a particular dashboard each
+    time a dashboard is run

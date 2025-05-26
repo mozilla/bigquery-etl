@@ -148,7 +148,9 @@ def main():
     distributions, client_sampled_distributions = get_distribution_metrics(schema)
     metrics_sql = get_metrics_sql(distributions)
     client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
-    if args.product == "firefox_desktop":
+    if args.product == "firefox_desktop" and args.source_table.startswith(
+        "firefox_desktop_stable.metrics_v"
+    ):
         client_sampled_metrics_sql = get_metrics_sql(client_sampled_distributions)
     if not metrics_sql["labeled"] and not metrics_sql["unlabeled"]:
         print(header)

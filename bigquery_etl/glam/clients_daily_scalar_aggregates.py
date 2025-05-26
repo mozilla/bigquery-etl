@@ -155,7 +155,9 @@ def main():
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
     client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
-    if args.product == "firefox_desktop":
+    if args.product == "firefox_desktop" and args.source_table.startswith(
+        "firefox_desktop_stable.metrics_v"
+    ):
         client_sampled_metrics_sql["unlabeled"] = get_unlabeled_metrics_sql(
             unlabeled_sampled_metric_names
         ).strip()

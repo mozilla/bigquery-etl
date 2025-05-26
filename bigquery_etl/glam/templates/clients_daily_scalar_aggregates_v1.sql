@@ -39,7 +39,7 @@ unlabeled_metrics AS (
     {{ attributes }}
 ),
 {% if client_sampled_unlabeled_metrics %}
-sampled_unlabelled_metrics AS (
+sampled_unlabeled_metrics AS (
   SELECT
     {{ attributes }},
     ARRAY<STRUCT<metric STRING, metric_type STRING, key STRING, agg_type STRING, value FLOAT64>>[
@@ -55,13 +55,13 @@ sampled_unlabelled_metrics AS (
     {{ attributes }}
 ),
 {% endif %}
-unioned_unlabelled_metrics AS (
+unioned_unlabeled_metrics AS (
   SELECT * FROM
     unlabeled_metrics
   {% if client_sampled_unlabeled_metrics %}
   UNION ALL
   SELECT * FROM
-    sampled_unlabelled_metrics
+    sampled_unlabeled_metrics
   {% endif %}
 ),
 grouped_labeled_metrics AS (
@@ -158,7 +158,7 @@ labeled_metrics AS (
 SELECT
   *
 FROM
-  unioned_unlabelled_metrics
+  unioned_unlabeled_metrics
 UNION ALL
 SELECT
   *

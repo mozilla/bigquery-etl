@@ -48,6 +48,7 @@ TEST_BACKFILL_3 = Backfill(
     shredder_mitigation=False,
     override_retention_limit=False,
     override_depends_on_past_end_date=False,
+    ignore_date_partition_offset=False,
     billing_project=DEFAULT_BILLING_PROJECT,
 )
 
@@ -453,6 +454,7 @@ class TestParseBackfill(object):
             "  shredder_mitigation: false\n"
             "  override_retention_limit: false\n"
             "  override_depends_on_past_end_date: false\n"
+            "  ignore_date_partition_offset: false\n"
         )
 
         results = TEST_BACKFILL_1.to_yaml()
@@ -473,6 +475,7 @@ class TestParseBackfill(object):
             shredder_mitigation = False
             override_retention_limit = False
             override_depends_on_past_end_date = False
+            ignore_date_partition_offset = False
             billing_project = None
             """
 
@@ -492,6 +495,7 @@ class TestParseBackfill(object):
             "  shredder_mitigation: false\n"
             "  override_retention_limit: false\n"
             "  override_depends_on_past_end_date: false\n"
+            "  ignore_date_partition_offset: false\n"
         )
 
         TEST_BACKFILL_1.excluded_dates = []

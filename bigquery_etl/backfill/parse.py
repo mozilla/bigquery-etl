@@ -74,6 +74,7 @@ class Backfill:
     shredder_mitigation: Optional[bool] = attr.ib(False)
     override_retention_limit: Optional[bool] = attr.ib(False)
     override_depends_on_past_end_date: Optional[bool] = attr.ib(False)
+    ignore_date_partition_offset: Optional[bool] = attr.ib(False)
     billing_project: Optional[str] = attr.ib(None)
 
     def __str__(self):
@@ -97,6 +98,7 @@ class Backfill:
             shredder_mitigation = {self.shredder_mitigation}
             override_retention_limit = {self.override_retention_limit}
             override_depends_on_past_end_date = {self.override_depends_on_past_end_date}
+            ignore_date_partition_offset = {self.ignore_date_partition_offset}
             billing_project = {self.billing_project}
             """
 
@@ -211,6 +213,9 @@ class Backfill:
                         ),
                         override_depends_on_past_end_date=entry.get(
                             "override_depends_on_past_end_date", False
+                        ),
+                        ignore_date_partition_offset=entry.get(
+                            "ignore_date_partition_offset", False
                         ),
                         billing_project=entry.get("billing_project", None),
                     )

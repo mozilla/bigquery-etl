@@ -184,7 +184,9 @@ For our example, the starting date is `2020-06-01` and we use a schedule interva
 The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
 When creating a new DAG, while it is still under active development and assumed to fail during this phase, the DAG can be tagged as `--tag triage/no_triage`. That way it will be ignored by the person on Airflow Triage.
-Once the active development is done, the `triage/no_triage` tag can be removed and problems will addressed during the Airflow Triage process.
+Once the active development is done, the `triage/no_triage` tag can be removed and problems will be addressed during the Airflow Triage process.
+
+**NOTE** - New DAGs will not be enabled automatically. You must enable them manually in the Airflow UI. DAGs can be located in Airflow at `https://workflow.telemetry.mozilla.org/dags/{YOUR_DAG_NAME}/grid`. To enable the DAG, toggle the switch next to your DAG name in the upper left corner.
 
 ```bash
 ./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3

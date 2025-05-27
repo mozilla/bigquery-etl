@@ -9,6 +9,7 @@
   shredder_mitigation: false
   override_retention_limit: true
   override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
 
 2024-11-13:
   start_date: 2019-10-01

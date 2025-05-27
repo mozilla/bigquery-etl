@@ -27,12 +27,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-- role: roles/bigquery.dataEditor
-  members:
-  - workgroup:ads/data-developers
+workgroup_access: []
 references: {}
+deprecated: true
 require_column_descriptions: false

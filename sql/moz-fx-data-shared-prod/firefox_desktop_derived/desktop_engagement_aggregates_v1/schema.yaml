@@ -1,0 +1,81 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID - Identifies the Firefox distribution
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: App Version
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+  description: Attribution Campaign
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+  description: Attribution Content
+- mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+  description: Attribution Download Source
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+  description: Attribution Medium
+- mode: NULLABLE
+  name: attribution_ua
+  type: STRING
+  description: Attribution User Agent
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel - The Firefox channel, set to Other for unrecognized channel names
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: Normalized Operating System Version
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: Country
+- mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
+- mode: NULLABLE
+  name: dau
+  type: INT64
+  description: Number of daily active users
+- mode: NULLABLE
+  name: wau
+  type: INT64
+  description: Number of weekly active users
+- mode: NULLABLE
+  name: mau
+  type: INT64
+  description: Number of monthly active users

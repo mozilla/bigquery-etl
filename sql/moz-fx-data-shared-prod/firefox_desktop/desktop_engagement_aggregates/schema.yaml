@@ -1,0 +1,82 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID - Identifies the Firefox distribution
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: App Version
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Campaign
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Content
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Download Source
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Medium
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: Attribution User Agent
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Variation
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel - The Firefox channel, set to Other for unrecognized
+    channel names
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System Version
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of daily active users
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of weekly active users
+- name: mau
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of monthly active users

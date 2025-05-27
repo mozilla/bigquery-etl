@@ -143,6 +143,17 @@ with DAG(
         retries=0,
     )
 
+    firefox_desktop_derived__desktop_engagement_aggregates__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__desktop_engagement_aggregates__v1",
+        destination_table="desktop_engagement_aggregates_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__desktop_engagement_clients__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__desktop_engagement_clients__v1",
         destination_table="desktop_engagement_clients_v1",
@@ -178,6 +189,10 @@ with DAG(
 
     checks__fail_firefox_desktop_derived__desktop_engagement_clients__v1.set_upstream(
         firefox_desktop_derived__desktop_engagement_clients__v1
+    )
+
+    firefox_desktop_derived__desktop_engagement_aggregates__v1.set_upstream(
+        checks__fail_firefox_desktop_derived__desktop_engagement_clients__v1
     )
 
     firefox_desktop_derived__desktop_engagement_clients__v1.set_upstream(

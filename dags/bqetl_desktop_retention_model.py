@@ -52,6 +52,58 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
@@ -106,6 +158,21 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    firefox_desktop_derived__desktop_retention_clients__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__desktop_retention_clients__v1",
+        destination_table="desktop_retention_clients_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__desktop_retention__v1 = bigquery_etl_query(
         task_id="telemetry_derived__desktop_retention__v1",
         destination_table='desktop_retention_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
@@ -152,6 +219,22 @@ with DAG(
         email=["mhirose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1
+    )
+
+    firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
     )
 
     telemetry_derived__desktop_retention__v1.set_upstream(

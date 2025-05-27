@@ -204,7 +204,7 @@ def main():
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 100,
-            "minimum_client_count": 100000,
+            "minimum_client_count": 450000,
         },
     }
 

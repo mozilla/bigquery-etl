@@ -190,7 +190,7 @@ def main():
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 10,
-            "minimum_client_count": 100,
+            "minimum_client_count": 375,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",

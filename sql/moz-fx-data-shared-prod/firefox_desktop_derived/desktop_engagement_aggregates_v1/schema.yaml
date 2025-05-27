@@ -6,7 +6,7 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date - Date when the server first received any of the 3 ping types from this client
+  description: First Seen Date
 - mode: NULLABLE
   name: distribution_id
   type: STRING
@@ -22,31 +22,31 @@ fields:
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
-  description: Attribution Campaign (from clients first seen)
+  description: Attribution Campaign
 - mode: NULLABLE
   name: attribution_content
   type: STRING
-  description: Attribution Content (from clients first seen)
+  description: Attribution Content
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING
-  description: Attribution Download Source (from clients first seen)
+  description: Attribution Download Source
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
-  description: Attribution Medium (from clients first seen)
+  description: Attribution Medium
 - mode: NULLABLE
   name: attribution_ua
   type: STRING
-  description: Attribution UA (from clients first seen)
+  description: Attribution User Agent
 - mode: NULLABLE
   name: attribution_experiment
   type: STRING
-  description: Attribution Experiment (from clients first seen)
+  description: Attribution Experiment
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation (from clients last seen since unavailable in clients first seen)
+  description: Attribution Variation
 - mode: NULLABLE
   name: normalized_channel
   type: STRING

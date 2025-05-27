@@ -70,12 +70,12 @@ fields:
 - mode: NULLABLE
   name: dau
   type: INT64
-  description: DAU - Daily Active User
+  description: Number of daily active users
 - mode: NULLABLE
   name: wau
   type: INT64
-  description: WAU - Weekly Active User
+  description: Number of weekly active users
 - mode: NULLABLE
   name: mau
   type: INT64
-  description: MAU - Monthly Active User
+  description: Number of monthly active users

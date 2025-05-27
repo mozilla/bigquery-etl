@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+from collections import defaultdict
 from typing import Dict, List
 
 from jinja2 import Environment, PackageLoader
@@ -54,6 +55,7 @@ def get_distribution_metrics(
     # Metrics that are already sampled
     sampled_metric_names = get_sampled_metrics("distributions")
     sampled_metrics = {"timing_distribution": sampled_metric_names}
+    found_sampled_metrics = defaultdict(list)
 
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
@@ -65,13 +67,12 @@ def get_distribution_metrics(
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
-                if (
-                    field["name"] not in excluded_metrics
-                    and field["name"] not in sampled_metric_names
-                ):
+                if field["name"] in sampled_metrics.get(metric_type, []):
+                    found_sampled_metrics[metric_type].append(field["name"])
+                elif field["name"] not in excluded_metrics:
                     metrics[metric_type].append(field["name"])
 
-    return metrics, sampled_metrics
+    return metrics, found_sampled_metrics
 
 
 def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:

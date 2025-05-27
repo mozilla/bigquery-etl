@@ -130,6 +130,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__fail_firefox_desktop_derived__desktop_engagement_clients__v1 = bigquery_dq_check(
+        task_id="checks__fail_firefox_desktop_derived__desktop_engagement_clients__v1",
+        source_table="desktop_engagement_clients_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     firefox_desktop_derived__desktop_engagement_clients__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__desktop_engagement_clients__v1",
         destination_table="desktop_engagement_clients_v1",
@@ -161,6 +174,10 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    checks__fail_firefox_desktop_derived__desktop_engagement_clients__v1.set_upstream(
+        firefox_desktop_derived__desktop_engagement_clients__v1
     )
 
     firefox_desktop_derived__desktop_engagement_clients__v1.set_upstream(

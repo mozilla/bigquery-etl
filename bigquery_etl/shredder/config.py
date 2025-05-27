@@ -235,6 +235,9 @@ DELETE_TARGETS: DeleteIndex = {
         table="telemetry_derived.desktop_retention_clients_v1"
     ): DESKTOP_SRC,
     client_id_target(
+        table="firefox_desktop_derived.desktop_retention_clients_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
         table="ltv_derived.firefox_desktop_new_profile_ltv_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,

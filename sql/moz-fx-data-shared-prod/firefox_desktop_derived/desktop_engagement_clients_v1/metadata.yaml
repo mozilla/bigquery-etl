@@ -6,7 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
-  table_tpye: client_level
+  table_type: client_level
 scheduling:
   dag_name: bqetl_desktop_engagement_model
 bigquery:

@@ -47,7 +47,7 @@ fields:
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
-  description: Attribution Download Source
+  description: Attribution Download Source - identifier that indicate where installations of Firefox originate
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
@@ -55,15 +55,17 @@ fields:
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
-  description: Attribution User Agent
+  description: |-
+    Attribution User Agent - identifier derived from the user agent downloading the installer e.g. chrome, Google Chrome 123
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
-  description: Attribution Experiment
+  description: Attribution Experiment - name/id of the enrolled funnel experiment
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
-  description: Attribution Variation
+  description: |-
+    Attribution Variation - name/id of the variation cohort used in the enrolled funnel experiment
 - name: normalized_channel
   type: STRING
   mode: NULLABLE

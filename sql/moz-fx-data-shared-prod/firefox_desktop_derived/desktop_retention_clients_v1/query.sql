@@ -27,17 +27,16 @@ new_profiles AS (
     cfs.app_display_version AS app_version,
     cfs.attribution.campaign AS attribution_campaign,
     cfs.attribution.content AS attribution_content,
-    --cfs.attribution_dlsource AS attribution_dlsource,
+    cfs.attribution_dlsource AS attribution_dlsource,
     cfs.attribution.source AS attribution_source,
     cfs.attribution.medium AS attribution_medium,
-    --cfs.attribution.ua AS attribution_ua,
-    --cfs.attribution_experiment,
-    --cfs.attribution_variation,
+    cfs.attribution_ua,
+    cfs.attribution_experiment,
+    cfs.attribution_variation,
     cfs.distribution_id,
     cfs.is_desktop,
     cfs.isp,
     cfs.normalized_channel,
-    --startup_profile_selection_reason, not available yet in cfs
     cfs.normalized_os,
     COALESCE(
       windows_version,
@@ -73,20 +72,18 @@ clients_data AS (
     cd.locale,
     cd.attribution.campaign AS attribution_campaign,
     cd.attribution.content AS attribution_content,
-    --cd.attribution_dlsource AS attribution_dlsource,
+    cd.attribution_dlsource AS attribution_dlsource,
     cd.attribution.source AS attribution_source,
     cd.attribution.medium AS attribution_medium,
-    --cd.attribution.ua AS attribution_ua,
-    --cd.attribution.experiment AS attribution_experiment,
-    --cd.attribution.variation AS attribution_variation,
-    --cd.startup_profile_selection_reason_first AS startup_profile_selection_reason,
+    cd.attribution_ua,
+    cd.attribution_experiment,
+    cd.attribution_variation,
     cd.distribution_id AS distribution_id,
     au.is_desktop,
     cd.isp,
     au.days_seen_bits,
     au.days_active_bits,
     cd.normalized_os,
-    --check the function below is working properly
     COALESCE(
       mozfun.norm.glean_windows_version_info(
         cd.normalized_os,
@@ -95,7 +92,6 @@ clients_data AS (
       ),
       NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     ) AS normalized_os_version,
-    --check if the function above is working properly
     au.retention_seen.day_27.active_in_week_3 AS retention_active_in_week_3,
   -- ping sent retention
     au.retention_seen.day_27.active_on_metric_date AS ping_sent_metric_date,
@@ -132,18 +128,12 @@ SELECT
   COALESCE(cd.first_seen_date, np.first_seen_date) AS first_seen_date,
   COALESCE(cd.attribution_campaign, np.attribution_campaign) AS attribution_campaign,
   COALESCE(cd.attribution_content, np.attribution_content) AS attribution_content,
-  --COALESCE(cd.attribution_dlsource, np.attribution_dlsource) AS attribution_dlsource,
+  COALESCE(cd.attribution_dlsource, np.attribution_dlsource) AS attribution_dlsource,
   COALESCE(cd.attribution_source, np.attribution_source) AS attribution_source,
   COALESCE(cd.attribution_medium, np.attribution_medium) AS attribution_medium,
-  --COALESCE(cd.attribution_ua, np.attribution_ua) AS attribution_ua,
-  --COALESCE(cd.attribution_experiment, np.attribution_experiment) AS attribution_experiment,
-  --COALESCE(cd.attribution_variation, np.attribution_variation) AS attribution_variation,
-  /*
-  COALESCE(
-    cd.startup_profile_selection_reason,
-    np.startup_profile_selection_reason
-  ) AS startup_profile_selection_reason,
-  */
+  COALESCE(cd.attribution_ua, np.attribution_ua) AS attribution_ua,
+  COALESCE(cd.attribution_experiment, np.attribution_experiment) AS attribution_experiment,
+  COALESCE(cd.attribution_variation, np.attribution_variation) AS attribution_variation,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
   COALESCE(cd.normalized_os_version, np.normalized_os_version) AS normalized_os_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,

@@ -26,9 +26,11 @@ The first step is to create a query file and decide on the name of your derived 
 The `org_mozilla_mozregression_derived` part represents a [BigQuery dataset](https://cloud.google.com/bigquery/docs/datasets-intro), which is essentially a container of tables. By convention, we use the `_derived` postfix to hold derived tables like this one.
 
 Run:
+
 ```bash
 ./bqetl query create <dataset>.<table_name>
 ```
+
 In our example:
 
 ```bash
@@ -53,8 +55,7 @@ Let's look at what the `metadata.yaml` file for our example looks like. Make sur
 
 ```yaml
 friendly_name: mozregression aggregates
-description:
-  Aggregated metrics of mozregression usage
+description: Aggregated metrics of mozregression usage
 labels:
   incremental: true
 owners:
@@ -67,23 +68,22 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - app_used
-    - os
+      - app_used
+      - os
 ```
 
 Most of the fields are self-explanatory. `incremental` means that the table is updated incrementally, e.g. a new partition gets added/updated to the destination table whenever the query is run. For non-incremental queries the entire destination is overwritten when the query is executed.
 
 [For big datasets make sure to include optimization strategies](https://docs.telemetry.mozilla.org/cookbooks/bigquery/optimization.html). Our aggregation is small so it is only for illustration purposes that we are including a partition by the `date` field and a clustering on `app_used` and `os`.
 
-
 #### The YAML file structure for a public dataset
+
 Setting the dataset as public means that it will be both in Mozilla's public BigQuery project and a world-accessible JSON endpoint, and is a process that requires a data review.
 The required labels are: `public_json`, `public_bigquery` and `review_bugs` which refers to the Bugzilla bug where opening this data set up to the public was approved: we'll get to that in a subsequent section.
 
 ```yaml
 friendly_name: mozregression aggregates
-description:
-  Aggregated metrics of mozregression usage
+description: Aggregated metrics of mozregression usage
 labels:
   incremental: true
   public_json: true
@@ -100,8 +100,8 @@ bigquery:
     expiration_days: null
   clustering:
     fields:
-    - app_used
-    - os
+      - app_used
+      - os
 ```
 
 ## Fill out the query
@@ -111,7 +111,6 @@ Now that we've filled out the metadata, we can look into creating a query. In ma
 Test your query and add it to the `query.sql` file.
 
 In our example, the query is tested in `sql.telemetry.mozilla.org`, and the `query.sql` file looks like this:
-
 
 ```sql
 SELECT
@@ -148,10 +147,13 @@ Now that we've written our query, we can format it and validate it. Once that's 
 ```bash
 ./bqetl query validate <dataset>.<table>
 ```
+
 For our example:
+
 ```bash
 ./bqetl query validate org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
+
 If there are no problems, you should see no output.
 
 ## Creating the table schema
@@ -165,6 +167,7 @@ Review the schema.YAML generated as an output of the following command, and make
 ```
 
 For our example:
+
 ```bash
 ./bqetl query schema update org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
@@ -184,7 +187,9 @@ For our example, the starting date is `2020-06-01` and we use a schedule interva
 The `--tag impact/tier3` parameter specifies that this DAG is considered "tier 3". For a list of valid tags and their descriptions see [Airflow Tags](../reference/airflow_tags.md).
 
 When creating a new DAG, while it is still under active development and assumed to fail during this phase, the DAG can be tagged as `--tag triage/no_triage`. That way it will be ignored by the person on Airflow Triage.
-Once the active development is done, the `triage/no_triage` tag can be removed and problems will addressed during the Airflow Triage process.
+Once the active development is done, the `triage/no_triage` tag can be removed and problems will be addressed during the Airflow Triage process.
+
+**NOTE** - New DAGs will not be enabled automatically. You must enable them manually in the Airflow UI. DAGs can be located in Airflow at `https://workflow.telemetry.mozilla.org/dags/{YOUR_DAG_NAME}/grid`. To enable the DAG, toggle the switch next to your DAG name in the upper left corner.
 
 ```bash
 ./bqetl dag create bqetl_internal_tooling --schedule-interval "0 4 * * *" --owner wlachance@mozilla.com --description "This DAG schedules queries for populating queries related to Mozilla's internal developer tooling (e.g. mozregression)." --start-date 2020-06-01 --tag impact/tier_3
@@ -200,7 +205,8 @@ If the query was created with `--no-schedule`, it is possible to manually schedu
 ./bqetl query schedule <dataset>.<table> --dag <dag_name> --task-name <task_name>
 ```
 
-Here is the command for our example. Notice the name of the table as created with the suffix _v1.
+Here is the command for our example. Notice the name of the table as created with the suffix \_v1.
+
 ```bash
 ./bqetl query schedule org_mozilla_mozregression_derived.mozregression_aggregates_v1 --dag bqetl_internal_tooling --task-name mozregression_aggregates__v1
 ```
@@ -252,6 +258,7 @@ Once the PR has been approved, deploy the schema to bqetl using this command:
 ```
 
 For our example:
+
 ```bash
 ./bqetl query schema deploy org_mozilla_mozregression_derived.mozregression_aggregates_v1
 ```
@@ -264,21 +271,22 @@ For our example:
 
 1. Create a backfill schedule entry to (re)-process data in your table:
 
-  ```bash
-  bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
-  ```
+```bash
+bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
+```
 
-  - If the table's metadata has the label `shredder_mitigation: true`, use the process to run a [backfill with shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation#running-a-managed-backfill-with-shredder-mitigation):
-    - Bump the version of the query.
-    - Make the necessary updates to the new version of the query and schema.
-    - Create the managed backfill for the new version of the query, including the parameter `--shredder_mitigation`.
-      ```bash
-      bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
-      ```
+- If the table's metadata has the label `shredder_mitigation: true`, use the process to run a [backfill with shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation#running-a-managed-backfill-with-shredder-mitigation):
+  - Bump the version of the query.
+  - Make the necessary updates to the new version of the query and schema.
+  - Create the managed backfill for the new version of the query, including the parameter `--shredder_mitigation`.
+    ```bash
+    bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD> --shredder_mitigation
+    ```
 
 2. Fill out the missing details:
-  - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.
-  - Reason: Why are you backfilling this table?
+
+- Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.
+- Reason: Why are you backfilling this table?
 
 3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.
 
@@ -287,17 +295,18 @@ For our example:
 ### Completing the backfill:
 
 1. Validate that the backfill data looks like what you expect (calculate important metrics, look for nulls, etc.)
+
    - Note that backfill tables have a default of expiry of 30 days, so validation should be completed within 30 days of the start of the backfill
 
 2. If the data is valid, open a Pull Request, setting the backfill status to Complete, see [this example](https://github.com/mozilla/bigquery-etl/pull/5352). Once merged, you should receive a notification in around an hour that swapping has started. Current production data will be backed up and the staging backfill data will be swapped into production.
 
 3. You will be notified when swapping is complete.
 
-
 **Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.
 
 ## Completing the Pull Request
 
 At this point, the table exists in Bigquery so you are able to:
+
 - [Find and re-run the CI](https://app.circleci.com/pipelines/github/mozilla/bigquery-etl?) of your PR and make sure that all tests pass
 - Merge your PR.

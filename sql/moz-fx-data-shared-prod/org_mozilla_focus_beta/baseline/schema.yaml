@@ -488,6 +488,24 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: startup_profile_selection_reason
+      type: STRING
+      mode: NULLABLE
+      description: "How the profile was selected during startup. One of the following\
+        \ reasons:\n  unknown:\n    Generally should not happen, set as a default\
+        \ in case no other reason\n    occured.\n  profile-manager:\n    The profile\
+        \ was selected by the profile manager.\n  profile-selector:\n    The profile\
+        \ was selected by the profile selector window.\n  profile-reset:\n    The\
+        \ profile was selected for reset, normally this would mean a restart.\n  restart:\n\
+        \    The user restarted the application, the same profile as previous will\n\
+        \    be used.\n  argument-profile:\n    The profile was selected by the --profile\
+        \ command line argument.\n  argument-p:\n    The profile was selected by the\
+        \ -p command line argument.\n  firstrun-claimed-default:\n    A first run\
+        \ of a dedicated profiles build chose the old default\n    profile to be the\
+        \ default for this install.\n  firstrun-skipped-default:\n    A first run\
+        \ of a dedicated profiles build skipped over the old default\n    profile\
+        \ and created a new profile.\n  restart-claimed-default:\n    A first run\
+        \ of a dedicate"
   - name: timespan
     type: RECORD
     mode: NULLABLE

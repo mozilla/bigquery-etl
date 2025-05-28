@@ -32,7 +32,8 @@ SELECT
     STRUCT(
       metrics.string.glean_baseline_locale,
       metrics.string.browser_default_search_engine,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.startup_profile_selection_reason
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`

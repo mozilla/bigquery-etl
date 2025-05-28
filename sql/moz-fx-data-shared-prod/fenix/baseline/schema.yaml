@@ -349,6 +349,9 @@ fields:
     - name: first_session_install_source
       type: STRING
       mode: NULLABLE
+    - name: startup_profile_selection_reason
+      type: STRING
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

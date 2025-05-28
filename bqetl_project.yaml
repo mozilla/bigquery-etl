@@ -355,6 +355,13 @@ generate:
       manual_refresh:  # apps to use manual materialized view refreshes for on-demand billing
       - firefox_desktop
       - firefox_desktop_background_update
+    event_flow_monitoring:
+      include_apps:
+      - accounts_backend
+      - accounts_frontend
+      - focus_android
+      - fenix
+      - firefox_desktop
     bigconfig:
       skip_apps:
       - firefox_echo_show

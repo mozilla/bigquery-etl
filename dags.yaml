@@ -1361,6 +1361,23 @@ bqetl_google_analytics_derived_ga4:
   tags:
     - impact/tier_2
 
+bqetl_ga4_firefoxdotcom:
+  schedule_interval: 0 14 * * *
+  description: Daily aggregations of data exported from Google Analytics 4
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-05-27"
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
+
 bqetl_glam_refresh_aggregates:
   default_args:
     depends_on_past: false

@@ -1,0 +1,40 @@
+friendly_name: New profile clients - {{ friendly_name }}
+description: |-
+  New profile clients ({{ friendly_name }}) metrics
+
+  Table grain: client_id, normalized_channel
+  Partitioned by: first_seen_date
+  Clustered by: normalized_channel, country
+
+  Notes:
+  {% if app_name in ['fenix', 'firefox_ios'] -%}
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
+  {%- else -%}
+  - 2025-01-18: `device_type` and `device_manufacturer` fields added
+  {%- endif %}
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  shredder_mitigation: false
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+      - normalized_channel
+      - country
+monitoring:
+  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+  collection: {{ bigeye_collection }}

@@ -1,5 +1,7 @@
 friendly_name: Firefox Android Clients
 description: |-
+  Dataset deprecated on: 2025-05-28 and replaced by `new_profile_clients_v1`.
+
   This table should be accessed through the user-facing view
   `fenix.firefox_android_clients`.
 
@@ -48,3 +50,4 @@ bigquery:
     - first_reported_country
     - distribution_id
 references: {}
+deprecated: true

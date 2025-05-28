@@ -4,6 +4,7 @@ import os
 from collections import namedtuple
 from pathlib import Path
 
+from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import (
     GleanTable,
     get_table_dir,
@@ -35,8 +36,13 @@ class EventFlowMonitoring(GleanTable):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:
             return
+        
+        # Include only selected apps to avoid too complex query
+        include_apps = ConfigLoader.get(
+            "generate", "glean_usage", "event_flow_monitoring", "include_apps", fallback=[]
+        )
 
-        apps = [app[0] for app in apps]
+        apps = [app[0] for app in apps if app[0]["app_name"] in include_apps]
 
         render_kwargs = dict(
             project_id=project_id,

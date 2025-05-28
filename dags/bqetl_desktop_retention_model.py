@@ -175,6 +175,23 @@ with DAG(
         retries=0,
     )
 
+    firefox_desktop_derived__desktop_retention_aggregates__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__desktop_retention_aggregates__v1",
+        destination_table='desktop_retention_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -27), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["metric_date:DATE:{{macros.ds_add(ds, -27)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
     firefox_desktop_derived__desktop_retention_clients__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__desktop_retention_clients__v1",
         destination_table="desktop_retention_clients_v1",
@@ -240,6 +257,10 @@ with DAG(
 
     checks__fail_firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(
         firefox_desktop_derived__desktop_retention_clients__v1
+    )
+
+    firefox_desktop_derived__desktop_retention_aggregates__v1.set_upstream(
+        checks__fail_firefox_desktop_derived__desktop_retention_clients__v1
     )
 
     firefox_desktop_derived__desktop_retention_clients__v1.set_upstream(

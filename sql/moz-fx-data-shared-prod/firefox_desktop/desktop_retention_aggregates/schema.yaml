@@ -1,0 +1,97 @@
+fields:
+- name: metric_date
+  type: DATE
+  mode: NULLABLE
+  description: Metric Date
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: First Seen Date
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Channel
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: App Version
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Campaign
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Content
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+  description: Attribution DL Source
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Medium
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+  description: Attribution UA
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Experiment
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Variation
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: Distribution ID
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Normalized OS Version
+- name: is_desktop
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI
+- name: ping_sent_metric_date
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Pings Sent on Metric Date
+- name: ping_sent_week_4
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Pings Sent on Week 4
+- name: active_metric_date
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Clients Active on Metric Date
+- name: retained_week_4
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Clients Retained on Week 4
+- name: retained_week_4_new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of New Profiles Retained on Week 4
+- name: new_profiles_metric_date
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of New Profiles on Metric Date
+- name: repeat_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of Repeat Profiles

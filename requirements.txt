@@ -1905,9 +1905,9 @@ rich==12.6.0 \
     # via
     #   rich-click
     #   typer
-rich-click==1.8.8 \
-    --hash=sha256:205aabd5a98e64ab2c105dee9e368be27480ba004c7dfa2accd0ed44f9f1550e \
-    --hash=sha256:547c618dea916620af05d4a6456da797fbde904c97901f44d2f32f89d85d6c84
+rich-click==1.8.9 \
+    --hash=sha256:c3fa81ed8a671a10de65a9e20abf642cfdac6fdb882db1ef465ee33919fbcfe2 \
+    --hash=sha256:fd98c0ab9ddc1cf9c0b7463f68daf28b4d0033a74214ceb02f761b3ff2af3136
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \

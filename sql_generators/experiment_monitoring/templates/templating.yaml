@@ -59,9 +59,9 @@ search_metrics:
     search_with_ads_count: payload.processes.parent.keyed_scalars.browser_search_withads_urlbar
     search_count: payload.keyed_histograms.search_counts
   firefox_desktop:
-    ad_clicks_count: metrics.labeled_counter.browser_search_ad_clicks
-    search_with_ads_count: metrics.labeled_counter.browser_search_with_ads
-    search_count: metrics.labeled_counter.metrics_search_count
+    ad_clicks_count: metrics.labeled_counter.browser_search_adclicks_urlbar
+    search_with_ads_count: metrics.labeled_counter.browser_search_withads_urlbar
+    search_count: metrics.labeled_counter.sap_deprecated_counts
   org_mozilla_ios_firefox:
     ad_clicks_count: null
     search_with_ads_count: null

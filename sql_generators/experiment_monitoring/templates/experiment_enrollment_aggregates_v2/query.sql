@@ -27,11 +27,11 @@ WITH
       event_name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
-      IF(mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109 OR normalized_app_name != 'firefox_desktop', TRUE, FALSE) AS validation_errors_valid
+      IF(app_version_major >= 109 OR normalized_app_name != 'firefox_desktop', TRUE, FALSE) AS validation_errors_valid
     FROM
       `moz-fx-data-shared-prod.{{ app_dataset }}.events_stream`
     WHERE
-      event.category = 'nimbus_events' AND
+      event_category = 'nimbus_events' AND
       DATE(submission_timestamp) = @submission_date
   ),
   {% endif %}

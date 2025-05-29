@@ -1,5 +1,5 @@
 friendly_name: Experiment Enrollment Aggregates
-description: Experiment enrollment aggregates, partitioned by day. (glean-only)
+description: Experiment enrollment aggregates, partitioned by day. (glean only)
 owners:
 - ascholtz@mozilla.com
 - mwilliams@mozilla.com

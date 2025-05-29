@@ -80,6 +80,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefoxdotcom_derived__wwww_site_metrics_summary__v1 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__wwww_site_metrics_summary__v1",
+        destination_table="wwww_site_metrics_summary_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefoxdotcom_derived__www_site_downloads__v1.set_upstream(
+        wait_for_firefoxdotcom_events_table
+    )
+
+    firefoxdotcom_derived__wwww_site_metrics_summary__v1.set_upstream(
         wait_for_firefoxdotcom_events_table
     )

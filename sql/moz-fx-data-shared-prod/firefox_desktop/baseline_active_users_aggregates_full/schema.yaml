@@ -39,6 +39,12 @@ fields:
   description: 'Country reported by the client.
 
     '
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: 'City reported by the client.
+
+    '
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -46,10 +52,22 @@ fields:
     and regional settings.
 
     '
+- name: os
+  type: STRING
+  mode: NULLABLE
+  description: 'Operating system reported by the client.
+
+    '
 - name: os_grouped
   type: STRING
   mode: NULLABLE
   description: 'Operating system group reported by the client.
+
+    '
+- name: os_version
+  type: STRING
+  mode: NULLABLE
+  description: 'OS version reported by the client.
 
     '
 - name: os_version_major
@@ -89,6 +107,19 @@ fields:
   mode: NULLABLE
   description: 'The major version of the application version (e.g. if 123.0, then
     123)
+
+    '
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'The minor version of the application version (e.g. if 123.0, then
+    0)
+
+    '
+- name: app_version_patch_revision
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'The patch revision number of the app version
 
     '
 - name: app_version_is_major_release
@@ -131,9 +162,6 @@ fields:
     search fox.
 
     '
-- name: windows_version
-  type: STRING
-  mode: NULLABLE
 - name: daily_users
   type: INTEGER
   mode: NULLABLE
@@ -176,3 +204,6 @@ fields:
     (based on activity).
 
     '
+- name: windows_version
+  type: STRING
+  mode: NULLABLE

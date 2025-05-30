@@ -157,6 +157,9 @@ fields:
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE
+- name: paid_vs_organic_via_gclid_attribution
+  type: STRING
+  mode: NULLABLE
 - name: is_activated
   type: BOOLEAN
   mode: NULLABLE

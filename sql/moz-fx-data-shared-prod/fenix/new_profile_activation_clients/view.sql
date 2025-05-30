@@ -5,6 +5,9 @@ AS
 SELECT
   *,
   `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile`(adjust_network) AS paid_vs_organic,
+  `moz-fx-data-shared-prod.udf.organic_vs_paid_mobile_gclid_attribution`(
+    play_store_attribution_install_referrer_response
+  ) AS paid_vs_organic_via_gclid_attribution,
   -- Checking if the client was seen more than once in the first 2 - 7 days
   -- and if they had more than 0 searches within the time window (3 days).
   IF(num_days_seen_day_2_7 > 1 AND search_count > 0, TRUE, FALSE) AS is_activated,

@@ -13,12 +13,8 @@ WITH all_events AS (
     events,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
-    IF(
-      mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 109
-      OR normalized_app_name != 'firefox_desktop',
-      TRUE,
-      FALSE
-    ) AS validation_errors_valid
+    CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+).*") AS NUMERIC) >= 109
+    OR normalized_app_name != 'firefox_desktop' AS validation_errors_valid
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_focus_live.events_v1`
 ),

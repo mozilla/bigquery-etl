@@ -16,11 +16,9 @@ WITH experiment_events AS (
     IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
-    IF(
-      mozfun.norm.extract_version(application.version, 'major') >= 109,
-      TRUE,
-      FALSE
-    ) AS validation_errors_valid
+    CAST(
+      REGEXP_EXTRACT(application.version, r"^([0-9]+).*") AS NUMERIC
+    ) >= 109 AS validation_errors_valid
   FROM
     `moz-fx-data-shared-prod.telemetry_live.event_v4`
   CROSS JOIN

@@ -11,7 +11,17 @@ labels:
   owner2: mwilliams
 scheduling:
   dag_name: bqetl_experiments_daily
-bigquery: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: window_start
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - experiment
+    - branch
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

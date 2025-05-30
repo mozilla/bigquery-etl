@@ -49,3 +49,4 @@ repos:
     entry: ./bqetl
     args: [format, --check]
     types: [sql]
+    exclude: sql_generators/.+\.sql$

@@ -2,15 +2,33 @@ queries:
   experiments_daily_active_clients_v1:
     per_app: false
     destination_dataset: telemetry_derived
+    skip_applications:
+      - "firefox_desktop"
   experiment_enrollment_aggregates_live_v1:
     per_app: false
     destination_dataset: telemetry_derived
+    skip_applications:
+      - "firefox_desktop"
+  experiment_enrollment_aggregates_live_v2:
+    per_app: false
+    destination_dataset: telemetry_derived
+    skip_applications:
+      - "telemetry"
   experiment_search_aggregates_v1:
     per_app: false
     destination_dataset: telemetry_derived
+    skip_applications:
+      - "firefox_desktop"
   experiment_enrollment_aggregates_v1:
     per_app: false
     destination_dataset: telemetry_derived
+    skip_applications:
+      - "firefox_desktop"
+  experiment_enrollment_aggregates_v2:
+    per_app: false
+    destination_dataset: telemetry_derived
+    skip_applications:
+      - "telemetry"
   experiment_events_live_v1:
     per_app: true
     start_date: "2025-03-30"
@@ -40,6 +58,10 @@ search_metrics:
     ad_clicks_count: payload.processes.parent.keyed_scalars.browser_search_adclicks_urlbar
     search_with_ads_count: payload.processes.parent.keyed_scalars.browser_search_withads_urlbar
     search_count: payload.keyed_histograms.search_counts
+  firefox_desktop:
+    ad_clicks_count: metrics.labeled_counter.browser_search_adclicks_urlbar
+    search_with_ads_count: metrics.labeled_counter.browser_search_withads_urlbar
+    search_count: metrics.labeled_counter.sap_deprecated_counts
   org_mozilla_ios_firefox:
     ad_clicks_count: null
     search_with_ads_count: null
@@ -104,6 +126,7 @@ applications:
   - org_mozilla_ios_firefoxbeta
   - org_mozilla_ios_fennec
   - telemetry
+  - firefox_desktop
   - org_mozilla_klar
   - org_mozilla_focus
   - org_mozilla_focus_nightly

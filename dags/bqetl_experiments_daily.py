@@ -211,6 +211,84 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_org_mozilla_focus_beta_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_focus_beta_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.org_mozilla_focus_beta_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_focus_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_focus_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.org_mozilla_focus_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_focus_nightly_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_focus_nightly_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_android.org_mozilla_focus_nightly_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_focus_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_focus_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="focus_ios.org_mozilla_ios_focus_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_klar_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_klar_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_ios.org_mozilla_ios_klar_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_klar_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_klar_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="klar_android.org_mozilla_klar_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
@@ -374,6 +452,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__experiment_enrollment_aggregates__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__experiment_enrollment_aggregates__v2",
+        destination_table="experiment_enrollment_aggregates_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "mwilliams@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     telemetry_derived__experiment_search_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__experiment_search_aggregates__v1",
         destination_table="experiment_search_aggregates_v1",
@@ -462,6 +555,62 @@ with DAG(
 
     telemetry_derived__experiment_enrollment_aggregates__v1.set_upstream(
         wait_for_event_events
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_firefox_desktop_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_fenix_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_firefox_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_focus_beta_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_focus_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_focus_nightly_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_ios_fennec_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_ios_firefox_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_ios_focus_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_ios_klar_derived__events_stream__v1
+    )
+
+    telemetry_derived__experiment_enrollment_aggregates__v2.set_upstream(
+        wait_for_org_mozilla_klar_derived__events_stream__v1
     )
 
     telemetry_derived__experiment_search_aggregates__v1.set_upstream(

@@ -69,6 +69,23 @@ telemetry AS (
     branch,
     crash_process_type
 ),
+firefox_desktop AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    metrics.string.crash_process_type AS crash_process_type,
+    COUNT(*) AS crash_count,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_stable.crash_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch,
+    crash_process_type
+),
 org_mozilla_klar AS (
   SELECT
     submission_timestamp,
@@ -157,6 +174,11 @@ all_events AS (
     *
   FROM
     telemetry
+  UNION ALL
+  SELECT
+    *
+  FROM
+    firefox_desktop
   UNION ALL
   SELECT
     *

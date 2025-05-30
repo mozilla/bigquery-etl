@@ -41,6 +41,39 @@ WITH telemetry AS (
     experiment,
     branch
 ),
+firefox_desktop AS (
+  SELECT
+    submission_timestamp,
+    experiment.key AS experiment,
+    experiment.value.branch AS branch,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_adclicks_urlbar) AS value
+      )
+    ) AS ad_clicks_count,
+    SUM(
+      (
+        SELECT
+          SUM(value.value)
+        FROM
+          UNNEST(metrics.labeled_counter.browser_search_withads_urlbar) AS value
+      )
+    ) AS search_with_ads_count,
+    SUM(
+      (SELECT SUM(value.value) FROM UNNEST(metrics.labeled_counter.sap_deprecated_counts) AS value)
+    ) AS search_count,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
+  LEFT JOIN
+    UNNEST(ping_info.experiments) AS experiment
+  GROUP BY
+    submission_timestamp,
+    experiment,
+    branch
+),
 org_mozilla_ios_firefox AS (
   SELECT
     submission_timestamp,
@@ -326,6 +359,11 @@ all_events AS (
     *
   FROM
     telemetry
+  UNION ALL
+  SELECT
+    *
+  FROM
+    firefox_desktop
   UNION ALL
   SELECT
     *

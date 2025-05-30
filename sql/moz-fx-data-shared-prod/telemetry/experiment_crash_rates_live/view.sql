@@ -58,6 +58,18 @@ SELECT
   crash_process_type,
   crash_count
 FROM
+  `moz-fx-data-shared-prod.firefox_desktop_derived.experiment_crash_events_live_v1`
+WHERE
+  window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))
+UNION ALL
+SELECT
+  experiment,
+  branch,
+  window_start,
+  window_end,
+  crash_process_type,
+  crash_count
+FROM
   `moz-fx-data-shared-prod.org_mozilla_klar_derived.experiment_crash_events_live_v1`
 WHERE
   window_start > TIMESTAMP(DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY))

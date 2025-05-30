@@ -1,27 +1,6 @@
 -- Generated via ./bqetl generate experiment_monitoring
 WITH
 {% for app_dataset in applications %}
-  {% if app_dataset == "telemetry" %}
-  {{ app_dataset }} AS (
-    SELECT
-      submission_timestamp,
-      unnested_experiments.key AS experiment,
-      unnested_experiments.value AS branch,
-      payload.process_type AS crash_process_type,
-      COUNT(*) AS crash_count
-    FROM
-      `moz-fx-data-shared-prod.telemetry_stable.crash_v4`
-    LEFT JOIN
-      UNNEST(
-        ARRAY(SELECT AS STRUCT key, value.branch AS value FROM UNNEST(environment.experiments))
-      ) AS unnested_experiments
-    GROUP BY
-      submission_timestamp,
-      experiment,
-      branch,
-      crash_process_type
-  ),
-  {% else %}
   {{ app_dataset }} AS (
     SELECT
       submission_timestamp,
@@ -39,7 +18,6 @@ WITH
       branch,
       crash_process_type
   ),
-  {% endif %}
 {% endfor %}
 all_events AS (
   {% for app_dataset in applications %}

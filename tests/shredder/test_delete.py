@@ -191,7 +191,10 @@ def test_context_id_brace_normalization(mock_sql_table_id):
     ]
 
     target = DeleteTarget(table="dataset.table_v1", field="context_id")
-    source = DeleteSource(table="dataset.deletions_v1", field="payload.scalars.parent.deletion_request_context_id")
+    source = DeleteSource(
+        table="dataset.deletions_v1",
+        field="payload.scalars.parent.deletion_request_context_id",
+    )
 
     task = next(
         shredder_delete.delete_from_table(

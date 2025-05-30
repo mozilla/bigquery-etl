@@ -325,7 +325,10 @@ def delete_from_partition(
 
     def create_job(client) -> bigquery.QueryJob:
         def normalized_expr(expr: str) -> str:
-            if expr == "context_id" or expr == "payload.scalars.parent.deletion_request_context_id":
+            if (
+                expr == "context_id"
+                or expr == "payload.scalars.parent.deletion_request_context_id"
+            ):
                 return f"REPLACE(REPLACE({expr}, '{{', ''), '}}', '')"
             return expr
 

@@ -1,7 +1,4 @@
 fields:
-- name: normalized_app_id
-  type: STRING
-  mode: NULLABLE
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -38,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -77,14 +78,84 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
+  - name: windows_build_number
+    type: INTEGER
+    mode: NULLABLE
+    description: The optional Windows build number, reported by Windows (e.g. 22000)
+      and not set for other platforms
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+    description: An optional running counter of the number of sessions for a client.
+  - name: session_id
     type: STRING
     mode: NULLABLE
-    description: The date & time the application was built
+    description: An optional UUID uniquely identifying the client's current session.
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+      description: The attribution campaign (e.g. 'mozilla-org').
+    - name: content
+      type: STRING
+      mode: NULLABLE
+      description: The attribution content (e.g. 'firefoxview').
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+      description: The attribution medium (e.g. 'organic' for a search engine).
+    - name: source
+      type: STRING
+      mode: NULLABLE
+      description: The attribution source (e.g. 'google-play').
+    - name: term
+      type: STRING
+      mode: NULLABLE
+      description: The attribution term (e.g. 'browser with developer tools for android').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The distribution name (e.g. 'MozillaOnline').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE
   description: The document ID specified in the URI when the client sent this message
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -130,6 +201,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -142,14 +221,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -199,6 +270,122 @@ fields:
       type: STRING
       mode: NULLABLE
     description: Parsed components of the client's user agent string
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric was set with an invalid label.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric was set a value that overflowed.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a timing metric was used incorrectly.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric was set to an invalid value.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
+  - name: uuid
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: legacy_telemetry_client_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The client_id according to Telemetry.
+
+        Might not always have a value due to being too early for it to have
+
+        loaded.
+
+        Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0`
+
+        in pings near when the data upload pref is disabled (if Telemetry gets
+
+        to go first), or between when a client_id has been removed and when it
+
+        has been regenerated.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+    - name: legacy_telemetry_profile_group_id
+      type: STRING
+      mode: NULLABLE
+      description: 'The profile_group_id according to Telemetry.
+
+        Might not always have a value due to being too early for it to have
+
+        loaded.
+
+        Does not need to be sent in the Glean "deletion-request" ping.
+
+        '
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -252,13 +439,13 @@ fields:
   - name: ping_type
     type: STRING
     mode: NULLABLE
+  - name: reason
+    type: STRING
+    mode: NULLABLE
   - name: seq
     type: INTEGER
     mode: NULLABLE
   - name: start_time
-    type: STRING
-    mode: NULLABLE
-  - name: reason
     type: STRING
     mode: NULLABLE
   - name: parsed_start_time
@@ -288,25 +475,3 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
-- name: event_id
-  type: STRING
-  mode: NULLABLE
-- name: event_timestamp
-  type: INTEGER
-  mode: NULLABLE
-- name: event_category
-  type: STRING
-  mode: NULLABLE
-- name: event_name
-  type: STRING
-  mode: NULLABLE
-- name: event_extra
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE

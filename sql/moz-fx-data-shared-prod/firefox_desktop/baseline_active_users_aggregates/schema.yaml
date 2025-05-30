@@ -204,3 +204,6 @@ fields:
     (based on activity).
 
     '
+- name: windows_version
+  type: STRING
+  mode: NULLABLE

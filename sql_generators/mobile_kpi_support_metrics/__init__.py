@@ -29,6 +29,7 @@ TEMPLATES = (
     ("AGGREGATE", "engagement.view.sql"),
     ("CLIENT", "attribution_clients.view.sql"),
     ("CLIENT", "attribution_clients.query.sql"),
+    ("CLIENT", "new_profile_clients.query.sql"),
     ("CLIENT", "new_profile_clients.view.sql"),
     ("AGGREGATE", "new_profiles.view.sql"),
     ("AGGREGATE", "new_profiles.query.sql"),

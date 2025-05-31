@@ -244,6 +244,9 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_derived.baseline_clients_first_seen_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(
+        table="firefox_desktop_derived.baseline_clients_daily_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
         table="ltv_derived.firefox_desktop_new_profile_ltv_v1"
     ): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.block_autoplay_v1"): DESKTOP_SRC,
@@ -291,6 +294,10 @@ DELETE_TARGETS: DeleteIndex = {
         *FOCUS_ADDITIONAL_DELETIONS,
         *LEGACY_MOBILE_SOURCES,
     ),
+    DeleteTarget(
+        table="firefox_desktop_stable.baseline_v1",
+        field=(GLEAN_CLIENT_ID),
+    ): DESKTOP_GLEAN_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_active_clients_v1",
         field=(CLIENT_ID,) * 15,

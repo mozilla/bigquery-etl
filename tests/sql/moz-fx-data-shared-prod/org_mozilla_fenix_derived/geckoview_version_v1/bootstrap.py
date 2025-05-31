@@ -1,4 +1,4 @@
-"""Code for setting up the the tests."""
+"""Code for setting up the tests."""
 
 import math
 import shutil

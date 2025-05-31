@@ -324,18 +324,26 @@ def delete_from_partition(
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
 
     def create_job(client) -> bigquery.QueryJob:
+        def normalized_expr(expr: str) -> str:
+            if (
+                expr == "context_id"
+                or expr == "payload.scalars.parent.deletion_request_context_id"
+            ):
+                return f"REPLACE(REPLACE({expr}, '{{', ''), '}}', '')"
+            return expr
+
         if use_dml:
             field_condition = " OR ".join(
                 f"""
-                {field} IN (
+                {normalized_expr(field)} IN (
                   SELECT
-                    {source.field}
+                    {normalized_expr(source.field)}
                   FROM
                     `{sql_table_id(source)}`
                   WHERE
+                    {" AND ".join((source_condition, *source.conditions))}
+                )
                 """
-                + " AND ".join((source_condition, *source.conditions))
-                + ")"
                 for field, source in zip(target.fields, sources)
             )
 
@@ -362,7 +370,7 @@ def delete_from_partition(
                 LEFT JOIN
                   (
                     SELECT
-                      {source.field} AS _source_{index}
+                      {normalized_expr(source.field)} AS _source_{index}
                     FROM
                       `{sql_table_id(source)}`
                     WHERE
@@ -371,7 +379,7 @@ def delete_from_partition(
                     + (f" AND sample_id = {sample_id}" if sample_id is not None else "")
                     + f"""
                   )
-                  ON {field} = _source_{index}
+                  ON {normalized_expr(field)} = _source_{index}
                 """
                 )
                 for index, (field, source) in enumerate(zip(target.fields, sources))

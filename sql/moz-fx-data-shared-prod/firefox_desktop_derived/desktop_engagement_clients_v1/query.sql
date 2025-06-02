@@ -47,7 +47,7 @@ LEFT JOIN
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.deletion_request_v1`
     WHERE
-      DATE(submission_timestamp) <= current_date
+      DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 17 WEEK)
   ) AS deletion_requests
   ON cls.client_id = deletion_requests.client_id
 WHERE

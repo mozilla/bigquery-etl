@@ -1027,6 +1027,14 @@ fields:
       description: 'True when the browser was started in kiosk mode.
 
         '
+    - name: extensions_button_prefers_hidden_button
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records whether the user prefers the Extensions Button to be hidden.
+        Corresponds to the inverse value of the `exceptions.unifiedExtensions.button.always_visible`
+        pref.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11150,6 +11158,33 @@ fields:
       description: 'Whether the request is crossing to a more private addresspace
 
         '
+    - name: extensions_button_temporarily_unhidden
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts how often the hidden Extensions Button is temporarily shown.
+        There are multiple possible triggers for showing the extensions button, only
+        the first that would trigger the transition from hidden to shown is going
+        to be counted. For example, if the button is shown because the "attention"
+        dot is shown, and a permission prompt is shown, then we only count the trigger
+        for the attention dot, not the permission prompt.
+
+        customize is when the user entered Customize Mode, which causes the Extensions
+        Button to show unconditionally until the user exits the mode.
+
+        addon_install_doorhanger covers notifications related to add-on installations,
+        including blocked installations, add-on download progress, and failed installations.
+        Permission prompts are NOT part of this, but covered by extension_permission_prompt.
+        A typical installation flow triggers both addon_install_doorhanger and extension_permission_prompt.
+
+        extension_controlled_setting is when a notification is anchored to the Extensions
+        Button that notifies the user'
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

@@ -527,7 +527,7 @@ DELETE_TARGETS: DeleteIndex = {
     ),
     DeleteTarget(
         table="firefox_desktop_stable.quick_suggest_v1",
-        field=QUICK_SUGGEST_CONTEXT_ID,
+        field=(QUICK_SUGGEST_CONTEXT_ID, QUICK_SUGGEST_CONTEXT_ID),
     ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC),
     # client association ping
     DeleteTarget(

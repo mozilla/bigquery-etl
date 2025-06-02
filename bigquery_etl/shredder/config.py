@@ -119,6 +119,13 @@ IMPRESSION_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_impression_id",
 )
+
+CONTEXT_ID_DELETION_SRC = DeleteSource(
+    table="firefox_desktop_stable.context_id_deletion_request_v1",
+    field="metrics.uuid.contextual_services_context_id",
+)
+
+# Legacy context_id deletion sources
 CONTEXTUAL_SERVICES_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4",
     field="payload.scalars.parent.deletion_request_context_id",
@@ -127,6 +134,7 @@ QUICK_SUGGEST_SRC = DeleteSource(
     table="firefox_desktop_stable.quick_suggest_deletion_request_v1",
     field=QUICK_SUGGEST_CONTEXT_ID,
 )
+
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )
@@ -181,6 +189,7 @@ USER_CHARACTERISTICS_SRC = DeleteSource(
     table="firefox_desktop_stable.deletion_request_v1",
     field=USER_CHARACTERISTICS_ID,
 )
+
 SOURCES = (
     [
         DESKTOP_SRC,
@@ -201,7 +210,7 @@ glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
-context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
+context_id_target = partial(DeleteTarget, field=(CONTEXT_ID, CONTEXT_ID))
 
 DELETE_TARGETS: DeleteIndex = {
     # Other
@@ -500,22 +509,26 @@ DELETE_TARGETS: DeleteIndex = {
     user_id_target(
         table="firefox_accounts_derived.fxa_users_services_devices_last_seen_v1"
     ): FXA_SRC,
-    context_id_target(
-        table="contextual_services_stable.topsites_click_v1"
-    ): CONTEXTUAL_SERVICES_SRC,
-    context_id_target(
-        table="contextual_services_stable.topsites_impression_v1"
-    ): CONTEXTUAL_SERVICES_SRC,
-    context_id_target(
-        table="contextual_services_stable.quicksuggest_click_v1"
-    ): CONTEXTUAL_SERVICES_SRC,
-    context_id_target(
-        table="contextual_services_stable.quicksuggest_impression_v1"
-    ): CONTEXTUAL_SERVICES_SRC,
+    context_id_target(table="contextual_services_stable.topsites_click_v1"): (
+        CONTEXT_ID_DELETION_SRC,
+        CONTEXTUAL_SERVICES_SRC,
+    ),
+    context_id_target(table="contextual_services_stable.topsites_impression_v1"): (
+        CONTEXT_ID_DELETION_SRC,
+        CONTEXTUAL_SERVICES_SRC,
+    ),
+    context_id_target(table="contextual_services_stable.quicksuggest_click_v1"): (
+        CONTEXT_ID_DELETION_SRC,
+        CONTEXTUAL_SERVICES_SRC,
+    ),
+    context_id_target(table="contextual_services_stable.quicksuggest_impression_v1"): (
+        CONTEXT_ID_DELETION_SRC,
+        CONTEXTUAL_SERVICES_SRC,
+    ),
     DeleteTarget(
         table="firefox_desktop_stable.quick_suggest_v1",
-        field=QUICK_SUGGEST_CONTEXT_ID,
-    ): QUICK_SUGGEST_SRC,
+        field=(QUICK_SUGGEST_CONTEXT_ID, QUICK_SUGGEST_CONTEXT_ID),
+    ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC),
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",

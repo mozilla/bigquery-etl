@@ -165,3 +165,58 @@ def test_delete_from_table_sampling(mock_list_partitions):
             if sampling_enabled
             else "create_job"
         )
+
+
+@patch("bigquery_etl.shredder.delete.sql_table_id", return_value="dataset.table_v1")
+def test_context_id_brace_normalization(mock_sql_table_id):
+    """
+    Ensure context_id fields are normalized in generated SQL to accept and
+    delete braced and unbraced forms.
+    """
+    mock_table = Mock()
+    mock_table.num_bytes = 1000
+    mock_table.schema = []
+    mock_table.time_partitioning = None
+
+    mock_range = Mock()
+    mock_range.interval = 1
+    mock_range_partitioning = Mock()
+    mock_range_partitioning.range_ = mock_range
+    mock_table.range_partitioning = mock_range_partitioning
+
+    mock_client = Mock()
+    mock_client.get_table.return_value = mock_table
+    mock_client.query.return_value.result.return_value = [
+        {"partition_id": "20240101"},
+    ]
+
+    target = DeleteTarget(table="dataset.table_v1", field="context_id")
+    source = DeleteSource(
+        table="dataset.deletions_v1",
+        field="payload.scalars.parent.deletion_request_context_id",
+    )
+
+    task = next(
+        shredder_delete.delete_from_table(
+            client=mock_client,
+            target=target,
+            sources=(source,),
+            dry_run=True,
+            use_dml=True,
+            source_condition="DATE(submission_timestamp) < '2025-05-29'",
+            start_date="2025-05-01",
+            end_date="2025-05-29",
+            max_single_dml_bytes=1,
+            partition_limit=None,
+            sampling_parallelism=10,
+            use_sampling=False,
+            temp_dataset="project.tmp",
+            priority="INTERACTIVE",
+        )
+    )
+
+    task.func.keywords["create_job"](mock_client)
+    sql = mock_client.query.call_args[0][0]
+
+    assert "REPLACE(REPLACE(context_id" in sql
+    assert "REPLACE(REPLACE(payload.scalars.parent.deletion_request_context_id" in sql

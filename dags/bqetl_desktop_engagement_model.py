@@ -104,6 +104,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
+        external_dag_id="copy_deduplicate",
+        external_task_id="copy_deduplicate_all",
+        execution_delta=datetime.timedelta(seconds=39600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
@@ -209,6 +222,10 @@ with DAG(
 
     firefox_desktop_derived__desktop_engagement_clients__v1.set_upstream(
         wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    firefox_desktop_derived__desktop_engagement_clients__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     telemetry_derived__desktop_engagement__v1.set_upstream(

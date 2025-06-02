@@ -40,5 +40,16 @@ LEFT JOIN
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users` aud
   ON cls.client_id = aud.client_id
   AND cls.submission_date = aud.submission_date
+LEFT JOIN
+  (
+    SELECT DISTINCT
+      client_info.client_id AS client_id
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop_stable.deletion_request_v1`
+    WHERE
+      DATE(submission_timestamp) >= DATE_SUB(@submission_date, INTERVAL 17 WEEK)
+  ) AS deletion_requests
+  ON cls.client_id = deletion_requests.client_id
 WHERE
   cls.submission_date = @submission_date
+  AND deletion_requests.client_id IS NULL

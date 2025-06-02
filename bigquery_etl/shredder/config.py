@@ -210,7 +210,7 @@ glean_target = partial(DeleteTarget, field=GLEAN_CLIENT_ID)
 impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
-context_id_target = partial(DeleteTarget, field=CONTEXT_ID)
+context_id_target = partial(DeleteTarget, field=(CONTEXT_ID, CONTEXT_ID))
 
 DELETE_TARGETS: DeleteIndex = {
     # Other

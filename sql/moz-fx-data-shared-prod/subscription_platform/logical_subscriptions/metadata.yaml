@@ -1,0 +1,4 @@
+friendly_name: Logical subscriptions
+description: |-
+  Logical subscriptions, which are a continuous active period for a particular provider subscription.
+require_column_descriptions: true

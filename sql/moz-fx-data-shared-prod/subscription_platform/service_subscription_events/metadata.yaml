@@ -2,5 +2,7 @@ friendly_name: Service subscriptions events
 description: |-
   Service subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
 
+  Data for the past 7 days is considered to still be in flux due to possible late-arriving data.
+
   Service subscriptions are a continuous active period for a specific service by a particular provider subscription.
 require_column_descriptions: true

@@ -26,3 +26,4 @@ bigquery:
     expiration_days: null
   clustering: null
 references: {}
+require_column_descriptions: true

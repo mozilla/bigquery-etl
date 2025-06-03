@@ -56,19 +56,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_mozilla_org_derived__ga_sessions__v2 = ExternalTaskSensor(
-        task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
-        external_dag_id="bqetl_google_analytics_derived_ga4",
-        external_task_id="mozilla_org_derived__ga_sessions__v2",
-        execution_delta=datetime.timedelta(seconds=7200),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_firefoxdotcom_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_firefoxdotcom_events_table",
         project_id="moz-fx-data-marketing-prod",
@@ -133,10 +120,6 @@ with DAG(
 
     checks__warn_firefoxdotcom_derived__ga_sessions__v1.set_upstream(
         firefoxdotcom_derived__ga_sessions__v1
-    )
-
-    firefoxdotcom_derived__ga_sessions__v1.set_upstream(
-        wait_for_mozilla_org_derived__ga_sessions__v2
     )
 
     firefoxdotcom_derived__ga_sessions__v1.set_upstream(

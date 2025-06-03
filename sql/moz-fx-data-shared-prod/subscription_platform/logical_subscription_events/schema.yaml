@@ -43,7 +43,11 @@ fields:
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE
-    description: Provider subscription ID.
+    description: 'Provider subscription ID.
+
+      For Stripe subscriptions this will be the subscription ID.
+
+      For Google subscriptions this will be the purchase token.'
   - name: provider_subscription_item_id
     type: STRING
     mode: NULLABLE
@@ -120,7 +124,7 @@ fields:
   - name: provider_product_id
     type: STRING
     mode: NULLABLE
-    description: 'Provider "product ID".
+    description: 'Provider product ID.
 
       For Stripe subscriptions this will be the product ID.
 
@@ -134,7 +138,7 @@ fields:
   - name: provider_plan_id
     type: STRING
     mode: NULLABLE
-    description: 'Provider "plan ID".
+    description: 'Provider plan ID.
 
       For Stripe subscriptions this will be the plan/price ID.
 
@@ -385,7 +389,11 @@ fields:
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE
-    description: Provider subscription ID.
+    description: 'Provider subscription ID.
+
+      For Stripe subscriptions this will be the subscription ID.
+
+      For Google subscriptions this will be the purchase token.'
   - name: provider_subscription_item_id
     type: STRING
     mode: NULLABLE
@@ -462,7 +470,7 @@ fields:
   - name: provider_product_id
     type: STRING
     mode: NULLABLE
-    description: 'Provider "product ID".
+    description: 'Provider product ID.
 
       For Stripe subscriptions this will be the product ID.
 
@@ -476,7 +484,7 @@ fields:
   - name: provider_plan_id
     type: STRING
     mode: NULLABLE
-    description: 'Provider "plan ID".
+    description: 'Provider plan ID.
 
       For Stripe subscriptions this will be the plan/price ID.
 

@@ -1,6 +1,9 @@
 friendly_name: Service subscriptions
 description: |-
   Service subscriptions, which are a continuous active period for a specific service by a particular provider subscription.
+
+  Some caveats:
+    * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
 owners: []
 labels: {}
 bigquery: null

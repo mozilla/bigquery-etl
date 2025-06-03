@@ -3,12 +3,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Service subscription ID.
-- name: service_id
-  type: STRING
-  mode: NULLABLE
-  description: |-
-    ID of the service provided by the subscription, as defined in the `services_v1` ETL.
+    Logical subscription ID.
 - name: provider
   type: STRING
   mode: NULLABLE
@@ -21,11 +16,6 @@ fields:
     Payment provider for the subscription.
     For Stripe subscriptions this will be "Stripe" or "PayPal".
     For Google subscriptions this will be "Google".
-- name: logical_subscription_id
-  type: STRING
-  mode: NULLABLE
-  description: |-
-    ID of the associated logical subscription this service subscription was derived from.
 - name: provider_subscription_id
   type: STRING
   mode: NULLABLE
@@ -65,18 +55,12 @@ fields:
   description: |-
     SHA256 hash of the `mozilla_account_id` string value (if any) as a hexadecimal string.
     This may be missing for some subscriptions.
-- name: customer_logical_subscription_number
+- name: customer_subscription_number
   type: INTEGER
   mode: NULLABLE
   description: |-
-    Number of the associated logical subscription in the overall sequence of all of the customer's logical subscriptions.
+    Number of this subscription in the overall sequence of all of the customer's logical subscriptions.
     For example, this should be `1` for their first logical subscription, `2` for their second logical subscription, etc.
-- name: customer_service_subscription_number
-  type: INTEGER
-  mode: NULLABLE
-  description: |-
-    Number of this service subscription in the overall sequence of all of the customer's service subscriptions to this service.
-    For example, this should be `1` for their first service subscription to this service, `2` for their second service subscription to this service, etc.
 - name: country_code
   type: STRING
   mode: NULLABLE
@@ -89,11 +73,11 @@ fields:
   description: |-
     Name of the country the subscription is in.
     This may be "Unknown" for some subscriptions.
-- name: service
+- name: services
   type: RECORD
-  mode: NULLABLE
+  mode: REPEATED
   description: |-
-    The service provided by the subscription, as defined in the `services_v1` ETL.
+    Array of one or more services provided by the subscription, as defined in the `services_v1` ETL.
   fields:
   - name: id
     type: STRING
@@ -110,27 +94,6 @@ fields:
     mode: NULLABLE
     description: |-
       Service tier.
-- name: other_services
-  type: RECORD
-  mode: REPEATED
-  description: |-
-    Array of zero or more other services provided by the subscription, as defined in the `services_v1` ETL.
-  fields:
-  - name: id
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Other service ID.
-  - name: name
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Other service name.
-  - name: tier
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Other service tier.
 - name: provider_product_id
   type: STRING
   mode: NULLABLE
@@ -207,11 +170,6 @@ fields:
   mode: NULLABLE
   description: |-
     The provider's status indicator for the subscription.
-- name: logical_subscription_started_at
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: |-
-    When the associated logical subscription started.
 - name: started_at
   type: TIMESTAMP
   mode: NULLABLE
@@ -310,7 +268,7 @@ fields:
   type: RECORD
   mode: NULLABLE
   description: |-
-    Unbounded first-touch attribution for the service subscription (if any).
+    Unbounded first-touch attribution for the subscription (if any).
     This will be null for Google subscriptions.
   fields:
   - name: impression_at
@@ -362,7 +320,7 @@ fields:
   type: RECORD
   mode: NULLABLE
   description: |-
-    Unbounded last-touch attribution for the service subscription (if any).
+    Unbounded last-touch attribution for the subscription (if any).
     This will be null for Google subscriptions.
   fields:
   - name: impression_at

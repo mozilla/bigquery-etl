@@ -1,6 +1,8 @@
-friendly_name: Logical subscription events
+friendly_name: Logical subscriptions events
 description: |-
   Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
+
+  Data for the past 7 days is considered to still be in flux due to possible late-arriving data.
 
   Logical subscriptions are a continuous active period for a particular provider subscription.
 require_column_descriptions: true

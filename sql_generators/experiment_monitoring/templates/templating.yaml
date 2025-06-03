@@ -37,8 +37,6 @@ queries:
   experiment_events_live_v1:
     per_app: true
     start_date: "2025-03-30"
-    skip_applications:
-      - "firefox_desktop"
   experiment_search_events_live_v1:
     per_app: true
     start_date: "2025-03-30"

@@ -56,6 +56,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_mozilla_org_derived__ga_sessions__v2 = ExternalTaskSensor(
+        task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
+        external_dag_id="bqetl_google_analytics_derived_ga4",
+        external_task_id="mozilla_org_derived__ga_sessions__v2",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_firefoxdotcom_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_firefoxdotcom_events_table",
         project_id="moz-fx-data-marketing-prod",
@@ -67,6 +80,33 @@ with DAG(
         timeout=datetime.timedelta(seconds=36000),
         retries=1,
         retry_delay=datetime.timedelta(seconds=1800),
+    )
+
+    checks__warn_firefoxdotcom_derived__ga_sessions__v1 = bigquery_dq_check(
+        task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v1",
+        source_table="ga_sessions_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    firefoxdotcom_derived__ga_sessions__v1 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__ga_sessions__v1",
+        destination_table=None,
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/firefoxdotcom_derived/ga_sessions_v1/script.sql",
     )
 
     firefoxdotcom_derived__www_site_downloads__v1 = bigquery_etl_query(
@@ -89,6 +129,18 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    checks__warn_firefoxdotcom_derived__ga_sessions__v1.set_upstream(
+        firefoxdotcom_derived__ga_sessions__v1
+    )
+
+    firefoxdotcom_derived__ga_sessions__v1.set_upstream(
+        wait_for_mozilla_org_derived__ga_sessions__v2
+    )
+
+    firefoxdotcom_derived__ga_sessions__v1.set_upstream(
+        wait_for_firefoxdotcom_events_table
     )
 
     firefoxdotcom_derived__www_site_downloads__v1.set_upstream(

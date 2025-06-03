@@ -368,20 +368,6 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v2/script.sql",
     )
 
-    with TaskGroup(
-        "mozilla_org_derived__ga_sessions__v2_external",
-    ) as mozilla_org_derived__ga_sessions__v2_external:
-        ExternalTaskMarker(
-            task_id="bqetl_ga4_firefoxdotcom__wait_for_mozilla_org_derived__ga_sessions__v2",
-            external_dag_id="bqetl_ga4_firefoxdotcom",
-            external_task_id="wait_for_mozilla_org_derived__ga_sessions__v2",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
-        )
-
-        mozilla_org_derived__ga_sessions__v2_external.set_upstream(
-            mozilla_org_derived__ga_sessions__v2
-        )
-
     mozilla_org_derived__gclid_conversions__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__gclid_conversions__v2",
         destination_table="gclid_conversions_v2",

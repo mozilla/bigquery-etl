@@ -57,7 +57,7 @@ WITH all_hits AS (
       NULL
     ) AS download_session_id
   FROM
-    `moz-fx-data-marketing-prod.analytics_489412379.events_*` AS ga
+    `moz-fx-data-marketing-prod.analytics_489412379.ga_sessions_*` AS ga
   CROSS JOIN
     UNNEST(hits) AS hit
   WHERE
@@ -114,7 +114,7 @@ ga_session_dimensions AS (
     mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(device.language)) AS `language`,
     IFNULL(mozfun.stats.mode_last_retain_nulls(ARRAY_AGG(totals.timeOnSite)), 0) AS time_on_site
   FROM
-    `moz-fx-data-marketing-prod.analytics_489412379.events_*` AS ga
+    `moz-fx-data-marketing-prod.analytics_489412379.ga_sessions_*`
   WHERE
     _TABLE_SUFFIX
     BETWEEN FORMAT_DATE('%Y%m%d', DATE_SUB(@download_date, INTERVAL 2 DAY))

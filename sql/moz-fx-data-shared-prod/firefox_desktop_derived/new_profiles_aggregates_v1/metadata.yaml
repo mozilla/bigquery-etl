@@ -1,0 +1,19 @@
+friendly_name: New Profiles Aggregates
+description: |-
+  Please provide a description for the query
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

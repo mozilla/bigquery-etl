@@ -1,0 +1,4 @@
+fields:
+- description: Date when clients were first seen.
+  name: first_seen_date
+  type: DATE

@@ -10,7 +10,7 @@ labels:
 scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   depends_on:
-  - task_id: wait_for_wmo_events_table
+  - task_id: wait_for_firefoxdotcom_events_table
     dag_name: bqetl_ga4_firefoxdotcom
 bigquery:
   time_partitioning:

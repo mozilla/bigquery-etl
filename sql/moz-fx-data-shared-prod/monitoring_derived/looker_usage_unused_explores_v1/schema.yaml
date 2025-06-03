@@ -1,3 +1,4 @@
+fields:
 - mode: NULLABLE
   name: Model
   type: STRING

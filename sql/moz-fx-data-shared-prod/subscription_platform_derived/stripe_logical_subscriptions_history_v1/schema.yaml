@@ -105,8 +105,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: |-
-      Provider "product ID".
-      For Stripe subscriptions this will be the product ID.
+      Provider product ID.
   - name: product_name
     type: STRING
     mode: NULLABLE
@@ -117,7 +116,7 @@ fields:
     type: STRING
     mode: NULLABLE
     description: |-
-      Provider "plan ID".
+      Provider plan ID.
       For Stripe subscriptions this will be the plan/price ID.
   - name: plan_interval_type
     type: STRING

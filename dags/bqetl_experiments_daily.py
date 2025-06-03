@@ -327,6 +327,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    experiment_enrollment_daily_active_population_v2 = bigquery_etl_query(
+        task_id="experiment_enrollment_daily_active_population_v2",
+        destination_table="experiment_enrollment_daily_active_population_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     fenix_derived__nimbus_recorded_targeting_context__v1 = bigquery_etl_query(
         task_id="fenix_derived__nimbus_recorded_targeting_context__v1",
         destination_table="nimbus_recorded_targeting_context_v1",
@@ -489,8 +501,27 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__experiments_daily_active_clients__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__experiments_daily_active_clients__v2",
+        destination_table="experiments_daily_active_clients_v2",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "mwilliams@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     experiment_enrollment_daily_active_population.set_upstream(
         telemetry_derived__experiments_daily_active_clients__v1
+    )
+
+    experiment_enrollment_daily_active_population_v2.set_upstream(
+        telemetry_derived__experiments_daily_active_clients__v2
     )
 
     fenix_derived__nimbus_recorded_targeting_context__v1.set_upstream(
@@ -627,4 +658,8 @@ with DAG(
 
     telemetry_derived__experiments_daily_active_clients__v1.set_upstream(
         wait_for_telemetry_derived__clients_daily_joined__v1
+    )
+
+    telemetry_derived__experiments_daily_active_clients__v2.set_upstream(
+        wait_for_copy_deduplicate_all
     )

@@ -1,0 +1,16 @@
+friendly_name: Experiment Enrollment Other Events Overall
+description: |
+  Number of events other than enroll and unenroll sent by clients enrolled in experiments, clustered by experiment. (glean only)
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_aggregates_live_v2
+require_column_descriptions: false

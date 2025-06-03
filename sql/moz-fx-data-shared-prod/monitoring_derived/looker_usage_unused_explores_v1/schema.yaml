@@ -1,0 +1,15 @@
+- mode: NULLABLE
+  name: Model
+  type: STRING
+- mode: NULLABLE
+  name: Explore
+  type: STRING
+- mode: NULLABLE
+  name: Unused Joins
+  type: STRING
+- mode: NULLABLE
+  name: Unused Fields
+  type: STRING
+- mode: NULLABLE
+  name: submission_date
+  type: DATE

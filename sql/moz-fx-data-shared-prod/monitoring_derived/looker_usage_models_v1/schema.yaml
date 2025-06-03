@@ -1,0 +1,18 @@
+- mode: NULLABLE
+  name: Project
+  type: STRING
+- mode: NULLABLE
+  name: Model
+  type: STRING
+- mode: NULLABLE
+  name: '# Explores'
+  type: INTEGER
+- mode: NULLABLE
+  name: '# Unused Explores'
+  type: INTEGER
+- mode: NULLABLE
+  name: Query Count
+  type: INTEGER
+- mode: NULLABLE
+  name: submission_date
+  type: DATE

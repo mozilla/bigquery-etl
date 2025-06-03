@@ -1,0 +1,30 @@
+- mode: NULLABLE
+  name: Model
+  type: STRING
+- mode: NULLABLE
+  name: Explore
+  type: STRING
+- mode: NULLABLE
+  name: Is Hidden
+  type: BOOLEAN
+- mode: NULLABLE
+  name: Has Description
+  type: BOOLEAN
+- mode: NULLABLE
+  name: '# Joins'
+  type: INTEGER
+- mode: NULLABLE
+  name: '# Unused Joins'
+  type: INTEGER
+- mode: NULLABLE
+  name: '# Fields'
+  type: INTEGER
+- mode: NULLABLE
+  name: '# Unused Fields'
+  type: INTEGER
+- mode: NULLABLE
+  name: Query Count
+  type: INTEGER
+- mode: NULLABLE
+  name: submission_date
+  type: DATE

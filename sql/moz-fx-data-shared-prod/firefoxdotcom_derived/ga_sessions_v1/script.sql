@@ -177,46 +177,7 @@ MERGE INTO
         COUNTIF(event_name = 'page_view') AS pageviews,
         MIN(event_timestamp) AS min_event_timestamp,
         MAX(event_timestamp) AS max_event_timestamp,
-        SUM(
-          CASE
-            WHEN (event_name = 'firefox_download' AND event_date >= '20240217')
-              OR (
-                event_name = 'product_download'
-                AND event_date < '20240217'
-                AND (
-                  SELECT
-                    `value`
-                  FROM
-                    UNNEST(event_params)
-                  WHERE
-                    key = 'product'
-                  LIMIT
-                    1
-                ).string_value = 'firefox'
-                AND (
-                  SELECT
-                    `value`
-                  FROM
-                    UNNEST(event_params)
-                  WHERE
-                    key = 'platform'
-                  LIMIT
-                    1
-                ).string_value IN (
-                  'win',
-                  'win64',
-                  'macos',
-                  'linux64',
-                  'win64-msi',
-                  'linux',
-                  'win-msi',
-                  'win64-aarch64'
-                ) --platform = desktop
-              )
-              THEN 1
-            ELSE 0
-          END
-        ) AS firefox_desktop_downloads,
+        COUNTIF(event_name = 'firefox_download') AS firefox_desktop_downloads,
         CAST(
           MAX(
             CASE

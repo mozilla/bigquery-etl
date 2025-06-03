@@ -1,4 +1,44 @@
-WITH firefox_desktop_downloads AS (
+WITH firefox_desktop_downloads_stg AS (
+  SELECT
+    PARSE_DATE('%Y%m%d', event_date) AS `date`,
+    device.category AS device_category,
+    device.operating_system AS operating_system,
+    device.web_info.browser AS browser,
+    device.language AS `language`,
+    geo.country AS country,
+    collected_traffic_source.manual_source AS source,
+    collected_traffic_source.manual_medium AS medium,
+    collected_traffic_source.manual_campaign_name AS campaign,
+    collected_traffic_source.manual_content AS ad_content,
+    event_name,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'product'
+      LIMIT
+        1
+    ).string_value AS product_type,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'platform'
+      LIMIT
+        1
+    ).string_value AS platform_type
+  FROM
+    `moz-fx-data-marketing-prod.analytics_489412379.events_*`
+  WHERE
+    _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
+    AND _TABLE_SUFFIX <= '20240216'
+    AND event_name = 'product_download'
+),
+firefox_desktop_downloads AS (
   SELECT
     PARSE_DATE('%Y%m%d', event_date) AS `date`,
     device.category AS device_category,

@@ -21,6 +21,8 @@ fields:
   mode: NULLABLE
   description: |-
     Provider subscription ID.
+    For Stripe subscriptions this will be the subscription ID.
+    For Google subscriptions this will be the purchase token.
 - name: provider_subscription_item_id
   type: STRING
   mode: NULLABLE
@@ -98,7 +100,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Provider "product ID".
+    Provider product ID.
     For Stripe subscriptions this will be the product ID.
     For Google subscriptions this will be the package name.
 - name: product_name
@@ -111,7 +113,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Provider "plan ID".
+    Provider plan ID.
     For Stripe subscriptions this will be the plan/price ID.
     For Google subscriptions this will be the SKU.
 - name: plan_summary

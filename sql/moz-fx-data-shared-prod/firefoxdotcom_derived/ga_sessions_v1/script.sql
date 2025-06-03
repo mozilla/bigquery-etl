@@ -1,5 +1,5 @@
 MERGE INTO
-  `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2` T
+  `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1` T
   USING (
     --get all the unique "GA Client ID", "GA Session ID" combinations with events between 3 days prior to the submission date and the submission date
     WITH all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days AS (

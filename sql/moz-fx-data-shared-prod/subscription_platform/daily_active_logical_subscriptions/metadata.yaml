@@ -3,7 +3,9 @@ description: |-
   Daily snapshots of logical subscriptions that were active at any point during each day.
   The latest state of the subscription during the day is saved.
 
-  Data for the past 7 days is considered to still be in flux due to possible late-arriving data.
-
   Logical subscriptions are a continuous active period for a particular provider subscription.
+
+  Some caveats:
+    * Data for the past 7 days is considered to still be in flux due to possible late-arriving data.
+    * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
 require_column_descriptions: true

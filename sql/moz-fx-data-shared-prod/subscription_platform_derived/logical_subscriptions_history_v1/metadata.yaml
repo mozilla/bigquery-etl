@@ -24,3 +24,4 @@ bigquery:
     fields:
     - valid_from
 references: {}
+require_column_descriptions: true

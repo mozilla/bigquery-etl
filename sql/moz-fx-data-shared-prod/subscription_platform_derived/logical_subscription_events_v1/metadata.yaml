@@ -26,3 +26,4 @@ bigquery:
     - type
     - reason
 references: {}
+require_column_descriptions: true

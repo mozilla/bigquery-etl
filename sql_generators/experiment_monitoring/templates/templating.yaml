@@ -4,6 +4,11 @@ queries:
     destination_dataset: telemetry_derived
     skip_applications:
       - "firefox_desktop"
+  experiments_daily_active_clients_v2:
+    per_app: false
+    destination_dataset: telemetry_derived
+    skip_applications:
+      - "telemetry"
   experiment_enrollment_aggregates_live_v1:
     per_app: false
     destination_dataset: telemetry_derived
@@ -32,8 +37,6 @@ queries:
   experiment_events_live_v1:
     per_app: true
     start_date: "2025-03-30"
-    skip_applications:
-      - "firefox_desktop"
   experiment_search_events_live_v1:
     per_app: true
     start_date: "2025-03-30"

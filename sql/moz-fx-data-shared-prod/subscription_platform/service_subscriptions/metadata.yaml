@@ -1,6 +1,6 @@
-friendly_name: Service Subscriptions
+friendly_name: Service subscriptions
 description: |-
-  Please provide a description for the query
+  Service subscriptions, which are a continuous active period for a specific service by a particular provider subscription.
 owners: []
 labels: {}
 bigquery: null

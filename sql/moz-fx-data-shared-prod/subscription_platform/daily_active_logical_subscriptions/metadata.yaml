@@ -1,6 +1,11 @@
-friendly_name: Daily Active Logical Subscriptions
+friendly_name: Daily active logical subscriptions
 description: |-
-  Please provide a description for the query
+  Daily snapshots of logical subscriptions that were active at any point during each day.
+  The latest state of the subscription during the day is saved.
+
+  Data for the past 7 days is considered to still be in flux due to possible late-arriving data.
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.
 owners: []
 labels: {}
 bigquery: null
@@ -12,4 +17,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.daily_active_logical_subscriptions_v1
   - moz-fx-data-shared-prod.subscription_platform_derived.recent_daily_active_logical_subscriptions_v1
-require_column_descriptions: false
+require_column_descriptions: true

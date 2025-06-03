@@ -1,6 +1,6 @@
-friendly_name: Logical Subscriptions
+friendly_name: Logical subscriptions
 description: |-
-  Please provide a description for the query
+  Logical subscriptions, which are a continuous active period for a particular provider subscription.
 owners: []
 labels: {}
 bigquery: null
@@ -11,4 +11,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1
-require_column_descriptions: false
+require_column_descriptions: true

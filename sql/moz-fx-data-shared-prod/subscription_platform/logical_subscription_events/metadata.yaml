@@ -1,6 +1,10 @@
-friendly_name: Logical Subscription Events
+friendly_name: Logical subscriptions events
 description: |-
-  Please provide a description for the query
+  Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
+
+  Data for the past 7 days is considered to still be in flux due to possible late-arriving data.
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.
 owners: []
 labels: {}
 bigquery: null
@@ -12,4 +16,4 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.logical_subscription_events_v1
   - moz-fx-data-shared-prod.subscription_platform_derived.recent_logical_subscription_events_v1
-require_column_descriptions: false
+require_column_descriptions: true

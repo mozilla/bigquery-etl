@@ -13,4 +13,4 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1
-require_column_descriptions: false
+require_column_descriptions: true

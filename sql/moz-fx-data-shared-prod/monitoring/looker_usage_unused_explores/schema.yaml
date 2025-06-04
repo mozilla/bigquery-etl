@@ -1,0 +1,16 @@
+fields:
+- name: model
+  type: STRING
+  mode: NULLABLE
+- name: explore
+  type: STRING
+  mode: NULLABLE
+- name: unused_joins
+  type: STRING
+  mode: NULLABLE
+- name: unused_fields
+  type: STRING
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE

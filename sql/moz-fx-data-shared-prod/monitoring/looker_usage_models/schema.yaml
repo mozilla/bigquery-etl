@@ -1,0 +1,19 @@
+fields:
+- name: project
+  type: STRING
+  mode: NULLABLE
+- name: model
+  type: STRING
+  mode: NULLABLE
+- name: total_explores
+  type: INTEGER
+  mode: NULLABLE
+- name: total_unused_explores
+  type: INTEGER
+  mode: NULLABLE
+- name: query_count
+  type: INTEGER
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE

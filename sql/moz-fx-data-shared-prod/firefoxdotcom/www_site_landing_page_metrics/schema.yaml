@@ -1,0 +1,121 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date of the visit
+- name: site
+  type: STRING
+  mode: NULLABLE
+  description: Site - The website domain (i.e. mozilla.org)
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device Category - The device category the visitor used to visit the
+    site
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating System - The operating system the visitor used to visit the
+    site
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language - The language the visiting device was using when it visited
+    the site
+- name: landing_page
+  type: STRING
+  mode: NULLABLE
+  description: Landing Page - The page path of the page view
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale - Level 1 of the page path of the page view (i.e. en-US, de,
+    etc)
+- name: page_name
+  type: STRING
+  mode: NULLABLE
+  description: Page Name - Consists of page levels 1 to 5 concatenated together
+- name: page_level_1
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 1
+- name: page_level_2
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 2
+- name: page_level_3
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 3
+- name: page_level_4
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 4
+- name: page_level_5
+  type: STRING
+  mode: NULLABLE
+  description: Page Level 5
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country - The country from which events were reported, based on IP
+    address
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Source - Referring partner domain
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Medium - Category of the source, such as 'organic' for a search engine
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign - Identifier for the marketing campaign
+- name: ad_content
+  type: STRING
+  mode: NULLABLE
+  description: Ad Content - Indicates the particular link within a campaign
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser - The browser the visiting device used to visit the site
+- name: sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Sessions - The number of session entrances
+- name: non_fx_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Non Firefox Sessions - The number of session entrances on a non-Firefox
+    browser
+- name: downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Downloads - The number of Firefox Desktop downloads
+- name: non_fx_downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Non Firefox Downloads - The number of Firefox Desktop downloads from
+    a non-Firefox browser
+- name: pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: Page Views - The number of page views
+- name: unique_pageviews
+  type: INTEGER
+  mode: NULLABLE
+  description: Unique Page Views - The number of unique page paths visited
+- name: single_page_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Single Page Sessions - The number of sessions with a single page view
+- name: bounces
+  type: INTEGER
+  mode: NULLABLE
+  description: Bounces - The number of "bounce" sessions, sessions that had no engaged
+    session event
+- name: exits
+  type: INTEGER
+  mode: NULLABLE
+  description: Exits - The number of sessions where this page was the last page viewed

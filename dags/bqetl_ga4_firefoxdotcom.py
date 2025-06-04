@@ -158,6 +158,21 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefoxdotcom_derived__www_site_events_metrics__v1 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__www_site_events_metrics__v1",
+        destination_table="www_site_events_metrics_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefoxdotcom_derived__www_site_hits__v1 = bigquery_etl_query(
         task_id="firefoxdotcom_derived__www_site_hits__v1",
         destination_table="www_site_hits_v1",
@@ -221,6 +236,10 @@ with DAG(
 
     firefoxdotcom_derived__www_site_downloads__v1.set_upstream(
         wait_for_firefoxdotcom_events_table
+    )
+
+    firefoxdotcom_derived__www_site_events_metrics__v1.set_upstream(
+        firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__www_site_hits__v1.set_upstream(

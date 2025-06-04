@@ -72,4 +72,4 @@ SELECT
   os_grouped,
   mozfun.norm.partnership(distribution_id) AS partnership,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users_aggregates_full`
+  `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users_aggregates`

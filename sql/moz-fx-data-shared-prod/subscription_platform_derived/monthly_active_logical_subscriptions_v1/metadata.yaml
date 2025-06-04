@@ -3,10 +3,12 @@ description: |-
   Monthly snapshots of logical subscriptions that were active at any point during each month.
   The latest state of the subscription during the month is saved.
 
-  This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
-  More recent data that is still in flux can be found in `recent_monthly_active_logical_subscriptions_v1`.
-
   Logical subscriptions are a continuous active period for a particular provider subscription.
+
+  Some caveats:
+    * This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
+      More recent data that is still in flux can be found in `recent_monthly_active_logical_subscriptions_v1`.
+    * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
 owners:
 - srose@mozilla.com
 labels:
@@ -24,3 +26,4 @@ bigquery:
     expiration_days: null
   clustering: null
 references: {}
+require_column_descriptions: true

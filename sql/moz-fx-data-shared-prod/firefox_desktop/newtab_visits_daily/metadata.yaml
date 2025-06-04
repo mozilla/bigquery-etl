@@ -1,0 +1,6 @@
+friendly_name: Newtab Visits Daily
+description: |-
+  Daily aggregation of visit metrics for Newtab.
+  The granularity is one row per Firefox Desktop newtab_visit_id per submission_date.
+owners:
+- gkatre@mozilla.com

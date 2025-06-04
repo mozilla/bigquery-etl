@@ -1,0 +1,15 @@
+friendly_name: Experiment Enrollment Daily Active Population V2
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.telemetry_derived.experiment_enrollment_daily_active_population_v2
+require_column_descriptions: false

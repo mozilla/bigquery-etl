@@ -1,0 +1,7 @@
+friendly_name: Looker Usage Unused Explores
+description: |-
+  Looker unused explores via henry.
+
+  This is run via docker-etl.
+owners:
+- ascholtz@mozilla.com

@@ -1,0 +1,29 @@
+friendly_name: GA Clients
+description: |-
+  A table representing GA clients. Grain is one row per client.
+  Key is ga_client_id.
+owners:
+- mhirose@mozilla.com
+- kwindau@mozilla.com
+labels:
+  owner1: mhirose
+  dag: bqetl_ga4_firefoxdotcom
+  owner2: kwindau
+scheduling:
+  depends_on_past: true
+  dag_name: bqetl_ga4_firefoxdotcom
+  date_partition_parameter: null
+  parameters:
+  - session_date:DATE:{{ds}}
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - first_seen_date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

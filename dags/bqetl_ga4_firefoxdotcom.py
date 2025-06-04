@@ -69,6 +69,24 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
+    checks__fail_firefoxdotcom_derived__ga_clients__v1 = bigquery_dq_check(
+        task_id="checks__fail_firefoxdotcom_derived__ga_clients__v1",
+        source_table="ga_clients_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["session_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__warn_firefoxdotcom_derived__ga_sessions__v1 = bigquery_dq_check(
         task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v1",
         source_table="ga_sessions_v1",
@@ -98,6 +116,22 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
+    )
+
+    firefoxdotcom_derived__ga_clients__v1 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__ga_clients__v1",
+        destination_table="ga_clients_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["session_date:DATE:{{ds}}"],
     )
 
     firefoxdotcom_derived__ga_sessions__v1 = bigquery_etl_query(
@@ -165,12 +199,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    checks__fail_firefoxdotcom_derived__ga_clients__v1.set_upstream(
+        firefoxdotcom_derived__ga_clients__v1
+    )
+
     checks__warn_firefoxdotcom_derived__ga_sessions__v1.set_upstream(
         firefoxdotcom_derived__ga_sessions__v1
     )
 
     checks__warn_firefoxdotcom_derived__www_site_hits__v1.set_upstream(
         firefoxdotcom_derived__www_site_hits__v1
+    )
+
+    firefoxdotcom_derived__ga_clients__v1.set_upstream(
+        firefoxdotcom_derived__ga_sessions__v1
     )
 
     firefoxdotcom_derived__ga_sessions__v1.set_upstream(

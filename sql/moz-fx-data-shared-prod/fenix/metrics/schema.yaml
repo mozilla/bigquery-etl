@@ -11155,6 +11155,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: networking_connection_address_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -11669,6 +11679,9 @@ fields:
       type: STRING
       mode: REPEATED
     - name: system_cpu_extensions
+      type: STRING
+      mode: REPEATED
+    - name: pkcs11_third_party_module_profile_entries
       type: STRING
       mode: REPEATED
   - name: timing_distribution
@@ -27902,6 +27915,44 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: webfont_download_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: javascript_gc_time_between_minor
       type: RECORD
       mode: NULLABLE
       fields:

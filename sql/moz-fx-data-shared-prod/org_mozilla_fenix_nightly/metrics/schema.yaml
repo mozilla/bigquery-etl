@@ -8415,6 +8415,18 @@ fields:
       description: 'Whether the request is crossing to a more private addresspace
 
         '
+    - name: networking_connection_address_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: Records the IP address family (IPv4 or IPv6) used when an HTTP
+        transaction is dispatched.
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -9142,6 +9154,9 @@ fields:
       type: STRING
       mode: REPEATED
     - name: system_cpu_extensions
+      type: STRING
+      mode: REPEATED
+    - name: pkcs11_third_party_module_profile_entries
       type: STRING
       mode: REPEATED
   - name: timing_distribution
@@ -28691,6 +28706,50 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram WEBFONT_DOWNLOAD_TIME.
+
+        '
+    - name: javascript_gc_time_between_minor
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time between minor garbage collections (nursery collections) for
+        all runtimes.
 
         '
   - name: custom_distribution

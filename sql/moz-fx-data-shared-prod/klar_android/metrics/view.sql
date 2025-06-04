@@ -619,7 +619,8 @@ SELECT
       metrics.labeled_counter.network_id_online,
       metrics.labeled_counter.network_rel_preload_miss_ratio,
       metrics.labeled_counter.region_store_region_result,
-      metrics.labeled_counter.networking_local_network_access
+      metrics.labeled_counter.networking_local_network_access,
+      metrics.labeled_counter.networking_connection_address_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1482,7 +1483,8 @@ SELECT
       metrics.timing_distribution.quotamanager_shutdown_total_time_excluding_suspend,
       metrics.timing_distribution.script_preloader_wait_time,
       metrics.timing_distribution.slow_script_warning_notify_delay,
-      metrics.timing_distribution.webfont_download_time
+      metrics.timing_distribution.webfont_download_time,
+      metrics.timing_distribution.javascript_gc_time_between_minor
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1682,7 +1684,8 @@ SELECT
       metrics.string_list.intl_regional_prefs_locales,
       metrics.string_list.intl_requested_locales,
       metrics.string_list.intl_system_locales,
-      metrics.string_list.system_cpu_extensions
+      metrics.string_list.system_cpu_extensions,
+      metrics.string_list.pkcs11_third_party_module_profile_entries
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,

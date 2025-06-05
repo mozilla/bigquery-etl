@@ -19,7 +19,8 @@ scheduling:
   date_partition_parameter: date
   date_partition_offset: -7
   # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
-  # so this depends on the latest bqetl_subplat_hourly DAG run.
+  # to wait for the concurrent bqetl_subplat_hourly DAG tasks to complete so the
+  # dependent tables are in a consistent state.
   depends_on:
   - dag_name: bqetl_subplat_hourly
     task_id: subscription_platform_derived__service_subscriptions_history__v1

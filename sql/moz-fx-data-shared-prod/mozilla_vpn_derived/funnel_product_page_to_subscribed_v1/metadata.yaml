@@ -9,7 +9,8 @@ scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
   # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
-  # so this depends on the latest bqetl_subplat_hourly DAG run.
+  # to wait for the concurrent bqetl_subplat_hourly DAG tasks to complete so the
+  # dependent tables are in a consistent state.
   depends_on:
     - dag_name: bqetl_subplat_hourly
       task_id: stripe_external__plan__v1

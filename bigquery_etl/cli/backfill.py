@@ -7,7 +7,6 @@ import sys
 import tempfile
 from collections import defaultdict
 from datetime import date, datetime, timedelta
-from os.path import exists
 from pathlib import Path
 
 import rich_click as click
@@ -238,6 +237,7 @@ def create(
 @sql_dir_option
 @project_id_option()
 @ignore_missing_metadata_option
+@click.option("--no-exit", default=False, is_flag=True)
 @click.pass_context
 def validate(
     ctx,
@@ -245,18 +245,10 @@ def validate(
     sql_dir,
     project_id,
     ignore_missing_metadata,
+    no_exit,
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
-        # checking if path string was passed in instead of "dataset.table_name" format
-        # if yes we convert it to the expected format.
-        # this is to accommodate pre-commit hook
-        qualified_table_name = (
-            ".".join(qualified_table_name.split("/")[-4:-1])
-            if exists(qualified_table_name)
-            else qualified_table_name
-        )
-
         backfills_dict = {
             qualified_table_name: get_entries_from_qualified_table_name(
                 sql_dir, qualified_table_name
@@ -274,7 +266,10 @@ def validate(
             sql_dir, table_name, ignore_missing_metadata
         ):
             click.echo("\n".join(metadata_errors))
-            sys.exit(1)
+            if not no_exit:
+                sys.exit(1)
+
+            return metadata_errors
 
         try:
             backfill_file = get_backfill_file_from_qualified_table_name(
@@ -303,11 +298,65 @@ def validate(
                 continue
             click.echo(f"{table_name}:")
             click.echo("\n".join(error_list))
-        sys.exit(1)
+        if not no_exit:
+            sys.exit(1)
+        return error_list
     elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
         )
+
+
+@backfill.command(
+    help="""Validates multiple backfill.yaml files format and content.
+
+    This command was created to enable pre-commit hook for backfill file changes related validation.
+
+    \b
+    # validate all backfill.yaml files if table is not specified
+    Use the `--project_id` option to change the project to be validated;
+    default is `moz-fx-data-shared-prod`.
+
+    Example:
+
+    ./bqetl backfill validate-multiple \
+        sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_daily_v1/backfill.yaml \
+        sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml
+
+    """
+)
+@ignore_missing_metadata_option
+@click.argument("backfill_files", required=True, nargs=-1)
+@click.pass_context
+def validate_multiple(
+    ctx,
+    backfill_files,
+    ignore_missing_metadata,
+):
+    """Validate backfill.yaml files."""
+    errors = list()
+    validate_errors = list()
+
+    for backfill_file in backfill_files:
+        *sql_dir, project_id, dataset, table_name = str(backfill_file).split("/")[:-1]
+
+        cmd_args = {
+            "sql_dir": "/".join(sql_dir),
+            "project_id": project_id,
+            "ignore_missing_metadata": True if ignore_missing_metadata else False,
+            "no_exit": True,
+            "qualified_table_name": f"{project_id}.{dataset}.{table_name}",
+        }
+        try:
+            validate_errors = ctx.invoke(validate, **cmd_args)
+            click.echo(validate_errors)
+        except (KeyError, FileNotFoundError) as error:
+            errors.append(error)
+            error_message = f"{str(error.with_traceback)} -> {str(error)}"
+            click.echo(f"Validation for {backfill_file} FAILED with: {error_message}.")
+
+    if sum([len(errors), len(validate_errors or list())]) > 0:
+        sys.exit(1)
 
 
 @backfill.command(

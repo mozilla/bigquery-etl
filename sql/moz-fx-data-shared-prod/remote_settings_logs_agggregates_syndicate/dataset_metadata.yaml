@@ -1,0 +1,20 @@
+friendly_name: remote_settings_logs_aggregates_syndicate
+description: |
+  This dataset contains Remote Settings CDN requests logs aggregates per endpoints
+  and collections. It is derived from the load balancer logs using a BigQuery Transfer
+  job that runs every day.
+dataset_base_acl: syndicate
+user_facing: false
+labels: {}
+syndication:
+  stage:
+    syndicated_project: "moz-fx-remote-settings-nonprod"
+    syndicated_dataset: "nonprod_logs_aggregates_dataset"
+  prod:
+    syndicated_project: "moz-fx-remote-settings-prod"
+    syndicated_dataset: "prod_logs_aggregates_dataset"
+  administer_views: false
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

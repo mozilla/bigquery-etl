@@ -11,7 +11,7 @@ syndication:
     syndicated_project: "moz-fx-remote-settings-nonprod"
     syndicated_dataset: "nonprod_logs_aggregates_dataset"
   prod:
-    syndicated_project: "moz-fx-remote-settings-nonprod"
+    syndicated_project: "moz-fx-remote-settings-prod"
     syndicated_dataset: "prod_logs_aggregates_dataset"
   administer_views: false
 workgroup_access:

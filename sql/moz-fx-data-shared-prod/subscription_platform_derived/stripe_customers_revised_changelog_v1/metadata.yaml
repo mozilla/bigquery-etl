@@ -12,9 +12,10 @@ owners:
 - srose@mozilla.com
 labels:
   incremental: true
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
+  dag_name: bqetl_subplat_hourly
   date_partition_parameter: date
 bigquery:
   time_partitioning:

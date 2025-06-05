@@ -14,4 +14,4 @@ WHERE
         `moz-fx-data-shared-prod.subscription_platform_derived.monthly_active_service_subscriptions_v1`
     )
   )
-  AND month_start_date <= CURRENT_DATE() - 1
+  AND month_start_date <= DATE(TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR))

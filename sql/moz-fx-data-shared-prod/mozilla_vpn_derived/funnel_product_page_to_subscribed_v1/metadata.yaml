@@ -8,6 +8,15 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
+  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
+  # so this depends on the latest bqetl_subplat_hourly DAG run.
+  depends_on:
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__plan__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__product__v1
+      execution_delta: -23h
 bigquery:
   time_partitioning:
     type: day

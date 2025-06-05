@@ -11,11 +11,16 @@ owners:
 - srose@mozilla.com
 labels:
   incremental: false
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
+  # Override `referenced_tables` to ignore the reference to `logical_subscription_events_v1`,
+  # because DAG generation would otherwise output an external task sensor for that which would only
+  # work for one bqetl_subplat_hourly DAG run per day.
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'logical_subscriptions_history_v1']
 bigquery:
   time_partitioning:
     type: day

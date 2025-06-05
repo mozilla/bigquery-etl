@@ -1,0 +1,25 @@
+friendly_name: Recent FxA GCP stderr events (prod)
+description: |
+  FxA server events extracted from stderr logs from the past two days.
+owners:
+- srose@mozilla.com
+labels:
+  application: fxa
+  incremental: false
+  schedule: hourly
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+  arguments:
+  - --schema_update_option=ALLOW_FIELD_ADDITION
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+    - fxa_server

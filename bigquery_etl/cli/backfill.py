@@ -41,6 +41,7 @@ from ..backfill.utils import (
     validate_table_metadata,
 )
 from ..backfill.validate import (
+    BackfillConfigurationError,
     validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
@@ -56,7 +57,10 @@ from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..format_sql.formatter import reformat
 from ..metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
-from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
+from ..metadata.validate_metadata import (
+    SHREDDER_MITIGATION_LABEL,
+    MetadataValidationError,
+)
 from ..schema import SCHEMA_FILE, Schema
 
 logging.basicConfig(level=logging.INFO)
@@ -237,7 +241,6 @@ def create(
 @sql_dir_option
 @project_id_option()
 @ignore_missing_metadata_option
-@click.option("--no-exit", default=False, is_flag=True)
 @click.pass_context
 def validate(
     ctx,
@@ -245,7 +248,6 @@ def validate(
     sql_dir,
     project_id,
     ignore_missing_metadata,
-    no_exit,
 ):
     """Validate backfill.yaml files."""
     if qualified_table_name:
@@ -266,10 +268,7 @@ def validate(
             sql_dir, table_name, ignore_missing_metadata
         ):
             click.echo("\n".join(metadata_errors))
-            if not no_exit:
-                sys.exit(1)
-
-            return metadata_errors
+            raise MetadataValidationError(str(metadata_errors))
 
         try:
             backfill_file = get_backfill_file_from_qualified_table_name(
@@ -298,9 +297,7 @@ def validate(
                 continue
             click.echo(f"{table_name}:")
             click.echo("\n".join(error_list))
-        if not no_exit:
-            sys.exit(1)
-        return error_list
+            raise BackfillConfigurationError
     elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
@@ -335,7 +332,6 @@ def validate_multiple(
 ):
     """Validate backfill.yaml files."""
     errors = list()
-    validate_errors = list()
 
     for backfill_file in backfill_files:
         *sql_dir, project_id, dataset, table_name = str(backfill_file).split("/")[:-1]
@@ -344,18 +340,22 @@ def validate_multiple(
             "sql_dir": "/".join(sql_dir),
             "project_id": project_id,
             "ignore_missing_metadata": True if ignore_missing_metadata else False,
-            "no_exit": True,
             "qualified_table_name": f"{project_id}.{dataset}.{table_name}",
         }
         try:
-            validate_errors = ctx.invoke(validate, **cmd_args)
-            click.echo(validate_errors)
-        except (KeyError, FileNotFoundError, ValueError) as error:
+            ctx.invoke(validate, **cmd_args)
+        except (
+            KeyError,
+            FileNotFoundError,
+            ValueError,
+            MetadataValidationError,
+            BackfillConfigurationError,
+        ) as error:
             errors.append(error)
             error_message = f"{str(error.with_traceback)} -> {str(error)}"
             click.echo(f"Validation for {backfill_file} FAILED with: {error_message}")
 
-    if sum([len(errors), len(validate_errors or list())]) > 0:
+    if len(errors) > 0:
         sys.exit(1)
 
 

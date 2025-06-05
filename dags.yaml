@@ -1694,9 +1694,9 @@ bqetl_firefox_desktop_new_profiles_aggregates:
     owner: lmcfall@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2024-07-16'
+    start_date: '2025-06-02'
   description: |
-    TODO
+    This table aggregates the number of new profiles on a given day.
   repo: bigquery-etl
   schedule_interval: 0 16 * * *
   tags:

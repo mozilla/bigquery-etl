@@ -1,13 +1,13 @@
 friendly_name: New Profiles Aggregates
 description: |-
-  Please provide a description for the query
+  This table aggregates the number of new profiles on a given day.
 owners:
 - lmcfall@mozilla.com
 labels:
   incremental: true
   owner1: lmcfall
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_firefox_desktop_new_profiles_aggregates
 bigquery:
   time_partitioning:
     type: day

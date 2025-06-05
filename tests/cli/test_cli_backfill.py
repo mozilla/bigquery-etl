@@ -464,14 +464,7 @@ class TestBackfill:
                 str(backfill_file_2),
             ],
         )
-        # print(dir(result))
-        # print(result.exc_info)
-        # print(result.runner)
-        # print(result.exit_code)
-        print(result.stdout)
-        print(result.output)
-        # print(result.exception)
-        # assert result.exit_code == 0
+        assert result.exit_code == 0
 
     def test_validate_backfill_with_billing_project(self, mock_date, runner):
         backfill_file = Path(QUERY_DIR) / BACKFILL_FILE

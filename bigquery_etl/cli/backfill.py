@@ -350,10 +350,10 @@ def validate_multiple(
         try:
             validate_errors = ctx.invoke(validate, **cmd_args)
             click.echo(validate_errors)
-        except (KeyError, FileNotFoundError) as error:
+        except (KeyError, FileNotFoundError, ValueError) as error:
             errors.append(error)
             error_message = f"{str(error.with_traceback)} -> {str(error)}"
-            click.echo(f"Validation for {backfill_file} FAILED with: {error_message}.")
+            click.echo(f"Validation for {backfill_file} FAILED with: {error_message}")
 
     if sum([len(errors), len(validate_errors or list())]) > 0:
         sys.exit(1)

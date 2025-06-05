@@ -1682,6 +1682,27 @@ bqetl_firefox_desktop_ad_click_history:
     - repo/bigquery-etl
     - impact/tier_2
 
+bqetl_firefox_desktop_new_profiles_aggregates:
+  default_args:
+    depends_on_past: false
+    email:
+      - lmcfall@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: lmcfall@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-06-02'
+  description: |
+    This table aggregates the number of new profiles on a given day.
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_2
+
 bqetl_merino_newtab_extract_to_gcs:
   default_args:
     depends_on_past: false

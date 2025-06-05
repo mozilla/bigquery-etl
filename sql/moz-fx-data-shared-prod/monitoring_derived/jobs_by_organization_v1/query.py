@@ -17,6 +17,7 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-sumo-prod",
     "moz-fx-data-sumo-nonprod",
     "moz-fx-mozsocial-dw-prod",
+    "moz-fx-data-bq-people",
 ]
 
 parser = ArgumentParser(description=__doc__)

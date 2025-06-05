@@ -1,0 +1,14 @@
+friendly_name: Firefox Whatsnew Summary
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_whatsnew_summary_v1
+require_column_descriptions: false

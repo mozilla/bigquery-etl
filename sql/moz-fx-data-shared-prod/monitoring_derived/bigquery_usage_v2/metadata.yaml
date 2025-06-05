@@ -14,8 +14,6 @@ scheduling:
     # wait for run at 6:00 UTC to get finished state
     # of jobs that start before midnight and end after 2:00
     execution_delta: -4h
-    poke_interval: 10m
-    timeout: 6h
 bigquery:
   time_partitioning:
     type: day

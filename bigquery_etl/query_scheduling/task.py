@@ -91,6 +91,8 @@ class TaskRef:
     schedule_interval: Optional[str] = attr.ib(None)
     date_partition_offset: Optional[int] = attr.ib(None)
     task_group: Optional[str] = attr.ib(None)
+    poke_interval: Optional[str] = attr.ib(None, kw_only=True)
+    timeout: Optional[str] = attr.ib(None, kw_only=True)
 
     @property
     def task_key(self):
@@ -112,6 +114,18 @@ class TaskRef:
         """Validate the schedule_interval format."""
         if value is not None and not is_schedule_interval(value):
             raise ValueError(f"Invalid schedule_interval {value}.")
+
+    @poke_interval.validator
+    def validate_poke_interval(self, attribute, value):
+        """Check that `poke_interval` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
+
+    @timeout.validator
+    def validate_timeout(self, attribute, value):
+        """Check that `timeout` is a valid timedelta string."""
+        if value is not None:
+            validate_timedelta_string(value)
 
     def get_execution_delta(self, schedule_interval):
         """Determine execution_delta, via schedule_interval if necessary."""

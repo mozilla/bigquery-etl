@@ -122,6 +122,13 @@ with DAG(
         "google_ads_derived__conversion_event_categorization__v1_external",
     ) as google_ads_derived__conversion_event_categorization__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_ga4_firefoxdotcom__wait_for_google_ads_derived__conversion_event_categorization__v1",
+            external_dag_id="bqetl_ga4_firefoxdotcom",
+            external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_google_analytics_derived_ga4__wait_for_google_ads_derived__conversion_event_categorization__v1",
             external_dag_id="bqetl_google_analytics_derived_ga4",
             external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",

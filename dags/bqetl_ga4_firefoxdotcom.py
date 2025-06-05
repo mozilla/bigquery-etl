@@ -56,6 +56,60 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+        external_dag_id="bqetl_mozilla_org_derived",
+        external_task_id="checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_clients_first_seen_v3 = ExternalTaskSensor(
+        task_id="wait_for_clients_first_seen_v3",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="clients_first_seen_v3",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_google_ads_derived__conversion_event_categorization__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
+            external_dag_id="bqetl_desktop_conv_evnt_categorization",
+            external_task_id="google_ads_derived__conversion_event_categorization__v1",
+            execution_delta=datetime.timedelta(seconds=7200),
+            check_existence=True,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=5),
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily__v6",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily__v6",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_firefoxdotcom_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_firefoxdotcom_events_table",
         project_id="moz-fx-data-marketing-prod",
@@ -84,6 +138,23 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
         parameters=["session_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__fail_firefoxdotcom_derived__gclid_conversions__v1 = bigquery_dq_check(
+        task_id="checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
+        source_table="gclid_conversions_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
 
@@ -145,6 +216,21 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/firefoxdotcom_derived/ga_sessions_v1/script.sql",
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__gclid_conversions__v1",
+        destination_table="gclid_conversions_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     firefoxdotcom_derived__www_site_downloads__v1 = bigquery_etl_query(
@@ -218,6 +304,10 @@ with DAG(
         firefoxdotcom_derived__ga_clients__v1
     )
 
+    checks__fail_firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        firefoxdotcom_derived__gclid_conversions__v1
+    )
+
     checks__warn_firefoxdotcom_derived__ga_sessions__v1.set_upstream(
         firefoxdotcom_derived__ga_sessions__v1
     )
@@ -232,6 +322,26 @@ with DAG(
 
     firefoxdotcom_derived__ga_sessions__v1.set_upstream(
         wait_for_firefoxdotcom_events_table
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        wait_for_clients_first_seen_v3
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        firefoxdotcom_derived__ga_sessions__v1
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        wait_for_google_ads_derived__conversion_event_categorization__v1
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        wait_for_telemetry_derived__clients_daily__v6
     )
 
     firefoxdotcom_derived__www_site_downloads__v1.set_upstream(

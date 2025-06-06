@@ -49,6 +49,7 @@ repos:
     entry: ./bqetl
     args: [format, --check]
     types: [sql]
+    exclude: sql_generators/.+\.sql$
 - repo: local
   hooks:
   - id: bqetl_backfill_validate

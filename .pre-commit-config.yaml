@@ -57,4 +57,4 @@ repos:
     entry: ./bqetl
     args: [backfill, validate-multiple, --ignore-missing-metadata]
     types: [yaml]
-    files: ^.+.backfill.yaml$
+    files: ^.+/backfill\.yaml$

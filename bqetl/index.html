@@ -1734,6 +1734,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#validate-multiple" class="md-nav__link">
+    <span class="md-ellipsis">
+      validate-multiple
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#info_4" class="md-nav__link">
     <span class="md-ellipsis">
       info
@@ -2425,6 +2434,15 @@
   <a href="#validate_4" class="md-nav__link">
     <span class="md-ellipsis">
       validate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-multiple" class="md-nav__link">
+    <span class="md-ellipsis">
+      validate-multiple
     </span>
   </a>
   
@@ -3242,6 +3260,23 @@ Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>-
 default<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
 
 <span class="w">    </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate
+</code></pre></div>
+<h4 id="validate-multiple"><code>validate-multiple</code></h4>
+<p>Validates multiple backfill.yaml files format and content.</p>
+<p><strong>Usage</strong></p>
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate-multiple<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>backfill_files<span class="o">]</span>
+</code></pre></div>
+<p><strong>Examples</strong></p>
+<div class="highlight"><pre><span></span><code>This<span class="w"> </span><span class="nb">command</span><span class="w"> </span>was<span class="w"> </span>created<span class="w"> </span>to<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>pre-commit<span class="w"> </span>hook<span class="w"> </span><span class="k">for</span><span class="w"> </span>backfill<span class="w"> </span>file<span class="w"> </span>changes<span class="w"> </span>related<span class="w"> </span>validation.
+
+
+<span class="c1"># validate all backfill.yaml files if table is not specified</span>
+Use<span class="w"> </span>the<span class="w"> </span><span class="sb">`</span>--project_id<span class="sb">`</span><span class="w"> </span>option<span class="w"> </span>to<span class="w"> </span>change<span class="w"> </span>the<span class="w"> </span>project<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>validated<span class="p">;</span>
+default<span class="w"> </span>is<span class="w"> </span><span class="sb">`</span>moz-fx-data-shared-prod<span class="sb">`</span>.
+
+Example:
+
+./bqetl<span class="w"> </span>backfill<span class="w"> </span>validate-multiple<span class="w">         </span>sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_daily_v1/backfill.yaml<span class="w">         </span>sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml
 </code></pre></div>
 <h4 id="info_4"><code>info</code></h4>
 <p>Get backfill(s) information from all or specific table(s).</p>

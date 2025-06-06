@@ -36,6 +36,7 @@ from bigquery_etl.cli.backfill import (
     initiate,
     scheduled,
     validate,
+    validate_multiple,
 )
 from bigquery_etl.cli.stage import QUERY_FILE
 from bigquery_etl.deploy import FailedDeployException
@@ -428,6 +429,39 @@ class TestBackfill:
             validate,
             [
                 "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_multiple_backfill_one_path(self, mock_date, runner):
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(BACKFILL_YAML_TEMPLATE)
+        assert BACKFILL_FILE in os.listdir(QUERY_DIR)
+
+        result = runner.invoke(
+            validate_multiple,
+            [
+                str(backfill_file),
+            ],
+        )
+        assert result.exit_code == 0
+
+    def test_validate_multiple_backfill_multi_path(
+        self, mock_date, setup_second_query, runner
+    ):
+        backfill_file_1 = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file_1.write_text(BACKFILL_YAML_TEMPLATE)
+        assert BACKFILL_FILE in os.listdir(QUERY_DIR)
+
+        backfill_file_2 = Path(QUERY_DIR_2) / BACKFILL_FILE
+        backfill_file_2.write_text(BACKFILL_YAML_TEMPLATE)
+        assert BACKFILL_FILE in os.listdir(QUERY_DIR_2)
+
+        result = runner.invoke(
+            validate_multiple,
+            [
+                str(backfill_file_1),
+                str(backfill_file_2),
             ],
         )
         assert result.exit_code == 0

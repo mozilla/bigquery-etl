@@ -1,7 +1,3 @@
-{{ header }}
-CREATE OR REPLACE VIEW
-  `{{ project_id }}.{{ dataset }}.{{ name }}`
-AS
 SELECT
   active_users.submission_date AS first_seen_date,
   client_id,
@@ -12,7 +8,6 @@ SELECT
   city,
   geo_subdivision,
   locale,
-  -- isp,  -- TODO: should this be here?
   normalized_os AS os,
   normalized_os_version AS os_version,
   device_model,
@@ -28,7 +23,7 @@ LEFT JOIN
   `{{ project_id }}.{{ dataset }}.attribution_clients` AS attribution
   USING(client_id, normalized_channel)
 WHERE
-  active_users.submission_date < CURRENT_DATE
+  active_users.submission_date = @submission_date
   AND is_new_profile
   AND is_daily_user
   AND active_users.submission_date = active_users.first_seen_date

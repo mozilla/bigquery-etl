@@ -2,12 +2,6 @@ fields:
 - name: usage_profile_id
   type: STRING
   mode: NULLABLE
-- name: normalized_app_id
-  type: STRING
-  mode: NULLABLE
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -17,10 +11,10 @@ fields:
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
-- name: normalized_app_id_1
+- name: normalized_app_id
   type: STRING
   mode: NULLABLE
-- name: normalized_channel_1
+- name: normalized_channel
   type: STRING
   mode: NULLABLE
 - name: first_run_date
@@ -46,12 +40,6 @@ fields:
   mode: NULLABLE
 - name: is_active
   type: BOOLEAN
-  mode: NULLABLE
-- name: normalized_app_id_2
-  type: STRING
-  mode: NULLABLE
-- name: normalized_channel_2
-  type: STRING
   mode: NULLABLE
 - name: first_seen_date
   type: DATE

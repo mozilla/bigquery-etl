@@ -1,4 +1,5 @@
 -- Query generated via `mobile_kpi_support_metrics` SQL generator.
+-- TODO: keeping this view as is for now until the new table get's backfilled.
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.klar_android.new_profile_clients`
 AS

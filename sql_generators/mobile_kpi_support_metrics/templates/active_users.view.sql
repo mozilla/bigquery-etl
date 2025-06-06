@@ -67,7 +67,7 @@ SELECT
   `mozfun.norm.browser_version_info`(app_display_version).patch_revision AS app_version_patch_revision,
   `mozfun.norm.browser_version_info`(app_display_version).is_major_release AS app_version_is_major_release,
   normalized_os AS os,
-  normalized_os_version AS os_version,
+  NULLIF(normalized_os_version, "") AS os_version,
   CAST(`mozfun.norm.truncate_version`(normalized_os_version, "major") AS INTEGER) AS os_version_major,
   CAST(`mozfun.norm.truncate_version`(normalized_os_version, "minor") AS INTEGER) AS os_version_minor,
   normalized_channel AS channel,

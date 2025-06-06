@@ -6,10 +6,8 @@ owners:
 labels:
   application: hubs
   schedule: daily
-  dag: bqetl_subplat
   owner1: srose
 scheduling:
-  dag_name: bqetl_subplat
   date_partition_offset: -7
   date_partition_parameter: date
 bigquery:

@@ -225,54 +225,6 @@ with DAG(
         retries=0,
     )
 
-    hubs_derived__active_subscription_ids__v1 = bigquery_etl_query(
-        task_id="hubs_derived__active_subscription_ids__v1",
-        destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="hubs_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=True,
-        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
-    )
-
-    hubs_derived__active_subscriptions__v1 = bigquery_etl_query(
-        task_id="hubs_derived__active_subscriptions__v1",
-        destination_table='active_subscriptions_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="hubs_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{macros.ds_add(ds, -7)}}"],
-    )
-
-    hubs_derived__subscription_events__v1 = bigquery_etl_query(
-        task_id="hubs_derived__subscription_events__v1",
-        destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -8), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="hubs_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["date:DATE:{{macros.ds_add(ds, -8)}}"],
-    )
-
-    hubs_derived__subscriptions__v1 = bigquery_etl_query(
-        task_id="hubs_derived__subscriptions__v1",
-        destination_table="subscriptions_v1",
-        dataset_id="hubs_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-    )
-
     mozilla_vpn_derived__active_subscription_ids__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__active_subscription_ids__v1",
         destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
@@ -1803,26 +1755,6 @@ with DAG(
         subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
     )
 
-    hubs_derived__active_subscription_ids__v1.set_upstream(
-        hubs_derived__subscriptions__v1
-    )
-
-    hubs_derived__active_subscriptions__v1.set_upstream(
-        hubs_derived__active_subscription_ids__v1
-    )
-
-    hubs_derived__active_subscriptions__v1.set_upstream(hubs_derived__subscriptions__v1)
-
-    hubs_derived__subscription_events__v1.set_upstream(
-        hubs_derived__active_subscription_ids__v1
-    )
-
-    hubs_derived__subscription_events__v1.set_upstream(hubs_derived__subscriptions__v1)
-
-    hubs_derived__subscriptions__v1.set_upstream(
-        subscription_platform_derived__stripe_subscriptions_history__v1
-    )
-
     mozilla_vpn_derived__active_subscription_ids__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
@@ -2130,18 +2062,6 @@ with DAG(
     )
 
     stripe_external__tax_rate__v1.set_upstream(fivetran_stripe_sync_start)
-
-    subscription_platform_derived__active_subscriptions__v1.set_upstream(
-        hubs_derived__active_subscription_ids__v1
-    )
-
-    subscription_platform_derived__active_subscriptions__v1.set_upstream(
-        hubs_derived__active_subscriptions__v1
-    )
-
-    subscription_platform_derived__active_subscriptions__v1.set_upstream(
-        hubs_derived__subscriptions__v1
-    )
 
     subscription_platform_derived__active_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__active_subscription_ids__v1

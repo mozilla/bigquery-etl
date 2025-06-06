@@ -158,6 +158,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_firefoxdotcom_derived__gclid_conversions__v1_external",
+    ) as checks__fail_firefoxdotcom_derived__gclid_conversions__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_census_feed__wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
+            external_dag_id="bqetl_census_feed",
+            external_task_id="wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        checks__fail_firefoxdotcom_derived__gclid_conversions__v1_external.set_upstream(
+            checks__fail_firefoxdotcom_derived__gclid_conversions__v1
+        )
+
     checks__warn_firefoxdotcom_derived__ga_sessions__v1 = bigquery_dq_check(
         task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v1",
         source_table="ga_sessions_v1",

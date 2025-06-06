@@ -8,7 +8,7 @@ fields:
     name: candidate_set_type
     description: Indicates if candidate set consists of either prospects for curation or candidates for recommendation slates
   - mode: NULLABLE
-    type: INTEGER
+    type: TIMESTAMP
     name: expires_at
     description: The date at which this candidate set is no longer "fresh".
   - mode: NULLABLE

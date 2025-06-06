@@ -2,7 +2,7 @@ SELECT
   JSON_VALUE(run_details.candidate_set_id) AS candidate_set_id,
   -- line below is copied over from original DBT model
   'prospect' AS candidate_set_type, -- the hardcoding is for backward compatiblility with the legacy item feed from candidate set generation
-  LAX_INT64(run_details.expires_at) AS expires_at,
+  TIMESTAMP_SECONDS(LAX_INT64(run_details.expires_at)) AS expires_at,
   JSON_VALUE(run_details.flow) AS flow,
   happened_at,
   topic AS predicted_topic,

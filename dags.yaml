@@ -2280,8 +2280,8 @@ bqetl_content_ml_daily:
     Daily extracts for corpus item data to be evaluated for new tab presentation.
   default_args:
     owner: skamath@mozilla.com
-    # manually started in Airflow on 2025-05-27
-    start_date: "2025-05-27"
+    # manually started in Airflow on 2025-05-26
+    start_date: "2025-05-26"
     email: ["skamath@mozilla.com", "rrando@mozilla.com"]
     retries: 2
     retry_delay: 30m

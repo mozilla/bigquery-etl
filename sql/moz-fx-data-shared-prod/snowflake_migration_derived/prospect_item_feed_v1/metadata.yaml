@@ -10,10 +10,6 @@ labels:
   owner2: rrando
 scheduling:
   dag_name: bqetl_content_ml_daily
-  # be specific about which tables this depends on so the DAG can execute
-  # jobs in the proper order
-  referenced_tables:
-    - ["moz-fx-data-shared-prod", "snowflake_migration_derived", "prospects_v1"]
 bigquery:
   time_partitioning:
     type: day

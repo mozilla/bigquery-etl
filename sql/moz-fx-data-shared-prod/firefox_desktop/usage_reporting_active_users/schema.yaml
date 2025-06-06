@@ -17,6 +17,12 @@ fields:
 - name: days_created_profile_bits
   type: INTEGER
   mode: NULLABLE
+- name: normalized_app_id_1
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel_1
+  type: STRING
+  mode: NULLABLE
 - name: first_run_date
   type: DATE
   mode: NULLABLE
@@ -43,6 +49,12 @@ fields:
   mode: NULLABLE
 - name: windows_build_number
   type: INTEGER
+  mode: NULLABLE
+- name: normalized_app_id_2
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel_2
+  type: STRING
   mode: NULLABLE
 - name: first_seen_date
   type: DATE

@@ -7,24 +7,21 @@ WITH _current AS (
     {% else %}
       @submission_date AS first_seen_date,
     {% endif %}
-    app_channel,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_beta.usage_reporting_clients_daily`
   WHERE
     usage_profile_id IS NOT NULL
     {% if is_init() %}
       AND submission_date > "2014-10-10"
+      GROUP BY
+        usage_profile_id
     {% else %}
       AND submission_date = @submission_date
     {% endif %}
-  GROUP BY
-    usage_profile_id,
-    app_channel
 ),
 _previous AS (
   SELECT
     usage_profile_id,
-    app_channel,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.usage_reporting_clients_first_seen_v1`
   WHERE
@@ -37,12 +34,11 @@ _previous AS (
 SELECT
   first_seen_date,
   usage_profile_id,
-  app_channel,
 FROM
   _current
 LEFT JOIN
   _previous
-  USING (usage_profile_id, app_channel)
+  USING (usage_profile_id)
 WHERE
   _previous.usage_profile_id IS NULL
 QUALIFY

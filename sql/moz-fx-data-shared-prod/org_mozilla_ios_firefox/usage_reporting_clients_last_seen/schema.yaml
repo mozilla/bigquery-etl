@@ -14,9 +14,6 @@ fields:
 - name: app_channel
   type: STRING
   mode: NULLABLE
-  description: 'The channel the application is being distributed on.
-
-    '
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE

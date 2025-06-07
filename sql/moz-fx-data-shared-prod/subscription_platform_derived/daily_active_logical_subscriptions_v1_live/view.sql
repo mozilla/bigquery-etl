@@ -6,7 +6,7 @@ WITH dates AS (
     `date`,
     (`date` + 1) AS next_date
   FROM
-    UNNEST(GENERATE_DATE_ARRAY('2019-10-10', (CURRENT_DATE() - 1))) AS `date`
+    UNNEST(GENERATE_DATE_ARRAY('2019-10-10', CURRENT_DATE())) AS `date`
 ),
 daily_active_subscriptions_history AS (
   SELECT

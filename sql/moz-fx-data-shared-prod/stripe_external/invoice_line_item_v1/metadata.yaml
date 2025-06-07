@@ -3,9 +3,9 @@ description: Production Stripe invoice_line_item table from Fivetran
 owners:
   - srose@mozilla.com
 labels:
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null

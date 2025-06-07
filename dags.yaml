@@ -160,12 +160,10 @@ bqetl_accounts_derived:
     - repo/bigquery-etl
 
 bqetl_subplat:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 30 1 * * *
   description: |
     Daily imports for Subscription Platform data from Stripe, Firestore, and the Mozilla VPN
     operational DB as well as derived tables based on that data.
-
-    Scheduled mid-day to allow more time for late-arriving data from the previous day.
 
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
@@ -174,13 +172,30 @@ bqetl_subplat:
     In such cases the failure is expected, the task will continue to retry every
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
-
   default_args:
     owner: srose@mozilla.com
-    start_date: "2025-05-20"
+    start_date: "2025-06-05"
     email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
+
+bqetl_subplat_hourly:
+  schedule_interval: 30 * * * *
+  description: |
+    Hourly imports for Subscription Platform data from Stripe and Firestore,
+    as well as derived tables based on that data.
+
+    This DAG is scheduled with consideration for its ETLs that write to date-partitioned tables,
+    so the last run targeting a particular date partition will happen at 00:30 the following day,
+    allowing time for all of the data for that date to be ready from external systems like Stripe.
+  default_args:
+    owner: srose@mozilla.com
+    start_date: "2025-06-05"
+    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    retries: 1
+    retry_delay: 5m
   tags:
     - impact/tier_1
 

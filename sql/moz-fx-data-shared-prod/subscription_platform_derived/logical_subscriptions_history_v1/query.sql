@@ -36,32 +36,30 @@ customer_attribution_impressions AS (
   UNION ALL
   -- Include historical VPN attributions from before VPN's SubPlat funnel was implemented on 2021-08-25.
   SELECT
-    users.fxa_uid AS mozilla_account_id_sha256,
-    users.created_at AS impression_at,
+    fxa_uid AS mozilla_account_id_sha256,
+    user_created_at AS impression_at,
     CAST(NULL AS STRING) AS entrypoint,
-    users_attribution.attribution.entrypoint_experiment,
-    users_attribution.attribution.entrypoint_variation,
-    users_attribution.attribution.utm_campaign,
-    users_attribution.attribution.utm_content,
-    users_attribution.attribution.utm_medium,
-    users_attribution.attribution.utm_source,
-    users_attribution.attribution.utm_term,
+    attribution.entrypoint_experiment,
+    attribution.entrypoint_variation,
+    attribution.utm_campaign,
+    attribution.utm_content,
+    attribution.utm_medium,
+    attribution.utm_source,
+    attribution.utm_term,
     ['VPN'] AS service_ids
   FROM
-    `moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v1` AS users_attribution
-  JOIN
-    `moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1` AS users
-    ON users_attribution.user_id = users.id
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v2`
   WHERE
-    DATE(users.created_at) <= '2021-08-25'
+    fxa_uid IS NOT NULL
+    AND DATE(user_created_at) <= '2021-08-25'
     AND (
-      users_attribution.attribution.entrypoint_experiment IS NOT NULL
-      OR users_attribution.attribution.entrypoint_variation IS NOT NULL
-      OR users_attribution.attribution.utm_campaign IS NOT NULL
-      OR users_attribution.attribution.utm_content IS NOT NULL
-      OR users_attribution.attribution.utm_medium IS NOT NULL
-      OR users_attribution.attribution.utm_source IS NOT NULL
-      OR users_attribution.attribution.utm_term IS NOT NULL
+      attribution.entrypoint_experiment IS NOT NULL
+      OR attribution.entrypoint_variation IS NOT NULL
+      OR attribution.utm_campaign IS NOT NULL
+      OR attribution.utm_content IS NOT NULL
+      OR attribution.utm_medium IS NOT NULL
+      OR attribution.utm_source IS NOT NULL
+      OR attribution.utm_term IS NOT NULL
     )
 ),
 subscription_starts AS (

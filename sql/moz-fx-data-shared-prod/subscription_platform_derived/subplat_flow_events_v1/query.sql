@@ -31,15 +31,59 @@ WITH new_flow_events AS (
     ua_browser,
     ua_version,
   FROM
+    `moz-fx-data-shared-prod.firefox_accounts.recent_fxa_all_events`
+  WHERE
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
+    AND flow_id IS NOT NULL
+    {% if not is_init() %}
+      AND DATE(`timestamp`) = @date
+    {% endif %}
+  UNION ALL
+  SELECT
+    logger,
+    `timestamp` AS log_timestamp,
+    COALESCE(event_time, `timestamp`) AS event_time,
+    event_type,
+    flow_id,
+    user_id AS mozilla_account_id_sha256,
+    oauth_client_id,
+    service AS oauth_client_name,
+    checkout_type,
+    payment_provider,
+    subscription_id,
+    product_id,
+    plan_id,
+    entrypoint,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_campaign,
+    utm_content,
+    utm_medium,
+    utm_source,
+    utm_term,
+    promotion_code,
+    country_code_source,
+    country_code,
+    country,
+    `language`,
+    os_name,
+    os_version,
+    ua_browser,
+    ua_version,
+  FROM
     `moz-fx-data-shared-prod.firefox_accounts.fxa_all_events`
   WHERE
     fxa_log IN ('content', 'auth', 'stdout', 'payments')
     AND flow_id IS NOT NULL
-    {% if is_init() %}
-      AND DATE(`timestamp`) < CURRENT_DATE()
-    {% else %}
+    {% if not is_init() %}
       AND DATE(`timestamp`) = @date
     {% endif %}
+    AND DATE(`timestamp`) < (
+      SELECT
+        MIN(DATE(`timestamp`))
+      FROM
+        `moz-fx-data-shared-prod.firefox_accounts.recent_fxa_all_events`
+    )
 ),
 services_metadata AS (
   SELECT

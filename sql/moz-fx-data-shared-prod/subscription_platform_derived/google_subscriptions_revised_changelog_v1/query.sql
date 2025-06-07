@@ -130,13 +130,10 @@ synthetic_subscription_suspected_expiration_changelog AS (
   WHERE
     subscription_change_number = subscription_change_count
     AND subscription.expiry_time > `timestamp`
-    -- Wait at least 12 hours before assuming the subscription has expired, which will hopefully
+    -- Wait at least 24 hours before assuming the subscription has expired, which will hopefully
     -- allow the majority of late-arriving changelog data to arrive (based on late-arriving data
-    -- seen prior to 2025-04-16, waiting 12 hours would have covered ~86% of such cases).
-    AND subscription.expiry_time < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 12 HOUR)
-    -- Ignore suspected expirations during the current day, as these ETLs run daily and are
-    -- primarily intended to process the previous day's data.
-    AND subscription.expiry_time < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY)
+    -- seen prior to 2025-06-04, waiting 24 hours would have covered ~95% of such cases).
+    AND subscription.expiry_time < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)
 ),
 changelog_union AS (
   SELECT

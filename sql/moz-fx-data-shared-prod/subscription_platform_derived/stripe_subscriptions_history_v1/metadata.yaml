@@ -11,3 +11,43 @@ scheduling:
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null
+  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
+  # to wait for the concurrent bqetl_subplat_hourly DAG tasks to complete so the
+  # dependent tables are in a consistent state.
+  depends_on:
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__card__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__charge__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__coupon__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__customer__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__invoice_discount__v2
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__invoice__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__plan__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__product__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__promotion_code__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__refund__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__subscription_history__v1
+      execution_delta: -23h
+    - dag_name: bqetl_subplat_hourly
+      task_id: stripe_external__subscription_item__v1
+      execution_delta: -23h

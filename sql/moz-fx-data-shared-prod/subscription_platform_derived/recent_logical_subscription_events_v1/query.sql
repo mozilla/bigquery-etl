@@ -62,4 +62,4 @@ WHERE
         `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscription_events_v1`
     )
   )
-  AND DATE(`timestamp`) <= CURRENT_DATE() - 1
+  AND DATE(`timestamp`) <= DATE(TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR))

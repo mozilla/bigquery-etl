@@ -1,0 +1,9 @@
+2025-05-28:
+  start_date: 2023-04-15
+  end_date: 2025-05-28
+  reason: Initial backfill for the table
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false

@@ -30,4 +30,3 @@ workgroup_access:
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc
 deprecated: true
-

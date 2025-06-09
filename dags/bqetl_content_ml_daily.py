@@ -31,9 +31,9 @@ skamath@mozilla.com
 
 default_args = {
     "owner": "skamath@mozilla.com",
-    "start_date": datetime.datetime(2025, 5, 5, 0, 0),
+    "start_date": datetime.datetime(2025, 5, 26, 0, 0),
     "end_date": None,
-    "email": ["skamath@mozilla.com", "mlcooper@mozilla.com"],
+    "email": ["skamath@mozilla.com", "rrando@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=1800),
     "email_on_failure": True,
@@ -53,14 +53,29 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    snowflake_migration_derived__prospect_item_feed__v1 = bigquery_etl_query(
+        task_id="snowflake_migration_derived__prospect_item_feed__v1",
+        destination_table="prospect_item_feed_v1",
+        dataset_id="snowflake_migration_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="skamath@mozilla.com",
+        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     snowflake_migration_derived__prospects__v1 = bigquery_etl_query(
         task_id="snowflake_migration_derived__prospects__v1",
         destination_table="prospects_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
         owner="skamath@mozilla.com",
-        email=["mlcooper@mozilla.com", "skamath@mozilla.com"],
+        email=["rrando@mozilla.com", "skamath@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    snowflake_migration_derived__prospect_item_feed__v1.set_upstream(
+        snowflake_migration_derived__prospects__v1
     )

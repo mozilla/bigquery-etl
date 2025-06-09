@@ -150,3 +150,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Identifier derived from the user agent downloading the installer.
+- name: windows_version
+  type: STRING
+  mode: NULLABLE

@@ -227,11 +227,25 @@ def main():
             **dict(app_id_channel=(f"'{channel_prefixes[args.prefix]}'")),
         ),
         init(
+            "clients_scalar_aggregates_new_v1",
+            **models.clients_scalar_aggregates_new(
+                destination_table=(
+                    f"glam_etl.{args.prefix}__clients_scalar_aggregates_new_v1"
+                ),
+            ),
+        ),
+        table(
+            "clients_scalar_aggregates_new_v1",
+            **models.clients_scalar_aggregates_new(
+                destination_table=(
+                    f"glam_etl.{args.prefix}__clients_scalar_aggregates_new_v1"
+                ),
+                **config[args.prefix],
+            ),
+        ),
+        init(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(
-                source_table=(
-                    f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"
-                ),
                 destination_table=(
                     f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
                 ),
@@ -240,13 +254,20 @@ def main():
         table(
             "clients_scalar_aggregates_v1",
             **models.clients_scalar_aggregates(
-                source_table=(
-                    f"glam_etl.{args.prefix}__view_clients_daily_scalar_aggregates_v1"
-                ),
                 destination_table=(
                     f"glam_etl.{args.prefix}__clients_scalar_aggregates_v1"
                 ),
                 **config[args.prefix],
+            ),
+        ),
+        init(
+            "clients_histogram_aggregates_new_v1",
+            **models.clients_histogram_aggregates_new(parameterize=True),
+        ),
+        table(
+            "clients_histogram_aggregates_new_v1",
+            **models.clients_histogram_aggregates_new(
+                parameterize=True, **config[args.prefix]
             ),
         ),
         init(

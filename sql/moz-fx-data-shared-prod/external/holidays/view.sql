@@ -57,6 +57,22 @@ WITH staging AS (
     ) AS us_presidents_day,
     IF(
       submission_date IN (
+        '2020-03-19',
+        '2021-03-20',
+        '2022-03-20',
+        '2023-03-20',
+        '2024-03-19',
+        '2025-03-20',
+        '2026-03-20',
+        '2027-03-20',
+        '2028-03-19',
+        '2029-03-20'
+      ),
+      1,
+      0
+    ) AS nowruz,
+    IF(
+      submission_date IN (
         '2020-03-10',
         '2021-03-29',
         '2022-03-18',
@@ -494,6 +510,7 @@ SELECT
   stg.us_superbowl,
   stg.valentines_day,
   stg.us_presidents_day,
+  stg.nowruz,
   stg.in_holi,
   stg.eid_al_fitr,
   stg.good_friday_eastern,
@@ -538,6 +555,7 @@ SELECT
     IF(stg.us_superbowl = 1, ['US_SuperBowl'], []),
     IF(stg.valentines_day = 1, ['ValentinesDay'], []),
     IF(stg.us_presidents_day = 1, ['US_PresidentsDay'], []),
+    IF(stg.nowruz = 1, ['Nowruz'], []),
     IF(stg.in_holi = 1, ['IN_Holi'], []),
     IF(stg.eid_al_fitr = 1, ['EidAlFitr'], []),
     IF(stg.good_friday_eastern = 1, ['GoodFriday_Eastern'], []),

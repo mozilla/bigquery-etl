@@ -144,9 +144,9 @@ beautifulsoup4==4.13.4 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.5.1 \
-    --hash=sha256:103c92a7117e48066aeac105ccf3596292d7ec973c92fbbdde77126ec3e0e0e0 \
-    --hash=sha256:6827c3a48278b5486c7429cff04c553874577c4f3c322f74d000fe91b9dd37c3
+bigeye-sdk==0.6.0 \
+    --hash=sha256:40b339dd89c0e932433a59647c828f095a97b6009398fb4427ad034e6b5d06dd \
+    --hash=sha256:d571c890d71f98302005a31d2e10675ffa714ee36849e8a7aa01aec10c844c4a
     # via -r requirements.in
 black==25.1.0 \
     --hash=sha256:030b9759066a4ee5e5aca28c3c77f9c64789cdd4de8ac1df642c40b708be6171 \
@@ -181,13 +181,13 @@ boltons==23.1.1 \
     # via
     #   face
     #   glom
-boto3==1.35.11 \
-    --hash=sha256:bdfb8dd2564e5cf2f5095fb8e3a0a4612202654c1196692dddd9bc48aadc7657 \
-    --hash=sha256:f5834dd908edda56c3da86b908693c7cd1c17c2f8150de736e9e90c56ecc78f6
+boto3==1.35.99 \
+    --hash=sha256:83e560faaec38a956dfb3d62e05e1703ee50432b45b788c09e25107c5058bd71 \
+    --hash=sha256:e0abd794a7a591d90558e92e29a9f8837d25ece8e3c120e530526fe27eba5fca
     # via bigeye-sdk
-botocore==1.35.11 \
-    --hash=sha256:e9b647b6cf1f63fd701c27433802d1c4342838a37fd152b40fe53b967fd19af4 \
-    --hash=sha256:f5f671f8f9566f28bed496017ea94d275ca5c253e9e4f91cd56cb7a293e37d0c
+botocore==1.35.99 \
+    --hash=sha256:1eab44e969c39c5f3d9a3104a0836c24715579a455f12b3979a31d7cde51b3c3 \
+    --hash=sha256:b22d27b6b617fc2d7342090d6129000af2efd20174215948c0d7ae2da0fab445
     # via
     #   bigeye-sdk
     #   boto3

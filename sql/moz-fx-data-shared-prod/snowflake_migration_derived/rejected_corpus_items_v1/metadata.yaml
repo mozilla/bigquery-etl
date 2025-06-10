@@ -1,6 +1,6 @@
-friendly_name: Prospects v1
+friendly_name: Rejected Corpus Items v1
 description: |-
-  Model prospective article options for the Fx New Tab from raw Snowplow data
+  Model corpus item rejected events for the Fx New Tab from stg_reviewed_corpus_items_v1 and prospect_item_feed_v1 tables
 owners:
 - skamath@mozilla.com
 - rrando@mozilla.com
@@ -12,7 +12,6 @@ labels:
   dag: bqetl_content_ml_daily
 scheduling:
   dag_name: bqetl_content_ml_daily
-  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day
@@ -22,16 +21,13 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-    - prospect_source
-    - language
-    - topic
-    - publisher
-    - prospect_review_status
+    - scheduled_surface_id
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - moz-fx-data-shared-prod.snowplow_external.events
+  - moz-fx-data-shared-prod.snowflake_migration_derived.prospect_item_feed_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.stg_reviewed_corpus_items_v1
 require_column_descriptions: false

@@ -351,6 +351,22 @@ WITH staging AS (
       1,
       0
     ) AS us_labor_day,
+    IF(
+      submission_date IN (
+        '2020-10-30',
+        '2021-10-19',
+        '2022-10-08',
+        '2023-09-28',
+        '2024-09-16',
+        '2025-09-05',
+        '2026-08-26',
+        '2027-08-14',
+        '2028-08-02',
+        '2029-07-23'
+      ),
+      1,
+      0
+    ) AS prophets_birthday,
     IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS br_independence_day,
     IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
     IF(
@@ -597,6 +613,7 @@ SELECT
   stg.fr_national_day,
   stg.ashura,
   stg.us_labor_day,
+  stg.prophets_birthday,
   stg.br_independence_day,
   stg.mx_independence_day,
   stg.us_thanksgiving,
@@ -648,6 +665,7 @@ SELECT
     IF(stg.fr_national_day = 1, ['FR_NationalDay'], []),
     IF(stg.ashura = 1, ['Ashura'], []),
     IF(stg.us_labor_day = 1, ['US_LaborDay'], []),
+    IF(stg.prophets_birthday = 1, ['ProphetBirthday'], []),
     IF(stg.br_independence_day = 1, ['BR_IndependenceDay'], []),
     IF(stg.mx_independence_day = 1, ['MX_IndependenceDay'], []),
     IF(stg.us_thanksgiving = 1, ['US_Thanksgiving'], []),

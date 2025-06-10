@@ -71,7 +71,7 @@ with DAG(
             task_id="bqetl_monitoring__wait_for_monitoring_derived__jobs_by_organization__v1",
             external_dag_id="bqetl_monitoring",
             external_task_id="wait_for_monitoring_derived__jobs_by_organization__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=14400)).isoformat() }}",
         )
 
         ExternalTaskMarker(

@@ -63,6 +63,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Normalized OS Version
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows Version
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

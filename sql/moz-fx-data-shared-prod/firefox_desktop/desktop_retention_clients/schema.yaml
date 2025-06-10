@@ -84,6 +84,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Normalized Operating System Version
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows Version
 - name: distribution_id
   type: STRING
   mode: NULLABLE
@@ -100,10 +104,10 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Days Seen Bits
-- name: days_active_bits
+- name: days_desktop_active_bits
   type: INTEGER
   mode: NULLABLE
-  description: Days Active Bits
+  description: Days Desktop Active Bits
 - name: ping_sent_metric_date
   type: BOOLEAN
   mode: NULLABLE

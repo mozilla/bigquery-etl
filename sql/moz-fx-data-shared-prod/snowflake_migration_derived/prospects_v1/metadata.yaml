@@ -25,3 +25,4 @@ bigquery:
       - language
       - topic
       - publisher
+      - prospect_review_status

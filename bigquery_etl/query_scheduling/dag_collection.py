@@ -11,6 +11,7 @@ import yaml
 from black import FileMode, format_file_contents
 
 from bigquery_etl.query_scheduling.dag import Dag, InvalidDag, PublicDataJsonDag
+from bigquery_etl.query_scheduling.utils import negate_timedelta_string
 
 
 class DagCollection:
@@ -147,8 +148,14 @@ class DagCollection:
                     for upstream_dependency in (
                         _task.depends_on + _task.upstream_dependencies
                     ):
+                        execution_delta = None
+                        if upstream_dependency.execution_delta:
+                            # Make the execution delta relative to the upstream dependency.
+                            execution_delta = negate_timedelta_string(
+                                upstream_dependency.execution_delta
+                            )
                         downstream_dependencies[upstream_dependency.task_key].append(
-                            _task.to_ref(self)
+                            _task.to_ref(self, execution_delta=execution_delta)
                         )
             self._downstream_dependencies = downstream_dependencies
 

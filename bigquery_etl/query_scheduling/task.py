@@ -654,12 +654,13 @@ class Task:
 
         return task
 
-    def to_ref(self, dag_collection):
+    def to_ref(self, dag_collection, execution_delta=None):
         """Return the task as `TaskRef`."""
         return TaskRef(
             dag_name=self.dag_name,
             task_id=self.task_name,
             date_partition_offset=self.date_partition_offset,
+            execution_delta=execution_delta,
             schedule_interval=dag_collection.dag_by_name(
                 self.dag_name
             ).schedule_interval,

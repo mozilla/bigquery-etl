@@ -475,6 +475,22 @@ WITH staging AS (
       1,
       0
     ) AS in_diwali,
+    IF(
+      submission_date IN (
+        '2020-10-25',
+        '2021-10-15',
+        '2022-10-05',
+        '2023-10-24',
+        '2024-10-12',
+        '2025-10-02',
+        '2026-10-20',
+        '2027-10-09',
+        '2028-09-27',
+        '2029-10-16'
+      ),
+      1,
+      0
+    ) AS dussehra,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 11, 1, 0) AS us_veterans_day,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
     IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
@@ -623,6 +639,7 @@ SELECT
   stg.amazon_prime_days_summer,
   stg.de_unity_day,
   stg.in_diwali,
+  stg.dussehra,
   stg.us_veterans_day,
   stg.mx_revolution_day,
   stg.halloween,
@@ -675,6 +692,7 @@ SELECT
     IF(stg.amazon_prime_days_summer = 1, ['AmazonSummerPrimeDays'], []),
     IF(stg.de_unity_day = 1, ['DE_UnityDay'], []),
     IF(stg.in_diwali = 1, ['IN_Diwali'], []),
+    IF(stg.dussehra = 1, ['Dussehra'], []),
     IF(stg.us_veterans_day = 1, ['US_VeteransDay'], []),
     IF(stg.mx_revolution_day = 1, ['MX_RevolutionDay'], []),
     IF(stg.halloween = 1, ['Halloween'], []),

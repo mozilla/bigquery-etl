@@ -1,0 +1,16 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+- name: usage_profile_id
+  type: STRING
+  mode: NULLABLE
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_created_profile_bits
+  type: INTEGER
+  mode: NULLABLE

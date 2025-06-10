@@ -5,11 +5,11 @@ WITH active_users AS (
     au.sample_id,
     mozfun.bits28.retention(au.days_seen_bits, au.submission_date) AS retention_seen,
     mozfun.bits28.retention(
-      au.days_active_bits & au.days_seen_bits,
+      au.days_desktop_active_bits & au.days_seen_bits,
       au.submission_date
     ) AS retention_active,
     au.days_seen_bits,
-    au.days_active_bits,
+    au.days_desktop_active_bits,
     au.is_desktop
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users` AS au
@@ -38,6 +38,7 @@ new_profiles AS (
     cfs.isp,
     cfs.normalized_channel,
     cfs.normalized_os,
+    cfs.windows_version,
     COALESCE(
       windows_version,
       NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
@@ -46,7 +47,7 @@ new_profiles AS (
     TRUE AS is_new_profile,
     au.retention_active.day_27.active_in_week_3 AS retained_week_4_new_profile,
     BIT_COUNT(
-      mozfun.bits28.from_string('0111111111111111111111111111') & au.days_active_bits
+      mozfun.bits28.from_string('0111111111111111111111111111') & au.days_desktop_active_bits
     ) > 0 AS repeat_profile
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_first_seen` cfs
@@ -82,14 +83,11 @@ clients_data AS (
     au.is_desktop,
     cd.isp,
     au.days_seen_bits,
-    au.days_active_bits,
+    au.days_desktop_active_bits,
     cd.normalized_os,
+    cd.windows_version,
     COALESCE(
-      mozfun.norm.glean_windows_version_info(
-        cd.normalized_os,
-        cd.normalized_os_version,
-        cd.windows_build_number
-      ),
+      cd.windows_version,
       NULLIF(SPLIT(cd.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
     ) AS normalized_os_version,
     au.retention_seen.day_27.active_in_week_3 AS retention_active_in_week_3,
@@ -136,11 +134,12 @@ SELECT
   COALESCE(cd.attribution_variation, np.attribution_variation) AS attribution_variation,
   COALESCE(cd.normalized_os, np.normalized_os) AS normalized_os,
   COALESCE(cd.normalized_os_version, np.normalized_os_version) AS normalized_os_version,
+  COALESCE(cd.windows_version, np.windows_version) AS windows_version,
   COALESCE(cd.distribution_id, np.distribution_id) AS distribution_id,
   COALESCE(cd.isp, np.isp) AS isp,
   COALESCE(cd.is_desktop, np.is_desktop) AS is_desktop,
   cd.days_seen_bits,
-  cd.days_active_bits,
+  cd.days_desktop_active_bits,
   cd.ping_sent_metric_date,
   cd.ping_sent_week_4,
   cd.active_metric_date,

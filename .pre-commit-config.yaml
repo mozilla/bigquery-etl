@@ -50,3 +50,12 @@ repos:
     args: [format, --check]
     types: [sql]
     exclude: sql_generators/.+\.sql$
+- repo: local
+  hooks:
+  - id: bqetl_backfill_validate
+    name: bqetl_backfill_validate
+    language: script
+    entry: ./bqetl
+    args: [backfill, validate-multiple, --ignore-missing-metadata]
+    types: [yaml]
+    files: ^.+/backfill\.yaml$

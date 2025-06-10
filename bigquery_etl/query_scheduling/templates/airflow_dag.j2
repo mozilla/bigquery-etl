@@ -106,7 +106,15 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {% endif -%}
         check_existence=True,
         mode='reschedule',
-        poke_interval=datetime.timedelta(minutes=5),
+        poke_interval=
+        {%- if dependency.poke_interval != None -%}
+        {{ dependency.poke_interval | format_timedelta | format_repr }}
+        {%- else -%}
+        datetime.timedelta(minutes=5)
+        {%- endif -%},
+        {% if dependency.timeout -%}
+        timeout={{ dependency.timeout | format_timedelta | format_repr }},
+        {% endif -%}
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool='DATA_ENG_EXTERNALTASKSENSOR',

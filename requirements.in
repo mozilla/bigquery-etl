@@ -1,14 +1,13 @@
 attrs==25.3.0
 authlib==1.6.0
 beautifulsoup4==4.13.4
-bigeye-sdk==0.5.1
+bigeye-sdk==0.6.0
 black==25.1.0
 cattrs==24.1.3
 click==8.1.8
-cryptography==45.0.2
+cryptography==45.0.4
 exceptiongroup==1.3.0 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
-gcsfs==2025.3.2
 gcloud==0.18.3
 gitpython==3.1.44
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.
@@ -56,5 +55,5 @@ types-ujson==5.10.0.20250326
 typing==3.7.4.3
 ujson==5.10.0
 yamllint==1.37.1
-requests==2.32.3
+requests==2.32.4
 responses==0.25.7

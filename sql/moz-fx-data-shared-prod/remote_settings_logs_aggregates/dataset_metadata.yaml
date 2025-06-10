@@ -1,10 +1,10 @@
-friendly_name: remote_settings_logs_aggregates_syndicate
+friendly_name: remote_settings_logs_aggregates
 description: |
   This dataset contains Remote Settings CDN requests logs aggregates per endpoints
   and collections. It is derived from the load balancer logs using a BigQuery Transfer
   job that runs every day.
 dataset_base_acl: syndicate
-user_facing: false
+user_facing: true
 labels: {}
 syndication:
   stage:

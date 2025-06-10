@@ -1,0 +1,172 @@
+fields:
+  - mode: NULLABLE
+    type: STRING
+    name: action_ui_page
+    description: "
+      Indicates where in the Curation Tools UI the action took place Null if the action was
+      performed by a backend ML process"
+  - mode: NULLABLE
+    type: STRING
+    name: approved_corpus_item_external_id
+    description: "Backend identifier for reviewed_corpus_item's approved_corpus_item_external_id"
+  - mode: NULLABLE
+    type: STRING
+    name: authors
+    description: The list of authors of the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: br_lang
+    description: Language the user's browser/device is set to.
+  - mode: NULLABLE
+    type: JSON
+    name: contexts_com_iab_snowplow_spiders_and_robots_1
+    description: Snowplow's out-of-the-box spider and bot detection enrichment.
+  - mode: NULLABLE
+    type: JSON
+    name: contexts_com_pocket_api_user_1
+    description: The custom Pocket api_user entity.
+  - mode: NULLABLE
+    type: JSON
+    name: contexts_com_snowplowanalytics_snowplow_ua_parser_context_1
+    description: "Snowplow's in-house user agent parsing enrichment."
+  - mode: NULLABLE
+    type: JSON
+    name: contexts_nl_basjes_yauaa_context_1
+    description: Snowplow's YAUAA user agent parsing enrichment.
+  - mode: NULLABLE
+    type: STRING
+    name: corpus_review_status
+    description: "The curator's decision on the item's validity for the curated corpus"
+  - mode: NULLABLE
+    type: STRING
+    name: curator_created_by
+    description: The curator who created the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: curator_updated_by
+    description: The curator who updated the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: event_id
+    description: A UUID for each event
+  - mode: NULLABLE
+    type: STRING
+    name: event_id_object_version_key
+    description: "
+      Unique key consisting of concatenated event ID & syndicated_article object version,
+      then hashed"
+  - mode: NULLABLE
+    type: STRING
+    name: geo_country
+    description: ISO 3166-1 code for the country the visitor is located in
+  - mode: NULLABLE
+    type: STRING
+    name: geo_region
+    description: ISO-3166-2 code for country region the visitor is in
+  - mode: NULLABLE
+    type: STRING
+    name: geo_region_name
+    description: Visitor region name
+  - mode: NULLABLE
+    type: STRING
+    name: geo_timezone
+    description: Visitor timezone name
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: happened_at
+    description: Timestamp making allowance for inaccurate device clock
+  - mode: NULLABLE
+    type: STRING
+    name: image_url
+    description: The url of the main image of the reviewed corpus item
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: is_collection
+    description: Indicates whether the reviewed_corpus_item is a collection
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: is_syndicated
+    description: Indicates whether the reviewed_corpus_item is a syndicated article
+  - mode: NULLABLE
+    type: BOOLEAN
+    name: is_time_sensitive
+    description: "
+      Indicates whether the reviewed_corpus_item is only relevant for a short period of time
+      (e.g. news)"
+  - mode: NULLABLE
+    type: STRING
+    name: language
+    description: The language of the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: loaded_from
+    description: "
+      Indicates the source for an approved corpus item PROSPECT: From a prospect feed MANUAL:
+      Manually added by curators ML: Added by an ML generated process BACKFILL: Backfilled from
+      legacy curation process"
+  - mode: NULLABLE
+    type: STRING
+    name: object_update_object
+    description: The name of the entity being updated. 'reviewed_corpus_item' for this model.
+  - mode: NULLABLE
+    type: STRING
+    name: object_update_trigger
+    description: The backend action taken that triggers the object update.
+  - mode: NULLABLE
+    type: STRING
+    name: object_version
+    description: "
+      Indication of whether the version of the entity is before or after the
+      modifications were made."
+  - mode: NULLABLE
+    type: STRING
+    name: prospect_id
+    description: "
+      The identifier for the curation prospect, used to join with the dataset that
+      describes the prospect"
+  - mode: NULLABLE
+    type: STRING
+    name: publisher
+    description: The name of the online publication that published this story.
+  - mode: NULLABLE
+    type: STRING
+    name: rejected_corpus_item_external_id
+    description: "Backend identifier for reviewed_corpus_item's rejected corpus item external_id"
+  - mode: NULLABLE
+    type: STRING
+    name: rejection_reasons
+    description: "
+      The list of reasons a curator rejected the item (if the item has a 'rejected'
+      corpus_review_status)"
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: reviewed_corpus_item_created_at
+    description: timestamp when the reviewed_corpus_item was created
+  - mode: NULLABLE
+    type: TIMESTAMP
+    name: reviewed_corpus_item_updated_at
+    description: timestamp when the reviewed_corpus_item was updated
+  - mode: NULLABLE
+    type: STRING
+    name: title
+    description: The title of the reviewed corpus item
+  - mode: NULLABLE
+    type: STRING
+    name: topic
+    description: The topic of the reviewed_corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: tracker_app_id
+    description: Snowplow Application ID for the app that emitted this event.
+  - mode: NULLABLE
+    type: JSON
+    name: unstruct_event_com_pocket_object_update_1
+    description: The custom Pocket object update entity.
+  - mode: NULLABLE
+    type: STRING
+    name: url
+    description: The url of the reviewed corpus_item
+  - mode: NULLABLE
+    type: STRING
+    name: useragent
+    description: Raw useragent

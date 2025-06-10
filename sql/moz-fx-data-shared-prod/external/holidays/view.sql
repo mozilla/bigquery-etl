@@ -311,6 +311,32 @@ WITH staging AS (
     IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,
     IF(
       submission_date IN (
+        '2020-08-28',
+        '2020-08-29',
+        '2021-08-18',
+        '2021-08-19',
+        '2022-08-07',
+        '2022-08-08',
+        '2023-07-27',
+        '2023-07-28',
+        '2024-07-15',
+        '2024-07-16',
+        '2025-07-05',
+        '2025-07-06',
+        '2026-06-25',
+        '2026-06-26',
+        '2027-06-14',
+        '2027-06-15',
+        '2028-06-02',
+        '2028-06-03',
+        '2029-05-23',
+        '2029-05-24'
+      ),
+      1,
+      0
+    ) AS ashura,
+    IF(
+      submission_date IN (
         '2020-09-07',
         '2021-09-06',
         '2022-09-05',
@@ -569,6 +595,7 @@ SELECT
   stg.us_juneteenth,
   stg.us_independence_day,
   stg.fr_national_day,
+  stg.ashura,
   stg.us_labor_day,
   stg.br_independence_day,
   stg.mx_independence_day,
@@ -619,6 +646,7 @@ SELECT
     IF(stg.us_juneteenth = 1, ['US_Juneteenth'], []),
     IF(stg.us_independence_day = 1, ['US_IndependenceDay'], []),
     IF(stg.fr_national_day = 1, ['FR_NationalDay'], []),
+    IF(stg.ashura = 1, ['Ashura'], []),
     IF(stg.us_labor_day = 1, ['US_LaborDay'], []),
     IF(stg.br_independence_day = 1, ['BR_IndependenceDay'], []),
     IF(stg.mx_independence_day = 1, ['MX_IndependenceDay'], []),

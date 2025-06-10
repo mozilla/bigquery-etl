@@ -6,6 +6,12 @@ fields:
 - name: new_years_day
   type: INTEGER
   mode: NULLABLE
+- name: australia_day
+  type: INTEGER
+  mode: NULLABLE
+- name: orthodox_christmas
+  type: INTEGER
+  mode: NULLABLE
 - name: lunar_new_year
   type: INTEGER
   mode: NULLABLE
@@ -19,6 +25,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: us_presidents_day
+  type: INTEGER
+  mode: NULLABLE
+- name: nowruz
   type: INTEGER
   mode: NULLABLE
 - name: in_holi
@@ -57,13 +66,22 @@ fields:
 - name: fr_victory_day
   type: INTEGER
   mode: NULLABLE
+- name: ir_death_of_khomeini
+  type: INTEGER
+  mode: NULLABLE
 - name: us_memorial_day
+  type: INTEGER
+  mode: NULLABLE
+- name: ascension_day
   type: INTEGER
   mode: NULLABLE
 - name: whit_monday
   type: INTEGER
   mode: NULLABLE
 - name: eid_al_adha
+  type: INTEGER
+  mode: NULLABLE
+- name: corpus_christi
   type: INTEGER
   mode: NULLABLE
 - name: us_juneteenth
@@ -75,7 +93,13 @@ fields:
 - name: fr_national_day
   type: INTEGER
   mode: NULLABLE
+- name: ashura
+  type: INTEGER
+  mode: NULLABLE
 - name: us_labor_day
+  type: INTEGER
+  mode: NULLABLE
+- name: prophets_birthday
   type: INTEGER
   mode: NULLABLE
 - name: br_independence_day
@@ -103,6 +127,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: in_diwali
+  type: INTEGER
+  mode: NULLABLE
+- name: dussehra
   type: INTEGER
   mode: NULLABLE
 - name: us_veterans_day

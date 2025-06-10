@@ -5,6 +5,8 @@ WITH staging AS (
   SELECT
     submission_date,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS new_years_day,
+    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS australia_day,
+    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS orthodox_christmas,
     IF(
       submission_date IN (
         '2020-01-25',
@@ -55,6 +57,22 @@ WITH staging AS (
       1,
       0
     ) AS us_presidents_day,
+    IF(
+      submission_date IN (
+        '2020-03-19',
+        '2021-03-20',
+        '2022-03-20',
+        '2023-03-20',
+        '2024-03-19',
+        '2025-03-20',
+        '2026-03-20',
+        '2027-03-20',
+        '2028-03-19',
+        '2029-03-20'
+      ),
+      1,
+      0
+    ) AS nowruz,
     IF(
       submission_date IN (
         '2020-03-10',
@@ -197,6 +215,7 @@ WITH staging AS (
     IF(calendar_month = 4 AND EXTRACT(day FROM submission_date) = 25, 1, 0) AS au_anzac_day,
     IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS fr_may_day,
     IF(calendar_month = 5 AND EXTRACT(day FROM submission_date) = 8, 1, 0) AS fr_victory_day,
+    IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 3, 1, 0) AS ir_death_of_khomeini,
     IF(
       submission_date IN (
         '2020-05-25',
@@ -213,6 +232,22 @@ WITH staging AS (
       1,
       0
     ) AS us_memorial_day,
+    IF(
+      submission_date IN (
+        '2020-05-21',
+        '2021-05-13',
+        '2022-05-26',
+        '2023-05-18',
+        '2024-05-09',
+        '2025-05-29',
+        '2026-05-14',
+        '2027-05-06',
+        '2028-05-25',
+        '2029-05-10'
+      ),
+      1,
+      0
+    ) AS ascension_day,
     IF(
       submission_date IN (
         '2020-06-01',
@@ -255,9 +290,51 @@ WITH staging AS (
       1,
       0
     ) AS eid_al_adha,
+    IF(
+      submission_date IN (
+        '2020-06-11',
+        '2021-06-03',
+        '2022-06-16',
+        '2023-06-08',
+        '2024-05-30',
+        '2025-06-19',
+        '2026-06-04',
+        '2027-05-27',
+        '2028-06-15',
+        '2029-05-31'
+      ),
+      1,
+      0
+    ) AS corpus_christi,
     IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
     IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
     IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,
+    IF(
+      submission_date IN (
+        '2020-08-28',
+        '2020-08-29',
+        '2021-08-18',
+        '2021-08-19',
+        '2022-08-07',
+        '2022-08-08',
+        '2023-07-27',
+        '2023-07-28',
+        '2024-07-15',
+        '2024-07-16',
+        '2025-07-05',
+        '2025-07-06',
+        '2026-06-25',
+        '2026-06-26',
+        '2027-06-14',
+        '2027-06-15',
+        '2028-06-02',
+        '2028-06-03',
+        '2029-05-23',
+        '2029-05-24'
+      ),
+      1,
+      0
+    ) AS ashura,
     IF(
       submission_date IN (
         '2020-09-07',
@@ -274,6 +351,22 @@ WITH staging AS (
       1,
       0
     ) AS us_labor_day,
+    IF(
+      submission_date IN (
+        '2020-10-30',
+        '2021-10-19',
+        '2022-10-08',
+        '2023-09-28',
+        '2024-09-16',
+        '2025-09-05',
+        '2026-08-26',
+        '2027-08-14',
+        '2028-08-02',
+        '2029-07-23'
+      ),
+      1,
+      0
+    ) AS prophets_birthday,
     IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS br_independence_day,
     IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
     IF(
@@ -382,6 +475,22 @@ WITH staging AS (
       1,
       0
     ) AS in_diwali,
+    IF(
+      submission_date IN (
+        '2020-10-25',
+        '2021-10-15',
+        '2022-10-05',
+        '2023-10-24',
+        '2024-10-12',
+        '2025-10-02',
+        '2026-10-20',
+        '2027-10-09',
+        '2028-09-27',
+        '2029-10-16'
+      ),
+      1,
+      0
+    ) AS dussehra,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 11, 1, 0) AS us_veterans_day,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
     IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
@@ -489,11 +598,14 @@ WITH staging AS (
 SELECT
   stg.submission_date,
   stg.new_years_day,
+  stg.australia_day,
+  stg.orthodox_christmas,
   stg.lunar_new_year,
   stg.in_republic_day,
   stg.us_superbowl,
   stg.valentines_day,
   stg.us_presidents_day,
+  stg.nowruz,
   stg.in_holi,
   stg.eid_al_fitr,
   stg.good_friday_eastern,
@@ -506,13 +618,18 @@ SELECT
   stg.au_anzac_day,
   stg.fr_may_day,
   stg.fr_victory_day,
+  stg.ir_death_of_khomeini,
   stg.us_memorial_day,
+  stg.ascension_day,
   stg.whit_monday,
   stg.eid_al_adha,
+  stg.corpus_christi,
   stg.us_juneteenth,
   stg.us_independence_day,
   stg.fr_national_day,
+  stg.ashura,
   stg.us_labor_day,
+  stg.prophets_birthday,
   stg.br_independence_day,
   stg.mx_independence_day,
   stg.us_thanksgiving,
@@ -522,6 +639,7 @@ SELECT
   stg.amazon_prime_days_summer,
   stg.de_unity_day,
   stg.in_diwali,
+  stg.dussehra,
   stg.us_veterans_day,
   stg.mx_revolution_day,
   stg.halloween,
@@ -533,11 +651,14 @@ SELECT
   stg.new_years_eve,
   ARRAY_CONCAT(
     IF(stg.new_years_day = 1, ['NewYearsDay'], []),
+    IF(stg.australia_day = 1, ['AustraliaDay'], []),
+    IF(stg.orthodox_christmas = 1, ['OrthodoxChristmas'], []),
     IF(stg.lunar_new_year = 1, ['LunarNewYear'], []),
     IF(stg.in_republic_day = 1, ['IN_RepublicDay'], []),
     IF(stg.us_superbowl = 1, ['US_SuperBowl'], []),
     IF(stg.valentines_day = 1, ['ValentinesDay'], []),
     IF(stg.us_presidents_day = 1, ['US_PresidentsDay'], []),
+    IF(stg.nowruz = 1, ['Nowruz'], []),
     IF(stg.in_holi = 1, ['IN_Holi'], []),
     IF(stg.eid_al_fitr = 1, ['EidAlFitr'], []),
     IF(stg.good_friday_eastern = 1, ['GoodFriday_Eastern'], []),
@@ -550,13 +671,18 @@ SELECT
     IF(stg.au_anzac_day = 1, ['AU_AnzacDay'], []),
     IF(stg.fr_may_day = 1, ['FR_MayDay'], []),
     IF(stg.fr_victory_day = 1, ['FR_VictoryDay'], []),
+    IF(stg.ir_death_of_khomeini = 1, ['IR_DeathOfKhomeini'], []),
     IF(stg.us_memorial_day = 1, ['US_MemorialDay'], []),
+    IF(stg.ascension_day = 1, ['AscensionDay'], []),
     IF(stg.whit_monday = 1, ['WhitMonday'], []),
     IF(stg.eid_al_adha = 1, ['EidAlAdha'], []),
+    IF(stg.corpus_christi = 1, ['CorpusChristi'], []),
     IF(stg.us_juneteenth = 1, ['US_Juneteenth'], []),
     IF(stg.us_independence_day = 1, ['US_IndependenceDay'], []),
     IF(stg.fr_national_day = 1, ['FR_NationalDay'], []),
+    IF(stg.ashura = 1, ['Ashura'], []),
     IF(stg.us_labor_day = 1, ['US_LaborDay'], []),
+    IF(stg.prophets_birthday = 1, ['ProphetBirthday'], []),
     IF(stg.br_independence_day = 1, ['BR_IndependenceDay'], []),
     IF(stg.mx_independence_day = 1, ['MX_IndependenceDay'], []),
     IF(stg.us_thanksgiving = 1, ['US_Thanksgiving'], []),
@@ -566,6 +692,7 @@ SELECT
     IF(stg.amazon_prime_days_summer = 1, ['AmazonSummerPrimeDays'], []),
     IF(stg.de_unity_day = 1, ['DE_UnityDay'], []),
     IF(stg.in_diwali = 1, ['IN_Diwali'], []),
+    IF(stg.dussehra = 1, ['Dussehra'], []),
     IF(stg.us_veterans_day = 1, ['US_VeteransDay'], []),
     IF(stg.mx_revolution_day = 1, ['MX_RevolutionDay'], []),
     IF(stg.halloween = 1, ['Halloween'], []),

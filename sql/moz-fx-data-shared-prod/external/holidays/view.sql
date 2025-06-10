@@ -231,6 +231,22 @@ WITH staging AS (
     ) AS us_memorial_day,
     IF(
       submission_date IN (
+        '2020-05-21',
+        '2021-05-13',
+        '2022-05-26',
+        '2023-05-18',
+        '2024-05-09',
+        '2025-05-29',
+        '2026-05-14',
+        '2027-05-06',
+        '2028-05-25',
+        '2029-05-10'
+      ),
+      1,
+      0
+    ) AS ascension_day,
+    IF(
+      submission_date IN (
         '2020-06-01',
         '2021-05-24',
         '2022-06-06',
@@ -524,6 +540,7 @@ SELECT
   stg.fr_may_day,
   stg.fr_victory_day,
   stg.us_memorial_day,
+  stg.ascension_day,
   stg.whit_monday,
   stg.eid_al_adha,
   stg.us_juneteenth,
@@ -569,6 +586,7 @@ SELECT
     IF(stg.fr_may_day = 1, ['FR_MayDay'], []),
     IF(stg.fr_victory_day = 1, ['FR_VictoryDay'], []),
     IF(stg.us_memorial_day = 1, ['US_MemorialDay'], []),
+    IF(stg.ascension_day = 1, ['AscensionDay'], []),
     IF(stg.whit_monday = 1, ['WhitMonday'], []),
     IF(stg.eid_al_adha = 1, ['EidAlAdha'], []),
     IF(stg.us_juneteenth = 1, ['US_Juneteenth'], []),

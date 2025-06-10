@@ -5,6 +5,7 @@ WITH staging AS (
   SELECT
     submission_date,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS new_years_day,
+    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS australia_day,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS orthodox_christmas,
     IF(
       submission_date IN (
@@ -539,6 +540,7 @@ WITH staging AS (
 SELECT
   stg.submission_date,
   stg.new_years_day,
+  stg.australia_day,
   stg.orthodox_christmas,
   stg.lunar_new_year,
   stg.in_republic_day,
@@ -588,6 +590,7 @@ SELECT
   stg.new_years_eve,
   ARRAY_CONCAT(
     IF(stg.new_years_day = 1, ['NewYearsDay'], []),
+    IF(stg.australia_day = 1, ['AustraliaDay'], []),
     IF(stg.orthodox_christmas = 1, ['OrthodoxChristmas'], []),
     IF(stg.lunar_new_year = 1, ['LunarNewYear'], []),
     IF(stg.in_republic_day = 1, ['IN_RepublicDay'], []),

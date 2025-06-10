@@ -174,7 +174,7 @@ bqetl_subplat:
     different then it should be reported using the Airflow triage process.
   default_args:
     owner: srose@mozilla.com
-    start_date: "2025-06-05"
+    start_date: "2025-06-10"
     email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
@@ -192,7 +192,7 @@ bqetl_subplat_hourly:
     allowing time for all of the data for that date to be ready from external systems like Stripe.
   default_args:
     owner: srose@mozilla.com
-    start_date: "2025-06-05"
+    start_date: "2025-06-10"
     email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 1
     retry_delay: 5m

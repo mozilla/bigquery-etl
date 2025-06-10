@@ -511,16 +511,16 @@ frozenlist==1.3.3 \
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2025.3.2 \
-    --hash=sha256:2daf8dc3d1dfa65b6aa37748d112773a7a08416f6c70d96b264c96476ecaf711 \
-    --hash=sha256:e52c77ef398680bbd6a98c0e628fbc469491282981209907bbc8aea76a04fdc6
+fsspec==2025.5.1 \
+    --hash=sha256:24d3a2e663d5fc735ab256263c4075f374a174c3410c0b25e5bd1970bceaa462 \
+    --hash=sha256:2e55e47a540b91843b755e83ded97c6e897fa0942b11490113f09e9c443c2475
     # via gcsfs
 gcloud==0.18.3 \
     --hash=sha256:0af2dec59fce20561752f86e42d981c6a255e306a6c5e5d1fa3d358a8857e4fb
     # via -r requirements.in
-gcsfs==2025.3.2 \
-    --hash=sha256:1bdecb530fbf3604a31f00f858a208e0770baf24d405a0b9df99fdde35737745 \
-    --hash=sha256:fe300179492e63e309fecb11e4de7c15a51172eefa2b846d4b3659960216bba8
+gcsfs==2025.5.1 \
+    --hash=sha256:48712471ff71ac83d3e2152ba4dc232874698466e344d5e700feba06b0a0de7b \
+    --hash=sha256:ba945530cf4857cd9d599ccb3ae729c65c39088880b11c4df1fecac30df5f3e3
     # via -r requirements.in
 ghp-import==2.1.0 \
     --hash=sha256:8337dd7b50877f163d4c0289bc1f1c7f127550241988d568c1db512c4324a619 \

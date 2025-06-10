@@ -289,6 +289,22 @@ WITH staging AS (
       1,
       0
     ) AS eid_al_adha,
+    IF(
+      submission_date IN (
+        '2020-06-11',
+        '2021-06-03',
+        '2022-06-16',
+        '2023-06-08',
+        '2024-05-30',
+        '2025-06-19',
+        '2026-06-04',
+        '2027-05-27',
+        '2028-06-15',
+        '2029-05-31'
+      ),
+      1,
+      0
+    ) AS corpus_christi,
     IF(calendar_month = 6 AND EXTRACT(day FROM submission_date) = 19, 1, 0) AS us_juneteenth,
     IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 4, 1, 0) AS us_independence_day,
     IF(calendar_month = 7 AND EXTRACT(day FROM submission_date) = 14, 1, 0) AS fr_national_day,
@@ -547,6 +563,7 @@ SELECT
   stg.ascension_day,
   stg.whit_monday,
   stg.eid_al_adha,
+  stg.corpus_christi,
   stg.us_juneteenth,
   stg.us_independence_day,
   stg.fr_national_day,
@@ -595,6 +612,7 @@ SELECT
     IF(stg.ascension_day = 1, ['AscensionDay'], []),
     IF(stg.whit_monday = 1, ['WhitMonday'], []),
     IF(stg.eid_al_adha = 1, ['EidAlAdha'], []),
+    IF(stg.corpus_christi = 1, ['CorpusChristi'], []),
     IF(stg.us_juneteenth = 1, ['US_Juneteenth'], []),
     IF(stg.us_independence_day = 1, ['US_IndependenceDay'], []),
     IF(stg.fr_national_day = 1, ['FR_NationalDay'], []),

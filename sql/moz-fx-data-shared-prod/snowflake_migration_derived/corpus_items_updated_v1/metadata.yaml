@@ -1,0 +1,33 @@
+friendly_name: Corpus Items Updated v1
+description: |-
+  Model corpus item updated events for the Fx New Tab from stg_reviewed_corpus_items_v1 and prospect_item_feed_v1 tables
+owners:
+- skamath@mozilla.com
+- rrando@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  owner1: skamath
+  owner2: rrando
+  dag: bqetl_content_ml_daily
+scheduling:
+  dag_name: bqetl_content_ml_daily
+bigquery:
+  time_partitioning:
+    type: day
+    field: happened_at
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - approved_corpus_item_external_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.prospect_item_feed_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.stg_reviewed_corpus_items_v1
+require_column_descriptions: false

@@ -11,9 +11,6 @@ fields:
   description: 'A UUID of the usage_profile.
 
     '
-- name: app_channel
-  type: STRING
-  mode: NULLABLE
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE

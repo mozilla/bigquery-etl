@@ -91,25 +91,47 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
             dataset_metadata_updated = True
 
         if table_metadata.deprecated:
-            # set workgroup: [] if table has been tagged as deprecated
-            # this overwrites existing workgroups
+            # filter table workgroup_access to only retained roles
             if table_metadata.workgroup_access is not None:
                 table_metadata.workgroup_access = [
-                    table_workgroup_access
-                    for table_workgroup_access in table_metadata.workgroup_access
-                    if table_workgroup_access.role in retained_dataset_roles
+                    workgroup
+                    for workgroup in table_metadata.workgroup_access
+                    if workgroup.role in retained_dataset_roles
                 ]
-
             else:
                 table_metadata.workgroup_access = []
-
             table_metadata_updated = True
+
+            # filter dataset workgroup_access to only retained roles
             dataset_metadata.workgroup_access = [
                 workgroup
                 for workgroup in dataset_metadata.workgroup_access
                 if workgroup.get("role") in retained_dataset_roles
             ]
             dataset_metadata_updated = True
+
+            # if dataViewer role exists in default_table_workgroup_access, ensure metadataViewer is present in workgroup_access
+            # https://mozilla-hub.atlassian.net/browse/DENG-8843
+            data_viewer = next(
+                (
+                    workgroup
+                    for workgroup in dataset_metadata.default_table_workgroup_access
+                    if workgroup.get("role") == "roles/bigquery.dataViewer"
+                ),
+                None,
+            )
+            if data_viewer:
+                has_metadata_viewer = any(
+                    workgroup.get("role") == "roles/bigquery.metadataViewer"
+                    for workgroup in dataset_metadata.workgroup_access
+                )
+                if not has_metadata_viewer:
+                    dataset_metadata.workgroup_access.append(
+                        {
+                            "role": "roles/bigquery.metadataViewer",
+                            "members": data_viewer.get("members", []),
+                        }
+                    )
         else:
             if table_metadata.workgroup_access is None:
                 table_metadata.workgroup_access = []

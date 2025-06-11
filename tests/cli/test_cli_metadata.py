@@ -218,7 +218,7 @@ class TestMetadata:
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
             ]
-            r = runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
             with open(
                 tmpdirname
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
@@ -244,7 +244,11 @@ class TestMetadata:
             {
                 "members": ["workgroup:mozilla-test"],
                 "role": "roles/bigquery.dataEditor",
-            }
+            },
+            {
+                "members": ["workgroup:mozilla-confidential"],
+                "role": "roles/bigquery.metadataViewer",
+            },
         ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {

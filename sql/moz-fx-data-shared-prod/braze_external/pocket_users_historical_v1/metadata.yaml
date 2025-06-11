@@ -1,0 +1,29 @@
+friendly_name: Pocket Users Historical
+description: |-
+  Imported historical Pocket users data from a snowflake export.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+  dag: bqetl_pocket_users_historical
+scheduling:
+  dag_name: bqetl_pocket_users_historical
+  arguments:
+  - --destination-project=moz-fx-data-shared-prod
+  - --destination-dataset=braze_external
+  - --destination-table=pocket_users_historical_v1
+  - --source-bucket=moz-fx-data-prod-external-pocket-data
+  - --source-prefix=braze_pocket_historical
+  - --source-file=pocket_users_historical
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references: {}
+require_column_descriptions: false

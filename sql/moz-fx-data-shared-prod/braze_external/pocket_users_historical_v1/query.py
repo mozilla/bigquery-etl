@@ -1,4 +1,4 @@
-"""Import historical newtab telemetry from GCS into BigQuery."""
+"""Import historical Pocket user data from GCS into BigQuery."""
 
 import rich_click as click
 from google.cloud import bigquery

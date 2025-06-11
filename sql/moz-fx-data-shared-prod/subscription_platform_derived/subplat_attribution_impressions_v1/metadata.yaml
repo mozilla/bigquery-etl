@@ -1,25 +1,37 @@
 friendly_name: SubPlat attribution impressions
 description: |-
   Subscription service attribution impressions from SubPlat logs.
+
+  Some caveats:
+    * This ETL is delayed by an extra day to allow more time for possible late-arriving data.
+      More recent data that is still in flux can be found in `recent_subplat_attribution_impressions_v1`.
 owners:
 - srose@mozilla.com
 labels:
   incremental: true
-  schedule: hourly
+  schedule: daily
 scheduling:
-  dag_name: bqetl_subplat_hourly
-  depends_on_past: true
-  # The whole table is overwritten every time, not a specific date partition.
-  date_partition_parameter: null
-  parameters:
-  - 'date:DATE:{{ds}}'
+  dag_name: bqetl_subplat
+  date_partition_parameter: date
+  date_partition_offset: -1
+  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG:
+  #   * -23h for upstream ETLs which overwrite the entire table, to wait for the hourly ETL that
+  #     started at the same time as this daily ETL, so the upstream table is in a consistent state.
+  #   * 2h for upstream ETLs which write to a specific date partition, to wait for the last hourly
+  #     ETL that will have written to the date partition this daily ETL will be reading from,
+  #     taking into consideration the date_partition_offset.
+  depends_on:
+  - dag_name: bqetl_subplat_hourly
+    task_id: subscription_platform_derived__services__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: subscription_platform_derived__subplat_flow_events__v1
+    execution_delta: 2h
 bigquery:
   time_partitioning:
     type: day
     field: impression_at
     require_partition_filter: false
     expiration_days: null
-  clustering:
-    fields:
-    - flow_id
+  clustering: null
 references: {}

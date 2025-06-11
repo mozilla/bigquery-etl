@@ -280,6 +280,9 @@ For our example:
 
 2. Fill out the missing details:
   - Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.
+    - Note that the email name should match the username listed here: https://mozilla.slack.com/account/settings#username.
+      If it doesn't, put the username with `@mozilla.com` instead (an email won't be sent there).
+      e.g. if your username is `abcdef`, set the watcher to `abcdef@mozilla.com`
   - Reason: Why are you backfilling this table?
 
 3. Open a Pull Request with the backfill entry, see [this example](https://github.com/mozilla/bigquery-etl/pull/5369). Once merged, you should receive a notification in around an hour that processing has started. Your backfill data will be temporarily placed in a staging location.

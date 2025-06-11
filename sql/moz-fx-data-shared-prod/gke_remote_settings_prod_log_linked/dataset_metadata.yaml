@@ -1,0 +1,16 @@
+friendly_name: Gke Remote Settings Prod Log Linked
+description: |-
+  Remote Settings requests logs on the GKE load balancer.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

@@ -26,7 +26,6 @@ bigquery:
     - language
     - topic
     - publisher
-    - prospect_review_status
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

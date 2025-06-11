@@ -11,12 +11,16 @@ description: |-
 owners:
 - srose@mozilla.com
 labels:
-  schedule: daily
-  dag: bqetl_subplat
+  schedule: hourly
+  dag: bqetl_subplat_hourly
   owner1: srose
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - service_subscriptions_history_v1
 bigquery:
   time_partitioning:
     type: day

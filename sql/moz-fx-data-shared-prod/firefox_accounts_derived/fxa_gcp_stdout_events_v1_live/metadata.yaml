@@ -1,0 +1,14 @@
+friendly_name: Fxa Gcp Stdout Events V1 Live
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-fxa-prod.gke_fxa_prod_log.stdout
+require_column_descriptions: false

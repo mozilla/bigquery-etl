@@ -1,0 +1,17 @@
+friendly_name: Mozilla VPN users attribution archive
+description: |-
+  Archive of VPN users' attribution data between 2020-06-25 and 2022-03-23, augmented with some user data.
+owners:
+- srose@mozilla.com
+labels:
+  owner1: srose
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

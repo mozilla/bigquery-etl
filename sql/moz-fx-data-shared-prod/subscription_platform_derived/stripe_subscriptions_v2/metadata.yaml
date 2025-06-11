@@ -11,11 +11,11 @@ description: |-
 owners:
 - srose@mozilla.com
 labels:
-  schedule: daily
-  dag: bqetl_subplat
+  schedule: hourly
+  dag: bqetl_subplat_hourly
   owner1: srose
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
 bigquery: null
 workgroup_access:

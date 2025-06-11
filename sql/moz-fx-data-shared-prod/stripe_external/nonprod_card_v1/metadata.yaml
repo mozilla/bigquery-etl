@@ -4,7 +4,7 @@ description: |-
 owners:
 - srose@mozilla.com
 labels:
-  schedule: hourly
+  schedule: daily
   dag: bqetl_subplat
   owner1: srose
 scheduling:

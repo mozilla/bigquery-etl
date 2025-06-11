@@ -10,6 +10,43 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: null
+  depends_on:
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__card__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__charge__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__coupon__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__customer__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__invoice_discount__v2
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__invoice__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__plan__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__product__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__promotion_code__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__refund__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__subscription_history__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__subscription_item__v1
+    execution_delta: -23h
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

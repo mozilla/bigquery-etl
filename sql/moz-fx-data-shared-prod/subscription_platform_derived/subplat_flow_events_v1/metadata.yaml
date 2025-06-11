@@ -5,13 +5,23 @@ owners:
 - srose@mozilla.com
 labels:
   incremental: true
-  schedule: daily
-  dag: bqetl_subplat
+  schedule: hourly
+  dag: bqetl_subplat_hourly
   owner1: srose
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   depends_on_past: true
   date_partition_parameter: date
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - firefox_accounts_derived
+    - recent_fxa_gcp_stderr_events_v1
+  - - moz-fx-data-shared-prod
+    - firefox_accounts_derived
+    - recent_fxa_gcp_stdout_events_v1
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - services_v1
 bigquery:
   time_partitioning:
     type: day

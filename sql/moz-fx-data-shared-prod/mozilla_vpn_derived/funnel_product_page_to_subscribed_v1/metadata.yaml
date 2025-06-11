@@ -11,6 +11,13 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
+  depends_on:
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__plan__v1
+    execution_delta: -23h
+  - dag_name: bqetl_subplat_hourly
+    task_id: stripe_external__product__v1
+    execution_delta: -23h
 bigquery:
   time_partitioning:
     type: day

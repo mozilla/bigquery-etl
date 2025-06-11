@@ -1,36 +1,33 @@
-friendly_name: SubPlat flow events
+friendly_name: Recent SubPlat attribution impressions
 description: |-
-  Subscription service flow events from SubPlat logs.
+  Subscription service attribution impressions from SubPlat logs during the previous day and today.
+
+  Some caveats:
+    * This data is considered to still be in flux due to possible late-arriving data.
 owners:
 - srose@mozilla.com
 labels:
-  incremental: true
   schedule: hourly
   dag: bqetl_subplat_hourly
   owner1: srose
 scheduling:
   dag_name: bqetl_subplat_hourly
-  date_partition_parameter: date
+  date_partition_parameter: null
   referenced_tables:
-  - - moz-fx-data-shared-prod
-    - firefox_accounts_derived
-    - recent_fxa_gcp_stderr_events_v1
-  - - moz-fx-data-shared-prod
-    - firefox_accounts_derived
-    - recent_fxa_gcp_stdout_events_v1
   - - moz-fx-data-shared-prod
     - subscription_platform_derived
     - services_v1
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - subplat_flow_events_v1
 bigquery:
   time_partitioning:
     type: day
-    field: log_timestamp
+    field: impression_at
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields:
-    - flow_id
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

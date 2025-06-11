@@ -795,6 +795,18 @@ with DAG(
         task_concurrency=1,
     )
 
+    subscription_platform_derived__recent_subplat_attribution_impressions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__recent_subplat_attribution_impressions__v1",
+        destination_table="recent_subplat_attribution_impressions_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     subscription_platform_derived__service_subscriptions__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__service_subscriptions__v1",
         destination_table="service_subscriptions_v1",
@@ -846,6 +858,20 @@ with DAG(
         depends_on_past=False,
         task_concurrency=1,
     )
+
+    with TaskGroup(
+        "subscription_platform_derived__services__v1_external",
+    ) as subscription_platform_derived__services__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_subscription_platform_derived__services__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_subscription_platform_derived__services__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=82800)).isoformat() }}",
+        )
+
+        subscription_platform_derived__services__v1_external.set_upstream(
+            subscription_platform_derived__services__v1
+        )
 
     subscription_platform_derived__stripe_customers_history__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__stripe_customers_history__v1",
@@ -943,18 +969,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    subscription_platform_derived__subplat_attribution_impressions__v1 = bigquery_etl_query(
-        task_id="subscription_platform_derived__subplat_attribution_impressions__v1",
-        destination_table="subplat_attribution_impressions_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=True,
-        parameters=["date:DATE:{{ds}}"],
-    )
-
     subscription_platform_derived__subplat_flow_events__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__subplat_flow_events__v1",
         destination_table="subplat_flow_events_v1",
@@ -963,8 +977,22 @@ with DAG(
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="date",
-        depends_on_past=True,
+        depends_on_past=False,
     )
+
+    with TaskGroup(
+        "subscription_platform_derived__subplat_flow_events__v1_external",
+    ) as subscription_platform_derived__subplat_flow_events__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_subplat__wait_for_subscription_platform_derived__subplat_flow_events__v1",
+            external_dag_id="bqetl_subplat",
+            external_task_id="wait_for_subscription_platform_derived__subplat_flow_events__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        subscription_platform_derived__subplat_flow_events__v1_external.set_upstream(
+            subscription_platform_derived__subplat_flow_events__v1
+        )
 
     checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__google_logical_subscriptions_history__v1
@@ -1133,11 +1161,11 @@ with DAG(
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        subscription_platform_derived__stripe_logical_subscriptions_history__v1
+        subscription_platform_derived__recent_subplat_attribution_impressions__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        subscription_platform_derived__subplat_attribution_impressions__v1
+        subscription_platform_derived__stripe_logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__recent_daily_active_logical_subscriptions__v1.set_upstream(
@@ -1164,6 +1192,14 @@ with DAG(
         subscription_platform_derived__service_subscriptions_history__v1
     )
 
+    subscription_platform_derived__recent_subplat_attribution_impressions__v1.set_upstream(
+        subscription_platform_derived__services__v1
+    )
+
+    subscription_platform_derived__recent_subplat_attribution_impressions__v1.set_upstream(
+        subscription_platform_derived__subplat_flow_events__v1
+    )
+
     subscription_platform_derived__service_subscriptions__v1.set_upstream(
         subscription_platform_derived__service_subscriptions_history__v1
     )
@@ -1173,7 +1209,7 @@ with DAG(
     )
 
     subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
-        subscription_platform_derived__subplat_attribution_impressions__v1
+        subscription_platform_derived__recent_subplat_attribution_impressions__v1
     )
 
     subscription_platform_derived__services__v1.set_upstream(
@@ -1270,14 +1306,6 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
         subscription_platform_derived__stripe_products__v1
-    )
-
-    subscription_platform_derived__subplat_attribution_impressions__v1.set_upstream(
-        subscription_platform_derived__services__v1
-    )
-
-    subscription_platform_derived__subplat_attribution_impressions__v1.set_upstream(
-        subscription_platform_derived__subplat_flow_events__v1
     )
 
     subscription_platform_derived__subplat_flow_events__v1.set_upstream(

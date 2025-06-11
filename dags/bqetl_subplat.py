@@ -289,6 +289,34 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_subscription_platform_derived__services__v1 = ExternalTaskSensor(
+        task_id="wait_for_subscription_platform_derived__services__v1",
+        external_dag_id="bqetl_subplat_hourly",
+        external_task_id="subscription_platform_derived__services__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_subscription_platform_derived__subplat_flow_events__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_subscription_platform_derived__subplat_flow_events__v1",
+            external_dag_id="bqetl_subplat_hourly",
+            external_task_id="subscription_platform_derived__subplat_flow_events__v1",
+            execution_delta=datetime.timedelta(seconds=7200),
+            check_existence=True,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=5),
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
     mozilla_vpn_derived__active_subscription_ids__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__active_subscription_ids__v1",
         destination_table='active_subscription_ids_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
@@ -1200,6 +1228,18 @@ with DAG(
         )
     )
 
+    subscription_platform_derived__subplat_attribution_impressions__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__subplat_attribution_impressions__v1",
+        destination_table='subplat_attribution_impressions_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     mozilla_vpn_derived__active_subscription_ids__v1.set_upstream(
         mozilla_vpn_derived__all_subscriptions__v1
     )
@@ -1560,4 +1600,12 @@ with DAG(
 
     subscription_platform_derived__stripe_subscriptions_history__v1.set_upstream(
         wait_for_stripe_external__subscription_item__v1
+    )
+
+    subscription_platform_derived__subplat_attribution_impressions__v1.set_upstream(
+        wait_for_subscription_platform_derived__services__v1
+    )
+
+    subscription_platform_derived__subplat_attribution_impressions__v1.set_upstream(
+        wait_for_subscription_platform_derived__subplat_flow_events__v1
     )

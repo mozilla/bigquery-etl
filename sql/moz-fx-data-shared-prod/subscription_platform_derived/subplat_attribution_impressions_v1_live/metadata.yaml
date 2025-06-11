@@ -1,0 +1,15 @@
+friendly_name: SubPlat attribution impressions
+description: |-
+  Subscription service attribution impressions from SubPlat logs.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.services_v1
+  - moz-fx-data-shared-prod.subscription_platform_derived.subplat_flow_events_v1
+require_column_descriptions: false

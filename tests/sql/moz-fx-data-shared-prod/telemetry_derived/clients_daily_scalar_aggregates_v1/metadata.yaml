@@ -10,7 +10,7 @@ deletion_date: 2024-03-02
 workgroup_access:
   - role: roles/bigquery.metadataViewer
     members:
-    - workgroup:mozilla-foo
+      - workgroup:mozilla-foo
   - role: roles/bigquery.dataEditor
     members:
-    - workgroup:mozilla-foo
+      - workgroup:mozilla-foo

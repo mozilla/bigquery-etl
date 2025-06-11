@@ -20,7 +20,7 @@ WITH filtered_date_channel AS (
   SELECT
     *
   FROM
-    glam_etl.{{prefix}}__clients_scalar_aggregates_new_v1
+    glam_etl.{{prefix}}__view_clients_daily_scalar_aggregates_v1
   WHERE
     submission_date = @submission_date
 ),

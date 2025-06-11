@@ -1,0 +1,7 @@
+fields:
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+- name: usage_profile_id
+  type: STRING
+  mode: NULLABLE

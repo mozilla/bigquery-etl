@@ -12,6 +12,3 @@ fields:
   description: 'A UUID of the usage_profile.
 
     '
-- name: app_channel
-  type: STRING
-  mode: NULLABLE

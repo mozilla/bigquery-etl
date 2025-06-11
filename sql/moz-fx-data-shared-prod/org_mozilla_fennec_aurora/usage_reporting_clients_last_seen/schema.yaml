@@ -31,6 +31,3 @@ fields:
   description: 'bit field indicating how many days lapsed since profile creation.
 
     '
-- name: app_channel
-  type: STRING
-  mode: NULLABLE

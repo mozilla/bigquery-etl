@@ -30,9 +30,33 @@ customer_attribution_impressions AS (
     utm_term,
     service_ids
   FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.recent_subplat_attribution_impressions_v1`
+  CROSS JOIN
+    UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
+  UNION ALL
+  SELECT
+    mozilla_account_id_sha256,
+    impression_at,
+    entrypoint,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_campaign,
+    utm_content,
+    utm_medium,
+    utm_source,
+    utm_term,
+    service_ids
+  FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1`
   CROSS JOIN
     UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
+  WHERE
+    DATE(impression_at) < (
+      SELECT
+        COALESCE(MIN(DATE(impression_at)), '9999-12-31')
+      FROM
+        `moz-fx-data-shared-prod.subscription_platform_derived.recent_subplat_attribution_impressions_v1`
+    )
   UNION ALL
   -- Include historical VPN attributions from before VPN's SubPlat funnel was implemented on 2021-08-25.
   SELECT

@@ -12,8 +12,6 @@ labels:
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
-  arguments:
-  - --schema_update_option=ALLOW_FIELD_ADDITION
 bigquery:
   time_partitioning:
     type: day

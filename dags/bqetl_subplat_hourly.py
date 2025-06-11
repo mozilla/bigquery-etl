@@ -183,7 +183,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     firefox_accounts_derived__recent_fxa_gcp_stdout_events__v1 = bigquery_etl_query(
@@ -196,7 +195,6 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
-        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
     )
 
     stripe_external__card__v1 = bigquery_etl_query(

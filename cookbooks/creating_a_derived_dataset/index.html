@@ -2074,7 +2074,12 @@ git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </
 <li>
 <p>Fill out the missing details:</p>
 <ul>
-<li>Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.</li>
+<li>Watchers: Mozilla Emails for users that should be notified via Slack about backfill progress.<ul>
+<li>Note that the email name should match the username listed here: https://mozilla.slack.com/account/settings#username.
+  If it doesn't, put the username with <code>@mozilla.com</code> instead (an email won't be sent there).
+  e.g. if your username is <code>abcdef</code>, set the watcher to <code>abcdef@mozilla.com</code></li>
+</ul>
+</li>
 <li>Reason: Why are you backfilling this table?</li>
 </ul>
 </li>

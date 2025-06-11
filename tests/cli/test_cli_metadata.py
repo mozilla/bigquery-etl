@@ -218,7 +218,7 @@ class TestMetadata:
                 str(tmpdirname)
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/"
             ]
-            runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
+            r = runner.invoke(update, name, "--sql_dir=" + str(tmpdirname) + "/sql")
             with open(
                 tmpdirname
                 + "/sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/metadata.yaml",
@@ -233,7 +233,12 @@ class TestMetadata:
             ) as stream:
                 dataset_metadata = yaml.safe_load(stream)
 
-        assert metadata["workgroup_access"] == []
+        assert metadata["workgroup_access"] == [
+            {
+                "members": ["workgroup:mozilla-foo"],
+                "role": "roles/bigquery.dataEditor",
+            }
+        ]
         assert metadata["deprecated"]
         assert dataset_metadata["workgroup_access"] == [
             {

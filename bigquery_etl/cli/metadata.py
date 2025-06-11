@@ -93,7 +93,16 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         if table_metadata.deprecated:
             # set workgroup: [] if table has been tagged as deprecated
             # this overwrites existing workgroups
-            table_metadata.workgroup_access = []
+            if table_metadata.workgroup_access is not None:
+                table_metadata.workgroup_access = [
+                    table_workgroup_access
+                    for table_workgroup_access in table_metadata.workgroup_access
+                    if table_workgroup_access.role in retained_dataset_roles
+                ]
+
+            else:
+                table_metadata.workgroup_access = []
+
             table_metadata_updated = True
             dataset_metadata.workgroup_access = [
                 workgroup

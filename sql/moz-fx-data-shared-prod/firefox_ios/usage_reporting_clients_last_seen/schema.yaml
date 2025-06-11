@@ -5,9 +5,6 @@ fields:
 - name: usage_profile_id
   type: STRING
   mode: NULLABLE
-- name: app_channel
-  type: STRING
-  mode: NULLABLE
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE

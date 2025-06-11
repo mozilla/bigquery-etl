@@ -2,14 +2,12 @@ friendly_name: Mozilla VPN Event Types
 description: |
   A materialized view of the most recent day of event_types data
 owners:
-- wlachance@mozilla.com
 - akomar@mozilla.com
 labels:
   application: mozilla_vpn
   schedule: daily
   dag: bqetl_event_rollup
-  owner1: wlachance
-  owner2: akomar
+  owner1: akomar
 scheduling:
   dag_name: bqetl_event_rollup
   date_partition_parameter: null

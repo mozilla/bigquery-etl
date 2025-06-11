@@ -2,7 +2,6 @@ friendly_name: Mozilla VPN Events Daily
 description: |
   Packed event representation with one-row per-client
 owners:
-- wlachance@mozilla.com
 - akomar@mozilla.com
 labels:
   application: mozilla_vpn
@@ -10,8 +9,7 @@ labels:
   incremental: true
   table_type: client_level
   dag: bqetl_event_rollup
-  owner1: wlachance
-  owner2: akomar
+  owner1: akomar
 scheduling:
   dag_name: bqetl_event_rollup
 bigquery:

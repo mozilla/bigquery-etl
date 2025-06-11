@@ -11,6 +11,8 @@ labels:
   dag: bqetl_shredder_impact_measurement
 scheduling:
   dag_name: bqetl_shredder_impact_measurement
+  arguments:
+  - --billing-project=moz-fx-data-backfill-4
 bigquery:
   time_partitioning:
     type: day

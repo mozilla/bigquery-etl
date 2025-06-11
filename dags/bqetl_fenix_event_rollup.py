@@ -67,7 +67,7 @@ with DAG(
         destination_table="event_types_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
+        owner="akomar@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
@@ -80,7 +80,7 @@ with DAG(
         destination_table="event_types_history_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
+        owner="akomar@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
@@ -91,10 +91,11 @@ with DAG(
         destination_table="events_daily_v1",
         dataset_id="fenix_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="wlachance@mozilla.com",
+        owner="akomar@mozilla.com",
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project=moz-fx-data-backfill-4"],
     )
 
     fenix_derived__event_types__v1.set_upstream(fenix_derived__event_types_history__v1)

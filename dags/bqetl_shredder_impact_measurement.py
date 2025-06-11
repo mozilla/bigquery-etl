@@ -257,6 +257,7 @@ with DAG(
         email=["kwindau@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+        arguments=["--billing-project=moz-fx-data-backfill-4"],
     )
 
     telemetry_derived__active_users_rollup_shredder__v1.set_upstream(

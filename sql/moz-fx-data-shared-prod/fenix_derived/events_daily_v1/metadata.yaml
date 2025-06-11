@@ -2,7 +2,6 @@ friendly_name: Firefox for Android Events Daily
 description: |
   Packed event representation with one-row per-client
 owners:
-- wlachance@mozilla.com
 - akomar@mozilla.com
 labels:
   application: fenix
@@ -10,10 +9,11 @@ labels:
   incremental: true
   table_type: client_level
   dag: bqetl_fenix_event_rollup
-  owner1: wlachance
-  owner2: akomar
+  owner1: akomar
 scheduling:
   dag_name: bqetl_fenix_event_rollup
+  arguments:
+  - --billing-project=moz-fx-data-backfill-4
 bigquery:
   time_partitioning:
     type: day

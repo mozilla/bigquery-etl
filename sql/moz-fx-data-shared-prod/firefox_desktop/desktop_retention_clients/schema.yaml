@@ -140,3 +140,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Legacy Telemetry Client Identifier
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE

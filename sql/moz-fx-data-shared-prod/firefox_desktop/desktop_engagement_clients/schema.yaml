@@ -105,3 +105,6 @@ fields:
   mode: NULLABLE
   description: Flag indicating client qualifies as a "Monthly Active User" on this
     submission date
+- name: lifecycle_stage
+  type: STRING
+  mode: NULLABLE

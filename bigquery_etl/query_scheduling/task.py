@@ -366,7 +366,11 @@ class Task:
     @property
     def task_key(self):
         """Key to uniquely identify the task."""
-        return f"{self.dag_name}.{self.task_name}"
+        return (
+            f"{self.dag_name}.{self.task_group}.{self.task_name}"
+            if self.task_group
+            else f"{self.dag_name}.{self.task_name}"
+        )
 
     @owner.validator
     def validate_owner(self, attribute, value):

@@ -493,3 +493,79 @@ with DAG(
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
+
+    braze_external__braze_currents_pocket_hard_bounces__v1 = GKEPodOperator(
+        task_id="braze_external__braze_currents_pocket_hard_bounces__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/braze_external/braze_currents_pocket_hard_bounces_v1/query.py",
+        ]
+        + [
+            "--destination-project=moz-fx-data-shared-prod",
+            "--destination-dataset=braze_external",
+            "--destination-table=braze_currents_pocket_hard_bounces_v1",
+            "--source-bucket=moz-fx-data-marketing-prod-braze-firefox",
+            "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
+            "--event-type=users.messages.email.Bounce",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="lmcfall@mozilla.com",
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+    )
+
+    braze_external__braze_currents_pocket_mark_as_spam__v1 = GKEPodOperator(
+        task_id="braze_external__braze_currents_pocket_mark_as_spam__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/braze_external/braze_currents_pocket_mark_as_spam_v1/query.py",
+        ]
+        + [
+            "--destination-project=moz-fx-data-shared-prod",
+            "--destination-dataset=braze_external",
+            "--destination-table=braze_currents_pocket_mark_as_spam_v1",
+            "--source-bucket=moz-fx-data-marketing-prod-braze-firefox",
+            "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
+            "--event-type=users.messages.email.MarkAsSpam",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="lmcfall@mozilla.com",
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+    )
+
+    braze_external__braze_currents_pocket_soft_bounce__v1 = GKEPodOperator(
+        task_id="braze_external__braze_currents_pocket_soft_bounce__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/braze_external/braze_currents_pocket_soft_bounce_v1/query.py",
+        ]
+        + [
+            "--destination-project=moz-fx-data-shared-prod",
+            "--destination-dataset=braze_external",
+            "--destination-table=braze_currents_pocket_soft_bounce_v1",
+            "--source-bucket=moz-fx-data-marketing-prod-braze-firefox",
+            "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
+            "--event-type=users.messages.email.SoftBounce",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="lmcfall@mozilla.com",
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+    )
+
+    braze_external__braze_currents_pocket_unsubscribe__v1 = GKEPodOperator(
+        task_id="braze_external__braze_currents_pocket_unsubscribe__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/braze_external/braze_currents_pocket_unsubscribe_v1/query.py",
+        ]
+        + [
+            "--destination-project=moz-fx-data-shared-prod",
+            "--destination-dataset=braze_external",
+            "--destination-table=braze_currents_pocket_unsubscribe_v1",
+            "--source-bucket=moz-fx-data-marketing-prod-braze-firefox",
+            "--source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a",
+            "--event-type=users.messages.email.Unsubscribe",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="lmcfall@mozilla.com",
+        email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
+    )

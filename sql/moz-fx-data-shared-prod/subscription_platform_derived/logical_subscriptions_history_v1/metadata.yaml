@@ -28,14 +28,11 @@ scheduling:
     - subscription_platform_derived
     - stripe_logical_subscriptions_history_v1
 bigquery:
-  time_partitioning:
-    type: day
-    field: valid_to
-    require_partition_filter: false
-    expiration_days: null
+  time_partitioning: null
   range_partitioning: null
   clustering:
     fields:
+    - valid_to
     - valid_from
 workgroup_access:
 - role: roles/bigquery.dataViewer

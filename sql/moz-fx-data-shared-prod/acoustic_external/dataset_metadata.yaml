@@ -17,4 +17,7 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/data-developers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:braze
 syndication: {}

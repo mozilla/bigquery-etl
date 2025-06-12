@@ -13,5 +13,8 @@ default_table_workgroup_access:
   - workgroup:google-managed/external-ads-dataproc
   - workgroup:dataops-managed/external-fides
 default_table_expiration_ms: null
-workgroup_access: []
+workgroup_access:
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:mozilla-confidential
 syndication: {}

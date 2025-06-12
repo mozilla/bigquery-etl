@@ -16,4 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:ads/data-developers
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:ads
 syndication: {}

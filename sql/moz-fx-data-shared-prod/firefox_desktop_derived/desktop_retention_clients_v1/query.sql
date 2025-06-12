@@ -2,7 +2,6 @@ WITH active_users AS (
   SELECT
     au.submission_date,
     au.client_id,
-    au.sample_id,
     mozfun.bits28.retention(au.days_seen_bits, au.submission_date) AS retention_seen,
     mozfun.bits28.retention(
       au.days_desktop_active_bits & au.days_seen_bits,
@@ -10,7 +9,8 @@ WITH active_users AS (
     ) AS retention_active,
     au.days_seen_bits,
     au.days_desktop_active_bits,
-    au.is_desktop
+    au.is_desktop,
+    au.legacy_telemetry_client_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users` AS au
   WHERE
@@ -19,6 +19,7 @@ WITH active_users AS (
 new_profiles AS (
   SELECT
     cfs.client_id,
+    cfs.legacy_telemetry_client_id,
     cfs.sample_id,
     cfs.profile_group_id,
     cfs.first_seen_date,
@@ -62,6 +63,7 @@ new_profiles AS (
 clients_data AS (
   SELECT
     au.submission_date AS submission_date,
+    au.legacy_telemetry_client_id,
     cd.submission_date AS metric_date,
     cd.first_seen_date,
     cd.client_id,
@@ -147,6 +149,10 @@ SELECT
   COALESCE(np.is_new_profile, FALSE) AS new_profile_metric_date,
   COALESCE(np.repeat_profile, FALSE) AS repeat_profile,
   COALESCE(np.retained_week_4_new_profile, FALSE) AS retained_week_4_new_profile,
+  COALESCE(
+    cd.legacy_telemetry_client_id,
+    np.legacy_telemetry_client_id
+  ) AS legacy_telemetry_client_id
 FROM
   clients_data cd
 FULL OUTER JOIN

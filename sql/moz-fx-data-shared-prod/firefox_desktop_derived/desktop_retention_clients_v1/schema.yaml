@@ -133,3 +133,7 @@ fields:
   name: retained_week_4_new_profile
   type: BOOLEAN
   description: Retained Week 4 New Profile
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description: Legacy Telemetry Client Identifier

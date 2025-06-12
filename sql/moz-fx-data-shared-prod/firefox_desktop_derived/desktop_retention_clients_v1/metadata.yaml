@@ -19,6 +19,7 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
+    - sample_id
     - country
     - normalized_os
 workgroup_access:

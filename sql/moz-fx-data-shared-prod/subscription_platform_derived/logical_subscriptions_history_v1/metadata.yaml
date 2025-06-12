@@ -25,13 +25,10 @@ scheduling:
   - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'recent_subplat_attribution_impressions_v1']
   - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'stripe_logical_subscriptions_history_v1']
 bigquery:
-  time_partitioning:
-    type: day
-    field: valid_to
-    require_partition_filter: false
-    expiration_days: null
+  time_partitioning: null
   clustering:
     fields:
+    - valid_to
     - valid_from
 references: {}
 require_column_descriptions: true

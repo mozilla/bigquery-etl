@@ -2289,17 +2289,18 @@ bqetl_monitoring_hourly:
     - impact/tier_1
     - repo/bigquery-etl
 
-bqetl_content_ml_daily:
-  schedule_interval: 0 4 * * *
+bqetl_content_ml_hourly:
+  schedule_interval: 30 * * * *
   description: |
-    Daily extracts for corpus item data to be evaluated for new tab presentation.
+    Hourly extracts for corpus item data to be evaluated for new tab presentation.
   default_args:
     owner: skamath@mozilla.com
     # manually started in Airflow on 2025-05-26
     start_date: "2025-05-26"
     email: ["skamath@mozilla.com", "rrando@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
+    # if the hourly task fails, retry once after a 10 minute wait
+    retries: 1
+    retry_delay: 10m
   tags:
     - impact/tier_2
 

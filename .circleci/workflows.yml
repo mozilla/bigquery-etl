@@ -791,6 +791,7 @@ jobs:
                                 git@github.com:mozilla/private-bigquery-etl.git \
                                 ~/private-bigquery-etl
                   rsync --archive ~/private-bigquery-etl/sql/ sql/
+                  rsync --archive ~/private-bigquery-etl/sql_generators/ sql_generators/
             - run:
                 name: Generate SQL content
                 no_output_timeout: 30m
@@ -844,6 +845,10 @@ jobs:
                   export PYTHONPATH="$PWD:$PYTHONPATH"
                   bqetl_script="$PWD/script/bqetl"
                   cd ~/private-bigquery-etl
+
+                  rm -rf sql/
+                  cp -r /tmp/workspace/private-generated-sql/sql sql
+
                   mkdir -p /tmp/workspace/private-generated-sql/dags
                   $bqetl_script dag generate \
                     --output-dir /tmp/workspace/private-generated-sql/dags/
@@ -1225,6 +1230,8 @@ workflows:
               only:
                 - main
       - private-generate-dags:
+          requires:
+            - private-generate-sql
           filters:
             branches:
               only:

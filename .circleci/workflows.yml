@@ -773,7 +773,8 @@ jobs:
             - *restore_venv_cache
             - *build
             - *authenticate
-            - add_ssh_keys:
+            - &add_private_bigquery_etl_ssh_keys
+              add_ssh_keys:
                 # deploy key to private-bigquery-etl
                 fingerprints:
                   - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
@@ -790,7 +791,6 @@ jobs:
                                 git@github.com:mozilla/private-bigquery-etl.git \
                                 ~/private-bigquery-etl
                   rsync --archive ~/private-bigquery-etl/sql/ sql/
-                  rsync --archive ~/private-bigquery-etl/dags.yaml dags.yaml
             - run:
                 name: Generate SQL content
                 no_output_timeout: 30m
@@ -810,7 +810,35 @@ jobs:
                     /tmp/workspace/private-generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/private-generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/private-generated-sql/sql/
-
+            - persist_to_workspace:
+                root: /tmp/workspace
+                paths:
+                  - private-generated-sql
+      - unless:
+          condition: *deploy
+          steps:
+            - *skip
+  private-generate-dags:
+    docker: *docker
+    steps:
+      - when:
+          condition: *deploy
+          steps:
+            - *skip_forked_pr
+            - checkout
+            - *restore_venv_cache
+            - *build
+            - *authenticate
+            - *add_private_bigquery_etl_ssh_keys
+            - run:
+                name: Pull down private-bigquery-etl content
+                command: |
+                  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                  git clone --branch main --depth 1 \
+                    git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+            - run:
+                name: Generate DAGs
+                command: |
                   # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
                   export PATH="$PWD/venv/bin:$PATH"
                   export PYTHONPATH="$PWD:$PYTHONPATH"
@@ -834,9 +862,7 @@ jobs:
           condition: *deploy
           steps:
             - *attach_generated_sql
-            - add_ssh_keys:
-                fingerprints:
-                  - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+            - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Push to private-generated-sql branch
                 # yamllint disable rule:line-length
@@ -1198,9 +1224,15 @@ workflows:
             branches:
               only:
                 - main
+      - private-generate-dags:
+          filters:
+            branches:
+              only:
+                - main
       - push-private-generated-sql:
           requires:
             - private-generate-sql
+            - private-generate-dags
           filters:
             branches:
               only:

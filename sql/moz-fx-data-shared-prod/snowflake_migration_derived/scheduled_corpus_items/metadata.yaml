@@ -1,0 +1,18 @@
+friendly_name: Scheduled Corpus Items
+description: |-
+  View of scheduled corpus items in the corpus_item_schedules_updated_v1 table
+owners:
+- skamath@mozilla.com
+- rrando@mozilla.com
+labels:
+  owner1: skamath
+  owner2: rrando
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1
+require_column_descriptions: false

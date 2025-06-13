@@ -25,7 +25,31 @@ SELECT
       metrics.labeled_string.sync_v2_failure_reason
     ) AS `labeled_string`,
     STRUCT(metrics.uuid.sync_sync_uuid, metrics.uuid.sync_v2_sync_uuid) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.syncs_hashed_device_id,
+      metrics.string.syncs_hashed_fxa_uid,
+      metrics.string.syncs_sync_node_type,
+      metrics.string.system_os_distro,
+      metrics.string.system_os_distro_version,
+      metrics.string.system_os_locale,
+      metrics.string.system_os_name,
+      metrics.string.system_os_version
+    ) AS `string`,
+    STRUCT(
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
+    ) AS `custom_distribution`,
+    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
+    STRUCT(
+      metrics.quantity.syncs_discarded,
+      metrics.quantity.system_os_service_pack_major,
+      metrics.quantity.system_os_service_pack_minor,
+      metrics.quantity.system_os_windows_build_number,
+      metrics.quantity.system_os_windows_ubr
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -64,7 +88,31 @@ SELECT
       metrics.labeled_string.sync_v2_failure_reason
     ) AS `labeled_string`,
     STRUCT(metrics.uuid.sync_sync_uuid, metrics.uuid.sync_v2_sync_uuid) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.syncs_hashed_device_id,
+      metrics.string.syncs_hashed_fxa_uid,
+      metrics.string.syncs_sync_node_type,
+      metrics.string.system_os_distro,
+      metrics.string.system_os_distro_version,
+      metrics.string.system_os_locale,
+      metrics.string.system_os_name,
+      metrics.string.system_os_version
+    ) AS `string`,
+    STRUCT(
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
+    ) AS `custom_distribution`,
+    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
+    STRUCT(
+      metrics.quantity.syncs_discarded,
+      metrics.quantity.system_os_service_pack_major,
+      metrics.quantity.system_os_service_pack_minor,
+      metrics.quantity.system_os_windows_build_number,
+      metrics.quantity.system_os_windows_ubr
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -103,7 +151,31 @@ SELECT
       metrics.labeled_string.sync_v2_failure_reason
     ) AS `labeled_string`,
     STRUCT(metrics.uuid.sync_sync_uuid, metrics.uuid.sync_v2_sync_uuid) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.syncs_hashed_device_id,
+      metrics.string.syncs_hashed_fxa_uid,
+      metrics.string.syncs_sync_node_type,
+      metrics.string.system_os_distro,
+      metrics.string.system_os_distro_version,
+      metrics.string.system_os_locale,
+      metrics.string.system_os_name,
+      metrics.string.system_os_version
+    ) AS `string`,
+    STRUCT(
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
+    ) AS `custom_distribution`,
+    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
+    STRUCT(
+      metrics.quantity.syncs_discarded,
+      metrics.quantity.system_os_service_pack_major,
+      metrics.quantity.system_os_service_pack_minor,
+      metrics.quantity.system_os_windows_build_number,
+      metrics.quantity.system_os_windows_ubr
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -142,7 +214,31 @@ SELECT
       metrics.labeled_string.sync_v2_failure_reason
     ) AS `labeled_string`,
     STRUCT(metrics.uuid.sync_sync_uuid, metrics.uuid.sync_v2_sync_uuid) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.syncs_hashed_device_id,
+      metrics.string.syncs_hashed_fxa_uid,
+      metrics.string.syncs_sync_node_type,
+      metrics.string.system_os_distro,
+      metrics.string.system_os_distro_version,
+      metrics.string.system_os_locale,
+      metrics.string.system_os_name,
+      metrics.string.system_os_version
+    ) AS `string`,
+    STRUCT(
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
+    ) AS `custom_distribution`,
+    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
+    STRUCT(
+      metrics.quantity.syncs_discarded,
+      metrics.quantity.system_os_service_pack_major,
+      metrics.quantity.system_os_service_pack_minor,
+      metrics.quantity.system_os_windows_build_number,
+      metrics.quantity.system_os_windows_ubr
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -181,7 +277,31 @@ SELECT
       metrics.labeled_string.sync_v2_failure_reason
     ) AS `labeled_string`,
     STRUCT(metrics.uuid.sync_sync_uuid, metrics.uuid.sync_v2_sync_uuid) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.syncs_hashed_device_id,
+      metrics.string.syncs_hashed_fxa_uid,
+      metrics.string.syncs_sync_node_type,
+      metrics.string.system_os_distro,
+      metrics.string.system_os_distro_version,
+      metrics.string.system_os_locale,
+      metrics.string.system_os_name,
+      metrics.string.system_os_version
+    ) AS `string`,
+    STRUCT(
+      metrics.custom_distribution.pwmgr_login_page_safety,
+      metrics.custom_distribution.pwmgr_prompt_remember_action,
+      metrics.custom_distribution.pwmgr_prompt_update_action
+    ) AS `custom_distribution`,
+    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
+    STRUCT(
+      metrics.quantity.syncs_discarded,
+      metrics.quantity.system_os_service_pack_major,
+      metrics.quantity.system_os_service_pack_minor,
+      metrics.quantity.system_os_windows_build_number,
+      metrics.quantity.system_os_windows_ubr
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

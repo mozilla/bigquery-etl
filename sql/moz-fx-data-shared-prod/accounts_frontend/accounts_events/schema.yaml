@@ -508,6 +508,10 @@ fields:
       description: 'The name of the client ID for Nimbus experiments.
 
         '
+    - name: event_choice
+      type: STRING
+      mode: NULLABLE
+      description: the choice made by the user in a given event
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE

@@ -351,6 +351,13 @@ fields:
       description: 'Whether Firefox is set as the default browser.
 
         '
+    - name: usage_windows_backup_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Tracks if Windows Backup is enabled and configured to back up
+        applications.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

@@ -305,6 +305,130 @@ fields:
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
+    - name: syncs_hashed_device_id
+      type: STRING
+      mode: NULLABLE
+    - name: syncs_hashed_fxa_uid
+      type: STRING
+      mode: NULLABLE
+    - name: syncs_sync_node_type
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_distro
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_distro_version
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_locale
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_name
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_version
+      type: STRING
+      mode: NULLABLE
+  - name: custom_distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: pwmgr_login_page_safety
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: pwmgr_prompt_remember_action
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: pwmgr_prompt_update_action
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: syncs_session_start_date
+      type: STRING
+      mode: NULLABLE
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: syncs_migrations
+      type: JSON
+      mode: NULLABLE
+    - name: syncs_syncs
+      type: JSON
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: syncs_discarded
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_service_pack_major
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_service_pack_minor
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_windows_build_number
+      type: INTEGER
+      mode: NULLABLE
+    - name: system_os_windows_ubr
+      type: INTEGER
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -6,7 +6,17 @@ SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
     mozfun.norm.glean_ping_info(ping_info) AS ping_info,
-    (SELECT AS STRUCT metrics.* EXCEPT (jwe, labeled_rate, text, url)) AS metrics,
+    (
+      SELECT AS STRUCT
+        metrics.* EXCEPT (jwe, labeled_rate, text, url) REPLACE(
+          STRUCT(
+            mozfun.glean.parse_datetime(
+              metrics.datetime.syncs_session_start_date
+            ) AS syncs_session_start_date,
+            metrics.datetime.syncs_session_start_date AS raw_syncs_session_start_date
+          ) AS datetime
+        )
+    ) AS metrics,
     mozfun.norm.glean_client_info_attribution(
       client_info,
       CAST(NULL AS JSON),

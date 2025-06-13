@@ -64,6 +64,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    snowflake_migration_derived__dismissed_prospects__v1 = bigquery_etl_query(
+        task_id="snowflake_migration_derived__dismissed_prospects__v1",
+        destination_table="dismissed_prospects_v1",
+        dataset_id="snowflake_migration_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="skamath@mozilla.com",
+        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     snowflake_migration_derived__prospect_item_feed__v1 = bigquery_etl_query(
         task_id="snowflake_migration_derived__prospect_item_feed__v1",
         destination_table="prospect_item_feed_v1",
@@ -126,6 +137,18 @@ with DAG(
 
     snowflake_migration_derived__corpus_items_updated__v1.set_upstream(
         snowflake_migration_derived__stg_reviewed_corpus_items__v1
+    )
+
+    snowflake_migration_derived__dismissed_prospects__v1.set_upstream(
+        snowflake_migration_derived__corpus_items_updated__v1
+    )
+
+    snowflake_migration_derived__dismissed_prospects__v1.set_upstream(
+        snowflake_migration_derived__prospects__v1
+    )
+
+    snowflake_migration_derived__dismissed_prospects__v1.set_upstream(
+        snowflake_migration_derived__rejected_corpus_items__v1
     )
 
     snowflake_migration_derived__prospect_item_feed__v1.set_upstream(

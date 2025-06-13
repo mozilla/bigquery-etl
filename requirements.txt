@@ -204,9 +204,9 @@ cachetools==5.3.0 \
     --hash=sha256:13dfddc7b8df938c21a940dfa6557ce6e94a2f1cdfa58eb90c805721d58f2c14 \
     --hash=sha256:429e1a1e845c008ea6c85aa35d4b98b65d6a9763eeef3e37e92728a12d1de9d4
     # via google-auth
-cattrs==24.1.3 \
-    --hash=sha256:981a6ef05875b5bb0c7fb68885546186d306f10f0f6718fe9b96c226e68821ff \
-    --hash=sha256:adf957dddd26840f27ffbd060a6c4dd3b2192c5b7c2c0525ef1bd8131d8a83f5
+cattrs==25.1.1 \
+    --hash=sha256:1b40b2d3402af7be79a7e7e097a9b4cd16d4c06e6d526644b0b26a063a1cc064 \
+    --hash=sha256:c914b734e0f2d59e5b720d145ee010f1fd9a13ee93900922a2f3f9d593b8382c
     # via
     #   -r requirements.in
     #   looker-sdk
@@ -2217,6 +2217,7 @@ typing-extensions==4.12.2 \
     --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
     # via
     #   beautifulsoup4
+    #   cattrs
     #   exceptiongroup
     #   looker-sdk
     #   mypy

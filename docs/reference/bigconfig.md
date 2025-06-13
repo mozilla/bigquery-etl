@@ -2,7 +2,7 @@
 
 ## Overview
 
-bigConfig is a yaml-based declarative configuration-as-code approach to managing out Bigeye assets and metrics applied to them. This includes specifying which resources (in our case BQ tables) we want to monitor, what metrics / monitors we want to be used on the asset, which collection those should be bundled under, and what should happen if those metrics detect data issues. For example, send a Slack notification.
+[bigConfig](https://docs.bigeye.com/docs/bigconfig) is a yaml-based declarative configuration-as-code approach to managing out Bigeye assets and metrics applied to them. This includes specifying which resources (in our case BQ tables) we want to monitor, what metrics / monitors we want to be used on the asset, which collection those should be bundled under, and what should happen if those metrics detect data issues. For example, send a Slack notification.
 
 > [!IMPORTANT]
 > Please keep in mind that bigConfig managed metrics cannot be modified using the Bigeye UI. The same is true the other way around, metrics defined via the UI cannot be managed via bigConfig.

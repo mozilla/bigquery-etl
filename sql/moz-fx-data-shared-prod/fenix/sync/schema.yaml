@@ -398,6 +398,9 @@ fields:
     mode: NULLABLE
     fields:
     - name: syncs_session_start_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_syncs_session_start_date
       type: STRING
       mode: NULLABLE
   - name: object

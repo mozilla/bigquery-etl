@@ -41,7 +41,10 @@ SELECT
       metrics.custom_distribution.pwmgr_prompt_remember_action,
       metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
-    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.syncs_session_start_date,
+      metrics.datetime.raw_syncs_session_start_date
+    ) AS `datetime`,
     STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
     STRUCT(
       metrics.quantity.syncs_discarded,
@@ -104,7 +107,10 @@ SELECT
       metrics.custom_distribution.pwmgr_prompt_remember_action,
       metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
-    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.syncs_session_start_date,
+      metrics.datetime.raw_syncs_session_start_date
+    ) AS `datetime`,
     STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
     STRUCT(
       metrics.quantity.syncs_discarded,
@@ -167,7 +173,10 @@ SELECT
       metrics.custom_distribution.pwmgr_prompt_remember_action,
       metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
-    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.syncs_session_start_date,
+      metrics.datetime.raw_syncs_session_start_date
+    ) AS `datetime`,
     STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
     STRUCT(
       metrics.quantity.syncs_discarded,
@@ -230,7 +239,10 @@ SELECT
       metrics.custom_distribution.pwmgr_prompt_remember_action,
       metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
-    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.syncs_session_start_date,
+      metrics.datetime.raw_syncs_session_start_date
+    ) AS `datetime`,
     STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
     STRUCT(
       metrics.quantity.syncs_discarded,
@@ -293,7 +305,10 @@ SELECT
       metrics.custom_distribution.pwmgr_prompt_remember_action,
       metrics.custom_distribution.pwmgr_prompt_update_action
     ) AS `custom_distribution`,
-    STRUCT(metrics.datetime.syncs_session_start_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.syncs_session_start_date,
+      metrics.datetime.raw_syncs_session_start_date
+    ) AS `datetime`,
     STRUCT(metrics.object.syncs_migrations, metrics.object.syncs_syncs) AS `object`,
     STRUCT(
       metrics.quantity.syncs_discarded,

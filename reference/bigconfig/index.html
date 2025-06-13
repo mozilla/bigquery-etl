@@ -1,0 +1,1751 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mozilla BigQuery ETL">
+      
+      
+        <meta name="author" content="Mozilla Data Platform Team">
+      
+      
+      
+        <link rel="prev" href="../airflow_tags/">
+      
+      
+        <link rel="next" href="../configuration/">
+      
+      
+      <link rel="icon" href="../../favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Bigeye - bigConfig Reference Guide - BigQuery ETL</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bigeye-bigconfig-reference-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="BigQuery ETL" class="md-header__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            BigQuery ETL
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Bigeye - bigConfig Reference Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../mozfun/about/" class="md-tabs__link">
+          
+  
+  
+  UDFs
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cookbooks/common_workflows/" class="md-tabs__link">
+          
+  
+  
+  Cookbooks
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../bqetl/" class="md-tabs__link">
+          
+  
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="BigQuery ETL" class="md-nav__button md-logo" aria-label="BigQuery ETL" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    BigQuery ETL
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mozilla/bigquery-etl/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mozilla/bigquery-etl
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    UDFs
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            UDFs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Mozfun
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Mozfun
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    mozfun
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/addons/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Addons
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/assert/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Assert
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/bits28/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    bits28
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/bytes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    bytes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/event_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    event_analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ga/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ga
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/glam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Glam
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/glean/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    glean
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/google_ads/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Google ads
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/google_search_console/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    google_search_console
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/hist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    hist
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/iap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    iap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/json/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    json
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/ltv/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ltv
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    map
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/marketing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Marketing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/mobile_search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Mobile search
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/newtab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Newtab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/norm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    norm
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/serp_events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    serp_events
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/stats/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    stats
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utils
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../mozfun/vpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    vpn
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Moz fx data shared prod
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Moz fx data shared prod
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Udf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../moz-fx-data-shared-prod/udf_js/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Udf js
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Cookbooks
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Cookbooks
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/common_workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Common workflows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/creating_a_derived_dataset/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Creating a derived dataset
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cookbooks/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bqetl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    bqetl CLI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bqetl Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recommended_practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recommended practices
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incremental/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Incremental queries
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Scheduling
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../public_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Public data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../airflow_tags/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Airflow Tags
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data_checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Checks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stage-deploys-continuous-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stage Deploy & CI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-happens-with-bigconfig-after-it-is-defined" class="md-nav__link">
+    <span class="md-ellipsis">
+      What happens with bigConfig after it is defined?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#anatomy-of-a-bigconfig-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Anatomy of a bigConfig file
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-bigconfig-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example bigConfig file
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example bigConfig file">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bigconfig-saved-metric" class="md-nav__link">
+    <span class="md-ellipsis">
+      bigConfig / saved metric
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-few-important-bigconfig-metric-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      A few important bigConfig metric properties
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further reading
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="bigeye-bigconfig-reference-guide">Bigeye - bigConfig Reference Guide</h1>
+<h2 id="overview">Overview</h2>
+<p><a href="https://docs.bigeye.com/docs/bigconfig">bigConfig</a> is a yaml-based declarative configuration-as-code approach to managing out Bigeye assets and metrics applied to them. This includes specifying which resources (in our case BQ tables) we want to monitor, what metrics / monitors we want to be used on the asset, which collection those should be bundled under, and what should happen if those metrics detect data issues. For example, send a Slack notification.</p>
+<blockquote>
+<p>[!IMPORTANT]
+Please keep in mind that bigConfig managed metrics cannot be modified using the Bigeye UI. The same is true the other way around, metrics defined via the UI cannot be managed via bigConfig.</p>
+</blockquote>
+<hr />
+<h2 id="what-happens-with-bigconfig-after-it-is-defined">What happens with bigConfig after it is defined?</h2>
+<p>Bigeye provides CLI tooling that takes bigConfig files as input, compares it with the application's state, and determined a list of actions that would need to be taken in order to update the application's state to match what is defined in the bigConfig files passed in as input.</p>
+<p>This includes actions such as creation, update, and deletion of Bigeye metrics. In our case, the <a href="https://github.com/mozilla/telemetry-airflow/blob/main/dags/bqetl_artifact_deployment.py#L204C5-L212">publish_bigeye_monitors</a> task inside the <code>bqetl_artifact_deployment</code> DAG is responsible for pushing any bigConfig changes that have been merged into the main branch.</p>
+<blockquote>
+<p>[!CAUTION]
+When working with bigeye CLI be careful and avoid running <code>bigconfig apply</code> locally, Bigeye CLI will only work with currently specified bigConfig files. If an apply operation is executed and some configuration files are not included in the plan it would result in Bigeye metrics in those files getting <code>deleted</code>. Therefore, it is best to let the artifact_deployment DAG handle publishing Bigeye monitors.</p>
+</blockquote>
+<hr />
+<h2 id="anatomy-of-a-bigconfig-file">Anatomy of a bigConfig file</h2>
+<div class="highlight"><pre><span></span><code><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BIGCONFIG_FILE</span><span class="w">  </span><span class="c1"># required field to let bigConfig know it&#39;s a bigConfig config file</span>
+<span class="nt">table_deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="c1">#</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">collection</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;My</span><span class="nv"> </span><span class="s">Collection&#39;</span>
+<span class="w">      </span><span class="nt">notification_channels</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">slack</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#my-slack-channel&#39;</span>
+
+<span class="w">    </span><span class="c1"># Here we specify assets (tables) and metrics we should deloy for them</span>
+<span class="w">    </span><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># specify the asset we want to target</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">fq_table_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project_id.project_id.dataset.table_name</span>
+<span class="w">        </span><span class="c1"># Specify table level metrics we want to apply on the asset</span>
+<span class="w">        </span><span class="nt">table_metrics</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">volume</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freshness</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">fq_table_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">project_id.project_id.dataset.table_name_2</span>
+<span class="w">        </span><span class="c1"># Specify metrics we want to apply on individual columns</span>
+<span class="w">        </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">column_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">submission_date</span>
+<span class="w">            </span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is_not_null</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">column_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">usage_profile_id</span>
+<span class="w">            </span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is_not_null</span>
+</code></pre></div>
+<hr />
+<h2 id="example-bigconfig-file">Example bigConfig file</h2>
+<div class="highlight"><pre><span></span><code><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">BIGCONFIG_FILE</span>
+<span class="nt">table_deployments</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">collection</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;My</span><span class="nv"> </span><span class="s">Collection&#39;</span>
+<span class="w">      </span><span class="nt">notification_channels</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">slack</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#data-platform-infa-wg&#39;</span>
+<span class="w">    </span><span class="nt">deployments</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">fq_table_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.retention_v1</span>
+<span class="w">        </span><span class="nt">table_metrics</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">volume</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freshness</span>
+<span class="w">        </span><span class="nt">columns</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">column_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">submission_date</span>
+<span class="w">            </span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is_not_null</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">column_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">client_id</span>
+<span class="w">            </span><span class="nt">metrics</span><span class="p">:</span>
+<span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is_not_null</span>
+</code></pre></div>
+<p><em>Full list of all the config options available can be found in the official documentation for <a href="https://docs.bigeye.com/docs/bigconfig#table-deployments">table deployments</a> and <a href="https://docs.bigeye.com/docs/bigconfig#tag-definitions-optional">tag deployments</a>.</em></p>
+<p>When applied, this configuration would result in Bigeye the following metrics being applied for table <code>moz-fx-data-shared-prod.fenix_derived.retention_v1</code>:</p>
+<ul>
+<li>a metric to make sure the table is updated on time</li>
+<li>a metric to ensure an expected number of rows is added to the table on each update</li>
+<li>a metric to check that both <code>submission_date</code> and <code>client_id</code> fields do not contain null values*</li>
+</ul>
+<p>Those would get bundled under <code>My Collection</code> Bigeye Collection, and if any of the metrics would fail an alert would be sent to the <code>#data-platform-infa-wg</code> Slack channel.</p>
+<p>* <em><code>is_not_null</code> is a <code>saved_metric_id</code> and is defined inside <a href="https://github.com/mozilla/bigquery-etl/blob/main/sql/bigconfig.yml#L4C5-L19C26">sql/bigconfig.yml</a></em></p>
+<hr />
+<h3 id="bigconfig-saved-metric">bigConfig / saved metric</h3>
+<p>A saved metric is a way of defining a Bigeye (bigConfig) metric and giving it a name. This allows us to use this metric in other bigConfig config files just by referencing the saved metric name just like we did inside <code>Example bigConfig file</code> previously.</p>
+<p>Here's an example definition of a saved metric:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># is_not_null</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is_not_null</span>
+<span class="w">  </span><span class="nt">metric_type</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">predefined_metric</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PERCENT_NULL</span>
+<span class="w">  </span><span class="nt">threshold</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CONSTANT</span>
+<span class="w">    </span><span class="nt">upper_bound</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">schedule_frequency</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">interval_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MINUTES</span>
+<span class="w">    </span><span class="nt">interval_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">lookback</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">lookback_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DATA_TIME</span>
+<span class="w">    </span><span class="nt">lookback_window</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">interval_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DAYS</span>
+<span class="w">      </span><span class="nt">interval_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">  </span><span class="nt">rct_overrides</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">submission_date</span>
+</code></pre></div>
+<p>More information about bigConfig saved metrics and all options available can be found in <a href="https://docs.bigeye.com/docs/bigconfig#saved-metric-definitions-optional">the official docs</a>.</p>
+<h3 id="a-few-important-bigconfig-metric-properties">A few important bigConfig metric properties</h3>
+<p>Many of the metric properies are self explanatory. There are a couple we'd like to draw attention to in particular:</p>
+<ul>
+<li><code>schedule_frequency</code> - for many metrics we set it to <code>0 minutes</code> interval to prevent it from running on a schedule. For example, most metrics we only want to run after the dataset is updated so we have Airflow trigger the run manually</li>
+<li><code>lookback</code> - allows us to specify a time window for how much data should be included in a metric run</li>
+<li><code>rct_overrides</code> - allows us to overwrite which field is used to apply a lookback/date filter when running the metric</li>
+</ul>
+<p>If the configuration of a saved_metric is not quite exactly as we want it we can still reference it in another bigConfig file and overwrite the values by specifying the key and the value we want to use. Here's an example:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">metrics</span><span class="p">:</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">saved_metric_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">is_not_null</span>
+<span class="w">  </span><span class="nt">lookback</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">lookback_window</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">interval_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DAYS</span>
+<span class="w">      </span><span class="nt">interval_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">28</span>
+<span class="w">    </span><span class="nt">lookback_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DATA_TIME</span>
+<span class="w">  </span><span class="nt">rct_overrides</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">date</span>
+</code></pre></div>
+<p>This would result in the <code>lookback</code> and <code>rct_overrides</code> properties to be overwritten whilst keeping the rest of the configuration.</p>
+<hr />
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="https://docs.bigeye.com/docs/what-is-bigeye">What is Bigeye</a></li>
+<li><a href="https://docs.bigeye.com/docs/bigconfig">bigConfig</a></li>
+<li><a href="https://docs.bigeye.com/docs/cli#installation">Setting up Bigeye CLI</a></li>
+<li><a href="https://docs.bigeye.com/docs/available-metrics">Bigeye predefined metrics</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

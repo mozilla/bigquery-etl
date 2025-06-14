@@ -342,13 +342,29 @@ jobs:
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
-            - *copy_generated_sql
             - *authenticate
+            - &add_private_bigquery_etl_ssh_keys
+              add_ssh_keys:
+                # deploy key to private-bigquery-etl
+                fingerprints:
+                  - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+            - run:
+                name: Pull down private-bigquery-etl content
+                command: |
+                  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                  git clone --branch main --depth 1 \
+                    git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
             - run:
                 name: Generate DAGs
                 command: |
+                  rm -rf sql/
+                  cp -r /tmp/workspace/private-generated-sql/sql sql
+
+                  cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
                   mkdir -p /tmp/workspace/generated-sql/dags
                   PATH="venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
+                  rm -f /tmp/workspace/generated-sql/dags/private_bqetl_*.py
             # this task is overwriting the content produced by generate-sql;
             # the behaviour here is additive, generated DAGs are just added to
             # the generated-sql output
@@ -766,18 +782,14 @@ jobs:
     resource_class: large
     steps:
       - when:
-          condition: *deploy
+          condition: *validate-sql
           steps:
             - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
             - *authenticate
-            - &add_private_bigquery_etl_ssh_keys
-              add_ssh_keys:
-                # deploy key to private-bigquery-etl
-                fingerprints:
-                  - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+            - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Install rsync
                 command: |
@@ -816,7 +828,7 @@ jobs:
                 paths:
                   - private-generated-sql
       - unless:
-          condition: *deploy
+          condition: *validate-sql
           steps:
             - *skip
   private-generate-dags:
@@ -1191,6 +1203,7 @@ workflows:
       - generate-dags:
           requires:
             - generate-sql
+            - private-generate-sql
       - docs:
           requires:
             - generate-sql
@@ -1224,11 +1237,7 @@ workflows:
       # from the internal repository and pushing generated results back to
       # a branch on that internal repository, which may be initially
       # surprising.
-      - private-generate-sql:
-          filters:
-            branches:
-              only:
-                - main
+      - private-generate-sql
       - private-generate-dags:
           requires:
             - private-generate-sql

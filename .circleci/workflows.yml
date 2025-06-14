@@ -779,7 +779,6 @@ jobs:
             -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
   private-generate-sql:
     docker: *docker
-    resource_class: large
     steps:
       - when:
           condition: *validate-sql
@@ -788,41 +787,32 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
+            - *attach_generated_sql
             - *authenticate
             - *add_private_bigquery_etl_ssh_keys
-            - run:
-                name: Install rsync
-                command: |
-                  apt update
-                  apt install -y rsync
             - run:
                 name: Pull down private SQL content
                 command: |
                   ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-                  git clone --single-branch --branch main \
-                                git@github.com:mozilla/private-bigquery-etl.git \
-                                ~/private-bigquery-etl
-                  rsync --archive ~/private-bigquery-etl/sql/ sql/
-                  rsync --archive ~/private-bigquery-etl/sql_generators/ sql_generators/
+                  git clone --branch main --depth 1 \
+                    git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
             - run:
                 name: Generate SQL content
-                no_output_timeout: 30m
                 command: |
-                  mkdir -p /tmp/workspace/private-generated-sql
+                  export PATH="$PWD/venv/bin:$PATH"
+                  export PYTHONPATH="$PWD:$PYTHONPATH"
+                  bqetl_script="$PWD/script/bqetl"
+                  cd ~/private-bigquery-etl
 
-                  cp -r sql/ /tmp/workspace/private-generated-sql/sql
-                  # Don't depend on dry run for PRs
-                  PATH="venv/bin:$PATH" script/bqetl generate all \
-                    --output-dir /tmp/workspace/private-generated-sql/sql/ \
-                    --target-project moz-fx-data-shared-prod
-                  PATH="venv/bin:$PATH" script/bqetl dependency record \
-                    --skip-existing \
-                    "/tmp/workspace/private-generated-sql/sql/"
-                  PATH="venv/bin:$PATH" script/bqetl metadata update \
-                    --sql-dir /tmp/workspace/private-generated-sql/sql/ \
-                    /tmp/workspace/private-generated-sql/sql/
-                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/private-generated-sql/sql/
-                  PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/private-generated-sql/sql/
+                  $bqetl_script generate all --target-project moz-fx-data-shared-prod
+                  $bqetl_script dependency record --skip-existing sql/
+                  $bqetl_script metadata update sql/
+                  $bqetl_script format sql/
+                  $bqetl_script monitoring update sql/
+
+                  mkdir -p /tmp/workspace/private-generated-sql
+                  cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
+                  cp -rf sql/. /tmp/workspace/private-generated-sql/sql
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
@@ -1237,7 +1227,9 @@ workflows:
       # from the internal repository and pushing generated results back to
       # a branch on that internal repository, which may be initially
       # surprising.
-      - private-generate-sql
+      - private-generate-sql:
+          requires:
+            - generate-sql
       - private-generate-dags:
           requires:
             - private-generate-sql

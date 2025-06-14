@@ -942,10 +942,14 @@ jobs:
             - *restore_venv_cache
             - *build
             - *authenticate
+            - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Generate SQL content
                 command: |
-                  export PATH="venv/bin:$PATH"
+                  export PATH="$PWD/venv/bin:$PATH"
+                  export PYTHONPATH="$PWD:$PYTHONPATH"
+                  bigquery_etl="$PWD"
+                  bqetl_script="$PWD/script/bqetl"
 
                   # Get parent commit on main from which this branch diverged
                   MAIN_MERGE_BASE=$(git merge-base HEAD $CIRCLE_BRANCH || true)
@@ -968,7 +972,7 @@ jobs:
                     echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
                   fi
 
-                  cd ~/project
+                  cd "$bigquery_etl"
                   export GENERATED_SQL_CHANGED=false
 
                   if [[ -n $MAIN_MERGE_BASE ]]; then
@@ -996,38 +1000,41 @@ jobs:
                     GENERATED_SQL_CHANGED=true
                   fi
 
-                  mkdir -p /tmp/workspace/main-generated-sql
-                  mkdir -p /tmp/workspace/main-generated-sql/dags
-
                   if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
                     # re-run SQL generation and re-generate DAGs
-                    ./script/bqetl generate all \
+                    $bqetl_script generate all \
                       --target-project moz-fx-data-shared-prod
-
-                    cp -r sql/ /tmp/workspace/main-generated-sql/sql
                   else
                     echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
-                    # merge files that changed in this PR with the generated-sql branch
-                    cp -r ~/remote-generated-sql/sql/. /tmp/workspace/main-generated-sql/sql
-                    cp -a sql/. /tmp/workspace/main-generated-sql/sql
+                    # merge files from the generated-sql branch, preserving those that changed in this PR
+                    cp -rn ~/remote-generated-sql/sql/. sql
                   fi
 
-                  ./script/bqetl dependency record \
-                    --skip-existing \
-                    "/tmp/workspace/main-generated-sql/sql/"
-                  ./script/bqetl metadata update \
-                    --sql-dir /tmp/workspace/main-generated-sql/sql/ \
-                    /tmp/workspace/main-generated-sql/sql/
-                  # re-generate DAGs
-                  ./script/bqetl format /tmp/workspace/main-generated-sql/sql/
+                  $bqetl_script dependency record --skip-existing sql/
+                  $bqetl_script metadata update sql/
+                  $bqetl_script format sql/
+                  $bqetl_script monitoring update sql/
 
-                  ./script/bqetl dag generate \
-                    --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+                  mkdir -p /tmp/workspace/main-generated-sql
+                  cp -r sql /tmp/workspace/main-generated-sql/sql
+
+                  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                  git clone --branch main --depth 1 git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+                  cd ~/private-bigquery-etl
+                  $bqetl_script generate all --target-project moz-fx-data-shared-prod
+                  $bqetl_script dependency record --skip-existing sql/
+                  $bqetl_script metadata update sql/
+                  $bqetl_script format sql/
+                  $bqetl_script monitoring update sql/
+                  cd "$bigquery_etl"
+                  cp -rf ~/private-bigquery-etl/sql/. sql
+                  cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
+                  mkdir /tmp/workspace/main-generated-sql/dags
+                  $bqetl_script dag generate \
                     --output-dir /tmp/workspace/main-generated-sql/dags
-
-                  find /tmp/workspace/main-generated-sql/dags -name '*.py' \
-                    -exec sed -i -e 's/\/tmp\/workspace\/main-generated-sql\/sql/sql/g' {} \;
+                  rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:

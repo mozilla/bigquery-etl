@@ -99,3 +99,11 @@ fields:
   type: BOOLEAN
   mode: NULLABLE
   description: Flag indicating client qualifies as a "Monthly Active User" on this submission date
+- name: legacy_telemetry_client_id
+  type: STRING
+  mode: NULLABLE
+  description: Legacy Telemetry Client Identifier
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows Version

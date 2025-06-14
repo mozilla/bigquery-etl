@@ -45,8 +45,16 @@ WITH impressions AS (
     sample_id,
     metrics.boolean.quick_suggest_is_clicked AS is_clicked,
     client_info.locale AS locale,
-    metadata.geo.country,
-    metadata.geo.subdivision1 AS region,
+    IF(
+      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
+      metadata.geo.country,
+      metrics.string.country,
+    ) AS country,
+    IF(
+      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
+      metadata.geo.subdivision1,
+      CAST(NULL AS STRING)
+    ) AS region,
     normalized_os,
     normalized_os_version,
     normalized_channel,

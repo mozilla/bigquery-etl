@@ -831,6 +831,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
+            - *attach_generated_sql
             - *authenticate
             - *add_private_bigquery_etl_ssh_keys
             - run:
@@ -845,15 +846,19 @@ jobs:
                   # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
                   export PATH="$PWD/venv/bin:$PATH"
                   export PYTHONPATH="$PWD:$PYTHONPATH"
+                  bigquery_etl="$PWD"
                   bqetl_script="$PWD/script/bqetl"
                   cd ~/private-bigquery-etl
 
                   rm -rf sql/
                   cp -r /tmp/workspace/private-generated-sql/sql sql
 
+                  cat "$bigquery_etl/dags.yaml" | grep -v '^---$' >> dags.yaml
+
                   mkdir -p /tmp/workspace/private-generated-sql/dags
                   $bqetl_script dag generate \
                     --output-dir /tmp/workspace/private-generated-sql/dags/
+                  rm -f /tmp/workspace/private-generated-sql/dags/bqetl_*.py
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:

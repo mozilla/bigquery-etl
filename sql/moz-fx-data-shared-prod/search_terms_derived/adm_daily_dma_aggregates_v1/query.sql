@@ -10,7 +10,7 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` as mls
 ON
-  (sis.request_id == mls.request_id)
+  (sis.request_id = mls.request_id)
 WHERE
   DATE(sis.submission_timestamp) = @sis.submission_date
   AND LENGTH(sis.query) > 0

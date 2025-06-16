@@ -37,7 +37,7 @@ WITH stg_prospects AS (
       AND DATE(derived_tstamp) = @submission_date
     {% endif %}
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY happened_at ORDER BY happened_at) = 1
+    ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY dvce_created_tstamp) = 1
 )
 SELECT
   p.prospect_id,

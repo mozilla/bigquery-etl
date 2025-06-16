@@ -2617,7 +2617,13 @@ SELECT
       metrics.counter.use_counter_page_js_small_oom_recovered,
       metrics.counter.use_counter_page_js_small_oom_reported,
       metrics.counter.use_counter_css_doc_css_view_transition_class,
-      metrics.counter.use_counter_css_page_css_view_transition_class
+      metrics.counter.use_counter_css_page_css_view_transition_class,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_ctor,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_uncallable_ctor,
+      metrics.counter.use_counter_page_js_error_capturestacktrace,
+      metrics.counter.use_counter_page_js_error_capturestacktrace_ctor,
+      metrics.counter.use_counter_page_js_error_capturestacktrace_uncallable_ctor
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5257,7 +5263,13 @@ SELECT
       metrics.counter.use_counter_page_js_small_oom_recovered,
       metrics.counter.use_counter_page_js_small_oom_reported,
       metrics.counter.use_counter_css_doc_css_view_transition_class,
-      metrics.counter.use_counter_css_page_css_view_transition_class
+      metrics.counter.use_counter_css_page_css_view_transition_class,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_ctor,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_uncallable_ctor,
+      metrics.counter.use_counter_page_js_error_capturestacktrace,
+      metrics.counter.use_counter_page_js_error_capturestacktrace_ctor,
+      metrics.counter.use_counter_page_js_error_capturestacktrace_uncallable_ctor
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7897,7 +7909,13 @@ SELECT
       metrics.counter.use_counter_page_js_small_oom_recovered,
       metrics.counter.use_counter_page_js_small_oom_reported,
       metrics.counter.use_counter_css_doc_css_view_transition_class,
-      metrics.counter.use_counter_css_page_css_view_transition_class
+      metrics.counter.use_counter_css_page_css_view_transition_class,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_ctor,
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_uncallable_ctor,
+      metrics.counter.use_counter_page_js_error_capturestacktrace,
+      metrics.counter.use_counter_page_js_error_capturestacktrace_ctor,
+      metrics.counter.use_counter_page_js_error_capturestacktrace_uncallable_ctor
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

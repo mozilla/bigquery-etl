@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -8040,6 +8040,24 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: use_counter_css_page_css_view_transition_class
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_error_capturestacktrace
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_error_capturestacktrace_ctor
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_doc_js_error_capturestacktrace_uncallable_ctor
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_error_capturestacktrace
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_error_capturestacktrace_ctor
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_error_capturestacktrace_uncallable_ctor
       type: INTEGER
       mode: NULLABLE
   - name: labeled_counter

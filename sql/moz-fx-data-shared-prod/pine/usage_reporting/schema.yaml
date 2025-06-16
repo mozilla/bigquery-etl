@@ -380,6 +380,12 @@ fields:
         (e.g. 22000) and not set for other platforms.
 
         '
+    - name: usage_windows_user_profile_age_in_days
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The age of the current users home folder in days.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -11543,6 +11543,34 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page reported a small oom
+    - name: use_counter2_js_error_capturestacktrace_ctor_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Error.captureStackTrace with a constructor
+        argument
+    - name: use_counter2_js_error_capturestacktrace_ctor_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Error.captureStackTrace with a constructor
+        argument
+    - name: use_counter2_js_error_capturestacktrace_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Error.captureStackTrace
+    - name: use_counter2_js_error_capturestacktrace_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Error.captureStackTrace
+    - name: use_counter2_js_error_capturestacktrace_uncallable_ctor_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document called Error.captureStackTrace with a non-callable
+        constructor argument
+    - name: use_counter2_js_error_capturestacktrace_uncallable_ctor_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page called Error.captureStackTrace with a non-callable
+        constructor argument
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22942,6 +22970,34 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page reported a small oom
+        - name: use_counter2_js_error_capturestacktrace_ctor_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Error.captureStackTrace with a constructor
+            argument
+        - name: use_counter2_js_error_capturestacktrace_ctor_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Error.captureStackTrace with a constructor
+            argument
+        - name: use_counter2_js_error_capturestacktrace_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Error.captureStackTrace
+        - name: use_counter2_js_error_capturestacktrace_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Error.captureStackTrace
+        - name: use_counter2_js_error_capturestacktrace_uncallable_ctor_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document called Error.captureStackTrace with a non-callable
+            constructor argument
+        - name: use_counter2_js_error_capturestacktrace_uncallable_ctor_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page called Error.captureStackTrace with a non-callable
+            constructor argument
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

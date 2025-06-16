@@ -19750,6 +19750,52 @@ fields:
         rate.
 
         '
+    - name: use_counter_doc_js_error_capturestacktrace
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called Error.captureStackTrace. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_js_error_capturestacktrace_ctor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called Error.captureStackTrace with a constructor
+        argument. Compare against `use.counter.content_documents_destroyed` to calculate
+        the rate.
+
+        '
+    - name: use_counter_doc_js_error_capturestacktrace_uncallable_ctor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document called Error.captureStackTrace with a non-callable
+        constructor argument. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_error_capturestacktrace
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called Error.captureStackTrace. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_js_error_capturestacktrace_ctor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called Error.captureStackTrace with a constructor
+        argument. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_error_capturestacktrace_uncallable_ctor
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page called Error.captureStackTrace with a non-callable
+        constructor argument. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

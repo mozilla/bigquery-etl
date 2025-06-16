@@ -1,17 +1,6 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.telemetry.weekly_cohort_churn`
 AS
-WITH activity_joined AS (
-  SELECT
-    c.cohort_date_week,
-    c.client_id,
-    a.submission_date
-  FROM
-    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_cfs_staging_v1` c
-  JOIN
-    `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_staging_v1` a
-    ON c.client_id = a.client_id
-)
 SELECT
   c.cohort_date_week,
   c.app_version,
@@ -181,7 +170,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_cfs_staging_v1` c
 LEFT JOIN
-  activity_joined a
+  `moz-fx-data-shared-prod.telemetry_derived.cohort_weekly_active_clients_staging_v1` a
   ON a.client_id = c.client_id
 GROUP BY
   c.cohort_date_week,

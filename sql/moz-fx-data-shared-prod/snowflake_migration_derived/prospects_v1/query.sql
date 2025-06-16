@@ -33,6 +33,9 @@ WITH stg_prospects AS (
   WHERE
     event_name = 'object_update'
     AND unstruct_event_com_pocket_object_update_1.object = 'prospect'
+    {% if not is_init() %}
+      AND DATE(derived_tstamp) = @submission_date
+    {% endif %}
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY happened_at ORDER BY happened_at) = 1
 )

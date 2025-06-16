@@ -1,8 +1,8 @@
 SELECT
   @submission_date AS submission_date,
-  mls.dma,
-  sis.query,
-  sis.block_id,
+  mls.dma AS dma,
+  sis.query AS query,
+  sis.block_id AS block_id,
   COUNT(sis.request_id) AS impressions,
   COUNTIF(sis.is_clicked) AS clicks,
 FROM

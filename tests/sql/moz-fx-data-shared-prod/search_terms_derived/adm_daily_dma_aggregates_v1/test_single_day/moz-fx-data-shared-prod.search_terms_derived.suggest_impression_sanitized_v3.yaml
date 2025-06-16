@@ -18,12 +18,13 @@
   version: "1.2.0"
   timestamp: "2025-06-16T09:00:01Z"
   query: "buy running shoes"
-  dma: null
+  dma: ""
   form_factor: "mobile"
   browser: "Safari"
   os_family: "iOS"
   session_id: "sess_xyz001"
   sequence_no: 1
+
 - request_id: "req_1002"
   submission_timestamp: "2025-06-16T09:00:03Z"
   telemetry_query: "buy running shoes"
@@ -44,12 +45,13 @@
   version: "1.2.0"
   timestamp: "2025-06-16T09:00:03Z"
   query: "buy running shoes"
-  dma: null
+  dma: ""
   form_factor: "mobile"
   browser: "Safari"
   os_family: "iOS"
   session_id: "sess_xyz091"
   sequence_no: 2
+
 - request_id: "req_1003"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "cheap flights to Europe"
@@ -70,12 +72,13 @@
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
   query: "cheap flights to Europe"
-  dma: null
+  dma: ""
   form_factor: "desktop"
   browser: "Edge"
   os_family: "Windows"
   session_id: "sess_uk900"
   sequence_no: 1
+
 - request_id: "req_1005"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "fly away now!"
@@ -95,13 +98,14 @@
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
-  query: "cheap flights to Europe"
-  dma: null
+  query: "fly away now!"
+  dma: ""
   form_factor: "desktop"
   browser: "Edge"
   os_family: "Windows"
   session_id: "sess_uk990"
   sequence_no: 1
+
 - request_id: "req_1006"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "fly away now!"
@@ -121,13 +125,14 @@
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
-  query: "cheap flights to Europe"
-  dma: null
+  query: "fly away now!"
+  dma: ""
   form_factor: "desktop"
   browser: "Edge"
   os_family: "Windows"
   session_id: "sess_uk990"
   sequence_no: 1
+
 - request_id: "req_1009"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "fly away now!"
@@ -147,8 +152,8 @@
   scenario: "travel"
   version: "2.0.0"
   timestamp: "2025-06-16T10:15:20Z"
-  query: "cheap flights to Europe"
-  dma: null
+  query: "fly away now!"
+  dma: ""
   form_factor: "desktop"
   browser: "Edge"
   os_family: "Windows"

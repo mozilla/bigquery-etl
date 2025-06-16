@@ -3,40 +3,43 @@
   query: "buy running shoes"
   country: "US"
   region: "NY"
-  dma: "501"
+  dma: "501a"
   form_factor: "mobile"
   browser: "Safari"
   os_family: "iOS"
   session_id: "sess_xyz001"
   sequence_no: 1
+
 - timestamp: "2025-06-16T09:00:00Z"
   request_id: "req_1002"
   query: "buy running shoes"
   country: "US"
   region: "NY"
-  dma: "501"
+  dma: "501a"
   form_factor: "desktop"
   browser: "Safari"
   os_family: "iOS"
   session_id: "sess_xyz092"
   sequence_no: 1
+
 - timestamp: "2025-06-16T10:15:00Z"
   request_id: "req_1003"
   query: "cheap flights to Europe"
   country: "GB"
   region: "ENG"
-  dma: null
+  dma: ""
   form_factor: "desktop"
   browser: "Edge"
   os_family: "Windows"
   session_id: "sess_uk900"
   sequence_no: 1
+
 - timestamp: "2025-06-16T11:45:00Z"
   request_id: "req_1004"
   query: "new laptops"
   country: "CA"
   region: "ON"
-  dma: null
+  dma: ""
   form_factor: "laptop"
   browser: "Chrome"
   os_family: "macOS"

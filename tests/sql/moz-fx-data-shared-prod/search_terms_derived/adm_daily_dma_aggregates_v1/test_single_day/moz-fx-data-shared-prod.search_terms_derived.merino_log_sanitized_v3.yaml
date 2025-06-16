@@ -9,7 +9,6 @@
   os_family: "iOS"
   session_id: "sess_xyz001"
   sequence_no: 1
-
 - timestamp: "2025-06-16T09:00:00Z"
   request_id: "req_1002"
   query: "buy running shoes"
@@ -21,7 +20,6 @@
   os_family: "iOS"
   session_id: "sess_xyz092"
   sequence_no: 1
-
 - timestamp: "2025-06-16T10:15:00Z"
   request_id: "req_1003"
   query: "cheap flights to Europe"
@@ -33,7 +31,6 @@
   os_family: "Windows"
   session_id: "sess_uk900"
   sequence_no: 1
-
 - timestamp: "2025-06-16T11:45:00Z"
   request_id: "req_1004"
   query: "new laptops"

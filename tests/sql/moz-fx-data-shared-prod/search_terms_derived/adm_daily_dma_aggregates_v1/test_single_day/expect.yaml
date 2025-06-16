@@ -1,0 +1,27 @@
+- submission_date: "2025-06-16"
+  dma: "501"
+  query: "buy running shoes"
+  block_id: 1
+  impressions: 2
+  clicks: 1
+
+- submission_date: "2025-06-16"
+  dma: null
+  query: "cheap flights to Europe"
+  block_id: 1
+  impressions: 1
+  clicks: 1
+
+- submission_date: "2025-06-16"
+  dma: null
+  query: "fly away now!"
+  block_id: 1
+  impressions: 1
+  clicks: 1
+
+- submission_date: "2025-06-16"
+  dma: null
+  query: "fly away now!"
+  block_id: 2
+  impressions: 1
+  clicks: 0

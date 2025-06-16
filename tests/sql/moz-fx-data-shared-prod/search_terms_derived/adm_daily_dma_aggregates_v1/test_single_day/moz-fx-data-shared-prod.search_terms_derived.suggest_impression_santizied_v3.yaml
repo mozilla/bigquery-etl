@@ -1,0 +1,135 @@
+- request_id: "req_1001"
+  submission_timestamp: "2025-06-16T09:00:01Z"
+  telemetry_query: "buy running shoes"
+  advertiser: "Nike"
+  block_id: 1
+  context_id: "ctx_001"
+  sample_id: 101
+  is_clicked: true
+  locale: "en-US"
+  country: "US"
+  region: "NY"
+  normalized_os: "iOS"
+  normalized_os_version: "17.5"
+  normalized_channel: "app"
+  position: 1
+  reporting_url: "https://ads.allizom.com/report/abc123"
+  scenario: "shopping"
+  version: "1.2.0"
+  timestamp: "2025-06-16T09:00:01Z"
+  query: "buy running shoes"
+  dma: null
+  form_factor: "mobile"
+  browser: "Safari"
+  os_family: "iOS"
+  session_id: "sess_xyz001"
+  sequence_no: 1
+
+- request_id: "req_1002"
+  submission_timestamp: "2025-06-16T09:00:03Z"
+  telemetry_query: "buy running shoes"
+  advertiser: "Adidas"
+  block_id: 1
+  context_id: "ctx_001"
+  sample_id: 102
+  is_clicked: false
+  locale: "en-US"
+  country: "US"
+  region: "NY"
+  normalized_os: "iOS"
+  normalized_os_version: "17.5"
+  normalized_channel: "app"
+  position: 2
+  reporting_url: "https://ads.allizom.com/report/abc123"
+  scenario: "shopping"
+  version: "1.2.0"
+  timestamp: "2025-06-16T09:00:03Z"
+  query: "buy running shoes"
+  dma: null
+  form_factor: "mobile"
+  browser: "Safari"
+  os_family: "iOS"
+  session_id: "sess_xyz091"
+  sequence_no: 2
+
+- request_id: "req_1003"
+  submission_timestamp: "2025-06-16T10:15:20Z"
+  telemetry_query: "cheap flights to Europe"
+  advertiser: "Expedia"
+  block_id: 1
+  context_id: "ctx_002"
+  sample_id: 201
+  is_clicked: true
+  locale: "en-GB"
+  country: "GB"
+  region: "ENG"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "web"
+  position: 1
+  reporting_url: "https://ads.allizom.com/report/xyz789"
+  scenario: "travel"
+  version: "2.0.0"
+  timestamp: "2025-06-16T10:15:20Z"
+  query: "cheap flights to Europe"
+  dma: null
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_uk900"
+  sequence_no: 1
+
+
+- request_id: "req_1005"
+  submission_timestamp: "2025-06-16T10:15:20Z"
+  telemetry_query: "fly away now!"
+  advertiser: "Expedia"
+  block_id: 1
+  context_id: "ctx_002"
+  sample_id: 201
+  is_clicked: true
+  locale: "en-GB"
+  country: "GB"
+  region: "ENG"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "web"
+  position: 1
+  reporting_url: "https://ads.allizom.com/report/xyz789"
+  scenario: "travel"
+  version: "2.0.0"
+  timestamp: "2025-06-16T10:15:20Z"
+  query: "cheap flights to Europe"
+  dma: null
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_uk990"
+  sequence_no: 1
+
+- request_id: "req_1006"
+  submission_timestamp: "2025-06-16T10:15:20Z"
+  telemetry_query: "fly away now!"
+  advertiser: "Expedia"
+  block_id: 2
+  context_id: "ctx_002"
+  sample_id: 201
+  is_clicked: false
+  locale: "en-GB"
+  country: "GB"
+  region: "ENG"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "web"
+  position: 1
+  reporting_url: "https://ads.allizom.com/report/xyz789"
+  scenario: "travel"
+  version: "2.0.0"
+  timestamp: "2025-06-16T10:15:20Z"
+  query: "cheap flights to Europe"
+  dma: null
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_uk990"
+  sequence_no: 1

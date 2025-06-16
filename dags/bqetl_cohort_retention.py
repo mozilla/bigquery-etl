@@ -386,6 +386,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "telemetry_derived__cohort_weekly_active_clients_staging__v1_external",
+    ) as telemetry_derived__cohort_weekly_active_clients_staging__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_churn__wait_for_telemetry_derived__cohort_weekly_active_clients_staging__v1",
+            external_dag_id="bqetl_cohort_churn",
+            external_task_id="wait_for_telemetry_derived__cohort_weekly_active_clients_staging__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84000)).isoformat() }}",
+        )
+
+        telemetry_derived__cohort_weekly_active_clients_staging__v1_external.set_upstream(
+            telemetry_derived__cohort_weekly_active_clients_staging__v1
+        )
+
     telemetry_derived__cohort_weekly_cfs_staging__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_weekly_cfs_staging__v1",
         destination_table="cohort_weekly_cfs_staging_v1",
@@ -398,6 +412,20 @@ with DAG(
         task_concurrency=1,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    with TaskGroup(
+        "telemetry_derived__cohort_weekly_cfs_staging__v1_external",
+    ) as telemetry_derived__cohort_weekly_cfs_staging__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_churn__wait_for_telemetry_derived__cohort_weekly_cfs_staging__v1",
+            external_dag_id="bqetl_cohort_churn",
+            external_task_id="wait_for_telemetry_derived__cohort_weekly_cfs_staging__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=84000)).isoformat() }}",
+        )
+
+        telemetry_derived__cohort_weekly_cfs_staging__v1_external.set_upstream(
+            telemetry_derived__cohort_weekly_cfs_staging__v1
+        )
 
     telemetry_derived__cohort_weekly_statistics__v1 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_weekly_statistics__v1",

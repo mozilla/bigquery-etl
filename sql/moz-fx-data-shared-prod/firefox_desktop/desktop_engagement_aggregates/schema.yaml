@@ -60,6 +60,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Normalized Operating System Version
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+  description: Windows Version
 - name: country
   type: STRING
   mode: NULLABLE

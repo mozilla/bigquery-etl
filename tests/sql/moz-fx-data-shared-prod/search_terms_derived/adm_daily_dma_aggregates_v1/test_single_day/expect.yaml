@@ -25,3 +25,11 @@
   block_id: 2
   impressions: 1
   clicks: 0
+
+
+- submission_date: "2025-06-16"
+  dma: null
+  query: "thisshouldntexisttest"
+  block_id: 2
+  impressions: 1
+  clicks: 0

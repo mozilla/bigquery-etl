@@ -14,6 +14,7 @@ SELECT
   normalized_channel,
   normalized_os,
   normalized_os_version,
+  windows_version,
   country,
   is_desktop,
   COUNTIF(is_dau) AS dau,
@@ -39,5 +40,6 @@ GROUP BY
   normalized_channel,
   normalized_os,
   normalized_os_version,
+  windows_version,
   country,
   is_desktop

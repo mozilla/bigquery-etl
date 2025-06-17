@@ -52,7 +52,15 @@ SELECT
   cfs.distribution_id,
   cfs.channel,
   cfs.normalized_os,
-  cfs.normalized_os_version,
+  COALESCE(
+    mozfun.norm.glean_windows_version_info(
+      cfs.normalized_os,
+      cfs.normalized_os_version,
+      cfs.windows_build_number
+    ),
+    NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
+  ) AS normalized_os_version,
+  cfs.app_display_version AS app_version,
   cfs.locale,
   cfs.windows_version,
   cfs.windows_build_number,
@@ -80,7 +88,15 @@ GROUP BY
   cfs.distribution_id,
   cfs.channel,
   cfs.normalized_os,
-  cfs.normalized_os_version,
+  COALESCE(
+    mozfun.norm.glean_windows_version_info(
+      cfs.normalized_os,
+      cfs.normalized_os_version,
+      cfs.windows_build_number
+    ),
+    NULLIF(SPLIT(cfs.normalized_os_version, ".")[SAFE_OFFSET(0)], "")
+  ),
+  cfs.app_display_version,
   cfs.locale,
   cfs.windows_version,
   cfs.windows_build_number,

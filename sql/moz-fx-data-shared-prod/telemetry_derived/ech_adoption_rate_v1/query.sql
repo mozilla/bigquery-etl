@@ -20,7 +20,7 @@ WITH unioned AS (
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
+    AND metrics.labeled_custom_distribution.http3_ech_outcome IS NOT NULL
   GROUP BY
     submission_date,
     label,
@@ -48,7 +48,7 @@ WITH unioned AS (
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
+    AND metrics.custom_distribution.ssl_handshake_result_ech.values IS NOT NULL
   GROUP BY
     submission_date,
     label,
@@ -76,7 +76,7 @@ WITH unioned AS (
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
+    AND metrics.custom_distribution.ssl_handshake_result_ech_grease.values IS NOT NULL
   GROUP BY
     submission_date,
     label,
@@ -104,7 +104,7 @@ WITH unioned AS (
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND metrics.labeled_timing_distribution.network_sup_http3_tcp_connection IS NOT NULL
+    AND metrics.custom_distribution.ssl_handshake_privacy.values IS NOT NULL
   GROUP BY
     submission_date,
     label,

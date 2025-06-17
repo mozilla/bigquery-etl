@@ -63,6 +63,10 @@ fields:
   name: normalized_os_version
   type: STRING
   mode: NULLABLE
+- description: The application display version
+  name: app_version
+  type: STRING
+  mode: NULLABLE
 - description: The best locale that the application should be localized to.
   name: locale
   type: STRING

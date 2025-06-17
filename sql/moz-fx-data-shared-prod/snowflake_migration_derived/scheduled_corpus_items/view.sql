@@ -1,0 +1,46 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.snowflake_migration_derived.scheduled_corpus_items`
+AS
+SELECT
+  scheduled_corpus_item_external_id,
+  scheduled_corpus_item_scheduled_at,
+  url,
+  scheduled_surface_id,
+  scheduled_surface_name,
+  scheduled_surface_iana_timezone,
+  scheduled_corpus_item_created_at,
+  curator_created_by,
+  scheduled_corpus_item_updated_at,
+  curator_updated_by,
+  schedule_generated_by,
+  scheduled_status,
+  scheduled_status_reasons,
+  scheduled_status_reason_comment,
+  scheduled_action_ui_page,
+  approved_corpus_item_external_id,
+  prospect_id,
+  corpus_item_loaded_from,
+  corpus_review_status,
+  prospect_scheduled_surface_id,
+  predicted_topic,
+  prospect_source,
+  prospect_flow,
+  prospect_expires_at,
+  title,
+  excerpt,
+  image_url,
+  LANGUAGE,
+  topic,
+  authors,
+  publisher,
+  is_collection,
+  is_syndicated,
+  is_time_sensitive,
+  reviewed_corpus_item_created_at,
+  reviewed_corpus_item_updated_at,
+  happened_at
+FROM
+  `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1`
+WHERE
+  reviewed_corpus_update_status != 'removed'
+  AND scheduled_corpus_status != 'removed'

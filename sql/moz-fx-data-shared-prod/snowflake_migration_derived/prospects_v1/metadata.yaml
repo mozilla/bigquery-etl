@@ -10,9 +10,6 @@ labels:
   owner2: rrando
 scheduling:
   dag_name: bqetl_content_ml_daily
-  # destination is the whole table, not a single partition,
-  # so don't use date_partition_parameter
-  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

@@ -50,7 +50,6 @@ references:
   - moz-fx-data-shared-prod.firefox_desktop_stable.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1
-  - moz-fx-data-shared-prod.firefox_desktop_stable.sync_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1
   - moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1
   - moz-fx-data-shared-prod.firefox_translations_stable.custom_v1

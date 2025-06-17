@@ -1,6 +1,6 @@
 SELECT
   @submission_date AS submission_date,
-  mls.dma AS dma,
+  COALESCE(mls.dma, '') AS dma,
   sis.query AS query,
   sis.block_id AS block_id,
   COUNT(sis.request_id) AS impressions,
@@ -17,5 +17,5 @@ WHERE
   AND DATE(sis.submission_timestamp) = @submission_date
 GROUP BY
   sis.query,
-  mls.dma,
+  COALESCE(mls.dma, ''),
   sis.block_id

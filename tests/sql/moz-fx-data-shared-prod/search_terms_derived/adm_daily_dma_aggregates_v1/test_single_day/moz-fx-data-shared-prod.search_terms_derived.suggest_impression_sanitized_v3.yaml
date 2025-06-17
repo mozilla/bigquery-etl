@@ -1,7 +1,7 @@
 - request_id: "req_1001"
   submission_timestamp: "2025-06-16T09:00:01Z"
   telemetry_query: "buy running shoes"
-  advertiser: "Nike"
+  advertiser: "FakeShoeSupplier"
   block_id: 1
   context_id: "ctx_001"
   sample_id: 101
@@ -28,7 +28,7 @@
 - request_id: "req_1002"
   submission_timestamp: "2025-06-16T09:00:03Z"
   telemetry_query: "buy running shoes"
-  advertiser: "Adidas"
+  advertiser: "FakeShoeSupplierButDifferent"
   block_id: 1
   context_id: "ctx_001"
   sample_id: 102
@@ -55,7 +55,7 @@
 - request_id: "req_1003"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "cheap flights to Europe"
-  advertiser: "Expedia"
+  advertiser: "FakeTravelAgency"
   block_id: 1
   context_id: "ctx_002"
   sample_id: 201
@@ -82,7 +82,7 @@
 - request_id: "req_1005"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "fly away now!"
-  advertiser: "Expedia"
+  advertiser: "FakeTravelAgency"
   block_id: 1
   context_id: "ctx_002"
   sample_id: 201
@@ -109,7 +109,7 @@
 - request_id: "req_1006"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "fly away now!"
-  advertiser: "Expedia"
+  advertiser: "FakeTravelAgency"
   block_id: 2
   context_id: "ctx_002"
   sample_id: 201
@@ -136,7 +136,7 @@
 - request_id: "req_1009"
   submission_timestamp: "2025-06-16T10:15:20Z"
   telemetry_query: "fly away now!"
-  advertiser: "Expedia"
+  advertiser: "FakeTravelAgency"
   block_id: 2
   context_id: "ctx_002"
   sample_id: 201

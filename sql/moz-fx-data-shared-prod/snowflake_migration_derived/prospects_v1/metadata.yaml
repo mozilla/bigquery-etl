@@ -12,7 +12,6 @@ labels:
   dag: bqetl_content_ml_daily
 scheduling:
   dag_name: bqetl_content_ml_daily
-  date_partition_parameter: null
 bigquery:
   time_partitioning:
     type: day

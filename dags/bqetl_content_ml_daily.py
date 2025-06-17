@@ -104,9 +104,8 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="skamath@mozilla.com",
         email=["rrando@mozilla.com", "skamath@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_concurrency=1,
     )
 
     snowflake_migration_derived__rejected_corpus_items__v1 = bigquery_etl_query(

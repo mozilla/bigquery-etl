@@ -211,6 +211,14 @@ VALUES
     'take-action-for-the-internet'
   ),
   (
+    'ten-tabs',
+    'Ten Tabs Newsletter',
+    '5711f4ee-663a-4010-81e5-b087c273681c',
+    'f01e85e1-12a8-42ef-848c-2083bce89038',
+    '1da167f2-c473-4949-ac8e-0045ad5b23ff',
+    'ten-tabs'
+  ),
+  (
     'test-pilot',
     'New Product Testing',
     '7a6cc4c5-441e-4c3b-95a6-e9de7edc78fd',

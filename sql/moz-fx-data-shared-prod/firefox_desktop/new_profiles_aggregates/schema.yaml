@@ -68,6 +68,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The OS version.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: The application display version
 - name: locale
   type: STRING
   mode: NULLABLE

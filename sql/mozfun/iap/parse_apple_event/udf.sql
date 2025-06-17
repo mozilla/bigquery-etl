@@ -41,7 +41,7 @@ CREATE OR REPLACE FUNCTION iap.parse_apple_event(input STRING) AS (
     JSON_VALUE(input, "$.storefront") AS storefront,
     JSON_VALUE(input, "$.transactionId") AS transaction_id,
     JSON_VALUE(input, "$.type") AS type,
-    TO_HEX(SHA256(JSON_VALUE(input, "$.userId"))) AS user_id,
+    JSON_VALUE(input, "$.userId") AS user_id,
     TIMESTAMP_MILLIS(CAST(JSON_VALUE(input, "$.verifiedAt") AS INT64)) AS verified_at
   )
 );
@@ -80,7 +80,7 @@ SELECT
       "USA" AS storefront,
       "2000000987654321" AS transaction_id,
       "Auto-Renewable Subscription" AS type,
-      TO_HEX(SHA256("user id")) AS user_id,
+      "user id" AS user_id,
       TIMESTAMP "1970-01-01 00:00:03 UTC" AS verified_at
     ),
     actual => iap.parse_apple_event(

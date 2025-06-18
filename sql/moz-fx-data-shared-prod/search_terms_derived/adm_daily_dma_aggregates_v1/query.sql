@@ -10,11 +10,11 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` AS mls
   ON (sis.request_id = mls.request_id)
+  AND DATE(mls.timestamp) = @submission_date
 WHERE
   DATE(sis.submission_timestamp) = @submission_date
   AND LENGTH(sis.query) > 0
   AND sis.normalized_channel = 'release'
-  AND DATE(mls.timestamp) = @submission_date
 GROUP BY
   sis.query,
   COALESCE(mls.dma, ''),

@@ -10,9 +10,11 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.search_terms_derived.merino_log_sanitized_v3` AS mls
   ON (sis.request_id = mls.request_id)
-  AND DATE(mls.timestamp) = @submission_date
+  AND mls.timestamp >= TIMESTAMP(@submission_date)
+  AND mls.timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
 WHERE
-  DATE(sis.submission_timestamp) = @submission_date
+  sis.submission_timestamp >= TIMESTAMP(@submission_date)
+  AND sis.submission_timestamp < TIMESTAMP(DATE_ADD(@submission_date, INTERVAL 1 DAY))
   AND LENGTH(sis.query) > 0
   AND sis.normalized_channel = 'release'
 GROUP BY

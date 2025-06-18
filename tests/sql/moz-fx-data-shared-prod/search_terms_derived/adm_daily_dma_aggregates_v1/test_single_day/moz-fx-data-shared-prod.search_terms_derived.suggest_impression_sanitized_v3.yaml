@@ -159,3 +159,30 @@
   os_family: "Windows"
   session_id: "sess_uk990"
   sequence_no: 1
+
+- request_id: "req_1010"
+  submission_timestamp: "2025-06-17T00:15:20Z"
+  telemetry_query: "Looking for flights"
+  advertiser: "FakeTravelAgency"
+  block_id: 2
+  context_id: "ctx_002"
+  sample_id: 201
+  is_clicked: false
+  locale: "en-GB"
+  country: "GB"
+  region: "ENG"
+  normalized_os: "Windows"
+  normalized_os_version: "11"
+  normalized_channel: "release"
+  position: 1
+  reporting_url: "https://ads.allizom.com/report/xyz789"
+  scenario: "travel"
+  version: "2.0.0"
+  timestamp: "2025-06-16T10:15:20Z"
+  query: "Looking for flights"
+  dma: ""
+  form_factor: "desktop"
+  browser: "Edge"
+  os_family: "Windows"
+  session_id: "sess_uk990"
+  sequence_no: 1

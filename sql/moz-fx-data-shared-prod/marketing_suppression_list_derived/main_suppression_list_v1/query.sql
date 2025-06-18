@@ -51,7 +51,7 @@ WITH suppressions AS (
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
     "clicked header" AS suppression_reason,
-    "Braze Firefox unsubscribe" AS suppression_source
+    "Braze Pocket unsubscribe" AS suppression_source
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_pocket_unsubscribe_v1`
   -- braze hard bounces from Pocket workspace
@@ -60,7 +60,7 @@ WITH suppressions AS (
     LOWER(email_address) AS email,
     TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
     "hard bounce" AS suppression_reason,
-    "Braze Firefox hard bounce" AS suppression_source
+    "Braze Pocket hard bounce" AS suppression_source
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_currents_pocket_hard_bounces_v1`
 ),

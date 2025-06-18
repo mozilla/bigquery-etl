@@ -10,5 +10,5 @@
 # User 8 braze Mozilla hard bounce
 # User 9 braze Pocket hard bounce
 # User 10 braze Pocket unsubscribes
-- email_address: user10@emil.com
+- email_address: user10@email.com
   time: 1750032000

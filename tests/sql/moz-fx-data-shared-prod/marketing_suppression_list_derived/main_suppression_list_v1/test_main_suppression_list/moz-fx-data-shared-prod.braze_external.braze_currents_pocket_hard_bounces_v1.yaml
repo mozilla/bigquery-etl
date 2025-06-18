@@ -8,5 +8,7 @@
 # User 6 braze Firefox hard bounce
 # User 7 MoFo
 # User 8 braze Mozilla hard bounce
-- email_address: user8@email.com
-  time: 1722470400
+# User 9 braze Pocket hard bounce
+- email_address: user9@email.com
+  time: 1750032000
+# User 10 braze Pocket unsubscribes

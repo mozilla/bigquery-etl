@@ -23,7 +23,7 @@
   suppression_reason: clicked header
   suppression_source: Braze Firefox unsubscribe
 # User 6 braze Firefox hard bounce
-- email: user6@emil.com
+- email: user6@email.com
   suppressed_timestamp: 2022-06-01 00:00:00+00:00
   suppression_reason: hard bounce
   suppression_source: Braze Firefox hard bounce
@@ -32,7 +32,17 @@
   suppressed_timestamp: 2023-07-01 00:00:00+00:00
   suppression_source: Campaign Monitor
 # User 8 braze Mozilla hard bounce
-- email: user8@emil.com
+- email: user8@email.com
   suppressed_timestamp: 2024-08-01 00:00:00+00:00
   suppression_reason: hard bounce
   suppression_source: Braze Mozilla hard bounce
+# User 9 braze Pocket hard bounce
+- email: user9@email.com
+  suppressed_timestamp: 2025-06-16 00:00:00+00:00
+  suppression_reason: hard bounce
+  suppression_source: Braze Pocket hard bounce
+# User 10 braze Pocket unsubscribe
+- email: user10@email.com
+  suppressed_timestamp: 2025-06-16 00:00:00+00:00
+  suppression_reason: clicked header
+  suppression_source: Braze Pocket unsubscribe

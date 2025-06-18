@@ -4,7 +4,7 @@
 # User 2 Acoustic and braze unsubscribe
 # User 3 Acoustic and braze unsubscribe and braze hard bounce
 # User 4 Acoustic, braze unsubscribe, braze hard bounce and MoFo
-- email: usEr4@email.com
+- email: user4@email.com
   update_timestamp: 2022-04-01 00:00:00+00:00
   suppression_reason: bounced
 # User 5 braze unsubscribe

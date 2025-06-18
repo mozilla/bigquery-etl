@@ -1,5 +1,5 @@
 SELECT
-  @submission_date AS submission_date,
+  DATE(@submission_date) AS submission_date,
   COALESCE(mls.dma, '') AS dma,
   sis.query AS query,
   sis.block_id AS block_id,

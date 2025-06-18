@@ -2,20 +2,24 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date of the tile ID export
+  description: Date of the tile ID export.
 - mode: NULLABLE
   name: dma
   type: STRING
-  description: String representation of the Designated Market Area
+  description: String representation of the Designated Market Area.
 - mode: NULLABLE
   name: query
   type: STRING
+  description: A string a user input into the search bar reported to suggest.
 - mode: NULLABLE
   name: block_id
   type: INTEGER
+  description: A unique identifier for a set of related keywords.
 - mode: NULLABLE
   name: impressions
   type: INTEGER
+  description: The count of total impressions by users.
 - mode: NULLABLE
   name: clicks
   type: INTEGER
+  description: The count of total clicks by users.

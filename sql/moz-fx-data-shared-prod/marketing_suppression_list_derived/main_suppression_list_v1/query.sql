@@ -45,6 +45,24 @@ WITH suppressions AS (
     "Campaign Monitor" AS suppression_source
   FROM
     `moz-fx-data-shared-prod.marketing_suppression_list_external.campaign_monitor_suppression_list_v1`
+  -- braze unsubscribes from Pocket workspace
+  UNION DISTINCT
+  SELECT
+    LOWER(email_address) AS email,
+    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    "clicked header" AS suppression_reason,
+    "Braze Firefox unsubscribe" AS suppression_source
+  FROM
+    `moz-fx-data-shared-prod.braze_external.braze_currents_pocket_unsubscribe_v1`
+  -- braze hard bounces from Pocket workspace
+  UNION DISTINCT
+  SELECT
+    LOWER(email_address) AS email,
+    TIMESTAMP_SECONDS(time) AS suppressed_timestamp,
+    "hard bounce" AS suppression_reason,
+    "Braze Firefox hard bounce" AS suppression_source
+  FROM
+    `moz-fx-data-shared-prod.braze_external.braze_currents_pocket_hard_bounces_v1`
 ),
 final AS (
   SELECT

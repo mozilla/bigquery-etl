@@ -513,6 +513,20 @@ with DAG(
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
     )
 
+    with TaskGroup(
+        "braze_external__braze_currents_pocket_hard_bounces__v1_external",
+    ) as braze_external__braze_currents_pocket_hard_bounces__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__braze_currents_pocket_hard_bounces__v1",
+            external_dag_id="bqetl_marketing_suppression_list",
+            external_task_id="wait_for_braze_external__braze_currents_pocket_hard_bounces__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        braze_external__braze_currents_pocket_hard_bounces__v1_external.set_upstream(
+            braze_external__braze_currents_pocket_hard_bounces__v1
+        )
+
     braze_external__braze_currents_pocket_mark_as_spam__v1 = GKEPodOperator(
         task_id="braze_external__braze_currents_pocket_mark_as_spam__v1",
         arguments=[
@@ -569,3 +583,17 @@ with DAG(
         owner="lmcfall@mozilla.com",
         email=["cbeck@mozilla.com", "lmcfall@mozilla.com"],
     )
+
+    with TaskGroup(
+        "braze_external__braze_currents_pocket_unsubscribe__v1_external",
+    ) as braze_external__braze_currents_pocket_unsubscribe__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_suppression_list__wait_for_braze_external__braze_currents_pocket_unsubscribe__v1",
+            external_dag_id="bqetl_marketing_suppression_list",
+            external_task_id="wait_for_braze_external__braze_currents_pocket_unsubscribe__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        braze_external__braze_currents_pocket_unsubscribe__v1_external.set_upstream(
+            braze_external__braze_currents_pocket_unsubscribe__v1
+        )

@@ -98,6 +98,34 @@ with DAG(
         )
     )
 
+    wait_for_braze_external__braze_currents_pocket_hard_bounces__v1 = (
+        ExternalTaskSensor(
+            task_id="wait_for_braze_external__braze_currents_pocket_hard_bounces__v1",
+            external_dag_id="bqetl_braze_currents",
+            external_task_id="braze_external__braze_currents_pocket_hard_bounces__v1",
+            execution_delta=datetime.timedelta(seconds=3600),
+            check_existence=True,
+            mode="reschedule",
+            poke_interval=datetime.timedelta(minutes=5),
+            allowed_states=ALLOWED_STATES,
+            failed_states=FAILED_STATES,
+            pool="DATA_ENG_EXTERNALTASKSENSOR",
+        )
+    )
+
+    wait_for_braze_external__braze_currents_pocket_unsubscribe__v1 = ExternalTaskSensor(
+        task_id="wait_for_braze_external__braze_currents_pocket_unsubscribe__v1",
+        external_dag_id="bqetl_braze_currents",
+        external_task_id="braze_external__braze_currents_pocket_unsubscribe__v1",
+        execution_delta=datetime.timedelta(seconds=3600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_marketing_suppression_list_derived__main_suppression_list__v1 = bigquery_dq_check(
         task_id="checks__fail_marketing_suppression_list_derived__main_suppression_list__v1",
         source_table="main_suppression_list_v1",
@@ -184,6 +212,14 @@ with DAG(
 
     marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
         wait_for_braze_external__braze_currents_mozilla_hard_bounces__v1
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        wait_for_braze_external__braze_currents_pocket_hard_bounces__v1
+    )
+
+    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
+        wait_for_braze_external__braze_currents_pocket_unsubscribe__v1
     )
 
     marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(

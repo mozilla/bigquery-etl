@@ -14,7 +14,7 @@ WHERE
   DATE(sis.submission_timestamp) = @submission_date
   AND LENGTH(sis.query) > 0
   AND sis.normalized_channel = 'release'
-  AND DATE(sis.submission_timestamp) = @submission_date
+  AND DATE(mls.submission_timestamp) = @submission_date
 GROUP BY
   sis.query,
   COALESCE(mls.dma, ''),

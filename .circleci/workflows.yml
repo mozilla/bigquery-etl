@@ -364,14 +364,16 @@ jobs:
 
                   mkdir -p /tmp/workspace/generated-sql/dags
                   PATH="venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
-                  rm -f /tmp/workspace/generated-sql/dags/private_bqetl_*.py
-            # this task is overwriting the content produced by generate-sql;
+                  mkdir -p /tmp/workspace/private-generated-sql/dags
+                  mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
+            # this task is overwriting the content produced by generate-sql and private-generate-sql;
             # the behaviour here is additive, generated DAGs are just added to
-            # the generated-sql output
+            # the generated-sql and private-generate-sql output
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
+                  - private-generated-sql
       - unless:
           condition: *validate-sql
           steps:
@@ -821,52 +823,6 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip
-  private-generate-dags:
-    docker: *docker
-    steps:
-      - when:
-          condition: *deploy
-          steps:
-            - *skip_forked_pr
-            - checkout
-            - *restore_venv_cache
-            - *build
-            - *attach_generated_sql
-            - *authenticate
-            - *add_private_bigquery_etl_ssh_keys
-            - run:
-                name: Pull down private-bigquery-etl content
-                command: |
-                  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-                  git clone --branch main --depth 1 \
-                    git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
-            - run:
-                name: Generate DAGs
-                command: |
-                  # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
-                  export PATH="$PWD/venv/bin:$PATH"
-                  export PYTHONPATH="$PWD:$PYTHONPATH"
-                  bigquery_etl="$PWD"
-                  bqetl_script="$PWD/script/bqetl"
-                  cd ~/private-bigquery-etl
-
-                  rm -rf sql/
-                  cp -r /tmp/workspace/private-generated-sql/sql sql
-
-                  cat "$bigquery_etl/dags.yaml" | grep -v '^---$' >> dags.yaml
-
-                  mkdir -p /tmp/workspace/private-generated-sql/dags
-                  $bqetl_script dag generate \
-                    --output-dir /tmp/workspace/private-generated-sql/dags/
-                  rm -f /tmp/workspace/private-generated-sql/dags/bqetl_*.py
-            - persist_to_workspace:
-                root: /tmp/workspace
-                paths:
-                  - private-generated-sql
-      - unless:
-          condition: *deploy
-          steps:
-            - *skip
   push-private-generated-sql:
     docker: *docker
     steps:
@@ -1242,17 +1198,10 @@ workflows:
       - private-generate-sql:
           requires:
             - generate-sql
-      - private-generate-dags:
-          requires:
-            - private-generate-sql
-          filters:
-            branches:
-              only:
-                - main
       - push-private-generated-sql:
           requires:
             - private-generate-sql
-            - private-generate-dags
+            - generate-dags
           filters:
             branches:
               only:

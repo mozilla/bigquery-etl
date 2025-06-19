@@ -12347,8 +12347,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -17416,6 +17415,19 @@ fields:
         mode: NULLABLE
       description: Records the IP address family (IPv4 or IPv6) used when an HTTP
         transaction is dispatched.
+    - name: networking_cookie_db_validation
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts cookies loaded from the DB grouped by validation result.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

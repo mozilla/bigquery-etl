@@ -620,7 +620,8 @@ SELECT
       metrics.labeled_counter.network_rel_preload_miss_ratio,
       metrics.labeled_counter.region_store_region_result,
       metrics.labeled_counter.networking_local_network_access,
-      metrics.labeled_counter.networking_connection_address_type
+      metrics.labeled_counter.networking_connection_address_type,
+      metrics.labeled_counter.networking_cookie_db_validation
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

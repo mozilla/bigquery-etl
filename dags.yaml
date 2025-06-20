@@ -2353,3 +2353,17 @@ bqetl_pocket_users_historical:
     retry_delay: 5m
   tags:
     - impact/tier_3
+
+bqetl_pocket_user_engagement_historical:
+  schedule_interval: once
+  description: |
+    Load Pocket User Engagement historical data from GCS into BigQuery
+  default_args:
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+    start_date: '2025-06-12'
+    retries: 1
+    retry_delay: 5m
+  tags:
+    - impact/tier_3

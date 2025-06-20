@@ -1,0 +1,9 @@
+friendly_name: Bigeye Derived
+description: |-
+  Import of data from Bigeye, this includes things like information about workspaces, users, issues, etc.
+dataset_base_acl: derived
+user_facing: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

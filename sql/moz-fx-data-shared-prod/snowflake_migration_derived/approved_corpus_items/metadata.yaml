@@ -1,0 +1,5 @@
+friendly_name: Approved Corpus Items
+description: View of approved corpus items in the corpus_items_updated_v1 table
+owners:
+  - skamath@mozilla.com
+  - rrando@mozilla.com

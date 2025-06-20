@@ -77,6 +77,9 @@ fields:
     description: Timestamp making allowance for inaccurate device clock
   - mode: NULLABLE
     type: STRING
+    name: excerpt
+  - mode: NULLABLE
+    type: STRING
     name: image_url
     description: The url of the main image of the reviewed corpus item
   - mode: NULLABLE

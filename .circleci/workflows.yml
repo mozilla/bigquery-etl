@@ -342,20 +342,38 @@ jobs:
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
-            - *copy_generated_sql
             - *authenticate
+            - &add_private_bigquery_etl_ssh_keys
+              add_ssh_keys:
+                # deploy key to private-bigquery-etl
+                fingerprints:
+                  - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+            - run:
+                name: Pull down private-bigquery-etl content
+                command: |
+                  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                  git clone --branch main --depth 1 \
+                    git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
             - run:
                 name: Generate DAGs
                 command: |
+                  rm -rf sql/
+                  cp -r /tmp/workspace/private-generated-sql/sql sql
+
+                  cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
                   mkdir -p /tmp/workspace/generated-sql/dags
                   PATH="venv/bin:$PATH" script/bqetl dag generate --output-dir=/tmp/workspace/generated-sql/dags
-            # this task is overwriting the content produced by generate-sql;
+                  mkdir -p /tmp/workspace/private-generated-sql/dags
+                  mv /tmp/workspace/generated-sql/dags/private_bqetl_*.py /tmp/workspace/private-generated-sql/dags/
+            # this task is overwriting the content produced by generate-sql and private-generate-sql;
             # the behaviour here is additive, generated DAGs are just added to
-            # the generated-sql output
+            # the generated-sql and private-generate-sql output
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
+                  - private-generated-sql
       - unless:
           condition: *validate-sql
           steps:
@@ -763,68 +781,46 @@ jobs:
             -d "{\"dagrun_note\": \"${DAGRUN_NOTE}\", \"dag_id\": \"bqetl_artifact_deployment\"}"
   private-generate-sql:
     docker: *docker
-    resource_class: large
     steps:
       - when:
-          condition: *deploy
+          condition: *validate-sql
           steps:
             - *skip_forked_pr
             - checkout
             - *restore_venv_cache
             - *build
+            - *attach_generated_sql
             - *authenticate
-            - add_ssh_keys:
-                # deploy key to private-bigquery-etl
-                fingerprints:
-                  - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
-            - run:
-                name: Install rsync
-                command: |
-                  apt update
-                  apt install -y rsync
+            - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Pull down private SQL content
                 command: |
                   ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-                  git clone --single-branch --branch main \
-                                git@github.com:mozilla/private-bigquery-etl.git \
-                                ~/private-bigquery-etl
-                  rsync --archive ~/private-bigquery-etl/sql/ sql/
-                  rsync --archive ~/private-bigquery-etl/dags.yaml dags.yaml
+                  git clone --branch main --depth 1 \
+                    git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
             - run:
                 name: Generate SQL content
-                no_output_timeout: 30m
                 command: |
-                  mkdir -p /tmp/workspace/private-generated-sql
-
-                  cp -r sql/ /tmp/workspace/private-generated-sql/sql
-                  # Don't depend on dry run for PRs
-                  PATH="venv/bin:$PATH" script/bqetl generate all \
-                    --output-dir /tmp/workspace/private-generated-sql/sql/ \
-                    --target-project moz-fx-data-shared-prod
-                  PATH="venv/bin:$PATH" script/bqetl dependency record \
-                    --skip-existing \
-                    "/tmp/workspace/private-generated-sql/sql/"
-                  PATH="venv/bin:$PATH" script/bqetl metadata update \
-                    --sql-dir /tmp/workspace/private-generated-sql/sql/ \
-                    /tmp/workspace/private-generated-sql/sql/
-                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/private-generated-sql/sql/
-                  PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/private-generated-sql/sql/
-
-                  # Change directory to generate DAGs so `sql_file_path` values are relative to the repo root.
                   export PATH="$PWD/venv/bin:$PATH"
                   export PYTHONPATH="$PWD:$PYTHONPATH"
                   bqetl_script="$PWD/script/bqetl"
                   cd ~/private-bigquery-etl
-                  mkdir -p /tmp/workspace/private-generated-sql/dags
-                  $bqetl_script dag generate \
-                    --output-dir /tmp/workspace/private-generated-sql/dags/
+
+                  $bqetl_script generate all --target-project moz-fx-data-shared-prod
+                  $bqetl_script dependency record --skip-existing sql/
+                  $bqetl_script metadata update sql/
+                  $bqetl_script format sql/
+                  $bqetl_script monitoring update sql/
+
+                  mkdir -p /tmp/workspace/private-generated-sql
+                  cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
+                  cp -rf sql/. /tmp/workspace/private-generated-sql/sql
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                   - private-generated-sql
       - unless:
-          condition: *deploy
+          condition: *validate-sql
           steps:
             - *skip
   push-private-generated-sql:
@@ -834,9 +830,7 @@ jobs:
           condition: *deploy
           steps:
             - *attach_generated_sql
-            - add_ssh_keys:
-                fingerprints:
-                  - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
+            - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Push to private-generated-sql branch
                 # yamllint disable rule:line-length
@@ -904,10 +898,14 @@ jobs:
             - *restore_venv_cache
             - *build
             - *authenticate
+            - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Generate SQL content
                 command: |
-                  export PATH="venv/bin:$PATH"
+                  export PATH="$PWD/venv/bin:$PATH"
+                  export PYTHONPATH="$PWD:$PYTHONPATH"
+                  bigquery_etl="$PWD"
+                  bqetl_script="$PWD/script/bqetl"
 
                   # Get parent commit on main from which this branch diverged
                   MAIN_MERGE_BASE=$(git merge-base HEAD $CIRCLE_BRANCH || true)
@@ -930,7 +928,7 @@ jobs:
                     echo "Latest tag on generated-sql branch: c-$LATEST_TAG_GENERATED_SQL"
                   fi
 
-                  cd ~/project
+                  cd "$bigquery_etl"
                   export GENERATED_SQL_CHANGED=false
 
                   if [[ -n $MAIN_MERGE_BASE ]]; then
@@ -958,38 +956,41 @@ jobs:
                     GENERATED_SQL_CHANGED=true
                   fi
 
-                  mkdir -p /tmp/workspace/main-generated-sql
-                  mkdir -p /tmp/workspace/main-generated-sql/dags
-
                   if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
                     # re-run SQL generation and re-generate DAGs
-                    ./script/bqetl generate all \
+                    $bqetl_script generate all \
                       --target-project moz-fx-data-shared-prod
-
-                    cp -r sql/ /tmp/workspace/main-generated-sql/sql
                   else
                     echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
-                    # merge files that changed in this PR with the generated-sql branch
-                    cp -r ~/remote-generated-sql/sql/. /tmp/workspace/main-generated-sql/sql
-                    cp -a sql/. /tmp/workspace/main-generated-sql/sql
+                    # merge files from the generated-sql branch, preserving those that changed in this PR
+                    cp -rn ~/remote-generated-sql/sql/. sql
                   fi
 
-                  ./script/bqetl dependency record \
-                    --skip-existing \
-                    "/tmp/workspace/main-generated-sql/sql/"
-                  ./script/bqetl metadata update \
-                    --sql-dir /tmp/workspace/main-generated-sql/sql/ \
-                    /tmp/workspace/main-generated-sql/sql/
-                  # re-generate DAGs
-                  ./script/bqetl format /tmp/workspace/main-generated-sql/sql/
+                  $bqetl_script dependency record --skip-existing sql/
+                  $bqetl_script metadata update sql/
+                  $bqetl_script format sql/
+                  $bqetl_script monitoring update sql/
 
-                  ./script/bqetl dag generate \
-                    --sql-dir /tmp/workspace/main-generated-sql/sql/ \
+                  mkdir -p /tmp/workspace/main-generated-sql
+                  cp -r sql /tmp/workspace/main-generated-sql/sql
+
+                  ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+                  git clone --branch main --depth 1 git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
+                  cd ~/private-bigquery-etl
+                  $bqetl_script generate all --target-project moz-fx-data-shared-prod
+                  $bqetl_script dependency record --skip-existing sql/
+                  $bqetl_script metadata update sql/
+                  $bqetl_script format sql/
+                  $bqetl_script monitoring update sql/
+                  cd "$bigquery_etl"
+                  cp -rf ~/private-bigquery-etl/sql/. sql
+                  cat ~/private-bigquery-etl/dags.yaml | grep -v '^---$' >> dags.yaml
+
+                  mkdir /tmp/workspace/main-generated-sql/dags
+                  $bqetl_script dag generate \
                     --output-dir /tmp/workspace/main-generated-sql/dags
-
-                  find /tmp/workspace/main-generated-sql/dags -name '*.py' \
-                    -exec sed -i -e 's/\/tmp\/workspace\/main-generated-sql\/sql/sql/g' {} \;
+                  rm -f /tmp/workspace/main-generated-sql/dags/private_bqetl_*.py
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
@@ -1160,6 +1161,7 @@ workflows:
       - generate-dags:
           requires:
             - generate-sql
+            - private-generate-sql
       - docs:
           requires:
             - generate-sql
@@ -1194,13 +1196,12 @@ workflows:
       # a branch on that internal repository, which may be initially
       # surprising.
       - private-generate-sql:
-          filters:
-            branches:
-              only:
-                - main
+          requires:
+            - generate-sql
       - push-private-generated-sql:
           requires:
             - private-generate-sql
+            - generate-dags
           filters:
             branches:
               only:

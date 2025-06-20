@@ -55,6 +55,7 @@ with DAG(
         task_id="fivetran_import_1_task",
         deferrable=False,
         task_concurrency=1,
+        trigger_rule="all_done",
     )
 
     wait_for_fivetran_import_1 = ExternalTaskSensor(

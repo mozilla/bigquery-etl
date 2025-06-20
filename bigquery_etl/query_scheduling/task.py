@@ -205,7 +205,17 @@ class FivetranTask:
     """Representation of a Fivetran data import task."""
 
     task_id: str = attr.ib()
+    trigger_rule: Optional[str] = attr.ib(None)
     depends_on: List[TaskRef] = attr.ib([])
+
+    @trigger_rule.validator
+    def validate_trigger_rule(self, attribute, value):
+        """Check that trigger_rule is a valid option."""
+        if value is not None and value not in set(rule.value for rule in TriggerRule):
+            raise ValueError(
+                f"Invalid trigger rule {value}. "
+                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+            )
 
 
 class SecretDeployType(Enum):
@@ -709,10 +719,11 @@ class Task:
             fivetran_dependencies = [
                 dep.task_key
                 for fivetran_task in self.depends_on_fivetran
-                for dep in getattr(fivetran_task, 'depends_on', [])
+                for dep in getattr(fivetran_task, "depends_on", [])
             ]
             return any(
-                d.task_key == task_ref.task_key for d in self.depends_on + dependencies + fivetran_dependencies
+                d.task_key == task_ref.task_key
+                for d in self.depends_on + dependencies + fivetran_dependencies
             )
 
         parent_task = None

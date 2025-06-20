@@ -255,9 +255,16 @@ class TestDagCollection:
                 "param": "test_param",
                 "arguments": ["--append_table"],
                 "depends_on_fivetran": [
-                    {"task_id": "fivetran_import_1", "depends_on": [{
-                        "dag_name": "fivetran_import_dag", "task_id": "fivetran_import_1"
-                    }]},
+                    {
+                        "task_id": "fivetran_import_1",
+                        "trigger_rule": "all_done",
+                        "depends_on": [
+                            {
+                                "dag_name": "fivetran_import_dag",
+                                "task_id": "fivetran_import_1",
+                            }
+                        ],
+                    },
                     {"task_id": "fivetran_import_2"},
                 ],
             },

@@ -194,6 +194,9 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
         {# Have the operator run synchronously so the task concurrency limit is respected. -#}
         deferrable=False,
         task_concurrency=1,
+        {%+ if fivetran_task.trigger_rule -%}
+        trigger_rule="{{ fivetran_task.trigger_rule }}",
+        {%+ endif -%}
     )
 
     {% do fivetran_seen.append(fivetran_task) -%}

@@ -17,3 +17,7 @@ fields:
 - mode: NULLABLE
   name: path_count
   type: INTEGER
+- name: total_row_count
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of rows in the table

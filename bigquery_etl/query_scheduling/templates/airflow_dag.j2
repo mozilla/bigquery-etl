@@ -197,6 +197,50 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     )
 
     {% do fivetran_seen.append(fivetran_task) -%}
+
+    {% for fivetran_dependency in fivetran_task.depends_on | sort(attribute='task_id') -%}
+    {% if not (fivetran_dependency.dag_name == name and fivetran_dependency.get_execution_delta(schedule_interval) in [none, '0h', '0m', '0s']) -%}
+    {% if fivetran_dependency.task_key not in wait_for_seen -%}
+    wait_for_{{ fivetran_dependency.task_id | replace('-', '_') }} = ExternalTaskSensor(
+        task_id='wait_for_{{ fivetran_dependency.task_id }}',
+        external_dag_id='{{ fivetran_dependency.dag_name }}',
+        {% if fivetran_dependency.task_group -%}
+        external_task_id='{{fivetran_dependency.task_group}}.{{ fivetran_dependency.task_id }}',
+        {% else -%}
+        external_task_id='{{ fivetran_dependency.task_id }}',
+        {% endif -%}
+        {% if fivetran_dependency.get_execution_delta(schedule_interval) -%}
+        execution_delta={{ fivetran_dependency.get_execution_delta(schedule_interval) | format_timedelta | format_repr }},
+        {% endif -%}
+        check_existence=True,
+        mode='reschedule',
+        poke_interval=
+        {%- if fivetran_dependency.poke_interval != None -%}
+        {{ fivetran_dependency.poke_interval | format_timedelta | format_repr }}
+        {%- else -%}
+        datetime.timedelta(minutes=5)
+        {%- endif -%},
+        {% if fivetran_dependency.timeout -%}
+        timeout={{ fivetran_dependency.timeout | format_timedelta | format_repr }},
+        {% endif -%}
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool='DATA_ENG_EXTERNALTASKSENSOR',
+    )
+
+    {% do wait_for_seen.append(fivetran_dependency.task_key) -%}
+    {% endif -%}
+    {% endif -%}
+
+    {% if fivetran_dependency.dag_name == name and fivetran_dependency.get_execution_delta(schedule_interval) in [none, '0h', '0m', '0s'] -%}
+        {% if fivetran_dependency.task_id != task.task_name -%}
+        {{ fivetran_task.task_id }}_sync_start.set_upstream({{ fivetran_dependency.task_id }})
+        {% endif -%}
+    {% else -%}
+        {{ fivetran_task.task_id }}_sync_start.set_upstream(wait_for_{{ fivetran_dependency.task_id | replace('-', '_') }})
+    {% endif -%}
+    {% endfor -%}
+
     {% endif -%}
     {% endfor -%}
     {% endif -%}

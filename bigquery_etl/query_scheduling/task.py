@@ -205,6 +205,7 @@ class FivetranTask:
     """Representation of a Fivetran data import task."""
 
     task_id: str = attr.ib()
+    depends_on: List[TaskRef] = attr.ib([])
 
 
 class SecretDeployType(Enum):
@@ -705,8 +706,13 @@ class Task:
         dependencies = []
 
         def _duplicate_dependency(task_ref):
+            fivetran_dependencies = [
+                dep.task_key
+                for fivetran_task in self.depends_on_fivetran
+                for dep in getattr(fivetran_task, 'depends_on', [])
+            ]
             return any(
-                d.task_key == task_ref.task_key for d in self.depends_on + dependencies
+                d.task_key == task_ref.task_key for d in self.depends_on + dependencies + fivetran_dependencies
             )
 
         parent_task = None

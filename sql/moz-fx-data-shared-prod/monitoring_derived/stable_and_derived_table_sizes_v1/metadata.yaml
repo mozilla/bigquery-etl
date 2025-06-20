@@ -12,7 +12,7 @@ scheduling:
   dag_name: bqetl_monitoring
   arguments:
   - --date
-  - '{{ macros.ds_add(ds, -1) }}'
+  - '{{ ds }}'
   referenced_tables:
   - - moz-fx-data-shared-prod
     - '*_stable'

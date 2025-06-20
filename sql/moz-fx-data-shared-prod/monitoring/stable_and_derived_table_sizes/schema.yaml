@@ -11,3 +11,6 @@ fields:
 - name: byte_size
   type: INTEGER
   mode: NULLABLE
+- name: row_count
+  type: INTEGER
+  mode: NULLABLE

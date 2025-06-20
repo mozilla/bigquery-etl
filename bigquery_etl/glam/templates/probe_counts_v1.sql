@@ -84,14 +84,14 @@ WITH probe_counts AS (
       mozfun.glam.histogram_fill_buckets_dirichlet(
         mozfun.map.sum(ARRAY_AGG(record)),
         mozfun.glam.histogram_buckets_cast_string_array(
-          udf_get_buckets(metric_type, range_min, range_max, bucket_count)
+          udf_get_buckets(metric_type, MIN(range_min), MAX(range_max), bucket_count)
         ),
         CAST(ROUND(SUM(record.value)) AS INT64)
       ) AS aggregates,
       mozfun.glam.histogram_fill_buckets(
         mozfun.map.sum(ARRAY_AGG(non_norm_record)),
         mozfun.glam.histogram_buckets_cast_string_array(
-          udf_get_buckets(metric_type, range_min, range_max, bucket_count)
+          udf_get_buckets(metric_type, MIN(range_min), MAX(range_max), bucket_count)
         )
       ) AS non_norm_aggregates
     {% endif %}
@@ -99,8 +99,10 @@ WITH probe_counts AS (
     {{ source_table }}
   GROUP BY
     {{ attributes }},
-    range_min,
-    range_max,
+    {% if is_scalar %}
+      range_min,
+      range_max,
+    {% endif %}
     bucket_count,
     {{ aggregate_attributes }},
     {{ aggregate_grouping }}

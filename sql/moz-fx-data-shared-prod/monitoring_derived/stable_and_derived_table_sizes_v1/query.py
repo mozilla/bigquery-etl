@@ -20,7 +20,7 @@ parser.add_argument(
     help="Project of tables to get sizes for",
 )
 parser.add_argument("--dataset", default=("*_derived", "*_stable"))  # pattern
-parser.add_argument("--destination_project")  # default to --project
+parser.add_argument("--destination_project", help="Project to write results to. Defaults to --project value.")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="stable_and_derived_table_sizes_v1")
 
@@ -131,6 +131,10 @@ def save_table_sizes(
 
 def main():
     args = parser.parse_args()
+
+    if args.destination_project is None:
+        args.destination_project = args.project
+
     client = bigquery.Client(args.project)
 
     for datediff in range(2):

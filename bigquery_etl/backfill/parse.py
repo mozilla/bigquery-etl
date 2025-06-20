@@ -52,6 +52,7 @@ class BackfillStatus(enum.Enum):
 
     INITIATE = "Initiate"
     COMPLETE = "Complete"
+    CANCELLED = "Cancelled"
 
 
 @attr.s(auto_attribs=True)

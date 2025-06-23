@@ -214,7 +214,7 @@ class FivetranTask:
         if value is not None and value not in set(rule.value for rule in TriggerRule):
             raise ValueError(
                 f"Invalid trigger rule {value}. "
-                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+                "See https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html#trigger-rules for list of trigger rules"
             )
 
 
@@ -431,7 +431,7 @@ class Task:
         if value is not None and value not in set(rule.value for rule in TriggerRule):
             raise ValueError(
                 f"Invalid trigger rule {value}. "
-                "See https://airflow.apache.org/docs/apache-airflow/1.10.3/concepts.html#trigger-rules for list of trigger rules"
+                "See https://airflow.apache.org/docs/apache-airflow/2.10.5/core-concepts/dags.html#trigger-rules for list of trigger rules"
             )
 
     @retry_delay.validator
@@ -716,14 +716,8 @@ class Task:
         dependencies = []
 
         def _duplicate_dependency(task_ref):
-            fivetran_dependencies = [
-                dep.task_key
-                for fivetran_task in self.depends_on_fivetran
-                for dep in getattr(fivetran_task, "depends_on", [])
-            ]
             return any(
-                d.task_key == task_ref.task_key
-                for d in self.depends_on + dependencies + fivetran_dependencies
+                d.task_key == task_ref.task_key for d in self.depends_on + dependencies
             )
 
         parent_task = None
@@ -806,4 +800,12 @@ class Task:
             task_ref
             for task_ref in dag_collection.get_task_downstream_dependencies(self)
             if task_ref.dag_name != self.dag_name
+        ]
+
+    def fivetran_dependencies(self):
+        """Return a upstream Fivetran dependency tasks based on `depends_on_fivetran`."""
+        return [
+            dep
+            for fivetran_task in self.depends_on_fivetran
+            for dep in getattr(fivetran_task, "depends_on", [])
         ]

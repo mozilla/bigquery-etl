@@ -11,7 +11,7 @@ fields:
 - name: provider
   type: STRING
   mode: NULLABLE
-  description: Provider of the subscription ("Stripe" or "Google").
+  description: Provider of the subscription ("Stripe", "Google", or "Apple").
 - name: payment_provider
   type: STRING
   mode: NULLABLE
@@ -19,7 +19,9 @@ fields:
 
     For Stripe subscriptions this will be "Stripe" or "PayPal".
 
-    For Google subscriptions this will be "Google".'
+    For Google subscriptions this will be "Google".
+
+    For Apple subscriptions this will be "Apple".'
 - name: logical_subscription_id
   type: STRING
   mode: NULLABLE
@@ -32,13 +34,15 @@ fields:
 
     For Stripe subscriptions this will be the subscription ID.
 
-    For Google subscriptions this will be the purchase token.'
+    For Google subscriptions this will be the purchase token.
+
+    For Apple subscriptions this will be the original transaction ID.'
 - name: provider_subscription_item_id
   type: STRING
   mode: NULLABLE
   description: 'Provider subscription item ID (if any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: provider_subscription_created_at
   type: TIMESTAMP
   mode: NULLABLE
@@ -52,7 +56,7 @@ fields:
   mode: NULLABLE
   description: 'Provider customer ID (if any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: mozilla_account_id
   type: STRING
   mode: NULLABLE
@@ -139,7 +143,9 @@ fields:
 
     For Stripe subscriptions this will be the product ID.
 
-    For Google subscriptions this will be the package name.'
+    For Google subscriptions this will be the package name.
+
+    For Apple subscriptions this will be the bundle ID.'
 - name: product_name
   type: STRING
   mode: NULLABLE
@@ -153,7 +159,9 @@ fields:
 
     For Stripe subscriptions this will be the plan/price ID.
 
-    For Google subscriptions this will be the SKU.'
+    For Google subscriptions this will be the SKU.
+
+    For Apple subscriptions this will be the product ID.'
 - name: plan_summary
   type: STRING
   mode: NULLABLE
@@ -181,11 +189,17 @@ fields:
 - name: plan_currency
   type: STRING
   mode: NULLABLE
-  description: ISO 4217 code for the subscription plan's currency.
+  description: 'ISO 4217 code for the subscription plan''s currency.
+
+    For Apple subscriptions prior to 2024-10-30 this may have fallen back to assuming
+    USD due to a lack of source data (FXA-10549).'
 - name: plan_amount
   type: NUMERIC
   mode: NULLABLE
-  description: Subscription plan's amount in the specified currency.
+  description: 'Subscription plan''s amount in the specified currency.
+
+    For Apple subscriptions prior to 2024-10-30 this may have fallen back to assuming
+    a USD amount due to a lack of source data (FXA-10549).'
 - name: is_bundle
   type: BOOLEAN
   mode: NULLABLE
@@ -244,7 +258,7 @@ fields:
   mode: NULLABLE
   description: 'Initial discount name (if any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: initial_discount_promotion_code
   type: STRING
   mode: NULLABLE
@@ -254,7 +268,7 @@ fields:
   mode: NULLABLE
   description: 'Current period discount name (if any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: current_period_discount_promotion_code
   type: STRING
   mode: NULLABLE
@@ -262,13 +276,15 @@ fields:
 - name: current_period_discount_amount
   type: NUMERIC
   mode: NULLABLE
-  description: Current period discount amount (if any).
+  description: 'Current period discount amount (if any).
+
+    This may be null for Apple subscriptions.'
 - name: ongoing_discount_name
   type: STRING
   mode: NULLABLE
   description: 'Ongoing discount name (if any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: ongoing_discount_promotion_code
   type: STRING
   mode: NULLABLE
@@ -276,11 +292,15 @@ fields:
 - name: ongoing_discount_amount
   type: NUMERIC
   mode: NULLABLE
-  description: Ongoing discount amount (if any).
+  description: 'Ongoing discount amount (if any).
+
+    This may be null for Apple subscriptions.'
 - name: ongoing_discount_ends_at
   type: TIMESTAMP
   mode: NULLABLE
-  description: When the ongoing discount ends (if any).
+  description: 'When the ongoing discount ends (if any).
+
+    This will be null for Apple subscriptions.'
 - name: has_refunds
   type: BOOLEAN
   mode: NULLABLE
@@ -292,7 +312,7 @@ fields:
   mode: NULLABLE
   description: 'Whether the subscription has had fraudulent charges.
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: first_touch_attribution
   type: RECORD
   mode: NULLABLE
@@ -336,7 +356,7 @@ fields:
   description: 'Unbounded first-touch attribution for the service subscription (if
     any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'
 - name: last_touch_attribution
   type: RECORD
   mode: NULLABLE
@@ -380,4 +400,4 @@ fields:
   description: 'Unbounded last-touch attribution for the service subscription (if
     any).
 
-    This will be null for Google subscriptions.'
+    This will be null for Google and Apple subscriptions.'

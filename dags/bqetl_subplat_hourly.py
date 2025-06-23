@@ -67,6 +67,60 @@ with DAG(
         task_concurrency=1,
     )
 
+    checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1",
+        source_table="apple_logical_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1",
+        source_table="apple_subscriptions_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__apple_subscriptions_history__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__apple_subscriptions_history__v1",
+        source_table="apple_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1",
+        source_table="apple_subscriptions_revised_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+        retries=0,
+    )
+
     checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_dq_check(
         task_id="checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1",
         source_table="google_logical_subscriptions_history_v1",
@@ -629,6 +683,70 @@ with DAG(
         task_concurrency=1,
     )
 
+    subscription_platform_derived__apple_logical_subscriptions_history__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__apple_logical_subscriptions_history__v1",
+        destination_table="apple_logical_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__apple_subscriptions__v2 = bigquery_etl_query(
+        task_id="subscription_platform_derived__apple_subscriptions__v2",
+        destination_table="apple_subscriptions_v2",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__apple_subscriptions_changelog__v1 = (
+        bigquery_etl_query(
+            task_id="subscription_platform_derived__apple_subscriptions_changelog__v1",
+            destination_table="apple_subscriptions_changelog_v1",
+            dataset_id="subscription_platform_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="srose@mozilla.com",
+            email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=False,
+            task_concurrency=1,
+            arguments=["--append_table", "--noreplace"],
+        )
+    )
+
+    subscription_platform_derived__apple_subscriptions_history__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__apple_subscriptions_history__v1",
+        destination_table="apple_subscriptions_history_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
+    subscription_platform_derived__apple_subscriptions_revised_changelog__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__apple_subscriptions_revised_changelog__v1",
+        destination_table="apple_subscriptions_revised_changelog_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        arguments=["--append_table", "--noreplace"],
+    )
+
     subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__google_logical_subscriptions_history__v1",
         destination_table="google_logical_subscriptions_history_v1",
@@ -994,6 +1112,22 @@ with DAG(
             subscription_platform_derived__subplat_flow_events__v1
         )
 
+    checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__apple_logical_subscriptions_history__v1
+    )
+
+    checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1.set_upstream(
+        subscription_platform_derived__apple_subscriptions_changelog__v1
+    )
+
+    checks__fail_subscription_platform_derived__apple_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__apple_subscriptions_history__v1
+    )
+
+    checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1.set_upstream(
+        subscription_platform_derived__apple_subscriptions_revised_changelog__v1
+    )
+
     checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__google_logical_subscriptions_history__v1
     )
@@ -1128,6 +1262,34 @@ with DAG(
 
     stripe_external__tax_rate__v1.set_upstream(fivetran_stripe_sync_start)
 
+    subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
+        checks__fail_subscription_platform_derived__apple_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__services__v1
+    )
+
+    subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__stripe_plans__v1
+    )
+
+    subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
+        subscription_platform_derived__stripe_products__v1
+    )
+
+    subscription_platform_derived__apple_subscriptions__v2.set_upstream(
+        checks__fail_subscription_platform_derived__apple_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__apple_subscriptions_history__v1.set_upstream(
+        checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1
+    )
+
+    subscription_platform_derived__apple_subscriptions_revised_changelog__v1.set_upstream(
+        checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1
+    )
+
     subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
         checks__fail_subscription_platform_derived__google_subscriptions_history__v1
     )
@@ -1154,6 +1316,10 @@ with DAG(
 
     subscription_platform_derived__google_subscriptions_revised_changelog__v1.set_upstream(
         checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1
+    )
+
+    subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
+        checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(

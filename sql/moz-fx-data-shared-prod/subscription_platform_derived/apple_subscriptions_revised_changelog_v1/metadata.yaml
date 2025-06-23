@@ -1,0 +1,34 @@
+friendly_name: Apple subscriptions revised changelog
+description: |-
+  Changes to Apple subscriptions as recorded by SubPlat in Firestore, with revisions to improve historical accuracy.
+
+  This table's schema roughly mirrors the Apple App Store Server subscriptions API
+  (https://developer.apple.com/documentation/appstoreserverapi/get-all-subscription-statuses),
+  though SubPlat doesn't currently save all the API fields and has added some custom metadata.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: null
+  arguments:
+  - --append_table
+  - --noreplace
+bigquery:
+  time_partitioning:
+    type: day
+    field: timestamp
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: true

@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../mobile_search/">
+        <link rel="prev" href="../addons/">
       
       
-        <link rel="next" href="../norm/">
+        <link rel="next" href="../assert/">
       
       
       <link rel="icon" href="../../favicon.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Newtab - BigQuery ETL</title>
+        <title>Ads - BigQuery ETL</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#is_default_ui_v1-udf" class="md-skip">
+        <a href="#generate_id_from_struct_v1-udf" class="md-skip">
           Skip to content
         </a>
       
@@ -108,7 +108,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Newtab
+              Ads
             
           </span>
         </div>
@@ -486,10 +486,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../ads/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Ads
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -500,6 +520,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#generate_id_from_struct_v1-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      generate_id_from_struct_v1 (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="generate_id_from_struct_v1 (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage:
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -877,30 +939,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Newtab
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../newtab/" class="md-nav__link">
         
   
   
@@ -911,90 +953,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#is_default_ui_v1-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      is_default_ui_v1 (UDF)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#is-default-ui-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      Is Default UI UDF
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Is Default UI UDF">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scheduled_surface_id_v1-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      scheduled_surface_id_v1 (UDF)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scheduled-surface-id-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scheduled Surface Id UDF
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Scheduled Surface Id UDF">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1622,61 +1580,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#is_default_ui_v1-udf" class="md-nav__link">
+  <a href="#generate_id_from_struct_v1-udf" class="md-nav__link">
     <span class="md-ellipsis">
-      is_default_ui_v1 (UDF)
+      generate_id_from_struct_v1 (UDF)
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#is-default-ui-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      Is Default UI UDF
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Is Default UI UDF">
+    <nav class="md-nav" aria-label="generate_id_from_struct_v1 (UDF)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
-      Parameters
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scheduled_surface_id_v1-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      scheduled_surface_id_v1 (UDF)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#scheduled-surface-id-udf" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scheduled Surface Id UDF
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Scheduled Surface Id UDF">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#parameters_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Parameters
+      Usage:
     </span>
   </a>
   
@@ -1703,45 +1619,48 @@
 
 
 
-  <h1>Newtab</h1>
+  <h1>Ads</h1>
 
-<h2 id="is_default_ui_v1-udf">is_default_ui_v1 (UDF)</h2>
-<p>Determine if the newtab open is attributed to default UI</p>
-<h2 id="is-default-ui-udf">Is Default UI UDF</h2>
-<p>This function computes if the newtab opened by the client is attributed to the Default UI.
-<div class="highlight"><pre><span></span><code>Input parameters from the newtab ping:
-       event_category as STRING (category)
-       event_name as STRING (name)
-       event_details as ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt; (extra)
-       newtab_homepage_category as STRING (metrics.string.newtab_homepage_category)
-       newtab_newtab_category as STRING (metrics.string.newtab_newtab_category)
-</code></pre></div></p>
-<h3 id="parameters">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>event_category STRING, event_name STRING, event_details ARRAY&lt;STRUCT&lt;key STRING, value STRING&gt;&gt;, newtab_homepage_category STRING, newtab_newtab_category STRING
+<h2 id="generate_id_from_struct_v1-udf">generate_id_from_struct_v1 (UDF)</h2>
+<p>Generate a deterministic and joinable INT64 identifier from the input STRUCT.</p>
+<p>Useful to match records across systems with different schemas and optimize the
+storage and join in source of truth tables.</p>
+<p>This UDF is used in Ads workspace to generate ad_ids using different sources (with or
+without an id in the source). We don't use ABS to prevent risk of collision of ids.</p>
+<p>Important
+- STRING fields are trimmed, lowercased and NULLs are replaced with empty strings.
+- Input. The input must be a typed STRUCTs without missing fields and in a fixed order.
+- Output. Returns a signed 64-bit integer as the generated ID and the version of
+ the UDF which can be used for backfills on different dates.
+==================================================================================
+- Changes. If you need to use a different logic e.g. adding or removing fields:
+  - Bump this UDF version.
+  - Create a dispatcher UDF to return the correct UDF version to use in each case.
+  This ensures consistency and using the correct version during backfills &amp; joins.
+==================================================================================</p>
+<h3 id="usage">Usage:</h3>
+<p><div class="highlight"><pre><span></span><code><span class="n">ads</span><span class="p">.</span><span class="n">generate_id_from_struct_v1</span><span class="p">(</span>
+<span class="w">    </span><span class="n">STRUCT</span><span class="p">(</span>
+<span class="w">        </span><span class="nb">DATE</span><span class="w"> </span><span class="ss">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;product&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;surface&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country_code&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;advertiser&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;position&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;pricing_model&quot;</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">IDs</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">regenerated</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">long</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">fields</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="k">position</span><span class="w"> </span><span class="n">remain</span><span class="w"> </span><span class="k">stable</span><span class="p">.</span>
+
+
+
+<span class="o">###</span><span class="w"> </span><span class="k">Parameters</span>
+
+
+<span class="o">**</span><span class="n">INPUTS</span><span class="o">**</span>
 </code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>BOOLEAN
+key STRUCT<adm_date DATE, product STRING, surface STRING, country_code STRING, advertiser STRING, position INT64, pricing_model STRING>
+<div class="highlight"><pre><span></span><code>**OUTPUTS**
 </code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/newtab/is_default_ui_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/newtab/is_default_ui_v1/metadata.yaml">Edit</a></p>
-<h2 id="scheduled_surface_id_v1-udf">scheduled_surface_id_v1 (UDF)</h2>
-<p>Content teams reference for the surface where an article is published on Newtab</p>
-<h2 id="scheduled-surface-id-udf">Scheduled Surface Id UDF</h2>
-<p>This function takes a country and locale to compute the Content teams identifier for the surface the article is
-published.</p>
-<p>Note:
-The UDF tries to mimic the backend merino implementation
-(https://github.com/mozilla-services/merino-py/blob/main/merino/curated_recommendations/provider.py#L66-L103) for
-the Scheduled_Surface_Id.
-The UDF is meant to be used temporarily until the backend computed value gets added to the newtab ping</p>
-<h3 id="parameters_1">Parameters</h3>
-<p><strong>INPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>country STRING, locale STRING
-</code></pre></div>
-<p><strong>OUTPUTS</strong></p>
-<div class="highlight"><pre><span></span><code>STRING
-</code></pre></div>
-<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/newtab/scheduled_surface_id_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/newtab/scheduled_surface_id_v1/metadata.yaml">Edit</a></p>
+STRUCT<id INT64, version STRING>
+```</p>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/ads/generate_id_from_struct_v1">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/ads/generate_id_from_struct_v1/metadata.yaml">Edit</a></p>
 
 
 

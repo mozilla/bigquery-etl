@@ -5,7 +5,7 @@ owners:
   - rrando@mozilla.com
 labels:
   schedule: daily
-  incremental: true
+  incremental: false
   owner1: skamath
   owner2: rrando
 scheduling:

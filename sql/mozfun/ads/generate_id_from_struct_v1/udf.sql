@@ -36,46 +36,38 @@ WITH test_cases AS (
   -- Case 1: Baseline.
   SELECT
     "Base case" AS test_name,
-    STRUCT(
-      DATE "2026-01-01",
-      "Sponsored Tile",
-      "Mobile",
-      "AT",
-      "Allegro",
-      1,
-      "impressions"
-    ) AS input,
-    -1178731585035914872 AS expected_id
+    STRUCT(DATE "2026-01-01", "Sponsored Tile", "Mobile", "AT", "Abcd", 1, "impressions") AS input,
+    288265945521826584 AS expected_id
   UNION ALL
   -- Case 2: Different values.
   SELECT
     "Change surface",
-    STRUCT(DATE "2026-01-01", "Sponsored Tile", "M", "AT", "Allegro", 1, "impressions"),
-    5393552329614256041
+    STRUCT(DATE "2026-01-01", "Sponsored Tile", "M", "AT", "Abcd", 1, "impressions"),
+    1334875948949342950
   UNION ALL
   -- Case 3: NULLs.
   SELECT
     "Set pricing model to NULL",
-    STRUCT(DATE "2026-01-01", "Sponsored Tile", "Mobile", "AT", "Allegro", 1, NULL),
-    -2691566846592782121
+    STRUCT(DATE "2026-01-01", "Sponsored Tile", "Mobile", "AT", "Abcd", 1, NULL),
+    2091622292415965945
   UNION ALL
   -- Case 4: Leading or trailing whitespaces.
   SELECT
     "Multiple white spaces in product.",
-    STRUCT(DATE "2026-01-01", "   Sponsored Tile ", "Mobile", "AT", "Allegro", 1, 'impressions'),
-    -1178731585035914872
+    STRUCT(DATE "2026-01-01", "   Sponsored Tile ", "Mobile", "AT", "Abcd", 1, 'impressions'),
+    288265945521826584
   UNION ALL
   -- Case 1: Deterministic.
   SELECT
     "Base case again shold return the same id.",
-    STRUCT(DATE "2026-01-01", "Sponsored Tile", "Mobile", "AT", "Allegro", 1, "impressions"),
-    -1178731585035914872
+    STRUCT(DATE "2026-01-01", "Sponsored Tile", "Mobile", "AT", "Abcd", 1, "impressions"),
+    288265945521826584
   UNION ALL
   -- Case 1: Different Order without field name
   SELECT
     "Base case with fields product and surface in switched order",
-    STRUCT(DATE "2026-01-01", "Mobile", "Sponsored Tile", "AT", "Allegro", 1, "impressions"),
-    -7757866412077111074
+    STRUCT(DATE "2026-01-01", "Mobile", "Sponsored Tile", "AT", "Abcd", 1, "impressions"),
+    6374729218279076125
   UNION ALL
   -- Case 1: Different Order with field name
   SELECT
@@ -85,11 +77,11 @@ WITH test_cases AS (
       "Mobile" AS surface,
       "Sponsored Tile" AS product,
       "AT" AS country_code,
-      "Allegro" AS advertiser,
+      "Abcd" AS advertiser,
       1 AS position,
       "impressions" AS pricing_model
     ),
-    -7757866412077111074
+    6374729218279076125
   UNION ALL
   -- Case 6: NULL in all fields.
   SELECT
@@ -106,6 +98,6 @@ WITH test_cases AS (
     -604032237644342624 AS expected
 )
 SELECT
-  `mozfun`.assert.equals((SELECT analysis.generate_id_from_struct_v1(input).id), expected_id)
+  `mozfun`.assert.equals((SELECT ads.generate_id_from_struct_v1(input).id), expected_id)
 FROM
   test_cases;

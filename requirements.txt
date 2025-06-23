@@ -144,9 +144,9 @@ beautifulsoup4==4.13.4 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.6.0 \
-    --hash=sha256:40b339dd89c0e932433a59647c828f095a97b6009398fb4427ad034e6b5d06dd \
-    --hash=sha256:d571c890d71f98302005a31d2e10675ffa714ee36849e8a7aa01aec10c844c4a
+bigeye-sdk==0.6.1 \
+    --hash=sha256:cb2c403427e1889940197a138ed0d185b4b61b36543a5e1794dbae8c6961ebd3 \
+    --hash=sha256:f02ce8b46317c54ece218daae2e88d96cf65e13778241e0469bf1959c8364990
     # via -r requirements.in
 black==25.1.0 \
     --hash=sha256:030b9759066a4ee5e5aca28c3c77f9c64789cdd4de8ac1df642c40b708be6171 \
@@ -815,9 +815,9 @@ keyring==24.3.1 \
     --hash=sha256:c3327b6ffafc0e8befbdb597cacdb4928ffe5c1212f7645f186e6d9957a898db \
     --hash=sha256:df38a4d7419a6a60fea5cef1e45a948a3e8430dd12ad88b0f423c5c143906218
     # via bigeye-sdk
-looker-sdk==25.8.0 \
-    --hash=sha256:4e9b8e00cab480bd73af8fe10ed7004eb52a875fb4fbd299c3fe3946b8d438c5 \
-    --hash=sha256:4eef55b317d6fa171898335ac95d8d7e26e9f7dd7dd642789f9f899db8c986f7
+looker-sdk==25.10.0 \
+    --hash=sha256:a35a1847ed7a04ca5a300cc9e314be3a1f6b9412fabaa465c178b1eddd190840 \
+    --hash=sha256:c239479230b4f7ed0acb8027feaefc0b748aac7ede39363f4a11b9f0eb6408a6
     # via -r requirements.in
 lz4==4.3.3 \
     --hash=sha256:01fe674ef2889dbb9899d8a67361e0c4a2c833af5aeb37dd505727cf5d2a131e \

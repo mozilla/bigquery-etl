@@ -1,13 +1,13 @@
 friendly_name: Generate Int Id From Struct
 description: |
   Generate a deterministic and joinable INT64 identifier from the input STRUCT.
-  
+
   Useful to match records across systems with different schemas and optimize the
   storage and join in source of truth tables.
-  
+
   This UDF is used in Ads workspace to generate ad_ids using different sources (with or
-  without an id in the source). We don't use ABS to prevent risk of collision of ids. 
-  
+  without an id in the source). We don't use ABS to prevent risk of collision of ids.
+
   Important
   - STRING fields are trimmed, lowercased and NULLs are replaced with empty strings.
   - Input. The input must be a typed STRUCTs without missing fields and in a fixed order.

@@ -1,0 +1,30 @@
+friendly_name: Scheduled Articles Report v1
+description: |-
+  Model article approval, rejected, and removal rates per day per surface
+owners:
+- skamath@mozilla.com
+- rrando@mozilla.com
+labels:
+  schedule: daily
+  owner1: skamath
+  owner2: rrando
+  dag: bqetl_content_ml_daily
+scheduling:
+  dag_name: bqetl_content_ml_daily
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - scheduled_surface_id
+    - scheduled_date
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1
+require_column_descriptions: false

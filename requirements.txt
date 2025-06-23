@@ -144,9 +144,9 @@ beautifulsoup4==4.13.4 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.6.0 \
-    --hash=sha256:40b339dd89c0e932433a59647c828f095a97b6009398fb4427ad034e6b5d06dd \
-    --hash=sha256:d571c890d71f98302005a31d2e10675ffa714ee36849e8a7aa01aec10c844c4a
+bigeye-sdk==0.6.1 \
+    --hash=sha256:cb2c403427e1889940197a138ed0d185b4b61b36543a5e1794dbae8c6961ebd3 \
+    --hash=sha256:f02ce8b46317c54ece218daae2e88d96cf65e13778241e0469bf1959c8364990
     # via -r requirements.in
 black==25.1.0 \
     --hash=sha256:030b9759066a4ee5e5aca28c3c77f9c64789cdd4de8ac1df642c40b708be6171 \

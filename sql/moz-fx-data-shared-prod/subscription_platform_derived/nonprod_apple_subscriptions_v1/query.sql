@@ -1,11 +1,19 @@
-WITH apple_iap_events AS (
+WITH apple_iap_changelog AS (
+  SELECT
+    document_id,
+    `timestamp`,
+    mozfun.iap.parse_apple_event(`data`) AS event,
+  FROM
+    `moz-fx-fxa-nonprod-375e.firestore_export.iap_app_store_purchases_raw_changelog`
+),
+apple_iap_events AS (
   SELECT
     document_id,
     -- WARNING: field order from here must exactly match guardian_apple_events_v1
     `timestamp` AS event_timestamp,
-    mozfun.iap.parse_apple_event(`data`).*,
+    event.* REPLACE (TO_HEX(SHA256(event.user_id)) AS user_id)
   FROM
-    `moz-fx-fxa-nonprod-375e.firestore_export.iap_app_store_purchases_raw_changelog`
+    apple_iap_changelog
   UNION ALL
   SELECT
     CAST(NULL AS STRING) AS document_id,

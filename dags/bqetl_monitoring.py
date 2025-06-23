@@ -466,6 +466,10 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    monitoring_derived__schema_error_counts__v2.set_upstream(
+        monitoring_derived__stable_and_derived_table_sizes__v1
+    )
+
     monitoring_derived__shredder_per_job_stats__v1.set_upstream(
         wait_for_monitoring_derived__jobs_by_organization__v1
     )

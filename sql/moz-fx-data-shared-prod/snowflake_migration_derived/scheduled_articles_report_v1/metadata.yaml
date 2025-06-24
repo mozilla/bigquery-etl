@@ -1,0 +1,20 @@
+friendly_name: Scheduled Articles Report v1
+description: Model article approval, rejected, and removal rates per day per surface
+owners:
+  - skamath@mozilla.com
+  - rrando@mozilla.com
+labels:
+  schedule: daily
+  incremental: false
+  owner1: skamath
+  owner2: rrando
+scheduling:
+  dag_name: bqetl_content_ml_daily
+  date_partition_parameter: null
+bigquery:
+  clustering:
+    # the fields below are guesses and will likely need to be updated based on ML
+    # access patterns
+    fields:
+      - scheduled_surface_id
+      - scheduled_date

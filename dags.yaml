@@ -2295,8 +2295,8 @@ bqetl_content_ml_hourly:
     Hourly extracts for corpus item data to be evaluated for new tab presentation.
   default_args:
     owner: skamath@mozilla.com
-    # manually started in Airflow on 2025-05-26
-    start_date: "2025-05-26"
+    # Converted to an hourly DAG on 2025-06-24
+    start_date: "2025-06-24"
     email: ["skamath@mozilla.com", "rrando@mozilla.com"]
     # if the hourly task fails, retry once after a 10 minute wait
     retries: 1

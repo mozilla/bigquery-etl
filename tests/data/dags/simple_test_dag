@@ -70,6 +70,7 @@ with DAG(
         trigger_rule="all_done",
     )
 
+    fivetran_import_1_sync_start.set_upstream(wait_for_fivetran_import_1)
     fivetran_import_2_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_task",

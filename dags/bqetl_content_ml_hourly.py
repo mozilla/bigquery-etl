@@ -10,13 +10,13 @@ from utils.constants import ALLOWED_STATES, FAILED_STATES
 from utils.gcp import bigquery_etl_query, bigquery_dq_check, bigquery_bigeye_check
 
 docs = """
-### bqetl_content_ml_daily
+### bqetl_content_ml_hourly
 
-Built from bigquery-etl repo, [`dags/bqetl_content_ml_daily.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_content_ml_daily.py)
+Built from bigquery-etl repo, [`dags/bqetl_content_ml_hourly.py`](https://github.com/mozilla/bigquery-etl/blob/generated-sql/dags/bqetl_content_ml_hourly.py)
 
 #### Description
 
-Daily extracts for corpus item data to be evaluated for new tab presentation.
+Hourly extracts for corpus item data to be evaluated for new tab presentation.
 
 #### Owner
 
@@ -31,23 +31,23 @@ skamath@mozilla.com
 
 default_args = {
     "owner": "skamath@mozilla.com",
-    "start_date": datetime.datetime(2025, 5, 26, 0, 0),
+    "start_date": datetime.datetime(2025, 6, 24, 0, 0),
     "end_date": None,
     "email": ["skamath@mozilla.com", "rrando@mozilla.com"],
     "depends_on_past": False,
-    "retry_delay": datetime.timedelta(seconds=1800),
+    "retry_delay": datetime.timedelta(seconds=600),
     "email_on_failure": True,
     "email_on_retry": True,
-    "retries": 2,
+    "retries": 1,
     "max_active_tis_per_dag": None,
 }
 
 tags = ["impact/tier_2", "repo/bigquery-etl"]
 
 with DAG(
-    "bqetl_content_ml_daily",
+    "bqetl_content_ml_hourly",
     default_args=default_args,
-    schedule_interval="0 4 * * *",
+    schedule_interval="30 * * * *",
     doc_md=docs,
     tags=tags,
     catchup=False,

@@ -5,12 +5,12 @@ owners:
 - skamath@mozilla.com
 - rrando@mozilla.com
 labels:
-  schedule: daily
+  schedule: hourly
   owner1: skamath
   owner2: rrando
-  dag: bqetl_content_ml_daily
+  dag: bqetl_content_ml_hourly
 scheduling:
-  dag_name: bqetl_content_ml_daily
+  dag_name: bqetl_content_ml_hourly
   date_partition_parameter: null
 bigquery:
   time_partitioning: null

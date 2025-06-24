@@ -11,6 +11,9 @@ fields:
 - name: bundle_id
   type: STRING
   mode: NULLABLE
+- name: currency
+  type: STRING
+  mode: NULLABLE
 - name: environment
   type: STRING
   mode: NULLABLE
@@ -53,11 +56,26 @@ fields:
 - name: original_transaction_id
   type: STRING
   mode: NULLABLE
+- name: price
+  type: INTEGER
+  mode: NULLABLE
 - name: product_id
   type: STRING
   mode: NULLABLE
 - name: purchase_date
   type: TIMESTAMP
+  mode: NULLABLE
+- name: renewal_currency
+  type: STRING
+  mode: NULLABLE
+- name: renewal_offer_identifier
+  type: STRING
+  mode: NULLABLE
+- name: renewal_offer_type
+  type: INTEGER
+  mode: NULLABLE
+- name: renewal_price
+  type: INTEGER
   mode: NULLABLE
 - name: revocation_date
   type: TIMESTAMP
@@ -67,6 +85,12 @@ fields:
   mode: NULLABLE
 - name: status
   type: INTEGER
+  mode: NULLABLE
+- name: storefront
+  type: STRING
+  mode: NULLABLE
+- name: transaction_id
+  type: STRING
   mode: NULLABLE
 - name: type
   type: STRING

@@ -4,12 +4,12 @@ owners:
   - skamath@mozilla.com
   - rrando@mozilla.com
 labels:
-  schedule: daily
+  schedule: hourly
   incremental: true
   owner1: skamath
   owner2: rrando
 scheduling:
-  dag_name: bqetl_content_ml_daily
+  dag_name: bqetl_content_ml_hourly
 bigquery:
   time_partitioning:
     type: day

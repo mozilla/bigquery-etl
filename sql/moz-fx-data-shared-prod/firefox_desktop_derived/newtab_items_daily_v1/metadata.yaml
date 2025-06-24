@@ -28,4 +28,5 @@ references: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
-  - workgroup:mozsoc-ml/service
+      - workgroup:mozsoc-ml/service
+      - workgroup:mozsoc-ml/developers

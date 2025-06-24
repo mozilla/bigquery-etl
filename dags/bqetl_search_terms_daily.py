@@ -131,6 +131,24 @@ with DAG(
         depends_on_past=False,
     )
 
+    search_terms_derived__adm_daily_dma_aggregates__v1 = bigquery_etl_query(
+        task_id="search_terms_derived__adm_daily_dma_aggregates__v1",
+        destination_table="adm_daily_dma_aggregates_v1",
+        dataset_id="search_terms_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="llisi@mozilla.com",
+        email=[
+            "ctroy@mozilla.com",
+            "llisi@mozilla.com",
+            "rburwei@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--schema_update_option=ALLOW_FIELD_ADDITION"],
+    )
+
     search_terms_derived__aggregated_search_terms_daily__v1 = bigquery_etl_query(
         task_id="search_terms_derived__aggregated_search_terms_daily__v1",
         destination_table="aggregated_search_terms_daily_v1",
@@ -209,6 +227,10 @@ with DAG(
 
     search_terms_derived__adm_daily_aggregates_qa__v1.set_upstream(
         search_terms_derived__adm_daily_aggregates__v1
+    )
+
+    search_terms_derived__adm_daily_dma_aggregates__v1.set_upstream(
+        search_terms_derived__suggest_impression_sanitized__v3
     )
 
     search_terms_derived__aggregated_search_terms_daily__v1.set_upstream(

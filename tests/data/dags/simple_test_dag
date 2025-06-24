@@ -50,13 +50,27 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_fivetran_import_1 = ExternalTaskSensor(
+        task_id="wait_for_fivetran_import_1",
+        external_dag_id="fivetran_import_dag",
+        external_task_id="fivetran_import_1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     fivetran_import_1_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_1_connector_id }}",
         task_id="fivetran_import_1_task",
         deferrable=False,
         task_concurrency=1,
+        trigger_rule="all_done",
     )
 
+    fivetran_import_1_sync_start.set_upstream(wait_for_fivetran_import_1)
     fivetran_import_2_sync_start = FivetranOperator(
         connector_id="{{ var.value.fivetran_import_2_connector_id }}",
         task_id="fivetran_import_2_task",

@@ -8,6 +8,11 @@ WITH history AS (
     *
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.google_logical_subscriptions_history_v1`
+  UNION ALL
+  SELECT
+    *
+  FROM
+    `moz-fx-data-shared-prod.subscription_platform_derived.apple_logical_subscriptions_history_v1`
 ),
 countries AS (
   SELECT

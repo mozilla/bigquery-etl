@@ -11,3 +11,4 @@ workgroup_access:
     members:
       - workgroup:mozilla-confidential
       - workgroup:mozsoc-ml/service
+      - workgroup:mozsoc-ml/developers

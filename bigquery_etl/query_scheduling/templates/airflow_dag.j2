@@ -201,16 +201,6 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
 
     {% do fivetran_seen.append(fivetran_task) -%}
 
-    {% for fivetran_dependency in fivetran_task.depends_on | sort(attribute='task_id') -%}
-    {% if fivetran_dependency.dag_name == name and fivetran_dependency.get_execution_delta(schedule_interval) in [none, '0h', '0m', '0s'] -%}
-        {% if fivetran_dependency.task_id != task.task_name -%}
-        {{ fivetran_task.task_id }}_sync_start.set_upstream({{ fivetran_dependency.task_id }})
-        {% endif -%}
-    {% else -%}
-        {{ fivetran_task.task_id }}_sync_start.set_upstream(wait_for_{{ fivetran_dependency.task_id | replace('-', '_') }})
-    {% endif -%}
-    {% endfor -%}
-
     {% endif -%}
     {% endfor -%}
     {% endif -%}
@@ -540,6 +530,20 @@ with DAG('{{ name }}', default_args=default_args{%+ if schedule_interval != None
     {% for fivetran_task in task.depends_on_fivetran -%}
     {{ task.task_name }}.set_upstream({{ fivetran_task.task_id }}_sync_start)
 
+    {% endfor -%}
+    {% endif -%}
+
+    {% if task.depends_on_fivetran != None -%}
+    {% for fivetran_task in task.depends_on_fivetran -%}
+    {% for fivetran_dependency in fivetran_task.depends_on | sort(attribute='task_id') -%}
+    {% if fivetran_dependency.dag_name == name and fivetran_dependency.get_execution_delta(schedule_interval) in [none, '0h', '0m', '0s'] -%}
+        {% if fivetran_dependency.task_id != fivetran_task.task_name -%}
+        {{ fivetran_task.task_id }}_sync_start.set_upstream({{ fivetran_dependency.task_id }})
+        {% endif -%}
+    {% else -%}
+        {{ fivetran_task.task_id }}_sync_start.set_upstream(wait_for_{{ fivetran_dependency.task_id | replace('-', '_') }})
+    {% endif -%}
+    {% endfor -%}
     {% endfor -%}
     {% endif -%}
 {% endfor -%}

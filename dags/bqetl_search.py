@@ -66,6 +66,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_revenue_derived__monetization_blocking_addons__v2 = ExternalTaskSensor(
+        task_id="wait_for_revenue_derived__monetization_blocking_addons__v2",
+        external_dag_id="private_bqetl_revenue",
+        external_task_id="revenue_derived__monetization_blocking_addons__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=81000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_telemetry_derived__clients_daily__v6 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily__v6",
         external_dag_id="bqetl_main_summary",
@@ -309,6 +322,10 @@ with DAG(
 
     search_derived__search_clients_daily__v8.set_upstream(
         wait_for_copy_deduplicate_main_ping
+    )
+
+    search_derived__search_clients_daily__v8.set_upstream(
+        wait_for_revenue_derived__monetization_blocking_addons__v2
     )
 
     search_derived__search_clients_daily__v8.set_upstream(

@@ -141,6 +141,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "firefox_desktop_derived__ltv_states__v1_external",
+    ) as firefox_desktop_derived__ltv_states__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_firefox_desktop_new_profile_ltv__wait_for_firefox_desktop_derived__ltv_states__v1",
+            external_dag_id="private_bqetl_firefox_desktop_new_profile_ltv",
+            external_task_id="wait_for_firefox_desktop_derived__ltv_states__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__ltv_states__v1_external.set_upstream(
+            firefox_desktop_derived__ltv_states__v1
+        )
+
     checks__fail_firefox_desktop_derived__adclick_history__v1.set_upstream(
         firefox_desktop_derived__adclick_history__v1
     )

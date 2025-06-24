@@ -241,6 +241,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "telemetry_derived__newtab_visits__v1_external",
+    ) as telemetry_derived__newtab_visits__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_telemetry_derived__newtab_visits__v1",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_telemetry_derived__newtab_visits__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-2, seconds=72000)).isoformat() }}",
+        )
+
+        telemetry_derived__newtab_visits__v1_external.set_upstream(
+            telemetry_derived__newtab_visits__v1
+        )
+
     firefox_desktop_derived__newtab_clients_daily__v2.set_upstream(
         firefox_desktop_derived__newtab_visits_daily__v2
     )

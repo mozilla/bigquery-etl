@@ -392,6 +392,19 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "search_derived__search_revenue_levers_daily__v1_external",
+    ) as search_derived__search_revenue_levers_daily__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_search__wait_for_search_derived__search_revenue_levers_daily__v1",
+            external_dag_id="private_bqetl_search",
+            external_task_id="wait_for_search_derived__search_revenue_levers_daily__v1",
+        )
+
+        search_derived__search_revenue_levers_daily__v1_external.set_upstream(
+            search_derived__search_revenue_levers_daily__v1
+        )
+
     search_derived__desktop_search_aggregates_by_userstate__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )

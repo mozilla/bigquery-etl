@@ -66,6 +66,19 @@ with DAG(
         )
     )
 
+    wait_for_checks__fail_ltv_derived__fenix_client_ltv__v1 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_ltv_derived__fenix_client_ltv__v1",
+        external_dag_id="private_bqetl_ltv",
+        external_task_id="checks__fail_ltv_derived__fenix_client_ltv__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_fenix_derived__funnel_retention_week_4__v1 = ExternalTaskSensor(
         task_id="wait_for_fenix_derived__funnel_retention_week_4__v1",
         external_dag_id="bqetl_analytics_tables",
@@ -329,6 +342,19 @@ with DAG(
         external_dag_id="bqetl_mobile_kpi_metrics",
         external_task_id="klar_ios.klar_ios_derived__attribution_clients__v1",
         execution_delta=datetime.timedelta(days=-1, seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_ltv_derived__fenix_new_profile_ltv__v1 = ExternalTaskSensor(
+        task_id="wait_for_ltv_derived__fenix_new_profile_ltv__v1",
+        external_dag_id="private_bqetl_ltv",
+        external_task_id="ltv_derived__fenix_new_profile_ltv__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -651,6 +677,10 @@ with DAG(
     )
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(
+        wait_for_checks__fail_ltv_derived__fenix_client_ltv__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
         wait_for_fenix_derived__funnel_retention_week_4__v1
     )
 
@@ -748,6 +778,10 @@ with DAG(
 
     google_ads_derived__android_app_campaign_stats__v2.set_upstream(
         wait_for_klar_ios_derived__attribution_clients__v1
+    )
+
+    google_ads_derived__android_app_campaign_stats__v2.set_upstream(
+        wait_for_ltv_derived__fenix_new_profile_ltv__v1
     )
 
     google_ads_derived__campaign_conversions_by_date__v1.set_upstream(

@@ -80,6 +80,19 @@ with DAG(
         sql_file_path="sql/moz-fx-data-shared-prod/telemetry_derived/newtab_interactions_hourly_v1/query.sql",
     )
 
+    with TaskGroup(
+        "telemetry_derived__newtab_interactions_hourly__v1_external",
+    ) as telemetry_derived__newtab_interactions_hourly__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads_hourly__wait_for_telemetry_derived__newtab_interactions_hourly__v1",
+            external_dag_id="private_bqetl_ads_hourly",
+            external_task_id="wait_for_telemetry_derived__newtab_interactions_hourly__v1",
+        )
+
+        telemetry_derived__newtab_interactions_hourly__v1_external.set_upstream(
+            telemetry_derived__newtab_interactions_hourly__v1
+        )
+
     telemetry_derived__newtab_interactions_hourly__v1.set_upstream(
         wait_for_ads_derived__interaction_aggregates_hourly__v1
     )

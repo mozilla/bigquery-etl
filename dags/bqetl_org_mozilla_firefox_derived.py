@@ -241,6 +241,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_fenix_derived__client_ltv__v1_external",
+    ) as checks__fail_fenix_derived__client_ltv__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ltv__wait_for_checks__fail_fenix_derived__client_ltv__v1",
+            external_dag_id="private_bqetl_ltv",
+            external_task_id="wait_for_checks__fail_fenix_derived__client_ltv__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        checks__fail_fenix_derived__client_ltv__v1_external.set_upstream(
+            checks__fail_fenix_derived__client_ltv__v1
+        )
+
     checks__fail_fenix_derived__ltv_state_values__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__ltv_state_values__v1",
         source_table="ltv_state_values_v1",
@@ -267,6 +281,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_fenix_derived__ltv_state_values__v2_external",
+    ) as checks__fail_fenix_derived__ltv_state_values__v2_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ltv__wait_for_checks__fail_fenix_derived__ltv_state_values__v2",
+            external_dag_id="private_bqetl_ltv",
+            external_task_id="wait_for_checks__fail_fenix_derived__ltv_state_values__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        checks__fail_fenix_derived__ltv_state_values__v2_external.set_upstream(
+            checks__fail_fenix_derived__ltv_state_values__v2
+        )
+
     checks__fail_fenix_derived__ltv_states__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__ltv_states__v1",
         source_table="ltv_states_v1",
@@ -279,6 +307,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
+
+    with TaskGroup(
+        "checks__fail_fenix_derived__ltv_states__v1_external",
+    ) as checks__fail_fenix_derived__ltv_states__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ltv__wait_for_checks__fail_fenix_derived__ltv_states__v1",
+            external_dag_id="private_bqetl_ltv",
+            external_task_id="wait_for_checks__fail_fenix_derived__ltv_states__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        checks__fail_fenix_derived__ltv_states__v1_external.set_upstream(
+            checks__fail_fenix_derived__ltv_states__v1
+        )
 
     checks__fail_fenix_derived__meta_attribution_country_counts__v1 = bigquery_dq_check(
         task_id="checks__fail_fenix_derived__meta_attribution_country_counts__v1",
@@ -439,6 +481,20 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup(
+        "firefox_ios_derived__client_ltv__v1_external",
+    ) as firefox_ios_derived__client_ltv__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_ios_campaign_reporting__wait_for_firefox_ios_derived__client_ltv__v1",
+            external_dag_id="bqetl_ios_campaign_reporting",
+            external_task_id="wait_for_firefox_ios_derived__client_ltv__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        firefox_ios_derived__client_ltv__v1_external.set_upstream(
+            firefox_ios_derived__client_ltv__v1
+        )
+
     firefox_ios_derived__ltv_states__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__ltv_states__v1",
         destination_table="ltv_states_v1",
@@ -453,6 +509,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    with TaskGroup(
+        "firefox_ios_derived__ltv_states__v1_external",
+    ) as firefox_ios_derived__ltv_states__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ltv__wait_for_firefox_ios_derived__ltv_states__v1",
+            external_dag_id="private_bqetl_ltv",
+            external_task_id="wait_for_firefox_ios_derived__ltv_states__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        firefox_ios_derived__ltv_states__v1_external.set_upstream(
+            firefox_ios_derived__ltv_states__v1
+        )
 
     org_mozilla_fenix_derived__client_deduplication__v1 = bigquery_etl_query(
         task_id="org_mozilla_fenix_derived__client_deduplication__v1",

@@ -499,6 +499,13 @@ with DAG(
         "checks__fail_fenix_derived__active_users_aggregates__v3_external",
     ) as checks__fail_fenix_derived__active_users_aggregates__v3_external:
         ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
             external_task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
@@ -536,6 +543,13 @@ with DAG(
     with TaskGroup(
         "checks__fail_firefox_ios_derived__active_users_aggregates__v3_external",
     ) as checks__fail_firefox_ios_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
@@ -575,6 +589,13 @@ with DAG(
         "checks__fail_focus_android_derived__active_users_aggregates__v3_external",
     ) as checks__fail_focus_android_derived__active_users_aggregates__v3_external:
         ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
             external_task_id="wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3",
@@ -612,6 +633,13 @@ with DAG(
     with TaskGroup(
         "checks__fail_focus_ios_derived__active_users_aggregates__v3_external",
     ) as checks__fail_focus_ios_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
@@ -651,6 +679,13 @@ with DAG(
         "checks__fail_klar_android_derived__active_users_aggregates__v3_external",
     ) as checks__fail_klar_android_derived__active_users_aggregates__v3_external:
         ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
             external_task_id="wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3",
@@ -688,6 +723,13 @@ with DAG(
     with TaskGroup(
         "checks__fail_klar_ios_derived__active_users_aggregates__v3_external",
     ) as checks__fail_klar_ios_derived__active_users_aggregates__v3_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3",
             external_dag_id="bqetl_fx_health_ind_dashboard",
@@ -909,6 +951,13 @@ with DAG(
     with TaskGroup(
         "firefox_desktop_active_users_aggregates_v4_external",
     ) as firefox_desktop_active_users_aggregates_v4_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_firefox_desktop_active_users_aggregates_v4",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_firefox_desktop_active_users_aggregates_v4",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=900)).isoformat() }}",
+        )
+
         ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_firefox_desktop_active_users_aggregates_v4",
             external_dag_id="bqetl_fx_health_ind_dashboard",

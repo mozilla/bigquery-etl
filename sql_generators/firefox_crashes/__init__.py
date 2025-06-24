@@ -2,6 +2,7 @@ from pathlib import Path
 
 import click
 from jinja2 import Environment, FileSystemLoader
+from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
@@ -11,6 +12,9 @@ from bigquery_etl.util.common import write_sql
 CRASH_TABLES = [
     ("moz-fx-data-shared-prod", "firefox_desktop", "crash"),
     ("moz-fx-data-shared-prod", "firefox_crashreporter", "crash"),
+    ("moz-fx-data-shared-prod", "fenix", "crash"),
+    ("moz-fx-data-shared-prod", "focus_android", "crash"),
+    ("moz-fx-data-shared-prod", "klar_android", "crash"),
 ]
 
 
@@ -30,13 +34,11 @@ CRASH_TABLES = [
 )
 @use_cloud_function_option
 def generate(target_project, output_dir, use_cloud_function):
+    client = bigquery.Client()
+
     schemas = {
-        f"{project}.{dataset}.{table}": Schema.for_table(
-            project=project,
-            dataset=dataset,
-            table=table,
-            partitioned_by="submission_timestamp",
-            use_cloud_function=use_cloud_function,
+        f"{project}.{dataset}.{table}": Schema.from_bigquery_schema(
+            client.get_table(f"{project}.{dataset}.{table}").schema
         )
         for project, dataset, table in CRASH_TABLES
     }
@@ -61,14 +63,22 @@ def generate(target_project, output_dir, use_cloud_function):
     template_dir = Path(__file__).parent / "templates"
     env = Environment(loader=FileSystemLoader(template_dir))
 
-    template = env.get_template("desktop_crashes.view.sql")
+    template = env.get_template("firefox_crashes.query.sql")
     query = template.render(tables=fields_per_table, project_id=target_project)
 
     write_sql(
         Path(output_dir) / target_project,
-        f"{target_project}.firefox_desktop.desktop_crashes",
-        "view.sql",
+        f"{target_project}.telemetry_derived.firefox_crashes_v1",
+        "query.sql",
         reformat(query),
+    )
+
+    combined_schema.to_yaml_file(
+        Path(output_dir)
+        / target_project
+        / "telemetry_derived"
+        / "firefox_crashes_v1"
+        / "schema.yaml"
     )
 
 

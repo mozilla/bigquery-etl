@@ -1,0 +1,65 @@
+fields:
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign Name
+- name: campaign_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Campaign ID
+- name: campaign_country_code
+  type: STRING
+  mode: NULLABLE
+  description: Campaign country code (normalized).
+- name: ad_group_name
+  type: STRING
+  mode: NULLABLE
+  description: Ad Group Name
+- name: ad_group_id
+  type: INTEGER
+  mode: NULLABLE
+  description: Ad Group ID
+- name: impressions
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times your ad appeared on the App Store within the reporting
+    time period.
+- name: clicks
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of times your ad was tapped by users within the reporting
+    time period.
+- name: downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: The total number of tap-through and view-through new downloads within
+    the reporting period.
+- name: new_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of New Profiles
+- name: activated_profiles
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Activated Profiles
+- name: repeat_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Repeat Users
+- name: week_4_retained_users
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Week 4 Retained Users
+- name: spend
+  type: BIGNUMERIC
+  mode: NULLABLE
+  description: The sum of the cost of each customer tap on your ad over the period
+    of time set for your reporting.
+- name: lifetime_value
+  type: FLOAT
+  mode: NULLABLE
+  description: Lifetime Value of the specific client.

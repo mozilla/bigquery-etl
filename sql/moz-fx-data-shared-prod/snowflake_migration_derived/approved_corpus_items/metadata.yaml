@@ -12,6 +12,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
 references:
   view.sql:
   - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1

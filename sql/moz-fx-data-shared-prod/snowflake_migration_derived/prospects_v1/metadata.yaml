@@ -29,6 +29,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
 references:
   query.sql:
   - moz-fx-data-shared-prod.snowplow_external.events

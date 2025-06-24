@@ -23,6 +23,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
 references:
   query.sql:
   - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1

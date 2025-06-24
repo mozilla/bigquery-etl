@@ -102,7 +102,7 @@ with DAG(
 
     test__non_incremental_query__v1.set_upstream(fivetran_import_1_sync_start)
 
+    fivetran_import_1_sync_start.set_upstream(wait_for_fivetran_import_1)
     test__non_incremental_query__v1.set_upstream(fivetran_import_2_sync_start)
 
-    fivetran_import_1_sync_start.set_upstream(wait_for_fivetran_import_1)
     fivetran_import_2_sync_start.set_upstream(test__incremental_query__v1)

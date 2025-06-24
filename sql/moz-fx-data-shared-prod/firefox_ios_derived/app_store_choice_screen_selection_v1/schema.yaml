@@ -13,7 +13,7 @@ fields:
   description: |
     The user’s region code as set in Settings > General > Language & Region. \
     This may not correspond to the user’s Apple Account or App Store storefront. \
-    Starting 23-06-2025 this field will correspond to the user's App Store storefront region.
+    Starting 2025-06-23 this field will correspond to the user's App Store storefront region.
 
 - mode: NULLABLE
   name: build

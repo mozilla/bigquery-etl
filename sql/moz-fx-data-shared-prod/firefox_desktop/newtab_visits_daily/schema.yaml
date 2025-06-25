@@ -2,6 +2,18 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
+- name: is_any_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_nonsearch_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_organic_content_interaction
+  type: BOOLEAN
+  mode: NULLABLE
+- name: is_organic_topsite_interaction
+  type: BOOLEAN
+  mode: NULLABLE
 - name: submission_date
   type: DATE
   mode: NULLABLE

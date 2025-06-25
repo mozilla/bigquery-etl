@@ -7955,6 +7955,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: wallpapers_new_wallpaper_applied
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
     - name: avif_a1lx
       type: RECORD
       mode: REPEATED
@@ -8036,16 +8046,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: avif_sequence
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-    - name: wallpapers_new_wallpaper_applied
       type: RECORD
       mode: REPEATED
       fields:
@@ -8665,16 +8665,6 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-    - name: fog_validation_gvsv_audio_stream_init_gvst
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
     - name: networking_residual_cache_folder_removal
       type: RECORD
       mode: REPEATED
@@ -8756,6 +8746,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: codec_stats_video_preferred_codec
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: fog_validation_gvsv_audio_stream_init_gvst
       type: RECORD
       mode: REPEATED
       fields:

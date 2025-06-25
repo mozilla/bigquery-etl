@@ -104,6 +104,9 @@ fields:
 - name: status_category
   type: STRING
   mode: NULLABLE
+- name: work_type
+  type: INTEGER
+  mode: NULLABLE
 - name: link
   type: STRING
   mode: NULLABLE

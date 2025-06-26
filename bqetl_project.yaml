@@ -445,20 +445,21 @@ generate:
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
+# ltv tables
+- sql/moz-fx-data-shared-prod/fenix_derived/ltv_states_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/ltv_derived/fenix_client_ltv_v1
+- sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1
+# first_seen tables
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v3
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/baseline_clients_first_seen_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/ltv_states_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/firefox_android_clients_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/client_ltv_v1
-- sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
-- sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
-- sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
-- sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
-- sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1
-- sql/moz-fx-data-shared-prod/ltv_derived/fenix_client_ltv_v1
 - sql/moz-fx-data-shared-prod/monitor_cirrus_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/accounts_cirrus_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/moso_mastodon_backend_derived/baseline_clients_first_seen_v1
@@ -499,28 +500,45 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/pine_derived/baseline_clients_first_seen_v11
-- sql/moz-fx-data-shared-prod/revenue_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/core_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/thunderbird_desktop_derived/baseline_clients_first_seen_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/attribution_clients_v1
-- sql/moz-fx-data-shared-prod/firefox_ios_derived/attribution_clients_v1
-- sql/moz-fx-data-shared-prod/focus_android_derived/attribution_clients_v1
-- sql/moz-fx-data-shared-prod/focus_ios_derived/attribution_clients_v1
-- sql/moz-fx-data-shared-prod/klar_android_derived/attribution_clients_v1
-- sql/moz-fx-data-shared-prod/klar_ios_derived/attribution_clients_v1
-- sql/moz-fx-data-shared-prod/firefox_desktop_derived/adclick_history_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/client_adclicks_history_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/clients_yearly_v1
 - sql/moz-fx-data-shared-prod/accounts_backend_derived/users_services_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_first_seen_v2
 - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_devices_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_users_services_first_seen_v2
-- sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v1
-- sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2
+# mobile attribution tables
+- sql/moz-fx-data-shared-prod/fenix_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/focus_android_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/focus_ios_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/klar_android_derived/attribution_clients_v1
+- sql/moz-fx-data-shared-prod/klar_ios_derived/attribution_clients_v1
+#
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/adclick_history_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/client_adclicks_history_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
-- sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/clients_yearly_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v1  # TODO: check if we still need this
+- sql/moz-fx-data-shared-prod/fenix_derived/attributable_clients_v2  # TODO: check if we still need this
 - sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1
+# marketing tables
+- sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1
+# mobile profile tables
+- sql/moz-fx-data-shared-prod/fenix_derived/firefox_android_clients_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/new_profile_clients_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/new_profile_activation_clients_v1
+- sql/moz-fx-data-shared-prod/focus_android_derived/new_profile_clients_v1
+- sql/moz-fx-data-shared-prod/focus_android_derived/new_profile_activation_clients_v1
+- sql/moz-fx-data-shared-prod/klar_android_derived/new_profile_clients_v1
+- sql/moz-fx-data-shared-prod/klar_android_derived/new_profile_activation_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/new_profile_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/new_profile_activation_clients_v1
+- sql/moz-fx-data-shared-prod/focus_ios_derived/new_profile_clients_v1
+- sql/moz-fx-data-shared-prod/focus_ios_derived/new_profile_activation_clients_v1
+- sql/moz-fx-data-shared-prod/klar_ios_derived/new_profile_clients_v1
+- sql/moz-fx-data-shared-prod/klar_ios_derived/new_profile_activation_clients_v1

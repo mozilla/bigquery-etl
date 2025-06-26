@@ -2,9 +2,6 @@
 {% for table_name, fields in tables.items() %}
   SELECT
     {{ fields }},
-    COALESCE(metrics.string.crash_app_build, client_info.app_build) AS crash_app_build,
-    COALESCE(metrics.string.crash_app_channel, client_info.app_channel) AS crash_app_channel,
-    COALESCE(metrics.string.crash_app_display_version, client_info.app_display_version) AS crash_app_display_version,
   FROM
    `{{ table_name }}`
   WHERE

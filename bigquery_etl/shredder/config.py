@@ -409,6 +409,15 @@ DELETE_TARGETS: DeleteIndex = {
         *FOCUS_ADDITIONAL_DELETIONS,
         *LEGACY_MOBILE_SOURCES,
     ),
+    DeleteTarget(
+        table="telemetry_derived.firefox_crashes_v1",
+        field=(GLEAN_CLIENT_ID,) * 4,
+    ): (
+        DESKTOP_SRC,
+        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
+        DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
+    ),
     # activity stream
     DeleteTarget(
         table="messaging_system_stable.cfr_v1", field=(CLIENT_ID, IMPRESSION_ID)

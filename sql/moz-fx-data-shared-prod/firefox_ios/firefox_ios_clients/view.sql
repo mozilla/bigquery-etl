@@ -15,9 +15,5 @@ SELECT
       ELSE adjust_network
     END AS adjust_network
   ),
-  activation_clients.is_activated,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.new_profile_clients` AS new_profiles
-LEFT JOIN
-  `moz-fx-data-shared-prod.firefox_ios.new_profile_activation_clients` AS activation_clients
-  USING (client_id, first_seen_date)

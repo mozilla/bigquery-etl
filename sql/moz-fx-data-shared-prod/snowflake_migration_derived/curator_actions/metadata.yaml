@@ -1,5 +1,5 @@
 friendly_name: Curator Actions
 description: View of curator actions on ML provided prospects and corpus items.
 owners:
-  - rrando@mozilla.com
   - jpetto@mozilla.com
+  - rrando@mozilla.com

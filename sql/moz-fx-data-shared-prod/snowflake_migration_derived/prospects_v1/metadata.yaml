@@ -1,12 +1,12 @@
 friendly_name: Prospects v1
 description: Model prospective article options for the Fx New Tab from raw Snowplow data
 owners:
-  - skamath@mozilla.com
+  - jpetto@mozilla.com
   - rrando@mozilla.com
 labels:
   schedule: hourly
   incremental: true
-  owner1: skamath
+  owner1: jpetto
   owner2: rrando
 scheduling:
   dag_name: bqetl_content_ml_hourly

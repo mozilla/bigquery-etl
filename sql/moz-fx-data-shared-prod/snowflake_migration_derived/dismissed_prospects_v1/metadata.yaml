@@ -1,12 +1,12 @@
 friendly_name: Dismissed Prospects v1
 description: Model dismissed prospects for the Fx New Tab from prospects_v1, corpus_items_updated_v1, and rejected_corpus_items_v1 tables
 owners:
-  - skamath@mozilla.com
+  - jpetto@mozilla.com
   - rrando@mozilla.com
 labels:
   schedule: hourly
   incremental: true
-  owner1: skamath
+  owner1: jpetto
   owner2: rrando
 scheduling:
   dag_name: bqetl_content_ml_hourly

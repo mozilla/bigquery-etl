@@ -20,7 +20,7 @@ Hourly extracts for corpus item data to be evaluated for new tab presentation.
 
 #### Owner
 
-skamath@mozilla.com
+jpetto@mozilla.com
 
 #### Tags
 
@@ -30,10 +30,10 @@ skamath@mozilla.com
 
 
 default_args = {
-    "owner": "skamath@mozilla.com",
+    "owner": "jpetto@mozilla.com",
     "start_date": datetime.datetime(2025, 6, 24, 0, 0),
     "end_date": None,
-    "email": ["skamath@mozilla.com", "rrando@mozilla.com"],
+    "email": ["jpetto@mozilla.com", "rrando@mozilla.com"],
     "depends_on_past": False,
     "retry_delay": datetime.timedelta(seconds=600),
     "email_on_failure": True,
@@ -58,8 +58,8 @@ with DAG(
         destination_table="corpus_item_schedules_updated_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -69,8 +69,8 @@ with DAG(
         destination_table="corpus_items_updated_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -80,8 +80,8 @@ with DAG(
         destination_table="dismissed_prospects_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -91,8 +91,8 @@ with DAG(
         destination_table="prospect_item_feed_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -102,8 +102,8 @@ with DAG(
         destination_table="prospects_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -113,8 +113,8 @@ with DAG(
         destination_table="rejected_corpus_items_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -124,8 +124,8 @@ with DAG(
         destination_table="scheduled_articles_report_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -136,8 +136,8 @@ with DAG(
         destination_table="stg_reviewed_corpus_items_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
@@ -147,8 +147,8 @@ with DAG(
         destination_table="stg_scheduled_corpus_items_v1",
         dataset_id="snowflake_migration_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="skamath@mozilla.com",
-        email=["rrando@mozilla.com", "skamath@mozilla.com"],
+        owner="jpetto@mozilla.com",
+        email=["jpetto@mozilla.com", "rrando@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )

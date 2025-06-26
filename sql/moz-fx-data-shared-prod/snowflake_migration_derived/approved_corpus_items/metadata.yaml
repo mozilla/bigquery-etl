@@ -2,10 +2,10 @@ friendly_name: Approved Corpus Items
 description: |-
   View of approved corpus items in the corpus_items_updated_v1 table
 owners:
-- skamath@mozilla.com
+- jpetto@mozilla.com
 - rrando@mozilla.com
 labels:
-  owner1: skamath
+  owner1: jpetto
   owner2: rrando
 bigquery: null
 workgroup_access:

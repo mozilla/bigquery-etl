@@ -2,11 +2,11 @@ friendly_name: Curator Actions
 description: |-
   View of curator actions on ML provided prospects and corpus items.
 owners:
-- rrando@mozilla.com
 - jpetto@mozilla.com
+- rrando@mozilla.com
 labels:
-  owner1: rrando
-  owner2: jpetto
+  owner1: jpetto
+  owner2: rrando
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -2,12 +2,12 @@ friendly_name: Stg Scheduled Corpus Items v1
 description: |-
   Model scheduled Corpus Item events for the Fx New Tab from raw Snowplow data
 owners:
-- skamath@mozilla.com
+- jpetto@mozilla.com
 - rrando@mozilla.com
 labels:
   schedule: hourly
   incremental: true
-  owner1: skamath
+  owner1: jpetto
   owner2: rrando
   dag: bqetl_content_ml_hourly
 scheduling:

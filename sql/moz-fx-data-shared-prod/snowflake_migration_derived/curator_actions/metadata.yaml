@@ -1,0 +1,23 @@
+friendly_name: Curator Actions
+description: |-
+  View of curator actions on ML provided prospects and corpus items.
+owners:
+- rrando@mozilla.com
+- jpetto@mozilla.com
+labels:
+  owner1: rrando
+  owner2: jpetto
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items
+  - moz-fx-data-shared-prod.snowflake_migration_derived.dismissed_prospects_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.rejected_corpus_items_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.scheduled_corpus_items
+require_column_descriptions: false

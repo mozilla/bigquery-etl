@@ -49,11 +49,6 @@ fields:
   mode: NULLABLE
   description: Client's locale on the first seen date.
 
-- name: isp
-  type: STRING
-  mode: NULLABLE
-  description: Client's isp subdivision on the first seen date.
-
 - name: os
   type: STRING
   mode: NULLABLE

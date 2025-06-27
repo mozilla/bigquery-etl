@@ -1,0 +1,20 @@
+friendly_name: App-specific view for Glean ping "fx-accounts"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for iOS"
+  (org_mozilla_ios_firefox.fx_accounts, org_mozilla_ios_firefoxbeta.fx_accounts, org_mozilla_ios_fennec.fx_accounts).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_ios_fennec.fx_accounts
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefox.fx_accounts
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.fx_accounts
+require_column_descriptions: false

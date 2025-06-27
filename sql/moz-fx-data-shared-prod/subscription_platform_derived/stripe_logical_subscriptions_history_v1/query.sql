@@ -1,10 +1,28 @@
 CREATE TEMP FUNCTION calculate_discount_amount(
   amount_off INTEGER,
   percent_off FLOAT64,
-  original_amount INTEGER
+  plan_currency STRING,
+  plan_amount INTEGER,
+  override_plan_currency STRING,
+  override_plan_amount INTEGER
 )
 RETURNS DECIMAL AS (
-  CAST(COALESCE(amount_off, ROUND(original_amount * percent_off / 100), 0) AS DECIMAL) / 100
+  CAST(
+    IF(
+      override_plan_currency != plan_currency
+      AND override_plan_amount IS NOT NULL,
+      COALESCE(
+        -- If the default plan amount is being overridden then the default amount off can't be used directly
+        -- because the override plan amount is presumably in a different currency.  Instead, we calculate
+        -- the proportion of the override plan amount equivalent to the proportion of the default amount off
+        -- as compared to the default plan amount.
+        ROUND(override_plan_amount * amount_off / plan_amount),
+        ROUND(override_plan_amount * percent_off / 100),
+        0
+      ),
+      COALESCE(amount_off, ROUND(plan_amount * percent_off / 100), 0)
+    ) AS DECIMAL
+  ) / 100
 );
 
 WITH subscriptions_history AS (
@@ -239,8 +257,28 @@ SELECT
     subscription_item.plan.id AS provider_plan_id,
     subscription_item.plan.`interval` AS plan_interval_type,
     subscription_item.plan.interval_count AS plan_interval_count,
-    UPPER(subscription_item.plan.currency) AS plan_currency,
-    (CAST(subscription_item.plan.amount AS DECIMAL) / 100) AS plan_amount,
+    -- If Stripe's multi-currency prices feature is used then the plan's default currency and amount
+    -- may not be what the subscription is using.  Since Fivetran doesn't currently support syncing
+    -- the data related to multi-currency prices, SubPlat has implemented a workaround of recording
+    -- a subscription's actual plan currency and amount in custom metadata fields (FXA-10382).
+    UPPER(
+      IF(
+        LOWER(history.subscription.metadata.currency) != subscription_item.plan.currency
+        AND history.subscription.metadata.amount IS NOT NULL,
+        history.subscription.metadata.currency,
+        subscription_item.plan.currency
+      )
+    ) AS plan_currency,
+    (
+      CAST(
+        IF(
+          LOWER(history.subscription.metadata.currency) != subscription_item.plan.currency
+          AND history.subscription.metadata.amount IS NOT NULL,
+          history.subscription.metadata.amount,
+          subscription_item.plan.amount
+        ) AS DECIMAL
+      ) / 100
+    ) AS plan_amount,
     IF(ARRAY_LENGTH(plan_services.services) > 1, TRUE, FALSE) AS is_bundle,
     IF(
       history.subscription.status = 'trialing'
@@ -280,14 +318,20 @@ SELECT
     calculate_discount_amount(
       current_period_discounts.amount_off,
       current_period_discounts.percent_off,
-      subscription_item.plan.amount
+      subscription_item.plan.currency,
+      subscription_item.plan.amount,
+      LOWER(history.subscription.metadata.currency),
+      history.subscription.metadata.amount
     ) AS current_period_discount_amount,
     ongoing_discounts.coupon_name AS ongoing_discount_name,
     ongoing_discounts.promotion_code AS ongoing_discount_promotion_code,
     calculate_discount_amount(
       ongoing_discounts.amount_off,
       ongoing_discounts.percent_off,
-      subscription_item.plan.amount
+      subscription_item.plan.currency,
+      subscription_item.plan.amount,
+      LOWER(history.subscription.metadata.currency),
+      history.subscription.metadata.amount
     ) AS ongoing_discount_amount,
     ongoing_discounts.ends_at AS ongoing_discount_ends_at,
     COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,

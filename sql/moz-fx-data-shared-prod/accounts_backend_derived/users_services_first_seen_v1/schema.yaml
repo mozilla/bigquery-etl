@@ -1,0 +1,16 @@
+fields:
+- name: user_id_sha256
+  type: STRING
+  mode: NULLABLE
+- name: service
+  type: STRING
+  mode: NULLABLE
+- name: first_service_country
+  type: STRING
+  mode: NULLABLE
+- name: registered
+  type: BOOLEAN
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE

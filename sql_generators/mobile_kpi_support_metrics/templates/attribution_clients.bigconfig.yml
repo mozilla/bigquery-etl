@@ -18,5 +18,17 @@ tag_deployments:
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:
+          - saved_metric_id: composite_key_uniqueness_2_column
+            parameters:
+            - key: col_1
+              column_name: client_id
+            - key: col_2
+              column_name: normalized_channel
+            - key: table
+              string_value: {{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
+
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
           - saved_metric_id: freshness
           - saved_metric_id: volume

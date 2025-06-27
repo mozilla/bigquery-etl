@@ -621,7 +621,8 @@ SELECT
       metrics.labeled_counter.region_store_region_result,
       metrics.labeled_counter.networking_local_network_access,
       metrics.labeled_counter.networking_connection_address_type,
-      metrics.labeled_counter.networking_cookie_db_validation
+      metrics.labeled_counter.networking_cookie_db_validation,
+      metrics.labeled_counter.pdfjs_digital_signature_certificate
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2322,7 +2323,8 @@ SELECT
       metrics.labeled_counter.region_store_region_result,
       metrics.labeled_counter.networking_local_network_access,
       metrics.labeled_counter.networking_connection_address_type,
-      metrics.labeled_counter.networking_cookie_db_validation
+      metrics.labeled_counter.networking_cookie_db_validation,
+      metrics.labeled_counter.pdfjs_digital_signature_certificate
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4023,7 +4025,8 @@ SELECT
       metrics.labeled_counter.region_store_region_result,
       metrics.labeled_counter.networking_local_network_access,
       metrics.labeled_counter.networking_connection_address_type,
-      metrics.labeled_counter.networking_cookie_db_validation
+      metrics.labeled_counter.networking_cookie_db_validation,
+      metrics.labeled_counter.pdfjs_digital_signature_certificate
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

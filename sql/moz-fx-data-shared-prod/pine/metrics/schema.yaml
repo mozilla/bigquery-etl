@@ -18985,6 +18985,19 @@ fields:
       description: 'Counts cookies loaded from the DB grouped by validation result.
 
         '
+    - name: pdfjs_digital_signature_certificate
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of certificates used to sign a PDF document.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

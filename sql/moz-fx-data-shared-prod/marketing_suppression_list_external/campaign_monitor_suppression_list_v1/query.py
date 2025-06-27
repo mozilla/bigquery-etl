@@ -88,6 +88,7 @@ def download_suppression_list(
 @click.command
 @click.option(
     "--api_key",
+    envvar='CAMPAIGN_MONITOR_API_KEY',
     required=True,
     help="Campaign Monitor API key to use for authentication.",
 )
@@ -111,6 +112,7 @@ def download_suppression_list(
 )
 @click.option(
     "--client_id",
+    envvar='CAMPAIGN_MONITOR_CLIENT_ID',
     required=True,
     help="Client Id for Campaign Monitor.",
 )

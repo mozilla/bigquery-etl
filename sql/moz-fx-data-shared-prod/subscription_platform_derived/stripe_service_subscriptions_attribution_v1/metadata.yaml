@@ -1,0 +1,27 @@
+friendly_name: Stripe service subscriptions attribution
+description: |-
+  Attribution for Stripe service subscriptions based on FxA log events.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+scheduling:
+  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: date
+  # Override `referenced_tables` to ignore the reference to `subplat_attribution_impressions_v1`,
+  # because DAG generation would otherwise output an external task sensor for that which would only
+  # work for one bqetl_subplat_hourly DAG run per day.
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'logical_subscriptions_history_v1']
+  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'recent_subplat_attribution_impressions_v1']
+bigquery:
+  time_partitioning:
+    type: day
+    field: subscription_started_at
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}
+require_column_descriptions: true

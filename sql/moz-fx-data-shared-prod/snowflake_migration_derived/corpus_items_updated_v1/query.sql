@@ -38,14 +38,6 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.snowflake_migration_derived.prospect_item_feed_v1` AS p
   ON p.prospect_id = r.prospect_id
-  {% if is_init() %}
-    -- 2024-09-19 is the earliest date we have data from snowplow
-    AND DATE(p.happened_at) >= '2024-09-19'
-  {% else %}
-    -- @submission_date is the default name for the query param
-    -- automatically passed in when the job runs
-    AND DATE(p.happened_at) = @submission_date
-  {% endif %}
 WHERE
   r.object_version = 'new' --only select the new version from each reviewed_corpus_item event
   AND r.approved_corpus_item_external_id IS NOT NULL

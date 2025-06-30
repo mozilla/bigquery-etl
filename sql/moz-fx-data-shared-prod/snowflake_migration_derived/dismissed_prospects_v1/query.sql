@@ -25,19 +25,9 @@ FROM
 LEFT JOIN
   `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1` AS c
   ON c.prospect_id = p.prospect_id
-  {% if is_init() %}
-    AND DATE(c.happened_at) >= '2024-09-19'
-  {% else %}
-    AND DATE(c.happened_at) = @submission_date
-  {% endif %}
 LEFT JOIN
   `moz-fx-data-shared-prod.snowflake_migration_derived.rejected_corpus_items_v1` AS r
   ON r.prospect_id = p.prospect_id
-  {% if is_init() %}
-    AND DATE(r.happened_at) >= '2024-09-19'
-  {% else %}
-    AND DATE(r.happened_at) = @submission_date
-  {% endif %}
 WHERE
   p.prospect_review_status = 'dismissed'
   {% if is_init() %}

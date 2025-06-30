@@ -1,9 +1,10 @@
-2025-06-27:
+2025-06-30:
   start_date: 2024-09-19
-  end_date: 2025-06-26
-  reason: Data inconsistencies between live table and running the ETL manually in BQ console. Suspect due to GCP outage during previous backfill.
+  end_date: 2025-06-29
+  reason: Backfill table after fixing bug in LEFT JOIN in ETL query
   watchers:
     - jpetto@mozilla.com
+    - ctroy@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

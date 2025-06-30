@@ -20,6 +20,8 @@ WITH base_subscriptions_history AS (
       CAST(JSON_VALUE(metadata, "$.plan_change_date") AS INT64)
     ) AS plan_change_date,
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
+    JSON_VALUE(metadata, "$.currency") AS plan_currency,
+    CAST(JSON_VALUE(metadata, "$.amount") AS INT64) AS plan_amount,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
 ),
@@ -37,7 +39,9 @@ subscriptions_history AS (
       CAST(NULL AS TIMESTAMP) AS ended_at,
       "active" AS status,
       CAST(NULL AS TIMESTAMP) AS plan_change_date,
-      CAST(NULL AS STRING) AS previous_plan_id
+      CAST(NULL AS STRING) AS previous_plan_id,
+      CAST(NULL AS STRING) AS plan_currency,
+      CAST(NULL AS INT64) AS plan_amount
     )
   FROM
     base_subscriptions_history
@@ -372,13 +376,22 @@ subscriptions_history_promotions AS (
     subscriptions_history.valid_from,
     ARRAY_AGG(DISTINCT promotion_codes.code IGNORE NULLS) AS promotion_codes,
     SUM(
-      COALESCE(coupons.amount_off, 0) + COALESCE(
+      COALESCE(
+        -- If the actual plan currency is different than the coupon's currency then the coupon's amount off
+        -- can't be used directly.  Instead, we calculate the proportion of the invoice subtotal equivalent
+        -- to the proportion of the coupon's amount off as compared to the default plan amount.
+        IF(
+          LOWER(subscriptions_history.plan_currency) != coupons.currency
+          AND subscriptions_history.plan_amount IS NOT NULL,
+          CAST((invoices.subtotal * coupons.amount_off / plans.plan_amount) AS INT64),
+          coupons.amount_off
+        ),
         CAST((invoices.subtotal * coupons.percent_off / 100) AS INT64),
         0
       )
     ) AS promotion_discounts_amount,
   FROM
-    subscriptions_history
+    subscriptions_history_with_plan_ids AS subscriptions_history
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.invoice_v1 AS invoices
     ON subscriptions_history.subscription_id = invoices.subscription_id
@@ -395,6 +408,9 @@ subscriptions_history_promotions AS (
   JOIN
     `moz-fx-data-shared-prod`.stripe_external.coupon_v1 AS coupons
     ON promotion_codes.coupon_id = coupons.id
+  LEFT JOIN
+    plans
+    ON subscriptions_history.plan_id = plans.plan_id
   WHERE
     invoices.status = "paid"
   GROUP BY
@@ -427,9 +443,23 @@ SELECT
   subscriptions_history.plan_ended_at,
   plans.plan_name,
   plans.plan_capabilities,
-  plans.plan_amount,
+  -- If Stripe's multi-currency prices feature is used then the plan's default currency and amount
+  -- may not be what the subscription is using.  Since Fivetran doesn't currently support syncing
+  -- the data related to multi-currency prices, SubPlat has implemented a workaround of recording
+  -- a subscription's actual plan currency and amount in custom metadata fields (FXA-10382).
+  IF(
+    LOWER(subscriptions_history.plan_currency) != plans.plan_currency
+    AND subscriptions_history.plan_amount IS NOT NULL,
+    subscriptions_history.plan_amount,
+    plans.plan_amount
+  ) AS plan_amount,
   plans.billing_scheme,
-  plans.plan_currency,
+  IF(
+    LOWER(subscriptions_history.plan_currency) != plans.plan_currency
+    AND subscriptions_history.plan_amount IS NOT NULL,
+    LOWER(subscriptions_history.plan_currency),
+    plans.plan_currency
+  ) AS plan_currency,
   plans.plan_interval,
   plans.plan_interval_count,
   "Etc/UTC" AS plan_interval_timezone,

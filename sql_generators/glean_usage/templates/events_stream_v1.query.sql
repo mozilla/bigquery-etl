@@ -113,13 +113,10 @@ WITH base AS (
   FROM
     `{{ events_view }}`
   WHERE
-    {% raw %}
-    {% if is_init() %}
-      DATE(submission_timestamp) >= '2023-11-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
+    {% if slice_by_sample_id %}
+      AND sample_id BETWEEN @min_sample_id AND @max_sample_id
     {% endif %}
-    {% endraw %}
 )
 --
 SELECT

@@ -8,9 +8,11 @@ description: |-
   See https://mozilla-hub.atlassian.net/browse/DENG-3503
 owners:
 - cbeck@mozilla.com
+- lmcfall@mozilla.com
 labels:
   owner: cbeck
   owner1: cbeck
+  owner2: lmcfall
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

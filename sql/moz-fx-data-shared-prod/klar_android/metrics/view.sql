@@ -266,7 +266,8 @@ SELECT
       metrics.counter.webfont_per_page,
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
-      metrics.counter.quotamanager_restore_origin_directory_metadata_counter
+      metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
+      metrics.counter.networking_local_network_blocked_tracker
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -622,7 +623,13 @@ SELECT
       metrics.labeled_counter.networking_local_network_access,
       metrics.labeled_counter.networking_connection_address_type,
       metrics.labeled_counter.networking_cookie_db_validation,
-      metrics.labeled_counter.pdfjs_digital_signature_certificate
+      metrics.labeled_counter.pdfjs_digital_signature_certificate,
+      metrics.labeled_counter.network_retried_system_channel_addon_status,
+      metrics.labeled_counter.network_retried_system_channel_addonversion_status,
+      metrics.labeled_counter.network_retried_system_channel_other_status,
+      metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
+      metrics.labeled_counter.network_retried_system_channel_telemetry_status,
+      metrics.labeled_counter.network_retried_system_channel_update_status
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1100,7 +1107,10 @@ SELECT
       metrics.custom_distribution.network_id,
       metrics.custom_distribution.network_ipv4_and_ipv6_address_connectivity,
       metrics.custom_distribution.websockets_handshake_type,
-      metrics.custom_distribution.networking_local_network_access_port
+      metrics.custom_distribution.networking_local_network_access_port,
+      metrics.custom_distribution.cert_pinning_failures_by_ca_2,
+      metrics.custom_distribution.cert_validation_success_by_ca_2,
+      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

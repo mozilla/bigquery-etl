@@ -2323,6 +2323,13 @@ fields:
         optimizations or regressions.
 
         '
+    - name: networking_local_network_blocked_tracker
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times the channel was blocked because it''s
+        a LNA load triggered by a tracker
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -7603,6 +7610,84 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts the number of certificates used to sign a PDF document.
+
+        '
+    - name: network_retried_system_channel_addon_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of fallback requests to addons.mozilla.org
+
+        '
+    - name: network_retried_system_channel_addonversion_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of fallback requests to *.addons.mozilla.org
+
+        '
+    - name: network_retried_system_channel_other_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of fallback requests to other mozilla.org domains
+
+        '
+    - name: network_retried_system_channel_remote_settings_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of fallback requests to firefox.settings.services.mozilla.com
+
+        '
+    - name: network_retried_system_channel_telemetry_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of fallback requests to incoming.telemetry.mozilla.org
+
+        '
+    - name: network_retried_system_channel_update_status
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the status of fallback requests to aus5.mozilla.org
 
         '
   - name: memory_distribution
@@ -18651,6 +18736,84 @@ fields:
           type: INTEGER
           mode: NULLABLE
       description: 'port used for local network access
+
+        '
+    - name: cert_pinning_failures_by_ca_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Pinning failures by CA (see KnownRootHashes.txt for names of CAs).
+
+        '
+    - name: cert_validation_success_by_ca_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Successful SSL server cert validations by CA (see KnownRootHashes.txt
+        for names of CAs).
+
+        '
+    - name: ssl_ct_policy_non_compliant_connections_by_ca_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Number of successfully established TLS connections NOT compliant
+        with the Certificate Transparency Policy, by CA. See KnownRootHashes.txt for
+        names of CAs. range_min: 0
 
         '
   - name: timespan

@@ -56,8 +56,7 @@ class EventsStreamTable(GleanTable):
             "slice_by_sample_id",
             fallback=[],
         )
-        if slice_by_sample_id:
-            self.python_query = True
+        self.python_query = slice_by_sample_id
 
         # Separate apps with legacy telemetry client ID vs those that don't have it
         if app_id == "firefox_desktop":

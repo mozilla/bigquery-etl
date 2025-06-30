@@ -1664,7 +1664,7 @@ without an id in the source). We don't use ABS to prevent risk of collision of i
 <h3 id="usage">Usage:</h3>
 <p><div class="highlight"><pre><span></span><code><span class="n">ads</span><span class="p">.</span><span class="n">generate_id_from_struct_v1</span><span class="p">(</span>
 <span class="w">    </span><span class="n">STRUCT</span><span class="p">(</span>
-<span class="w">        </span><span class="nb">DATE</span><span class="w"> </span><span class="ss">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;product&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;surface&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country_code&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;advertiser&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;position&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;pricing_model&quot;</span>
+<span class="w">        </span><span class="nb">DATE</span><span class="w"> </span><span class="ss">&quot;YYYY-MM-DD&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;product&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;surface&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;country_code&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;advertiser&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">position</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">)</span>
@@ -1678,7 +1678,7 @@ without an id in the source). We don't use ABS to prevent risk of collision of i
 
 <span class="o">**</span><span class="n">INPUTS</span><span class="o">**</span>
 </code></pre></div>
-key STRUCT<adm_date DATE, product STRING, surface STRING, country_code STRING, advertiser STRING, position INT64, pricing_model STRING>
+key STRUCT<adm_date DATE, product STRING, surface STRING, country_code STRING, advertiser STRING, position INT64>
 <div class="highlight"><pre><span></span><code>**OUTPUTS**
 </code></pre></div>
 STRUCT<id INT64, version STRING>

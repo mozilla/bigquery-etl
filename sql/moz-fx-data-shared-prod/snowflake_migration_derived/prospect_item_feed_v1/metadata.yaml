@@ -1,20 +1,20 @@
 friendly_name: Prospect Item Feed v1
 description: Model prospect created events for the Fx New Tab from prospects_v1 table
 owners:
-  - skamath@mozilla.com
+  - jpetto@mozilla.com
   - rrando@mozilla.com
 labels:
-  schedule: daily
+  schedule: hourly
   incremental: true
-  owner1: skamath
+  owner1: jpetto
   owner2: rrando
 scheduling:
-  dag_name: bqetl_content_ml_daily
+  dag_name: bqetl_content_ml_hourly
 bigquery:
   time_partitioning:
     type: day
     field: happened_at
-    require_partition_filter: true
+    require_partition_filter: false
     expiration_days: 775
   clustering:
     fields:

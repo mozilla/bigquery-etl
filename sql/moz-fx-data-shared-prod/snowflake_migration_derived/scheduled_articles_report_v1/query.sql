@@ -189,5 +189,3 @@ SELECT
   ) AS schedule_failure_rate
 FROM
   combined
-ORDER BY
-  1

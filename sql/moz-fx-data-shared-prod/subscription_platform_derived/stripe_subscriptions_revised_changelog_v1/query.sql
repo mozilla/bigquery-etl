@@ -68,7 +68,18 @@ CREATE TEMP FUNCTION synthesize_subscription(
             NULL
           ) AS cancelled_for_customer_at,
           IF(plan_start > subscription.start_date, plan_start, NULL) AS plan_change_date,
-          previous_plan_id
+          previous_plan_id,
+          CAST(NULL AS STRING) AS currency,
+          CAST(NULL AS INT64) AS amount,
+          CAST(NULL AS STRING) AS session_flow_id,
+          CAST(NULL AS STRING) AS session_entrypoint,
+          CAST(NULL AS STRING) AS session_entrypoint_experiment,
+          CAST(NULL AS STRING) AS session_entrypoint_variation,
+          CAST(NULL AS STRING) AS utm_campaign,
+          CAST(NULL AS STRING) AS utm_content,
+          CAST(NULL AS STRING) AS utm_medium,
+          CAST(NULL AS STRING) AS utm_source,
+          CAST(NULL AS STRING) AS utm_term
         ) AS metadata,
         CASE
           WHEN subscription.status IN ('incomplete', 'incomplete_expired')
@@ -105,7 +116,22 @@ WITH original_changelog AS (
             TIMESTAMP_SECONDS(
               CAST(JSON_VALUE(subscription.metadata.plan_change_date) AS INT64)
             ) AS plan_change_date,
-            JSON_VALUE(subscription.metadata.previous_plan_id) AS previous_plan_id
+            JSON_VALUE(subscription.metadata.previous_plan_id) AS previous_plan_id,
+            JSON_VALUE(subscription.metadata.currency) AS currency,
+            CAST(JSON_VALUE(subscription.metadata.amount) AS INT64) AS amount,
+            JSON_VALUE(subscription.metadata.session_flow_id) AS session_flow_id,
+            JSON_VALUE(subscription.metadata.session_entrypoint) AS session_entrypoint,
+            JSON_VALUE(
+              subscription.metadata.session_entrypoint_experiment
+            ) AS session_entrypoint_experiment,
+            JSON_VALUE(
+              subscription.metadata.session_entrypoint_variation
+            ) AS session_entrypoint_variation,
+            JSON_VALUE(subscription.metadata.utm_campaign) AS utm_campaign,
+            JSON_VALUE(subscription.metadata.utm_content) AS utm_content,
+            JSON_VALUE(subscription.metadata.utm_medium) AS utm_medium,
+            JSON_VALUE(subscription.metadata.utm_source) AS utm_source,
+            JSON_VALUE(subscription.metadata.utm_term) AS utm_term
           ) AS metadata
         )
     ) AS subscription,

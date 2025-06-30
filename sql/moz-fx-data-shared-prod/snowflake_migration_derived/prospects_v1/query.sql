@@ -33,6 +33,8 @@ WITH stg_prospects AS (
   WHERE
     event_name = 'object_update'
     AND unstruct_event_com_pocket_object_update_1.object = 'prospect'
+    AND app_id NOT LIKE '%-dev'
+    AND app_id LIKE 'pocket-%'
     {% if not is_init() %}
       AND DATE(derived_tstamp) = @submission_date
     {% endif %}

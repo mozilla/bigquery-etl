@@ -28,7 +28,7 @@ BACKFILL_DESTINATION_PROJECT = "moz-fx-data-shared-prod"
 BACKFILL_DESTINATION_DATASET = "backfills_staging_derived"
 
 # currently only supporting backfilling tables with workgroup access: mozilla-confidential.
-VALID_WORKGROUP_MEMBER = ["workgroup:mozilla-confidential"]
+VALID_WORKGROUP_MEMBER = "workgroup:mozilla-confidential"
 
 # Backfills older than this will not run due to staging table expiration
 MAX_BACKFILL_ENTRY_AGE_DAYS = 28
@@ -245,7 +245,7 @@ def _validate_workgroup_members(workgroup_access, metadata_filename):
             elif metadata_filename == DATASET_METADATA_FILE:
                 members = workgroup["members"]
 
-            if members == VALID_WORKGROUP_MEMBER:
+            if VALID_WORKGROUP_MEMBER in members:
                 return True
 
     return False

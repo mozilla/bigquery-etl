@@ -1277,6 +1277,70 @@ class TestBackfill:
         result = validate_metadata_workgroups("sql", qualified_table_name)
         assert not result
 
+    def test_validate_metadata_workgroups_dataset_valid_superset(self, runner):
+        """Dataset access containing mozilla-confidential and something else should be valid."""
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(TABLE_METADATA_CONF_EMPTY_WORKGROUP))
+
+        dataset_metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "dataset_base_acl": "derived",
+            "workgroup_access": [
+                dict(
+                    role="roles/bigquery.dataViewer",
+                    members=[
+                        "workgroup:mozilla-confidential",
+                        "workgroup:something-else",
+                    ],
+                )
+            ],
+        }
+
+        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
+            f.write(yaml.dump(dataset_metadata_conf))
+
+        result = validate_metadata_workgroups("sql", qualified_table_name)
+        assert result
+
+    def test_validate_metadata_workgroups_table_valid_superset(self, runner):
+        """Table access containing mozilla-confidential and something else should be valid."""
+        qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
+
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(
+                yaml.dump(
+                    {
+                        "friendly_name": "test",
+                        "description": "test",
+                        "owners": ["test@example.org"],
+                        "workgroup_access": [
+                            dict(
+                                role="roles/bigquery.dataViewer",
+                                members=[
+                                    "workgroup:mozilla-confidential",
+                                    "workgroup:something-else",
+                                ],
+                            )
+                        ],
+                    }
+                ),
+            )
+
+        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
+            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+        result = validate_metadata_workgroups("sql", qualified_table_name)
+        assert result
+
     def test_qualified_table_name_matching(self, runner):
         qualified_table_name = "moz-fx-data-shared-prod.test.test_query_v1"
         project_id, dataset_id, table_id = qualified_table_name_matching(

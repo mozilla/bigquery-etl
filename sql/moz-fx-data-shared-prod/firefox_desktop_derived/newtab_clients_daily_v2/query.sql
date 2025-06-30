@@ -26,44 +26,17 @@ SELECT
   ) AS newtab_search_enabled,
   COUNT(DISTINCT IF(is_newtab_opened, newtab_visit_id, NULL)) AS all_visits,
   COUNT(DISTINCT IF(is_default_ui, newtab_visit_id, NULL)) AS default_ui_visits,
+  COUNT(DISTINCT IF(is_any_interaction, newtab_visit_id, NULL)) AS any_engagement_visits,
   COUNT(
-    DISTINCT IF(
-      (
-        is_search_issued
-        OR is_content_interaction
-        OR is_topsite_interaction
-        OR is_widget_interaction
-        OR is_wallpaper_interaction
-        OR is_other_interaction
-      ),
-      newtab_visit_id,
-      NULL
-    )
-  ) AS any_engagement_visits,
-  COUNT(
-    DISTINCT IF(
-      (
-        is_content_interaction
-        OR is_topsite_interaction
-        OR is_widget_interaction
-        OR is_wallpaper_interaction
-        OR is_other_interaction
-      ),
-      newtab_visit_id,
-      NULL
-    )
+    DISTINCT IF(is_nonsearch_interaction, newtab_visit_id, NULL)
   ) AS nonsearch_engagement_visits,
   COUNT(
-    DISTINCT IF(is_content_interaction OR is_sponsored_content_interaction, newtab_visit_id, NULL)
+    DISTINCT IF(is_content_interaction, newtab_visit_id, NULL)
   ) AS any_content_engagement_visits,
   SUM(any_content_click_count) AS any_content_click_count,
   SUM(any_content_impression_count) AS any_content_impression_count,
   COUNT(
-    DISTINCT IF(
-      (is_content_interaction AND NOT is_sponsored_content_interaction),
-      newtab_visit_id,
-      NULL
-    )
+    DISTINCT IF(is_organic_content_interaction, newtab_visit_id, NULL)
   ) AS organic_content_engagement_visits,
   SUM(organic_content_click_count) AS organic_content_click_count,
   SUM(organic_content_impression_count) AS organic_content_impression_count,
@@ -78,11 +51,7 @@ SELECT
   SUM(any_topsite_click_count) AS any_topsite_click_count,
   SUM(any_topsite_impression_count) AS any_topsite_impression_count,
   COUNT(
-    DISTINCT IF(
-      (is_topsite_interaction AND NOT is_sponsored_topsite_interaction),
-      newtab_visit_id,
-      NULL
-    )
+    DISTINCT IF(is_organic_topsite_interaction, newtab_visit_id, NULL)
   ) AS organic_topsite_engagement_visits,
   SUM(organic_topsite_click_count) AS organic_topsite_click_count,
   SUM(organic_topsite_impression_count) AS organic_topsite_impression_count,
@@ -94,7 +63,7 @@ SELECT
   COUNT(DISTINCT IF(is_widget_interaction, newtab_visit_id, NULL)) AS widget_engagement_visits,
   COUNT(DISTINCT IF(is_other_interaction, newtab_visit_id, NULL)) AS others_engagement_visits,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_visits_daily_v2`
+  `moz-fx-data-shared-prod.firefox_desktop.newtab_visits_daily`
 WHERE
   submission_date = @submission_date
 GROUP BY

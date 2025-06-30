@@ -8,6 +8,7 @@ description: |-
   See https://mozilla-hub.atlassian.net/browse/DENG-3503
 owners:
 - cbeck@mozilla.com
+- lmcfall@mozilla.com
 labels:
   incremental: false
   owner: cbeck

@@ -1,7 +1,7 @@
 -- Definition for ads.generate_id_from_struct_v1
 -- For more information on writing UDFs see:
 -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
-CREATE OR REPLACE FUNCTION `moz-fx-data-shared-prod.ads.generate_id_from_struct_v1`(
+CREATE OR REPLACE FUNCTION ads.generate_id_from_struct_v1(
   key STRUCT<
     adm_date DATE,
     product STRING,

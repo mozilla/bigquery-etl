@@ -59,14 +59,6 @@ FROM
 JOIN
   `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1` AS a
   ON a.approved_corpus_item_external_id = s.approved_corpus_item_external_id
-  {% if is_init() %}
-    -- 2024-09-19 is the earliest date we have data from snowplow
-    AND DATE(a.happened_at) >= '2024-09-19'
-  {% else %}
-    -- @submission_date is the default name for the query param
-    -- automatically passed in when the job runs
-    AND DATE(a.happened_at) = @submission_date
-  {% endif %}
 WHERE
   object_version = 'new' --only select the new version from each scheduled_corpus_item event
   AND s.object_update_trigger IN (

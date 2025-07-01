@@ -17,5 +17,18 @@ tag_deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1.*
     metrics:
+    - saved_metric_id: composite_key_uniqueness_2_column
+      parameters:
+      - key: col_1
+        column_name: client_id
+      - key: col_2
+        column_name: normalized_channel
+      - key: table
+        string_value: moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1
+      rct_overrides:
+      - FULL_SCAN
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.attribution_clients_v1.*
+    metrics:
     - saved_metric_id: freshness
     - saved_metric_id: volume

@@ -1230,6 +1230,12 @@ fields:
     - name: networking_local_network_blocked_tracker
       type: INTEGER
       mode: NULLABLE
+    - name: logins_store_local_undecryptable_deleted
+      type: INTEGER
+      mode: NULLABLE
+    - name: logins_store_mirror_undecryptable_deleted
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

@@ -350,7 +350,9 @@ SELECT
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
-      metrics.counter.networking_local_network_blocked_tracker
+      metrics.counter.networking_local_network_blocked_tracker,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2284,7 +2286,9 @@ SELECT
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
-      metrics.counter.networking_local_network_blocked_tracker
+      metrics.counter.networking_local_network_blocked_tracker,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4238,7 +4242,9 @@ SELECT
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
-      metrics.counter.networking_local_network_blocked_tracker
+      metrics.counter.networking_local_network_blocked_tracker,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -6201,7 +6207,9 @@ SELECT
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
-      metrics.counter.networking_local_network_blocked_tracker
+      metrics.counter.networking_local_network_blocked_tracker,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -8144,7 +8152,9 @@ SELECT
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
-      metrics.counter.networking_local_network_blocked_tracker
+      metrics.counter.networking_local_network_blocked_tracker,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

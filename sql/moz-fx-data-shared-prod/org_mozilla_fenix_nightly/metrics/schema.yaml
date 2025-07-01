@@ -2993,6 +2993,20 @@ fields:
         a LNA load triggered by a tracker
 
         '
+    - name: logins_store_local_undecryptable_deleted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Track how many logins we deleted locally due to various reasons
+        that prevent us from decrypting the login
+
+        '
+    - name: logins_store_mirror_undecryptable_deleted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Track how many logins we deleted in the mirror table due to various
+        reasons that prevent us from decrypting the login
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

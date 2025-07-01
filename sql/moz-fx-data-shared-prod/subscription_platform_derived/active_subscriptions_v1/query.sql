@@ -23,6 +23,7 @@ WITH product_union AS (
   WHERE
     -- in order to avoid double counting, only include bundles via relay
     product_name NOT LIKE "%Relay%"
+    AND product_name != "Privacy protection plan"
 {%- endif %}
 {%- if not loop.last %}
   UNION ALL

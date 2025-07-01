@@ -233,13 +233,22 @@ class TestMetadata:
             ) as stream:
                 dataset_metadata = yaml.safe_load(stream)
 
-        assert metadata["workgroup_access"] == []
+        assert metadata["workgroup_access"] == [
+            {
+                "members": ["workgroup:mozilla-foo"],
+                "role": "roles/bigquery.dataEditor",
+            }
+        ]
         assert metadata["deprecated"]
         assert dataset_metadata["workgroup_access"] == [
             {
                 "members": ["workgroup:mozilla-test"],
                 "role": "roles/bigquery.dataEditor",
-            }
+            },
+            {
+                "members": ["workgroup:mozilla-confidential"],
+                "role": "roles/bigquery.metadataViewer",
+            },
         ]
         assert dataset_metadata["default_table_workgroup_access"] == [
             {

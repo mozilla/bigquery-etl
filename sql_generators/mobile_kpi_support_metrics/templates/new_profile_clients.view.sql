@@ -1,4 +1,5 @@
 {{ header }}
+-- TODO: keeping this view as is for now until the new table get's backfilled.
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS

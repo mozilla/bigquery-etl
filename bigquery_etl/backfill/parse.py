@@ -52,6 +52,7 @@ class BackfillStatus(enum.Enum):
 
     INITIATE = "Initiate"
     COMPLETE = "Complete"
+    CANCELLED = "Cancelled"
 
 
 @attr.s(auto_attribs=True)
@@ -68,6 +69,8 @@ class Backfill:
     end_date: date = attr.ib()
     excluded_dates: List[date] = attr.ib()
     reason: str = attr.ib()
+    # watchers are expected to be emails with the name matching
+    # the username listed at https://mozilla.slack.com/account/settings#username
     watchers: List[str] = attr.ib()
     status: BackfillStatus = attr.ib()
     custom_query_path: Optional[str] = attr.ib(None)

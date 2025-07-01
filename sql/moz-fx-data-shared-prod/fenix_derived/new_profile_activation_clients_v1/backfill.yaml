@@ -4,7 +4,7 @@
   reason: Backfill to propegate upstream population of install_source field.
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Cancelled
   shredder_mitigation: false
   override_retention_limit: false
 2025-02-03:

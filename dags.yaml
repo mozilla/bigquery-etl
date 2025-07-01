@@ -160,12 +160,10 @@ bqetl_accounts_derived:
     - repo/bigquery-etl
 
 bqetl_subplat:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 30 1 * * *
   description: |
     Daily imports for Subscription Platform data from Stripe, Firestore, and the Mozilla VPN
     operational DB as well as derived tables based on that data.
-
-    Scheduled mid-day to allow more time for late-arriving data from the previous day.
 
     Stripe data retrieved by stripe_external__itemized_payout_reconciliation__v5
     task has highly viariable availability timing, so it is possible for it to
@@ -174,13 +172,30 @@ bqetl_subplat:
     In such cases the failure is expected, the task will continue to retry every
     30 minutes until the data becomes available. If failure observed looks
     different then it should be reported using the Airflow triage process.
-
   default_args:
     owner: srose@mozilla.com
-    start_date: "2025-05-20"
+    start_date: "2025-06-10"
     email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
     retries: 2
     retry_delay: 30m
+  tags:
+    - impact/tier_1
+
+bqetl_subplat_hourly:
+  schedule_interval: 30 * * * *
+  description: |
+    Hourly imports for Subscription Platform data from Stripe and Firestore,
+    as well as derived tables based on that data.
+
+    This DAG is scheduled with consideration for its ETLs that write to date-partitioned tables,
+    so the last run targeting a particular date partition will happen at 00:30 the following day,
+    allowing time for all of the data for that date to be ready from external systems like Stripe.
+  default_args:
+    owner: srose@mozilla.com
+    start_date: "2025-06-10"
+    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
+    retries: 1
+    retry_delay: 5m
   tags:
     - impact/tier_1
 
@@ -1682,6 +1697,27 @@ bqetl_firefox_desktop_ad_click_history:
     - repo/bigquery-etl
     - impact/tier_2
 
+bqetl_firefox_desktop_new_profiles_aggregates:
+  default_args:
+    depends_on_past: false
+    email:
+      - lmcfall@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: lmcfall@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-06-02'
+  description: |
+    This table aggregates the number of new profiles on a given day.
+  repo: bigquery-etl
+  schedule_interval: 0 16 * * *
+  tags:
+    - repo/bigquery-etl
+    - impact/tier_2
+
 bqetl_merino_newtab_extract_to_gcs:
   default_args:
     depends_on_past: false
@@ -2253,16 +2289,18 @@ bqetl_monitoring_hourly:
     - impact/tier_1
     - repo/bigquery-etl
 
-bqetl_content_ml_daily:
-  schedule_interval: 0 4 * * *
+bqetl_content_ml_hourly:
+  schedule_interval: 30 * * * *
   description: |
-    Daily extracts for corpus item data to be evaluated for new tab presentation.
+    Hourly extracts for corpus item data to be evaluated for new tab presentation.
   default_args:
-    owner: skamath@mozilla.com
-    start_date: "2025-05-05" #TODO: Change to merge date
-    email: ["skamath@mozilla.com", "mlcooper@mozilla.com"]
-    retries: 2
-    retry_delay: 30m
+    owner: jpetto@mozilla.com
+    # Converted to an hourly DAG on 2025-06-24
+    start_date: "2025-06-24"
+    email: ["jpetto@mozilla.com", "rrando@mozilla.com"]
+    # if the hourly task fails, retry once after a 10 minute wait
+    retries: 1
+    retry_delay: 10m
   tags:
     - impact/tier_2
 
@@ -2298,6 +2336,34 @@ bqetl_newtab_historical:
     email:
       - cbeck@mozilla.com
     start_date: '2025-05-13'
+    retries: 1
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+
+bqetl_pocket_users_historical:
+  schedule_interval: once
+  description: |
+    Load Pocket Users historical data from GCS into BigQuery
+  default_args:
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+    start_date: '2025-06-12'
+    retries: 1
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+
+bqetl_pocket_user_engagement_historical:
+  schedule_interval: once
+  description: |
+    Load Pocket User Engagement historical data from GCS into BigQuery
+  default_args:
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+    start_date: '2025-06-12'
     retries: 1
     retry_delay: 5m
   tags:

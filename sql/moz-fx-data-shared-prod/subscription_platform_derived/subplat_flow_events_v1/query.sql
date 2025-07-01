@@ -1,4 +1,45 @@
-WITH new_flow_events AS (
+WITH fxa_flow_events AS (
+  SELECT
+    logger,
+    `timestamp` AS log_timestamp,
+    COALESCE(event_time, `timestamp`) AS event_time,
+    event_type,
+    flow_id,
+    user_id AS mozilla_account_id_sha256,
+    oauth_client_id,
+    service AS oauth_client_name,
+    checkout_type,
+    payment_provider,
+    subscription_id,
+    product_id,
+    plan_id,
+    entrypoint,
+    entrypoint_experiment,
+    entrypoint_variation,
+    utm_campaign,
+    utm_content,
+    utm_medium,
+    utm_source,
+    utm_term,
+    promotion_code,
+    country_code_source,
+    country_code,
+    country,
+    `language`,
+    os_name,
+    os_version,
+    ua_browser,
+    ua_version,
+  FROM
+    `moz-fx-data-shared-prod.firefox_accounts.recent_fxa_all_events`
+  WHERE
+    fxa_log IN ('content', 'auth', 'stdout', 'payments')
+    AND flow_id IS NOT NULL
+    {% if not is_init() %}
+      -- Include the previous day's events as well in case a flow spanned multiple days.
+      AND (DATE(`timestamp`) BETWEEN (@date - 1) AND @date)
+    {% endif %}
+  UNION ALL
   SELECT
     logger,
     `timestamp` AS log_timestamp,
@@ -35,11 +76,16 @@ WITH new_flow_events AS (
   WHERE
     fxa_log IN ('content', 'auth', 'stdout', 'payments')
     AND flow_id IS NOT NULL
-    {% if is_init() %}
-      AND DATE(`timestamp`) < CURRENT_DATE()
-    {% else %}
-      AND DATE(`timestamp`) = @date
+    {% if not is_init() %}
+      -- Include the previous day's events as well in case a flow spanned multiple days.
+      AND (DATE(`timestamp`) BETWEEN (@date - 1) AND @date)
     {% endif %}
+    AND DATE(`timestamp`) < (
+      SELECT
+        MIN(DATE(`timestamp`))
+      FROM
+        `moz-fx-data-shared-prod.firefox_accounts.recent_fxa_all_events`
+    )
 ),
 services_metadata AS (
   SELECT
@@ -49,35 +95,21 @@ services_metadata AS (
     `moz-fx-data-shared-prod.subscription_platform_derived.services_v1`
   LEFT JOIN
     UNNEST(subplat_oauth_clients) AS subplat_oauth_client
-),
-existing_flow_ids AS (
-  {% if is_init() %}
-    SELECT
-      CAST(NULL AS STRING) AS flow_id
-  {% else %}
-    SELECT DISTINCT
-      flow_id
-    FROM
-      `moz-fx-data-shared-prod.subscription_platform_derived.subplat_flow_events_v1`
-  {% endif %}
 )
 SELECT
-  new_flow_events.*
+  fxa_flow_events.*
 FROM
-  new_flow_events
+  fxa_flow_events
 CROSS JOIN
   services_metadata
-LEFT JOIN
-  existing_flow_ids
-  ON new_flow_events.flow_id = existing_flow_ids.flow_id
 QUALIFY
-  LOGICAL_OR(
-    new_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_ids)
-    OR new_flow_events.oauth_client_name IN UNNEST(services_metadata.subplat_oauth_client_names)
+  DATE(fxa_flow_events.log_timestamp) = @date
+  AND LOGICAL_OR(
+    fxa_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_ids)
+    OR fxa_flow_events.oauth_client_name IN UNNEST(services_metadata.subplat_oauth_client_names)
     -- For a while Bedrock incorrectly passed VPN's OAuth client name as the OAuth client ID.
-    OR new_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_names)
-    OR new_flow_events.subscription_id IS NOT NULL
-    OR new_flow_events.product_id IS NOT NULL
-    OR new_flow_events.plan_id IS NOT NULL
-  ) OVER (PARTITION BY new_flow_events.flow_id)
-  OR existing_flow_ids.flow_id IS NOT NULL
+    OR fxa_flow_events.oauth_client_id IN UNNEST(services_metadata.subplat_oauth_client_names)
+    OR fxa_flow_events.subscription_id IS NOT NULL
+    OR fxa_flow_events.product_id IS NOT NULL
+    OR fxa_flow_events.plan_id IS NOT NULL
+  ) OVER (PARTITION BY fxa_flow_events.flow_id)

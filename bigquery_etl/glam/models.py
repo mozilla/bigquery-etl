@@ -3,6 +3,41 @@
 from .utils import compute_datacube_groupings, get_custom_distribution_metadata
 
 
+def clients_scalar_aggregates_new(**kwargs):
+    """Variables for clients scalar aggregation."""
+    attributes_list = [
+        "client_id",
+        "ping_type",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
+    attributes_type_list = ["STRING", "STRING", "STRING", "INT64", "STRING", "STRING"]
+    user_data_attributes_list = ["metric", "metric_type", "key"]
+    return dict(
+        attributes=",".join(attributes_list),
+        attributes_list=attributes_list,
+        attributes_type=",".join(
+            f"{name} {dtype}"
+            for name, dtype in zip(attributes_list, attributes_type_list)
+        ),
+        user_data_attributes=",".join(user_data_attributes_list),
+        user_data_type="""
+            ARRAY<
+                STRUCT<
+                metric STRING,
+                metric_type STRING,
+                key STRING,
+                agg_type STRING,
+                value FLOAT64
+                >
+            >
+        """,
+        **kwargs,
+    )
+
+
 def clients_scalar_aggregates(**kwargs):
     """Variables for clients scalar aggregation."""
     attributes_list = [
@@ -33,6 +68,30 @@ def clients_scalar_aggregates(**kwargs):
                 value FLOAT64
                 >
             >
+        """,
+        **kwargs,
+    )
+
+
+def clients_histogram_aggregates_new(**kwargs):
+    """Variables for histogram aggregates new."""
+    attributes_list = [
+        "sample_id",
+        "client_id",
+        "ping_type",
+        "os",
+        "app_version",
+        "app_build_id",
+        "channel",
+    ]
+    return dict(
+        attributes_list=attributes_list,
+        attributes=",".join(attributes_list),
+        metric_attributes="""
+            metric,
+            metric_type,
+            key,
+            agg_type
         """,
         **kwargs,
     )

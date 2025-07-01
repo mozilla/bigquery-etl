@@ -415,6 +415,60 @@ fields:
       mode: NULLABLE
       description: ID of the previous plan the customer was subscribed to via this
         subscription (if any).
+    - name: currency
+      type: STRING
+      mode: NULLABLE
+      description: ISO 4217 code for the actual plan currency, possibly in lowercase.
+        This may differ from `subscription.items[0].plan.currency` if multi-currency prices are being used.
+    - name: amount
+      type: INTEGER
+      mode: NULLABLE
+      description: The actual plan amount in whole cents to be charged.
+        This may differ from `subscription.items[0].plan.amount` if multi-currency prices are being used.
+    - name: session_flow_id
+      type: STRING
+      mode: NULLABLE
+      description: ID of the subscription flow which resulted in the creation of the subscription.
+    - name: session_entrypoint
+      type: STRING
+      mode: NULLABLE
+      description: The `entrypoint` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: session_entrypoint_experiment
+      type: STRING
+      mode: NULLABLE
+      description: The `entrypoint_experiment` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: session_entrypoint_variation
+      type: STRING
+      mode: NULLABLE
+      description: The `entrypoint_variation` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+      description: The `utm_campaign` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+      description: The `utm_content` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+      description: The `utm_medium` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+      description: The `utm_source` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE
+      description: The `utm_term` attribution parameter from the subscription flow
+        which resulted in the creation of the subscription.
   - name: pending_setup_intent_id
     type: STRING
     mode: NULLABLE

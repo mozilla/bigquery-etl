@@ -15,6 +15,7 @@ SELECT
   distribution_id,
   normalized_os,
   normalized_os_version,
+  windows_version,
   is_desktop,
   COUNTIF(ping_sent_metric_date) AS ping_sent_metric_date,
   COUNTIF(ping_sent_week_4) AS ping_sent_week_4,
@@ -45,4 +46,5 @@ GROUP BY
   distribution_id,
   normalized_os,
   normalized_os_version,
+  windows_version,
   is_desktop

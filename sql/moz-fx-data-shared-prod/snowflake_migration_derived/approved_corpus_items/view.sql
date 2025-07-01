@@ -1,0 +1,34 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items`
+AS
+SELECT
+  approved_corpus_item_external_id,
+  prospect_id,
+  url,
+  loaded_from,
+  corpus_review_status,
+  reviewed_action_ui_page,
+  scheduled_surface_id,
+  predicted_topic,
+  prospect_source,
+  prospect_flow,
+  prospect_expires_at,
+  title,
+  excerpt,
+  image_url,
+  LANGUAGE,
+  topic,
+  authors,
+  publisher,
+  is_collection,
+  is_syndicated,
+  is_time_sensitive,
+  reviewed_corpus_item_created_at,
+  curator_created_by,
+  reviewed_corpus_item_updated_at,
+  curator_updated_by,
+  happened_at
+FROM
+  `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1`
+WHERE
+  reviewed_corpus_update_status != 'removed'

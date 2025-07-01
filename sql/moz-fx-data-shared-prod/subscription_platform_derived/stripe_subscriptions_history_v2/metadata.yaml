@@ -9,22 +9,23 @@ description: |-
   This table's schema closely mirrors Stripe's subscriptions API (https://stripe.com/docs/api/subscriptions/object).
   Fields which Fivetran doesn't sync and fields we've specifically chosen not to include (e.g. PII) have been omitted.
   In particular, all address fields except country have been omitted because Firefox Account user IDs are present and this is in a Mozilla-confidential dataset.
+
+  Some caveats:
+    * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
 owners:
 - srose@mozilla.com
 labels:
   incremental: false
-  schedule: daily
+  schedule: hourly
 scheduling:
-  dag_name: bqetl_subplat
+  dag_name: bqetl_subplat_hourly
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery:
-  time_partitioning:
-    type: day
-    field: valid_to
-    require_partition_filter: false
-    expiration_days: null
+  time_partitioning: null
   clustering:
     fields:
+    - valid_to
     - valid_from
 references: {}
+require_column_descriptions: true

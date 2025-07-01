@@ -130,3 +130,11 @@ saved_metric_definitions:
           interval_value: 0
       rct_overrides:
         - submission_date
+    - saved_metric_id: composite_key_uniqueness_2_column
+      metric_type:
+        type: TEMPLATE
+        aggregation_type: PERCENT
+        template_name: composite_key_uniqueness_2_column
+      threshold:
+        type: CONSTANT
+        lower_bound: 1

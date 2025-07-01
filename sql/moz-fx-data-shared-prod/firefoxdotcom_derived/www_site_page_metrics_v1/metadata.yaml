@@ -1,0 +1,24 @@
+friendly_name: WWW Site Page Metrics V1
+description: |-
+  Aggregated metrics per page on www.firefox.com from Google Analytics 4
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - page_name
+    - locale
+    - country
+    - medium
+references: {}

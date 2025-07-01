@@ -1,0 +1,24 @@
+friendly_name: WWW Site Events Metrics V1
+description: |-
+  Aggregated metrics on non-page view events on www.firefox.com
+  Sourced from Google Analytics 4 (GA4) data
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose@mozilla.com
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - country
+    - device_category
+    - event_category
+    - browser
+references: {}

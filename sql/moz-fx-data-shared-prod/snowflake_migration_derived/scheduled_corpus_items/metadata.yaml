@@ -1,0 +1,5 @@
+friendly_name: Scheduled Corpus Items
+description: View of scheduled corpus items in the corpus_item_schedules_updated_v1 table
+owners:
+  - jpetto@mozilla.com
+  - rrando@mozilla.com

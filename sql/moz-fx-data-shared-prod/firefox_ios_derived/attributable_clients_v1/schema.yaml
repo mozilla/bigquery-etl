@@ -29,7 +29,7 @@ fields:
   name: adjust_adgroup
   type: STRING
   description: |
-    Structure parameter for the the ad group of a campaign.
+    Structure parameter for the ad group of a campaign.
 
 - mode: NULLABLE
   name: adjust_campaign

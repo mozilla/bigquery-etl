@@ -105,7 +105,7 @@ fields:
     name: flow_id
     type: STRING
     description: |
-      The the first flow_id recorded for this specific
+      The first flow_id recorded for this specific
       user / service combination.
       The flow identifier is a hash value representing
       a registration and login sessions.

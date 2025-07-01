@@ -4,7 +4,7 @@ This directory contains an assortment of scripts for managing the state of GLAM
 queries. Also refer to the `bqetl glam` CLI tool.
 
 The GLAM glean queries are situated within the `glam_etl` dataset under the
-`glam-fenix-dev` project. Each query is prefixed with the namespace of the the
+`glam-fenix-dev` project. Each query is prefixed with the namespace of the
 glean application.
 
 ## Setup
@@ -38,7 +38,7 @@ run locally.
 The `test_glean_org_mozilla_fenix_glam_nightly` script is the main testing
 script for this set of GLAM ETL queries. The volume of data is typically low and
 requires joining across several different glean datasets. Read the script to
-determine how to run it. For reference, here is how to generate the the queries
+determine how to run it. For reference, here is how to generate the queries
 and the schemas for check-in.
 
 ```bash
@@ -57,7 +57,7 @@ representative, since there would be too much duplication otherwise.
 
 ## Adding a new glean application
 
-Adding a new Glean application currently requires a few depedencies:
+Adding a new Glean application currently requires a few dependencies:
 
 1. In the configuration (currently located in `bigquery_etl.glam.generate`), add
    a new entry for the application id

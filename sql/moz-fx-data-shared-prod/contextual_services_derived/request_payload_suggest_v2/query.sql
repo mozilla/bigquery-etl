@@ -22,14 +22,14 @@ ping_data AS (
     -- receives geo information from the client rather than from Glean ingestion's
     -- IP geolocation. We no longer send subdivision, only country.
     IF(
-      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
-      metadata.geo.country,
-      metrics.string.quick_suggest_country
+      SAFE_CAST(metadata.user_agent.version AS INT64) >= 140,
+      metrics.string.quick_suggest_country,
+      metadata.geo.country
     ) AS country_code,
     IF(
-      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
-      metadata.geo.subdivision1,
-      CAST(NULL AS STRING)
+      SAFE_CAST(metadata.user_agent.version AS INT64) >= 140,
+      CAST(NULL AS STRING),
+      metadata.geo.subdivision1
     ) AS region_code,
     metadata.user_agent.os AS os_family,
     metadata.user_agent.version AS product_version,

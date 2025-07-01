@@ -24,14 +24,14 @@ combined AS (
     -- receives geo information from the client rather than from Glean ingestion's
     -- IP geolocation. We no longer send subdivision, only country.
     IF(
-      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
-      normalized_country_code,
-      metrics.string.quick_suggest_country
+      SAFE_CAST(metadata.user_agent.version AS INT64) >= 140,
+      metrics.string.quick_suggest_country,
+      normalized_country_code
     ) AS country,
     IF(
-      SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
-      metadata.geo.subdivision1,
-      CAST(NULL AS STRING)
+      SAFE_CAST(metadata.user_agent.version AS INT64) >= 140,
+      CAST(NULL AS STRING),
+      metadata.geo.subdivision1
     ) AS subdivision1,
     metrics.string.quick_suggest_advertiser AS advertiser,
     client_info.app_channel AS release_channel,

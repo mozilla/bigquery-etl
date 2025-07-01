@@ -6,9 +6,7 @@ owners:
 - frank@mozilla.com
 labels:
   owner1: frank
-  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
-  dag_name: bqetl_org_mozilla_firefox_derived
   depends_on_past: false
   date_partition_parameter: null
 bigquery:
@@ -17,9 +15,7 @@ bigquery:
   clustering:
     fields:
     - country
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references: {}
+deprecated: true
 require_column_descriptions: false

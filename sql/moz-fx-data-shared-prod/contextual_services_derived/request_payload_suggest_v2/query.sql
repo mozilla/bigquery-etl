@@ -24,7 +24,7 @@ ping_data AS (
     IF(
       SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
       metadata.geo.country,
-      metrics.string.country,
+      metrics.string.quick_suggest_country
     ) AS country_code,
     IF(
       SAFE_CAST(metadata.user_agent.version AS INT64) < 140,

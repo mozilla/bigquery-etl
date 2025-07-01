@@ -20,7 +20,7 @@ combined AS (
     IF(
       SAFE_CAST(metadata.user_agent.version AS INT64) < 140,
       normalized_country_code,
-      metrics.string.country,
+      metrics.string.quick_suggest_country
     ) AS country,
     LOWER(metrics.string.quick_suggest_advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,

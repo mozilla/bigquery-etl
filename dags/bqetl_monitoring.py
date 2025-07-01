@@ -195,18 +195,6 @@ with DAG(
             monitoring_derived__bigquery_tables_inventory__v1
         )
 
-    monitoring_derived__bigquery_usage__v1 = GKEPodOperator(
-        task_id="monitoring_derived__bigquery_usage__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="wichan@mozilla.com",
-        email=["ascholtz@mozilla.com", "kwindau@mozilla.com", "wichan@mozilla.com"],
-    )
-
     monitoring_derived__bigquery_usage__v2 = bigquery_etl_query(
         task_id="monitoring_derived__bigquery_usage__v2",
         destination_table="bigquery_usage_v2",

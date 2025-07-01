@@ -170,7 +170,9 @@ SELECT
       metrics.counter.credit_card_saved,
       metrics.counter.tabs_grouped_tab_closed,
       metrics.counter.password_generator_filled,
-      metrics.counter.password_generator_shown
+      metrics.counter.password_generator_shown,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -466,7 +468,9 @@ SELECT
       metrics.counter.credit_card_saved,
       metrics.counter.tabs_grouped_tab_closed,
       metrics.counter.password_generator_filled,
-      metrics.counter.password_generator_shown
+      metrics.counter.password_generator_shown,
+      metrics.counter.logins_store_local_undecryptable_deleted,
+      metrics.counter.logins_store_mirror_undecryptable_deleted
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -762,7 +766,9 @@ SELECT
       metrics.counter.credit_card_saved,
       metrics.counter.tabs_grouped_tab_closed,
       metrics.counter.password_generator_filled,
-      metrics.counter.password_generator_shown
+      metrics.counter.password_generator_shown,
+      CAST(NULL AS INTEGER) AS `logins_store_local_undecryptable_deleted`,
+      CAST(NULL AS INTEGER) AS `logins_store_mirror_undecryptable_deleted`
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

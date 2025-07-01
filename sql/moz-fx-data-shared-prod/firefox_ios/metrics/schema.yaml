@@ -699,6 +699,12 @@ fields:
     - name: password_generator_shown
       type: INTEGER
       mode: NULLABLE
+    - name: logins_store_local_undecryptable_deleted
+      type: INTEGER
+      mode: NULLABLE
+    - name: logins_store_mirror_undecryptable_deleted
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

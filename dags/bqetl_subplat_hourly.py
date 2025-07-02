@@ -201,6 +201,32 @@ with DAG(
         retries=0,
     )
 
+    checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1",
+        source_table="stripe_logical_subscriptions_attribution_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1 = bigquery_dq_check(
+        task_id="checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1",
+        source_table="stripe_service_subscriptions_attribution_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2 = bigquery_dq_check(
         task_id="checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2",
         source_table="stripe_subscriptions_history_v2",
@@ -1014,6 +1040,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    subscription_platform_derived__stripe_logical_subscriptions_attribution__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__stripe_logical_subscriptions_attribution__v1",
+        destination_table="stripe_logical_subscriptions_attribution_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
     subscription_platform_derived__stripe_logical_subscriptions_history__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__stripe_logical_subscriptions_history__v1",
         destination_table="stripe_logical_subscriptions_history_v1",
@@ -1048,6 +1085,17 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    subscription_platform_derived__stripe_service_subscriptions_attribution__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__stripe_service_subscriptions_attribution__v1",
+        destination_table="stripe_service_subscriptions_attribution_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
     )
 
     subscription_platform_derived__stripe_subscriptions__v2 = bigquery_etl_query(
@@ -1150,6 +1198,14 @@ with DAG(
 
     checks__fail_subscription_platform_derived__stripe_customers_revised_changelog__v1.set_upstream(
         subscription_platform_derived__stripe_customers_revised_changelog__v1
+    )
+
+    checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__stripe_logical_subscriptions_attribution__v1
+    )
+
+    checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__stripe_service_subscriptions_attribution__v1
     )
 
     checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
@@ -1327,7 +1383,7 @@ with DAG(
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        subscription_platform_derived__recent_subplat_attribution_impressions__v1
+        checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
@@ -1371,11 +1427,11 @@ with DAG(
     )
 
     subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
-        subscription_platform_derived__logical_subscriptions_history__v1
+        checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1
     )
 
     subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
-        subscription_platform_derived__recent_subplat_attribution_impressions__v1
+        subscription_platform_derived__logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__services__v1.set_upstream(
@@ -1396,6 +1452,14 @@ with DAG(
 
     subscription_platform_derived__stripe_customers_revised_changelog__v1.set_upstream(
         stripe_external__subscriptions_changelog__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__recent_subplat_attribution_impressions__v1
+    )
+
+    subscription_platform_derived__stripe_logical_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__stripe_logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
@@ -1444,6 +1508,14 @@ with DAG(
 
     subscription_platform_derived__stripe_products__v1.set_upstream(
         stripe_external__product__v1
+    )
+
+    subscription_platform_derived__stripe_service_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__logical_subscriptions_history__v1
+    )
+
+    subscription_platform_derived__stripe_service_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__recent_subplat_attribution_impressions__v1
     )
 
     subscription_platform_derived__stripe_subscriptions__v2.set_upstream(

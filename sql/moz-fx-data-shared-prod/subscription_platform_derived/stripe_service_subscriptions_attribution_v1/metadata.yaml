@@ -1,0 +1,34 @@
+friendly_name: Stripe service subscriptions attribution
+description: |-
+  Attribution for Stripe service subscriptions based on FxA log events.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: date
+  referenced_tables:
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - logical_subscriptions_history_v1
+  - - moz-fx-data-shared-prod
+    - subscription_platform_derived
+    - recent_subplat_attribution_impressions_v1
+bigquery:
+  time_partitioning:
+    type: day
+    field: subscription_started_at
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: true

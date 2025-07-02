@@ -347,6 +347,9 @@ generate:
       - accounts_frontend
       - accounts_backend
       - subscription_platform_backend
+      slice_by_sample_id:
+      - firefox_desktop
+      - firefox_desktop_background_update
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view

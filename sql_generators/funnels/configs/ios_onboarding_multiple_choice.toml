@@ -83,7 +83,7 @@ aggregation = "count distinct"
 
 [data_sources.onboarding_events]
 from_expression = """
-  firefox_ios.firefox_ios_clients ic --each client_id has only one row
+  firefox_ios.new_profile_clients AS ic --each client_id has only one row
   LEFT JOIN (
     SELECT * FROM `moz-fx-data-shared-prod`.firefox_ios.retention_clients
     WHERE submission_date = @submission_date
@@ -134,10 +134,10 @@ data_source = "onboarding_events"
 select_expression = "COALESCE(r.retained_week_4, FALSE)"
 client_id_column = "r.client_id"
 
-# these dimensions are sourced from firefox_ios_clients
+# these dimensions are sourced from new_profile_clients
 [dimensions.country]
 data_source = "onboarding_events"
-select_expression = "ic.first_reported_country"
+select_expression = "ic.country"
 friendly_name = "Country"
 description = "Client's First Reported Country"
 client_id_column = "ic.client_id"
@@ -150,7 +150,7 @@ client_id_column = "ic.client_id"
 
 [dimensions.channel]
 data_source = "onboarding_events"
-select_expression = "ic.channel"
+select_expression = "ic.normalized_channel"
 friendly_name = "First Reported Release Channel"
 client_id_column = "ic.client_id"
 

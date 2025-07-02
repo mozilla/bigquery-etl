@@ -1,25 +1,21 @@
 --- Query generated via sql_generators.active_users.
 WITH
-{% if app_name == "fenix"%}
-  attribution_data AS (
-    SELECT
+attribution_data AS (
+  SELECT
       client_id,
+      {% if app_name == "fenix" %}
+      install_source,
+      {% else %}
+      CAST(NULL AS STRING) AS install_source,
+      {% endif %}
+      {% if app_name in ("fenix", "firefox_ios") %}
       adjust_network,
-      install_source
+      {% else %}
+      CAST(NULL AS STRING) AS adjust_network,
+      {% endif %}
     FROM
-      fenix.firefox_android_clients
-  ),
-{% endif %}
-{% if app_name == "firefox_ios"%}
-  attribution_data AS (
-    SELECT
-      client_id,
-      adjust_network,
-      CAST(NULL AS STRING) install_source
-    FROM
-      firefox_ios.firefox_ios_clients
-  ),
-{% endif %}
+      {{ app_name }}.attribution_clients
+),
 baseline AS (
   SELECT
     submission_date,
@@ -36,7 +32,7 @@ baseline AS (
     device_model,
     first_seen_date,
     submission_date = first_seen_date AS is_new_profile,
-    {% if app_name == "fenix"%}
+    {% if app_name == "fenix" %}
       distribution_id,
     {% else %}
       CAST(NULL AS string) AS distribution_id,
@@ -62,7 +58,7 @@ metrics AS (
     ARRAY_AGG(normalized_channel IGNORE NULLS ORDER BY submission_date ASC)[
       SAFE_OFFSET(0)
     ] AS normalized_channel,
-    {% if app_name == "klar_android"%}
+    {% if app_name == "klar_android" %}
       CAST(NULL AS INTEGER) AS uri_count,
       CAST(NULL AS BOOL) AS is_default_browser,
     {% else %}
@@ -136,19 +132,13 @@ unioned AS (
 unioned_with_attribution AS (
   SELECT
     unioned.*,
-    {% if app_name == "fenix" or  app_name == "firefox_ios" %}
       attribution_data.install_source,
       attribution_data.adjust_network
-    {% else %}
-      CAST(NULL AS STRING) AS install_source,
-      CAST(NULL AS STRING) AS adjust_network
-    {% endif %}
   FROM
     unioned
-    {% if app_name == "fenix" or  app_name == "firefox_ios" %}
-      LEFT JOIN
-        attribution_data
-        USING (client_id)
+  LEFT JOIN
+      attribution_data
+      USING (client_id)
     {% endif %}
 ),
 todays_metrics AS (

@@ -1,0 +1,15 @@
+friendly_name: Add-ons Developers Users Sync | Firefox Workspace
+description: |-
+  Temporary table used to sync add-ons developers to Braze for a
+  one-time send. These users will need to be deleted once the sync
+  is successful in order to keep Braze clean and in sync w/ CTMS.
+
+  See https://mozilla-hub.atlassian.net/browse/DENG-8894
+owners:
+- cbeck@mozilla.com
+- lmcfall@mozilla.com
+labels:
+  incremental: false
+  owner: cbeck
+scheduling:
+  dag_name: bqetl_braze_extract_add_ons_users

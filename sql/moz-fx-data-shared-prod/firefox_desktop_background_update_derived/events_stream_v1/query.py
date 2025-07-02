@@ -40,6 +40,7 @@ query = (Path(__file__).parent / "query_supplemental.sql").read_text()
     help="Number of queries to split events stream query into, based on sample id",
 )
 def main(submission_date, billing_project, destination_table, temp_dataset, slices):
+    print(submission_date)
     client = bigquery.Client(project=billing_project)
 
     sample_id_interval_size = 100 // slices
@@ -54,7 +55,6 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
         # create temp table
         temp_table = bigquery.Table(temp_dataset.temp_table())
         temp_table.schema = destination_table.schema
-        temp_table.time_partitioning = destination_table.time_partitioning
         temp_table.clustering_fields = destination_table.clustering_fields
         temp_table.expires = datetime.utcnow() + timedelta(days=1)
         temp_table = client.create_table(temp_table)
@@ -83,14 +83,21 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
         job.result()
         temp_tables.append(job.destination)
 
-    print(f"Copying to {destination_table}")
-    client.copy_table(
+    copy_job = client.copy_table(
         sources=temp_tables,
         destination=f"{destination_table}${submission_date.strftime('%Y%m%d')}",
         job_config=bigquery.CopyJobConfig(
-            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
+            write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+            create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
         ),
     )
+    print(
+        f"Copying to {destination_table}${submission_date.strftime('%Y%m%d')}: {copy_job.path}"
+    )
+    copy_job.result()
+
+    for temp_table in temp_tables:
+        client.delete_table(temp_table, not_found_ok=True)
 
 
 if __name__ == "__main__":

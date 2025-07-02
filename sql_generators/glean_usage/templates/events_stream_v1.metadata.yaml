@@ -21,7 +21,17 @@ scheduling:
     {%- if metrics_as_struct %}
     "--schema_update_option", "ALLOW_FIELD_ADDITION",
     {%- endif %}
+    {%- if slice_by_sample_id %}
+    # slice_by_sample_id will run as a python script
+    "--slices", "10",
+    "--submission-date", {% raw %}"{{ ds }}"{% endraw %},
+    "--destination-table", "{{ project_id }}.{{ derived_dataset }}.{{ target_table }}",
+    {%- endif %}
   ]
+  {%- if slice_by_sample_id %}
+  referenced_tables:
+    - [ "{{ project_id }}", "{{ app_name }}", "events" ]
+  {%- endif %}
 bigquery:
   time_partitioning:
     type: day

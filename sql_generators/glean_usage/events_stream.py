@@ -49,6 +49,15 @@ class EventsStreamTable(GleanTable):
             "generate", "glean_usage", "events_stream", "metrics_as_struct", fallback=[]
         )
 
+        slice_by_sample_id = app_id in ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_stream",
+            "slice_by_sample_id",
+            fallback=[],
+        )
+        self.python_query = slice_by_sample_id
+
         # Separate apps with legacy telemetry client ID vs those that don't have it
         if app_id == "firefox_desktop":
             has_legacy_telemetry_client_id = True
@@ -68,6 +77,7 @@ class EventsStreamTable(GleanTable):
             "has_legacy_telemetry_client_id": has_legacy_telemetry_client_id,
             "metrics_as_struct": metrics_as_struct,
             "has_metrics": ping_has_metrics(app_id, unversioned_table_name),
+            "slice_by_sample_id": slice_by_sample_id,
         }
 
         super().generate_per_app_id(

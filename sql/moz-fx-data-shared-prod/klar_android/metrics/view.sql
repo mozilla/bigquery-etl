@@ -1512,7 +1512,8 @@ SELECT
       metrics.labeled_boolean.mediadrm_decryption,
       metrics.labeled_boolean.widget_pointing_devices,
       metrics.labeled_boolean.devtools_tool_registered,
-      metrics.labeled_boolean.networking_doh_heuristic_ever_tripped
+      metrics.labeled_boolean.networking_doh_heuristic_ever_tripped,
+      metrics.labeled_boolean.system_special_directory_appdata_fallback
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

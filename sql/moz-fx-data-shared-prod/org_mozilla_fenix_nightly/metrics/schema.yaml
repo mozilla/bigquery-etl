@@ -40354,6 +40354,22 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar networking.doh_heuristic_ever_tripped.
 
         '
+    - name: system_special_directory_appdata_fallback
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Success status of using SpecialSystemDirectory''s fallback path
+        to retrieve
+
+        either %AppData% or %LocalAppData%.
+
+        '
   - name: rate
     type: RECORD
     mode: NULLABLE

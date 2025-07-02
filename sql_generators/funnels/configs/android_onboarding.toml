@@ -187,7 +187,7 @@ aggregation = "count distinct"
 
 [data_sources.onboarding_events]
 from_expression = """
-  fenix.firefox_android_clients ac
+  fenix.new_profile_clients AS ac
   LEFT JOIN (
     SELECT * FROM `moz-fx-data-shared-prod`.firefox_ios.retention_clients
     WHERE submission_date = @submission_date
@@ -236,10 +236,10 @@ data_source = "onboarding_events"
 select_expression = "COALESCE(r.retained_week_4, FALSE)"
 client_id_column = "r.client_id"
 
-# these dimensions are sourced from firefox_android_clients
+# these dimensions are sourced from new_profile_clients
 [dimensions.country]
 data_source = "onboarding_events"
-select_expression = "ac.first_reported_country"
+select_expression = "ac.country"
 friendly_name = "Country"
 description = "Client's First Reported Country"
 client_id_column = "ac.client_id"
@@ -259,7 +259,7 @@ client_id_column = "ac.client_id"
 
 [dimensions.channel]
 data_source = "onboarding_events"
-select_expression = "ac.channel"
+select_expression = "ac.normalized_channel"
 friendly_name = "First Reported Release Channel"
 client_id_column = "ac.client_id"
 

@@ -8,7 +8,7 @@ WITH client_activation_per_campaign AS (
     COUNTIF(is_activated) AS clients_activated,
     COUNT(*) AS new_profiles,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+    `moz-fx-data-shared-prod.firefox_ios.new_profile_activation_clients`
   WHERE
     is_activated IS NOT NULL
   GROUP BY

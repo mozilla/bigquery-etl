@@ -97,16 +97,15 @@ WITH base AS (
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
     from_map_experiment(ping_info.experiments) AS experiments,
-    CAST(NULL AS STRING) AS profile_group_id,
-    CAST(NULL AS STRING) AS legacy_telemetry_client_id,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
+    metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_background_update.events`
+    `moz-fx-data-shared-prod.firefox_desktop.events`
   WHERE
-    {% if is_init() %}
-      DATE(submission_timestamp) >= '2023-11-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
+    DATE(submission_timestamp) = @submission_date
+    AND sample_id
+    BETWEEN @min_sample_id
+    AND @max_sample_id
 )
 --
 SELECT
@@ -122,23 +121,14 @@ SELECT
 FROM
   base
 CROSS JOIN
-  -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
-  -- Filtering out nimbus and normandy events that are emitted due to 'invalid-feature'.
-  -- The number of these events is too large to be processed, invalid-feature has also
-  -- been removed in more recent versions.
-  UNNEST(
-    ARRAY(
-      SELECT
-        event
-      FROM
-        UNNEST(events) AS event
-      WHERE
-        (
-          app_version_major IN (138, 139)
-          AND (
-            (event.category = 'nimbus_events' AND event.name = 'validation_failed')
-            OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
-          )
-        ) IS NOT TRUE
-    )
-  ) AS event
+  UNNEST(events) AS event
+    -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
+WHERE
+  NOT (
+    normalized_channel = 'release'
+    AND event.category = 'security'
+    AND event.name = 'unexpected_load'
+    AND app_version_major
+    BETWEEN 132
+    AND 135
+  )

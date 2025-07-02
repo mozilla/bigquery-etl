@@ -3481,11 +3481,23 @@ with DAG(
         task_group=task_group_firefox_desktop_background_update,
     )
 
-    firefox_desktop_background_update_derived__events_stream__v1 = bigquery_etl_query(
+    firefox_desktop_background_update_derived__events_stream__v1 = GKEPodOperator(
         task_id="firefox_desktop_background_update_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="firefox_desktop_background_update_derived",
-        project_id="moz-fx-data-shared-prod",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/firefox_desktop_background_update_derived/events_stream_v1/query.py",
+        ]
+        + [
+            "--billing-project",
+            "moz-fx-data-backfill-2",
+            "--slices",
+            "10",
+            "--submission-date",
+            "{{ ds }}",
+            "--destination-table",
+            "moz-fx-data-shared-prod.firefox_desktop_background_update_derived.events_stream_v1",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="jrediger@mozilla.com",
         email=[
             "ascholtz@mozilla.com",
@@ -3493,9 +3505,6 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_desktop_background_update,
     )
 
@@ -3572,11 +3581,23 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
-    firefox_desktop_derived__events_stream__v1 = bigquery_etl_query(
+    firefox_desktop_derived__events_stream__v1 = GKEPodOperator(
         task_id="firefox_desktop_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="firefox_desktop_derived",
-        project_id="moz-fx-data-shared-prod",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_stream_v1/query.py",
+        ]
+        + [
+            "--billing-project",
+            "moz-fx-data-backfill-2",
+            "--slices",
+            "10",
+            "--submission-date",
+            "{{ ds }}",
+            "--destination-table",
+            "moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1",
+        ],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="jrediger@mozilla.com",
         email=[
             "ascholtz@mozilla.com",
@@ -3584,9 +3605,6 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "wstuckey@mozilla.com",
         ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_desktop,
     )
 
@@ -7650,10 +7668,6 @@ with DAG(
         bigeye__firefox_desktop_background_update_derived__metrics_clients_last_seen__v1
     )
 
-    firefox_desktop_background_update_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     firefox_desktop_background_update_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -7688,10 +7702,6 @@ with DAG(
 
     firefox_desktop_derived__clients_last_seen_joined__v1.set_upstream(
         bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1
-    )
-
-    firefox_desktop_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     firefox_desktop_derived__metrics_clients_daily__v1.set_upstream(

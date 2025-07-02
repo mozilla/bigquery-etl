@@ -101,11 +101,7 @@ WITH base AS (
   FROM
     `moz-fx-data-shared-prod.accounts_backend.events`
   WHERE
-    {% if is_init() %}
-      DATE(submission_timestamp) >= '2023-11-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
+    DATE(submission_timestamp) = @submission_date
 )
 --
 SELECT

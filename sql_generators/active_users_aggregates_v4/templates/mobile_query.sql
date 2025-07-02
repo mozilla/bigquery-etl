@@ -139,7 +139,6 @@ unioned_with_attribution AS (
   LEFT JOIN
       attribution_data
       USING (client_id)
-    {% endif %}
 ),
 todays_metrics AS (
   SELECT

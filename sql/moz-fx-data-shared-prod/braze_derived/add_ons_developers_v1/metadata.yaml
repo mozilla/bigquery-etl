@@ -1,6 +1,6 @@
 friendly_name: Add-ons Developers Users
 description: |-
-  Imported historical Pocket user engagement data from a snowflake export.
+  Imported Add-ons developer list.
 owners:
   - cbeck@mozilla.com
 labels:

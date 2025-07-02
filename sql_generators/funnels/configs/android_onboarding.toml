@@ -208,7 +208,7 @@ from_expression = """
   USING(client_id)
 
 """
-submission_date_column = "ac.submission_date"
+submission_date_column = "ac.first_seen_date"
 client_id_column = "ac.client_id"
 
 

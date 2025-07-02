@@ -340,7 +340,7 @@ from_expression = """
   USING(client_id)
 
 """
-submission_date_column = "DATE(ic.submission_timestamp)"
+submission_date_column = "ic.first_seen_date"
 client_id_column = "ic.client_id"
 
 

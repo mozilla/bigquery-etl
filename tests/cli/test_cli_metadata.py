@@ -50,12 +50,6 @@ class TestMetadata:
                 codeowners.write(codeowners_conf or "")
 
             assert self.codeowners_filename in os.listdir(self.test_path)
-
-            print()
-            print(self.test_path)
-            print(metadata)
-            print(codeowners_conf)
-            return
             assert (
                 validate_change_control(
                     file_path=self.test_path,

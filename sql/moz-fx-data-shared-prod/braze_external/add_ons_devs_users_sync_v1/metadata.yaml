@@ -12,4 +12,4 @@ labels:
   incremental: false
   owner: cbeck
 scheduling:
-  dag_name: bqetl_braze_extract_add_ons_users
+  dag_name: bqetl_braze_add_ons_sync

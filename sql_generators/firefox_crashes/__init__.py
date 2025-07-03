@@ -2,7 +2,6 @@ from pathlib import Path
 
 import click
 from jinja2 import Environment, FileSystemLoader
-from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
@@ -34,11 +33,13 @@ CRASH_TABLES = [
 )
 @use_cloud_function_option
 def generate(target_project, output_dir, use_cloud_function):
-    client = bigquery.Client()
-
     schemas = {
-        f"{project}.{dataset}.{table}": Schema.from_bigquery_schema(
-            client.get_table(f"{project}.{dataset}.{table}").schema
+        f"{project}.{dataset}.{table}": Schema.for_table(
+            project=project,
+            dataset=dataset,
+            table=table,
+            partitioned_by="submission_timestamp",
+            use_cloud_function=use_cloud_function,
         )
         for project, dataset, table in CRASH_TABLES
     }

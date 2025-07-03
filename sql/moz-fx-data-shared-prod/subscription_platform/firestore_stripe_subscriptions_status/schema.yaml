@@ -1,0 +1,26 @@
+fields:
+- name: subscription_id
+  type: STRING
+  mode: NULLABLE
+  description: Stripe subscription ID.
+- name: firestore_export_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: When the Firestore export operation occurred.
+- name: firestore_export_operation
+  type: STRING
+  mode: NULLABLE
+  description: The type of Firestore export operation ("IMPORT", "CREATE", "UPDATE",
+    or "DELETE").
+- name: subscription_status
+  type: STRING
+  mode: NULLABLE
+  description: 'Stripe subscription status (if any).
+
+    This will be null for Firestore delete operations.'
+- name: previous_subscription_status
+  type: STRING
+  mode: NULLABLE
+  description: 'Previous Stripe subscription status (if any).
+
+    This will be null for a subscription''s initial Firestore export record.'

@@ -799,6 +799,17 @@ with DAG(
         arguments=["--append_table", "--noreplace"],
     )
 
+    subscription_platform_derived__firestore_stripe_subscriptions_status__v1 = bigquery_etl_query(
+        task_id="subscription_platform_derived__firestore_stripe_subscriptions_status__v1",
+        destination_table="firestore_stripe_subscriptions_status_v1",
+        dataset_id="subscription_platform_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
     subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_etl_query(
         task_id="subscription_platform_derived__google_logical_subscriptions_history__v1",
         destination_table="google_logical_subscriptions_history_v1",

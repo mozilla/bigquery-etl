@@ -1,0 +1,14 @@
+friendly_name: Firestore Stripe Subscriptions Status
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.firestore_stripe_subscriptions_status_v1
+require_column_descriptions: false

@@ -197,9 +197,9 @@ beautifulsoup4==4.13.4 \
 betterproto[compiler]==1.2.5 \
     --hash=sha256:74a3ab34646054f674d236d1229ba8182dc2eae86feb249b8590ef496ce9803d
     # via bigeye-sdk
-bigeye-sdk==0.6.1 \
-    --hash=sha256:cb2c403427e1889940197a138ed0d185b4b61b36543a5e1794dbae8c6961ebd3 \
-    --hash=sha256:f02ce8b46317c54ece218daae2e88d96cf65e13778241e0469bf1959c8364990
+bigeye-sdk==0.6.2 \
+    --hash=sha256:20737832c11fb5da5dfbbdb6d8cb385cfd35b152077090bcf5efd0c02419c54b \
+    --hash=sha256:6dcb76bc0927f0633991f6c841a9dea7f08c0e108188230ddee02710b748cee5
     # via -r requirements.in
 black==25.1.0 \
     --hash=sha256:030b9759066a4ee5e5aca28c3c77f9c64789cdd4de8ac1df642c40b708be6171 \
@@ -234,13 +234,13 @@ boltons==23.1.1 \
     # via
     #   face
     #   glom
-boto3==1.35.99 \
-    --hash=sha256:83e560faaec38a956dfb3d62e05e1703ee50432b45b788c09e25107c5058bd71 \
-    --hash=sha256:e0abd794a7a591d90558e92e29a9f8837d25ece8e3c120e530526fe27eba5fca
+boto3==1.39.2 \
+    --hash=sha256:a37f202978f11f384e3fd1f0ff8938367b527845493f9509357e1732debc390f \
+    --hash=sha256:edad811edacb8c99f2fe59b117d9b9d8ee3972beb6c090c8aa164ddbc506d67d
     # via bigeye-sdk
-botocore==1.35.99 \
-    --hash=sha256:1eab44e969c39c5f3d9a3104a0836c24715579a455f12b3979a31d7cde51b3c3 \
-    --hash=sha256:b22d27b6b617fc2d7342090d6129000af2efd20174215948c0d7ae2da0fab445
+botocore==1.39.2 \
+    --hash=sha256:474445fa8b281dd5db8fc62184f0f6e494d4f1efb96fe10312490583e67a9dd0 \
+    --hash=sha256:921cab9aa6e1e4ceddcece5b55b57daae7722168e74409f1aafcc2c5589df676
     # via
     #   bigeye-sdk
     #   boto3
@@ -2144,9 +2144,9 @@ ruamel-yaml-clib==0.2.8 \
     --hash=sha256:f481f16baec5290e45aebdc2a5168ebc6d35189ae6fea7a58787613a25f6e875 \
     --hash=sha256:fff3573c2db359f091e1589c3d7c5fc2f86f5bdb6f24252c2d8e539d4e45f412
     # via ruamel-yaml
-s3transfer==0.10.2 \
-    --hash=sha256:0711534e9356d3cc692fdde846b4a1e4b0cb6519971860796e6bc4c7aea00ef6 \
-    --hash=sha256:eca1c20de70a39daee580aef4986996620f365c4e0fda6a86100231d62f1bf69
+s3transfer==0.13.0 \
+    --hash=sha256:0148ef34d6dd964d0d8cf4311b2b21c474693e57c2e069ec708ce043d2b527be \
+    --hash=sha256:f5e6db74eb7776a37208001113ea7aa97695368242b364d73e91c981ac522177
     # via boto3
 secretstorage==3.3.3 \
     --hash=sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77 \

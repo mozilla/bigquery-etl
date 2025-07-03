@@ -1,22 +1,19 @@
--- Construct the JSON payload in Braze required format
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
-  CONCAT(
-  'add-ons-devs-',
-  SUBSTR(TO_HEX(SHA256(GENERATE_UUID())), 1, 23)
-) AS pocket_email_id
-
+  CONCAT('add-ons-devs-', SUBSTR(TO_HEX(SHA256(GENERATE_UUID())), 1, 23)) AS EXTERNAL_ID,
   TO_JSON(
     STRUCT(
       email AS email,
-      email_subscribe AS email_subscribe,
+      "subscribed" AS email_subscribe,
       ARRAY_AGG(
         STRUCT(
-          subscriptions_array.firefox_subscription_id AS subscription_group_id,
-          subscriptions_array.subscription_state AS subscription_state
-        )
+          "a0159f46-c559-4922-89a0-61ed2c8e0e4f" AS subscription_group_id,
+          "subscribed" AS subscription_state
         )
       ) AS subscription_groups
     )
-  AS PAYLOAD
-  FROM `moz-fx-data-shared-prod.braze_derived.add_ons_devs_users_sync_v1`
+  ) AS PAYLOAD
+FROM
+  `moz-fx-data-shared-prod.braze_derived.add_ons_developers_v1`
+GROUP BY
+  email

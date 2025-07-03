@@ -73,14 +73,8 @@ def validate_change_control(
                 line for line in file_content if not line.startswith("#")
             ]
 
-        expanded_owners_list = list()
-
-        for line in owner_file_content:
-            owners_path, *owners = line.split(" ")
-            expanded_paths = glob.glob(owners_path, recursive=True)
-            for path in expanded_paths:
-                expanded_owners_list.append(f'{path} {" ".join(owners)}')
-
+        # generate a new codeowners list for each path that matches the pattern defined
+        # inside CODEOWNERS
         expanded_owners_list = [
             f"{path} {' '.join(entry.split(' ')[1:])}".rstrip()
             for entry in owner_file_content

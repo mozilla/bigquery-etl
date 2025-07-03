@@ -1,6 +1,6 @@
 friendly_name: User Retention Aggregations - Firefox iOS (Week 4)
 description: |
-  DEPRECATED, please use `retention` instead.
+  DEPRECATED, please use `retention_clients` or `retention` instead.
 
   Aggregated dataset for Firefox iOS retention analysis.
 owners:

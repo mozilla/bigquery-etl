@@ -3,7 +3,7 @@
 ```sql
 ads.generate_id_from_struct_v1(
     STRUCT(
-        DATE "YYYY-MM-DD", "product", "surface", "country_code", "advertiser", "position", "pricing_model"
+        DATE "YYYY-MM-DD", "product", "surface", "country_code", "advertiser", position
         )
     )
 )

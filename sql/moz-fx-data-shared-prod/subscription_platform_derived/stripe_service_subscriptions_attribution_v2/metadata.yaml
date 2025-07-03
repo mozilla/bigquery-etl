@@ -1,0 +1,27 @@
+friendly_name: Stripe service subscriptions attribution
+description: |-
+  Attribution for Stripe service subscriptions based on Stripe subscription metadata stored by SubPlat 3.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: subscription_started_at
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: true

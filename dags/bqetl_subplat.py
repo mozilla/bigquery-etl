@@ -550,6 +550,17 @@ with DAG(
         parameters=["date:DATE:{{ds}}"],
     )
 
+    mozilla_vpn_derived__stripe_subscriptions_attribution__v1 = bigquery_etl_query(
+        task_id="mozilla_vpn_derived__stripe_subscriptions_attribution__v1",
+        destination_table="stripe_subscriptions_attribution_v1",
+        dataset_id="mozilla_vpn_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="srose@mozilla.com",
+        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="date",
+        depends_on_past=False,
+    )
+
     mozilla_vpn_derived__subscription_events__v1 = bigquery_etl_query(
         task_id="mozilla_vpn_derived__subscription_events__v1",
         destination_table='subscription_events_v1${{ macros.ds_format(macros.ds_add(ds, -8), "%Y-%m-%d", "%Y%m%d") }}',
@@ -1268,6 +1279,10 @@ with DAG(
     )
 
     mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
+        mozilla_vpn_derived__stripe_subscriptions_attribution__v1
+    )
+
+    mozilla_vpn_derived__all_subscriptions__v1.set_upstream(
         mozilla_vpn_derived__users__v1
     )
 
@@ -1379,6 +1394,10 @@ with DAG(
 
     mozilla_vpn_derived__login_flows__v1.set_upstream(
         wait_for_firefox_accounts_derived__fxa_stdout_events__v1
+    )
+
+    mozilla_vpn_derived__stripe_subscriptions_attribution__v1.set_upstream(
+        subscription_platform_derived__stripe_subscriptions_history__v1
     )
 
     mozilla_vpn_derived__subscription_events__v1.set_upstream(

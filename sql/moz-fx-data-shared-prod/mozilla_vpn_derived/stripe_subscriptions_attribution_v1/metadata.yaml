@@ -1,0 +1,30 @@
+friendly_name: Mozilla VPN Stripe subscriptions attribution
+description: |
+  Last-touch attribution for Mozilla VPN Stripe subscriptions based on subscription metadata stored by SubPlat 3.
+owners:
+- srose@mozilla.com
+labels:
+  application: mozilla_vpn
+  schedule: daily
+  incremental: true
+  dag: bqetl_subplat
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v1
+require_column_descriptions: false

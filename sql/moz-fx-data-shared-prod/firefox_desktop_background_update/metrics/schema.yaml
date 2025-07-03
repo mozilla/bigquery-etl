@@ -632,6 +632,20 @@ fields:
       description: 'Whether updates are available.
 
         '
+    - name: contentblocking_tp_allowlist_baseline_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the tracking protection allowlist convenience option is
+        enabled. Updates on "idle daily".
+
+        '
+    - name: contentblocking_tp_allowlist_convenience_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the tracking protection allowlist baseline option is enabled.
+        Updates on "idle daily".
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

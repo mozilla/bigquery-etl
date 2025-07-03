@@ -71,3 +71,16 @@ with DAG(
         owner="cbeck@mozilla.com",
         email=["cbeck@mozilla.com"],
     )
+
+    with TaskGroup(
+        "braze_derived__add_ons_developers__v1_external",
+    ) as braze_derived__add_ons_developers__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze_add_ons_sync__wait_for_braze_derived__add_ons_developers__v1",
+            external_dag_id="bqetl_braze_add_ons_sync",
+            external_task_id="wait_for_braze_derived__add_ons_developers__v1",
+        )
+
+        braze_derived__add_ons_developers__v1_external.set_upstream(
+            braze_derived__add_ons_developers__v1
+        )

@@ -71,7 +71,9 @@ SELECT
       metrics.boolean.system_is_wow_arm_64,
       metrics.boolean.update_settings_auto_download,
       metrics.boolean.update_settings_background,
-      metrics.boolean.update_settings_enabled
+      metrics.boolean.update_settings_enabled,
+      metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -1784,7 +1786,9 @@ SELECT
       metrics.boolean.system_is_wow_arm_64,
       metrics.boolean.update_settings_auto_download,
       metrics.boolean.update_settings_background,
-      metrics.boolean.update_settings_enabled
+      metrics.boolean.update_settings_enabled,
+      metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,
@@ -3497,7 +3501,9 @@ SELECT
       metrics.boolean.system_is_wow_arm_64,
       metrics.boolean.update_settings_auto_download,
       metrics.boolean.update_settings_background,
-      metrics.boolean.update_settings_enabled
+      metrics.boolean.update_settings_enabled,
+      metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_io,

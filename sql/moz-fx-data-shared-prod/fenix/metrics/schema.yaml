@@ -530,6 +530,12 @@ fields:
     - name: update_settings_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: contentblocking_tp_allowlist_baseline_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: contentblocking_tp_allowlist_convenience_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE

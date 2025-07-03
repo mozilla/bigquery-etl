@@ -2,7 +2,7 @@ fields:
   - name: client_id
     mode: NULLABLE
     type: STRING
-    description: "Client ID; uniquely identifies a client. Joinable with fenix.firefox_android_clients."
+    description: "Client ID; uniquely identifies a client."
   - name: sample_id
     mode: NULLABLE
     type: INTEGER

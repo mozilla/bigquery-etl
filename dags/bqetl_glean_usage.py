@@ -7668,6 +7668,10 @@ with DAG(
         bigeye__firefox_desktop_background_update_derived__metrics_clients_last_seen__v1
     )
 
+    firefox_desktop_background_update_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     firefox_desktop_background_update_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -7702,6 +7706,10 @@ with DAG(
 
     firefox_desktop_derived__clients_last_seen_joined__v1.set_upstream(
         bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1
+    )
+
+    firefox_desktop_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
     )
 
     firefox_desktop_derived__metrics_clients_daily__v1.set_upstream(

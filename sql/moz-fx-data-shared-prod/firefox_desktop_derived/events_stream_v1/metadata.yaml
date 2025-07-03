@@ -28,8 +28,8 @@ scheduling:
   - moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1
   referenced_tables:
   - - moz-fx-data-shared-prod
-    - firefox_desktop
-    - events
+    - firefox_desktop_stable
+    - events_v1
 bigquery:
   time_partitioning:
     type: day

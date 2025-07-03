@@ -78,7 +78,7 @@ def validate_change_control(
         expanded_owners_list = [
             f"{path} {' '.join(entry.split(' ')[1:])}".rstrip()
             for entry in owner_file_content
-            for path in glob.glob(entry.split(" ")[0], recursive=True)
+            for path in glob.glob(entry.split(" ")[0].removeprefix("/"), recursive=True)
         ]
 
         owners_list = []

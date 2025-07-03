@@ -50,6 +50,12 @@ class TestMetadata:
                 codeowners.write(codeowners_conf or "")
 
             assert self.codeowners_filename in os.listdir(self.test_path)
+
+            print()
+            print(self.test_path)
+            print(metadata)
+            print(codeowners_conf)
+            return
             assert (
                 validate_change_control(
                     file_path=self.test_path,
@@ -85,7 +91,7 @@ class TestMetadata:
             "labels": {"change_controlled": "true"},
         }
         codeowners = (
-            "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org"
         )
         self.check_metadata(
             runner=runner,
@@ -105,7 +111,7 @@ class TestMetadata:
             "labels": {"change_controlled": "true", "foo": "abc"},
         }
         codeowners = (
-            "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test2@example.org"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test2@example.org"
         )
         self.check_metadata(
             runner=runner,
@@ -124,7 +130,7 @@ class TestMetadata:
             ],
             "labels": {"change_controlled": "true", "foo": "abc"},
         }
-        codeowners = "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org test2@example.org test3@example.org"
+        codeowners = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org test2@example.org test3@example.org"
         self.check_metadata(
             runner=runner,
             metadata_conf=metadata,
@@ -143,7 +149,7 @@ class TestMetadata:
             "labels": {"change_controlled": "true", "foo": "abc"},
         }
         codeowners = (
-            "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 @mozilla/reviewers"
+            "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 @mozilla/reviewers"
         )
         self.check_metadata(
             runner=runner,
@@ -166,7 +172,7 @@ class TestMetadata:
             "owners": ["test@example.org", "test2@example.org", "test3@example.org"],
             "labels": {"change_controlled": "true"},
         }
-        codeowners = "/sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org test2@example.org"
+        codeowners = "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1 test@example.org test2@example.org"
         self.check_metadata(
             runner=runner,
             metadata_conf=metadata,

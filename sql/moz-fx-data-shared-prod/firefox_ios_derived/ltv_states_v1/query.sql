@@ -60,16 +60,16 @@ SELECT
   ac.durations,
   ac.ad_clicks,
   ac.total_historic_ad_clicks,
-  c.adjust_network,
-  c.first_reported_country,
-  c.first_reported_isp
+  clients.adjust_network,
+  clients.country AS first_reported_country,
+  CAST(NULL AS STRING) AS first_reported_isp,
 FROM
   ad_clicks ac
 JOIN
-  `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` c
-  USING (sample_id, client_id)
+  `moz-fx-data-shared-prod.firefox_ios.new_profile_clients` AS clients
+  USING (client_id)
 WHERE
     -- BrowserStack clients are bots, we don't want to accidentally report on them
-  COALESCE(first_reported_isp, '') != "BrowserStack"
+  app_name <> "Firefox iOS BrowserStack"
     -- Remove clients who are new on this day, but have more/less than 1 day of activity
   AND NOT (days_since_first_seen = 0 AND BIT_COUNT(days_seen_bytes) != 1)

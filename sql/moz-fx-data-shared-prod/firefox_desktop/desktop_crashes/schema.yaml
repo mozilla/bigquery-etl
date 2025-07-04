@@ -1,0 +1,529 @@
+fields:
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+- name: client_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: android_sdk_version
+    type: STRING
+    mode: NULLABLE
+  - name: app_build
+    type: STRING
+    mode: NULLABLE
+  - name: app_channel
+    type: STRING
+    mode: NULLABLE
+  - name: app_display_version
+    type: STRING
+    mode: NULLABLE
+  - name: architecture
+    type: STRING
+    mode: NULLABLE
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+  - name: client_id
+    type: STRING
+    mode: NULLABLE
+  - name: device_manufacturer
+    type: STRING
+    mode: NULLABLE
+  - name: device_model
+    type: STRING
+    mode: NULLABLE
+  - name: first_run_date
+    type: STRING
+    mode: NULLABLE
+  - name: locale
+    type: STRING
+    mode: NULLABLE
+  - name: os
+    type: STRING
+    mode: NULLABLE
+  - name: os_version
+    type: STRING
+    mode: NULLABLE
+  - name: telemetry_sdk_build
+    type: STRING
+    mode: NULLABLE
+  - name: windows_build_number
+    type: INTEGER
+    mode: NULLABLE
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+    - name: content
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: term
+      type: STRING
+      mode: NULLABLE
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+    - name: parsed_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: parsed_x_source_tags
+      type: STRING
+      mode: REPEATED
+    - name: parsed_x_lb_tags
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: tls_version
+        type: STRING
+        mode: NULLABLE
+      - name: tls_cipher_hex
+        type: STRING
+        mode: NULLABLE
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_startup
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: crash_is_garbage_collecting
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: crash_windows_error_reporting
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: dll_blocklist_init_failed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: dll_blocklist_user32_loaded_before
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: environment_headless_mode
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_time
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_crash_time
+      type: STRING
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_process_type
+      type: STRING
+      mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+    - name: crash_app_build
+      type: STRING
+      mode: NULLABLE
+    - name: crash_app_channel
+      type: STRING
+      mode: NULLABLE
+    - name: crash_app_display_version
+      type: STRING
+      mode: NULLABLE
+    - name: crash_background_task_name
+      type: STRING
+      mode: NULLABLE
+    - name: crash_font_name
+      type: STRING
+      mode: NULLABLE
+    - name: crash_ipc_channel_error
+      type: STRING
+      mode: NULLABLE
+    - name: crash_main_thread_runnable_name
+      type: STRING
+      mode: NULLABLE
+    - name: crash_minidump_sha256_hash
+      type: STRING
+      mode: NULLABLE
+    - name: crash_moz_crash_reason
+      type: STRING
+      mode: NULLABLE
+    - name: crash_profiler_child_shutdown_phase
+      type: STRING
+      mode: NULLABLE
+    - name: crash_remote_type
+      type: STRING
+      mode: NULLABLE
+    - name: crash_shutdown_progress
+      type: STRING
+      mode: NULLABLE
+    - name: crash_windows_file_dialog_error_code
+      type: STRING
+      mode: NULLABLE
+    - name: windows_package_family_name
+      type: STRING
+      mode: NULLABLE
+    - name: memory_js_large_allocation_failure
+      type: STRING
+      mode: NULLABLE
+    - name: memory_js_out_of_memory
+      type: STRING
+      mode: NULLABLE
+  - name: timespan
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_uptime
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: environment_uptime
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_async_shutdown_timeout
+      type: JSON
+      mode: NULLABLE
+    - name: crash_quota_manager_shutdown_timeout
+      type: JSON
+      mode: NULLABLE
+    - name: crash_stack_traces
+      type: JSON
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_event_loop_nesting_level
+      type: INTEGER
+      mode: NULLABLE
+    - name: crash_gpu_process_launch
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_available_commit
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_available_physical
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_available_swap
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_available_virtual
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_low_physical
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_oom_allocation_size
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_purgeable_physical
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_system_use_percentage
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_texture
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_total_page_file
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_total_physical
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_total_virtual
+      type: INTEGER
+      mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: dll_blocklist_list
+      type: STRING
+      mode: REPEATED
+    - name: environment_experimental_features
+      type: STRING
+      mode: REPEATED
+    - name: crash_utility_actors_name
+      type: STRING
+      mode: REPEATED
+    - name: environment_nimbus_enrollments
+      type: STRING
+      mode: REPEATED
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: ping_info
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: end_time
+    type: STRING
+    mode: NULLABLE
+  - name: experiments
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: branch
+        type: STRING
+        mode: NULLABLE
+      - name: extra
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: type
+          type: STRING
+          mode: NULLABLE
+        - name: enrollment_id
+          type: STRING
+          mode: NULLABLE
+  - name: ping_type
+    type: STRING
+    mode: NULLABLE
+  - name: reason
+    type: STRING
+    mode: NULLABLE
+  - name: seq
+    type: INTEGER
+    mode: NULLABLE
+  - name: start_time
+    type: STRING
+    mode: NULLABLE
+  - name: parsed_start_time
+    type: TIMESTAMP
+    mode: NULLABLE
+  - name: parsed_end_time
+    type: TIMESTAMP
+    mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch
+  type: NUMERIC
+  mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE

@@ -472,7 +472,7 @@ DELETE_TARGETS: DeleteIndex = {
     DeleteTarget(
         table="firefox_desktop_stable.search_with_v1",
         field=SEARCHWITH_CONTEXT_ID,
-    ): SEARCHWITH_SRC,
+    ): QUICK_SUGGEST_SRC,
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",

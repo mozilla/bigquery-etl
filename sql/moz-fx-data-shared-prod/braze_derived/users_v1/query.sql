@@ -72,7 +72,7 @@ WHERE
       FROM
         `moz-fx-data-shared-prod.ctms_braze.ctms_newsletters` AS newsletters
       INNER JOIN
-        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v2` AS map
+        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
         ON newsletters.name = map.braze_subscription_name
       WHERE
         newsletters.email_id = emails.external_id
@@ -84,7 +84,7 @@ WHERE
       FROM
         `moz-fx-data-shared-prod.ctms_braze.ctms_waitlists` AS waitlists
       INNER JOIN
-        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v2` AS map
+        `moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1` AS map
         ON IF(
           waitlists.name = "vpn",
           "guardian-vpn-waitlist",

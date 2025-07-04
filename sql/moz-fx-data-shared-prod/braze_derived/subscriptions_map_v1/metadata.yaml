@@ -1,19 +1,21 @@
-friendly_name: Braze Users
+friendly_name: Braze Subscriptions Map
 description: |-
-  User Data from the CTMS emails table
+  This is a map from Basket/CTMS newsletter and waitlist data to Braze subscriptions.
+  Each time a new subscription is added in Braze, it must also be added to this map.
+
+  Newsletter and waitlist subscriptions are joined on newsletter/waitlist name to
+  braze subscription name.
 
   See https://mozilla-hub.atlassian.net/browse/DENG-3008
 owners:
 - cbeck@mozilla.com
 labels:
-  schedule: daily
   owner: cbeck
   dag: bqetl_braze
   owner1: cbeck
 scheduling:
   dag_name: bqetl_braze
   date_partition_parameter: null
-  referenced_tables: []
 bigquery:
   time_partitioning: null
   range_partitioning: null
@@ -28,11 +30,6 @@ workgroup_access:
 references:
   checks.sql:
   - ..
-  query.sql:
+  script.sql:
   - moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1
-  - moz-fx-data-shared-prod.ctms_braze.ctms_emails
-  - moz-fx-data-shared-prod.ctms_braze.ctms_fxa
-  - moz-fx-data-shared-prod.ctms_braze.ctms_newsletters
-  - moz-fx-data-shared-prod.ctms_braze.ctms_waitlists
-  - moz-fx-data-shared-prod.marketing_suppression_list_derived.main_suppression_list_v1
 require_column_descriptions: false

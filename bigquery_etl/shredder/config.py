@@ -128,10 +128,6 @@ QUICK_SUGGEST_SRC = DeleteSource(
     table="firefox_desktop_stable.quick_suggest_deletion_request_v1",
     field=QUICK_SUGGEST_CONTEXT_ID,
 )
-SEARCHWITH_SRC = DeleteSource(
-    table="firefox_desktop_stable.search_with_deletion_request_v1",
-    field=SEARCHWITH_CONTEXT_ID,
-)
 FXA_HMAC_SRC = DeleteSource(
     table="firefox_accounts.fxa_delete_events", field="hmac_user_id"
 )

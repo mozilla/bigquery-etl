@@ -132,6 +132,26 @@ class TestMetadata:
             expected_result=True,
         )
 
+    def test_validate_change_control_all_owners_using_wildcard(self, runner):
+        metadata = {
+            "friendly_name": "test",
+            "owners": [
+                "test@example.org",
+                "test2@example.org",
+                "test3@example.org",
+            ],
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        codeowners = (
+            "/sql/**/query_v1 test@example.org test2@example.org test3@example.org"
+        )
+        self.check_metadata(
+            runner=runner,
+            metadata_conf=metadata,
+            codeowners_conf=codeowners,
+            expected_result=True,
+        )
+
     def test_validate_change_control_github_identity(self, runner):
         metadata = {
             "friendly_name": "test",

@@ -346,6 +346,9 @@ fields:
     - name: memory_js_out_of_memory
       type: STRING
       mode: NULLABLE
+    - name: crash_cause
+      type: STRING
+      mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE
@@ -381,6 +384,12 @@ fields:
       type: JSON
       mode: NULLABLE
     - name: crash_stack_traces
+      type: JSON
+      mode: NULLABLE
+    - name: crash_breadcrumbs
+      type: JSON
+      mode: NULLABLE
+    - name: crash_java_exception
       type: JSON
       mode: NULLABLE
   - name: quantity
@@ -526,4 +535,7 @@ fields:
   mode: NULLABLE
 - name: is_bot_generated
   type: BOOLEAN
+  mode: NULLABLE
+- name: normalized_app_id
+  type: STRING
   mode: NULLABLE

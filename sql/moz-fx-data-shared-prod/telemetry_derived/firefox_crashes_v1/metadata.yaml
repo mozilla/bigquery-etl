@@ -1,0 +1,38 @@
+friendly_name: Firefox Crashes
+description: |-
+  Combined crashes for Firefox desktop, Fenix, Focus Android, and Klar.
+  Deduped by minidump hash.
+owners:
+- benwu@mozilla.com
+labels:
+  incremental: true
+  owner1: benwu
+  dag: bqetl_crashes
+scheduling:
+  dag_name: bqetl_crashes
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_app_id
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/crash-ping-ingest
+  - workgroup:mozilla-confidential
+  - workgroup:remote-settings/gke
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.crash
+  - moz-fx-data-shared-prod.firefox_crashreporter.crash
+  - moz-fx-data-shared-prod.firefox_desktop.crash
+  - moz-fx-data-shared-prod.focus_android.crash
+  - moz-fx-data-shared-prod.klar_android.crash
+require_column_descriptions: false

@@ -10,7 +10,6 @@ WITH approved_ml AS (
     AND curator_created_by = 'ML'
     AND is_syndicated = FALSE
     AND is_collection = FALSE
-    AND DATE(happened_at) >= '2024-09-19'
   GROUP BY
     1,
     2
@@ -38,7 +37,6 @@ removed_ml AS (
     AND curator_created_by = 'ML'
     AND is_syndicated = FALSE
     AND is_collection = FALSE
-    AND DATE(happened_at) >= '2024-09-19'
     AND APPROVED_CORPUS_ITEM_EXTERNAL_ID NOT IN (
       SELECT
         APPROVED_CORPUS_ITEM_EXTERNAL_ID
@@ -46,7 +44,6 @@ removed_ml AS (
         `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1`
       WHERE
         reviewed_corpus_update_status = 'removed'
-        AND DATE(happened_at) >= '2024-09-19'
     )
   GROUP BY
     1,
@@ -65,13 +62,11 @@ rejected_ml AS (
     `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1` u
     ON s.APPROVED_CORPUS_ITEM_EXTERNAL_ID = u.APPROVED_CORPUS_ITEM_EXTERNAL_ID
     AND u.reviewed_corpus_update_status = 'removed'
-    AND DATE(u.happened_at) >= '2024-09-19'
   WHERE
     s.scheduled_corpus_status = 'removed'
     AND s.curator_created_by = 'ML'
     AND s.is_syndicated = FALSE
     AND s.is_collection = FALSE
-    AND DATE(s.happened_at) >= '2024-09-19'
   GROUP BY
     1,
     2
@@ -98,7 +93,6 @@ manual_within_tool_ml AS (
       DATE(scheduled_corpus_item_scheduled_at) != DATE(scheduled_corpus_item_created_at)
       AND is_time_sensitive = FALSE
     )
-    AND DATE(happened_at) >= '2024-09-19'
   GROUP BY
     1,
     2
@@ -128,7 +122,6 @@ manual_outside_tool_ml AS (
       DATE(scheduled_corpus_item_scheduled_at) != DATE(scheduled_corpus_item_created_at)
       AND is_time_sensitive = FALSE
     )
-    AND DATE(happened_at) >= '2024-09-19'
   GROUP BY
     1,
     2

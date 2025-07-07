@@ -43,3 +43,8 @@ fields:
   mode: NULLABLE
   description: Whether the client ID associated with this GCLID had 3 or more days
     of use and 0.5 or more active hours in first week
+- name: is_dau_at_least_4_of_first_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client ID associated with this GCLID was active 4 of more
+    days in the first 7

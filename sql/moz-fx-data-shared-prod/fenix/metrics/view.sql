@@ -3883,9 +3883,9 @@ FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_beta.metrics`
 UNION ALL
 SELECT
-  "org_mozilla_fenix_nightly" AS normalized_app_id,
+  "org_mozilla_fenix" AS normalized_app_id,
   mozfun.norm.fenix_app_info(
-    "org_mozilla_fenix_nightly",
+    "org_mozilla_fenix",
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
@@ -5849,7 +5849,7 @@ SELECT
   app_version_patch,
   is_bot_generated
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_nightly.metrics`
+  `moz-fx-data-shared-prod.org_mozilla_fenix.metrics`
 UNION ALL
 SELECT
   "org_mozilla_fennec_aurora" AS normalized_app_id,

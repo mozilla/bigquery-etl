@@ -1,14 +1,19 @@
 friendly_name: Firefox Crashes
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Combined crashes for Firefox desktop, Fenix, Focus Android, and Klar.
+  Deduped by minidump hash.
+owners:
+- benwu@mozilla.com
+labels:
+  owner1: benwu
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:dataops-managed/crash-ping-ingest
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:remote-settings/gke
 references:
   view.sql:
   - moz-fx-data-shared-prod.telemetry_derived.firefox_crashes_v1

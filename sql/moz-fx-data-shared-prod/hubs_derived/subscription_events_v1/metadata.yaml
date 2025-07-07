@@ -7,7 +7,8 @@ labels:
   application: hubs
   schedule: daily
 scheduling:
-  dag_name: bqetl_subplat
+  # Mozilla ended support for Hubs on 2024-05-31.
+  #dag_name: bqetl_subplat
   # Delay aggregates by 8 days, to ensure data is complete. Upstream tables are
   # delayed 7 days, and this needs an additional day of delay for cancel events.
   date_partition_offset: -8

@@ -2,13 +2,15 @@
 """clients_daily_scalar_aggregates query generator."""
 import argparse
 import sys
-from typing import Dict, List
+from collections import defaultdict
+from typing import Dict, List, Tuple
 
 from jinja2 import Environment, PackageLoader
 
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
+from .client_side_sampled_metrics import get as get_sampled_metrics
 from .utils import get_schema, ping_type_from_table
 
 ATTRIBUTES = ",".join(
@@ -84,7 +86,9 @@ def get_unlabeled_metrics_sql(probes: Dict[str, List[str]]) -> str:
     return probes_arr
 
 
-def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
+def get_scalar_metrics(
+    schema: Dict, scalar_type: str
+) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all scalar probes in a Glean table.
 
     Metric types are defined in the Glean documentation found here:
@@ -100,6 +104,11 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
     }
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
+    # Metrics that are already sampled
+    sampled_metric_names = get_sampled_metrics("counters")
+    sampled_metrics = {"counter": sampled_metric_names}
+    found_sampled_metrics = defaultdict(list)
+
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
     for root_field in schema:
@@ -110,9 +119,12 @@ def get_scalar_metrics(schema: Dict, scalar_type: str) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set[scalar_type]:
                 continue
             for field in metric_field["fields"]:
-                if field["name"] not in excluded_metrics:
+                if field["name"] in sampled_metrics.get(metric_type, []):
+                    found_sampled_metrics[metric_type].append(field["name"])
+                elif field["name"] not in excluded_metrics:
                     scalars[metric_type].append(field["name"])
-    return scalars
+
+    return scalars, found_sampled_metrics
 
 
 def main():
@@ -145,11 +157,17 @@ def main():
     )
 
     schema = get_schema(args.source_table)
-    unlabeled_metric_names = get_scalar_metrics(schema, "unlabeled")
-    labeled_metric_names = get_scalar_metrics(schema, "labeled")
+    unlabeled_metric_names, unlabeled_sampled_metric_names = get_scalar_metrics(
+        schema, "unlabeled"
+    )
+    labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
-
+    client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
+    if args.product == "firefox_desktop":
+        client_sampled_metrics_sql["unlabeled"] = get_unlabeled_metrics_sql(
+            unlabeled_sampled_metric_names
+        ).strip()
     if not unlabeled_metrics and not labeled_metrics:
         print(header)
         print("-- Empty query: no probes found!")
@@ -163,6 +181,11 @@ def main():
             unlabeled_metrics=unlabeled_metrics,
             labeled_metrics=labeled_metrics,
             ping_type=ping_type_from_table(args.source_table),
+            client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
+            client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],
+            client_sampled_channel="release",
+            client_sampled_os="Windows",
+            client_sampled_max_sample_id=100,
         )
     )
 

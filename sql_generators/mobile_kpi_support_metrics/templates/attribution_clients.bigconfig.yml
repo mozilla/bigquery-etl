@@ -12,6 +12,23 @@ tag_deployments:
           - saved_metric_id: is_unique
           - saved_metric_id: is_not_null
       - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
+        metrics:
+          - saved_metric_id: is_99_percent_valid_normalized_channel
+      - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        metrics:
+          - saved_metric_id: composite_key_uniqueness_2_column
+            parameters:
+              - key: col_1
+                column_name: client_id
+              - key: col_2
+                column_name: normalized_channel
+              - key: table
+                string_value: {{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
+            rct_overrides:
+              - FULL_SCAN
+      - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
         metrics:
           - saved_metric_id: freshness

@@ -1,0 +1,34 @@
+friendly_name: Recent monthly active logical subscriptions
+description: |-
+  Monthly snapshots of logical subscriptions that were active at any point during the previous 7 days.
+  The latest state of the subscription during the month is saved.
+
+  Logical subscriptions are a continuous active period for a particular provider subscription.
+
+  Some caveats:
+    * This data is considered to still be in flux due to possible late-arriving data.
+    * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
+    * We only have partial data for Apple subscriptions prior to December 2022 when VPN's Apple subscriptions were migrated to SubPlat (VPN-3921).
+owners:
+- srose@mozilla.com
+labels:
+  incremental: false
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  # The whole table is overwritten every time, not a specific date partition.
+  date_partition_parameter: null
+  # Override `referenced_tables` to ignore the reference to `monthly_active_logical_subscriptions_v1`,
+  # because DAG generation would otherwise output an external task sensor for that which would only
+  # work for one bqetl_subplat_hourly DAG run per day.
+  referenced_tables:
+  - ['moz-fx-data-shared-prod', 'subscription_platform_derived', 'logical_subscriptions_history_v1']
+bigquery:
+  time_partitioning:
+    type: month
+    field: month_start_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}
+require_column_descriptions: true

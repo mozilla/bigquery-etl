@@ -1,0 +1,23 @@
+friendly_name: ECH Adoption Rate
+description: |-
+  A distinct client count of a combination of metrics to measure
+  the adoption of ECH (Encrypted Client Hello) in Firefox.
+owners:
+  - efilho@mozilla.com
+labels:
+  incremental: true
+  owner1: efilho
+  public_bigquery: true
+  public_json: true
+  review_bugs:
+    - '1957082'
+scheduling:
+  dag_name: bqetl_ech_adoption_rate
+bigquery:
+  time_partitioning:
+    type: day
+    field: 'submission_date'
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+references: {}

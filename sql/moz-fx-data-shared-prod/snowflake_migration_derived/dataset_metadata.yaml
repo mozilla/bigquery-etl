@@ -1,0 +1,14 @@
+friendly_name: Snowflake Migration Derived
+description: |-
+  Queries for modeling raw snowplow data about prospects
+  (candidate links to be curated by ML models and the editorial team for New Tab).
+
+user_facing: false
+dataset_base_acl: derived
+labels: {}
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential
+      - workgroup:mozsoc-ml/service
+      - workgroup:mozsoc-ml/developers

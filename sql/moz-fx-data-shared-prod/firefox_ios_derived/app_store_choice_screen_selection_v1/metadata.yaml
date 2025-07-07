@@ -6,6 +6,9 @@ description: |
 
   Official docs: https://developer.apple.com/documentation/analytics-reports/browser-choice-screen-selection
 
+  Note: Starting 2025-06-23 Apple changed the value of the "territory" field
+        from the user’s region code as set in "Language & Region" to the user's App Store storefront region.
+
 owners:
 - kik@mozilla.com
 labels:

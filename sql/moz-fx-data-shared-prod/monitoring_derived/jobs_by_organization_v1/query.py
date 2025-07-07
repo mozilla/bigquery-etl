@@ -17,6 +17,7 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-sumo-prod",
     "moz-fx-data-sumo-nonprod",
     "moz-fx-mozsocial-dw-prod",
+    "moz-fx-data-bq-people",
 ]
 
 parser = ArgumentParser(description=__doc__)
@@ -60,6 +61,7 @@ def create_query(job_date: date, project: str):
           transferred_bytes,
           DATE(creation_time) as creation_date,
           materialized_view_statistics,
+          query_dialect,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE

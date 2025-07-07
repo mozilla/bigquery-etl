@@ -1,0 +1,7 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+- name: activity_date_week
+  type: DATE
+  mode: NULLABLE

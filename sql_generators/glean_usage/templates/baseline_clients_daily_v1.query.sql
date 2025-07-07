@@ -55,6 +55,21 @@ WITH base AS (
     CAST(NULL AS BOOLEAN) AS is_default_browser,
     CAST(NULL AS STRING) AS install_source,
     {% endif %}
+    client_info.attribution,
+    client_info.distribution,
+    {% if app_name == "firefox_desktop" %}
+    JSON_VALUE(metrics.object.glean_attribution_ext.dltoken) AS attribution_dltoken,
+    JSON_VALUE(metrics.object.glean_attribution_ext.dlsource) AS attribution_dlsource,
+    JSON_VALUE(metrics.object.glean_attribution_ext.experiment) AS attribution_experiment,
+    JSON_VALUE(metrics.object.glean_attribution_ext.variation) AS attribution_variation,
+    JSON_VALUE(metrics.object.glean_attribution_ext.ua) AS attribution_ua,
+    {% else %}
+    CAST(NULL AS STRING) AS attribution_dltoken,
+    CAST(NULL AS STRING) AS attribution_dlsource,
+    CAST(NULL AS STRING) AS attribution_experiment,
+    CAST(NULL AS STRING) AS attribution_variation,
+    CAST(NULL AS STRING) AS attribution_ua,
+    {% endif %}
   FROM
     `{{ baseline_table }}`
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
@@ -157,6 +172,13 @@ windowed AS (
     SUM(COALESCE(browser_engagement_active_ticks, 0)) OVER w1 AS browser_engagement_active_ticks,
     udf.mode_last(ARRAY_AGG(legacy_telemetry_client_id) OVER w1) AS legacy_telemetry_client_id,
     udf.mode_last(ARRAY_AGG(is_default_browser) OVER w1) AS is_default_browser,
+    udf.mode_last(ARRAY_AGG(attribution) OVER w1) AS attribution,
+    udf.mode_last(ARRAY_AGG(`distribution`) OVER w1) AS `distribution`,
+    udf.mode_last(ARRAY_AGG(attribution_dltoken) OVER w1) AS attribution_dltoken,
+    udf.mode_last(ARRAY_AGG(attribution_dlsource) OVER w1) AS attribution_dlsource,
+    udf.mode_last(ARRAY_AGG(attribution_experiment) OVER w1) AS attribution_experiment,
+    udf.mode_last(ARRAY_AGG(attribution_variation) OVER w1) AS attribution_variation,
+    udf.mode_last(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
   FROM
     with_date_offsets
   LEFT JOIN

@@ -1,0 +1,27 @@
+friendly_name: WWW Site Metrics Summary
+description: |-
+  Summary of site metrics from Google Analytics about firefox.com
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  depends_on:
+  - task_id: wait_for_firefoxdotcom_events_table
+    dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - browser
+references: {}
+require_column_descriptions: true

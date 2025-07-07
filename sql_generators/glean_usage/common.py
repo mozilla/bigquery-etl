@@ -203,6 +203,7 @@ class GleanTable:
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
+        self.python_query = False
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -234,6 +235,7 @@ class GleanTable:
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         query_filename = f"{self.target_table_id}.query.sql"
+        python_query_filename = f"{self.target_table_id}.query.py"
         checks_filename = f"{self.target_table_id}.checks.sql"
         bigconfig_filename = f"{self.target_table_id}.bigconfig.yml"
         view_filename = f"{self.target_table_id[:-3]}.view.sql"
@@ -271,9 +273,20 @@ class GleanTable:
         render_kwargs.update(self.custom_render_kwargs)
         render_kwargs.update(tables)
 
-        query_sql = render(
-            query_filename, template_folder=PATH / "templates", **render_kwargs
-        )
+        # query.sql is optional for python queries
+        query_sql = None
+        query_python = None
+        if (PATH / "templates" / query_filename).exists() or not self.python_query:
+            query_sql = render(
+                query_filename, template_folder=PATH / "templates", **render_kwargs
+            )
+        if self.python_query:
+            query_python = render(
+                python_query_filename,
+                template_folder=PATH / "templates",
+                format=False,
+                **render_kwargs,
+            )
         view_sql = render(
             view_filename, template_folder=PATH / "templates", **render_kwargs
         )
@@ -328,8 +341,17 @@ class GleanTable:
         artifacts = [
             Artifact(view, "metadata.yaml", view_metadata),
             Artifact(table, "metadata.yaml", table_metadata),
-            Artifact(table, "query.sql", query_sql),
         ]
+        if query_sql:
+            artifacts.append(
+                Artifact(
+                    table,
+                    "query_supplemental.sql" if query_python else "query.sql",
+                    query_sql,
+                )
+            )
+        if query_python:
+            artifacts.append(Artifact(table, "query.py", query_python))
 
         if not (referenced_table_exists(view_sql, id_token)):
             logging.info("Skipping view for table which doesn't exist:" f" {table}")

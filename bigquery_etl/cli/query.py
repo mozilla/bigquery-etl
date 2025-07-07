@@ -1362,6 +1362,7 @@ def _run_part(
 @no_dryrun_option(default=False)
 @click.option("--skip_format_sql", "--skip-format-sql", is_flag=True, default=False)
 @click.pass_context
+@billing_project_option()
 def validate(
     ctx,
     name,
@@ -1372,6 +1373,7 @@ def validate(
     respect_dryrun_skip,
     no_dryrun,
     skip_format_sql,
+    billing_project,
 ):
     """Validate queries by dry running, formatting and checking scheduling configs."""
     if name is None:
@@ -1393,6 +1395,7 @@ def validate(
                 project=project_id,
                 validate_schemas=validate_schemas,
                 respect_skip=respect_dryrun_skip,
+                billing_project=billing_project,
             )
 
         try:

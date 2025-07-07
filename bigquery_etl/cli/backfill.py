@@ -41,6 +41,7 @@ from ..backfill.utils import (
     validate_table_metadata,
 )
 from ..backfill.validate import (
+    BackfillConfigurationError,
     validate_depends_on_past_end_date,
     validate_duplicate_entry_with_initiate_status,
     validate_file,
@@ -56,7 +57,10 @@ from ..config import ConfigLoader
 from ..deploy import FailedDeployException, SkippedDeployException, deploy_table
 from ..format_sql.formatter import reformat
 from ..metadata.parse_metadata import METADATA_FILE, Metadata, PartitionType
-from ..metadata.validate_metadata import SHREDDER_MITIGATION_LABEL
+from ..metadata.validate_metadata import (
+    SHREDDER_MITIGATION_LABEL,
+    MetadataValidationError,
+)
 from ..schema import SCHEMA_FILE, Schema
 
 logging.basicConfig(level=logging.INFO)
@@ -264,7 +268,7 @@ def validate(
             sql_dir, table_name, ignore_missing_metadata
         ):
             click.echo("\n".join(metadata_errors))
-            sys.exit(1)
+            raise MetadataValidationError(str(metadata_errors))
 
         try:
             backfill_file = get_backfill_file_from_qualified_table_name(
@@ -293,11 +297,66 @@ def validate(
                 continue
             click.echo(f"{table_name}:")
             click.echo("\n".join(error_list))
-        sys.exit(1)
+            raise BackfillConfigurationError
     elif backfills_dict:
         click.echo(
             f"All {BACKFILL_FILE} files have been validated for project {project_id}."
         )
+
+
+@backfill.command(
+    help="""Validates multiple backfill.yaml files format and content.
+
+    This command was created to enable pre-commit hook for backfill file changes related validation.
+
+    \b
+    # validate all backfill.yaml files if table is not specified
+    Use the `--project_id` option to change the project to be validated;
+    default is `moz-fx-data-shared-prod`.
+
+    Example:
+
+    ./bqetl backfill validate-multiple \
+        sql/moz-fx-data-shared-prod/org_mozilla_fenix_nightly_derived/baseline_clients_daily_v1/backfill.yaml \
+        sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_daily_v1/backfill.yaml
+
+    """
+)
+@ignore_missing_metadata_option
+@click.argument("backfill_files", required=True, nargs=-1)
+@click.pass_context
+def validate_multiple(
+    ctx,
+    backfill_files,
+    ignore_missing_metadata,
+):
+    """Validate backfill.yaml files."""
+    errors = list()
+
+    for backfill_file in backfill_files:
+        *sql_dir, project_id, dataset, table_name = str(backfill_file).split("/")[:-1]
+
+        cmd_args = {
+            "sql_dir": "/".join(sql_dir),
+            "project_id": project_id,
+            "ignore_missing_metadata": True if ignore_missing_metadata else False,
+            "qualified_table_name": f"{project_id}.{dataset}.{table_name}",
+        }
+        try:
+            ctx.invoke(validate, **cmd_args)
+        except (
+            KeyError,
+            FileNotFoundError,
+            ValueError,
+            MetadataValidationError,
+            BackfillConfigurationError,
+        ) as error:
+            errors.append(error)
+            error_message = f"{str(error.with_traceback)} -> {str(error)}"
+            click.echo(f"Validation for {backfill_file} FAILED with: {error_message}")
+
+    if len(errors) > 0:
+        sys.exit(1)
 
 
 @backfill.command(
@@ -645,6 +704,10 @@ def _initiate_backfill(
 
         custom_query_path = replaced_ref_query
 
+    scheduling_overrides = "{}"
+    if entry.ignore_date_partition_offset:
+        scheduling_overrides = '{"date_partition_offset": 0}'
+
     override_retention_limit = entry.override_retention_limit
 
     # copy previous partition if depends_on_past
@@ -681,6 +744,7 @@ def _initiate_backfill(
                 }
             ),
             billing_project=billing_project,
+            scheduling_overrides=scheduling_overrides,
             override_retention_range_limit=override_retention_limit,
         )
     except subprocess.CalledProcessError as e:
@@ -726,7 +790,8 @@ def _initialize_previous_partition(
         partition_param = metadata.scheduling.get(
             "date_partition_parameter", partition_param
         )
-        offset = metadata.scheduling.get("date_partition_offset", offset)
+        if not backfill_entry.ignore_date_partition_offset:
+            offset = metadata.scheduling.get("date_partition_offset", offset)
 
     previous_partition_id = get_backfill_partition(
         previous_partition_date,
@@ -858,7 +923,8 @@ def _copy_backfill_staging_to_prod(
             partition_param = table_metadata.scheduling.get(
                 "date_partition_parameter", partition_param
             )
-            offset = table_metadata.scheduling.get("date_partition_offset", offset)
+            if not entry.ignore_date_partition_offset:
+                offset = table_metadata.scheduling.get("date_partition_offset", offset)
 
         for backfill_date in backfill_date_range:
             if (

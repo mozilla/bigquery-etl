@@ -3,7 +3,6 @@ friendly_name: '{{ name }} Events Daily'
 description: >
   Packed event representation with one-row per-client
 owners:
-  - wlachance@mozilla.com
   - akomar@mozilla.com
 labels:
   application: {{ dataset }}
@@ -12,6 +11,11 @@ labels:
   table_type: client_level
 scheduling:
   dag_name: {{ dag_name }}
+  {%- if dataset == "fenix" %}
+  arguments: [
+    "--billing-project=moz-fx-data-backfill-4"
+  ]
+  {%- endif %}
 bigquery:
   time_partitioning:
     type: day

@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+from collections import defaultdict
 from typing import Dict, List
 
 from jinja2 import Environment, PackageLoader
@@ -9,6 +10,7 @@ from jinja2 import Environment, PackageLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.probe_filters import get_etl_excluded_probes_quickfix
 
+from .client_side_sampled_metrics import get as get_sampled_metrics
 from .utils import get_schema, ping_type_from_table
 
 ATTRIBUTES = ",".join(
@@ -32,7 +34,9 @@ def render_main(**kwargs):
     return reformat(main_sql.render(**kwargs))
 
 
-def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
+def get_distribution_metrics(
+    schema: Dict,
+) -> tuple[Dict[str, List[str]], Dict[str, List[str]]]:
     """Find all distribution-like metrics in a Glean table.
 
     Metric types are defined in the Glean documentation found here:
@@ -48,6 +52,11 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
     metrics: Dict[str, List[str]] = {metric_type: [] for metric_type in metric_type_set}
     excluded_metrics = get_etl_excluded_probes_quickfix("fenix")
 
+    # Metrics that are already sampled
+    sampled_metric_names = get_sampled_metrics("distributions")
+    sampled_metrics = {"timing_distribution": sampled_metric_names}
+    found_sampled_metrics = defaultdict(list)
+
     # Iterate over every element in the schema under the metrics section and
     # collect a list of metric names.
     for root_field in schema:
@@ -58,9 +67,12 @@ def get_distribution_metrics(schema: Dict) -> Dict[str, List[str]]:
             if metric_type not in metric_type_set:
                 continue
             for field in metric_field["fields"]:
-                if field["name"] not in excluded_metrics:
+                if field["name"] in sampled_metrics.get(metric_type, []):
+                    found_sampled_metrics[metric_type].append(field["name"])
+                elif field["name"] not in excluded_metrics:
                     metrics[metric_type].append(field["name"])
-    return metrics
+
+    return metrics, found_sampled_metrics
 
 
 def get_metrics_sql(metrics: Dict[str, List[str]]) -> dict[str, str]:
@@ -134,9 +146,12 @@ def main():
     )
 
     schema = get_schema(args.source_table)
-    distributions = get_distribution_metrics(schema)
+    distributions, client_sampled_distributions = get_distribution_metrics(schema)
     metrics_sql = get_metrics_sql(distributions)
-    if not metrics_sql["labeled"] or not metrics_sql["unlabeled"]:
+    client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
+    if args.product == "firefox_desktop":
+        client_sampled_metrics_sql = get_metrics_sql(client_sampled_distributions)
+    if not metrics_sql["labeled"] and not metrics_sql["unlabeled"]:
         print(header)
         print("-- Empty query: no probes found!")
         sys.exit(1)
@@ -149,6 +164,11 @@ def main():
             histograms=metrics_sql["unlabeled"],
             labeled_histograms=metrics_sql["labeled"],
             ping_type=ping_type_from_table(args.source_table),
+            client_sampled_histograms=client_sampled_metrics_sql["unlabeled"],
+            client_sampled_labeled_histograms=client_sampled_metrics_sql["labeled"],
+            client_sampled_channel="release",
+            client_sampled_os="Windows",
+            client_sampled_max_sample_id=100,
         )
     )
 

@@ -1,0 +1,139 @@
+fields:
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: Client ID - A UUID uniquely identifying the client.
+- mode: NULLABLE
+  name: sample_id
+  type: INT64
+  description: |-
+    Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
+- mode: NULLABLE
+  name: profile_group_id
+  type: STRING
+  description: |-
+     A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Date when the ingestion edge server accepted this message
+- mode: NULLABLE
+  name: metric_date
+  type: DATE
+  description: Metric Date
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: An ISO 3166-1 alpha-2 country code
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: Locale - The locale of the application during initialization.
+- mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: The user visible version string (e.g. "1.0.3").
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: Normalized Channel - The normalized channel the application is being distributed on.
+- mode: NULLABLE
+  name: first_seen_date
+  type: DATE
+  description: First Seen Date
+- mode: NULLABLE
+  name: attribution_campaign
+  type: STRING
+  description: Attribution Campaign
+- mode: NULLABLE
+  name: attribution_content
+  type: STRING
+  description: Attribution Content
+- mode: NULLABLE
+  name: attribution_dlsource
+  type: STRING
+  description: Attribution Download Source - Indicates where installations of Firefox originate from.
+- mode: NULLABLE
+  name: attribution_source
+  type: STRING
+  description: Attribution Source - Derived from the UTM parameter of the same name.
+- mode: NULLABLE
+  name: attribution_medium
+  type: STRING
+  description: Attribution Medium - Derived from the UTM parameter of the same name.
+- mode: NULLABLE
+  name: attribution_ua
+  type: STRING
+  description: Attribution User Agent
+- mode: NULLABLE
+  name: attribution_experiment
+  type: STRING
+  description: Attribution Experiment - Name/id of the enrolled funnel experiment.
+- mode: NULLABLE
+  name: attribution_variation
+  type: STRING
+  description: Attribution Variation - Name/id of the variation cohort used in the enrolled funnel experiment.
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Normalized Operating System
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: Normalized Operating System Version
+- mode: NULLABLE
+  name: windows_version
+  type: STRING
+  description: Windows Version
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: Distribution ID
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: Internet Service Provider
+- mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI
+- mode: NULLABLE
+  name: days_seen_bits
+  type: INTEGER
+  description: Days Seen Bits
+- mode: NULLABLE
+  name: days_desktop_active_bits
+  type: INTEGER
+  description: Days Desktop Active Bits
+- mode: NULLABLE
+  name: ping_sent_metric_date
+  type: BOOLEAN
+  description: Ping Sent on Metric Date
+- mode: NULLABLE
+  name: ping_sent_week_4
+  type: BOOLEAN
+  description: Ping Sent Week 4
+- mode: NULLABLE
+  name: active_metric_date
+  type: BOOLEAN
+  description: Active on Metric Date
+- mode: NULLABLE
+  name: retained_week_4
+  type: BOOLEAN
+  description: Retained Week 4
+- mode: NULLABLE
+  name: new_profile_metric_date
+  type: BOOLEAN
+  description: New Profile on Metric Date
+- mode: NULLABLE
+  name: repeat_profile
+  type: BOOLEAN
+  description: Repeat Profile
+- mode: NULLABLE
+  name: retained_week_4_new_profile
+  type: BOOLEAN
+  description: Retained Week 4 New Profile
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description: Legacy Telemetry Client Identifier

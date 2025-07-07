@@ -4,7 +4,7 @@ IF
   PARTITION BY DATE(submission_date)
   CLUSTER BY channel, event_category, event_name
   OPTIONS
-    (enable_refresh = TRUE, refresh_interval_minutes = 60) AS
+    (enable_refresh = {% if manual_refresh %} FALSE {% else %} TRUE {% endif %}, refresh_interval_minutes = 60) AS
     WITH
     {% for events_table in events_tables -%}
       base_{{ events_table }} AS (

@@ -1,13 +1,18 @@
 friendly_name: Stripe subscriptions attributed to CJ flows
-description: Stripe subscriptions attributed to CJ flows
+description: |-
+  Stripe subscriptions attributed to CJ flows
+
+  Deprecated since 2025-05-09.
 owners:
   - srose@mozilla.com
 labels:
   application: cjms
   schedule: hourly
 scheduling:
-  dag_name: bqetl_cjms_nonprod
+  #dag_name: bqetl_cjms_nonprod
   query_project: moz-fx-data-shared-prod
   # destination is the whole table, not a single partition,
   # so don't use date_partition_parameter
   date_partition_parameter: null
+deprecated: true
+deletion_date: 2025-08-09

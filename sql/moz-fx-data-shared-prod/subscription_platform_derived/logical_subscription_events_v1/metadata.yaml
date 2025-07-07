@@ -3,6 +3,12 @@ description: |-
   Logical subscription events such as "Subscription Start", "Plan Change", "Auto-Renew Change", and "Subscription End".
 
   Logical subscriptions are a continuous active period for a particular provider subscription.
+
+  Some caveats:
+    * This ETL is delayed by 7 extra days to allow more time for possible late-arriving data.
+      More recent data that is still in flux can be found in `recent_logical_subscription_events_v1`.
+    * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
+    * We only have partial data for Apple subscriptions prior to December 2022 when VPN's Apple subscriptions were migrated to SubPlat (VPN-3921).
 owners:
 - srose@mozilla.com
 labels:
@@ -11,6 +17,14 @@ labels:
 scheduling:
   dag_name: bqetl_subplat
   date_partition_parameter: date
+  date_partition_offset: -7
+  # Adjust the execution delta for the task dependencies in the bqetl_subplat_hourly DAG
+  # to wait for the concurrent bqetl_subplat_hourly DAG tasks to complete so the
+  # dependent tables are in a consistent state.
+  depends_on:
+  - dag_name: bqetl_subplat_hourly
+    task_id: subscription_platform_derived__logical_subscriptions_history__v1
+    execution_delta: -23h
 bigquery:
   time_partitioning:
     type: day
@@ -22,3 +36,4 @@ bigquery:
     - type
     - reason
 references: {}
+require_column_descriptions: true

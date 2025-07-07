@@ -1,0 +1,23 @@
+friendly_name: WWW Site Landing Page Metrics V1
+description: |-
+  Aggregated metrics for the www.firefox.com landing page sourced from Google Analytics 4 (GA4)
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose@mozilla.com
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+bigquery:
+  time_partitioning:
+    type: day
+    field: date
+    require_partition_filter: true
+    expiration_days: null
+  clustering:
+    fields:
+    - device_category
+    - country
+    - operating_system
+references: {}

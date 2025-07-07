@@ -1,11 +1,12 @@
 {{ header }}
+-- TODO: keeping this view as is for now until the new table get's backfilled.
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ dataset }}.{{ name }}`
 AS
 SELECT
   client_id,
   active_users.submission_date AS first_seen_date,
-  normalized_channel,
+  active_users.normalized_channel,
   app_name,
   app_display_version AS app_version,
   country,
@@ -27,7 +28,7 @@ FROM
   `{{ project_id }}.{{ dataset }}.active_users` AS active_users
 LEFT JOIN
   `{{ project_id }}.{{ dataset }}.attribution_clients` AS attribution
-  USING(client_id)
+  USING(client_id) --temporarily removing normalized_channel until backfill finishes
 WHERE
   active_users.submission_date < CURRENT_DATE
   AND is_new_profile

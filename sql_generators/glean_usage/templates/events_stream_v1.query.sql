@@ -113,13 +113,10 @@ WITH base AS (
   FROM
     `{{ events_view }}`
   WHERE
-    {% raw %}
-    {% if is_init() %}
-      DATE(submission_timestamp) >= '2023-11-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = @submission_date
+    {% if slice_by_sample_id %}
+      AND sample_id BETWEEN @min_sample_id AND @max_sample_id
     {% endif %}
-    {% endraw %}
 )
 --
 SELECT
@@ -135,7 +132,27 @@ SELECT
 FROM
   base
 CROSS JOIN
+  {% if app_name == "firefox_desktop_background_update" %}
+  -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
+  -- Filtering out nimbus and normandy events that are emitted due to 'invalid-feature'.
+  -- The number of these events is too large to be processed, invalid-feature has also
+  -- been removed in more recent versions.
+  UNNEST(
+    ARRAY(
+      SELECT event
+      FROM UNNEST(events) AS event
+      WHERE (
+        app_version_major IN (138, 139)
+        AND (
+          (event.category = 'nimbus_events' AND event.name = 'validation_failed')
+          OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
+        )
+      ) IS NOT TRUE
+    )
+  ) AS event
+  {% else %}
   UNNEST(events) AS event
+  {% endif %}
   {% if app_name == "firefox_desktop" %}
     -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
     WHERE

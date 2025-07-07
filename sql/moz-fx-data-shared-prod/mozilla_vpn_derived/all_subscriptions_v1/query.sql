@@ -5,17 +5,6 @@ WITH standardized_country AS (
   FROM
     `moz-fx-data-shared-prod`.static.third_party_standardized_country_names
 ),
-fxa_attributions AS (
-  SELECT
-    fxa_uid,
-    attribution
-  FROM
-    `moz-fx-data-shared-prod`.mozilla_vpn_derived.fxa_attribution_v1
-  CROSS JOIN
-    UNNEST(fxa_uids) AS fxa_uid
-  WHERE
-    attribution IS NOT NULL
-),
 users AS (
   SELECT
     id AS user_id,
@@ -263,27 +252,40 @@ all_subscriptions AS (
   FROM
     google_iap_subscriptions
 ),
+subscriptions_attribution AS (
+  SELECT
+    subscription_id,
+    attribution
+  FROM
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.all_subscriptions_attribution_v1`
+  UNION ALL
+  SELECT
+    subscription_id,
+    attribution
+  FROM
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.stripe_subscriptions_attribution_v1`
+),
 subscription_last_touch_attributions AS (
   -- Select the latest attribution before the subscription originally started.
   SELECT
     subscriptions.subscription_id,
     ARRAY_AGG(
-      fxa_attributions.attribution
+      subscriptions_attribution.attribution
       ORDER BY
-        fxa_attributions.attribution.timestamp DESC
+        subscriptions_attribution.attribution.timestamp DESC
       LIMIT
         1
     )[ORDINAL(1)].*
   FROM
     all_subscriptions AS subscriptions
   JOIN
-    fxa_attributions
-    ON subscriptions.fxa_uid = fxa_attributions.fxa_uid
+    subscriptions_attribution
+    ON subscriptions.subscription_id = subscriptions_attribution.subscription_id
     AND COALESCE(
       subscriptions.original_subscription_start_date,
       subscriptions.subscription_start_date,
       subscriptions.trial_start
-    ) >= fxa_attributions.attribution.timestamp
+    ) >= subscriptions_attribution.attribution.timestamp
   GROUP BY
     subscription_id
 ),

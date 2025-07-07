@@ -10,7 +10,6 @@ WITH subscription_starts AS (
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', valid_from)
     ) AS subscription_id,
     subscription.id AS logical_subscription_id,
-    subscription.services,
     service.id AS service_id,
     valid_from AS started_at,
     subscription.mozilla_account_id_sha256,
@@ -18,17 +17,10 @@ WITH subscription_starts AS (
     subscription.provider_subscription_id,
     IF(
       valid_from = subscription.started_at,
-      STRUCT(
-        subscription.initial_discount_name,
-        subscription.initial_discount_promotion_code,
-        subscription.first_touch_attribution,
-        subscription.last_touch_attribution
-      ),
+      STRUCT(subscription.initial_discount_name, subscription.initial_discount_promotion_code),
       STRUCT(
         subscription.current_period_discount_name AS initial_discount_name,
-        subscription.current_period_discount_promotion_code AS initial_discount_promotion_code,
-        NULL AS first_touch_attribution,
-        NULL AS last_touch_attribution
+        subscription.current_period_discount_promotion_code AS initial_discount_promotion_code
       )
     ).*
   FROM
@@ -41,7 +33,8 @@ WITH subscription_starts AS (
         subscription.id,
         service.id
       ORDER BY
-        valid_from
+        valid_from,
+        valid_to
     )
 ),
 subscriptions_history_periods AS (
@@ -65,104 +58,27 @@ subscriptions_history_periods AS (
         subscription_id
     ) AS customer_service_subscription_number,
     initial_discount_name,
-    initial_discount_promotion_code,
-    first_touch_attribution,
-    last_touch_attribution
+    initial_discount_promotion_code
   FROM
     subscription_starts
-),
-customer_attribution_impressions AS (
-  SELECT
-    mozilla_account_id_sha256,
-    impression_at,
-    entrypoint,
-    entrypoint_experiment,
-    entrypoint_variation,
-    utm_campaign,
-    utm_content,
-    utm_medium,
-    utm_source,
-    utm_term,
-    service_ids
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.subplat_attribution_impressions_v1`
-  CROSS JOIN
-    UNNEST(mozilla_account_ids_sha256) AS mozilla_account_id_sha256
-  UNION ALL
-  -- Include historical VPN attributions from before VPN's SubPlat funnel was implemented on 2021-08-25.
-  SELECT
-    users.fxa_uid AS mozilla_account_id_sha256,
-    users.created_at AS impression_at,
-    CAST(NULL AS STRING) AS entrypoint,
-    users_attribution.attribution.entrypoint_experiment,
-    users_attribution.attribution.entrypoint_variation,
-    users_attribution.attribution.utm_campaign,
-    users_attribution.attribution.utm_content,
-    users_attribution.attribution.utm_medium,
-    users_attribution.attribution.utm_source,
-    users_attribution.attribution.utm_term,
-    ['VPN'] AS service_ids
-  FROM
-    `moz-fx-data-shared-prod.mozilla_vpn_derived.users_attribution_v1` AS users_attribution
-  JOIN
-    `moz-fx-data-shared-prod.mozilla_vpn_derived.users_v1` AS users
-    ON users_attribution.user_id = users.id
-  WHERE
-    DATE(users.created_at) <= '2021-08-25'
-    AND (
-      users_attribution.attribution.entrypoint_experiment IS NOT NULL
-      OR users_attribution.attribution.entrypoint_variation IS NOT NULL
-      OR users_attribution.attribution.utm_campaign IS NOT NULL
-      OR users_attribution.attribution.utm_content IS NOT NULL
-      OR users_attribution.attribution.utm_medium IS NOT NULL
-      OR users_attribution.attribution.utm_source IS NOT NULL
-      OR users_attribution.attribution.utm_term IS NOT NULL
-    )
 ),
 subscription_attributions AS (
   SELECT
-    subscription_starts.subscription_id,
-    MIN_BY(
-      STRUCT(
-        customer_attribution_impressions.impression_at,
-        customer_attribution_impressions.entrypoint,
-        customer_attribution_impressions.entrypoint_experiment,
-        customer_attribution_impressions.entrypoint_variation,
-        customer_attribution_impressions.utm_campaign,
-        customer_attribution_impressions.utm_content,
-        customer_attribution_impressions.utm_medium,
-        customer_attribution_impressions.utm_source,
-        customer_attribution_impressions.utm_term
-        -- TODO: calculate normalized attribution values like `mozfun.norm.vpn_attribution()` does
-      ),
-      customer_attribution_impressions.impression_at
+    subscription_id,
+    IF(
+      attribution_v2.subscription_id IS NOT NULL,
+      NULL,
+      attribution_v1.first_touch_attribution
     ) AS first_touch_attribution,
-    MAX_BY(
-      STRUCT(
-        customer_attribution_impressions.impression_at,
-        customer_attribution_impressions.entrypoint,
-        customer_attribution_impressions.entrypoint_experiment,
-        customer_attribution_impressions.entrypoint_variation,
-        customer_attribution_impressions.utm_campaign,
-        customer_attribution_impressions.utm_content,
-        customer_attribution_impressions.utm_medium,
-        customer_attribution_impressions.utm_source,
-        customer_attribution_impressions.utm_term
-        -- TODO: calculate normalized attribution values like `mozfun.norm.vpn_attribution()` does
-      ),
-      customer_attribution_impressions.impression_at
+    COALESCE(
+      attribution_v2.last_touch_attribution,
+      attribution_v1.last_touch_attribution
     ) AS last_touch_attribution
   FROM
-    subscription_starts
-  CROSS JOIN
-    UNNEST(subscription_starts.services) AS service
-  JOIN
-    customer_attribution_impressions
-    ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
-    AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
-    AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
-  GROUP BY
-    subscription_id
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v1` AS attribution_v1
+  FULL JOIN
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v2` AS attribution_v2
+    USING (subscription_id)
 ),
 subscriptions_history AS (
   SELECT
@@ -233,14 +149,8 @@ subscriptions_history AS (
       history.subscription.ongoing_discount_ends_at,
       history.subscription.has_refunds,
       history.subscription.has_fraudulent_charges,
-      COALESCE(
-        subscriptions_history_periods.first_touch_attribution,
-        subscription_attributions.first_touch_attribution
-      ) AS first_touch_attribution,
-      COALESCE(
-        subscriptions_history_periods.last_touch_attribution,
-        subscription_attributions.last_touch_attribution
-      ) AS last_touch_attribution
+      subscription_attributions.first_touch_attribution,
+      subscription_attributions.last_touch_attribution
     ) AS subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1` AS history
@@ -275,7 +185,7 @@ synthetic_subscription_ends_history AS (
   FROM
     subscriptions_history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC)
+    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC, valid_to DESC)
     AND valid_to < '9999-12-31 23:59:59.999999'
 )
 SELECT

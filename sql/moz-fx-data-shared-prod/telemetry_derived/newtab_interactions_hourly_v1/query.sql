@@ -5,12 +5,12 @@ legacy_deduplicated_pings AS (
     *
   FROM
     `moz-fx-data-shared-prod.activity_stream_live.impression_stats_v1`
+    -- live is fine for backfills within the past 30 days, otherwise use stable
+    --`moz-fx-data-shared-prod.activity_stream_stable.impression_stats_v1`
   WHERE
-    {% if is_init() %}
-      submission_timestamp >= '2025-01-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
+    -- ensures no overlap with legacy_historical
+    submission_timestamp >= '2024-12-01'
+    AND DATE(submission_timestamp) = @submission_date
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -37,7 +37,7 @@ legacy_impression_data AS (
 -- this CTE allows us to filter out >2 clicks from a given client on the same tile within 1 second
 legacy_flattened_impression_data AS (
   SELECT
-    submission_timestamp,
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_second,
     impression_id AS client_id, -- client_id renamed to impression_id in GCP
     flattened_tiles.id AS tile_id,
     --the 3x1 layout has a bug where we need to use the position of each element in the tiles array instead of the actual pos field
@@ -60,14 +60,14 @@ legacy_flattened_impression_data AS (
     UNNEST(legacy_impression_data.tiles) AS flattened_tiles
     WITH OFFSET AS alt_pos
   GROUP BY
-    submission_timestamp,
+    submission_second,
     client_id,
     tile_id,
     position
 ),
 legacy_summary AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+    DATE(submission_second) AS submission_date,
     CAST(NULL AS STRING) AS recommendation_id,
     tile_id,
     position,
@@ -92,6 +92,29 @@ legacy_summary AS (
     os,
     form_factor
 ),
+-- this table was copied from snowflake for historical data as the stable table
+-- only goes back 180 days. it is pre-aggregated.
+legacy_historical_summary AS (
+  SELECT
+    happened_at AS submission_date,
+    CAST(NULL AS STRING) AS recommendation_id,
+    tile_id AS ad_id,
+    position,
+    CAST(NULL AS STRING) AS product,
+    CAST(NULL AS STRING) AS placement,
+    CAST(NULL AS STRING) AS os,
+    CAST(NULL AS STRING) AS form_factor,
+    impression_count,
+    click_count,
+    save_count,
+    dismiss_count
+  FROM
+    `moz-fx-data-shared-prod.telemetry_derived.newtab_interactions_historical_legacy_v1`
+  WHERE
+    -- ensures no overlap with legacy data
+    happened_at < '2024-12-01'
+    AND happened_at = @submission_date
+),
   -- GLEAN Query
 glean_deduplicated_pings AS (
   SELECT
@@ -102,12 +125,9 @@ glean_deduplicated_pings AS (
     events
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
+    --`moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1` -- use for backfill
   WHERE
-    {% if is_init() %}
-      submission_timestamp >= '2025-01-01'
-    {% else %}
-      DATE(submission_timestamp) = @submission_date
-    {% endif %}
+    DATE(submission_timestamp) = @submission_date
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -198,11 +218,7 @@ uapi_summary AS (
   FROM
     `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_uapi_hourly_v1`
   WHERE
-    {% if is_init() %}
-      DATE(submission_hour) >= '2025-01-01'
-    {% else %}
-      DATE(submission_hour) = @submission_date
-    {% endif %}
+    DATE(submission_hour) = @submission_date
   GROUP BY
     submission_date,
     ad_id,
@@ -227,3 +243,8 @@ SELECT
   *
 FROM
   uapi_summary
+UNION ALL
+SELECT
+  *
+FROM
+  legacy_historical_summary

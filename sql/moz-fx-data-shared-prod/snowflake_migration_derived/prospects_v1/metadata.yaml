@@ -1,0 +1,24 @@
+friendly_name: Prospects v1
+description: Model prospective article options for the Fx New Tab from raw Snowplow data
+owners:
+  - jpetto@mozilla.com
+  - rrando@mozilla.com
+labels:
+  schedule: hourly
+  incremental: true
+  owner1: jpetto
+  owner2: rrando
+scheduling:
+  dag_name: bqetl_content_ml_hourly
+bigquery:
+  time_partitioning:
+    type: day
+    field: happened_at
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+      - prospect_source
+      - language
+      - topic
+      - publisher

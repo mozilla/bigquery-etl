@@ -13,3 +13,7 @@ workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:ci-and-quality-tools/taskcluster
+      # https://mozilla-hub.atlassian.net/browse/DENG-8350
+      - workgroup:dataops-managed/crash-ping-ingest
+      # https://mozilla-hub.atlassian.net/browse/DENG-8977
+      - workgroup:remote-settings/gke

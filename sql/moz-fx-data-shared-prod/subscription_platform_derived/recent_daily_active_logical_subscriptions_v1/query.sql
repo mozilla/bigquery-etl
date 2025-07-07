@@ -1,0 +1,42 @@
+SELECT
+  -- Match the deployed `daily_active_logical_subscriptions_v1` table schema so this table can be easily unioned with it.
+  * REPLACE (
+    (
+      SELECT AS STRUCT
+        subscription.* EXCEPT (
+          initial_discount_name,
+          initial_discount_promotion_code,
+          current_period_discount_name,
+          current_period_discount_promotion_code,
+          current_period_discount_amount,
+          ongoing_discount_name,
+          ongoing_discount_promotion_code,
+          ongoing_discount_amount,
+          ongoing_discount_ends_at
+        ),
+        subscription.initial_discount_name,
+        subscription.initial_discount_promotion_code,
+        subscription.current_period_discount_name,
+        subscription.current_period_discount_promotion_code,
+        subscription.current_period_discount_amount,
+        subscription.ongoing_discount_name,
+        subscription.ongoing_discount_promotion_code,
+        subscription.ongoing_discount_amount,
+        subscription.ongoing_discount_ends_at
+    ) AS subscription
+  )
+FROM
+  `moz-fx-data-shared-prod.subscription_platform_derived.daily_active_logical_subscriptions_v1_live`
+WHERE
+  (
+    `date` >= CURRENT_DATE() - 7
+    -- Include more than the previous 7 days if necessary to avoid data gaps between this table and
+    -- `daily_active_logical_subscriptions_v1` (e.g. ETLs failed for multiple days and are catching up).
+    OR `date` >= (
+      SELECT
+        MAX(`date`) + 1
+      FROM
+        `moz-fx-data-shared-prod.subscription_platform_derived.daily_active_logical_subscriptions_v1`
+    )
+  )
+  AND `date` <= DATE(TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 HOUR))

@@ -1,0 +1,31 @@
+friendly_name: WWW Site Downloads
+description: |-
+  Data about downloads from firefox.com from GA4
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_ga4_firefoxdotcom
+  depends_on_tables_existing:
+  - task_id: wait_for_firefoxdotcom_events_table
+    table_id: 'moz-fx-data-marketing-prod.analytics_489412379.events_{{ ds_nodash }}'
+    poke_interval: 30m
+    timeout: 10h
+    retries: 1
+    retry_delay: 30m
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - device_category
+    - operating_system
+references: {}
+require_column_descriptions: true

@@ -1,5 +1,6 @@
 """Validate metadata files."""
 
+import glob
 import logging
 import os
 from argparse import ArgumentParser
@@ -68,7 +69,17 @@ def validate_change_control(
 
         with open(codeowners_file, "r") as owners_file:
             file_content = owners_file.readlines()
-            content = [line for line in file_content if not line.startswith("#")]
+            owner_file_content = [
+                line for line in file_content if not line.startswith("#")
+            ]
+
+        # generate a new codeowners list for each path that matches the pattern defined
+        # inside CODEOWNERS
+        expanded_owners_list = [
+            f"{path} {' '.join(entry.split(' ')[1:])}".rstrip()
+            for entry in owner_file_content
+            for path in glob.glob(entry.split(" ")[0].removeprefix("/"), recursive=True)
+        ]
 
         owners_list = []
         for owner in metadata.owners:
@@ -77,7 +88,7 @@ def validate_change_control(
             owners_list.append(owner)
         sample_row_all_owners = f"/{path_in_codeowners} {(' '.join(owners_list))}"
 
-        if not [line for line in content if path_in_codeowners in line]:
+        if not [line for line in expanded_owners_list if path_in_codeowners in line]:
             click.echo(
                 click.style(
                     f"ERROR: This query has label `change_controlled` which "
@@ -87,7 +98,7 @@ def validate_change_control(
             )
             return False
 
-        for line in content:
+        for line in expanded_owners_list:
             if path_in_codeowners in line and not any(
                 owner in line for owner in owners_list
             ):

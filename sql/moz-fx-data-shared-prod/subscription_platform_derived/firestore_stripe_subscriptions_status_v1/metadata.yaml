@@ -1,0 +1,20 @@
+friendly_name: Firestore Stripe subscriptions status
+description: |-
+  Stripe subscriptions' status over time as recorded in Firestore by SubPlat, based on Firestore record changes exported to BigQuery.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+scheduling:
+  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: firestore_export_timestamp
+    require_partition_filter: false
+    expiration_days: null
+references: {}
+require_column_descriptions: true

@@ -30,7 +30,7 @@ scheduling:
   ]
   {%- if slice_by_sample_id %}
   referenced_tables:
-    - [ "{{ project_id }}", "{{ app_name }}", "events" ]
+    - [ "{{ project_id }}", "{{ app_name }}_stable", "events_v1" ]
   {%- endif %}
 bigquery:
   time_partitioning:

@@ -1,0 +1,21 @@
+friendly_name: Stripe logical subscriptions attribution
+description: |-
+  Attribution for Stripe logical subscriptions based on Stripe subscription metadata stored by SubPlat 3.
+owners:
+- srose@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+scheduling:
+  # The partition for a particular date will be rebuilt hourly from 01:30 to 00:30 the next day.
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: date
+bigquery:
+  time_partitioning:
+    type: day
+    field: subscription_started_at
+    require_partition_filter: false
+    expiration_days: null
+  clustering: null
+references: {}
+require_column_descriptions: true

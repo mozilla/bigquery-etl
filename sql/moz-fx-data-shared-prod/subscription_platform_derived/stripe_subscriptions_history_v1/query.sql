@@ -22,6 +22,15 @@ WITH base_subscriptions_history AS (
     JSON_VALUE(metadata, "$.previous_plan_id") AS previous_plan_id,
     JSON_VALUE(metadata, "$.currency") AS plan_currency,
     CAST(JSON_VALUE(metadata, "$.amount") AS INT64) AS plan_amount,
+    JSON_VALUE(metadata, "$.session_flow_id") AS session_flow_id,
+    JSON_VALUE(metadata, "$.session_entrypoint") AS session_entrypoint,
+    JSON_VALUE(metadata, "$.session_entrypoint_experiment") AS session_entrypoint_experiment,
+    JSON_VALUE(metadata, "$.session_entrypoint_variation") AS session_entrypoint_variation,
+    JSON_VALUE(metadata, "$.utm_campaign") AS utm_campaign,
+    JSON_VALUE(metadata, "$.utm_content") AS utm_content,
+    JSON_VALUE(metadata, "$.utm_medium") AS utm_medium,
+    JSON_VALUE(metadata, "$.utm_source") AS utm_source,
+    JSON_VALUE(metadata, "$.utm_term") AS utm_term,
   FROM
     `moz-fx-data-shared-prod`.stripe_external.subscription_history_v1
 ),
@@ -501,6 +510,31 @@ SELECT
   ) AS has_fraudulent_charge_refunds,
   subscriptions_history_promotions.promotion_codes,
   subscriptions_history_promotions.promotion_discounts_amount,
+  IF(
+    (
+      subscriptions_history.session_flow_id IS NOT NULL
+      OR subscriptions_history.session_entrypoint IS NOT NULL
+      OR subscriptions_history.session_entrypoint_experiment IS NOT NULL
+      OR subscriptions_history.session_entrypoint_variation IS NOT NULL
+      OR subscriptions_history.utm_campaign IS NOT NULL
+      OR subscriptions_history.utm_content IS NOT NULL
+      OR subscriptions_history.utm_medium IS NOT NULL
+      OR subscriptions_history.utm_source IS NOT NULL
+      OR subscriptions_history.utm_term IS NOT NULL
+    ),
+    STRUCT(
+      subscriptions_history.session_flow_id AS flow_id,
+      subscriptions_history.session_entrypoint AS entrypoint,
+      subscriptions_history.session_entrypoint_experiment AS entrypoint_experiment,
+      subscriptions_history.session_entrypoint_variation AS entrypoint_variation,
+      subscriptions_history.utm_campaign,
+      subscriptions_history.utm_content,
+      subscriptions_history.utm_medium,
+      subscriptions_history.utm_source,
+      subscriptions_history.utm_term
+    ),
+    NULL
+  ) AS attribution
 FROM
   subscriptions_history_with_plan_ids AS subscriptions_history
 LEFT JOIN

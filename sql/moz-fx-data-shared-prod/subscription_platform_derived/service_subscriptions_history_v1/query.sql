@@ -64,9 +64,21 @@ subscriptions_history_periods AS (
 ),
 subscription_attributions AS (
   SELECT
-    *
+    subscription_id,
+    IF(
+      attribution_v2.subscription_id IS NOT NULL,
+      NULL,
+      attribution_v1.first_touch_attribution
+    ) AS first_touch_attribution,
+    COALESCE(
+      attribution_v2.last_touch_attribution,
+      attribution_v1.last_touch_attribution
+    ) AS last_touch_attribution
   FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v1`
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v1` AS attribution_v1
+  FULL JOIN
+    `moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v2` AS attribution_v2
+    USING (subscription_id)
 ),
 subscriptions_history AS (
   SELECT

@@ -252,6 +252,19 @@ all_subscriptions AS (
   FROM
     google_iap_subscriptions
 ),
+subscriptions_attribution AS (
+  SELECT
+    subscription_id,
+    attribution
+  FROM
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.all_subscriptions_attribution_v1`
+  UNION ALL
+  SELECT
+    subscription_id,
+    attribution
+  FROM
+    `moz-fx-data-shared-prod.mozilla_vpn_derived.stripe_subscriptions_attribution_v1`
+),
 subscription_last_touch_attributions AS (
   -- Select the latest attribution before the subscription originally started.
   SELECT
@@ -266,7 +279,7 @@ subscription_last_touch_attributions AS (
   FROM
     all_subscriptions AS subscriptions
   JOIN
-    `moz-fx-data-shared-prod.mozilla_vpn_derived.all_subscriptions_attribution_v1` AS subscriptions_attribution
+    subscriptions_attribution
     ON subscriptions.subscription_id = subscriptions_attribution.subscription_id
     AND COALESCE(
       subscriptions.original_subscription_start_date,

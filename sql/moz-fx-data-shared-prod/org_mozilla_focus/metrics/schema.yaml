@@ -2344,6 +2344,14 @@ fields:
         a LNA load triggered by a tracker
 
         '
+    - name: use_counter_top_level_content_documents_destroyed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A count of how many "pages" were destroyed. Used to turn page
+        use counters'' counts into rates. Excludes pages that contain only documents
+        for which we do not count use counters (See `Document::ShouldIncludeInTelemetry`).
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

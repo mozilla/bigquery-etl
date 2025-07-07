@@ -1242,6 +1242,9 @@ fields:
     - name: logins_store_mirror_undecryptable_deleted
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_top_level_content_documents_destroyed
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

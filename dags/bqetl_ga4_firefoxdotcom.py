@@ -82,11 +82,11 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_google_ads_derived__conversion_event_categorization__v1 = (
+    wait_for_google_ads_derived__conversion_event_categorization__v2 = (
         ExternalTaskSensor(
-            task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
+            task_id="wait_for_google_ads_derived__conversion_event_categorization__v2",
             external_dag_id="bqetl_desktop_conv_evnt_categorization",
-            external_task_id="google_ads_derived__conversion_event_categorization__v1",
+            external_task_id="google_ads_derived__conversion_event_categorization__v2",
             execution_delta=datetime.timedelta(seconds=7200),
             check_existence=True,
             mode="reschedule",
@@ -385,7 +385,7 @@ with DAG(
     )
 
     firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
-        wait_for_google_ads_derived__conversion_event_categorization__v1
+        wait_for_google_ads_derived__conversion_event_categorization__v2
     )
 
     firefoxdotcom_derived__gclid_conversions__v1.set_upstream(

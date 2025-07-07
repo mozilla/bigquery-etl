@@ -105,6 +105,20 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_google_ads_derived__conversion_event_categorization__v2 = bigquery_dq_check(
+        task_id="checks__warn_google_ads_derived__conversion_event_categorization__v2",
+        source_table='conversion_event_categorization_v2${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     google_ads_derived__conversion_event_categorization__v1 = bigquery_etl_query(
         task_id="google_ads_derived__conversion_event_categorization__v1",
         destination_table='conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
@@ -122,13 +136,6 @@ with DAG(
         "google_ads_derived__conversion_event_categorization__v1_external",
     ) as google_ads_derived__conversion_event_categorization__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_ga4_firefoxdotcom__wait_for_google_ads_derived__conversion_event_categorization__v1",
-            external_dag_id="bqetl_ga4_firefoxdotcom",
-            external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_google_analytics_derived_ga4__wait_for_google_ads_derived__conversion_event_categorization__v1",
             external_dag_id="bqetl_google_analytics_derived_ga4",
             external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v1",
@@ -138,8 +145,39 @@ with DAG(
             google_ads_derived__conversion_event_categorization__v1
         )
 
+    google_ads_derived__conversion_event_categorization__v2 = bigquery_etl_query(
+        task_id="google_ads_derived__conversion_event_categorization__v2",
+        destination_table='conversion_event_categorization_v2${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
+    with TaskGroup(
+        "google_ads_derived__conversion_event_categorization__v2_external",
+    ) as google_ads_derived__conversion_event_categorization__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_ga4_firefoxdotcom__wait_for_google_ads_derived__conversion_event_categorization__v2",
+            external_dag_id="bqetl_ga4_firefoxdotcom",
+            external_task_id="wait_for_google_ads_derived__conversion_event_categorization__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        google_ads_derived__conversion_event_categorization__v2_external.set_upstream(
+            google_ads_derived__conversion_event_categorization__v2
+        )
+
     checks__warn_google_ads_derived__conversion_event_categorization__v1.set_upstream(
         google_ads_derived__conversion_event_categorization__v1
+    )
+
+    checks__warn_google_ads_derived__conversion_event_categorization__v2.set_upstream(
+        google_ads_derived__conversion_event_categorization__v2
     )
 
     google_ads_derived__conversion_event_categorization__v1.set_upstream(
@@ -151,5 +189,17 @@ with DAG(
     )
 
     google_ads_derived__conversion_event_categorization__v1.set_upstream(
+        wait_for_telemetry_derived__clients_first_seen__v1
+    )
+
+    google_ads_derived__conversion_event_categorization__v2.set_upstream(
+        wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
+    )
+
+    google_ads_derived__conversion_event_categorization__v2.set_upstream(
+        wait_for_clients_first_seen_v3
+    )
+
+    google_ads_derived__conversion_event_categorization__v2.set_upstream(
         wait_for_telemetry_derived__clients_first_seen__v1
     )

@@ -57,9 +57,10 @@ new_conversion_events AS (
     a.report_date AS activity_date,
     a.event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     a.event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-    a.event_3 AS first_wk_3_actv_days_and_24_active_minutes
+    a.event_3 AS first_wk_3_actv_days_and_24_active_minutes,
+    a.is_dau_at_least_4_of_first_7_days
   FROM
-    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1` a
+    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2` a
   JOIN
     dl_token_to_telemetry_id b
     ON a.client_id = b.telemetry_client_id
@@ -140,8 +141,9 @@ telemetry_id_to_activity_staging AS (
     event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     event_3 AS first_wk_3_actv_days_and_24_active_minutes,
+    is_dau_at_least_4_of_first_7_days,
   FROM
-    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1`
+    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2`
   WHERE
     (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
     AND report_date = @submission_date
@@ -157,6 +159,7 @@ telemetry_id_to_activity_staging AS (
     CAST(NULL AS BOOLEAN) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_24_active_minutes,
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_4_of_first_7_days
   FROM
     old_events
   WHERE
@@ -179,6 +182,7 @@ telemetry_id_to_activity AS (
     MAX(
       COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
     ) AS first_wk_3_actv_days_and_24_active_minutes,
+    MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days,
     MAX(COALESCE(firefox_first_run, FALSE)) AS firefox_first_run,
     MAX(COALESCE(firefox_first_ad_click, FALSE)) AS firefox_first_ad_click,
     MAX(COALESCE(firefox_first_search, FALSE)) AS firefox_first_search,
@@ -205,7 +209,8 @@ SELECT
   ) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
   MAX(
     COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
-  ) AS first_wk_3_actv_days_and_24_active_minutes
+  ) AS first_wk_3_actv_days_and_24_active_minutes,
+  MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days
 FROM
   ga_ids_to_dl_token
 INNER JOIN

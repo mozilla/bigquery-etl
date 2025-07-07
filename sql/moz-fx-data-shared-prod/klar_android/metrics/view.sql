@@ -269,7 +269,8 @@ SELECT
       metrics.counter.networking_doh_heuristics_attempts,
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
-      metrics.counter.networking_local_network_blocked_tracker
+      metrics.counter.networking_local_network_blocked_tracker,
+      metrics.counter.use_counter_top_level_content_documents_destroyed
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

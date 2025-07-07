@@ -545,8 +545,8 @@ DELETE_TARGETS: DeleteIndex = {
     ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC),
     DeleteTarget(
         table="firefox_desktop_stable.search_with_v1",
-        field=(SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID),
-    ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC),
+        field=(SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID),
+    ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC, DESKTOP_GLEAN_SRC),
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",

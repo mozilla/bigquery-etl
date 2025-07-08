@@ -67,4 +67,8 @@ fields:
   name: legacy_telemetry_profile_group_id
   type: STRING
   description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: First Seen Country
 {% endif %}

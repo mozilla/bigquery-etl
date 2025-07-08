@@ -41,7 +41,13 @@ WITH
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -109,7 +115,13 @@ _baseline AS (
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -132,7 +144,8 @@ _current AS (
     attribution_ext,
     distribution_ext,
     legacy_telemetry_client_id,
-    legacy_telemetry_profile_group_id
+    legacy_telemetry_profile_group_id,
+    country,
     {% endif %}
   FROM
     _baseline
@@ -157,6 +170,7 @@ _previous AS (
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -202,7 +216,13 @@ _current AS (
         metrics.uuid.legacy_telemetry_profile_group_id 
         ORDER BY submission_timestamp ASC
         )
-    ) AS legacy_telemetry_profile_group_id
+    ) AS legacy_telemetry_profile_group_id,
+    mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -229,6 +249,7 @@ _previous AS (
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -268,6 +289,7 @@ SELECT
   distribution_ext,
   legacy_telemetry_client_id,
   legacy_telemetry_profile_group_id,
+  country,
   {% endif %}
 FROM _joined
 QUALIFY

@@ -21,8 +21,12 @@ tag_deployments:
       parameters:
       - key: col_1
         column_name: client_id
+      - key: col_1_string
+        string_value: client_id
       - key: col_2
         column_name: normalized_channel
+      - key: col_2_string
+        string_value: normalized_channel
       - key: table
         string_value: moz-fx-data-shared-prod.fenix_derived.attribution_clients_v1
       rct_overrides:

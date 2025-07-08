@@ -60,14 +60,12 @@ WITH
           ORDER BY submission_timestamp DESC
           )
       ) AS windows_build_number,
-      --locale
       mozfun.stats.mode_last(
         ARRAY_AGG(
           COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
           ORDER BY submission_timestamp DESC
           )
       ) AS locale,
-      --locale
       {% endif %}
     FROM
       `{{ baseline_table }}`

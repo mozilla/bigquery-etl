@@ -71,4 +71,8 @@ fields:
   name: country
   type: STRING
   description: First Seen Country
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: The distribution ID associated with the install of Firefox.
 {% endif %}

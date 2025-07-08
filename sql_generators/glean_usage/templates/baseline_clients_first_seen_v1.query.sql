@@ -48,6 +48,12 @@ WITH
           ORDER BY submission_timestamp DESC
           )
       ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -122,6 +128,12 @@ _baseline AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -146,6 +158,7 @@ _current AS (
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
     country,
+    distribution_id,
     {% endif %}
   FROM
     _baseline
@@ -171,6 +184,7 @@ _previous AS (
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
     country,
+    distribution_id,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -223,6 +237,12 @@ _current AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -250,6 +270,7 @@ _previous AS (
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
     country,
+    distribution_id,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -290,6 +311,7 @@ SELECT
   legacy_telemetry_client_id,
   legacy_telemetry_profile_group_id,
   country,
+  distribution_id,
   {% endif %}
 FROM _joined
 QUALIFY

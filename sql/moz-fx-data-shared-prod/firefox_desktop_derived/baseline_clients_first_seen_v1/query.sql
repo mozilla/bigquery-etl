@@ -25,7 +25,26 @@
       ) AS legacy_telemetry_client_id,
       mozfun.stats.mode_last(
         ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id ORDER BY submission_timestamp ASC)
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metadata.geo.country ORDER BY submission_timestamp DESC)
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.string.usage_distribution_id ORDER BY submission_timestamp DESC)
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(client_info.windows_build_number ORDER BY submission_timestamp DESC)
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale)
+          ORDER BY
+            submission_timestamp DESC
+        )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -63,7 +82,26 @@
       ) AS legacy_telemetry_client_id,
       mozfun.stats.mode_last(
         ARRAY_AGG(metrics.uuid.legacy_telemetry_profile_group_id ORDER BY submission_timestamp ASC)
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metadata.geo.country ORDER BY submission_timestamp DESC)
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.string.usage_distribution_id ORDER BY submission_timestamp DESC)
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(client_info.windows_build_number ORDER BY submission_timestamp DESC)
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale)
+          ORDER BY
+            submission_timestamp DESC
+        )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -88,6 +126,11 @@
       distribution_ext,
       legacy_telemetry_client_id,
       legacy_telemetry_profile_group_id,
+      country,
+      distribution_id,
+      windows_build_number,
+      locale,
+      normalized_os,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -122,6 +165,11 @@
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
   FROM
     _joined
   QUALIFY

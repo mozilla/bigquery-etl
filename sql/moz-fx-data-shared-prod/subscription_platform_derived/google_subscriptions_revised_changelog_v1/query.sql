@@ -160,11 +160,11 @@ synthetic_subscription_start_changelog AS (
     is_initial_subscription_changelog
     AND subscription.start_time < `timestamp`
 ),
-synthetic_subscription_suspected_expiration_changelog AS (
+synthetic_suspected_subscription_expiration_changelog AS (
   -- SubPlat hasn't consistently recorded Google subscription expirations, so we synthesize changelog
   -- records for expirations which seem to have occurred after the subscription's latest changelog.
   SELECT
-    'synthetic_subscription_suspected_expiration' AS type,
+    'synthetic_suspected_subscription_expiration' AS type,
     original_id,
     firestore_export_event_id,
     firestore_export_operation,
@@ -214,7 +214,7 @@ changelog_union AS (
     firestore_export_operation,
     subscription
   FROM
-    synthetic_subscription_suspected_expiration_changelog
+    synthetic_suspected_subscription_expiration_changelog
 )
 SELECT
   CONCAT(

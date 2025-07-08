@@ -60,6 +60,14 @@ WITH
           ORDER BY submission_timestamp DESC
           )
       ) AS windows_build_number,
+      --locale
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      --locale
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -146,6 +154,12 @@ _baseline AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -172,6 +186,7 @@ _current AS (
     country,
     distribution_id,
     windows_build_number,
+    locale,
     {% endif %}
   FROM
     _baseline
@@ -199,6 +214,7 @@ _previous AS (
     country,
     distribution_id,
     windows_build_number,
+    locale,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -263,6 +279,12 @@ _current AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -292,6 +314,7 @@ _previous AS (
     country,
     distribution_id,
     windows_build_number,
+    locale,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -334,6 +357,7 @@ SELECT
   country,
   distribution_id,
   windows_build_number,
+  locale,
   {% endif %}
 FROM _joined
 QUALIFY

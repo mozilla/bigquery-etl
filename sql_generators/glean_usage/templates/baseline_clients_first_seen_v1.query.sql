@@ -66,6 +66,9 @@ WITH
           ORDER BY submission_timestamp DESC
           )
       ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -158,6 +161,9 @@ _baseline AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -185,6 +191,7 @@ _current AS (
     distribution_id,
     windows_build_number,
     locale,
+    normalized_os,
     {% endif %}
   FROM
     _baseline
@@ -213,6 +220,7 @@ _previous AS (
     distribution_id,
     windows_build_number,
     locale,
+    normalized_os,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -283,6 +291,9 @@ _current AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -313,6 +324,7 @@ _previous AS (
     distribution_id,
     windows_build_number,
     locale,
+    normalized_os,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -356,6 +368,7 @@ SELECT
   distribution_id,
   windows_build_number,
   locale,
+  normalized_os,
   {% endif %}
 FROM _joined
 QUALIFY

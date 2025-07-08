@@ -54,6 +54,12 @@ WITH
           ORDER BY submission_timestamp DESC
           )
       ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number  
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -133,7 +139,13 @@ _baseline AS (
           metrics.string.usage_distribution_id 
           ORDER BY submission_timestamp DESC
           )
-      ) AS distribution_id
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number  
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -159,6 +171,7 @@ _current AS (
     legacy_telemetry_profile_group_id,
     country,
     distribution_id,
+    windows_build_number,
     {% endif %}
   FROM
     _baseline
@@ -185,6 +198,7 @@ _previous AS (
     legacy_telemetry_profile_group_id,
     country,
     distribution_id,
+    windows_build_number,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -243,6 +257,12 @@ _current AS (
           ORDER BY submission_timestamp DESC
           )
       ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number  
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -271,6 +291,7 @@ _previous AS (
     legacy_telemetry_profile_group_id,
     country,
     distribution_id,
+    windows_build_number,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -312,6 +333,7 @@ SELECT
   legacy_telemetry_profile_group_id,
   country,
   distribution_id,
+  windows_build_number,
   {% endif %}
 FROM _joined
 QUALIFY

@@ -11,9 +11,9 @@ SELECT
     attribution,
     `distribution`
   ) REPLACE(
-    IFNULL(country, '??') AS country,
+    IFNULL(last_seen.country, '??') AS country,
     IFNULL(city, '??') AS city,
-    COALESCE(REGEXP_EXTRACT(locale, r'^(.+?)-'), locale, NULL) AS locale
+    COALESCE(REGEXP_EXTRACT(last_seen.locale, r'^(.+?)-'), last_seen.locale, NULL) AS locale
   ),
   CASE
     WHEN LOWER(IFNULL(isp, '')) = 'browserstack'
@@ -46,16 +46,16 @@ SELECT
       THEN "legacy"
     ELSE CAST(NULL AS STRING)
   END AS distribution_id_source,
-  normalized_os AS os,
+  last_seen.normalized_os AS os,
   --"os_grouped" is the same as "os", but we are making a choice to include it anyway
   --to make the switch from legacy sources to Glean easier since the column was in the previous view
-  normalized_os AS os_grouped,
+  last_seen.normalized_os AS os_grouped,
   normalized_os_version AS os_version,
   COALESCE(
     `mozfun.norm.glean_windows_version_info`(
-      normalized_os,
-      normalized_os_version,
-      windows_build_number
+      last_seen.normalized_os,
+      last_seen.normalized_os_version,
+      last_seen.windows_build_number
     ),
     normalized_os_version
   ) AS os_version_build,

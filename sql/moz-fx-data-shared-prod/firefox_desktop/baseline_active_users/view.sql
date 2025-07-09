@@ -16,8 +16,8 @@ SELECT
     COALESCE(REGEXP_EXTRACT(last_seen.locale, r'^(.+?)-'), last_seen.locale, NULL) AS locale
   ),
   CASE
-    WHEN LOWER(IFNULL(isp, '')) = 'browserstack'
-      THEN CONCAT('Firefox Desktop', ' ', isp)
+    WHEN LOWER(IFNULL(last_seen.isp, '')) = 'browserstack'
+      THEN CONCAT('Firefox Desktop', ' ', last_seen.isp)
     WHEN LOWER(
         IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
       ) = 'mozillaonline'

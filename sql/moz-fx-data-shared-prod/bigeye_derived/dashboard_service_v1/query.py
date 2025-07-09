@@ -5,7 +5,7 @@ import os
 import time
 from typing import Any, Dict
 
-# Libraries load specific for pulling from API and uploading to bigquery.
+# Libraries specific for pulling from API and uploading to bigquery.
 import pandas as pd
 import requests
 from google.api_core.exceptions import GoogleAPIError

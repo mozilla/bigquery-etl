@@ -16,6 +16,15 @@ SELECT
   JSON_VALUE(attribution_ext.variation) AS attribution_variation,
   distribution_ext,
   legacy_telemetry_client_id,
-  legacy_telemetry_profile_group_id
+  legacy_telemetry_profile_group_id,
+  country,
+  distribution_id,
+  windows_build_number,
+  locale,
+  normalized_os,
+  app_display_version,
+  normalized_channel,
+  normalized_os_version,
+  isp,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`

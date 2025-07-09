@@ -16,8 +16,8 @@ SELECT
     COALESCE(REGEXP_EXTRACT(last_seen.locale, r'^(.+?)-'), last_seen.locale, NULL) AS locale
   ),
   CASE
-    WHEN LOWER(IFNULL(isp, '')) = 'browserstack'
-      THEN CONCAT('Firefox Desktop', ' ', isp)
+    WHEN LOWER(IFNULL(last_seen.isp, '')) = 'browserstack'
+      THEN CONCAT('Firefox Desktop', ' ', last_seen.isp)
     WHEN LOWER(
         IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
       ) = 'mozillaonline'
@@ -28,16 +28,20 @@ SELECT
         )
     ELSE 'Firefox Desktop'
   END AS app_name,
-  app_display_version AS app_version,
-  `mozfun.norm.browser_version_info`(app_display_version).major_version AS app_version_major,
-  `mozfun.norm.browser_version_info`(app_display_version).minor_version AS app_version_minor,
+  last_seen.app_display_version AS app_version,
   `mozfun.norm.browser_version_info`(
-    app_display_version
+    last_seen.app_display_version
+  ).major_version AS app_version_major,
+  `mozfun.norm.browser_version_info`(
+    last_seen.app_display_version
+  ).minor_version AS app_version_minor,
+  `mozfun.norm.browser_version_info`(
+    last_seen.app_display_version
   ).patch_revision AS app_version_patch_revision,
   `mozfun.norm.browser_version_info`(
-    app_display_version
+    last_seen.app_display_version
   ).is_major_release AS app_version_is_major_release,
-  normalized_channel AS channel,
+  last_seen.normalized_channel AS channel,
   COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id) AS distribution_id,
   CASE
     WHEN last_seen.distribution_id IS NOT NULL
@@ -50,20 +54,20 @@ SELECT
   --"os_grouped" is the same as "os", but we are making a choice to include it anyway
   --to make the switch from legacy sources to Glean easier since the column was in the previous view
   last_seen.normalized_os AS os_grouped,
-  normalized_os_version AS os_version,
+  last_seen.normalized_os_version AS os_version,
   COALESCE(
     `mozfun.norm.glean_windows_version_info`(
       last_seen.normalized_os,
       last_seen.normalized_os_version,
       last_seen.windows_build_number
     ),
-    normalized_os_version
+    last_seen.normalized_os_version
   ) AS os_version_build,
   CAST(
-    `mozfun.norm.extract_version`(normalized_os_version, "major") AS INTEGER
+    `mozfun.norm.extract_version`(last_seen.normalized_os_version, "major") AS INTEGER
   ) AS os_version_major,
   CAST(
-    `mozfun.norm.extract_version`(normalized_os_version, "minor") AS INTEGER
+    `mozfun.norm.extract_version`(last_seen.normalized_os_version, "minor") AS INTEGER
   ) AS os_version_minor,
   CASE
     WHEN BIT_COUNT(days_desktop_active_bits)
@@ -102,7 +106,7 @@ SELECT
   first_seen.attribution.term AS first_seen_attribution_term,
   first_seen.distribution.name AS first_seen_distribution_name,
   IF(
-    LOWER(IFNULL(isp, '')) <> 'browserstack'
+    LOWER(IFNULL(last_seen.isp, '')) <> 'browserstack'
     AND LOWER(
       IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
     ) <> 'mozillaonline',

@@ -45,6 +45,16 @@
       mozfun.stats.mode_last(
         ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
       ) AS normalized_os,
+      ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp ASC LIMIT 1)[
+        OFFSET(0)
+      ] AS app_display_version,
+      ARRAY_AGG(normalized_channel ORDER BY submission_timestamp ASC LIMIT 1)[
+        OFFSET(0)
+      ] AS normalized_channel,
+      ARRAY_AGG(normalized_os_version ORDER BY submission_timestamp ASC LIMIT 1)[
+        OFFSET(0)
+      ] AS normalized_os_version,
+      ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp ASC LIMIT 1)[OFFSET(0)] AS isp,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -102,6 +112,16 @@
       mozfun.stats.mode_last(
         ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
       ) AS normalized_os,
+      ARRAY_AGG(client_info.app_display_version ORDER BY submission_timestamp ASC LIMIT 1)[
+        OFFSET(0)
+      ] AS app_display_version,
+      ARRAY_AGG(normalized_channel ORDER BY submission_timestamp ASC LIMIT 1)[
+        OFFSET(0)
+      ] AS normalized_channel,
+      ARRAY_AGG(normalized_os_version ORDER BY submission_timestamp ASC LIMIT 1)[
+        OFFSET(0)
+      ] AS normalized_os_version,
+      ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp ASC LIMIT 1)[OFFSET(0)] AS isp,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -131,6 +151,10 @@
       windows_build_number,
       locale,
       normalized_os,
+      app_display_version,
+      normalized_channel,
+      normalized_os_version,
+      isp,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -170,6 +194,10 @@
     windows_build_number,
     locale,
     normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
   FROM
     _joined
   QUALIFY

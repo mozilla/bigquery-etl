@@ -172,7 +172,7 @@ def publish_routine(
         write_entry = bigquery.AccessEntry(
             "WRITER",
             bigquery.enums.EntityTypes.IAM_MEMBER,
-            "group:team-data-platform@firefox.gcp.mozilla.com",
+            "group:gcp-wg-dataplatform--developers@firefox.gcp.mozilla.com",
         )
         entries = list(dataset.access_entries)
         entries += [read_entry, write_entry]

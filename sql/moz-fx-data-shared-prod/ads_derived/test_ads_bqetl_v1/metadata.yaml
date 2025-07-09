@@ -1,0 +1,35 @@
+friendly_name: Copy of Native Desktop Ads Metrics
+description: |-
+  This is a table created to test moving ads models to the public repository.
+owners:
+- cbeck@mozilla.com
+labels:
+  incremental: true
+  schedule: hourly
+scheduling:
+  dag_name: bqetl_ads_hourly
+  date_partition_parameter: null
+  # We reprocess the same day every hour up until 1:00 the following day, to give
+  # the live data time to come in
+  destination_table: >-
+    native_desktop_ad_metrics_hourly_v1${{
+    (execution_date - macros.timedelta(hours=1)).strftime("%Y%m%d")
+    }}
+  parameters:
+  - >-
+    submission_date:DATE:{{
+    (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d')
+    }}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    sql/moz-fx-data-shared-prod/ads_derived/native_desktop_ad_metrics_hourly_v1/query.sql
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - advertiser
+    - country

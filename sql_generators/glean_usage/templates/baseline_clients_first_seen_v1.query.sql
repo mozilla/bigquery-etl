@@ -77,6 +77,10 @@ WITH
         normalized_channel
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -180,6 +184,10 @@ _baseline AS (
         normalized_channel
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -210,6 +218,7 @@ _current AS (
     normalized_os,
     app_display_version,
     normalized_channel,
+    normalized_os_version,
     {% endif %}
   FROM
     _baseline
@@ -241,6 +250,7 @@ _previous AS (
     normalized_os,
     app_display_version,
     normalized_channel,
+    normalized_os_version,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -322,6 +332,10 @@ _current AS (
         normalized_channel
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -355,6 +369,7 @@ _previous AS (
     normalized_os,
     app_display_version,
     normalized_channel,
+    normalized_os_version,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -401,6 +416,7 @@ SELECT
   normalized_os,
   app_display_version,
   normalized_channel,
+  normalized_os_version,
   {% endif %}
 FROM _joined
 QUALIFY

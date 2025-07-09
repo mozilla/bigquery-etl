@@ -97,4 +97,8 @@ fields:
   name: normalized_channel
   type: STRING
   description: The normalized channel the application is being distributed on.
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: The normalized operating system version.
 {% endif %}

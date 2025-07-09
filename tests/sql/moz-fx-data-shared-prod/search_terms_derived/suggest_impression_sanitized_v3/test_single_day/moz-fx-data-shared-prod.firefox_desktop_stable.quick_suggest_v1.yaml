@@ -6,6 +6,8 @@
     geo:
       country: US
       subdivision1: CA
+    user_agent:
+      version: "134.0.1"
   metrics:
     boolean:
       quick_suggest_is_clicked: false
@@ -32,6 +34,8 @@
     geo:
       country: US
       subdivision1: PA
+    user_agent:
+      version: "134.0.1"
   metrics:
     boolean:
       quick_suggest_is_clicked: true
@@ -58,6 +62,8 @@
     geo:
       country: US
       subdivision1: OR
+    user_agent:
+      version: "134.0.1"
   metrics:
     boolean:
       quick_suggest_is_clicked: false
@@ -84,6 +90,8 @@
     geo:
       country: US
       subdivision1: WA
+    user_agent:
+      version: "134.0.1"
   metrics:
     boolean:
       quick_suggest_is_clicked: true
@@ -101,4 +109,33 @@
   normalized_channel: release
   normalized_os: Windows
   normalized_os_version: "11.0"
+  sample_id: null
+- submission_timestamp: "2021-01-01 13:05:00"
+  client_info:
+    app_display_version: "141.0.1"
+    locale: en-US
+  metadata:
+    geo:
+      country: null
+      subdivision1: null
+    user_agent:
+      version: "141.0.1"
+  metrics:
+    boolean:
+      quick_suggest_is_clicked: false
+    quantity:
+      quick_suggest_position: 15
+    string:
+      quick_suggest_advertiser: omni consumer products
+      quick_suggest_block_id: 205
+      quick_suggest_ping_type: "quicksuggest-impression"
+      quick_suggest_request_id: rid15
+      quick_suggest_country: US
+    url2:
+      quick_suggest_reporting_url: "https://example.com/ocp"
+    uuid:
+      quick_suggest_context_id: cid15
+  normalized_channel: release
+  normalized_os: windows
+  normalized_os_version: "15.2"
   sample_id: null

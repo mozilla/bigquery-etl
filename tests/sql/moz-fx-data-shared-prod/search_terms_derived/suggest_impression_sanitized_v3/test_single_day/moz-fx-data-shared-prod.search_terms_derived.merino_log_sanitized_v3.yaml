@@ -64,3 +64,14 @@
   form_factor: desktop
   browser: firefox(134)
   os_family: windows
+- timestamp: "2021-01-01 13:05:00.000000"
+  request_id: rid15
+  session_id: sid15
+  sequence_no: 15
+  query: "robot police"
+  country: null
+  region: null
+  dma: null
+  form_factor: desktop
+  browser: firefox(141)
+  os_family: windows

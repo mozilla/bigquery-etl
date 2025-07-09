@@ -49,8 +49,8 @@ WITH subscriptions_history AS (
       )
     ) AS mozilla_account_id,
     COALESCE(
-      CAST(REGEXP_EXTRACT(subscription.metadata.sku, r'(\d+)[_-]?month') AS INTEGER),
-      (CAST(REGEXP_EXTRACT(subscription.metadata.sku, r'(\d+)[_-]?year') AS INTEGER) * 12)
+      CAST(REGEXP_EXTRACT(subscription.metadata.sku, r'(\d+)[_.]?month') AS INTEGER),
+      (CAST(REGEXP_EXTRACT(subscription.metadata.sku, r'(\d+)[_.]?year') AS INTEGER) * 12)
     ) AS plan_interval_months,
     (CAST(subscription.price_amount_micros AS DECIMAL) / 1000000) AS plan_amount,
     (
@@ -70,6 +70,8 @@ WITH subscriptions_history AS (
     ) AS introductory_price_ends_at
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_history_v1`
+  WHERE
+    subscription.purchase_type IS DISTINCT FROM 0  -- 0 = Test
 ),
 subscription_starts AS (
   SELECT

@@ -107,6 +107,7 @@ FXA_USER_ID = "jsonPayload.fields.user_id"
 SYNC_IDS = ("SUBSTR(payload.device_id, 0, 32)", "payload.uid")
 CONTEXT_ID = "context_id"
 QUICK_SUGGEST_CONTEXT_ID = "metrics.uuid.quick_suggest_context_id"
+SEARCH_WITH_CONTEXT_ID = "metrics.uuid.search_with_context_id"
 USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 
 DESKTOP_SRC = DeleteSource(
@@ -227,6 +228,9 @@ DELETE_TARGETS: DeleteIndex = {
     ): DESKTOP_SRC,
     client_id_target(table="search_derived.search_clients_last_seen_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_v6"): DESKTOP_SRC,
+    client_id_target(
+        table="google_ads_derived.conversion_event_categorization_v2"
+    ): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_daily_joined_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_last_seen_v1"): DESKTOP_SRC,
     client_id_target(table="telemetry_derived.clients_last_seen_v2"): DESKTOP_SRC,
@@ -542,6 +546,10 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.quick_suggest_v1",
         field=(QUICK_SUGGEST_CONTEXT_ID, QUICK_SUGGEST_CONTEXT_ID),
     ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC),
+    DeleteTarget(
+        table="firefox_desktop_stable.search_with_v1",
+        field=(SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID),
+    ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC, DESKTOP_GLEAN_SRC),
     # client association ping
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",

@@ -28,6 +28,16 @@ fields:
   mode: NULLABLE
   description: |-
     ID of the `google_subscriptions_changelog_v1` record this changelog was derived from.
+- name: firestore_export_event_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The associated Firestore export event ID.
+- name: firestore_export_operation
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The associated Firestore export operation ("IMPORT", "CREATE", "UPDATE", or "DELETE").
 - name: subscription
   type: RECORD
   mode: NULLABLE

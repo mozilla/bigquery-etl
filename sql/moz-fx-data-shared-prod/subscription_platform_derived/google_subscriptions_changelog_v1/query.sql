@@ -47,7 +47,7 @@ subscriptions_new_changelog AS (
     subscriptions_changelog
   LEFT JOIN
     existing_subscriptions_changelog
-    ON subscriptions_changelog.subscription.purchase_token = existing_subscriptions_changelog.purchase_token
+    ON subscriptions_changelog.document_id = existing_subscriptions_changelog.purchase_token
   WHERE
     subscriptions_changelog.timestamp > existing_subscriptions_changelog.max_timestamp
     OR existing_subscriptions_changelog.max_timestamp IS NULL

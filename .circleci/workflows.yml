@@ -807,9 +807,6 @@ jobs:
                   bqetl_script="$PWD/script/bqetl"
                   cd ~/private-bigquery-etl
 
-                  # persist commit hash used for generation
-                  git rev-parse HEAD >> PRIVATE_BIGQUERY_ETL_SHA
-
                   $bqetl_script generate all --target-project moz-fx-data-shared-prod
                   $bqetl_script dependency record --skip-existing sql/
                   $bqetl_script metadata update sql/
@@ -819,6 +816,9 @@ jobs:
                   mkdir -p /tmp/workspace/private-generated-sql
                   cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
                   cp -rf sql/. /tmp/workspace/private-generated-sql/sql
+
+                  # persist commit hash used for generation
+                  git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:

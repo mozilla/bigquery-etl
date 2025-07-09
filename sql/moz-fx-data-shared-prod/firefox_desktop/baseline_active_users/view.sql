@@ -54,20 +54,20 @@ SELECT
   --"os_grouped" is the same as "os", but we are making a choice to include it anyway
   --to make the switch from legacy sources to Glean easier since the column was in the previous view
   last_seen.normalized_os AS os_grouped,
-  normalized_os_version AS os_version,
+  last_seen.normalized_os_version AS os_version,
   COALESCE(
     `mozfun.norm.glean_windows_version_info`(
       last_seen.normalized_os,
       last_seen.normalized_os_version,
       last_seen.windows_build_number
     ),
-    normalized_os_version
+    last_seen.normalized_os_version
   ) AS os_version_build,
   CAST(
-    `mozfun.norm.extract_version`(normalized_os_version, "major") AS INTEGER
+    `mozfun.norm.extract_version`(last_seen.normalized_os_version, "major") AS INTEGER
   ) AS os_version_major,
   CAST(
-    `mozfun.norm.extract_version`(normalized_os_version, "minor") AS INTEGER
+    `mozfun.norm.extract_version`(last_seen.normalized_os_version, "minor") AS INTEGER
   ) AS os_version_minor,
   CASE
     WHEN BIT_COUNT(days_desktop_active_bits)

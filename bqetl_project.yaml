@@ -99,6 +99,7 @@ dry_run:
   - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_changelog_v1/query.sql
+  - sql/moz-fx-data-shared-prod/subscription_platform_derived/firestore_stripe_subscriptions_status_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/google_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/google_subscriptions_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/nonprod_apple_subscriptions_v1/query.sql
@@ -347,6 +348,9 @@ generate:
       - accounts_frontend
       - accounts_backend
       - subscription_platform_backend
+      slice_by_sample_id:
+      - firefox_desktop
+      - firefox_desktop_background_update
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view

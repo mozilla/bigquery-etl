@@ -1,0 +1,31 @@
+friendly_name: Firefox Crashes
+description: |-
+  Combined crashes for Firefox desktop, Fenix, Focus Android, and Klar.
+  Deduped by minidump hash.
+owners:
+- benwu@mozilla.com
+labels:
+  incremental: true
+  owner1: benwu
+scheduling:
+  dag_name: bqetl_crashes
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: true
+    expiration_days: 775
+  clustering:
+    fields:
+    - normalized_app_id
+    - normalized_channel
+    - sample_id
+# schema is generated based on ping tables
+require_column_descriptions: false
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  # https://mozilla-hub.atlassian.net/browse/DENG-8189
+  - workgroup:dataops-managed/crash-ping-ingest
+  # https://mozilla-hub.atlassian.net/browse/DENG-8424
+  - workgroup:remote-settings/gke

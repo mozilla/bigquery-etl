@@ -2368,3 +2368,51 @@ bqetl_pocket_user_engagement_historical:
     retry_delay: 5m
   tags:
     - impact/tier_3
+
+bqetl_braze_add_ons_devs_users:
+  schedule_interval: once
+  description: |
+    Load Add-ons Developers data into BigQuery for one-time send.
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2025-07-02'
+    retries: 1
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+
+bqetl_braze_add_ons_sync:
+  schedule_interval: once
+  description: |
+    Create Add-ons sync table to sync to Braze.
+  default_args:
+    owner: cbeck@mozilla.com
+    email:
+      - cbeck@mozilla.com
+    start_date: '2025-07-03'
+    retries: 1
+    retry_delay: 5m
+  tags:
+    - impact/tier_3
+
+bqetl_crashes:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - benwu@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: benwu@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-06-01'
+  description: Crash ping-related ETL
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

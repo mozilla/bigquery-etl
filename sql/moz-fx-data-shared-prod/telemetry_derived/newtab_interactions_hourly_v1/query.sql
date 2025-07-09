@@ -37,7 +37,7 @@ legacy_impression_data AS (
 -- this CTE allows us to filter out >2 clicks from a given client on the same tile within 1 second
 legacy_flattened_impression_data AS (
   SELECT
-    submission_timestamp,
+    TIMESTAMP_TRUNC(submission_timestamp, SECOND) AS submission_second,
     impression_id AS client_id, -- client_id renamed to impression_id in GCP
     flattened_tiles.id AS tile_id,
     --the 3x1 layout has a bug where we need to use the position of each element in the tiles array instead of the actual pos field
@@ -60,14 +60,14 @@ legacy_flattened_impression_data AS (
     UNNEST(legacy_impression_data.tiles) AS flattened_tiles
     WITH OFFSET AS alt_pos
   GROUP BY
-    submission_timestamp,
+    submission_second,
     client_id,
     tile_id,
     position
 ),
 legacy_summary AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+    DATE(submission_second) AS submission_date,
     CAST(NULL AS STRING) AS recommendation_id,
     tile_id,
     position,
@@ -216,7 +216,7 @@ uapi_summary AS (
     0 AS save_count,
     0 AS dismiss_count,
   FROM
-    `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_hourly_v1`
+    `moz-fx-data-shared-prod.ads_derived.interaction_aggregates_uapi_hourly_v1`
   WHERE
     DATE(submission_hour) = @submission_date
   GROUP BY

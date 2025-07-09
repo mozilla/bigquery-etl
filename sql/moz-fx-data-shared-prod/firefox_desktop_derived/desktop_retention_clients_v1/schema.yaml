@@ -82,6 +82,10 @@ fields:
   type: STRING
   description: Normalized Operating System Version
 - mode: NULLABLE
+  name: windows_version
+  type: STRING
+  description: Windows Version
+- mode: NULLABLE
   name: distribution_id
   type: STRING
   description: Distribution ID
@@ -98,9 +102,9 @@ fields:
   type: INTEGER
   description: Days Seen Bits
 - mode: NULLABLE
-  name: days_active_bits
+  name: days_desktop_active_bits
   type: INTEGER
-  description: Days Active Bits
+  description: Days Desktop Active Bits
 - mode: NULLABLE
   name: ping_sent_metric_date
   type: BOOLEAN
@@ -129,3 +133,7 @@ fields:
   name: retained_week_4_new_profile
   type: BOOLEAN
   description: Retained Week 4 New Profile
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description: Legacy Telemetry Client Identifier

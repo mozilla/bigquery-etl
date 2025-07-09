@@ -1,0 +1,235 @@
+fields:
+- name: environment
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The server environment, "Sandbox" or "Production", in which the App Store generated the response.
+- name: bundle_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The app's bundle identifier.
+- name: original_transaction_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    The original transaction identifier of the auto-renewable subscription.
+- name: status
+  type: INTEGER
+  mode: NULLABLE
+  description: |-
+    The status of the auto-renewable subscription.
+
+    Possible values:
+      * `1` - The auto-renewable subscription is active.
+      * `2` - The auto-renewable subscription is expired.
+      * `3` - The auto-renewable subscription is in a billing retry period.
+      * `4` - The auto-renewable subscription is in a Billing Grace Period.
+      * `5` - The auto-renewable subscription is revoked.
+        The App Store refunded the transaction or revoked it from Family Sharing.
+- name: last_transaction
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    The most recent App Store transaction information for the auto-renewable subscription.
+  fields:
+  - name: currency
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The three-letter ISO 4217 currency code associated with the `price` parameter.
+      This value is present only if `price` is present.
+  - name: expires_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The time that the subscription expires or renews.
+  - name: in_app_ownership_type
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      A string that describes whether the transaction was purchased by the customer, or is available to them through Family Sharing.
+
+      Possible values:
+        * `FAMILY_SHARED` - The transaction belongs to a family member who benefits from service.
+        * `PURCHASED` - The transaction belongs to the purchaser.
+  - name: is_upgraded
+    type: BOOLEAN
+    mode: NULLABLE
+    description: |-
+      Whether the customer upgraded to another subscription.
+  - name: offer_identifier
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The identifier that contains the offer code or the promotional offer identifier.
+  - name: offer_type
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      A value that represents the promotional offer type.
+
+      Possible values:
+        * `1` - An introductory offer.
+        * `2` - A promotional offer.
+        * `3` - An offer with a subscription offer code.
+        * `4` - A win-back offer.
+  - name: original_purchase_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The time that represents the purchase date of the original transaction identifier.
+  - name: price
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      An integer value that represents the price multiplied by 1000 of the in-app purchase or subscription offer.
+      The `currency` parameter indicates the currency of this price.
+  - name: product_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The unique identifier of the product.
+  - name: purchase_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The time that the App Store charged the customer's account for a purchase, restored product, subscription, or subscription renewal after a lapse.
+  - name: revocation_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The time that the App Store refunded the transaction or revoked it from Family Sharing.
+  - name: revocation_reason
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The reason that the App Store refunded the transaction or revoked it from Family Sharing.
+
+      Possible values:
+        * `0` - The App Store refunded the transaction on behalf of the customer for other reasons, for example, an accidental purchase.
+        * `1` - The App Store refunded the transaction on behalf of the customer due to an actual or perceived issue within your app.
+  - name: storefront
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The ISO 3166-1 alpha-3 country code that represents the country or region associated with the App Store storefront for the purchase.
+  - name: transaction_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The unique identifier of the transaction.
+  - name: type
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The type of the in-app purchase (should always be "Auto-Renewable Subscription").
+
+      Possible values:
+        * `Auto-Renewable Subscription` - An auto-renewable subscription
+        * `Non-Consumable` - A non-consumable In-App Purchase
+        * `Consumable` - A consumable In-App Purchase
+        * `Non-Renewing Subscription` - A non-renewing subscription
+- name: renewal_info
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    The most recent App Store renewal information for the auto-renewable subscription.
+  fields:
+  - name: auto_renew_product_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The identifier of the product that renews at the next billing period.
+  - name: auto_renew_status
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The renewal status of the auto-renewable subscription.
+
+      Possible values:
+        * `0` - Automatic renewal is off.
+          The customer has turned off automatic renewal for the subscription, and it won't renew at the end of the current subscription period.
+        * `1` - Automatic renewal is on.
+          The subscription renews at the end of the current subscription period.
+  - name: currency
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The three-letter ISO 4217 currency code for the `renewal_price` of the subscription.
+  - name: expiration_intent
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The reason the subscription expired.
+
+      Possible values:
+        * `1` - The customer canceled their subscription.
+        * `2` - Billing error; for example, the customer's payment information is no longer valid.
+        * `3` - The customer didn't consent to an auto-renewable subscription price increase that requires customer consent.
+        * `4` - The product wasn't available for purchase at the time of renewal.
+        * `5` - The subscription expired for some other reason.
+  - name: grace_period_expires_date
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The time when the Billing Grace Period for subscription renewals expires.
+  - name: is_in_billing_retry_period
+    type: BOOLEAN
+    mode: NULLABLE
+    description: |-
+      Whether the App Store is attempting to automatically renew the expired subscription.
+  - name: offer_identifier
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The offer code or the promotional offer identifier.
+  - name: offer_type
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The type of subscription offer.
+
+      Possible values:
+        * `1` - An introductory offer.
+        * `2` - A promotional offer.
+        * `3` - An offer with a subscription offer code.
+        * `4` - A win-back offer.
+  - name: renewal_price
+    type: INTEGER
+    mode: NULLABLE
+    description: |-
+      The renewal price, in milliunits, of the auto-renewable subscription that renews at the next billing period.
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    Custom subscription metadata recorded by SubPlat.
+  fields:
+  - name: form_of_payment
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The form of payment for the subscription (should always be "APPLE_APP_STORE").
+  - name: latest_notification_type
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The type of the latest Apple App Store Server notification SubPlat received for the subscription.
+      See https://developer.apple.com/documentation/appstoreservernotifications/notificationtype.
+  - name: latest_notification_subtype
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The sub-type of the latest Apple App Store Server notification SubPlat received for the subscription.
+      See https://developer.apple.com/documentation/appstoreservernotifications/subtype.
+  - name: user_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      The customer's Mozilla Account user ID.
+  - name: verified_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      When SubPlat last retrieved the subscription's data from the Apple App Store Server API.

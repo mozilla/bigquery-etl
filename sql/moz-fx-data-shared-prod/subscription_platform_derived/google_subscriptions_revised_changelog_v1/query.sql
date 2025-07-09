@@ -1,56 +1,69 @@
-WITH existing_revised_changelog AS (
+WITH latest_existing_revised_changelog AS (
   {% if is_init() %}
     SELECT
-      CAST(NULL AS STRING) AS purchase_token,
-      CAST(NULL AS INTEGER) AS subscription_change_count,
-      CAST(NULL AS TIMESTAMP) AS max_timestamp
+      CAST(NULL AS TIMESTAMP) AS `timestamp`,
+      CAST(NULL AS STRING) AS google_subscriptions_changelog_id,
+      CAST(NULL AS STRING) AS firestore_export_event_id,
+      CAST(NULL AS STRING) AS firestore_export_operation,
+      IF(FALSE, subscription, NULL) AS subscription
     FROM
-      UNNEST([])
+      `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_changelog_v1`
+    WHERE
+      FALSE
   {% else %}
     SELECT
-      subscription.metadata.purchase_token,
-      COUNT(*) AS subscription_change_count,
-      MAX(`timestamp`) AS max_timestamp
+      `timestamp`,
+      google_subscriptions_changelog_id,
+      firestore_export_event_id,
+      firestore_export_operation,
+      subscription
     FROM
       `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1`
-    GROUP BY
-      subscription.metadata.purchase_token
+    QUALIFY
+      1 = ROW_NUMBER() OVER (
+        PARTITION BY
+          subscription.metadata.purchase_token
+        ORDER BY
+          `timestamp` DESC,
+          id DESC
+      )
   {% endif %}
 ),
-original_changelog AS (
+new_original_changelog AS (
   SELECT
-    original_changelog.*,
+    original_changelog.id AS original_id,
+    original_changelog.timestamp,
+    'original' AS type,
+    original_changelog.firestore_export_event_id,
+    original_changelog.firestore_export_operation,
+    original_changelog.subscription,
     (
-      COALESCE(existing_revised_changelog.subscription_change_count, 0) + (
-        ROW_NUMBER() OVER (
-          PARTITION BY
-            original_changelog.subscription.metadata.purchase_token
-          ORDER BY
-            original_changelog.timestamp,
-            original_changelog.id
-        )
-      )
-    ) AS subscription_change_number,
-    (
-      COALESCE(existing_revised_changelog.subscription_change_count, 0) + (
-        COUNT(*) OVER (PARTITION BY original_changelog.subscription.metadata.purchase_token)
-      )
-    ) AS subscription_change_count
+      latest_existing_revised_changelog.subscription.metadata.purchase_token IS NULL
+      AND 1 = ROW_NUMBER() OVER subscription_changes_asc
+    ) AS is_initial_subscription_changelog
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_changelog_v1` AS original_changelog
   LEFT JOIN
-    existing_revised_changelog
-    ON original_changelog.subscription.metadata.purchase_token = existing_revised_changelog.purchase_token
+    latest_existing_revised_changelog
+    ON original_changelog.subscription.metadata.purchase_token = latest_existing_revised_changelog.subscription.metadata.purchase_token
   WHERE
     original_changelog.firestore_export_operation != 'DELETE'
     AND (
-      original_changelog.timestamp > existing_revised_changelog.max_timestamp
-      OR existing_revised_changelog.max_timestamp IS NULL
+      original_changelog.timestamp > latest_existing_revised_changelog.timestamp
+      OR latest_existing_revised_changelog.timestamp IS NULL
+    )
+  WINDOW
+    subscription_changes_asc AS (
+      PARTITION BY
+        original_changelog.subscription.metadata.purchase_token
+      ORDER BY
+        original_changelog.timestamp,
+        original_changelog.id
     )
 ),
-adjusted_original_changelog AS (
+adjusted_new_original_changelog AS (
   SELECT
-    id AS original_id,
+    original_id,
     (
       CASE
         -- Override the default 1970-01-01 00:00:00 timestamps for the records which were imported
@@ -61,12 +74,50 @@ adjusted_original_changelog AS (
               TIMESTAMP('2021-10-18 20:00:00') AS `timestamp`,
               'adjusted_subscription_import' AS type
             )
-        ELSE STRUCT(`timestamp`, 'original' AS type)
+        ELSE STRUCT(`timestamp`, type)
       END
     ).*,
-    * EXCEPT (id, `timestamp`)
+    * EXCEPT (original_id, `timestamp`, type)
   FROM
-    original_changelog
+    new_original_changelog
+),
+latest_new_original_changelog AS (
+  SELECT
+    *
+  FROM
+    adjusted_new_original_changelog
+  QUALIFY
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        subscription.metadata.purchase_token
+      ORDER BY
+        `timestamp` DESC,
+        original_id DESC
+    )
+),
+latest_changelog AS (
+  SELECT
+    `timestamp`,
+    original_id,
+    firestore_export_event_id,
+    firestore_export_operation,
+    subscription
+  FROM
+    latest_new_original_changelog
+  UNION ALL
+  SELECT
+    latest_existing_revised_changelog.timestamp,
+    latest_existing_revised_changelog.google_subscriptions_changelog_id AS original_id,
+    latest_existing_revised_changelog.firestore_export_event_id,
+    latest_existing_revised_changelog.firestore_export_operation,
+    latest_existing_revised_changelog.subscription
+  FROM
+    latest_existing_revised_changelog
+  LEFT JOIN
+    latest_new_original_changelog
+    ON latest_existing_revised_changelog.subscription.metadata.purchase_token = latest_new_original_changelog.subscription.metadata.purchase_token
+  WHERE
+    latest_new_original_changelog.subscription.metadata.purchase_token IS NULL
 ),
 synthetic_subscription_start_changelog AS (
   SELECT
@@ -104,16 +155,16 @@ synthetic_subscription_start_changelog AS (
         )
     ) AS subscription
   FROM
-    adjusted_original_changelog
+    adjusted_new_original_changelog
   WHERE
-    subscription_change_number = 1
+    is_initial_subscription_changelog
     AND subscription.start_time < `timestamp`
 ),
-synthetic_subscription_suspected_expiration_changelog AS (
+synthetic_suspected_subscription_expiration_changelog AS (
   -- SubPlat hasn't consistently recorded Google subscription expirations, so we synthesize changelog
   -- records for expirations which seem to have occurred after the subscription's latest changelog.
   SELECT
-    'synthetic_subscription_suspected_expiration' AS type,
+    'synthetic_suspected_subscription_expiration' AS type,
     original_id,
     firestore_export_event_id,
     firestore_export_operation,
@@ -126,17 +177,13 @@ synthetic_subscription_suspected_expiration_changelog AS (
         )
     ) AS subscription
   FROM
-    adjusted_original_changelog
+    latest_changelog
   WHERE
-    subscription_change_number = subscription_change_count
-    AND subscription.expiry_time > `timestamp`
-    -- Wait at least 12 hours before assuming the subscription has expired, which will hopefully
+    subscription.expiry_time > `timestamp`
+    -- Wait at least 24 hours before assuming the subscription has expired, which will hopefully
     -- allow the majority of late-arriving changelog data to arrive (based on late-arriving data
-    -- seen prior to 2025-04-16, waiting 12 hours would have covered ~86% of such cases).
-    AND subscription.expiry_time < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 12 HOUR)
-    -- Ignore suspected expirations during the current day, as these ETLs run daily and are
-    -- primarily intended to process the previous day's data.
-    AND subscription.expiry_time < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY)
+    -- seen prior to 2025-06-04, waiting 24 hours would have covered ~95% of such cases).
+    AND subscription.expiry_time < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)
 ),
 changelog_union AS (
   SELECT
@@ -147,7 +194,7 @@ changelog_union AS (
     firestore_export_operation,
     subscription
   FROM
-    adjusted_original_changelog
+    adjusted_new_original_changelog
   UNION ALL
   SELECT
     `timestamp`,
@@ -167,7 +214,7 @@ changelog_union AS (
     firestore_export_operation,
     subscription
   FROM
-    synthetic_subscription_suspected_expiration_changelog
+    synthetic_suspected_subscription_expiration_changelog
 )
 SELECT
   CONCAT(
@@ -182,6 +229,8 @@ SELECT
   CURRENT_TIMESTAMP() AS created_at,
   type,
   original_id AS google_subscriptions_changelog_id,
+  firestore_export_event_id,
+  firestore_export_operation,
   subscription
 FROM
   changelog_union

@@ -14,9 +14,14 @@ subscriptions_changelog AS (
     purchase AS subscription
   FROM
     purchases_changelog
-  WHERE
-    purchase.form_of_payment = 'GOOGLE_PLAY'
-    AND purchase.sku_type = 'subs'
+  -- This filter is mimicking some of SubPlat's internal logic:
+  -- https://github.com/mozilla/fxa/blob/e73499ee02cfc67a81e3f4cb21742fb95e00d1ea/packages/fxa-shared/payments/iap/google-play/user-manager.ts#L30-L32
+  -- Using LOGICAL_OR() to also include associated deletion changelog records, where the data values would be null.
+  QUALIFY
+    LOGICAL_OR(purchase.form_of_payment = 'GOOGLE_PLAY' AND purchase.sku_type = 'subs') OVER (
+      PARTITION BY
+        document_id
+    )
 ),
 existing_subscriptions_changelog AS (
   {% if is_init() %}

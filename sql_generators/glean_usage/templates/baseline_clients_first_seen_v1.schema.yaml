@@ -87,5 +87,22 @@ fields:
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Set to "Other" if this message contained an unrecognized OS name 
+  description: Set to "Other" if this message contained an unrecognized OS name
+- mode: NULLABLE
+  name: app_display_version
+  type: STRING
+  description: |-
+    The user visible version string (e.g. "1.0.3"). If the value was not provided through configuration, this metric gets set to Unknown.
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: The normalized channel the application is being distributed on.
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: The normalized operating system version.
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: Internet Service Provider
 {% endif %}

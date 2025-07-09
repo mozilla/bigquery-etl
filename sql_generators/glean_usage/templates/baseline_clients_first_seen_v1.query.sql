@@ -69,6 +69,22 @@ WITH
       mozfun.stats.mode_last(
         ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
       ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -164,6 +180,22 @@ _baseline AS (
       mozfun.stats.mode_last(
         ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
       ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -192,6 +224,10 @@ _current AS (
     windows_build_number,
     locale,
     normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
     {% endif %}
   FROM
     _baseline
@@ -221,6 +257,10 @@ _previous AS (
     windows_build_number,
     locale,
     normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -294,6 +334,22 @@ _current AS (
       mozfun.stats.mode_last(
         ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
       ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -325,6 +381,10 @@ _previous AS (
     windows_build_number,
     locale,
     normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -369,6 +429,10 @@ SELECT
   windows_build_number,
   locale,
   normalized_os,
+  app_display_version,
+  normalized_channel,
+  normalized_os_version,
+  isp,
   {% endif %}
 FROM _joined
 QUALIFY

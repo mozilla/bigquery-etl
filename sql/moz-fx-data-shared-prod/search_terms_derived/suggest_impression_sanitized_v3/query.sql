@@ -46,12 +46,12 @@ WITH impressions AS (
     metrics.boolean.quick_suggest_is_clicked AS is_clicked,
     client_info.locale AS locale,
     IF(
-      SAFE_CAST(SPLIT(metadata.user_agent.version, '.')[0] AS INT64) >= 140,
+      SAFE_CAST(metadata.user_agent.version AS INT64) >= 140,
       metrics.string.quick_suggest_country,
       metadata.geo.country
     ) AS country,
     IF(
-      SAFE_CAST(SPLIT(metadata.user_agent.version, '.')[0] AS INT64) >= 140,
+      SAFE_CAST(metadata.user_agent.version AS INT64) >= 140,
       CAST(NULL AS STRING),
       metadata.geo.subdivision1
     ) AS region,

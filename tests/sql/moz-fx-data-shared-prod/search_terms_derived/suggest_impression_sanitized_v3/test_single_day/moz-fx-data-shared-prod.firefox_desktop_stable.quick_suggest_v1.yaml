@@ -7,7 +7,7 @@
       country: US
       subdivision1: CA
     user_agent:
-      version: "134.0.1"
+      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: false
@@ -35,7 +35,7 @@
       country: US
       subdivision1: PA
     user_agent:
-      version: "134.0.1"
+      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: true
@@ -63,7 +63,7 @@
       country: US
       subdivision1: OR
     user_agent:
-      version: "134.0.1"
+      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: false
@@ -91,7 +91,7 @@
       country: US
       subdivision1: WA
     user_agent:
-      version: "134.0.1"
+      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: true
@@ -119,7 +119,7 @@
       country: null
       subdivision1: null
     user_agent:
-      version: "141.0.1"
+      version: "141"
   metrics:
     boolean:
       quick_suggest_is_clicked: false

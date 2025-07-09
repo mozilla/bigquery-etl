@@ -11,6 +11,9 @@ from bigquery_etl.util.common import write_sql
 CRASH_TABLES = [
     ("moz-fx-data-shared-prod", "firefox_desktop", "crash"),
     ("moz-fx-data-shared-prod", "firefox_crashreporter", "crash"),
+    ("moz-fx-data-shared-prod", "fenix", "crash"),
+    ("moz-fx-data-shared-prod", "focus_android", "crash"),
+    ("moz-fx-data-shared-prod", "klar_android", "crash"),
 ]
 
 
@@ -61,14 +64,22 @@ def generate(target_project, output_dir, use_cloud_function):
     template_dir = Path(__file__).parent / "templates"
     env = Environment(loader=FileSystemLoader(template_dir))
 
-    template = env.get_template("desktop_crashes.view.sql")
+    template = env.get_template("firefox_crashes.query.sql")
     query = template.render(tables=fields_per_table, project_id=target_project)
 
     write_sql(
         Path(output_dir) / target_project,
-        f"{target_project}.firefox_desktop.desktop_crashes",
-        "view.sql",
+        f"{target_project}.telemetry_derived.firefox_crashes_v1",
+        "query.sql",
         reformat(query),
+    )
+
+    combined_schema.to_yaml_file(
+        Path(output_dir)
+        / target_project
+        / "telemetry_derived"
+        / "firefox_crashes_v1"
+        / "schema.yaml"
     )
 
 

@@ -1,9 +1,9 @@
-friendly_name: Firefox Desktop Crashes
+friendly_name: Firefox Crashes
 description: |-
-  Union of multiple Firefox desktop crash ping sources.
-  Replaced by telemetry.firefox_crashes in https://mozilla-hub.atlassian.net/browse/DENG-8594
+  Combined crashes for Firefox desktop, Fenix, Focus Android, and Klar.
+  Deduped by minidump hash.
 owners:
-- bewu@mozilla.cam
+- benwu@mozilla.com
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

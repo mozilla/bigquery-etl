@@ -2396,3 +2396,23 @@ bqetl_braze_add_ons_sync:
     retry_delay: 5m
   tags:
     - impact/tier_3
+
+bqetl_crashes:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - benwu@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    owner: benwu@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-06-01'
+  description: Crash ping-related ETL
+  repo: bigquery-etl
+  schedule_interval: 0 4 * * *
+  tags:
+    - impact/tier_1
+    - repo/bigquery-etl

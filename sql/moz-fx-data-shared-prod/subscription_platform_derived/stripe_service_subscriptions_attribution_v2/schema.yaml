@@ -1,0 +1,62 @@
+fields:
+- name: subscription_id
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Service subscription ID.
+- name: subscription_started_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: |-
+    When the service subscription started.
+- name: last_touch_attribution
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    Last-touch attribution for the service subscription (if any).
+  fields:
+  - name: impression_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      When the last-touch attribution impression occurred.
+  - name: entrypoint
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint.
+  - name: entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint experiment.
+  - name: entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint experiment variation.
+  - name: utm_campaign
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM campaign.
+  - name: utm_content
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM content.
+  - name: utm_medium
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM medium.
+  - name: utm_source
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM source.
+  - name: utm_term
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM term.

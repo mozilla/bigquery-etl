@@ -70,6 +70,8 @@ WITH subscriptions_history AS (
     ) AS introductory_price_ends_at
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_history_v1`
+  WHERE
+    subscription.purchase_type IS DISTINCT FROM 0  -- 0 = Test
 ),
 subscription_starts AS (
   SELECT

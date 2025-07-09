@@ -102,6 +102,70 @@ SELECT
   COUNT(
     DISTINCT(
       CASE
+        WHEN activity_date = DATE_ADD(cohort_date, INTERVAL 1 DAY)
+          THEN active_client_id
+        ELSE NULL
+      END
+    )
+  ) AS num_clients_returned_on_day_1,
+  COUNT(
+    DISTINCT(
+      CASE
+        WHEN activity_date
+          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
+          AND DATE_ADD(cohort_date, INTERVAL 2 DAY)
+          THEN active_client_id
+        ELSE NULL
+      END
+    )
+  ) AS num_clients_returned_any_day_between_day_1_and_day_2,
+  COUNT(
+    DISTINCT(
+      CASE
+        WHEN activity_date
+          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
+          AND DATE_ADD(cohort_date, INTERVAL 3 DAY)
+          THEN active_client_id
+        ELSE NULL
+      END
+    )
+  ) AS num_clients_returned_any_day_between_day_1_and_day_3,
+  COUNT(
+    DISTINCT(
+      CASE
+        WHEN activity_date
+          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
+          AND DATE_ADD(cohort_date, INTERVAL 4 DAY)
+          THEN active_client_id
+        ELSE NULL
+      END
+    )
+  ) AS num_clients_returned_any_day_between_day_1_and_day_4,
+  COUNT(
+    DISTINCT(
+      CASE
+        WHEN activity_date
+          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
+          AND DATE_ADD(cohort_date, INTERVAL 5 DAY)
+          THEN active_client_id
+        ELSE NULL
+      END
+    )
+  ) AS num_clients_returned_any_day_between_day_1_and_day_5,
+  COUNT(
+    DISTINCT(
+      CASE
+        WHEN activity_date
+          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
+          AND DATE_ADD(cohort_date, INTERVAL 6 DAY)
+          THEN active_client_id
+        ELSE NULL
+      END
+    )
+  ) AS num_clients_returned_any_day_between_day_1_and_day_6,
+  COUNT(
+    DISTINCT(
+      CASE
         WHEN activity_date
           BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
           AND DATE_ADD(cohort_date, INTERVAL 7 DAY)
@@ -114,79 +178,13 @@ SELECT
     DISTINCT(
       CASE
         WHEN activity_date
-          BETWEEN DATE_ADD(cohort_date, INTERVAL 8 DAY)
-          AND DATE_ADD(cohort_date, INTERVAL 14 DAY)
-          THEN active_client_id
-        ELSE NULL
-      END
-    )
-  ) AS num_clients_returned_any_day_between_day_8_and_day_14,
-  COUNT(
-    DISTINCT(
-      CASE
-        WHEN activity_date
-          BETWEEN DATE_ADD(cohort_date, INTERVAL 15 DAY)
-          AND DATE_ADD(cohort_date, INTERVAL 28 DAY)
-          THEN active_client_id
-        ELSE NULL
-      END
-    )
-  ) AS num_clients_returned_any_day_between_day_15_and_day_28,
-  COUNT(
-    DISTINCT(
-      CASE
-        WHEN activity_date
-          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
-          AND DATE_ADD(cohort_date, INTERVAL 14 DAY)
-          THEN active_client_id
-        ELSE NULL
-      END
-    )
-  ) AS num_clients_returned_any_day_between_day_1_and_day_14,
-  COUNT(
-    DISTINCT(
-      CASE
-        WHEN activity_date
           BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
           AND DATE_ADD(cohort_date, INTERVAL 28 DAY)
           THEN active_client_id
         ELSE NULL
       END
     )
-  ) AS num_clients_returned_any_day_between_day_1_and_day_28,
-  COUNT(DISTINCT(client_id)) - COUNT(
-    DISTINCT(
-      CASE
-        WHEN activity_date
-          BETWEEN DATE_ADD(cohort_date, INTERVAL 1 DAY)
-          AND DATE_ADD(cohort_date, INTERVAL 7 DAY)
-          THEN active_client_id
-        ELSE NULL
-      END
-    )
-  ) AS num_clients_not_seen_between_day_1_to_day_7,
-  COUNT(DISTINCT(client_id)) - COUNT(
-    DISTINCT(
-      CASE
-        WHEN activity_date
-          BETWEEN DATE_ADD(cohort_date, INTERVAL 8 DAY)
-          AND DATE_ADD(cohort_date, INTERVAL 14 DAY)
-          THEN active_client_id
-        ELSE NULL
-      END
-    )
-  ) AS num_clients_not_seen_between_day_8_and_day_14,
-  COUNT(DISTINCT(client_id)) - COUNT(
-    DISTINCT(
-      CASE
-        WHEN activity_date
-          BETWEEN DATE_ADD(cohort_date, INTERVAL 15 DAY)
-          AND DATE_ADD(cohort_date, INTERVAL 28 DAY)
-          THEN active_client_id
-        ELSE NULL
-      END
-    )
-  ) AS num_clients_not_seen_between_day_15_and_day_28
+  ) AS num_clients_returned_any_day_between_day_1_and_day_28
 FROM
   activity_cohort_match
 GROUP BY

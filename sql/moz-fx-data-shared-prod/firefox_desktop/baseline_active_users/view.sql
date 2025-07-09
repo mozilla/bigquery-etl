@@ -106,7 +106,7 @@ SELECT
   first_seen.attribution.term AS first_seen_attribution_term,
   first_seen.distribution.name AS first_seen_distribution_name,
   IF(
-    LOWER(IFNULL(isp, '')) <> 'browserstack'
+    LOWER(IFNULL(last_seen.isp, '')) <> 'browserstack'
     AND LOWER(
       IFNULL(COALESCE(last_seen.distribution_id, distribution_mapping.distribution_id), '')
     ) <> 'mozillaonline',

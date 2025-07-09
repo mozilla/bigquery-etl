@@ -53,6 +53,8 @@ cohorts_in_range AS (
   WHERE
     cohort_date >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
 ),
+--Get all first seen in last 180 days left joined
+--to 1 row per day/client where they were DAU for the last 180 days
 activity_cohort_match AS (
   SELECT
     cohorts_in_range.client_id AS cohort_client_id,

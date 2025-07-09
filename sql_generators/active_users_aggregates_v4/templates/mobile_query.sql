@@ -5,7 +5,7 @@ WITH
     SELECT
       client_id,
       adjust_network,
-      install_source
+      install_source,
     FROM
       fenix.firefox_android_clients
   ),

@@ -26,6 +26,11 @@ def validate_timedelta_string(s):
         )
 
 
+def negate_timedelta_string(s: str) -> str:
+    """Negate the provided timedelta string."""
+    return s[1:] if s.startswith("-") else ("-" + s)
+
+
 def is_date_string(s):
     """Check whether a string is a valid date string formatted like YYYY-MM-DD."""
     try:

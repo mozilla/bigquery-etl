@@ -2,143 +2,248 @@ fields:
 - name: id
   type: STRING
   mode: NULLABLE
+  description: |-
+    History record ID.
 - name: valid_from
   type: TIMESTAMP
   mode: NULLABLE
+  description: |-
+    Start of the time range this history record is considered valid for (inclusive).
 - name: valid_to
   type: TIMESTAMP
   mode: NULLABLE
+  description: |-
+    End of the time range this history record is considered valid for (non-inclusive).
+    Open-ended history records will have this set to the max timestamp value (9999-12-31 23:59:59.999999).
 - name: provider_subscriptions_history_id
   type: STRING
   mode: NULLABLE
+  description: |-
+    ID of the provider subscriptions history record this history record was derived from.
 - name: subscription
   type: RECORD
   mode: NULLABLE
+  description: |-
+    The logical subscription as it ostensibly was during the time range this history record is considered valid for.
   fields:
   - name: id
     type: STRING
     mode: NULLABLE
+    description: |-
+      Logical subscription ID.
   - name: provider
     type: STRING
     mode: NULLABLE
+    description: |-
+      Provider of the subscription ("Stripe").
   - name: payment_provider
     type: STRING
     mode: NULLABLE
+    description: |-
+      Payment provider for the subscription.
+      For Stripe subscriptions this will be "Stripe" or "PayPal".
   - name: provider_subscription_id
     type: STRING
     mode: NULLABLE
+    description: |-
+      Provider subscription ID.
   - name: provider_subscription_item_id
     type: STRING
     mode: NULLABLE
+    description: |-
+      Provider subscription item ID.
   - name: provider_subscription_created_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the provider subscription was created.
   - name: provider_customer_id
     type: STRING
     mode: NULLABLE
+    description: |-
+      Provider customer ID.
   - name: mozilla_account_id
     type: STRING
     mode: NULLABLE
+    description: |-
+      ID of the Mozilla Account associated with the subscription (if any) as a hexadecimal string.
+      This may be missing for some subscriptions, particularly older subscriptions when we were only recording hashed Mozilla Account IDs.
   - name: mozilla_account_id_sha256
     type: STRING
     mode: NULLABLE
+    description: |-
+      SHA256 hash of the `mozilla_account_id` string value (if any) as a hexadecimal string.
+      This may be missing for some subscriptions.
   - name: country_code
     type: STRING
     mode: NULLABLE
+    description: |-
+      ISO 3166-1 alpha-2 code for the country the subscription is in.
+      This may be missing for some subscriptions.
   - name: services
     type: RECORD
     mode: REPEATED
+    description: |-
+      Array of one or more services provided by the subscription, as defined in the `services_v1` ETL.
     fields:
     - name: id
       type: STRING
       mode: NULLABLE
+      description: |-
+        Service ID.
     - name: name
       type: STRING
       mode: NULLABLE
+      description: |-
+        Service name.
     - name: tier
       type: STRING
       mode: NULLABLE
+      description: |-
+        Service tier.
   - name: provider_product_id
     type: STRING
     mode: NULLABLE
+    description: |-
+      Provider product ID.
   - name: product_name
     type: STRING
     mode: NULLABLE
+    description: |-
+      Product name.
+      For all subscriptions this will be the associated Stripe product name.
   - name: provider_plan_id
     type: STRING
     mode: NULLABLE
+    description: |-
+      Provider plan ID.
+      For Stripe subscriptions this will be the plan/price ID.
   - name: plan_interval_type
     type: STRING
     mode: NULLABLE
+    description: |-
+      Subscription plan's interval type (e.g. "month" or "year").
   - name: plan_interval_count
     type: INTEGER
     mode: NULLABLE
+    description: |-
+      Subscription plan's interval count.
   - name: plan_currency
     type: STRING
     mode: NULLABLE
+    description: |-
+      ISO 4217 code for the subscription plan's currency.
   - name: plan_amount
     type: NUMERIC
     mode: NULLABLE
+    description: |-
+      Subscription plan's amount in the specified currency.
   - name: is_bundle
     type: BOOLEAN
     mode: NULLABLE
+    description: |-
+      Whether the subscription is a bundle (i.e. providing multiple services).
   - name: is_trial
     type: BOOLEAN
     mode: NULLABLE
+    description: |-
+      Whether the subscription is a free trial.
   - name: is_active
     type: BOOLEAN
     mode: NULLABLE
+    description: |-
+      Whether the subscription is active (i.e. providing the customer access to the services).
   - name: provider_status
     type: STRING
     mode: NULLABLE
+    description: |-
+      The provider's status indicator for the subscription.
   - name: started_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the subscription started.
   - name: ended_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the subscription ended.
+      This will be null for active subscriptions.
   - name: current_period_started_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the current subscription period started.
+      This will be null for inactive subscriptions.
   - name: current_period_ends_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the current subscription period ends.
+      This will be null for inactive subscriptions.
   - name: auto_renew
     type: BOOLEAN
     mode: NULLABLE
+    description: |-
+      Whether the subscription is set to auto-renew.
   - name: auto_renew_disabled_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the subscription's auto-renewal setting was disabled.
+      This will be null for subscriptions set to auto-renew.
   - name: initial_discount_name
     type: STRING
     mode: NULLABLE
+    description: |-
+      Initial discount name (if any).
   - name: initial_discount_promotion_code
     type: STRING
     mode: NULLABLE
+    description: |-
+      Initial discount promotion code (if any).
   - name: current_period_discount_name
     type: STRING
     mode: NULLABLE
+    description: |-
+      Current period discount name (if any).
   - name: current_period_discount_promotion_code
     type: STRING
     mode: NULLABLE
+    description: |-
+      Current period discount promotion code (if any).
   - name: current_period_discount_amount
     type: NUMERIC
     mode: NULLABLE
+    description: |-
+      Current period discount amount (if any).
   - name: ongoing_discount_name
     type: STRING
     mode: NULLABLE
+    description: |-
+      Ongoing discount name (if any).
   - name: ongoing_discount_promotion_code
     type: STRING
     mode: NULLABLE
+    description: |-
+      Ongoing discount promotion code (if any).
   - name: ongoing_discount_amount
     type: NUMERIC
     mode: NULLABLE
+    description: |-
+      Ongoing discount amount (if any).
   - name: ongoing_discount_ends_at
     type: TIMESTAMP
     mode: NULLABLE
+    description: |-
+      When the ongoing discount ends (if any).
   - name: has_refunds
     type: BOOLEAN
     mode: NULLABLE
+    description: |-
+      Whether the subscription has had refunds.
   - name: has_fraudulent_charges
     type: BOOLEAN
     mode: NULLABLE
+    description: |-
+      Whether the subscription has had fraudulent charges.

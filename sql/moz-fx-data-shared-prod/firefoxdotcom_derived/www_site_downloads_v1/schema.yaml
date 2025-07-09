@@ -1,0 +1,93 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: visit_identifier
+  type: STRING
+  mode: NULLABLE
+  description: Visit Identifier
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device Category
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Operating System
+- name: language
+  type: STRING
+  mode: NULLABLE
+  description: Language
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Country
+- name: traffic_source_name
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source Name
+- name: traffic_source_medium
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source Medium
+- name: traffic_source_source
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source Source
+- name: manual_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Manual Campaign ID
+- name: manual_term
+  type: STRING
+  mode: NULLABLE
+  description: Manual Term
+- name: source
+  type: STRING
+  mode: NULLABLE
+  description: Source
+- name: medium
+  type: STRING
+  mode: NULLABLE
+  description: Medium
+- name: campaign
+  type: STRING
+  mode: NULLABLE
+  description: Campaign
+- name: ad_content
+  type: STRING
+  mode: NULLABLE
+  description: Ad Content
+- name: browser
+  type: STRING
+  mode: NULLABLE
+  description: Browser
+- name: campaign_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: Campaign from Event Parameters
+- name: first_campaign_from_event_params_in_session
+  type: STRING
+  mode: NULLABLE
+  description: First Campaign from Event Parameters in Session
+- name: source_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: Source from Event Parameters
+- name: first_source_from_event_params_in_session
+  type: STRING
+  mode: NULLABLE
+  description: First Source from Event Parameters in Session
+- name: download_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Download Events
+- name: downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Downloads
+- name: non_fx_downloads
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Downloads from a Non-Firefox Browser

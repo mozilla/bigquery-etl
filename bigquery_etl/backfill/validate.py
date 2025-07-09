@@ -136,3 +136,7 @@ def validate_entries(backfills: List[Backfill], backfill_file: Path) -> None:
         validate_depends_on_past_end_date(backfill_entry, backfill_file)
         validate_old_entry_date(backfill_entry)
     validate_entries_are_sorted(backfills)
+
+
+class BackfillConfigurationError(Exception):
+    """Backfill configuration error."""

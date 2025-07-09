@@ -104,6 +104,7 @@ class DryRun:
         project=None,
         dataset=None,
         table=None,
+        billing_project=None,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
@@ -123,6 +124,7 @@ class DryRun:
         self.project = project
         self.dataset = dataset
         self.table = table
+        self.billing_project = billing_project
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
@@ -276,7 +278,10 @@ class DryRun:
                 )
                 result = json.load(r)
             else:
-                self.client.project = project
+                # Prefer billing project if provided, otherwise use the project from the SQL file
+                self.client.project = (
+                    self.billing_project if self.billing_project else project
+                )
                 job_config = bigquery.QueryJobConfig(
                     dry_run=True,
                     use_query_cache=False,

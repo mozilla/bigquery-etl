@@ -41,7 +41,50 @@ WITH
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number  
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -109,7 +152,50 @@ _baseline AS (
           metrics.uuid.legacy_telemetry_profile_group_id 
           ORDER BY submission_timestamp ASC
           )
-      ) AS legacy_telemetry_profile_group_id
+      ) AS legacy_telemetry_profile_group_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number  
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -132,7 +218,16 @@ _current AS (
     attribution_ext,
     distribution_ext,
     legacy_telemetry_client_id,
-    legacy_telemetry_profile_group_id
+    legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
     {% endif %}
   FROM
     _baseline
@@ -157,6 +252,15 @@ _previous AS (
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -202,7 +306,50 @@ _current AS (
         metrics.uuid.legacy_telemetry_profile_group_id 
         ORDER BY submission_timestamp ASC
         )
-    ) AS legacy_telemetry_profile_group_id
+    ) AS legacy_telemetry_profile_group_id,
+    mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metadata.geo.country 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS country,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          metrics.string.usage_distribution_id 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS distribution_id,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          client_info.windows_build_number  
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS windows_build_number,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(
+          COALESCE(client_info.locale, metrics.string.glean_baseline_locale) 
+          ORDER BY submission_timestamp DESC
+          )
+      ) AS locale,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(normalized_os ORDER BY submission_timestamp DESC)
+      ) AS normalized_os,
+      ARRAY_AGG(
+        client_info.app_display_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS app_display_version,
+      ARRAY_AGG(
+        normalized_channel
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_channel,
+      ARRAY_AGG(
+        normalized_os_version
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -229,6 +376,15 @@ _previous AS (
     distribution_ext,
     legacy_telemetry_client_id,
     legacy_telemetry_profile_group_id,
+    country,
+    distribution_id,
+    windows_build_number,
+    locale,
+    normalized_os,
+    app_display_version,
+    normalized_channel,
+    normalized_os_version,
+    isp,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -268,6 +424,15 @@ SELECT
   distribution_ext,
   legacy_telemetry_client_id,
   legacy_telemetry_profile_group_id,
+  country,
+  distribution_id,
+  windows_build_number,
+  locale,
+  normalized_os,
+  app_display_version,
+  normalized_channel,
+  normalized_os_version,
+  isp,
   {% endif %}
 FROM _joined
 QUALIFY

@@ -1,0 +1,28 @@
+friendly_name: Desktop Retention Aggregates
+description: |-
+  Calculates user retention by app, channel, country, and more.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_desktop_retention_model
+  date_partition_parameter: metric_date
+  date_partition_offset: -27
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: metric_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - normalized_os
+references: {}
+require_column_descriptions: true

@@ -33,18 +33,13 @@ WITH stg_prospects AS (
   WHERE
     event_name = 'object_update'
     AND unstruct_event_com_pocket_object_update_1.object = 'prospect'
-    AND SAFE_CAST(contexts_com_pocket_prospect_1[0].created_at AS INT64) IS NOT NULL
-    AND SAFE_CAST(contexts_com_pocket_prospect_1[0].created_at AS INT64)
-    BETWEEN 946684800
-    AND UNIX_MILLIS(CURRENT_TIMESTAMP())
-    AND SAFE_CAST(contexts_com_pocket_prospect_1[0].reviewed_at AS INT64) IS NOT NULL
-    -- reviewed_at is in miliseconds (for some reason), so we need to divide
-    AND SAFE_CAST(DIV(contexts_com_pocket_prospect_1[0].reviewed_at, 1000) AS INT64)
-    BETWEEN 946684800
-    AND UNIX_MILLIS(CURRENT_TIMESTAMP())
-  -- This ensures recommended_at is between Jan 1, 2000, and the current time to remain within BQ limits for dates
+    AND app_id NOT LIKE '%-dev'
+    AND app_id LIKE 'pocket-%'
+    {% if not is_init() %}
+      AND DATE(derived_tstamp) = @submission_date
+    {% endif %}
   QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY happened_at ORDER BY happened_at) = 1
+    ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY dvce_created_tstamp) = 1
 )
 SELECT
   p.prospect_id,

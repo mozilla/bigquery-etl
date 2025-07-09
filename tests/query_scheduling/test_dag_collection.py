@@ -244,6 +244,16 @@ class TestDagCollection:
             / "query.sql"
         )
 
+        query_file_2 = (
+            TEST_DIR
+            / "data"
+            / "test_sql"
+            / "moz-fx-data-test-project"
+            / "test"
+            / "incremental_query_v1"
+            / "query.sql"
+        )
+
         metadata = Metadata(
             "test",
             "test",
@@ -255,13 +265,43 @@ class TestDagCollection:
                 "param": "test_param",
                 "arguments": ["--append_table"],
                 "depends_on_fivetran": [
-                    {"task_id": "fivetran_import_1"},
-                    {"task_id": "fivetran_import_2"},
+                    {
+                        "task_id": "fivetran_import_1",
+                        "trigger_rule": "all_done",
+                        "depends_on": [
+                            {
+                                "dag_name": "fivetran_import_dag",
+                                "task_id": "fivetran_import_1",
+                            }
+                        ],
+                    },
+                    {
+                        "task_id": "fivetran_import_2",
+                        "depends_on": [
+                            {
+                                "dag_name": "bqetl_test_dag",
+                                "task_id": "test__incremental_query__v1",
+                            }
+                        ],
+                    },
                 ],
             },
         )
 
-        tasks = [Task.of_query(query_file, metadata)]
+        metadata_2 = Metadata(
+            "test",
+            "test",
+            ["test@example.com"],
+            {},
+            {
+                "dag_name": "bqetl_test_dag",
+            },
+        )
+
+        tasks = [
+            Task.of_query(query_file, metadata),
+            Task.of_query(query_file_2, metadata_2),
+        ]
 
         default_args = {
             "depends_on_past": False,

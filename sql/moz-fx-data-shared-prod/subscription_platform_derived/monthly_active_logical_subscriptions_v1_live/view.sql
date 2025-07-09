@@ -7,9 +7,7 @@ WITH months AS (
     LAST_DAY(month_start_date, MONTH) AS month_end_date,
     (LAST_DAY(month_start_date, MONTH) + 1) AS next_month_start_date
   FROM
-    UNNEST(
-      GENERATE_DATE_ARRAY('2019-10-01', (CURRENT_DATE() - 1), INTERVAL 1 MONTH)
-    ) AS month_start_date
+    UNNEST(GENERATE_DATE_ARRAY('2019-10-01', CURRENT_DATE(), INTERVAL 1 MONTH)) AS month_start_date
 ),
 monthly_active_subscriptions_history AS (
   SELECT

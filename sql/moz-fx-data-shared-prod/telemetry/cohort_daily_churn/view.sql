@@ -12,12 +12,11 @@ WITH submission_date_activity AS (
     submission_date >= DATE_SUB(CURRENT_DATE, INTERVAL 180 DAY)
     AND is_dau IS TRUE
 ),
--- Get all the clients first seen in the last 180 days
+-- Get all the clients first seen in the last 180 days and attrs as of first seen
 cohorts_in_range AS (
   SELECT
     client_id,
-    cohort_date,
-    activity_date,
+    cohort_date, --first seen date
     activity_segment,
     app_version,
     attribution_campaign,
@@ -58,12 +57,13 @@ activity_cohort_match AS (
   SELECT
     cohorts_in_range.client_id AS cohort_client_id,
     submission_date_activity.client_id AS active_client_id,
+    submission_date_activity.activity_date,
     cohorts_in_range.* EXCEPT (client_id)
   FROM
     cohorts_in_range
   LEFT JOIN
     submission_date_activity
-    USING (client_id, activity_date)
+    USING (client_id)
 )
 SELECT
   cohort_date,

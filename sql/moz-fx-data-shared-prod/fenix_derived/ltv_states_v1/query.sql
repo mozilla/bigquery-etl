@@ -42,20 +42,20 @@ SELECT
     WHERE
       key <= clients_yearly.submission_date
   ) AS total_historic_ad_clicks,
-  firefox_android_clients.first_reported_country,
-  firefox_android_clients.first_reported_isp,
-  firefox_android_clients.adjust_network,
-  firefox_android_clients.install_source,
+  clients.country AS first_reported_country,
+  CAST(NULL AS STRING) AS first_reported_isp,
+  clients.adjust_network,
+  clients.install_source,
 FROM
   clients_yearly
 JOIN
-  `moz-fx-data-shared-prod.fenix.firefox_android_clients` AS firefox_android_clients
-  USING (sample_id, client_id)
+  `moz-fx-data-shared-prod.fenix.new_profile_clients` AS clients
+  USING (client_id)
 LEFT JOIN
   `moz-fx-data-shared-prod.fenix.client_adclicks_history`
   USING (sample_id, client_id)
 WHERE
     -- BrowserStack clients are bots, we don't want to accidentally report on them
-  first_reported_isp != "BrowserStack"
+  app_name <> "Fenix BrowserStack"
     -- Remove clients who are new on this day, but have more/less than 1 day of activity
   AND NOT (days_since_first_seen = 0 AND BIT_COUNT(days_seen_bytes) != 1)

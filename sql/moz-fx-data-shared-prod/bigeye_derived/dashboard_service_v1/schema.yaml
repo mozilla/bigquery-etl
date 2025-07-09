@@ -8,7 +8,7 @@ fields:
     Date timestamp associated with this record.
   mode: NULLABLE
   name: timestamp
-  type: INTEGER
+  type: DATETIME
 - description: |
     Value associated with this record. Note: This value has been aggregated to a daily level by BigEye API which is the lowest granularity.
   mode: NULLABLE

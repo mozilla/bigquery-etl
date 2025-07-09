@@ -91,6 +91,9 @@ def process_response(response_data: Dict[str, Any]) -> pd.DataFrame:
             }
         )
 
+        # Ensure your DataFrame column is datetime type
+        df["timestamp"] = pd.to_datetime(df["timestamp"], unit="s")
+
         return df
     except KeyError as e:
         raise Exception(f"Missing expected key in response data: {str(e)}")

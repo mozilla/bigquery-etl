@@ -25,5 +25,6 @@ SELECT
   app_display_version,
   normalized_channel,
   normalized_os_version,
+  isp,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`

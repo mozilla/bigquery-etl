@@ -101,4 +101,8 @@ fields:
   name: normalized_os_version
   type: STRING
   description: The normalized operating system version.
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: Internet Service Provider
 {% endif %}

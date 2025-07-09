@@ -81,6 +81,10 @@ WITH
         normalized_os_version
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -188,6 +192,10 @@ _baseline AS (
         normalized_os_version
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -219,6 +227,7 @@ _current AS (
     app_display_version,
     normalized_channel,
     normalized_os_version,
+    isp,
     {% endif %}
   FROM
     _baseline
@@ -251,6 +260,7 @@ _previous AS (
     app_display_version,
     normalized_channel,
     normalized_os_version,
+    isp,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -336,6 +346,10 @@ _current AS (
         normalized_os_version
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS normalized_os_version,
+      ARRAY_AGG(
+        metadata.isp.name
+        ORDER BY submission_timestamp ASC LIMIT 1
+      )[OFFSET(0)] AS isp,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -370,6 +384,7 @@ _previous AS (
     app_display_version,
     normalized_channel,
     normalized_os_version,
+    isp,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -417,6 +432,7 @@ SELECT
   app_display_version,
   normalized_channel,
   normalized_os_version,
+  isp,
   {% endif %}
 FROM _joined
 QUALIFY

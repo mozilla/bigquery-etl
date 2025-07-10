@@ -2428,11 +2428,11 @@ bqetl_ads_hourly:
     owner: cbeck@mozilla.com
     retries: 2
     retry_delay: 10m
-    start_date: '2025-07-09'
+    start_date: '2025-07-10'
   description: Hourly tables for ad reporting
   repo: bigquery-etl
   schedule_interval: hourly
-  catchup: true
+  catchup: false
   tags:
     - impact/tier_3
     - repo/bigquery-etl

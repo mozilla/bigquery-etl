@@ -698,6 +698,7 @@ jobs:
                   cp -r /tmp/workspace/generated-sql/dags dags
                   git add .
                   git commit -m "Auto-push due to change on main branch [ci skip]" \
+                    -m "Created from ${CIRCLE_SHA1}" \
                     && git tag c-${CIRCLE_SHA1:0:9} \
                     && git push \
                     && git push origin c-${CIRCLE_SHA1:0:9} \
@@ -815,10 +816,14 @@ jobs:
                   mkdir -p /tmp/workspace/private-generated-sql
                   cp -r /tmp/workspace/generated-sql/sql /tmp/workspace/private-generated-sql/sql
                   cp -rf sql/. /tmp/workspace/private-generated-sql/sql
+
+                  # persist commit hash used for generation
+                  git rev-parse HEAD > /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                   - private-generated-sql
+                  - PRIVATE_BIGQUERY_ETL_SHA
       - unless:
           condition: *validate-sql
           steps:
@@ -847,7 +852,11 @@ jobs:
                   rm -rf dags/
                   cp -r /tmp/workspace/private-generated-sql/dags dags
                   git add .
+
+                  private_bqetl_sha=$(cat /tmp/workspace/PRIVATE_BIGQUERY_ETL_SHA)
+
                   git commit -m "Auto-push due to change on main branch [ci skip]" \
+                    -m "Created from $CIRCLE_REPOSITORY_URL/commit/$CIRCLE_SHA1 and $private_bqetl_sha" \
                     && git push \
                     || echo "Skipping push since it looks like there were no changes"
                 # yamllint enable rule:line-length

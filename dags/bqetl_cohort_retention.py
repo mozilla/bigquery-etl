@@ -351,6 +351,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_telemetry_derived__rolling_cohorts__v2_external",
+    ) as checks__fail_telemetry_derived__rolling_cohorts__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_daily_churn__wait_for_checks__fail_telemetry_derived__rolling_cohorts__v2",
+            external_dag_id="bqetl_cohort_daily_churn",
+            external_task_id="wait_for_checks__fail_telemetry_derived__rolling_cohorts__v2",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=17400)).isoformat() }}",
+        )
+
+        checks__fail_telemetry_derived__rolling_cohorts__v2_external.set_upstream(
+            checks__fail_telemetry_derived__rolling_cohorts__v2
+        )
+
     telemetry_derived__cohort_daily_statistics__v2 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_daily_statistics__v2",
         destination_table="cohort_daily_statistics_v2",

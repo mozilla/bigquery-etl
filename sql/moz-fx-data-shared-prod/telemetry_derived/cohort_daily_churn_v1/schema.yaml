@@ -1,11 +1,11 @@
 fields:
-- name: table_last_updated_date
+- mode: NULLABLE
+  name: table_last_updated_date
   type: DATE
-  mode: NULLABLE
   description: Date the table was last updated
-- name: cohort_date
+- mode: NULLABLE
+  name: cohort_date
   type: DATE
-  mode: NULLABLE
   description: Cohort Date
 - name: activity_segment
   type: STRING

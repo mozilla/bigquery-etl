@@ -170,6 +170,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_daily_churn__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            external_dag_id="bqetl_cohort_daily_churn",
+            external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",

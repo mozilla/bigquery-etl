@@ -89,6 +89,12 @@ with DAG(
             external_task_id="wait_for_telemetry_derived__newtab_interactions_hourly__v1",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_ads_hourly__wait_for_telemetry_derived__newtab_interactions_hourly__v1",
+            external_dag_id="bqetl_ads_hourly",
+            external_task_id="wait_for_telemetry_derived__newtab_interactions_hourly__v1",
+        )
+
         telemetry_derived__newtab_interactions_hourly__v1_external.set_upstream(
             telemetry_derived__newtab_interactions_hourly__v1
         )

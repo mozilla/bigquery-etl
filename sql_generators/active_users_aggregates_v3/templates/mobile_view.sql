@@ -46,14 +46,17 @@ CREATE OR REPLACE VIEW
       app_version_is_major_release,
     FROM
       `{{ project_id }}.{{ app_dataset_id }}.active_users_aggregates`
-  -- As per DENG-8914, we want to use composite tables for focus products
-  -- these fields do not exist in the composite view.
+    WHERE
+      -- Hard filter to introduce two day lag to match legacy desktop telemetry KPI delay
+      -- in order to avoid confusion.
+      submission_date < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
   {% if app_dataset_id in [
     focus_ios_dataset,
     focus_android_dataset
   ] %}
-    WHERE
-      submission_date < "2025-03-27"
+      AND submission_date < "2025-03-27"
+  -- As per DENG-8914, we want to use composite tables for focus products
+  -- these fields do not exist in the composite view.
     UNION ALL
     SELECT
       activity_segment AS segment,
@@ -90,6 +93,9 @@ CREATE OR REPLACE VIEW
     FROM
       `{{ project_id }}.{{ app_dataset_id }}.composite_active_users_aggregates`
     WHERE
-      submission_date >= "2025-03-27"
+      -- Hard filter to introduce two day lag to match legacy desktop telemetry KPI delay
+      -- in order to avoid confusion.
+      submission_date < DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY)
+      AND submission_date >= "2025-03-27"
     {% endif %}
   {% endfor %}

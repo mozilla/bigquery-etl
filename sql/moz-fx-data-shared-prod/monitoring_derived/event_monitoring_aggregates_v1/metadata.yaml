@@ -58,6 +58,7 @@ references:
   - moz-fx-data-shared-prod.glam_stable.events_v1
   - moz-fx-data-shared-prod.glean_dictionary_stable.events_v1
   - moz-fx-data-shared-prod.gleanjs_docs_stable.events_v1
+  - moz-fx-data-shared-prod.mdn_fred_stable.events_v1
   - moz-fx-data-shared-prod.mdn_yari_stable.action_v1
   - moz-fx-data-shared-prod.mdn_yari_stable.events_v1
   - moz-fx-data-shared-prod.monitor_backend_stable.events_v1

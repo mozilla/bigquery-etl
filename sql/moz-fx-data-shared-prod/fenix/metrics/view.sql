@@ -1043,7 +1043,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_other_status,
       metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
       metrics.labeled_counter.network_retried_system_channel_telemetry_status,
-      metrics.labeled_counter.network_retried_system_channel_update_status
+      metrics.labeled_counter.network_retried_system_channel_update_status,
+      metrics.labeled_counter.devtools_console_javascript_error_displayed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1926,6 +1927,29 @@ SELECT
       metrics.labeled_memory_distribution.networking_trr_response_size,
       metrics.labeled_memory_distribution.network_page_load_size
     ) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.dual_labeled_counter.application_reputation_server_verdict_2,
+      metrics.dual_labeled_counter.dns_lookup_disposition,
+      metrics.dual_labeled_counter.dns_trr_blacklisted,
+      metrics.dual_labeled_counter.dns_trr_disabled,
+      metrics.dual_labeled_counter.dns_trr_first,
+      metrics.dual_labeled_counter.dns_trr_http_version,
+      metrics.dual_labeled_counter.dns_trr_ns_verfified,
+      metrics.dual_labeled_counter.dns_trr_success,
+      metrics.dual_labeled_counter.dom_quota_first_initialization_attempt,
+      metrics.dual_labeled_counter.extensions_counters_browser_action_preload_result_by_addonid,
+      metrics.dual_labeled_counter.extensions_counters_event_page_idle_result_by_addonid,
+      metrics.dual_labeled_counter.http_cache_disposition,
+      metrics.dual_labeled_counter.http_traffic_analysis,
+      metrics.dual_labeled_counter.networking_http3_channel_onstart_success,
+      metrics.dual_labeled_counter.networking_http_channel_disposition_upgrade,
+      metrics.dual_labeled_counter.page_load_error,
+      metrics.dual_labeled_counter.security_content_signature_verification_errors,
+      metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
+      metrics.dual_labeled_counter.sqlite_store_open,
+      metrics.dual_labeled_counter.sqlite_store_query,
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+    ) AS `dual_labeled_counter`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -2983,7 +3007,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_other_status,
       metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
       metrics.labeled_counter.network_retried_system_channel_telemetry_status,
-      metrics.labeled_counter.network_retried_system_channel_update_status
+      metrics.labeled_counter.network_retried_system_channel_update_status,
+      metrics.labeled_counter.devtools_console_javascript_error_displayed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3866,6 +3891,29 @@ SELECT
       metrics.labeled_memory_distribution.networking_trr_response_size,
       metrics.labeled_memory_distribution.network_page_load_size
     ) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.dual_labeled_counter.application_reputation_server_verdict_2,
+      metrics.dual_labeled_counter.dns_lookup_disposition,
+      metrics.dual_labeled_counter.dns_trr_blacklisted,
+      metrics.dual_labeled_counter.dns_trr_disabled,
+      metrics.dual_labeled_counter.dns_trr_first,
+      metrics.dual_labeled_counter.dns_trr_http_version,
+      metrics.dual_labeled_counter.dns_trr_ns_verfified,
+      metrics.dual_labeled_counter.dns_trr_success,
+      metrics.dual_labeled_counter.dom_quota_first_initialization_attempt,
+      metrics.dual_labeled_counter.extensions_counters_browser_action_preload_result_by_addonid,
+      metrics.dual_labeled_counter.extensions_counters_event_page_idle_result_by_addonid,
+      metrics.dual_labeled_counter.http_cache_disposition,
+      metrics.dual_labeled_counter.http_traffic_analysis,
+      metrics.dual_labeled_counter.networking_http3_channel_onstart_success,
+      metrics.dual_labeled_counter.networking_http_channel_disposition_upgrade,
+      metrics.dual_labeled_counter.page_load_error,
+      metrics.dual_labeled_counter.security_content_signature_verification_errors,
+      metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
+      metrics.dual_labeled_counter.sqlite_store_open,
+      metrics.dual_labeled_counter.sqlite_store_query,
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+    ) AS `dual_labeled_counter`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -4943,7 +4991,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_other_status,
       metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
       metrics.labeled_counter.network_retried_system_channel_telemetry_status,
-      metrics.labeled_counter.network_retried_system_channel_update_status
+      metrics.labeled_counter.network_retried_system_channel_update_status,
+      metrics.labeled_counter.devtools_console_javascript_error_displayed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -5826,6 +5875,29 @@ SELECT
       metrics.labeled_memory_distribution.networking_trr_response_size,
       metrics.labeled_memory_distribution.network_page_load_size
     ) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.dual_labeled_counter.application_reputation_server_verdict_2,
+      metrics.dual_labeled_counter.dns_lookup_disposition,
+      metrics.dual_labeled_counter.dns_trr_blacklisted,
+      metrics.dual_labeled_counter.dns_trr_disabled,
+      metrics.dual_labeled_counter.dns_trr_first,
+      metrics.dual_labeled_counter.dns_trr_http_version,
+      metrics.dual_labeled_counter.dns_trr_ns_verfified,
+      metrics.dual_labeled_counter.dns_trr_success,
+      metrics.dual_labeled_counter.dom_quota_first_initialization_attempt,
+      metrics.dual_labeled_counter.extensions_counters_browser_action_preload_result_by_addonid,
+      metrics.dual_labeled_counter.extensions_counters_event_page_idle_result_by_addonid,
+      metrics.dual_labeled_counter.http_cache_disposition,
+      metrics.dual_labeled_counter.http_traffic_analysis,
+      metrics.dual_labeled_counter.networking_http3_channel_onstart_success,
+      metrics.dual_labeled_counter.networking_http_channel_disposition_upgrade,
+      metrics.dual_labeled_counter.page_load_error,
+      metrics.dual_labeled_counter.security_content_signature_verification_errors,
+      metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
+      metrics.dual_labeled_counter.sqlite_store_open,
+      metrics.dual_labeled_counter.sqlite_store_query,
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+    ) AS `dual_labeled_counter`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -6912,7 +6984,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_other_status,
       metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
       metrics.labeled_counter.network_retried_system_channel_telemetry_status,
-      metrics.labeled_counter.network_retried_system_channel_update_status
+      metrics.labeled_counter.network_retried_system_channel_update_status,
+      metrics.labeled_counter.devtools_console_javascript_error_displayed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -7795,6 +7868,29 @@ SELECT
       metrics.labeled_memory_distribution.networking_trr_response_size,
       metrics.labeled_memory_distribution.network_page_load_size
     ) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.dual_labeled_counter.application_reputation_server_verdict_2,
+      metrics.dual_labeled_counter.dns_lookup_disposition,
+      metrics.dual_labeled_counter.dns_trr_blacklisted,
+      metrics.dual_labeled_counter.dns_trr_disabled,
+      metrics.dual_labeled_counter.dns_trr_first,
+      metrics.dual_labeled_counter.dns_trr_http_version,
+      metrics.dual_labeled_counter.dns_trr_ns_verfified,
+      metrics.dual_labeled_counter.dns_trr_success,
+      metrics.dual_labeled_counter.dom_quota_first_initialization_attempt,
+      metrics.dual_labeled_counter.extensions_counters_browser_action_preload_result_by_addonid,
+      metrics.dual_labeled_counter.extensions_counters_event_page_idle_result_by_addonid,
+      metrics.dual_labeled_counter.http_cache_disposition,
+      metrics.dual_labeled_counter.http_traffic_analysis,
+      metrics.dual_labeled_counter.networking_http3_channel_onstart_success,
+      metrics.dual_labeled_counter.networking_http_channel_disposition_upgrade,
+      metrics.dual_labeled_counter.page_load_error,
+      metrics.dual_labeled_counter.security_content_signature_verification_errors,
+      metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
+      metrics.dual_labeled_counter.sqlite_store_open,
+      metrics.dual_labeled_counter.sqlite_store_query,
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+    ) AS `dual_labeled_counter`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -8861,7 +8957,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_other_status,
       metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
       metrics.labeled_counter.network_retried_system_channel_telemetry_status,
-      metrics.labeled_counter.network_retried_system_channel_update_status
+      metrics.labeled_counter.network_retried_system_channel_update_status,
+      metrics.labeled_counter.devtools_console_javascript_error_displayed
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -9744,6 +9841,29 @@ SELECT
       metrics.labeled_memory_distribution.networking_trr_response_size,
       metrics.labeled_memory_distribution.network_page_load_size
     ) AS `labeled_memory_distribution`,
+    STRUCT(
+      metrics.dual_labeled_counter.application_reputation_server_verdict_2,
+      metrics.dual_labeled_counter.dns_lookup_disposition,
+      metrics.dual_labeled_counter.dns_trr_blacklisted,
+      metrics.dual_labeled_counter.dns_trr_disabled,
+      metrics.dual_labeled_counter.dns_trr_first,
+      metrics.dual_labeled_counter.dns_trr_http_version,
+      metrics.dual_labeled_counter.dns_trr_ns_verfified,
+      metrics.dual_labeled_counter.dns_trr_success,
+      metrics.dual_labeled_counter.dom_quota_first_initialization_attempt,
+      metrics.dual_labeled_counter.extensions_counters_browser_action_preload_result_by_addonid,
+      metrics.dual_labeled_counter.extensions_counters_event_page_idle_result_by_addonid,
+      metrics.dual_labeled_counter.http_cache_disposition,
+      metrics.dual_labeled_counter.http_traffic_analysis,
+      metrics.dual_labeled_counter.networking_http3_channel_onstart_success,
+      metrics.dual_labeled_counter.networking_http_channel_disposition_upgrade,
+      metrics.dual_labeled_counter.page_load_error,
+      metrics.dual_labeled_counter.security_content_signature_verification_errors,
+      metrics.dual_labeled_counter.security_https_only_mode_upgrade_type,
+      metrics.dual_labeled_counter.sqlite_store_open,
+      metrics.dual_labeled_counter.sqlite_store_query,
+      metrics.dual_labeled_counter.urlclassifier_complete_timeout
+    ) AS `dual_labeled_counter`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,

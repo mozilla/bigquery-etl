@@ -538,28 +538,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    firefox_ios_derived__funnel_retention_clients_week_2__v1 = bigquery_etl_query(
-        task_id="firefox_ios_derived__funnel_retention_clients_week_2__v1",
-        destination_table="funnel_retention_clients_week_2_v1",
-        dataset_id="firefox_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1 = bigquery_etl_query(
-        task_id="firefox_ios_derived__funnel_retention_clients_week_4__v1",
-        destination_table="funnel_retention_clients_week_4_v1",
-        dataset_id="firefox_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
     firefox_ios_derived__new_profile_activation__v2 = bigquery_etl_query(
         task_id="firefox_ios_derived__new_profile_activation__v2",
         destination_table="new_profile_activation_v2",
@@ -698,46 +676,6 @@ with DAG(
 
     firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_2__v1.set_upstream(
-        firefox_ios_derived__clients_activation__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__funnel_retention_clients_week_4__v1.set_upstream(
-        firefox_ios_derived__clients_activation__v1
     )
 
     firefox_ios_derived__new_profile_activation__v2.set_upstream(

@@ -899,6 +899,34 @@ fields:
       description: 'Time waited for the uploader at shutdown.
 
         '
+  - name: dual_labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: crash_submit_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The submission status when main/plugin/content crashes are submitted.
+        1 is success, 0 is failure. Keyed on the CrashManager Crash.type.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        PROCESS_CRASH_SUBMIT_SUCCESS.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

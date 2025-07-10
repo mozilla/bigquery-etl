@@ -16,7 +16,7 @@ WITH base_action_v1 AS (
     event.name AS event_name,
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
-    'Mozilla Developer Network' AS normalized_app_name,
+    'MDN (2022–2025)' AS normalized_app_name,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
           -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
@@ -43,7 +43,7 @@ base_events_v1 AS (
     event.name AS event_name,
     event_extra.key AS event_extra_key,
     normalized_country_code AS country,
-    'Mozilla Developer Network' AS normalized_app_name,
+    'MDN (2022–2025)' AS normalized_app_name,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
           -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'

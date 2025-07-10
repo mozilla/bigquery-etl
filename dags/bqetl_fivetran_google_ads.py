@@ -79,18 +79,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_fenix_derived__funnel_retention_week_4__v1 = ExternalTaskSensor(
-        task_id="wait_for_fenix_derived__funnel_retention_week_4__v1",
-        external_dag_id="bqetl_analytics_tables",
-        external_task_id="fenix_derived__funnel_retention_week_4__v1",
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_bigeye__fenix_derived__attribution_clients__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
@@ -678,10 +666,6 @@ with DAG(
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(
         wait_for_checks__fail_ltv_derived__fenix_client_ltv__v1
-    )
-
-    google_ads_derived__android_app_campaign_stats__v1.set_upstream(
-        wait_for_fenix_derived__funnel_retention_week_4__v1
     )
 
     google_ads_derived__android_app_campaign_stats__v1.set_upstream(

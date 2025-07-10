@@ -3401,7 +3401,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -8571,6 +8572,24 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Counts the status of fallback requests to aus5.mozilla.org
+
+        '
+    - name: devtools_console_javascript_error_displayed
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records the key-identifiers of error messages when they are displayed
+        in the webconsole of the debugger. Nothing should be recorded unless they
+        are visible on the user screen. The label will be the error message name or
+        "Unknown".
+
+        This metric replaces the Legacy Telemetry boolean histogram DEVTOOLS_JAVASCRIPT_ERROR_DISPLAYED.
 
         '
   - name: string
@@ -46361,6 +46380,502 @@ fields:
             mode: NULLABLE
       description: 'The size of the HTTP response for a document load, keyed by the
         page itself or the sum of subresources.
+
+        '
+  - name: dual_labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: application_reputation_server_verdict_2
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Application reputation remote verdict, keyed by file extension
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram APPLICATION_REPUTATION_SERVER_VERDICT_2.
+
+        '
+    - name: dns_lookup_disposition
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS: lookup algorithm; Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram DNS_LOOKUP_DISPOSITION3.
+
+        '
+    - name: dns_trr_blacklisted
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'DNS check for TRR was blocked by blacklist; Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        DNS_TRR_BLACKLISTED3.
+
+        '
+    - name: dns_trr_disabled
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Resolve success rate when in TRR-first and called TRR-disabled
+        (fall-back mode); Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        DNS_TRR_DISABLED3.
+
+        '
+    - name: dns_trr_first
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'TRR-first mode distribution. 0=Worked, 1=fell back fine after
+        TRR fail, 2=native worked, 3=both failed; Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram DNS_TRR_FIRST4.
+
+        '
+    - name: dns_trr_http_version
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP version used by DoH endpoint
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram DNS_TRR_HTTP_VERSION2.
+
+        '
+    - name: dns_trr_ns_verfified
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'TRR managed to verify NS entry; Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        DNS_TRR_NS_VERFIFIED3.
+
+        '
+    - name: dns_trr_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How often TRR (Trusted Recursive Resolver) requests are fine,
+        time-out or error. Keyed by TRR domain
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram DNS_TRR_SUCCESS3.
+
+        '
+    - name: dom_quota_first_initialization_attempt
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'True if the first initialization attempt succeeded, keyed by the
+        initialization type.
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        QM_FIRST_INITIALIZATION_ATTEMPT.
+
+        '
+    - name: extensions_counters_browser_action_preload_result_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of times a browserAction popup is preloaded and results
+        in one of the categories, keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram WEBEXT_BROWSERACTION_POPUP_PRELOAD_RESULT_COUNT_BY_ADDONID.
+
+        '
+    - name: extensions_counters_event_page_idle_result_by_addonid
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The number of times an event page hit the idle timeout and results
+        in one of the categories, keyed by addon id.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram WEBEXT_EVENTPAGE_IDLE_RESULT_COUNT_BY_ADDONID.
+
+        '
+    - name: http_cache_disposition
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP Cache v2 hit/miss stats keyed by content type.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram HTTP_CACHE_DISPOSITION_3.
+
+        '
+    - name: http_traffic_analysis
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Numbers of HTTP transactions and connections by type. There are
+        some categories separated by labels based on 5 parameters: 1. normal browsing
+        or private browsing 2. system principal or not 3. first party or third party
+        4. class of service (Leader/Background/Others) 5. tracking classification
+        (Basic/Content/FingerprintingContent).
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram HTTP_TRAFFIC_ANALYSIS_3.
+
+        '
+    - name: networking_http3_channel_onstart_success
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Successfully started HTTP channels when HTTP3 is used
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTP3_CHANNEL_ONSTART_SUCCESS.
+
+        '
+    - name: networking_http_channel_disposition_upgrade
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Upgrading display content Channel Disposition
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram HTTP_CHANNEL_DISPOSITION_UPGRADE.
+
+        '
+    - name: page_load_error
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Page load errors. Match values with type of error in nsDocShellTelemetryUtils.cpp
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram PAGE_LOAD_ERROR.
+
+        '
+    - name: security_content_signature_verification_errors
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Result of the content signature verification keyed by application
+        (certificate fingerprint).
+
+        '
+    - name: security_https_only_mode_upgrade_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'What content type did we upgrade, and did it load successfully?
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        HTTPS_ONLY_MODE_UPGRADE_TYPE.
+
+        '
+    - name: sqlite_store_open
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The result of attempting to open a sqlite file.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram SQLITE_STORE_OPEN.
+
+        '
+    - name: sqlite_store_query
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'The result of attempting to query a sqlite file.
+
+        This metric was generated to correspond to the Legacy Telemetry categorical
+        histogram SQLITE_STORE_QUERY.
+
+        '
+    - name: urlclassifier_complete_timeout
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'This metric is recorded every time a gethash lookup is performed,
+        `true` is recorded if the lookup times out. Keyed by provider
+
+        This metric was generated to correspond to the Legacy Telemetry boolean histogram
+        URLCLASSIFIER_COMPLETE_TIMEOUT2.
 
         '
   - name: url

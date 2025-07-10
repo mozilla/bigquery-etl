@@ -1,6 +1,7 @@
 friendly_name: (DEPRECATED) User Retention - Firefox iOS (Week 4)
 description: |
-  DEPRECATED, please use `retention` instead.
+  DEPRECATED, please use `retention_clients` or `retention` instead.
+    Query descheduled on 2025-07-03.
 
   Derived dataset for Firefox iOS retention analysis. Contains metrics that can be calculated
   4 weeks (28 days) after a user was first seen.
@@ -10,11 +11,7 @@ labels:
   schedule: daily
   incremental: true
   table_type: client_level
-  dag: bqetl_firefox_ios
   owner1: kik
-scheduling:
-  dag_name: bqetl_firefox_ios
-  depends_on_past: false
 bigquery:
   time_partitioning:
     type: day
@@ -27,9 +24,6 @@ bigquery:
     - sample_id
     - first_seen_date
 workgroup_access: []
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.firefox_ios.baseline_clients_last_seen
-  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
+references: {}
 deprecated: true
 require_column_descriptions: false

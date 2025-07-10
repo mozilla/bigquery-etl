@@ -49,6 +49,7 @@ references:
   - moz-fx-data-shared-prod.glam_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.glean_dictionary_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.gleanjs_docs_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.mdn_fred_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mdn_yari_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.messaging_system_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.mobile_stable.INFORMATION_SCHEMA.PARTITIONS

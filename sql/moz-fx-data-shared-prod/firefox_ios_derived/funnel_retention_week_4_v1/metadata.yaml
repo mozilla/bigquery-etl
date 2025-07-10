@@ -1,6 +1,7 @@
-friendly_name: User Retention Aggregations - Firefox iOS (Week 4)
+friendly_name: (DEPRECATED) User Retention Aggregations - Firefox iOS (Week 4)
 description: |
-  DEPRECATED, please use `retention` instead.
+  DEPRECATED, please use `retention_clients` or `retention` instead.
+    Query descheduled on 2025-07-03.
 
   Aggregated dataset for Firefox iOS retention analysis.
 owners:
@@ -23,8 +24,6 @@ bigquery:
     - first_reported_country
     - adjust_network
 workgroup_access: []
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.firefox_ios_derived.funnel_retention_clients_week_4_v1
+references: {}
 deprecated: true
 require_column_descriptions: false

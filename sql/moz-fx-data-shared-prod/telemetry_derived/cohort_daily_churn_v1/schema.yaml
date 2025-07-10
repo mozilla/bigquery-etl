@@ -1,5 +1,9 @@
 fields:
 - mode: NULLABLE
+  name: table_last_updated_date
+  type: DATE
+  description: Date the table was last updated
+- mode: NULLABLE
   name: cohort_date
   type: DATE
   description: Cohort Date

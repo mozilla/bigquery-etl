@@ -9,6 +9,8 @@ labels:
   owner2: rzhao
 scheduling:
   dag_name: bqetl_cohort_daily_churn
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
 bigquery:
   time_partitioning:
     type: day

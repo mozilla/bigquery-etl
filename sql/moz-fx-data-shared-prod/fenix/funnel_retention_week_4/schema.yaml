@@ -51,7 +51,6 @@ fields:
 - name: install_source
   type: STRING
   mode: NULLABLE
-  description: null
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE

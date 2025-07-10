@@ -1869,6 +1869,21 @@ bqetl_shredder_impact_measurement:
   tags:
     - impact/tier_2
 
+bqetl_cohort_daily_churn:
+  schedule_interval: 50 14 * * 7
+  description: |
+    This DAG populates a table that measures churn of new users
+    Currently set to run weekly since it's an intensive query
+  default_args:
+    owner: kwindau@mozilla.com
+    email: ["kwindau@mozilla.com"]
+    start_date: "2025-07-01"
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
 
 bqetl_addons_moderations:
   default_args:

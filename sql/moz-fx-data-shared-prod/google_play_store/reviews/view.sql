@@ -7,4 +7,4 @@ SELECT
   DATE(_PARTITIONTIME) AS _DATA_DATE
 FROM
 -- The table below is `moz-fx-prod-marketing.google_play_store.p_Reviews_v1`
-  `444337733603.google_play_store.p_Review_v1`
+  `444337733603.google_play_store.p_Reviews_v1`

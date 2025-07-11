@@ -33,4 +33,6 @@ bigquery:
       - sample_id
 {% if app_name == "firefox_reality" -%}
 deprecated: true
+{% elif app_name == "firefox_reality_pc" -%}
+deprecated: true
 {% endif -%}

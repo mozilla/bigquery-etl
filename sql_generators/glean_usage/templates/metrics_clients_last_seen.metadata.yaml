@@ -30,4 +30,6 @@ monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
 {% if app_name == "firefox_reality" -%}
 deprecated: true
+{% elif app_name == "firefox_reality_pc" -%}
+deprecated: true
 {% endif -%}

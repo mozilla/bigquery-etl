@@ -92,6 +92,32 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        external_dag_id="bqetl_usage_reporting",
+        external_task_id="focus_android.bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        external_dag_id="bqetl_usage_reporting",
+        external_task_id="focus_ios.bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_fenix_derived__active_users_aggregates__v3 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
@@ -953,6 +979,14 @@ with DAG(
     )
 
     telemetry_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__fx_health_ind_mau_per_os__v1.set_upstream(
         wait_for_checks__fail_fenix_derived__active_users_aggregates__v3
     )
 
@@ -978,6 +1012,14 @@ with DAG(
 
     telemetry_derived__fx_health_ind_mau_per_os__v1.set_upstream(
         wait_for_firefox_desktop_active_users_aggregates_v4
+    )
+
+    telemetry_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
     )
 
     telemetry_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
@@ -1062,6 +1104,14 @@ with DAG(
 
     telemetry_derived__fx_health_ind_win_uninstll__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    telemetry_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
     )
 
     telemetry_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(

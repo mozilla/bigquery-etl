@@ -159,6 +159,34 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
+    with TaskGroup(
+        "bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1_external",
+        parent_group=task_group_focus_android,
+    ) as bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_dynamic_dau__wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="bqetl_dynamic_dau",
+            external_task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1_external.set_upstream(
+            bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+        )
+
     bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1 = bigquery_bigeye_check(
         task_id="bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
         table_id="moz-fx-data-shared-prod.focus_ios_derived.usage_reporting_active_users_aggregates_v1",
@@ -170,6 +198,34 @@ with DAG(
         retries=1,
         task_group=task_group_focus_ios,
     )
+
+    with TaskGroup(
+        "bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1_external",
+        parent_group=task_group_focus_ios,
+    ) as bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_dynamic_dau__wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="bqetl_dynamic_dau",
+            external_task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1_external.set_upstream(
+            bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
+        )
 
     bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1 = bigquery_bigeye_check(
         task_id="bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1",

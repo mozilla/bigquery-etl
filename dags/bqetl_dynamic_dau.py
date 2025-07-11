@@ -53,6 +53,32 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        external_dag_id="bqetl_usage_reporting",
+        external_task_id="focus_android.bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        external_dag_id="bqetl_usage_reporting",
+        external_task_id="focus_ios.bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_fenix_derived__active_users_aggregates__v3 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_fenix_derived__active_users_aggregates__v3",
@@ -175,6 +201,14 @@ with DAG(
 
     checks__warn_telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
         telemetry_derived__segmented_dau_28_day_rolling__v1
+    )
+
+    telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
     )
 
     telemetry_derived__segmented_dau_28_day_rolling__v1.set_upstream(

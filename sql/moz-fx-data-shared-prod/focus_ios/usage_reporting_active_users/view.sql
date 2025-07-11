@@ -9,7 +9,7 @@ SELECT
   daily.normalized_channel AS channel,
   IFNULL(daily.normalized_country_code, "??") AS country,
   EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
-  "focus_ios" AS app_name,
+  "Focus iOS" AS app_name,
   -- Activity fields to support metrics built on top of activity
   CASE
     WHEN BIT_COUNT(days_active_bits)

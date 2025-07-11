@@ -14,6 +14,18 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
+- name: locale
+  type: STRING
+  mode: NULLABLE
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+- name: install_source
+  type: STRING
+  mode: NULLABLE
+- name: os_grouped
+  type: STRING
+  mode: NULLABLE
 - name: country
   type: STRING
   mode: NULLABLE
@@ -25,9 +37,6 @@ fields:
   mode: NULLABLE
 - name: is_default_browser
   type: BOOLEAN
-  mode: NULLABLE
-- name: locale
-  type: STRING
   mode: NULLABLE
 - name: channel
   type: STRING
@@ -46,12 +55,6 @@ fields:
   mode: NULLABLE
 - name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: adjust_network
-  type: STRING
-  mode: NULLABLE
-- name: install_source
-  type: STRING
   mode: NULLABLE
 - name: daily_users
   type: INTEGER
@@ -88,7 +91,4 @@ fields:
   mode: NULLABLE
 - name: app_version_is_major_release
   type: BOOLEAN
-  mode: NULLABLE
-- name: os_grouped
-  type: STRING
   mode: NULLABLE

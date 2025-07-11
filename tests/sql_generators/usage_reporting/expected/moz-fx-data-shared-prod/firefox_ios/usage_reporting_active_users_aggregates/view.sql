@@ -3,7 +3,25 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_active_users_aggregates`
 AS
 SELECT
-  *,
+  * REPLACE (
+    CASE
+      WHEN app_name = "firefox_desktop"
+        THEN "Firefox Desktop"
+      WHEN app_name = "fenix"
+        THEN "Fenix"
+      WHEN app_name = "focus_android"
+        THEN "Focus Android"
+      WHEN app_name = "klar_android"
+        THEN "Klar Android"
+      WHEN app_name = "firefox_ios"
+        THEN "Firefox iOS"
+      WHEN app_name = "focus_ios"
+        THEN "Focus iOS"
+      WHEN app_name = "klar_ios"
+        THEN "Klar iOS"
+      ELSE app_name
+    END AS app_name
+  ),
   `mozfun.norm.browser_version_info`(app_version).major_version AS app_version_major,
   `mozfun.norm.browser_version_info`(app_version).minor_version AS app_version_minor,
   `mozfun.norm.browser_version_info`(app_version).patch_revision AS app_version_patch_revision,

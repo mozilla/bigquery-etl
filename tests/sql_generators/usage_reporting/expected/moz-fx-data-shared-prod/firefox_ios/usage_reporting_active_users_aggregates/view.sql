@@ -7,8 +7,12 @@ SELECT
     CASE
       WHEN app_name = "firefox_desktop"
         THEN "Firefox Desktop"
+      WHEN LOWER(app_name) = "firefox_desktop mozillaonline"
+        THEN "Firefox Desktop MozillaOnline"
       WHEN app_name = "fenix"
         THEN "Fenix"
+      WHEN LOWER(app_name) = "fenix mozillaonline"
+        THEN "Fenix MozillaOnline"
       WHEN app_name = "focus_android"
         THEN "Focus Android"
       WHEN app_name = "klar_android"

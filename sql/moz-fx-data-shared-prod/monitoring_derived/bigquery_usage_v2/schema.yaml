@@ -147,4 +147,4 @@ fields:
 - mode: NULLABLE
   name: is_materialized_view_refresh
   type: BOOLEAN
-  description: Whether or not the query is a materialized view refresh, based on teh query string.
+  description: Whether or not the query is a materialized view refresh, based on the query string.

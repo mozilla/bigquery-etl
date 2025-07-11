@@ -62,6 +62,7 @@ def create_query(job_date: date, project: str):
           DATE(creation_time) as creation_date,
           materialized_view_statistics,
           query_dialect,
+          UPPER(LTRIM(REGEXP_REPLACE(query, r'\s+', " "))) LIKE 'CALL BQ.REFRESH_MATERIALIZED_VIEW%' AS is_materialized_view_refresh,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE

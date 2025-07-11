@@ -31,3 +31,6 @@ bigquery:
     fields:
       - normalized_channel
       - sample_id
+{% if app_name == "firefox_reality" -%}
+deprecated: true
+{% endif -%}

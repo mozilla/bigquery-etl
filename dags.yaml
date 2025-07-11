@@ -1548,23 +1548,6 @@ bqetl_desktop_retention_model:
   tags:
     - impact/tier_2
 
-bqetl_ios_campaign_reporting:
-  schedule_interval: 0 12 * * *
-  description: Loads the apple ads ios_app_campaign_stats table
-  default_args:
-    depends_on_past: false
-    owner: kwindau@mozilla.com
-    email:
-      - kwindau@mozilla.com
-      - telemetry-alerts@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2024-05-08"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2
-
 bqetl_mobile_kpi_metrics:
   schedule_interval: 0 12 * * *
   description: Generates support metrics for mobile KPI's
@@ -1869,6 +1852,21 @@ bqetl_shredder_impact_measurement:
   tags:
     - impact/tier_2
 
+bqetl_cohort_daily_churn:
+  schedule_interval: 50 14 * * 7
+  description: |
+    This DAG populates a table that measures churn of new users
+    Currently set to run weekly since it's an intensive query
+  default_args:
+    owner: kwindau@mozilla.com
+    email: ["kwindau@mozilla.com"]
+    start_date: "2025-07-01"
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
 
 bqetl_addons_moderations:
   default_args:
@@ -2416,3 +2414,24 @@ bqetl_crashes:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_ads_hourly:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 10m
+    start_date: '2025-07-10'
+  description: Hourly tables for ad reporting
+  repo: bigquery-etl
+  schedule_interval: hourly
+  catchup: false
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+    - triage/confidential

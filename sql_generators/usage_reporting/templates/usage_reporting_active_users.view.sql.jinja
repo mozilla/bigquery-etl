@@ -12,11 +12,11 @@ SELECT
   {% if app_name in ("fenix", "firefox_desktop") %}
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
-      THEN CONCAT("{{ app_name }}", " ", distribution_id)
-    ELSE "{{ app_name }}"
+      THEN CONCAT("{{ friendly_app_name }}", " ", distribution_id)
+    ELSE "{{ friendly_app_name }}"
   END AS app_name,
   {% else %}
-  "{{ app_name }}" AS app_name,
+  "{{ friendly_app_name }}" AS app_name,
   {% endif %}
   -- Activity fields to support metrics built on top of activity
   CASE

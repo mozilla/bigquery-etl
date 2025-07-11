@@ -11,8 +11,8 @@ SELECT
   EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
   CASE
     WHEN LOWER(distribution_id) = "mozillaonline"
-      THEN CONCAT("Fenix", " ", distribution_id)
-    ELSE "Fenix"
+      THEN CONCAT("fenix", " ", distribution_id)
+    ELSE "fenix"
   END AS app_name,
   -- Activity fields to support metrics built on top of activity
   CASE

@@ -285,13 +285,6 @@ with DAG(
         "checks__fail_firefox_ios_derived__firefox_ios_clients__v1_external",
     ) as checks__fail_firefox_ios_derived__firefox_ios_clients__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_ios_campaign_reporting__wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
-            external_dag_id="bqetl_ios_campaign_reporting",
-            external_task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_analytics_aggregations__wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_checks__fail_firefox_ios_derived__firefox_ios_clients__v1",
@@ -494,13 +487,6 @@ with DAG(
     with TaskGroup(
         "firefox_ios_derived__clients_activation__v1_external",
     ) as firefox_ios_derived__clients_activation__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_ios_campaign_reporting__wait_for_firefox_ios_derived__clients_activation__v1",
-            external_dag_id="bqetl_ios_campaign_reporting",
-            external_task_id="wait_for_firefox_ios_derived__clients_activation__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
         ExternalTaskMarker(
             task_id="bqetl_analytics_aggregations__wait_for_firefox_ios_derived__clients_activation__v1",
             external_dag_id="bqetl_analytics_aggregations",

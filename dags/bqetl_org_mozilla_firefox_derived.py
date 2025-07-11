@@ -456,20 +456,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
-    with TaskGroup(
-        "firefox_ios_derived__client_ltv__v1_external",
-    ) as firefox_ios_derived__client_ltv__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_ios_campaign_reporting__wait_for_firefox_ios_derived__client_ltv__v1",
-            external_dag_id="bqetl_ios_campaign_reporting",
-            external_task_id="wait_for_firefox_ios_derived__client_ltv__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
-        )
-
-        firefox_ios_derived__client_ltv__v1_external.set_upstream(
-            firefox_ios_derived__client_ltv__v1
-        )
-
     firefox_ios_derived__ltv_states__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__ltv_states__v1",
         destination_table="ltv_states_v1",

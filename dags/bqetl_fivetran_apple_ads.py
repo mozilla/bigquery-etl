@@ -67,20 +67,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    with TaskGroup(
-        "apple_ads_external__ad_group_report__v1_external",
-    ) as apple_ads_external__ad_group_report__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_ios_campaign_reporting__wait_for_apple_ads_external__ad_group_report__v1",
-            external_dag_id="bqetl_ios_campaign_reporting",
-            external_task_id="wait_for_apple_ads_external__ad_group_report__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=54000)).isoformat() }}",
-        )
-
-        apple_ads_external__ad_group_report__v1_external.set_upstream(
-            apple_ads_external__ad_group_report__v1
-        )
-
     apple_ads_external__campaign_report__v1 = bigquery_etl_query(
         task_id="apple_ads_external__campaign_report__v1",
         destination_table="campaign_report_v1",

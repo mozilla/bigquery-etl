@@ -8,14 +8,6 @@ labels:
   owner1: kwindau
   table_type: aggregate
   shredder_mitigation: true
-  dag: bqetl_ios_campaign_reporting
-scheduling:
-  dag_name: bqetl_ios_campaign_reporting
-  depends_on_past: false
-  date_partition_parameter: date
-  date_partition_offset: -27
-  parameters:
-  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
@@ -26,16 +18,14 @@ bigquery:
   clustering:
     fields:
     - campaign
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.apple_ads.ad_group_report
   - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios.funnel_retention_week_4
   - mozdata.ltv.firefox_ios_client_ltv
+deprecated: true
 monitoring:
   enabled: true
   collection: null

@@ -18,4 +18,3 @@ bigquery:
   clustering:
     fields:
       - event_name
-deprecated: true

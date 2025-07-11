@@ -1,0 +1,134 @@
+fields:
+  - mode: NULLABLE
+    name: submission_date
+    type: DATE
+    description: The date that the interaction took place.
+  - mode: NULLABLE
+    name: spoc_id
+    type: INTEGER
+    description: >
+      A content identifier specific to the Firefox New Tab. May not uniquely identify the
+      same piece of content if it is run multiple times. Referred to elsewhere as tile_id.
+  - mode: NULLABLE
+    name: position
+    type: INTEGER
+    description: 0-indexed position of the content in the content grid.
+  - mode: NULLABLE
+    name: advertiser
+    type: STRING
+    description: >
+      The name of the advertiser associated with this ad. Advertisers are the people/businesses
+      whose ads will be shown. Previously known as 'client'.
+  - mode: NULLABLE
+    name: campaign_name
+    type: STRING
+    description: >
+      The name of the campaign associated with this ad. Campaigns live under an advertiser
+      and enable them to run separate campaigns with different targeting, ads, flight dates, etc.
+  - mode: NULLABLE
+    name: campaign_id
+    type: INTEGER
+    description: The unique identifier associated with a campaign.
+  - mode: NULLABLE
+    name: title
+    type: STRING
+    description: The title of the ad shown to the user.
+  - mode: NULLABLE
+    name: flight_id
+    type: INTEGER
+    description: >
+      A numeric identifier for the flight associated with this ad. Flights live under campaigns
+      and enable the breaking out of further targeting options.
+  - mode: NULLABLE
+    name: creative_type
+    type: STRING
+    description: >
+      The name of the flight associated with this ad. Referred to elsewhere as flight name.
+  - mode: NULLABLE
+    name: site_name
+    type: STRING
+    description: >
+      The name of the site associated with this ad. Examples of sites include "Firefox Production",
+      "Firefox Staging", "Pocket App Production (Android)".
+
+      Ads can be associated with multiple sites. If this ad is associated with one site, that single
+      site name will be in this column. If this ad is associated with multiple sites, one of which is
+      Firefox Production, then it will be attributed to the Firefox Production site.
+
+      If an ad has multiple sites, none of which is the default Firefox Production site, this column
+      will show "Multiple Sites". If the ad is not associated with a site, this column will be NULL.
+  - mode: NULLABLE
+    name: zone_name
+    type: STRING
+    description: >
+      The name of the zone associated with this ad. Examples of zones include "3x7", "SponsoredCollection".
+      Ads can be associated with multiple zones. If this ad is associated with one zone, that single zone
+      ID will be in this column.
+
+      If this ad is associated with multiple zones, one of which is 3x7, then it will be attributed to the 3x7 zone.
+
+      If an ad has multiple zones, none of which is the default 3x7 zone, this column will show "Multiple Zones".
+      If the ad is not associated with a zone, this column will be NULL.
+  - mode: NULLABLE
+    name: country
+    type: STRING
+    description: >
+      A two-digit string extracted from the flight name indicating the country where the ad surfaced.
+  - mode: NULLABLE
+    name: rate_type
+    type: STRING
+    description: >
+      How this ad is priced (Flat/CPM/CPC/CPA). This column isn't highly reliable as the ad-ops team manually
+      enters pricing information into the ad server.
+  - mode: NULLABLE
+    name: pid
+    type: STRING
+  - mode: NULLABLE
+    name: ad_url
+    type: STRING
+    description: A uniform resource locator that points to the advertisement.
+  - mode: NULLABLE
+    name: image_url
+    type: STRING
+    description: A uniform resource locator that points to the thumbnail image for this ad.
+  - mode: NULLABLE
+    name: external_param
+    type: STRING
+  - mode: NULLABLE
+    name: impressions
+    type: INTEGER
+    description: A sum of the number of impressions of this piece of content.
+  - mode: NULLABLE
+    name: clicks
+    type: INTEGER
+    description: A sum of the number of clicks on this piece of content.
+  - mode: NULLABLE
+    name: click_rate
+    type: FLOAT
+    description: >
+      A rate calculated by the sum of the number of clicks on a piece of content divided
+      by the sum of the number of impressions i.e. sum(click_count)/sum(impression_count).
+  - mode: NULLABLE
+    name: dismisses
+    type: INTEGER
+    description: A sum of the number of times this piece of content was dismissed.
+  - mode: NULLABLE
+    name: dismiss_rate
+    type: FLOAT
+    description: >
+      A rate calculated by the sum of the number of dismisses divided by the sum of the number of
+      impressions i.e. sum(dismiss_count)/sum(impression_count).
+  - mode: NULLABLE
+    name: saves
+    type: INTEGER
+    description: A sum of the number of times this piece of content was saved.
+  - mode: NULLABLE
+    name: save_rate
+    type: FLOAT
+    description: >
+      A rate calculated by the sum of the number of saves divided by the sum of the number of
+      impressions i.e. sum(save_count)/sum(impression_count).
+  - mode: NULLABLE
+    name: spend
+    type: FLOAT
+    description: The spend amount for the advertiser.

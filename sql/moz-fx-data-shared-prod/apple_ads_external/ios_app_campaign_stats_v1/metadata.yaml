@@ -8,13 +8,13 @@ labels:
   owner1: kwindau@mozilla.com
   table_type: aggregate
   shredder_mitigation: true
-scheduling:
-  dag_name: bqetl_ios_campaign_reporting
-  depends_on_past: false
-  date_partition_parameter: date
-  date_partition_offset: -27
-  parameters:
-  - submission_date:DATE:{{ds}}
+#scheduling:
+#  dag_name: bqetl_ios_campaign_reporting
+#  depends_on_past: false
+#  date_partition_parameter: date
+#  date_partition_offset: -27
+#  parameters:
+#  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning:
     type: day
@@ -25,3 +25,4 @@ bigquery:
     - campaign
 monitoring:
   enabled: true
+deprecated: true

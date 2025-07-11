@@ -428,10 +428,13 @@ def validate(target):
                     if not validate_public_data(metadata, path):
                         failed = True
 
+                    _, project_id, _ = os.path.dirname(root).split("/")
+
                     if not validate_change_control(
                         file_path=root,
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
+                        project_id=project_id,
                     ):
                         failed = True
 

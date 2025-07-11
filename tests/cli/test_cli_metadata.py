@@ -13,6 +13,7 @@ from dateutil.relativedelta import relativedelta
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
 from bigquery_etl.metadata.validate_metadata import (
+    CODEOWNERS_FILE,
     validate,
     validate_change_control,
     validate_col_desc_enforced,
@@ -113,6 +114,38 @@ class TestMetadata:
             codeowners_conf=codeowners,
             expected_result=True,
         )
+
+    @patch("bigquery_etl.metadata.validate_metadata.validate_change_control")
+    def test_validate_change_control_called_with_correct_project(
+        self, mock_validate_change_control, runner
+    ):
+        project = "test-project"
+        test_path = f"sql/{project}/fenix_derived/query_v1"
+        metadata = {
+            "friendly_name": "test",
+            "owners": [
+                "test@example.org",
+                "test2@example.org",
+                "test3@example.org",
+            ],
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        with runner.isolated_filesystem():
+            os.makedirs(test_path)
+            with open(f"{test_path}/metadata.yaml", "w") as f:
+                f.write(yaml.dump(metadata))
+
+            validate(target=test_path)
+
+            metadata = Metadata.from_file(f"{test_path}/metadata.yaml")
+
+            mock_validate_change_control.assert_called_once()
+            mock_validate_change_control.assert_called_once_with(
+                file_path=test_path,
+                metadata=metadata,
+                codeowners_file=CODEOWNERS_FILE,
+                project_id=project,
+            )
 
     def test_validate_change_control_all_owners(self, runner):
         metadata = {

@@ -2,6 +2,43 @@
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.{{ view_name }}`
 AS
+WITH cls AS (
+  SELECT 
+    submission_date, 
+    usage_profile_id,
+    days_seen_bits,
+    days_active_bits,
+    days_created_profile_bits
+  FROM 
+    `{{ project_id }}.{{ app_name }}.usage_reporting_clients_last_seen`
+  WHERE
+    submission_date >= '2025-03-01'
+),
+cd AS (
+  SELECT 
+    normalized_app_id,
+    normalized_channel,
+    submission_date,
+    usage_profile_id,
+    first_run_date,
+    app_channel,
+    normalized_country_code,
+    os,
+    os_version,
+    app_build,
+    app_display_version,
+    distribution_id,
+    is_default_browser,
+    reason,
+    is_active,
+    {% if app_name == "firefox_desktop" -%}
+    windows_build_number,
+    {%- endif -%}
+  FROM
+    `{{ project_id }}.{{ app_name }}.usage_reporting_clients_daily`
+  WHERE
+    submission_date >= '2025-03-01'
+)
 SELECT
   * EXCEPT(submission_date, app_channel, normalized_country_code, app_display_version),
   last_seen.submission_date,
@@ -60,9 +97,9 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
 FROM
-  `{{ project_id }}.{{ app_name }}.usage_reporting_clients_last_seen` AS last_seen
+  cls AS last_seen
 LEFT JOIN
-  `{{ project_id }}.{{ app_name }}.usage_reporting_clients_daily` AS daily
+  cd AS daily
   USING(submission_date, usage_profile_id)
 LEFT JOIN
   `{{ project_id }}.{{ app_name }}.usage_reporting_clients_first_seen` AS first_seen

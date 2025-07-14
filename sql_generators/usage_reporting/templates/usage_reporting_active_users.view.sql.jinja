@@ -6,6 +6,9 @@ WITH cls AS (
   SELECT 
     submission_date, 
     usage_profile_id,
+    {% if app_name == "focus_ios" -%}
+    app_channel,
+    {%- endif -%}
     days_seen_bits,
     days_active_bits,
     days_created_profile_bits

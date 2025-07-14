@@ -12,6 +12,14 @@ fields:
   description: |
     A UUID of the usage_profile.
 
+{% if app_name  == "focus_ios" %}
+- mode: NULLABLE
+  name: app_channel
+  type: STRING
+  description: |
+    The channel the application is being distributed on.
+{% endif %}
+
 - mode: NULLABLE
   name: days_seen_bits
   type: INTEGER

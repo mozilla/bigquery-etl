@@ -11,9 +11,6 @@ WITH _current AS (
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
-    {% if channel_dataset == "org_mozilla_ios_focus" %}
-      app_channel,
-    {% endif %}
   FROM
     `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
   WHERE
@@ -25,9 +22,6 @@ _previous AS (
     days_seen_bits,
     days_active_bits,
     days_created_profile_bits,
-    {% if channel_dataset == "org_mozilla_ios_focus" %}
-      app_channel,
-    {% endif %}
   FROM
     `{{ project_id }}.{{ channel_dataset }}_derived.{{ view_name }}_v1`
   WHERE

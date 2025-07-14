@@ -428,7 +428,8 @@ def validate(target):
                     if not validate_public_data(metadata, path):
                         failed = True
 
-                    _, project_id, _ = os.path.dirname(root).split("/")
+                    # root looks like .../sql/project/dataset/table
+                    project_id = Path(root).parent.parent.name
 
                     if not validate_change_control(
                         file_path=root,

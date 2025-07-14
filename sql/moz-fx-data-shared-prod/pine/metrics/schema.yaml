@@ -8724,10 +8724,8 @@ fields:
           mode: NULLABLE
       description: 'Verification status of Signed Certificate Timestamps received
         (0=Decoding error, 1=Valid SCT, 2=SCT from unknown log, 3=Invalid SCT signature,
-        4=SCT timestamp is in the future, 5=Valid SCT from a disqualified log)
-
-        This metric was generated to correspond to the Legacy Telemetry enumerated
-        histogram SSL_SCTS_VERIFICATION_STATUS.
+        4=SCT timestamp is in the future, 5=Valid SCT from a disqualified log 6=SCT
+        timestamp is after the root''s distrustAfter time).
 
         '
     - name: ssl_tls10_intolerance_reason_post
@@ -11991,6 +11989,15 @@ fields:
 
         '
     - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
+    - name: termsofuse_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The timestamp when the user accepted the Terms of Use.
+
+        '
+    - name: raw_termsofuse_date
       type: STRING
       mode: NULLABLE
   - name: labeled_boolean
@@ -21324,6 +21331,12 @@ fields:
         Windows only.
 
         e.g. 134217728
+
+        '
+    - name: termsofuse_version
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The version of the Terms of Use the user accepted.
 
         '
   - name: string

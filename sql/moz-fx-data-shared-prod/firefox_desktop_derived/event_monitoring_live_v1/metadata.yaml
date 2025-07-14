@@ -25,6 +25,7 @@ references:
   materialized_view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_live.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
+  - moz-fx-data-shared-prod.firefox_desktop_live.profiles_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.prototype_no_code_events_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.sync_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.urlbar_keyword_exposure_v1

@@ -118,6 +118,11 @@ fields:
     mode: NULLABLE
     description: Label value.
   description: Array of labels applied to the job as key-value pairs.
+- name: is_materialized_view_refresh
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether or not the query is a materialized view refresh, based on the
+    query string.
 - name: user_type
   type: STRING
   mode: NULLABLE

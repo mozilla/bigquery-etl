@@ -5,10 +5,10 @@ fields:
   name: workspace_id
   type: INTEGER
 - description: |
-    Date timestamp associated with this record.
+    Timestamp associated with this record.
   mode: NULLABLE
   name: timestamp
-  type: DATETIME
+  type: TIMESTAMP
 - description: |
     Value associated with this record. Note: This value has been aggregated to a daily level by BigEye API which is the lowest granularity.
   mode: NULLABLE
@@ -19,3 +19,8 @@ fields:
   mode: NULLABLE
   name: data_point_type
   type: STRING
+- description: |
+    Timestamp of when data was loaded into BigQuery
+  mode: NULLABLE
+  name: refreshed_at
+  type: TIMESTAMP

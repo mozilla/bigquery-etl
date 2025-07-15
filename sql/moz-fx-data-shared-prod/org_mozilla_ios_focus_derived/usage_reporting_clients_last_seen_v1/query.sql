@@ -11,6 +11,7 @@ WITH _current AS (
     `moz-fx-data-shared-prod.udf.days_since_created_profile_as_28_bits`(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
+    app_channel,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_focus.usage_reporting_clients_daily`
   WHERE
@@ -22,6 +23,7 @@ _previous AS (
     days_seen_bits,
     days_active_bits,
     days_created_profile_bits,
+    app_channel,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_last_seen_v1`
   WHERE

@@ -48,3 +48,13 @@ fields:
   mode: NULLABLE
   description: Whether the client ID associated with this GCLID was active 4 of more
     days in the first 7
+- name: is_dau_at_least_3_of_first_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client ID associated with this GCLID was active 3 of more
+    days in the first 7
+- name: is_dau_at_least_2_of_first_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the client ID associated with this GCLID was active 2 of more
+    days in the first 7

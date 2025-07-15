@@ -21,7 +21,6 @@ FROM
   `moz-fx-data-shared-prod.focus_ios.usage_reporting_active_users`
 WHERE
   submission_date = @submission_date
-  AND `date` = @submission_date
 GROUP BY
   submission_date,
   first_seen_year,

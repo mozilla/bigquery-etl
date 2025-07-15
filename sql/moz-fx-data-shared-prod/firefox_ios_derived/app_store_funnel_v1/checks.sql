@@ -9,12 +9,12 @@
 #warn
 WITH fx_ios_count AS (
   SELECT
-    COUNT(*)
+    SUM(new_profiles)
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+    `moz-fx-data-shared-prod.firefox_ios.new_profiles`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-    AND channel = "release"
+    AND normalized_channel = "release"
 ),
 new_profiles_count AS (
   SELECT
@@ -27,7 +27,7 @@ new_profiles_count AS (
 SELECT
   IF(
     (SELECT * FROM fx_ios_count) - (SELECT * FROM new_profiles_count) <> 0,
-    ERROR("There's a 'new_profiles' mismatch between firefox_ios_clients and this funnel table"),
+    ERROR("There's a 'new_profiles' mismatch between new_profiles dataset and this funnel table"),
     NULL
   );
 

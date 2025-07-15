@@ -90,11 +90,10 @@ SELECT
   SUM(monthly_users) AS monthly_users,
 FROM
   `{{ project_id }}.{{ app_name }}.usage_reporting_active_users_aggregates`
-WHERE
-  {% if app_name == "firefox_desktop" %}
-    WHERE
-      mozfun.norm.browser_version_info(app_version).major_version >= 136
-  {% endif %}
+{% if app_name == "firefox_desktop" %}
+  WHERE
+    app_version_major >= 136
+{% endif %}
 GROUP BY
   submission_date,
   first_seen_year,

@@ -271,7 +271,6 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.heartbeat_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.main_v5"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.main_use_counter_v4"): DESKTOP_SRC,
-    client_id_target(table="telemetry_stable.modules_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.new_profile_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.saved_session_v4"): DESKTOP_SRC,
     client_id_target(table="telemetry_stable.saved_session_v5"): DESKTOP_SRC,

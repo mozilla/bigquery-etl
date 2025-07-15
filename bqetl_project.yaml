@@ -428,6 +428,9 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    skip_tables:
+      telemetry:
+      - modules
   usage_reporting:
     apps:
       fenix:

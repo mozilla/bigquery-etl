@@ -5457,6 +5457,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: networking_http_3_udp_datagram_size_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -12151,6 +12171,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: ssl_ct_policy_non_compliant_connections_by_ca_2
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: networking_http_3_udp_datagram_segments_sent
       type: RECORD
       mode: NULLABLE
       fields:

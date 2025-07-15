@@ -7709,6 +7709,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: networking_http_3_udp_datagram_segments_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -29163,6 +29183,26 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: webfont_size_per_page
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: networking_http_3_udp_datagram_size_sent
       type: RECORD
       mode: NULLABLE
       fields:

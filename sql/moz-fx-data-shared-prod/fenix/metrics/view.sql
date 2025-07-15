@@ -680,7 +680,8 @@ SELECT
       metrics.custom_distribution.networking_local_network_access_port,
       metrics.custom_distribution.cert_pinning_failures_by_ca_2,
       metrics.custom_distribution.cert_validation_success_by_ca_2,
-      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2
+      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -1703,7 +1704,8 @@ SELECT
       metrics.memory_distribution.memory_vsize,
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
-      metrics.memory_distribution.webfont_size_per_page
+      metrics.memory_distribution.webfont_size_per_page,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2644,7 +2646,8 @@ SELECT
       metrics.custom_distribution.networking_local_network_access_port,
       metrics.custom_distribution.cert_pinning_failures_by_ca_2,
       metrics.custom_distribution.cert_validation_success_by_ca_2,
-      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2
+      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -3667,7 +3670,8 @@ SELECT
       metrics.memory_distribution.memory_vsize,
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
-      metrics.memory_distribution.webfont_size_per_page
+      metrics.memory_distribution.webfont_size_per_page,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -4628,7 +4632,8 @@ SELECT
       metrics.custom_distribution.networking_local_network_access_port,
       metrics.custom_distribution.cert_pinning_failures_by_ca_2,
       metrics.custom_distribution.cert_validation_success_by_ca_2,
-      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2
+      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -5651,7 +5656,8 @@ SELECT
       metrics.memory_distribution.memory_vsize,
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
-      metrics.memory_distribution.webfont_size_per_page
+      metrics.memory_distribution.webfont_size_per_page,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -6621,7 +6627,8 @@ SELECT
       metrics.custom_distribution.networking_local_network_access_port,
       metrics.custom_distribution.cert_pinning_failures_by_ca_2,
       metrics.custom_distribution.cert_validation_success_by_ca_2,
-      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2
+      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -7644,7 +7651,8 @@ SELECT
       metrics.memory_distribution.memory_vsize,
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
-      metrics.memory_distribution.webfont_size_per_page
+      metrics.memory_distribution.webfont_size_per_page,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -8594,7 +8602,8 @@ SELECT
       metrics.custom_distribution.networking_local_network_access_port,
       metrics.custom_distribution.cert_pinning_failures_by_ca_2,
       metrics.custom_distribution.cert_validation_success_by_ca_2,
-      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2
+      metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2,
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.crash_metrics_crash_count,
@@ -9617,7 +9626,8 @@ SELECT
       metrics.memory_distribution.memory_vsize,
       metrics.memory_distribution.memory_vsize_max_contiguous,
       metrics.memory_distribution.webfont_size,
-      metrics.memory_distribution.webfont_size_per_page
+      metrics.memory_distribution.webfont_size_per_page,
+      metrics.memory_distribution.networking_http_3_udp_datagram_size_sent
     ) AS `memory_distribution`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

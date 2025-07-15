@@ -8803,6 +8803,31 @@ fields:
         histogram WEBFONT_SIZE_PER_PAGE.
 
         '
+    - name: networking_http_3_udp_datagram_size_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3 UDP datagram size sent.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -18129,6 +18154,31 @@ fields:
       description: 'Number of successfully established TLS connections NOT compliant
         with the Certificate Transparency Policy, by CA. See KnownRootHashes.txt for
         names of CAs. range_min: 0
+
+        '
+    - name: networking_http_3_udp_datagram_segments_sent
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'HTTP3 UDP number of segments per datagram sent.
 
         '
   - name: labeled_boolean

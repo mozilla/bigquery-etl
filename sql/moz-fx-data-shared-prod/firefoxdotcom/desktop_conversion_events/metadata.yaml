@@ -7,6 +7,8 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc
   - workgroup:mozilla-confidential
 references:
   view.sql:

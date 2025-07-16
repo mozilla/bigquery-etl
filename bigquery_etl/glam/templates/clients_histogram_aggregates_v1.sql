@@ -2,7 +2,7 @@
 {% set aggregate_filter_clause %}
 {% if filter_version %}
   LEFT JOIN
-    glam_etl.{{ prefix }}__latest_versions_v1
+    `glam_etl.{{ prefix }}__latest_versions_v1`
     USING (channel)
 {% endif %}
 WHERE
@@ -21,7 +21,7 @@ WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    glam_etl.{{ prefix }}__clients_histogram_aggregates_v1
+    `glam_etl.{{ prefix }}__clients_histogram_aggregates_snapshot_v1`
     {% if parameterize %}
       WHERE
         sample_id >= @min_sample_id
@@ -39,7 +39,12 @@ transformed_daily AS (
   SELECT
     *
   FROM
-    glam_etl.{{ prefix }}__clients_histogram_aggregates_new_v1
+    `glam_etl.{{ prefix }}__clients_histogram_aggregates_new_v1`
+    {% if parameterize %}
+      WHERE
+        sample_id >= @min_sample_id
+        AND sample_id <= @max_sample_id
+    {% endif %}
 )
 SELECT
   {% for attribute in attributes_list %}

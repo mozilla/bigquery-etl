@@ -8,23 +8,27 @@ This generator aims to provide reusable logic (templates) for generating mobile 
 
 Templates included in the generator:
 
-- `attribution_clients` - client level first time attribution in one place
+- `attribution_clients` - client level first time attribution in one place *(expected grain: client_id + normalized_channel)*
 
-- `active_users` - a view on top of baseline_clients_last_seen with some transformations used downstream (acts as the base for the other models)
+- `active_users` - a view on top of baseline_clients_last_seen with some transformations used downstream (acts as the base for the other models) *(expected grain: submission_date + client_id + normalized_channel)*
 
-- `engagement_clients` - a continuous calculation of client engagement
+- `engagement_clients` - a continuous calculation of client engagement *(expected grain: submission_date + client_id + normalized_channel)*
 
-- `engagement` - aggregated engagement stats
+- `engagement` - aggregated engagement stats *(aggregated dataset)*
 
-- `retention_clients` - a continuous calculation of client retention
+- `retention_clients` - a continuous calculation of client retention *(expected grain: submission_date + client_id + normalized_channel)*
 
-- `retention` - aggregated retention stats
+- `retention` - aggregated retention stats *(aggregated dataset)*
 
-- `new_profile_activation_clients` - indicates if a new profile has "activated"
+- `new_profile_activation_clients` - indicates if a new profile has "activated" *(expected grain: client_id + normalized_channel)*
 
-- `new_profile_activations` - aggregates stats of new profile activations
+- `new_profile_activations` - aggregates stats of new profile activations *(aggregated dataset)*
 
-- `new_profiles` - agggregates stats around new profiles / clients
+- `new_profiles` - agggregates stats around new profiles / clients *(aggregated dataset)*
+
+### Generated product lineage
+
+![mobile acquisition lineage example](images/mobile_acquisition_lineage.jpg "Mobile Acquisition Lineage")
 
 ## Usage
 

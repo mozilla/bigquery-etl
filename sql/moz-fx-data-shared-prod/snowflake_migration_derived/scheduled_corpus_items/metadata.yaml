@@ -14,6 +14,9 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:mozsoc-ml/developers
   - workgroup:mozsoc-ml/service
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:pocket/apps
 references:
   view.sql:
   - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_item_schedules_updated_v1

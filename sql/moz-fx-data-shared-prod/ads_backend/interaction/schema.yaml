@@ -429,6 +429,20 @@ fields:
       description: 'Reason selected by the user for reporting the ad
 
         '
+    - name: ad_creative_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Advertiser/partner provided identifier for assets used in a specific
+        ad.  May be null.
+
+        '
+    - name: ad_line_item_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Advertiser/partner provided identifier for the line item used
+        in a specific ad. Will be null for a Kevel supplied ad, use flight_id instead.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

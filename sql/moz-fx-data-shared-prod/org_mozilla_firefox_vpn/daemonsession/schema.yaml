@@ -781,6 +781,17 @@ fields:
         > desktop platforms and on the daemonsession ping for mobile platforms.
 
         '
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_server_in_same_country
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the VPN server''s country is the same as the user''s actual
+        country.
+
+        When using multihop, the exit server is used.'
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

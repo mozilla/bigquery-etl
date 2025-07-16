@@ -519,6 +519,13 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: session_server_in_same_country
+      type: BOOLEAN
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

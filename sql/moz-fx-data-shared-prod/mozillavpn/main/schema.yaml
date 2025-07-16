@@ -355,6 +355,22 @@ fields:
         system
 
         '
+    - name: settings_is_using_system_theme
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the client is set to use the system theme, false if not.
+
+        '
+    - name: settings_using_dark_mode
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the client is displaying dark mode, false if it''s displaying
+
+        light mode. This is recorded whether the mode was manually selected by
+
+        the user or whether it was used because "use system theme" was true.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

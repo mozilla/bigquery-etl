@@ -43,7 +43,8 @@ SELECT
     STRUCT(
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
-    ) AS `custom_distribution`
+    ) AS `custom_distribution`,
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -100,7 +101,8 @@ SELECT
     STRUCT(
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
-    ) AS `custom_distribution`
+    ) AS `custom_distribution`,
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -157,7 +159,8 @@ SELECT
     STRUCT(
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
-    ) AS `custom_distribution`
+    ) AS `custom_distribution`,
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -214,7 +217,8 @@ SELECT
     STRUCT(
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
-    ) AS `custom_distribution`
+    ) AS `custom_distribution`,
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

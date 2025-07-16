@@ -19,7 +19,9 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.boolean.settings_connect_on_startup_active,
-      metrics.boolean.settings_using_system_language
+      metrics.boolean.settings_using_system_language,
+      metrics.boolean.settings_is_using_system_theme,
+      metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
@@ -92,7 +94,9 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.boolean.settings_connect_on_startup_active,
-      metrics.boolean.settings_using_system_language
+      metrics.boolean.settings_using_system_language,
+      metrics.boolean.settings_is_using_system_theme,
+      metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
@@ -165,7 +169,9 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.boolean.settings_connect_on_startup_active,
-      metrics.boolean.settings_using_system_language
+      metrics.boolean.settings_using_system_language,
+      metrics.boolean.settings_is_using_system_theme,
+      metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
@@ -258,7 +264,9 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.boolean.settings_connect_on_startup_active,
-      metrics.boolean.settings_using_system_language
+      metrics.boolean.settings_using_system_language,
+      metrics.boolean.settings_is_using_system_theme,
+      metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     CAST(
       NULL

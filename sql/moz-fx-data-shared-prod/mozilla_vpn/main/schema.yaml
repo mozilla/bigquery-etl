@@ -274,6 +274,12 @@ fields:
     - name: settings_using_system_language
       type: BOOLEAN
       mode: NULLABLE
+    - name: settings_is_using_system_theme
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: settings_using_dark_mode
+      type: BOOLEAN
+      mode: NULLABLE
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE

@@ -97,7 +97,7 @@ def clients_histogram_aggregates_new(**kwargs):
     )
 
 
-def clients_histogram_aggregates(**kwargs):
+def clients_histogram_aggregates(channel, **kwargs):
     """Variables for histogram aggregates."""
     attributes_list = [
         "sample_id",
@@ -110,6 +110,12 @@ def clients_histogram_aggregates(**kwargs):
     ]
     fixed_attributes = ["app_version", "channel"]
     cubed_attributes = [x for x in attributes_list if x not in fixed_attributes]
+    source_table_suffix = (
+        "clients_histogram_aggregates_snapshot_v1"
+        if channel == "release"
+        else "clients_histogram_aggregates_v2"
+    )
+
     return dict(
         attributes_list=attributes_list,
         attributes=",".join(attributes_list),
@@ -121,6 +127,7 @@ def clients_histogram_aggregates(**kwargs):
             key,
             agg_type
         """,
+        suffix=source_table_suffix,
         **kwargs,
     )
 

@@ -21,7 +21,7 @@ WITH extracted_accumulated AS (
   SELECT
     *
   FROM
-    `glam_etl.{{ prefix }}__clients_histogram_aggregates_snapshot_v1`
+    `glam_etl.{{ prefix }}__{{ suffix }}`
     {% if parameterize %}
       WHERE
         sample_id >= @min_sample_id

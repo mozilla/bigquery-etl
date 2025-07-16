@@ -11,7 +11,7 @@ from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
 
-TARGET_TABLE = "moz-fx-data-shared-prod.bigeye_derived.dashboard_service"
+TARGET_TABLE = "moz-fx-data-shared-prod.bigeye_derived.dashboards"
 BIGEYE_API_KEY = os.environ["BIGEYE_API_KEY"]
 WORKSPACE_IDS = ConfigLoader.get("monitoring", "bigeye_workspace_ids")
 API_URL = "https://app.bigeye.com/api/v1/dashboard/calculate-data-points-request"

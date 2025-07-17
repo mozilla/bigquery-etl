@@ -554,6 +554,85 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.fx_accounts_v1",
         field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
     ): (FXA_UNHASHED_SRC, DESKTOP_GLEAN_SRC),
+    DeleteTarget(
+        table="org_mozilla_fenix_stable.fx_accounts_v1",
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_fenix_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_fenix_nightly_stable.fx_accounts_v1",
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_fenix_nightly_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_fennec_aurora_stable.fx_accounts_v1",
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_fennec_aurora_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_firefox_beta_stable.fx_accounts_v1",
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_firefox_beta_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_firefox_stable.fx_accounts_v1",
+        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_firefox_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_ios_fennec_stable.fx_accounts_v1",
+        field=("metrics.string.user_client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_ios_fennec_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_ios_firefoxbeta_stable.fx_accounts_v1",
+        field=("metrics.string.user_client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_ios_firefoxbeta_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
+    DeleteTarget(
+        table="org_mozilla_ios_firefox_stable.fx_accounts_v1",
+        field=("metrics.string.user_client_association_uid", GLEAN_CLIENT_ID),
+    ): (
+        FXA_UNHASHED_SRC,
+        DeleteSource(
+            table="org_mozilla_ios_firefox_stable.deletion_request_v1",
+            field=GLEAN_CLIENT_ID,
+        ),
+    ),
     # FxA on Glean
     DeleteTarget(
         table="accounts_backend_stable.events_v1",

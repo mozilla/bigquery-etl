@@ -23,3 +23,6 @@ bigquery:
       - sample_id
 monitoring:
   enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+{%- if deprecated_apps %}
+deprecated: true
+{%- endif -%}

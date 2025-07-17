@@ -113,7 +113,7 @@ def clients_histogram_aggregates(channel, **kwargs):
     source_table_suffix = (
         "clients_histogram_aggregates_snapshot_v1"
         if channel == "release"
-        else "clients_histogram_aggregates_v2"
+        else "clients_histogram_aggregates_v1"
     )
 
     return dict(

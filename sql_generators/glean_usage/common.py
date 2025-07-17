@@ -263,6 +263,9 @@ class GleanTable:
         # but do not do so actively anymore. This is why they get excluded.
         enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
+        # Some apps' tables have been deprecated
+        deprecated_app = app_name in list(set(DEPRECATED_APP_NAMES))
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -272,6 +275,7 @@ class GleanTable:
             app_name=app_name,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
             enable_monitoring=enable_monitoring,
+            deprecated_app=deprecated_app,
         )
 
         render_kwargs.update(self.custom_render_kwargs)

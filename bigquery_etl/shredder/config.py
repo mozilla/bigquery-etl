@@ -217,18 +217,24 @@ context_id_target = partial(DeleteTarget, field=(CONTEXT_ID, CONTEXT_ID))
 
 # App -> account_id_field mappings for mobile client association pings
 CLIENT_ASSOCIATION_MOBILE_APPS = {
-    **{app: MOZ_ACCOUNT_ID for app in [
-        "org_mozilla_fenix",
-        "org_mozilla_fenix_nightly", 
-        "org_mozilla_fennec_aurora",
-        "org_mozilla_firefox_beta",
-        "org_mozilla_firefox",
-    ]},
-    **{app: MOZ_ACCOUNT_ID_IOS for app in [
-        "org_mozilla_ios_fennec",
-        "org_mozilla_ios_firefoxbeta",
-        "org_mozilla_ios_firefox",
-    ]},
+    **{
+        app: MOZ_ACCOUNT_ID
+        for app in [
+            "org_mozilla_fenix",
+            "org_mozilla_fenix_nightly",
+            "org_mozilla_fennec_aurora",
+            "org_mozilla_firefox_beta",
+            "org_mozilla_firefox",
+        ]
+    },
+    **{
+        app: MOZ_ACCOUNT_ID_IOS
+        for app in [
+            "org_mozilla_ios_fennec",
+            "org_mozilla_ios_firefoxbeta",
+            "org_mozilla_ios_firefox",
+        ]
+    },
 }
 
 DELETE_TARGETS: DeleteIndex = {

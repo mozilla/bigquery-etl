@@ -8,19 +8,19 @@ This generator aims to provide reusable logic (templates) for generating mobile 
 
 Templates included in the generator:
 
-- `attribution_clients` - client level first time attribution in one place *(expected grain: client_id + normalized_channel)*
+- `attribution_clients` - client level first time attribution in one place *(expected grain: client_id + normalized_channel | population: all clients)*
 
-- `active_users` - a view on top of baseline_clients_last_seen with some transformations used downstream (acts as the base for the other models) *(expected grain: submission_date + client_id + normalized_channel)*
+- `active_users` - a view on top of baseline_clients_last_seen with some transformations used downstream (acts as the base for the other models) *(expected grain: submission_date + client_id + normalized_channel | population: all clients that sent at least one baseline ping on submission date or prior 27 days)*
 
-- `engagement_clients` - a continuous calculation of client engagement *(expected grain: submission_date + client_id + normalized_channel)*
+- `engagement_clients` - a continuous calculation of client engagement *(expected grain: submission_date + client_id + normalized_channel | population: all clients that sent at least one baseline ping on submission date or prior 27 days)*
 
 - `engagement` - aggregated engagement stats *(aggregated dataset)*
 
-- `retention_clients` - a continuous calculation of client retention *(expected grain: submission_date + client_id + normalized_channel)*
+- `retention_clients` - a continuous calculation of client retention *(expected grain: submission_date + client_id + normalized_channel | population: all clients that sent baseline ping on submission date)*
 
 - `retention` - aggregated retention stats *(aggregated dataset)*
 
-- `new_profile_activation_clients` - indicates if a new profile has "activated" *(expected grain: client_id + normalized_channel)*
+- `new_profile_activation_clients` - indicates if a new profile has "activated" *(expected grain: client_id + normalized_channel | population: all clients)*
 
 - `new_profile_activations` - aggregates stats of new profile activations *(aggregated dataset)*
 

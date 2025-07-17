@@ -1,4 +1,4 @@
---Step 1: Get all combinations of google click IDs, google analytics client IDs, and stub session IDs in last 30 days
+--Step 1: Get all combos of GCLID, GA Client ID, & Stub Session IDs Seen in Last 30 Days
 WITH gclids_to_ga_ids AS (
   SELECT DISTINCT
     unnested_gclid AS gclid,
@@ -15,7 +15,8 @@ WITH gclids_to_ga_ids AS (
     AND session_date <= @submission_date
     AND gclid IS NOT NULL
 ),
---Step 2: Get all the download tokens associated with a known GA client ID & stub session ID
+--Step 2: Get all download tokens associated with above stub session / GA Client IDs
+--        from the stub attribution logs
 ga_ids_to_dl_token AS (
   SELECT DISTINCT
     a.ga_client_id,
@@ -32,13 +33,14 @@ ga_ids_to_dl_token AS (
     a.ga_client_id IS NOT NULL
     AND a.stub_session_id IS NOT NULL
 ),
+--Step 3: Get unique download tokens (1 row per token)
 dist_dl_tokens AS (
   SELECT DISTINCT
     dl_token
   FROM
     ga_ids_to_dl_token
 ),
---Step 3: Get the telemetry clent ID & first seen date for each download token
+--Step 4: Get the telemetry clent ID & first seen date for each download token
 dl_token_to_telemetry_id AS (
   SELECT
     a.client_id AS telemetry_client_id,
@@ -50,26 +52,8 @@ dl_token_to_telemetry_id AS (
     dist_dl_tokens b
     ON a.attribution_dltoken = b.dl_token
 ),
---Step 4: Get the new conversion event types from conversion_event_categorization_v1
-new_conversion_events AS (
-  SELECT
-    a.client_id AS telemetry_client_id,
-    a.report_date AS activity_date,
-    a.event_1 AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
-    a.event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
-    a.event_3 AS first_wk_3_actv_days_and_24_active_minutes,
-    a.is_dau_at_least_4_of_first_7_days
-  FROM
-    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2` a
-  JOIN
-    dl_token_to_telemetry_id b
-    ON a.client_id = b.telemetry_client_id
-  WHERE
-    (a.event_1 IS TRUE OR a.event_2 IS TRUE OR a.event_3 IS TRUE)
-    AND a.report_date = @submission_date
-    AND a.first_seen_date < @submission_date
-),
---Step 5: Get, for each client, their first run date, first ad click date, first search date, the # of days running Firefox, and their most recent run date
+--Step 5: Get, for each client, calculate their first run date, first ad click date,
+--        first search date, the # of days running Firefox, and their most recent run date
 old_events_staging AS (
   SELECT
     a.client_id AS telemetry_client_id,
@@ -101,6 +85,10 @@ old_events_staging AS (
     1
 ),
 --Step 6: Summarize this into the old event types
+--        If first run date = submission date, then it's firefox first run
+--        If first ad click date = submission date, then it's first ad click date
+--        If first search date = submission date, then it's firefox first search date
+--        If # of days running firefox = 2 and most recent run date = submission date, then it's returned_second_day
 old_events AS (
   SELECT
     telemetry_client_id,
@@ -142,10 +130,19 @@ telemetry_id_to_activity_staging AS (
     event_2 AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     event_3 AS first_wk_3_actv_days_and_24_active_minutes,
     is_dau_at_least_4_of_first_7_days,
+    is_dau_at_least_3_of_first_7_days,
+    is_dau_at_least_2_of_first_7_days,
   FROM
     `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2`
   WHERE
-    (event_1 IS TRUE OR event_2 IS TRUE OR event_3 IS TRUE)
+    (
+      event_1 IS TRUE
+      OR event_2 IS TRUE
+      OR event_3 IS TRUE
+      OR is_dau_at_least_4_of_first_7_days IS TRUE
+      OR is_dau_at_least_3_of_first_7_days IS TRUE
+      OR is_dau_at_least_2_of_first_7_days IS TRUE
+    )
     AND report_date = @submission_date
     AND first_seen_date < @submission_date --needed since this is a required partition filter
   UNION ALL
@@ -159,7 +156,9 @@ telemetry_id_to_activity_staging AS (
     CAST(NULL AS BOOLEAN) AS first_wk_5_actv_days_and_1_or_more_search_w_ads,
     CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_1_or_more_search_w_ads,
     CAST(NULL AS BOOLEAN) AS first_wk_3_actv_days_and_24_active_minutes,
-    CAST(NULL AS BOOLEAN) AS is_dau_at_least_4_of_first_7_days
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_4_of_first_7_days,
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_3_of_first_7_days,
+    CAST(NULL AS BOOLEAN) AS is_dau_at_least_2_of_first_7_days,
   FROM
     old_events
   WHERE
@@ -183,6 +182,8 @@ telemetry_id_to_activity AS (
       COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
     ) AS first_wk_3_actv_days_and_24_active_minutes,
     MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days,
+    MAX(COALESCE(is_dau_at_least_3_of_first_7_days, FALSE)) AS is_dau_at_least_3_of_first_7_days,
+    MAX(COALESCE(is_dau_at_least_2_of_first_7_days, FALSE)) AS is_dau_at_least_2_of_first_7_days,
     MAX(COALESCE(firefox_first_run, FALSE)) AS firefox_first_run,
     MAX(COALESCE(firefox_first_ad_click, FALSE)) AS firefox_first_ad_click,
     MAX(COALESCE(firefox_first_search, FALSE)) AS firefox_first_search,
@@ -210,7 +211,9 @@ SELECT
   MAX(
     COALESCE(first_wk_3_actv_days_and_24_active_minutes, FALSE)
   ) AS first_wk_3_actv_days_and_24_active_minutes,
-  MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days
+  MAX(COALESCE(is_dau_at_least_4_of_first_7_days, FALSE)) AS is_dau_at_least_4_of_first_7_days,
+  MAX(COALESCE(is_dau_at_least_3_of_first_7_days, FALSE)) AS is_dau_at_least_3_of_first_7_days,
+  MAX(COALESCE(is_dau_at_least_2_of_first_7_days, FALSE)) AS is_dau_at_least_2_of_first_7_days,
 FROM
   ga_ids_to_dl_token
 INNER JOIN

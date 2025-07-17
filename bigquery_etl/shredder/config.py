@@ -109,6 +109,8 @@ CONTEXT_ID = "context_id"
 QUICK_SUGGEST_CONTEXT_ID = "metrics.uuid.quick_suggest_context_id"
 SEARCH_WITH_CONTEXT_ID = "metrics.uuid.search_with_context_id"
 USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
+MOZ_ACCOUNT_ID = "metrics.string.client_association_uid"
+MOZ_ACCOUNT_ID_IOS = "metrics.string.user_client_association_uid"
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -212,6 +214,28 @@ impression_id_target = partial(DeleteTarget, field=IMPRESSION_ID)
 fxa_user_id_target = partial(DeleteTarget, field=FXA_USER_ID)
 user_id_target = partial(DeleteTarget, field=USER_ID)
 context_id_target = partial(DeleteTarget, field=(CONTEXT_ID, CONTEXT_ID))
+
+# App -> account_id_field mappings for mobile client association pings
+CLIENT_ASSOCIATION_MOBILE_APPS = {
+    **{
+        app: MOZ_ACCOUNT_ID
+        for app in [
+            "org_mozilla_fenix",
+            "org_mozilla_fenix_nightly",
+            "org_mozilla_fennec_aurora",
+            "org_mozilla_firefox_beta",
+            "org_mozilla_firefox",
+        ]
+    },
+    **{
+        app: MOZ_ACCOUNT_ID_IOS
+        for app in [
+            "org_mozilla_ios_fennec",
+            "org_mozilla_ios_firefoxbeta",
+            "org_mozilla_ios_firefox",
+        ]
+    },
+}
 
 DELETE_TARGETS: DeleteIndex = {
     # Other
@@ -549,11 +573,25 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_stable.search_with_v1",
         field=(SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID, SEARCH_WITH_CONTEXT_ID),
     ): (CONTEXT_ID_DELETION_SRC, QUICK_SUGGEST_SRC, DESKTOP_GLEAN_SRC),
-    # client association ping
+    # client association ping - desktop
     DeleteTarget(
         table="firefox_desktop_stable.fx_accounts_v1",
-        field=("metrics.string.client_association_uid", GLEAN_CLIENT_ID),
+        field=(MOZ_ACCOUNT_ID, GLEAN_CLIENT_ID),
     ): (FXA_UNHASHED_SRC, DESKTOP_GLEAN_SRC),
+    # client association pings - mobile
+    **{
+        DeleteTarget(
+            table=f"{app}_stable.fx_accounts_v1",
+            field=(moz_account_id_field, GLEAN_CLIENT_ID),
+        ): (
+            FXA_UNHASHED_SRC,
+            DeleteSource(
+                table=f"{app}_stable.deletion_request_v1",
+                field=GLEAN_CLIENT_ID,
+            ),
+        )
+        for app, moz_account_id_field in CLIENT_ASSOCIATION_MOBILE_APPS.items()
+    },
     # FxA on Glean
     DeleteTarget(
         table="accounts_backend_stable.events_v1",

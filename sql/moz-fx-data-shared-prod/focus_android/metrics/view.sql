@@ -731,7 +731,8 @@ SELECT
       metrics.string.system_os_name,
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
-      metrics.string.update_settings_channel
+      metrics.string.update_settings_channel,
+      metrics.string.xpi_database_startup_error
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -1502,7 +1503,8 @@ SELECT
       metrics.timing_distribution.script_preloader_wait_time,
       metrics.timing_distribution.slow_script_warning_notify_delay,
       metrics.timing_distribution.webfont_download_time,
-      metrics.timing_distribution.javascript_gc_time_between_minor
+      metrics.timing_distribution.javascript_gc_time_between_minor,
+      metrics.timing_distribution.xpi_database_parses
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1574,7 +1576,8 @@ SELECT
       metrics.object.gfx_monitors,
       metrics.object.hdd_binary,
       metrics.object.hdd_profile,
-      metrics.object.hdd_system
+      metrics.object.hdd_system,
+      metrics.object.addons_manager_exception
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -1640,7 +1643,8 @@ SELECT
       metrics.labeled_timing_distribution.perf_h3p_page_load_time,
       metrics.labeled_timing_distribution.perf_http3_first_contentful_paint,
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
-      metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time
+      metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
+      metrics.labeled_timing_distribution.xpi_database_rebuilds
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -1689,7 +1693,13 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
-    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
+    STRUCT(
+      metrics.labeled_quantity.normandy_recipe_freshness,
+      metrics.labeled_quantity.addons_manager_startup_timeline,
+      metrics.labeled_quantity.browser_timings_startup_timeline,
+      metrics.labeled_quantity.timestamps_global_startup_timeline,
+      metrics.labeled_quantity.timestamps_startup_timeline
+    ) AS `labeled_quantity`,
     STRUCT(
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
@@ -1704,7 +1714,8 @@ SELECT
       metrics.string_list.intl_requested_locales,
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
-      metrics.string_list.pkcs11_third_party_module_profile_entries
+      metrics.string_list.pkcs11_third_party_module_profile_entries,
+      metrics.string_list.xpi_database_startup_load_reasons
     ) AS `string_list`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -1728,7 +1739,12 @@ SELECT
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
       metrics.dual_labeled_counter.urlclassifier_complete_timeout
-    ) AS `dual_labeled_counter`
+    ) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.text2.xpi_database_late_load,
+      metrics.text2.xpi_database_late_stack,
+      metrics.text2.xpi_database_sync_stack
+    ) AS `text2`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -2473,7 +2489,8 @@ SELECT
       metrics.string.system_os_name,
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
-      metrics.string.update_settings_channel
+      metrics.string.update_settings_channel,
+      metrics.string.xpi_database_startup_error
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -3244,7 +3261,8 @@ SELECT
       metrics.timing_distribution.script_preloader_wait_time,
       metrics.timing_distribution.slow_script_warning_notify_delay,
       metrics.timing_distribution.webfont_download_time,
-      metrics.timing_distribution.javascript_gc_time_between_minor
+      metrics.timing_distribution.javascript_gc_time_between_minor,
+      metrics.timing_distribution.xpi_database_parses
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -3316,7 +3334,8 @@ SELECT
       metrics.object.gfx_monitors,
       metrics.object.hdd_binary,
       metrics.object.hdd_profile,
-      metrics.object.hdd_system
+      metrics.object.hdd_system,
+      metrics.object.addons_manager_exception
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -3382,7 +3401,8 @@ SELECT
       metrics.labeled_timing_distribution.perf_h3p_page_load_time,
       metrics.labeled_timing_distribution.perf_http3_first_contentful_paint,
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
-      metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time
+      metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
+      metrics.labeled_timing_distribution.xpi_database_rebuilds
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -3431,7 +3451,13 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
-    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
+    STRUCT(
+      metrics.labeled_quantity.normandy_recipe_freshness,
+      metrics.labeled_quantity.addons_manager_startup_timeline,
+      metrics.labeled_quantity.browser_timings_startup_timeline,
+      metrics.labeled_quantity.timestamps_global_startup_timeline,
+      metrics.labeled_quantity.timestamps_startup_timeline
+    ) AS `labeled_quantity`,
     STRUCT(
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
@@ -3446,7 +3472,8 @@ SELECT
       metrics.string_list.intl_requested_locales,
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
-      metrics.string_list.pkcs11_third_party_module_profile_entries
+      metrics.string_list.pkcs11_third_party_module_profile_entries,
+      metrics.string_list.xpi_database_startup_load_reasons
     ) AS `string_list`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -3470,7 +3497,12 @@ SELECT
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
       metrics.dual_labeled_counter.urlclassifier_complete_timeout
-    ) AS `dual_labeled_counter`
+    ) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.text2.xpi_database_late_load,
+      metrics.text2.xpi_database_late_stack,
+      metrics.text2.xpi_database_sync_stack
+    ) AS `text2`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -4215,7 +4247,8 @@ SELECT
       metrics.string.system_os_name,
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
-      metrics.string.update_settings_channel
+      metrics.string.update_settings_channel,
+      metrics.string.xpi_database_startup_error
     ) AS `string`,
     STRUCT(
       metrics.quantity.shortcuts_shortcuts_on_home_number,
@@ -4986,7 +5019,8 @@ SELECT
       metrics.timing_distribution.script_preloader_wait_time,
       metrics.timing_distribution.slow_script_warning_notify_delay,
       metrics.timing_distribution.webfont_download_time,
-      metrics.timing_distribution.javascript_gc_time_between_minor
+      metrics.timing_distribution.javascript_gc_time_between_minor,
+      metrics.timing_distribution.xpi_database_parses
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -5058,7 +5092,8 @@ SELECT
       metrics.object.gfx_monitors,
       metrics.object.hdd_binary,
       metrics.object.hdd_profile,
-      metrics.object.hdd_system
+      metrics.object.hdd_system,
+      metrics.object.addons_manager_exception
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -5124,7 +5159,8 @@ SELECT
       metrics.labeled_timing_distribution.perf_h3p_page_load_time,
       metrics.labeled_timing_distribution.perf_http3_first_contentful_paint,
       metrics.labeled_timing_distribution.perf_http3_page_load_time,
-      metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time
+      metrics.labeled_timing_distribution.security_https_only_mode_upgrade_time,
+      metrics.labeled_timing_distribution.xpi_database_rebuilds
     ) AS `labeled_timing_distribution`,
     STRUCT(
       metrics.labeled_custom_distribution.networking_http_3_ecn_ce_ect0_ratio,
@@ -5173,7 +5209,13 @@ SELECT
       metrics.labeled_custom_distribution.gfx_content_small_paint_phase_weight_partial,
       metrics.labeled_custom_distribution.sandbox_failed_launch_keyed
     ) AS `labeled_custom_distribution`,
-    STRUCT(metrics.labeled_quantity.normandy_recipe_freshness) AS `labeled_quantity`,
+    STRUCT(
+      metrics.labeled_quantity.normandy_recipe_freshness,
+      metrics.labeled_quantity.addons_manager_startup_timeline,
+      metrics.labeled_quantity.browser_timings_startup_timeline,
+      metrics.labeled_quantity.timestamps_global_startup_timeline,
+      metrics.labeled_quantity.timestamps_startup_timeline
+    ) AS `labeled_quantity`,
     STRUCT(
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
@@ -5188,7 +5230,8 @@ SELECT
       metrics.string_list.intl_requested_locales,
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
-      metrics.string_list.pkcs11_third_party_module_profile_entries
+      metrics.string_list.pkcs11_third_party_module_profile_entries,
+      metrics.string_list.xpi_database_startup_load_reasons
     ) AS `string_list`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -5212,7 +5255,12 @@ SELECT
       metrics.dual_labeled_counter.sqlite_store_open,
       metrics.dual_labeled_counter.sqlite_store_query,
       metrics.dual_labeled_counter.urlclassifier_complete_timeout
-    ) AS `dual_labeled_counter`
+    ) AS `dual_labeled_counter`,
+    STRUCT(
+      metrics.text2.xpi_database_late_load,
+      metrics.text2.xpi_database_late_stack,
+      metrics.text2.xpi_database_sync_stack
+    ) AS `text2`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

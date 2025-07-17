@@ -356,6 +356,12 @@ fields:
       description: 'The Mozilla Account UID associated with the user.
 
         '
+    - name: client_association_uid
+      type: STRING
+      mode: NULLABLE
+      description: 'The Mozilla Account UID associated with the user.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

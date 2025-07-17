@@ -22,7 +22,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.metrics_client_association
+      metrics.string.metrics_client_association,
+      metrics.string.client_association_uid
     ) AS `string`
   ) AS `metrics`,
   normalized_app_name,
@@ -59,7 +60,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.metrics_client_association
+      metrics.string.metrics_client_association,
+      metrics.string.client_association_uid
     ) AS `string`
   ) AS `metrics`,
   normalized_app_name,
@@ -96,7 +98,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.metrics_client_association
+      metrics.string.metrics_client_association,
+      metrics.string.client_association_uid
     ) AS `string`
   ) AS `metrics`,
   normalized_app_name,
@@ -133,7 +136,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.metrics_client_association
+      metrics.string.metrics_client_association,
+      metrics.string.client_association_uid
     ) AS `string`
   ) AS `metrics`,
   normalized_app_name,
@@ -170,7 +174,8 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.metrics_client_association
+      metrics.string.metrics_client_association,
+      metrics.string.client_association_uid
     ) AS `string`
   ) AS `metrics`,
   normalized_app_name,

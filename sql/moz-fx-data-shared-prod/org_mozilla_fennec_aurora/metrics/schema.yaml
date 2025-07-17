@@ -12491,7 +12491,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -18864,6 +18865,14 @@ fields:
         e.g. "nightly-cck"
 
         '
+    - name: xpi_database_startup_error
+      type: STRING
+      mode: NULLABLE
+      description: 'Reason for XPI Database startup error.
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -18956,6 +18965,9 @@ fields:
       type: STRING
       mode: REPEATED
     - name: pkcs11_third_party_module_profile_entries
+      type: STRING
+      mode: REPEATED
+    - name: xpi_database_startup_load_reasons
       type: STRING
       mode: REPEATED
   - name: timing_distribution
@@ -38551,6 +38563,51 @@ fields:
         all runtimes.
 
         '
+    - name: xpi_database_parses
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'How long it took to parse the XPI Database.
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -41248,6 +41305,15 @@ fields:
         * diskType - Either "HDD" or "SSD"
 
         '
+    - name: addons_manager_exception
+      type: JSON
+      mode: NULLABLE
+      description: "Most recent exception reported by the Addons Manager this app\
+        \ session.\nPreviously reported in the \"main\" ping `simpleMeasurements`.\n\
+        ```\n{\n  module: string module name,\n  context: string context, like the\
+        \ method name,\n  message: string message of the exception,\n  file: the file\
+        \ that the exception occured in,\n  line: the line number the exception was\
+        \ thrown from,\n}\n```\n"
   - name: labeled_string
     type: RECORD
     mode: NULLABLE
@@ -44618,6 +44684,60 @@ fields:
         histogram HTTPS_ONLY_MODE_UPGRADE_TIME_MS.
 
         '
+    - name: xpi_database_rebuilds
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'How long it took to rebuild the XPI Database
+
+        per reason it was rebuilt.
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -46291,6 +46411,66 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry scalar normandy.recipe_freshness.
 
         '
+    - name: addons_manager_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Events on the startup timeline, in millis since process creation.
+
+        Previously carried in Legacy "main" ping `simpleMeasurements`.
+
+        '
+    - name: browser_timings_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Events on the startup timeline, in millis since process creation.
+
+        Previously carried in the Legacy "main" ping `simpleMeasurements`.
+
+        '
+    - name: timestamps_global_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: "Events on the startup timeline across all components,\nin millis\
+        \ since process creation.\nCombination of\n  - `timestamps.startup_timeline`\n\
+        \  - `addons_manager.startup_timeline`\n  - `browser.timings.startup_timeline`\n\
+        \  - `session_restore.startup_timeline`\nPreviously instrumented in \"main\"\
+        \ ping `simpleMeasurements`.\n"
+    - name: timestamps_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Events on the startup timeline, in millis since process creation.
+
+        See `StartupTimeline.h`
+
+        '
   - name: labeled_memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -46925,6 +47105,53 @@ fields:
         URLCLASSIFIER_COMPLETE_TIMEOUT2.
 
         '
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: xpi_database_late_load
+      type: STRING
+      mode: NULLABLE
+      description: 'Stack of XPI Database `asyncLoadDB` call happening while the XPI
+        provider
+
+        is closing.
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
+    - name: xpi_database_late_stack
+      type: STRING
+      mode: NULLABLE
+      description: 'Stack of XPI Database `saveChanges` call happening while the XPI
+        provider
+
+        is closing.
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
+    - name: xpi_database_sync_stack
+      type: STRING
+      mode: NULLABLE
+      description: 'Stack of XPI Database `syncLoadDB` call.
+
+        Previously reported in "main" ping `simpleMeasurements`.
+
+        '
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: xpi_database_late_load
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_late_stack
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_sync_stack
+      type: STRING
+      mode: NULLABLE
   - name: url
     type: RECORD
     mode: NULLABLE

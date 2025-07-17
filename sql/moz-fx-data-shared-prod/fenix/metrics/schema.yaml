@@ -11778,6 +11778,9 @@ fields:
     - name: update_settings_channel
       type: STRING
       mode: NULLABLE
+    - name: xpi_database_startup_error
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -11870,6 +11873,9 @@ fields:
       type: STRING
       mode: REPEATED
     - name: pkcs11_third_party_module_profile_entries
+      type: STRING
+      mode: REPEATED
+    - name: xpi_database_startup_load_reasons
       type: STRING
       mode: REPEATED
   - name: timing_distribution
@@ -28178,6 +28184,44 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: xpi_database_parses
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -29937,6 +29981,9 @@ fields:
       type: JSON
       mode: NULLABLE
     - name: hdd_system
+      type: JSON
+      mode: NULLABLE
+    - name: addons_manager_exception
       type: JSON
       mode: NULLABLE
   - name: labeled_string
@@ -32792,6 +32839,51 @@ fields:
           - name: value
             type: INTEGER
             mode: NULLABLE
+    - name: xpi_database_rebuilds
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: bucket_count
+          type: INTEGER
+          mode: NULLABLE
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+        - name: histogram_type
+          type: STRING
+          mode: NULLABLE
+        - name: overflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: range
+          type: FLOAT
+          mode: REPEATED
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: time_unit
+          type: STRING
+          mode: NULLABLE
+        - name: underflow
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
   - name: labeled_custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -34025,6 +34117,46 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: addons_manager_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_timings_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: timestamps_global_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: timestamps_startup_timeline
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: labeled_memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -34498,6 +34630,19 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+  - name: text2
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: xpi_database_late_load
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_late_stack
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_sync_stack
+      type: STRING
+      mode: NULLABLE
   - name: url
     type: RECORD
     mode: NULLABLE

@@ -317,6 +317,10 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: Whether the user is logged in to Firefox Accounts.
+    - name: nimbus_targeting_context_has_pinned_tabs
+      type: BOOLEAN
+      mode: NULLABLE
+      description: Whether the profile has any pinned tabs in any open window.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

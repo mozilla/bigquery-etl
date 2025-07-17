@@ -39,6 +39,7 @@ SELECT
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour
           ) AS datetime
         ),
+        metrics.text2 AS text,
         metrics.url2 AS url
     ) AS metrics,
     mozfun.norm.glean_client_info_attribution(

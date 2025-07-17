@@ -274,6 +274,9 @@ fields:
     - name: metrics_client_association
       type: STRING
       mode: NULLABLE
+    - name: client_association_uid
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -38,10 +38,15 @@ SELECT
               metrics.datetime.glean_validation_first_run_hour
             ) AS glean_validation_first_run_hour,
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.legacy_telemetry_session_start_date
+            ) AS legacy_telemetry_session_start_date,
+            metrics.datetime.legacy_telemetry_session_start_date AS raw_legacy_telemetry_session_start_date,
             mozfun.glean.parse_datetime(metrics.datetime.termsofuse_date) AS termsofuse_date,
             metrics.datetime.termsofuse_date AS raw_termsofuse_date
           ) AS datetime
         ),
+        metrics.text2 AS text,
         metrics.url2 AS url
     ) AS metrics,
     'Firefox' AS normalized_app_name,

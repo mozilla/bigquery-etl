@@ -33,7 +33,7 @@ BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
     "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
-DEPRECATED_APP_NAMES = ConfigLoader.get(
+DEPRECATED_APP_LIST = ConfigLoader.get(
     "generate", "glean_usage", "deprecated_apps", fallback=[]
 )
 
@@ -264,7 +264,7 @@ class GleanTable:
         enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
         # Some apps' tables have been deprecated
-        deprecated_app = app_name in list(set(DEPRECATED_APP_NAMES))
+        deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
@@ -437,7 +437,7 @@ class GleanTable:
         )
 
         # Some apps' tables have been deprecated
-        deprecated_app = app_name in list(set(DEPRECATED_APP_NAMES))
+        deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
 
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",

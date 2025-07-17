@@ -43097,6 +43097,19 @@ fields:
         Previously reported in "main" ping `simpleMeasurements`.
 
         '
+  - name: text
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: xpi_database_late_load
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_late_stack
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_sync_stack
+      type: STRING
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

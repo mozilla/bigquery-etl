@@ -1968,6 +1968,11 @@ SELECT
       metrics.text2.xpi_database_late_stack,
       metrics.text2.xpi_database_sync_stack
     ) AS `text2`,
+    STRUCT(
+      metrics.text.xpi_database_late_load,
+      metrics.text.xpi_database_late_stack,
+      metrics.text.xpi_database_sync_stack
+    ) AS `text`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -3950,6 +3955,11 @@ SELECT
       metrics.text2.xpi_database_late_stack,
       metrics.text2.xpi_database_sync_stack
     ) AS `text2`,
+    STRUCT(
+      metrics.text.xpi_database_late_load,
+      metrics.text.xpi_database_late_stack,
+      metrics.text.xpi_database_sync_stack
+    ) AS `text`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -5952,6 +5962,11 @@ SELECT
       metrics.text2.xpi_database_late_stack,
       metrics.text2.xpi_database_sync_stack
     ) AS `text2`,
+    STRUCT(
+      metrics.text.xpi_database_late_load,
+      metrics.text.xpi_database_late_stack,
+      metrics.text.xpi_database_sync_stack
+    ) AS `text`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -7963,6 +7978,11 @@ SELECT
       metrics.text2.xpi_database_late_stack,
       metrics.text2.xpi_database_sync_stack
     ) AS `text2`,
+    STRUCT(
+      metrics.text.xpi_database_late_load,
+      metrics.text.xpi_database_late_stack,
+      metrics.text.xpi_database_sync_stack
+    ) AS `text`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,
@@ -9954,6 +9974,11 @@ SELECT
       metrics.text2.xpi_database_late_stack,
       metrics.text2.xpi_database_sync_stack
     ) AS `text2`,
+    STRUCT(
+      metrics.text.xpi_database_late_load,
+      metrics.text.xpi_database_late_stack,
+      metrics.text.xpi_database_sync_stack
+    ) AS `text`,
     STRUCT(metrics.url.search_default_engine_search_url) AS `url`
   ) AS `metrics`,
   normalized_app_name,

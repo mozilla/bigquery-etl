@@ -1744,7 +1744,12 @@ SELECT
       metrics.text2.xpi_database_late_load,
       metrics.text2.xpi_database_late_stack,
       metrics.text2.xpi_database_sync_stack
-    ) AS `text2`
+    ) AS `text2`,
+    STRUCT(
+      metrics.text.xpi_database_late_load,
+      metrics.text.xpi_database_late_stack,
+      metrics.text.xpi_database_sync_stack
+    ) AS `text`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

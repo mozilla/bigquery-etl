@@ -27,7 +27,7 @@ references:
   - mozdata.ltv.firefox_ios_client_ltv
 deprecated: true
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: null
   partition_column_set: true

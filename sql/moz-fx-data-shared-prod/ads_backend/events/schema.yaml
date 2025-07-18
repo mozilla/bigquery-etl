@@ -1,7 +1,4 @@
 fields:
-- name: normalized_app_id
-  type: STRING
-  mode: NULLABLE
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -38,6 +35,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: The architecture of the device, (e.g. "arm", "x86").
+  - name: build_date
+    type: STRING
+    mode: NULLABLE
+    description: The date & time the application was built
   - name: client_id
     type: STRING
     mode: NULLABLE
@@ -73,18 +74,88 @@ fields:
     mode: NULLABLE
     description: The user-visible version of the operating system (e.g. "1.2.3").
       If the version detection fails, this metric gets set to `Unknown`.
+  - name: session_count
+    type: INTEGER
+    mode: NULLABLE
+    description: An optional running counter of the number of sessions for a client.
+  - name: session_id
+    type: STRING
+    mode: NULLABLE
+    description: An optional UUID uniquely identifying the client's current session.
   - name: telemetry_sdk_build
     type: STRING
     mode: NULLABLE
     description: The version of the Glean SDK
-  - name: build_date
-    type: STRING
+  - name: windows_build_number
+    type: INTEGER
     mode: NULLABLE
-    description: The date & time the application was built
+    description: The optional Windows build number, reported by Windows (e.g. 22000)
+      and not set for other platforms
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+      description: The attribution campaign (e.g. 'mozilla-org').
+    - name: content
+      type: STRING
+      mode: NULLABLE
+      description: The attribution content (e.g. 'firefoxview').
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+      description: The attribution medium (e.g. 'organic' for a search engine).
+    - name: source
+      type: STRING
+      mode: NULLABLE
+      description: The attribution source (e.g. 'google-play').
+    - name: term
+      type: STRING
+      mode: NULLABLE
+      description: The attribution term (e.g. 'browser with developer tools for android').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+      description: The distribution name (e.g. 'MozillaOnline').
+    - name: ext
+      type: JSON
+      mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE
   description: The document ID specified in the URI when the client sent this message
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -130,6 +201,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Debug-Id HTTP header
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
@@ -142,14 +221,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: X-Telemetry-Agent HTTP header
-    - name: x_foxsec_ip_reputation
-      type: STRING
-      mode: NULLABLE
-      description: X-Foxsec-IP-Reputation header
-    - name: x_lb_tags
-      type: STRING
-      mode: NULLABLE
-      description: X-LB-Tags HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -199,6 +270,144 @@ fields:
       type: STRING
       mode: NULLABLE
     description: Parsed components of the client's user agent string
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: datetime
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: technical_operations_fetched_timestamp
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Timestamp indicating when the ad was fetched from the demand_source
+        by the Unified API.  This timestamp along with served_timestamp indicates
+        the freshness of the ad.  If the ad is not cached on the server these two
+        timestamps will differ by milliseconds. Should not be null.
+
+        '
+    - name: raw_technical_operations_fetched_timestamp
+      type: STRING
+      mode: NULLABLE
+    - name: technical_operations_served_timestamp
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'Timestamp indicating when the ad was served by the Unified API
+        to client. This timestamp along with fetched_timestamp indicates the freshness
+        of the ad.  If the ad is not cached on the server these two timestamps will
+        differ by milliseconds. Should not be null.
+
+        '
+    - name: raw_technical_operations_served_timestamp
+      type: STRING
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: ad_advertiser
+      type: STRING
+      mode: NULLABLE
+      description: 'Advertiser associated with the ad.  Should not be null.
+
+        '
+    - name: ad_client_context_id
+      type: STRING
+      mode: NULLABLE
+      description: 'A unique identifier representing an application user; provided
+        by the client.  Should not be null.
+
+        '
+    - name: ad_client_form_factor
+      type: STRING
+      mode: NULLABLE
+      description: 'Form factor of the device displaying the ad (e.g. desktop, mobile).
+        Should not be null.
+
+        '
+    - name: ad_client_os
+      type: STRING
+      mode: NULLABLE
+      description: 'OS of the device displaying the ad.  May be null.
+
+        '
+    - name: ad_client_placement
+      type: STRING
+      mode: NULLABLE
+      description: 'Value identifying the surface; provided by the client when requesting
+        an ad (e.g. newtab). Should not be null.
+
+        '
+    - name: ad_client_placement_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Unique identifer representing an instance of a placement (e.g.
+        newtab_visit_id).  May be null.
+
+        '
+    - name: ad_client_position
+      type: STRING
+      mode: NULLABLE
+      description: 'Supplied by the client if position within the placement is relevant
+        (e.g. "1", "2", "top", "left-side").  May be null.
+
+        '
+    - name: ad_country_code
+      type: STRING
+      mode: NULLABLE
+      description: 'Country code associated with the client when the ad was requested.
+        Should not be null.
+
+        '
+    - name: ad_format
+      type: STRING
+      mode: NULLABLE
+      description: 'Format of the ad which satisfied the requested placement.  More
+        than one format can map to one product.  Should not be null.
+
+        '
+    - name: ad_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Advertiser/partner provided identifier for a specific ad.  May
+        be null.
+
+        '
+    - name: ad_interaction
+      type: STRING
+      mode: NULLABLE
+      description: 'The type of ad interaction (e.g. impression, click, ...).  Should
+        not be null.
+
+        '
+    - name: ad_product
+      type: STRING
+      mode: NULLABLE
+      description: 'The category of ad requested by the client. (e.g. tiles, native,
+        banner, carousel, video).  Should not be null.
+
+        '
+    - name: ad_provider
+      type: STRING
+      mode: NULLABLE
+      description: 'The external service providing the ad.  Should not be null.
+
+        '
+    - name: ad_region_code
+      type: STRING
+      mode: NULLABLE
+      description: 'Region code associated with the client when the ad was requested.  May
+        be null.
+
+        '
+    - name: technical_operations_user_agent
+      type: STRING
+      mode: NULLABLE
+      description: 'User agent of the client.  Used for error investigation only,
+        no analytics value.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -252,13 +461,13 @@ fields:
   - name: ping_type
     type: STRING
     mode: NULLABLE
+  - name: reason
+    type: STRING
+    mode: NULLABLE
   - name: seq
     type: INTEGER
     mode: NULLABLE
   - name: start_time
-    type: STRING
-    mode: NULLABLE
-  - name: reason
     type: STRING
     mode: NULLABLE
   - name: parsed_start_time
@@ -288,25 +497,3 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
-- name: event_id
-  type: STRING
-  mode: NULLABLE
-- name: event_timestamp
-  type: INTEGER
-  mode: NULLABLE
-- name: event_category
-  type: STRING
-  mode: NULLABLE
-- name: event_name
-  type: STRING
-  mode: NULLABLE
-- name: event_extra
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE

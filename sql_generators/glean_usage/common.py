@@ -33,6 +33,10 @@ BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
     "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
+DEPRECATED_APP_LIST = ConfigLoader.get(
+    "generate", "glean_usage", "deprecated_apps", fallback=[]
+)
+
 APPS_WITH_PROFILE_GROUP_ID = ("firefox_desktop",)
 
 
@@ -259,6 +263,9 @@ class GleanTable:
         # but do not do so actively anymore. This is why they get excluded.
         enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
+        # Some apps' tables have been deprecated
+        deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -268,6 +275,7 @@ class GleanTable:
             app_name=app_name,
             has_profile_group_id=app_name in APPS_WITH_PROFILE_GROUP_ID,
             enable_monitoring=enable_monitoring,
+            deprecated_app=deprecated_app,
         )
 
         render_kwargs.update(self.custom_render_kwargs)
@@ -428,6 +436,9 @@ class GleanTable:
             set(BIGCONFIG_SKIP_APPS + BIGCONFIG_SKIP_APPS_METRICS)
         )
 
+        # Some apps' tables have been deprecated
+        deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
+
         render_kwargs = dict(
             header="-- Generated via bigquery_etl.glean_usage\n",
             header_yaml="---\n# Generated via bigquery_etl.glean_usage\n",
@@ -438,6 +449,7 @@ class GleanTable:
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_name,
             enable_monitoring=enable_monitoring,
+            deprecated_app = deprecated_app,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

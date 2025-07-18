@@ -1,0 +1,19 @@
+friendly_name: Urlbar Events Daily Engagement By Product Result Type
+description: |-
+  Derived table from the urlbar_events ping to compute daily urlbar metrics per client.
+  This table will be used to power experiments, as querying the raw ping tables causes
+  Jetstream runs to either time out or run considerably longer.
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  shredder_mitigation: true
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_urlbar
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true

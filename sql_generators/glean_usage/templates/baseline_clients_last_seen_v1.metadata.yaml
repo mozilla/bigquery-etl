@@ -32,3 +32,6 @@ monitoring:
 schema:
   derived_from:
   - table: ['moz-fx-data-shared-prod', '{{ derived_dataset }}', 'baseline_clients_daily_v1']
+{%- if deprecated_app %}
+deprecated: true
+{%- endif -%}

@@ -1,0 +1,8 @@
+2025-07-18:
+  start_date: 2025-04-01
+  end_date: 2025-07-17
+  reason: Created new table and would like to have the historical data, which dates back to the start date of the backfill
+  watchers:
+  - ascholtz@mozilla.com
+  status: Initiate
+  shredder_mitigation: true

@@ -28,14 +28,12 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - moz-fx-data-shared-prod.firefox_reality.metrics_clients_daily
   - moz-fx-data-shared-prod.firefox_reality_derived.metrics_clients_last_seen_v1
+deprecated: true
 monitoring:
   enabled: false
   collection: null

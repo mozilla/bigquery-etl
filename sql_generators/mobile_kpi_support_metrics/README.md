@@ -24,6 +24,8 @@ Templates included in the generator:
 
 - `new_profile_activations` - aggregates stats of new profile activations *(aggregated dataset)*
 
+- `new_profile_clients` - contains information about new profiles *(expected grain: client_id + normalized_channel | population: all clients)*
+
 - `new_profiles` - agggregates stats around new profiles / clients *(aggregated dataset)*
 
 ### Generated product lineage

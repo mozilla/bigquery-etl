@@ -10,7 +10,7 @@ default_table_workgroup_access:
   - workgroup:mozilla-confidential
 default_table_expiration_ms: null
 workgroup_access:
-- role: roles/bigquery.dataViewer
+- role: roles/bigquery.metadataViewer
   members:
   - workgroup:mozilla-confidential
 syndication: {}

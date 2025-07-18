@@ -37,14 +37,12 @@ bigquery:
     fields:
     - sample_id
     - submission_date
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   query.sql:
   - org_mozilla_tv_firefox_derived.baseline_clients_first_seen_v1
   - org_mozilla_tv_firefox_stable.baseline_v1
+deprecated: true
 monitoring:
   enabled: false
   collection: null

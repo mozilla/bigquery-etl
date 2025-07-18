@@ -1846,14 +1846,16 @@ def schema():
 @click.option(
     "--use_dataset_schema",
     "--use-dataset-schema",
-    help="Use dataset schema to update column descriptions and recommend column names. This option requires file <dataset_name>.yaml present in bigquery_etl/schema.",
+    help="Use dataset schema to update column descriptions and recommend column names. "
+    "This option requires file <dataset_name>.yaml present in bigquery_etl/schema.",
     is_flag=True,
     default=False,
 )
 @click.option(
     "--use_global_schema",
     "--use-global-schema",
-    help="Use global schema to update column descriptions and recommend column names. This option uses file global.yaml in bigquery_etl/schema.",
+    help="Use global schema to update column descriptions and recommend column names. "
+    "This option uses file global.yaml in bigquery_etl/schema.",
     is_flag=True,
     default=False,
 )
@@ -1945,16 +1947,17 @@ def update(
 
 
 def _update_query_schema_with_base_schemas(
-        query_schema:Schema, dataset_name: str, use_dataset_schema: bool, use_global_schema:bool
-) -> schema:
+    query_schema: Schema,
+    dataset_name: str,
+    use_dataset_schema: bool,
+    use_global_schema: bool,
+) -> Schema:
     """
-    Update column descriptions in query_schema and recommend column names based on
-    a dataset base schema as primary source and (optionally) a global schema
-    as a secondary source.
+    Update column descriptions and recommend column names.
 
-    Return the updated schema if changes were applied or the original schema otherwise.
+    Base dataset schema is used as primary source and global schema as secondary.
+    Returns the updated schema if changes were applied or the original schema otherwise.
     """
-
     dataset_schema_name = f"{dataset_name}.yaml"
     modified_fields = []
     alias_recommendations = []
@@ -1962,12 +1965,16 @@ def _update_query_schema_with_base_schemas(
 
     dataset_path = Path(CANONICAL_SCHEMA_PATH / dataset_schema_name)
     if use_dataset_schema and (not dataset_path.exists() or not dataset_path.is_file()):
-        click.echo(f"WARNING: Option --use_dataset_schema was not applied due to missing required schema '{dataset_path}'.")
+        click.echo(
+            f"WARNING: Option --use_dataset_schema was not applied due to missing required schema '{dataset_path}'."
+        )
         return query_schema
 
     global_path = Path(CANONICAL_SCHEMA_PATH / GLOBAL_SCHEMA_NAME)
     if use_global_schema and (not global_path.exists() or not global_path.is_file()):
-        click.echo(f"WARNING: Option --use_global_schema was not applied due to missing required schema '{global_path}'")
+        click.echo(
+            f"WARNING: Option --use_global_schema was not applied due to missing required schema '{global_path}'"
+        )
         return query_schema
 
     def get_field_from_schema(field_name: str, base_schema: Schema):
@@ -2009,7 +2016,9 @@ def _update_query_schema_with_base_schemas(
                 missing_desc_columns.append(field_name)
 
     if modified_fields:
-        click.echo("\n[WARNING] The following column descriptions were overwritten using the base schemas:")
+        click.echo(
+            "\n[WARNING] The following column descriptions were overwritten using the base schemas:"
+        )
         for name, source in modified_fields:
             click.echo(f"  - '{name}' (source: {source})")
 
@@ -2019,7 +2028,9 @@ def _update_query_schema_with_base_schemas(
             click.echo(f"  - {col}")
 
     if alias_recommendations:
-        click.echo("\n[INFO] The following columns matched the base schemas by alias. Consider using the column name in the base schema:")
+        click.echo(
+            "\n[INFO] The following columns matched the base schemas by alias. Consider using the column name in the base schema:"
+        )
         for alias, base in alias_recommendations:
             click.echo(f"  - '{alias}' → '{base}'")
 
@@ -2301,7 +2312,7 @@ def _update_query_schema(
             updated_schema = existing_schema.merge(table_schema)
 
         if query_schema:
-            updated_schema =  existing_schema.merge(query_schema)
+            updated_schema = existing_schema.merge(query_schema)
             changed = not existing_schema.equal(old_schema)
     else:
         updated_schema = query_schema.merge(table_schema)
@@ -2309,7 +2320,8 @@ def _update_query_schema(
     if use_dataset_schema or use_global_schema:
         # Use standard schemas to update column descriptions, if requested.
         updated_schema = _update_query_schema_with_base_schemas(
-            existing_schema, dataset_name, use_dataset_schema, use_global_schema)
+            existing_schema, dataset_name, use_dataset_schema, use_global_schema
+        )
 
     if updated_schema:
         updated_schema.to_yaml_file(existing_schema_path)

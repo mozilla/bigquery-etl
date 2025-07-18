@@ -17,8 +17,12 @@ from bigquery_etl.cli.query import (
     materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
+    update,
+    _update_query_schema_with_base_schemas,
 )
 from bigquery_etl.metadata.publish_metadata import attach_metadata
+from bigquery_etl.schema import Schema
+from tests.cli.test_cli_backfill import TABLE_METADATA_CONF_DEPENDS_ON_PAST
 
 
 class TestQuery:
@@ -1010,3 +1014,173 @@ class TestQuery:
                 ],
             )
             assert result.exit_code == 1
+
+
+    @patch("bigquery_etl.cli.query.ParallelTopologicalSorter")
+    @patch("bigquery_etl.cli.query._update_query_schema_with_downstream")
+    def test_schema_update(
+            self,
+            mock_update_query_schema_with_downstream,
+            mock_sorter_,
+            runner,
+    ):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                    "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            with open(
+                    "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
+                    "w",
+            ) as f:
+                f.write(yaml.dump(metadata_conf))
+
+            # the update() uses a map that we need to intercept to simulate a run and test
+            # the mocked calls.
+            mock_sorter = mock_sorter_.return_value
+            def fake_map(f):
+                mock_sorter._mapped = f
+
+            def fake_run():
+                mock_sorter._mapped()
+
+            mock_sorter.map.side_effect = fake_map
+            mock_sorter.run.side_effect = fake_run
+
+            result = runner.invoke(
+                update,["telemetry_derived.query_v1"]
+            )
+            mock_sorter.run()
+            assert str(result) == "<Result okay>"
+            assert mock_update_query_schema_with_downstream.call_count == 1
+
+            result2 = runner.invoke(
+                update, ["telemetry_derived.query_v1", "--use_global_schema"]
+            )
+            mock_sorter.run()
+            assert str(result2) == "<Result okay>"
+            assert mock_update_query_schema_with_downstream.call_count == 2
+
+
+    def test_update_query_schema_with_base_schemas(
+        self, runner, capsys
+    ):
+        with ((runner.isolated_filesystem())):
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            os.makedirs("bigquery_etl/schema")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write("SELECT 1")
+
+            metadata_conf = {
+                "friendly_name": "test",
+                "description": "test",
+                "owners": ["test@example.org"],
+                "scheduling": {"dag_name": "bqetl_test"},
+                "labels": {"test": 123, "foo": "abc", "review_bugs": [1234, 1254]},
+            }
+
+            query_schema_yaml = {
+                "fields": [
+                    {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                    {"name": "dim_1", "type": "STRING", "mode": "NULLABLE", "description": "dim_1."},
+                    {"name": "dim_2", "type": "INTEGER", "mode": "NULLABLE"},
+                ]
+            }
+            global_schema_yaml = {
+                "fields": [
+                    {"name": "dim_1", "type": "STRING", "mode": "NULLABLE", "description": "Updated global dim_1 description."},
+                    {"name": "dim_2", "type": "INTEGER", "mode": "NULLABLE", "description": "Updated global dim_2 description."},
+                ]
+            }
+
+            dataset_schema_yaml = {
+                "fields": [
+                    {"name": "column_1", "type": "DATE", "mode": "NULLABLE",
+                     "description": "Updated dataset column_1 description."},
+                    {"name": "dim_1", "type": "STRING", "mode": "NULLABLE",
+                     "description": "Updated dataset dim_1 description."},
+                ]
+            }
+            expected2_schema_yaml = {
+                "fields": [
+                    {"name": "column_1", "type": "DATE", "mode": "NULLABLE"},
+                    {"name": "dim_1", "type": "STRING", "mode": "NULLABLE", "description": "Updated global dim_1 description."},
+                    {"name": "dim_2", "type": "INTEGER", "mode": "NULLABLE", "description": "Updated global dim_2 description."},
+                ]
+            }
+
+            expected4_schema_yaml = {
+                "fields": [
+                    {"name": "column_1", "type": "DATE", "mode": "NULLABLE",
+                     "description": "Updated dataset column_1 description."},
+                    {"name": "dim_1", "type": "STRING", "mode": "NULLABLE",
+                     "description": "Updated dataset dim_1 description."},
+                    {"name": "dim_2", "type": "INTEGER", "mode": "NULLABLE",
+                     "description": "Updated global dim_2 description."},
+                ]
+            }
+            query_schema_path = Path("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/schema.yaml")
+            global_schema_path = Path("bigquery_etl/schema/global.yaml")
+            dataset_schema_path = Path("bigquery_etl/schema/telemetry_derived.yaml")
+
+            with open(query_schema_path,"w") as f:
+                f.write(yaml.safe_dump(query_schema_yaml))
+            query_schema = Schema.from_schema_file(query_schema_path)
+
+            # Test using global schema when the global schema file doesn't exist.
+            result1 = _update_query_schema_with_base_schemas(
+                query_schema, "telemetry_derived", False, True
+            )
+            captured = capsys.readouterr()
+            assert "WARNING: Option --use_global_schema was not applied due to missing required schema" in captured.out
+
+            # Test using global schema and the global schema file exists.
+            with open(global_schema_path,"w") as f:
+                f.write(yaml.dump(global_schema_yaml))
+            result2 = _update_query_schema_with_base_schemas(
+                query_schema, "telemetry_derived", False, True
+            )
+            captured = capsys.readouterr()
+            assert expected2_schema_yaml["fields"] == result2.schema["fields"]
+            assert ("[INFO] The following columns are missing descriptions:") in captured.out
+
+            # Test not using any of the two base schemas: global, dataset.
+            query_schema2 = Schema.from_schema_file(query_schema_path)
+            result = _update_query_schema_with_base_schemas(
+                query_schema2, "telemetry_derived", use_dataset_schema=False, use_global_schema=False
+            )
+            captured = capsys.readouterr()
+            assert query_schema2.schema["fields"] == result.schema["fields"]
+            assert ("[INFO] The following columns are missing descriptions:") in captured.out
+
+            # Test using both base schemas, when dataset schema is missing.
+            query_schema3 = Schema.from_schema_file(query_schema_path)
+            result = _update_query_schema_with_base_schemas(
+                query_schema3, "telemetry_derived", use_dataset_schema=True, use_global_schema=True
+            )
+            captured = capsys.readouterr()
+            assert query_schema3.schema["fields"] == result.schema["fields"]
+            assert ("WARNING: Option --use_dataset_schema was not applied due to missing required") in captured.out
+
+            # Test using both base schemas: global, dataset, both are present.
+            query_schema4 = Schema.from_schema_file(query_schema_path)
+            with open(dataset_schema_path,"w") as f:
+                f.write(yaml.dump(dataset_schema_yaml))
+            result = _update_query_schema_with_base_schemas(
+                query_schema4, "telemetry_derived", use_dataset_schema=True, use_global_schema=True
+            )
+            captured = capsys.readouterr()
+            assert expected4_schema_yaml["fields"]  == result.schema["fields"]
+            assert ("[WARNING] The following column descriptions were overwritten using the base schemas:") in captured.out

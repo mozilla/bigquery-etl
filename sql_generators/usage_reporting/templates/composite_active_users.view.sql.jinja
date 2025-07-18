@@ -19,7 +19,7 @@ SELECT
   os_version_major,
   os_version_minor,
   {% if app_name == "firefox_desktop" %}
-  os_version_build,
+    os_version_build,
   {% endif %}
   distribution_id,
   is_default_browser,
@@ -32,9 +32,9 @@ SELECT
   is_monthly_user,
 FROM
   {% if app_name == "firefox_desktop" %}
-  `{{ project_id }}.{{ app_name }}.baseline_active_users`
+    `{{ project_id }}.{{ app_name }}.baseline_active_users`
   {% else %}
-  `{{ project_id }}.{{ app_name }}.active_users`
+    `{{ project_id }}.{{ app_name }}.active_users`
   {% endif %}
 WHERE
   mozfun.norm.browser_version_info(app_version).major_version < 136
@@ -57,7 +57,7 @@ SELECT
   os_version_major,
   os_version_minor,
   {% if app_name == "firefox_desktop" %}
-  os_version_build,
+    os_version_build,
   {% endif %}
   distribution_id,
   is_default_browser,
@@ -70,5 +70,7 @@ SELECT
   is_monthly_user,
 FROM
   `{{ project_id }}.{{ app_name }}.usage_reporting_active_users`
-WHERE
-  mozfun.norm.browser_version_info(app_version).major_version >= 136
+  {% if app_name == "firefox_desktop" %}
+    WHERE
+      mozfun.norm.browser_version_info(app_version).major_version >= 136
+  {% endif %}

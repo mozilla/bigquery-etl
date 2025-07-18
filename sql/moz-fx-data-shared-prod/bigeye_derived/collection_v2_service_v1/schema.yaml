@@ -1,110 +1,111 @@
 fields:
 - description: |
-    Collection ID associated with this record.
+    id associated with this record.
   mode: NULLABLE
   name: id
   type: INTEGER
 - description: |
-    Name associated with this record.
+    name associated with this record.
   mode: NULLABLE
   name: name
   type: STRING
 - description: |
-    Description associated with this record.
-  mode: NULLABLE
-  name: description
-  type: STRING
-- description: |
-    Created by timestamp associated with this record.
+    created_by associated with this record.
   mode: NULLABLE
   name: created_by
   type: INTEGER
 - description: |
-    Created by timestamp epoch in seconds with this record.
+    created_by_epoch_seconds associated with this record.
   mode: NULLABLE
   name: created_by_epoch_seconds
   type: INTEGER
 - description: |
-    Updated by timestamp associated with this record.
+    updated_by associated with this record.
   mode: NULLABLE
   name: updated_by
   type: INTEGER
 - description: |
-    Updated by timestamp epoch in seconds with this record.
+    updated_by_epoch_seconds associated with this record.
   mode: NULLABLE
   name: updated_by_epoch_seconds
   type: INTEGER
 - description: |
-    Owner associated with this record.
+    owner associated with this record.
   mode: NULLABLE
   name: owner
   type: INTEGER
 - description: |
-    Metric ID associated with this record.
-  mode: NULLABLE
+    metric_id associated with this record.
+  mode: REPEATED
   name: metric_id
-  type: ARRAY
+  type: INTEGER
 - description: |
-    Notification Channels associated with this record.
-  mode: NULLABLE
+    notification_channels associated with this record.
+  mode: REPEATED
   name: notification_channels
   type: RECORD
 - description: |
+    muted_until_timestamp associated with this record.
   mode: NULLABLE
   name: muted_until_timestamp
   type: INTEGER
 - description: |
-    Boolean value indicating if this collection has been marked as a favorite.
+    is_favorite associated with this record.
   mode: NULLABLE
   name: is_favorite
   type: BOOLEAN
 - description: |
-    Tag associated with this record.
-  mode: NULLABLE
+    tag associated with this record.
+  mode: REPEATED
   name: tag
   type: INTEGER
 - description: |
-    Metrics count associated with this record.
+    metrics_count associated with this record.
   mode: NULLABLE
   name: metrics_count
   type: INTEGER
 - description: |
-    Tags associated with this record.
+    alerting_mnetrics_count associated with this record.
   mode: NULLABLE
   name: alerting_mnetrics_count
   type: INTEGER
 - description: |
-    Earliest updated metric seconds associated with this record.
+    earliest_updated_metric_seconds associated with this record.
   mode: NULLABLE
-  name: earliestUpdatedMetricSeconds
+  name: earliest_updated_metric_seconds
   type: INTEGER
 - description: |
-    Latest updated metric seconds associated with this record.
+    latest_updated_metric_seconds associated with this record.
   mode: NULLABLE
-  name: latestUpdatedMetricSeconds
+  name: latest_updated_metric_seconds
   type: INTEGER
 - description: |
-    Open issues count associated with this record.
+    open_issues_count associated with this record.
   mode: NULLABLE
   name: open_issues_count
   type: INTEGER
 - description: |
-    Triage issues count associated with this record.
+    triage_issues_count associated with this record.
   mode: NULLABLE
   name: triage_issues_count
   type: INTEGER
 - description: |
-    Acknowledge issues count associated with this record.
+    acknowledge_issues_count associated with this record.
   mode: NULLABLE
   name: acknowledge_issues_count
   type: INTEGER
 - description: |
-    Monitoring issues count associated with this record.
+    monitoring_issues_count associated with this record.
   mode: NULLABLE
   name: monitoring_issues_count
   type: INTEGER
 - description: |
-    Timestamp of when data was loaded into BigQuery
+    refreshed_at associated with this record.
   mode: NULLABLE
   name: refreshed_at
   type: TIMESTAMP
+- description: |
+    description associated with this record.
+  mode: NULLABLE
+  name: description
+  type: STRING

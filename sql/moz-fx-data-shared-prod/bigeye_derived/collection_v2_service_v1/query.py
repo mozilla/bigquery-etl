@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 from argparse import ArgumentParser
 from typing import Any, Dict
 
@@ -11,7 +12,6 @@ from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
 
-TARGET_TABLE = "moz-fx-data-shared-prod.bigeye_derived.collection_v2_service"
 BIGEYE_API_KEY = os.environ["BIGEYE_API_KEY"]
 WORKSPACE_IDS = ConfigLoader.get("monitoring", "bigeye_workspace_ids")
 API_URL = "https://app.bigeye.com/api/v2/collections/info?workspaceId="
@@ -42,32 +42,13 @@ def process_response(response_data: Dict[str, Any]) -> pd.DataFrame:
         max_level=None,
     )
 
+    column_list = df.columns.tolist()
+    for column_name in column_list:
+        name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", column_name)
+        snake_case_name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
+        df = df.rename(columns={f"{column_name}": f"{snake_case_name}"})
+
     df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
-
-    df.columns = df.columns.str.replace("collectionConfiguration_", "")
-    df.columns = df.columns.str.replace("collectionMetricStatus_", "")
-
-    df = df.rename(
-        columns={
-            "isFavorite": "is_favorite",
-            "mutedUntilTimestamp": "muted_until_timestamp",
-            "notificationChannels": "notification_channels",
-            "metricIds": "metric_id",
-            "tags": "tag",
-            "entityInfo_createdBy": "created_by",
-            "entityInfo_createdEpochSeconds": "created_by_epoch_seconds",
-            "entityInfo_updatedBy": "updated_by",
-            "entityInfo_updatedEpochSeconds": "updated_by_epoch_seconds",
-            "metricsCount": "metrics_count",
-            "alertingMetricsCount": "alerting_mnetrics_count",
-            "earliestUpdatedMetricSeconds": "earliest_updated_metric_seconds",
-            "latestUpdatedMetricSeconds": "latest_updated_metric_seconds",
-            "openIssuesCount": "open_issues_count",
-            "triageIssuesCount": "triage_issues_count",
-            "acknowledgeIssuesCount": "acknowledge_issues_count",
-            "monitoringIssuesCount": "monitoring_issues_count",
-        }
-    )
 
     return df
 
@@ -92,9 +73,11 @@ def get_bigeye_data() -> pd.DataFrame:
     return pd.concat(all_data, ignore_index=True)
 
 
-def load_to_bigquery(project_id, df: pd.DataFrame) -> None:
+def load_to_bigquery(project_id, dataset, table, df: pd.DataFrame) -> None:
     """Load DataFrame to BigQuery."""
     client = bigquery.Client(project_id)
+
+    TARGET_TABLE = f"{project_id}.{dataset}.{table}"
 
     job = client.load_table_from_dataframe(
         df,
@@ -109,11 +92,13 @@ def main() -> None:
     """Pull from BigEye API dashboard service endpoint then upload to BigQuery."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
+    parser.add_argument("--dataset", default="bigeye_derived")
+    parser.add_argument("--table", default="collection_v2")
     args = parser.parse_args()
 
     df = get_bigeye_data()
 
-    load_to_bigquery(args.project, df)
+    load_to_bigquery(args.project, args.dataset, args.table, df)
 
 
 if __name__ == "__main__":

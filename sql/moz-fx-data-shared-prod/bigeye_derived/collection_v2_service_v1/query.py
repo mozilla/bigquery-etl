@@ -1,4 +1,4 @@
-"""Pull from BigEye API from dashboardService and upload to Big Query."""
+"""Pull from BigEye API from Collection V2 Service and upload to Big Query."""
 
 import logging
 import os

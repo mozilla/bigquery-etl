@@ -6,15 +6,36 @@ tag_deployments:
     - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.submission_date
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.first_seen_date
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.app_name
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.is_mobile
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.num_days_seen_day_2_7
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.num_days_active_day_2_7
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.search_count
     metrics:
     - saved_metric_id: is_not_null
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.normalized_channel
     metrics:
     - saved_metric_id: is_99_percent_valid_normalized_channel
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.*
+    metrics:
+    - saved_metric_id: composite_key_uniqueness_2_column
+      parameters:
+      - key: col_1
+        column_name: client_id
+      - key: col_1_string
+        string_value: client_id
+      - key: col_2
+        column_name: normalized_channel
+      - key: col_2_string
+        string_value: normalized_channel
+      - key: table
+        string_value: moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1
+      rct_overrides:
+      - FULL_SCAN
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.new_profile_activations_v1.*
     metrics:

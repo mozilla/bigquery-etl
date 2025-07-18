@@ -318,6 +318,8 @@ metadata:
 generate:
   glean_usage:
     deprecated_apps:
+    - firefox_fire_tv
+    - org.mozilla.tv.firefox
     - firefox_reality
     - firefox_reality_pc
     - org.mozilla.firefoxreality

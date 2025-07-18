@@ -3,6 +3,7 @@ description: |-
   Activation Clients (Firefox iOS).
 
   Table grain: submission_date, client_id, normalized_channel
+  Table population: all clients
 
   Notes:
   - 2024-03-05: `device_type` and `device_manufacturer` fields added

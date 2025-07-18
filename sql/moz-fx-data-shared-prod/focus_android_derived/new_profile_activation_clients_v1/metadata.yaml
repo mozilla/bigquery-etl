@@ -3,6 +3,7 @@ description: |-
   Activation Clients (Focus Android).
 
   Table grain: submission_date, client_id, normalized_channel
+  Table population: all clients
 
   Notes:
   - 2025-01-18: `device_type` and `device_manufacturer` fields added

@@ -3,8 +3,10 @@ description: |-
   New profile clients (Firefox iOS) metrics
 
   Table grain: client_id, normalized_channel
+  Table population: all clients
+
   Partitioned by: first_seen_date
-  Clustered by: normalized_channel, country
+  Clustered by: app_name, normalized_channel
 
   Notes:
   - 2024-03-05: `device_type` and `device_manufacturer` fields added

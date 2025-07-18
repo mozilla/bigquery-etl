@@ -2,6 +2,8 @@ friendly_name: Activations - Fenix (Aggregated)
 description: |-
   Activations (Fenix) aggregated metrics
 
+  Grouped by all dimensions to generate new profile activation metric.
+
   Notes:
   - 2024-03-05: `device_type` and `device_manufacturer` fields added
 owners:

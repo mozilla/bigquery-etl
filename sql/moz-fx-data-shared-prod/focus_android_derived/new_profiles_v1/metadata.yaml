@@ -2,6 +2,8 @@ friendly_name: New profiles - Focus Android (Aggregated)
 description: |-
   New profiles (Focus Android) aggregated metrics
 
+  Grouped by all dimensions to generate new profiles metric.
+
   Notes:
   - 2025-01-18: `device_type` and `device_manufacturer` fields added
 owners:

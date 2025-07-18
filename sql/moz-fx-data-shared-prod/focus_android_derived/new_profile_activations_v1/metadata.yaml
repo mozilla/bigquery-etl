@@ -2,6 +2,8 @@ friendly_name: Activations - Focus Android (Aggregated)
 description: |-
   Activations (Focus Android) aggregated metrics
 
+  Grouped by all dimensions to generate new profile activation metric.
+
   Notes:
   - 2025-01-18: `device_type` and `device_manufacturer` fields added
 owners:

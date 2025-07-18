@@ -21,6 +21,10 @@ default:
 monitoring:
   bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
+  bigeye_workspace_ids:
+  - 463
+  - 508
+  - 509
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun

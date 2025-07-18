@@ -11,7 +11,6 @@ from google.cloud import bigquery
 
 from bigquery_etl.config import ConfigLoader
 
-TARGET_TABLE = "moz-fx-data-shared-prod.bigeye_derived.dashboards"
 BIGEYE_API_KEY = os.environ["BIGEYE_API_KEY"]
 WORKSPACE_IDS = ConfigLoader.get("monitoring", "bigeye_workspace_ids")
 API_URL = "https://app.bigeye.com/api/v1/dashboard/calculate-data-points-request"
@@ -119,9 +118,11 @@ def validate_dataframe(df: pd.DataFrame) -> None:
         raise ValueError(f"DataFrame is missing required columns: {missing}")
 
 
-def load_to_bigquery(project_id, df: pd.DataFrame) -> None:
+def load_to_bigquery(project_id, dataset, table, df: pd.DataFrame) -> None:
     """Load DataFrame to BigQuery."""
     client = bigquery.Client(project_id)
+
+    TARGET_TABLE = f"{project_id}.{dataset}.{table}"
 
     job = client.load_table_from_dataframe(
         df,
@@ -136,13 +137,15 @@ def main() -> None:
     """Pull from BigEye API dashboard service endpoint then upload to BigQuery."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
+    parser.add_argument("--dataset", default="bigeye_derived")
+    parser.add_argument("--table", default="dashboards")
     args = parser.parse_args()
 
     df = get_bigeye_data()
 
     validate_dataframe(df)
 
-    load_to_bigquery(args.project, df)
+    load_to_bigquery(args.project, args.dataset, args.table, df)
 
 
 if __name__ == "__main__":

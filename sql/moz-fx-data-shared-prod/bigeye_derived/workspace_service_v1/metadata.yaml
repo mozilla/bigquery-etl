@@ -1,6 +1,6 @@
 friendly_name: Workspace Service
 description: |-
-  BigEye metadata for the workspace service docs: https://docs.bigeye.com/reference/getdashboarddataseries
+  BigEye metadata for the workspace service docs: https://docs.bigeye.com/reference/getallworkspaces
 owners:
 - phlee@mozilla.com
 labels:

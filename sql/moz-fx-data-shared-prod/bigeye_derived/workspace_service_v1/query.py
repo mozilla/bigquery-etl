@@ -2,6 +2,7 @@
 
 import logging
 import os
+import re
 from argparse import ArgumentParser
 from typing import Any, Dict
 
@@ -9,7 +10,6 @@ import pandas as pd
 import requests
 from google.cloud import bigquery
 
-TARGET_TABLE = "moz-fx-data-shared-prod.bigeye_derived.workspaces"
 BIGEYE_API_KEY = os.environ["BIGEYE_API_KEY"]
 API_URL = "https://app.bigeye.com/api/v1/workspaces"
 
@@ -36,6 +36,12 @@ def process_response(response_data: Dict[str, Any]) -> pd.DataFrame:
         meta_prefix="workspace_",
     )
 
+    column_list = df.columns.tolist()
+    for column_name in column_list:
+        name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", column_name)
+        snake_case_name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
+        df = df.rename(columns={f"{column_name}": f"{snake_case_name}"})
+
     df["refreshed_at"] = pd.Timestamp.now(tz="UTC")
 
     return df
@@ -49,9 +55,11 @@ def get_bigeye_data() -> pd.DataFrame:
     return df
 
 
-def load_to_bigquery(project_id, df: pd.DataFrame) -> None:
+def load_to_bigquery(project_id, dataset, table, df: pd.DataFrame) -> None:
     """Load DataFrame to BigQuery."""
     client = bigquery.Client(project_id)
+
+    TARGET_TABLE = f"{project_id}.{dataset}.{table}"
 
     job = client.load_table_from_dataframe(
         df,
@@ -66,11 +74,13 @@ def main() -> None:
     """Pull from BigEye API dashboard service endpoint then upload to BigQuery."""
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
+    parser.add_argument("--dataset", default="bigeye_derived")
+    parser.add_argument("--table", default="workspaces")
     args = parser.parse_args()
 
     df = get_bigeye_data()
 
-    load_to_bigquery(args.project, df)
+    load_to_bigquery(args.project, args.dataset, args.table, df)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 friendly_name: Mozilla Foundation Derived
 description: |-
-  Derived tables relating to Mozilla Foundation
+  Derived tables containing Mozilla Foundation data
 dataset_base_acl: derived
 user_facing: false
 labels: {}

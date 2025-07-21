@@ -217,6 +217,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/sumo_ga/analytics_314096102/view.sql
   - sql/moz-fx-data-shared-prod/sumo_ga/analytics_432581103/view.sql
+  - sql/moz-fx-data-shared-prod/mofo/analytics_321347134_events/view.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql

@@ -24,6 +24,10 @@ WITH potential_new_conversions AS (
         THEN "first_wk_3_actv_days_and_24_active_minutes"
       WHEN "is_dau_at_least_4_of_first_7_days"
         THEN "is_dau_at_least_4_of_first_7_days"
+      WHEN "is_dau_at_least_3_of_first_7_days"
+        THEN "is_dau_at_least_3_of_first_7_days"
+      WHEN "is_dau_at_least_2_of_first_7_days"
+        THEN "is_dau_at_least_2_of_first_7_days"
       ELSE NULL
     END AS conversion_name,
   FROM
@@ -36,7 +40,9 @@ WITH potential_new_conversions AS (
         first_wk_5_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_1_or_more_search_w_ads,
         first_wk_3_actv_days_and_24_active_minutes,
-        is_dau_at_least_4_of_first_7_days
+        is_dau_at_least_4_of_first_7_days,
+        is_dau_at_least_3_of_first_7_days,
+        is_dau_at_least_2_of_first_7_days
       )
     )
   WHERE

@@ -37,11 +37,7 @@ FROM
   `{{ project_id }}.{{ app_name }}.active_users_aggregates`
   {% endif %}
 WHERE
-  {% if app_name == "fenix" %}
-  app_version_major < 137
-  {% else %}
   app_version_major < 136
-  {% endif %}
 GROUP BY
   submission_date,
   first_seen_year,
@@ -94,12 +90,10 @@ SELECT
   SUM(monthly_users) AS monthly_users,
 FROM
   `{{ project_id }}.{{ app_name }}.usage_reporting_active_users_aggregates`
-WHERE
-  {% if app_name == "fenix" %}
-  app_version_major >= 137
-  {% else %}
-  app_version_major >= 136
-  {% endif %}
+{% if app_name == "firefox_desktop" %}
+  WHERE
+    app_version_major >= 136
+{% endif %}
 GROUP BY
   submission_date,
   first_seen_year,

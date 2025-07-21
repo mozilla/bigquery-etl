@@ -272,12 +272,17 @@ def main():
         ),
         init(
             "clients_histogram_aggregates_v1",
-            **models.clients_histogram_aggregates(parameterize=True),
+            **models.clients_histogram_aggregates(
+                parameterize=True,
+                channel=channel_prefixes[args.prefix],
+            ),
         ),
         table(
             "clients_histogram_aggregates_v1",
             **models.clients_histogram_aggregates(
-                parameterize=True, **config[args.prefix]
+                parameterize=True,
+                **config[args.prefix],
+                channel=channel_prefixes[args.prefix],
             ),
         ),
         table(

@@ -31,3 +31,6 @@ bigquery:
     fields:
       - normalized_channel
       - sample_id
+{%- if deprecated_app %}
+deprecated: true
+{%- endif -%}

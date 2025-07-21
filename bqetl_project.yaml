@@ -153,6 +153,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
+  - sql/moz-fx-data-shared-prod/google_play_store/reviews/view.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
@@ -188,6 +189,11 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/fog_decision_support_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/nimbus_recorded_targeting_context_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/ech_adoption_rate_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/review_checker_clients_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_daily_v1/query.sql
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
@@ -315,6 +321,13 @@ metadata:
 
 generate:
   glean_usage:
+    deprecated_apps:
+    - firefox_fire_tv
+    - org.mozilla.tv.firefox
+    - firefox_reality
+    - firefox_reality_pc
+    - org.mozilla.firefoxreality
+    - org.mozilla.vrbrowser
     skip_existing: # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
@@ -426,6 +439,9 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    skip_tables:
+      telemetry:
+      - modules
   usage_reporting:
     apps:
       fenix:

@@ -322,7 +322,6 @@ def generate_mobile_kpi_support_metrics(target_project: str, output_dir: click.P
 
     for template_grain, template in TEMPLATES:
         for product in MobileProducts:
-
             target_name, target_filename, target_extension = template.split(".")
 
             target_dataset = (

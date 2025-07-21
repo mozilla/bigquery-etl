@@ -85,7 +85,6 @@ DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
 NBR_DAYS_RETAINED = 775
-CANONICAL_SCHEMA_PATH = Path("bigquery_etl/schema")
 GLOBAL_SCHEMA_NAME = "global.yaml"
 
 
@@ -1962,18 +1961,19 @@ def _update_query_schema_with_base_schemas(
     modified_fields = []
     alias_recommendations = []
     missing_desc_columns = []
+    base_schemas_dir = ConfigLoader.get("schema", "base_schemas_dir")
 
-    dataset_path = Path(CANONICAL_SCHEMA_PATH / dataset_schema_name)
+    dataset_path = Path(base_schemas_dir) / dataset_schema_name
     if use_dataset_schema and (not dataset_path.exists() or not dataset_path.is_file()):
         click.echo(
             f"WARNING: Option --use_dataset_schema was not applied due to missing required schema '{dataset_path}'."
         )
         return query_schema
 
-    global_path = Path(CANONICAL_SCHEMA_PATH / GLOBAL_SCHEMA_NAME)
+    global_path = Path(base_schemas_dir) / GLOBAL_SCHEMA_NAME
     if use_global_schema and (not global_path.exists() or not global_path.is_file()):
         click.echo(
-            f"WARNING: Option --use_global_schema was not applied due to missing required schema '{global_path}'"
+            f"WARNING: Option --use_global_schema was not applied due to missing required schema '{global_path}'."
         )
         return query_schema
 

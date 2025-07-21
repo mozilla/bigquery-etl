@@ -12,6 +12,22 @@ scheduling:
   arguments:
   - --date
   - '{{ ds }}'
+  - --billing_projects
+  - moz-fx-data-backfill-10
+  - moz-fx-data-backfill-11
+  - moz-fx-data-backfill-12
+  - moz-fx-data-backfill-13
+  - moz-fx-data-backfill-14
+  - moz-fx-data-backfill-15
+  - moz-fx-data-backfill-16
+  - moz-fx-data-backfill-17
+  - moz-fx-data-backfill-18
+  - moz-fx-data-backfill-19
+  - --parallelism
+  - '25'
+  - --excluded_datasets
+  - org_mozilla_fennec_aurora_stable
+  - org_mozilla_fenix_nightly_stable
   referenced_tables:
   - - moz-fx-data-shared-prod
     - telemetry_stable

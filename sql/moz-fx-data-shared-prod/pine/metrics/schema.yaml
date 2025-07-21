@@ -887,6 +887,13 @@ fields:
         Updates on "idle daily".
 
         '
+    - name: newtab_addon_xpi_used
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if a downloaded XPI file is where the newtab resources are
+        being mapped from.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

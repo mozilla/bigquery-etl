@@ -49,6 +49,9 @@ jobs_by_project AS (
       REGEXP_EXTRACT(query, r'Username: (.*?),') AS username,
       REGEXP_EXTRACT(query, r'Query ID: (\w+), ') AS query_id,
       labels,
+      UPPER(
+        LTRIM(REGEXP_REPLACE(query, r'\s+', ' '))
+      ) LIKE 'CALL BQ.REFRESH_MATERIALIZED_VIEW%' AS is_materialized_view_refresh,
     FROM
       `{{project}}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT` AS jp
     LEFT JOIN
@@ -85,6 +88,7 @@ SELECT DISTINCT
   jo.resource_warning,
   @submission_date AS submission_date,
   jp.labels,
+  jp.is_materialized_view_refresh,
 FROM
   jobs_by_org AS jo
 LEFT JOIN

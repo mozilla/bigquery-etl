@@ -454,7 +454,14 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
     # set log level
     logging.basicConfig(level=log_level, format="%(levelname)s %(message)s")
 
-    schemas = get_stable_table_schemas()
+    skipped_tables_config = ConfigLoader.get(
+        "generate", "stable_views", "skip_tables", fallback={}
+    )
+    schemas = [
+        schema for schema in
+        get_stable_table_schemas()
+        if schema.bq_table_unversioned not in skipped_tables_config.get(schema.bq_dataset_family, [])
+    ]
     one_schema_per_dataset = [
         last
         for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
@@ -481,3 +488,7 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
             ),
             one_schema_per_dataset,
         )
+
+
+if __name__ == "__main__":
+    generate()

@@ -2,6 +2,8 @@ friendly_name: Activations - {{ friendly_name }} (Aggregated)
 description: |-
   Activations ({{ friendly_name }}) aggregated metrics
 
+  Grouped by all dimensions to generate new profile activation metric.
+
   Notes:
   {% if app_name in ['fenix', 'firefox_ios'] -%}
   - 2024-03-05: `device_type` and `device_manufacturer` fields added

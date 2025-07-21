@@ -5,4 +5,4 @@
   watchers:
   - ascholtz@mozilla.com
   status: Initiate
-  shredder_mitigation: true
+  shredder_mitigation: false

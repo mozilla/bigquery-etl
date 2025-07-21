@@ -61,7 +61,7 @@ SELECT
       CAST(NULL AS STRING)
   END AS device_type,
   EXTRACT(YEAR FROM first_seen_date) AS first_seen_year,
-  app_display_version AS app_version,
+  NULLIF(app_display_version, "") AS app_version,
   `mozfun.norm.browser_version_info`(app_display_version).major_version AS app_version_major,
   `mozfun.norm.browser_version_info`(app_display_version).minor_version AS app_version_minor,
   `mozfun.norm.browser_version_info`(app_display_version).patch_revision AS app_version_patch_revision,

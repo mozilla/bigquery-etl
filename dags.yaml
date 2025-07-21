@@ -2435,3 +2435,20 @@ bqetl_ads_hourly:
     - impact/tier_3
     - repo/bigquery-etl
     - triage/confidential
+
+bqetl_bigeye_derived:
+  schedule_interval: 0 3 * * *
+  description: |
+    Pulls metadata from BigEye API
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+    start_date: '2025-07-14'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

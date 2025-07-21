@@ -42,11 +42,6 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Is desktop client attribution organic or paid
-- name: city
-  type: STRING
-  mode: NULLABLE
-  description: City retrieved as a result of a geographic lookup based on the client's
-    IP address.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -92,3 +87,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of clients that are new on this date.
+- name: city
+  type: STRING
+  mode: NULLABLE

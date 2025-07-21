@@ -641,13 +641,6 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_firefox_desktop_new_profiles_aggregates__wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
-            external_dag_id="bqetl_firefox_desktop_new_profiles_aggregates",
-            external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_client_attributes__wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_client_attributes",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",

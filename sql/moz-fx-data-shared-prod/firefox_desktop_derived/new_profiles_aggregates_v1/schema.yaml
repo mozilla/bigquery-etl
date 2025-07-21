@@ -39,10 +39,6 @@ fields:
   name: paid_vs_organic
   type: STRING
   mode: NULLABLE
-- description: City retrieved as a result of a geographic lookup based on the client's IP address.
-  name: city
-  type: STRING
-  mode: NULLABLE
 - description: The ISO 3166-1 alpha-2 country code.
   name: country
   type: STRING

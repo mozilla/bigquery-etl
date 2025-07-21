@@ -61,7 +61,7 @@ with DAG(
     schedule_interval="30 1 * * *",
     doc_md=docs,
     tags=tags,
-    catchup=False,
+    catchup=True,
 ) as dag:
 
     wait_for_firefox_accounts_derived__fxa_gcp_stderr_events__v1 = ExternalTaskSensor(

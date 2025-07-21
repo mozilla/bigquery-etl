@@ -133,12 +133,12 @@ fields:
     metric_configuration_thresholds associated with this record.
   mode: REPEATED
   name: metric_configuration_thresholds
-  type: RECORD
+  type: STRING
 - description: |
     metric_configuration_notification_channels associated with this record.
   mode: REPEATED
   name: metric_configuration_notification_channels
-  type: RECORD
+  type: STRING
 - description: |
     metric_configuration_warehouse_id associated with this record.
   mode: NULLABLE
@@ -168,7 +168,7 @@ fields:
     metric_configuration_parameters associated with this record.
   mode: REPEATED
   name: metric_configuration_parameters
-  type: RECORD
+  type: STRING
 - description: |
     metric_configuration_lookback_interval_type associated with this record.
   mode: NULLABLE

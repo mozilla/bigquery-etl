@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 """Determine column sizes by performing dry runs."""
-
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
 from multiprocessing.pool import ThreadPool
@@ -106,6 +105,8 @@ def main():
     """Entrypoint for the column size job."""
     args = parser.parse_args()
 
+    default_client = bigquery.Client(args.project)
+
     billing_projects = (
         args.billing_projects if args.billing_projects else [args.project]
     )
@@ -117,7 +118,7 @@ def main():
 
     datasets = [
         dataset.dataset_id
-        for dataset in list(client_q.default_client.list_datasets(project=args.project))
+        for dataset in list(default_client.list_datasets(project=args.project))
         if fnmatchcase(dataset.dataset_id, args.dataset)
         and dataset.dataset_id not in args.excluded_datasets
     ]
@@ -125,7 +126,7 @@ def main():
     table_columns = [
         column
         for dataset in datasets
-        for column in get_columns(client_q.default_client, args.project, dataset)
+        for column in get_columns(default_client, args.project, dataset)
     ]
 
     with ThreadPool(len(billing_projects) * args.parallelism) as p:
@@ -138,7 +139,7 @@ def main():
     column_sizes = [cs for cs in column_sizes if cs is not None]
 
     save_column_sizes(
-        client_q.default_client,
+        default_client,
         column_sizes,
         args.date,
         args.destination_project,

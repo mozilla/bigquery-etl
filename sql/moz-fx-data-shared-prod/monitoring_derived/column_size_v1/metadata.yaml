@@ -21,7 +21,7 @@ scheduling:
     "moz-fx-data-backfill-18",
     "moz-fx-data-backfill-19",
     "--parallelism",
-    "30",
+    "25",
     "--excluded_datasets",
     "org_mozilla_fennec_aurora_stable",
     "org_mozilla_fenix_nightly_stable"

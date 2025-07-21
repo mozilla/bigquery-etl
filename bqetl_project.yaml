@@ -286,6 +286,7 @@ view:
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
 schema:
+  base_schemas_dir: bigquery_etl/schema
   mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas
   skip_prefixes:
   - pioneer

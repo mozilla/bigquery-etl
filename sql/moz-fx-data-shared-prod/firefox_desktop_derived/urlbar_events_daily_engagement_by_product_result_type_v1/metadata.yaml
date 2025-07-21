@@ -8,7 +8,6 @@ owners:
 labels:
   incremental: true
   schedule: daily
-  shredder_mitigation: true
   table_type: aggregate
   dag: bqetl_urlbar
   owner1: ascholtz

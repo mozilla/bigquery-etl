@@ -16,3 +16,4 @@ scheduling:
   dag_name: bqetl_pocket
   arguments: ["--date", "{{ ds }}"]
   referenced_tables: []
+deprecated: true

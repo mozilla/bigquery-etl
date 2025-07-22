@@ -1,0 +1,22 @@
+friendly_name: Cohort Daily Churn
+description: |-
+  Calculates churn for new users over time, for users first seen in last 180 days
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  owner2: rzhao
+scheduling:
+  dag_name: bqetl_cohort_daily_churn
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  time_partitioning:
+    type: day
+    field: cohort_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

@@ -162,8 +162,10 @@ def generate_usage_reporting(target_project: str, output_dir: Path):
     }
 
     for app_name, app_channels in generator_apps_info.items():
+        friendly_name = app_name.replace("_", " ").title().replace("Ios", "iOS")
         app_template_args = {
             "app_name": app_name,
+            "friendly_app_name": friendly_name,
             **default_template_args,
         }
 

@@ -67,3 +67,11 @@ fields:
   name: is_dau_at_least_4_of_first_7_days
   type: BOOLEAN
   description: Client was a daily active user in at least 4 of first 7 days
+- mode: NULLABLE
+  name: is_dau_at_least_3_of_first_7_days
+  type: BOOLEAN
+  description: Client was a daily active user in at least 3 of first 7 days
+- mode: NULLABLE
+  name: is_dau_at_least_2_of_first_7_days
+  type: BOOLEAN
+  description: Client was a daily active user in at least 2 of first 7 days

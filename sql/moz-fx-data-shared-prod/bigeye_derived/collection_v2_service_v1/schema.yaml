@@ -43,7 +43,7 @@ fields:
     notification_channels associated with this record.
   mode: REPEATED
   name: notification_channels
-  type: RECORD
+  type: STRING
 - description: |
     muted_until_timestamp associated with this record.
   mode: NULLABLE

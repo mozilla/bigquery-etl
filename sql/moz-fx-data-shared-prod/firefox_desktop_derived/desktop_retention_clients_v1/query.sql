@@ -21,7 +21,7 @@ new_profiles AS (
     cfs.client_id,
     cfs.legacy_telemetry_client_id,
     cfs.sample_id,
-    cfs.profile_group_id,
+    cfs.legacy_telemetry_profile_group_id AS profile_group_id,
     cfs.first_seen_date,
     cfs.country,
     cfs.locale,
@@ -51,7 +51,7 @@ new_profiles AS (
       mozfun.bits28.from_string('0111111111111111111111111111') & au.days_desktop_active_bits
     ) > 0 AS repeat_profile
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_first_seen` cfs
+    `moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen` cfs
   LEFT JOIN
     active_users AS au
     ON cfs.first_seen_date = au.retention_active.day_27.metric_date

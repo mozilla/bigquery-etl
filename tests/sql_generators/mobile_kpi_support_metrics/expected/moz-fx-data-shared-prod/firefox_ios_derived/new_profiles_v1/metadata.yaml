@@ -1,0 +1,33 @@
+friendly_name: New profiles - Firefox iOS (Aggregated)
+description: |-
+  New profiles (Firefox iOS) aggregated metrics
+
+  Grouped by all dimensions to generate new profiles metric.
+
+  Notes:
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  shredder_mitigation: false
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - normalized_channel
+      - country
+monitoring:
+  enabled: true
+  collection: Operational Checks

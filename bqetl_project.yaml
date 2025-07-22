@@ -445,6 +445,10 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    - org_mozilla_firefox_reality
+    - firefox_reality
+    - org_mozilla_vrbrowser
+    - org_mozilla_tv_firefox
     skip_tables:
       telemetry:
       - modules

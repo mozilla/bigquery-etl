@@ -1,0 +1,46 @@
+fields:
+- description: |
+    id associated with this record.
+  mode: NULLABLE
+  name: id
+  type: INTEGER
+- description: |
+    display_name associated with this record.
+  mode: NULLABLE
+  name: display_name
+  type: STRING
+- description: |
+    user_id associated with this record.
+  mode: NULLABLE
+  name: user_id
+  type: INTEGER
+- description: |
+    user_name associated with this record.
+  mode: NULLABLE
+  name: user_name
+  type: STRING
+- description: |
+    user_email associated with this record.
+  mode: NULLABLE
+  name: user_email
+  type: STRING
+- description: |
+    user_idp_groups associated with this record.
+  mode: REPEATED
+  name: user_idp_groups
+  type: INTEGER
+- description: |
+    user_last_login_at associated with this record.
+  mode: NULLABLE
+  name: user_last_login_at
+  type: INTEGER
+- description: |
+    user_picture_url associated with this record.
+  mode: NULLABLE
+  name: user_picture_url
+  type: STRING
+- description: |
+    refreshed_at associated with this record.
+  mode: NULLABLE
+  name: refreshed_at
+  type: TIMESTAMP

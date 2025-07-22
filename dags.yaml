@@ -2415,6 +2415,27 @@ bqetl_crashes:
     - impact/tier_1
     - repo/bigquery-etl
 
+bqetl_ads_hourly:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 10m
+    start_date: '2025-07-10'
+  description: Hourly tables for ad reporting
+  repo: bigquery-etl
+  schedule_interval: hourly
+  catchup: false
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+    - triage/confidential
+
 bqetl_bigeye_derived:
   schedule_interval: 0 3 * * *
   description: |

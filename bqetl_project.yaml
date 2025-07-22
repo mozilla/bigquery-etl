@@ -21,6 +21,10 @@ default:
 monitoring:
   bigeye_warehouse_id: 1939
   bigeye_conn_id: bigeye_connection
+  bigeye_workspace_ids:
+  - 463
+  - 508
+  - 509
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun
@@ -149,6 +153,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/downloads_with_attribution_v2/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v1/query.sql
   - sql/moz-fx-data-marketing-prod/ga_derived/downloads_with_attribution_v2/query.sql
+  - sql/moz-fx-data-shared-prod/google_play_store/reviews/view.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v1/query.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_page_v2/query.sql
   - sql/moz-fx-data-shared-prod/google_search_console_derived/search_impressions_by_site_v1/query.sql
@@ -184,6 +189,11 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/fog_decision_support_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/nimbus_recorded_targeting_context_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/ech_adoption_rate_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/review_checker_clients_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_v1/query.sql
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_daily_v1/query.sql
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
@@ -207,6 +217,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/sumo_ga/analytics_314096102/view.sql
   - sql/moz-fx-data-shared-prod/sumo_ga/analytics_432581103/view.sql
+  - sql/moz-fx-data-shared-prod/mofo/analytics_321347134_events/view.sql
   # Dataset sql/glam-fenix-dev:glam_etl was not found
   - sql/glam-fenix-dev/glam_etl/**/*.sql
   - sql/moz-fx-data-glam-prod-fca7/glam_etl/**/*.sql
@@ -276,6 +287,7 @@ view:
     - sql/moz-fx-data-test-project/test/simple_view/view.sql
 
 schema:
+  base_schemas_dir: bigquery_etl/schema
   mozilla_pipeline_schemas_uri: https://github.com/mozilla-services/mozilla-pipeline-schemas
   skip_prefixes:
   - pioneer
@@ -311,6 +323,13 @@ metadata:
 
 generate:
   glean_usage:
+    deprecated_apps:
+    - firefox_fire_tv
+    - org.mozilla.tv.firefox
+    - firefox_reality
+    - firefox_reality_pc
+    - org.mozilla.firefoxreality
+    - org.mozilla.vrbrowser
     skip_existing: # Skip automatically updating the following artifacts
     - sql/moz-fx-data-shared-prod/fenix/client_deduplication/**
     - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_last_seen_v1/checks.sql
@@ -419,9 +438,16 @@ generate:
       - moso_mastodon_backend
       - mozphab
       - mozregression
+    app_ping_views:
+      skip:  # don't add the following pings to the combined-channel ping view
+      - org_mozilla_fennec_aurora.metrics
+      - org_mozilla_fenix_nightly.metrics
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    skip_tables:
+      telemetry:
+      - modules
   usage_reporting:
     apps:
       fenix:

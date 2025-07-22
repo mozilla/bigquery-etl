@@ -1,20 +1,35 @@
 #!/usr/bin/env python3
 
 """Determine column sizes by performing dry runs."""
-
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
-from functools import partial
 from multiprocessing.pool import ThreadPool
 
 from google.cloud import bigquery
 
+from bigquery_etl.util.client_queue import ClientQueue
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--date", required=True)  # expect string with format yyyy-mm-dd
-parser.add_argument("--project", default="moz-fx-data-shared-prod")
+parser.add_argument(
+    "--project",
+    default="moz-fx-data-shared-prod",
+    help="Project of tables to get column sizes for",
+)
 parser.add_argument("--dataset", default="*_stable")
+parser.add_argument("--destination_project", default="moz-fx-data-shared-prod")
 parser.add_argument("--destination_dataset", default="monitoring_derived")
 parser.add_argument("--destination_table", default="column_size_v1")
+parser.add_argument("--excluded_datasets", nargs="*", default=[])
+parser.add_argument(
+    "--billing_projects", nargs="+", help="Projects to run query dry runs in"
+)
+parser.add_argument(
+    "--parallelism",
+    type=int,
+    default=25,
+    help="Dry run parallelism per billing project",
+)
 
 
 def get_columns(client, project, dataset):
@@ -26,7 +41,7 @@ def get_columns(client, project, dataset):
 
     try:
         result = client.query(sql).result()
-        return [(dataset, row.table_name, row.column_name) for row in result]
+        return [(project, dataset, row.table_name, row.column_name) for row in result]
     except Exception as e:
         print(f"Error querying dataset {dataset}")
 
@@ -37,10 +52,10 @@ def get_column_size_json(client, date, column):
     """Return the size of a specific date partition of the specified table."""
     try:
         job_config = bigquery.QueryJobConfig(dry_run=True, use_query_cache=False)
-        dataset_id, table_id, column_name = column
+        project_id, dataset_id, table_id, column_name = column
 
         sql = f"""
-            SELECT {column_name} FROM {dataset_id}.{table_id}
+            SELECT {column_name} FROM {project_id}.{dataset_id}.{table_id}
             WHERE DATE(submission_timestamp) = '{date}'
         """
 
@@ -60,7 +75,12 @@ def get_column_size_json(client, date, column):
 
 
 def save_column_sizes(
-    client, column_sizes, date, destination_dataset, destination_table
+    client,
+    column_sizes,
+    date,
+    destination_project,
+    destination_dataset,
+    destination_table,
 ):
     """Write column sizes for tables for a specific day to BigQuery."""
     job_config = bigquery.LoadJobConfig()
@@ -76,7 +96,7 @@ def save_column_sizes(
     partition_date = date.replace("-", "")
     client.load_table_from_json(
         column_sizes,
-        f"{destination_dataset}.{destination_table}${partition_date}",
+        f"{destination_project}.{destination_dataset}.{destination_table}${partition_date}",
         job_config=job_config,
     ).result()
 
@@ -84,36 +104,48 @@ def save_column_sizes(
 def main():
     """Entrypoint for the column size job."""
     args = parser.parse_args()
-    client = bigquery.Client(args.project)
+
+    default_client = bigquery.Client(args.project)
+
+    billing_projects = (
+        args.billing_projects if args.billing_projects else [args.project]
+    )
+
+    client_q = ClientQueue(
+        billing_projects=billing_projects,
+        parallelism=len(billing_projects) * args.parallelism,
+    )
 
     datasets = [
         dataset.dataset_id
-        for dataset in list(client.list_datasets())
+        for dataset in list(default_client.list_datasets(project=args.project))
         if fnmatchcase(dataset.dataset_id, args.dataset)
+        and dataset.dataset_id not in args.excluded_datasets
     ]
 
-    with ThreadPool(20) as p:
-        table_columns = [
-            column
-            for dataset in datasets
-            for column in get_columns(client, args.project, dataset)
-        ]
+    table_columns = [
+        column
+        for dataset in datasets
+        for column in get_columns(default_client, args.project, dataset)
+    ]
 
-        column_sizes = p.map(
-            partial(get_column_size_json, client, args.date),
-            table_columns,
+    with ThreadPool(len(billing_projects) * args.parallelism) as p:
+        column_sizes = p.starmap(
+            client_q.with_client,
+            [(get_column_size_json, args.date, column) for column in table_columns],
             chunksize=1,
         )
 
-        column_sizes = [cs for cs in column_sizes if cs is not None]
+    column_sizes = [cs for cs in column_sizes if cs is not None]
 
-        save_column_sizes(
-            client,
-            column_sizes,
-            args.date,
-            args.destination_dataset,
-            args.destination_table,
-        )
+    save_column_sizes(
+        default_client,
+        column_sizes,
+        args.date,
+        args.destination_project,
+        args.destination_dataset,
+        args.destination_table,
+    )
 
 
 if __name__ == "__main__":

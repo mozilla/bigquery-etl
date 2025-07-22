@@ -1,3 +1,14 @@
+2025-07-15:
+  start_date: 2025-03-01
+  end_date: 2025-07-14
+  reason: Fixed upstream table
+  watchers:
+  - kik@mozilla.com
+  - akommasani@mozilla.com
+  - kwindau@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+
 2025-04-03:
   start_date: 2025-03-01
   end_date: 2025-04-03

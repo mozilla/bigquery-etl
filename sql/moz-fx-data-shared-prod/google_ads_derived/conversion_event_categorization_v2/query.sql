@@ -130,6 +130,8 @@ SELECT
   IF(search_with_ads_count_all > 0 AND dou >= 5, TRUE, FALSE) AS event_1,
   IF(search_with_ads_count_all > 0 AND dou >= 3, TRUE, FALSE) AS event_2,
   IF(active_hours_sum >= 0.4 AND dou >= 3, TRUE, FALSE) AS event_3,
-  IF(dou >= 4, TRUE, FALSE) AS is_dau_at_least_4_of_first_7_days
+  IF(dou >= 4, TRUE, FALSE) AS is_dau_at_least_4_of_first_7_days,
+  IF(dou >= 3, TRUE, FALSE) AS is_dau_at_least_3_of_first_7_days,
+  IF(dou >= 2, TRUE, FALSE) AS is_dau_at_least_2_of_first_7_days,
 FROM
   combined

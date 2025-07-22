@@ -12,3 +12,4 @@ scheduling:
   dag_name: bqetl_pocket
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
+deprecated: true

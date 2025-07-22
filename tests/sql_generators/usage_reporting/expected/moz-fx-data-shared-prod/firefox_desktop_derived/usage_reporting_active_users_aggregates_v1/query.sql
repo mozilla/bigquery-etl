@@ -22,7 +22,6 @@ FROM
   `moz-fx-data-shared-prod.firefox_desktop.usage_reporting_active_users`
 WHERE
   submission_date = @submission_date
-  AND `date` = @submission_date
 GROUP BY
   submission_date,
   first_seen_year,

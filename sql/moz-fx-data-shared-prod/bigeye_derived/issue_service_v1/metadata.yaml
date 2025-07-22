@@ -13,8 +13,3 @@ scheduling:
   secrets:
   - deploy_target: BIGEYE_API_KEY
     key: bqetl_bigeye_api_key
-bigquery:
-  time_partitioning:
-    type: day
-    field: timestamp
-    require_partition_filter: false

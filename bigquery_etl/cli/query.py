@@ -85,6 +85,7 @@ DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
 NBR_DAYS_RETAINED = 775
+GLOBAL_SCHEMA_NAME = "global.yaml"
 
 
 @click.group(help="Commands for managing queries.")
@@ -1841,6 +1842,22 @@ def schema():
     is_flag=True,
     default=False,
 )
+@click.option(
+    "--use_dataset_schema",
+    "--use-dataset-schema",
+    help="Use dataset schema to update column descriptions and recommend column names. "
+    "This option requires file <dataset_name>.yaml present in bigquery_etl/schema.",
+    is_flag=True,
+    default=False,
+)
+@click.option(
+    "--use_global_schema",
+    "--use-global-schema",
+    help="Use global schema to update column descriptions and recommend column names. "
+    "This option uses file global.yaml in bigquery_etl/schema.",
+    is_flag=True,
+    default=False,
+)
 def update(
     name,
     sql_dir,
@@ -1851,6 +1868,8 @@ def update(
     respect_dryrun_skip,
     parallelism,
     is_init,
+    use_dataset_schema,
+    use_global_schema,
 ):
     """CLI command for generating the query schema."""
     if not is_authenticated():
@@ -1914,6 +1933,8 @@ def update(
             is_init=is_init,
             credentials=credentials,
             id_token=id_token,
+            use_dataset_schema=use_dataset_schema,
+            use_global_schema=use_global_schema,
         )
     )
 
@@ -1922,6 +1943,101 @@ def update(
         # delete temporary tables
         for _, table in tmp_tables.items():
             client.delete_table(table, not_found_ok=True)
+
+
+def _update_query_schema_with_base_schemas(
+    query_schema: Schema,
+    dataset_name: str,
+    use_dataset_schema: bool,
+    use_global_schema: bool,
+) -> Schema:
+    """
+    Update column descriptions and recommend column names.
+
+    Base dataset schema is used as primary source and global schema as secondary.
+    Returns the updated schema if changes were applied or the original schema otherwise.
+    """
+    dataset_schema_name = f"{dataset_name}.yaml"
+    modified_fields = []
+    alias_recommendations = []
+    missing_desc_columns = []
+    base_schemas_dir = ConfigLoader.get("schema", "base_schemas_dir")
+
+    dataset_path = Path(base_schemas_dir) / dataset_schema_name
+    if use_dataset_schema and (not dataset_path.exists() or not dataset_path.is_file()):
+        click.echo(
+            f"WARNING: Option --use_dataset_schema was not applied due to missing required schema '{dataset_path}'."
+        )
+        return query_schema
+
+    global_path = Path(base_schemas_dir) / GLOBAL_SCHEMA_NAME
+    if use_global_schema and (not global_path.exists() or not global_path.is_file()):
+        click.echo(
+            f"WARNING: Option --use_global_schema was not applied due to missing required schema '{global_path}'."
+        )
+        return query_schema
+
+    def get_field_from_schema(field_name: str, base_schema: Schema):
+        for field in base_schema.schema.get("fields", []):
+            if field_name == field.get("name"):
+                return field, "name"
+            if field_name in field.get("aliases", []):
+                return field, "alias"
+        return None, None
+
+    for field in query_schema.schema.get("fields", []):
+        field_name = field["name"]
+        field_desc = field.get("description")
+        found_field = None
+        match_type = None
+
+        if use_dataset_schema:
+            dataset_schema = Schema.from_schema_file(dataset_path)
+            found_field, match_type = get_field_from_schema(field_name, dataset_schema)
+            source = dataset_schema_name
+
+        if not found_field and use_global_schema:
+            global_schema = Schema.from_schema_file(global_path)
+            found_field, match_type = get_field_from_schema(field_name, global_schema)
+            source = GLOBAL_SCHEMA_NAME
+
+        if found_field:
+            base_name = found_field["name"]
+            base_desc = found_field.get("description", "")
+
+            if match_type == "alias":
+                alias_recommendations.append((field_name, base_name))
+            if field_desc != base_desc:
+                modified_fields.append((field_name, source))
+
+            field["description"] = base_desc
+        else:
+            if not field_desc:
+                missing_desc_columns.append(field_name)
+
+    if modified_fields:
+        click.echo(
+            "\n[WARNING] The following column descriptions were overwritten using the base schemas:"
+        )
+        for name, source in modified_fields:
+            click.echo(f"  - '{name}' (source: {source})")
+
+    if missing_desc_columns:
+        click.echo("\n[INFO] The following columns are missing descriptions:")
+        for col in missing_desc_columns:
+            click.echo(f"  - {col}")
+
+    if alias_recommendations:
+        click.echo(
+            "\n[INFO] The following columns matched the base schemas by alias. Consider using the column name in the base schema:"
+        )
+        for alias, base in alias_recommendations:
+            click.echo(f"  - '{alias}' → '{base}'")
+
+    if not modified_fields and not alias_recommendations and not missing_desc_columns:
+        click.echo("No changes applied to the schema.")
+
+    return query_schema
 
 
 def _update_query_schema_with_downstream(
@@ -1938,6 +2054,8 @@ def _update_query_schema_with_downstream(
     is_init=False,
     credentials=None,
     id_token=None,
+    use_dataset_schema=False,
+    use_global_schema=False,
 ):
     try:
         changed = _update_query_schema(
@@ -1951,6 +2069,8 @@ def _update_query_schema_with_downstream(
             is_init,
             credentials,
             id_token,
+            use_dataset_schema,
+            use_global_schema,
         )
 
         if update_downstream:
@@ -2003,6 +2123,8 @@ def _update_query_schema(
     is_init=False,
     credentials=None,
     id_token=None,
+    use_dataset_schema=False,
+    use_global_schema=False,
 ):
     """
     Update the schema of a specific query file.
@@ -2181,21 +2303,29 @@ def _update_query_schema(
     )
 
     changed = True
+    updated_schema = None
 
     if existing_schema_path.is_file():
         existing_schema = Schema.from_schema_file(existing_schema_path)
         old_schema = copy.deepcopy(existing_schema)
         if table_schema:
-            existing_schema.merge(table_schema)
+            updated_schema = existing_schema.merge(table_schema)
 
         if query_schema:
-            existing_schema.merge(query_schema)
+            updated_schema = existing_schema.merge(query_schema)
         existing_schema.to_yaml_file(existing_schema_path)
         changed = not existing_schema.equal(old_schema)
     else:
-        query_schema.merge(table_schema)
-        query_schema.to_yaml_file(existing_schema_path)
+        updated_schema = query_schema.merge(table_schema)
 
+    if use_dataset_schema or use_global_schema:
+        # Use standard schemas to update column descriptions, if requested.
+        updated_schema = _update_query_schema_with_base_schemas(
+            existing_schema, dataset_name, use_dataset_schema, use_global_schema
+        )
+
+    if updated_schema:
+        updated_schema.to_yaml_file(existing_schema_path)
     click.echo(f"Schema {existing_schema_path} updated.")
     return changed
 

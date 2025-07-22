@@ -1,0 +1,111 @@
+fields:
+- name: activity_segment
+  type: STRING
+  description: Classification of users based on their browsing activity.
+    E.g., infrequent, casual, regular.
+  aliases:
+  - segment
+  possible_values:
+  - casual_user
+  - core_user
+  - infrequent_user
+  - regular_user
+  - other
+- name: app_version
+  type: INTEGER
+  description: User visible version string (e.g. "1.0.3") for the browser.
+  aliases:
+  - version
+  - app_display_version
+- name: client_id
+  type: STRING
+  description: A unique identifier (UUID) for the client.
+- name: context_id
+  type: STRING
+  description: A unique identifier (UUID) for clients in contextual services user
+    interaction pings, e.g. top-sites ping.
+- name: country
+  type: STRING
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
+  aliases:
+  - normalized_country
+  - geo
+- name: country_code
+  type: STRING
+  description: Code of the country in which the activity took place, as determined by
+    the IP geolocation. Unknown or NULL values are normally stored as '??'.
+  aliases:
+  - normalized_country_code
+- name: created_at
+  type: TIMESTAMP
+  description: Timestamp when the row was created.
+  aliases:
+  - created_timestamp
+  - created_date
+- name: document_id
+  type: STRING
+  description: The document ID specified in the URI when the client sent this message.
+- name: locale
+  type: STRING
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: normalized_channel
+  description: The normalized channel the application is being distributed on.
+  type: STRING
+  aliases:
+  - channel
+  possible_values:
+  - release
+  - beta
+  - nightly
+  - aurora
+  - esr
+  - Other
+- name: normalized_os
+  type: STRING
+  description: The normalized name of the operating system running at the client.
+  aliases:
+  - os
+- name: os_code
+  type: STRING
+  mode: NULLABLE
+  description: The operating system code based on the Common Platform Enumeration CPE.
+- name: os_major
+  type: INTEGER
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
+  aliases:
+  - os_major_version
+- name: os_minor
+  type: INTEGER
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
+  aliases:
+  - os_minor_version
+- name: source_column
+  type: STRING
+  description: Column name in the source used to ingest the data.
+- name: source_report
+  type: STRING
+  description: Name of the report file used to ingest the data.
+  aliases:
+  - source_file
+- name: submission_date
+  type: DATE
+  description: The date when the telemetry ping is received on the server side.
+- name: submission_hour
+  type: TIMESTAMP
+  description: The submission_timestamp truncated to the hour.
+- name: submission_month
+  type: DATE
+  description: First calendar day of the month extracted from submission_date or
+    submission_timestamp.
+- name: submission_timestamp
+  type: TIMESTAMP
+  description: Timestamp when the ping is received on the server side.
+- name: updated_at
+  type: TIMESTAMP
+  description: Most recent date and time when the row was updated.
+  aliases:
+  - updated_timestamp
+  - updated_date

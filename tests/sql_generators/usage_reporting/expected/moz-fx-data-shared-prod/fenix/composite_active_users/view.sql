@@ -60,5 +60,3 @@ SELECT
   is_monthly_user,
 FROM
   `moz-fx-data-shared-prod.fenix.usage_reporting_active_users`
-WHERE
-  mozfun.norm.browser_version_info(app_version).major_version >= 136

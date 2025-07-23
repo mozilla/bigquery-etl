@@ -129,8 +129,8 @@ class DryRun:
         # if using cloud function and billing project isn't set, randomly select project to use
         self.billing_project = (
             billing_project
-            if billing_project or not use_cloud_function
-            else random.choice(DEFAULT_DRY_RUN_PROJECTS)
+            # if billing_project or not use_cloud_function
+            # else random.choice(DEFAULT_DRY_RUN_PROJECTS)
         )
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)

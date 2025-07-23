@@ -250,7 +250,6 @@ dry_run:
   - moz-fx-data-backfill-27
   - moz-fx-data-backfill-28
   - moz-fx-data-backfill-29
-  - moz-fx-data-backfill-30
   - moz-fx-data-backfill-31
 
 deprecation:

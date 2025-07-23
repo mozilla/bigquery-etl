@@ -1,0 +1,58 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description:
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description:
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description:
+
+- mode: NULLABLE
+  name: is_suspicious_device_client
+  type: BOOLEAN
+  description: |
+    Flag to identify suspicious device users, see bug-1846554 for more info.
+
+- mode: NULLABLE
+  name: adjust_info
+  type: RECORD
+  description:
+  fields:
+    - mode: NULLABLE
+      name: adjust_ad_group
+      type: STRING
+      description: |
+        Adjust Ad Group the profile is attributed to.
+    - mode: NULLABLE
+      name: adjust_campaign
+      type: STRING
+      description: |
+        Adjust Campaign the profile is attributed to.
+    - mode: NULLABLE
+      name: adjust_creative
+      type: STRING
+      description: |
+        Adjust Creative the profile is attributed to.
+    - mode: NULLABLE
+      name: adjust_network
+      type: STRING
+      description: |
+        Adjust Network the profile is attributed to.
+    - mode: NULLABLE
+      name: adjust_attribution_timestamp
+      type: TIMESTAMP
+      description: |
+        Timestamp corresponding to the ping that contained the adjust attribution.
+    

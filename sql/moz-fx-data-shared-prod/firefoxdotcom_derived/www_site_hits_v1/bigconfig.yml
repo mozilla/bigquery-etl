@@ -7,14 +7,14 @@ tag_deployments:
   deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1.visit_identifier
-  metrics:
-  - name: row_count_with_filter
-    type: row_count
-    filters:
-    - regexp_contains(visit_identifier,  r'^[0-9]+\\.{1}[0-9]+\\-{1}[0-9]+$' )
-    thresholds:
-    - type: CONSTANT
-      lower_bound: 0.0
+    metrics:
+    - name: row_count_with_filter
+      type: row_count
+      filters:
+      - regexp_contains(visit_identifier,  r'^[0-9]+\\.{1}[0-9]+\\-{1}[0-9]+$' )
+      thresholds:
+      - type: CONSTANT
+        lower_bound: 0.0
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1.*
     metrics:

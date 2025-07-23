@@ -81,15 +81,15 @@ def load_to_bigquery(project_id, dataset, table, df: pd.DataFrame) -> None:
     """Load DataFrame to BigQuery."""
     client = bigquery.Client(project_id)
 
-    TARGET_TABLE = f"{project_id}.{dataset}.{table}"
+    target_table = f"{project_id}.{dataset}.{table}"
 
     job = client.load_table_from_dataframe(
         df,
-        TARGET_TABLE,
+        target_table,
         job_config=bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE"),
     )
     job.result()
-    logging.info(f"Successfully loaded data to {TARGET_TABLE}")
+    logging.info(f"Successfully loaded data to {target_table}")
 
 
 def main() -> None:

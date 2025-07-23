@@ -93,10 +93,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_main_ping",
+    wait_for_copy_deduplicate_all = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_main_ping",
+        external_task_id="copy_deduplicate_all",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -106,10 +106,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_copy_deduplicate_all = ExternalTaskSensor(
-        task_id="wait_for_copy_deduplicate_all",
+    wait_for_copy_deduplicate_main_ping = ExternalTaskSensor(
+        task_id="wait_for_copy_deduplicate_main_ping",
         external_dag_id="copy_deduplicate",
-        external_task_id="copy_deduplicate_all",
+        external_task_id="copy_deduplicate_main_ping",
         execution_delta=datetime.timedelta(seconds=3600),
         check_existence=True,
         mode="reschedule",
@@ -452,6 +452,8 @@ with DAG(
     monitoring_derived__bigquery_usage__v2.set_upstream(
         wait_for_monitoring_derived__jobs_by_organization__v1
     )
+
+    monitoring_derived__column_size__v1.set_upstream(wait_for_copy_deduplicate_all)
 
     monitoring_derived__column_size__v1.set_upstream(
         wait_for_copy_deduplicate_main_ping

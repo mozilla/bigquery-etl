@@ -188,11 +188,10 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql #
   - sql/moz-fx-data-shared-prod/telemetry_derived/fog_decision_support_percentiles_v1/query.sql
   - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql #
-  - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql #
   - sql/moz-fx-data-shared-prod/fenix_derived/nimbus_recorded_targeting_context_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/ech_adoption_rate_v1/query.sql #
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/review_checker_clients_v1/query.sql #
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_daily_v1/query.sql #
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
@@ -236,6 +235,29 @@ dry_run:
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/event_types_history_v1/query.sql
   # Tests
   - sql/moz-fx-data-test-project/test/simple_view/view.sql
+  default_projects:  # projects to use for query dry run jobs
+  - moz-fx-data-backfill-10
+  - moz-fx-data-backfill-11
+  - moz-fx-data-backfill-12
+  - moz-fx-data-backfill-13
+  - moz-fx-data-backfill-14
+  - moz-fx-data-backfill-15
+  - moz-fx-data-backfill-16
+  - moz-fx-data-backfill-17
+  - moz-fx-data-backfill-18
+  - moz-fx-data-backfill-19
+  - moz-fx-data-backfill-20
+  - moz-fx-data-backfill-21
+  - moz-fx-data-backfill-22
+  - moz-fx-data-backfill-23
+  - moz-fx-data-backfill-24
+  - moz-fx-data-backfill-25
+  - moz-fx-data-backfill-26
+  - moz-fx-data-backfill-27
+  - moz-fx-data-backfill-28
+  - moz-fx-data-backfill-29
+  - moz-fx-data-backfill-30
+  - moz-fx-data-backfill-31
 
 deprecation:
   retain_dataset_roles: # the following roles are retain permissions on datasets when a dataset table is deprecated

@@ -649,7 +649,7 @@ def _backfill_query(
 )
 @click.option(
     "--checks_file_name",
-    "--checks_file_name",
+    "--checks-file-name",
     help="Name of a custom data checks file to run after each partition backfill. E.g. custom_checks.sql. Optional.",
     default=None,
 )
@@ -2563,7 +2563,7 @@ def validate_schema(
         id_token=id_token,
     )
 
-    with Pool(12) as p:
+    with Pool(8) as p:
         result = p.map(_validate_schema, query_files, chunksize=1)
 
     all_valid = True

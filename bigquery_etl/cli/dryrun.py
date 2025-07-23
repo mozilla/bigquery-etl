@@ -123,7 +123,7 @@ def dryrun(
         billing_project=billing_project,
     )
     start_time = time.time()
-    with Pool(12) as p:
+    with Pool(8) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
     print(f"Total dryrun time: {time.time() - start_time:.2f}s")
 

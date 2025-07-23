@@ -29,6 +29,12 @@ phlee@mozilla.com
 * repo/bigquery-etl
 """
 
+bigeye_derived__collection_v2_service__v1_bqetl_bigeye_api_key = Secret(
+    deploy_type="env",
+    deploy_target="BIGEYE_API_KEY",
+    secret="airflow-gke-secrets",
+    key="bqetl_bigeye_api_key",
+)
 bigeye_derived__dashboard_service__v1_bqetl_bigeye_api_key = Secret(
     deploy_type="env",
     deploy_target="BIGEYE_API_KEY",
@@ -60,6 +66,21 @@ with DAG(
     tags=tags,
     catchup=False,
 ) as dag:
+
+    bigeye_derived__collection_v2_service__v1 = GKEPodOperator(
+        task_id="bigeye_derived__collection_v2_service__v1",
+        arguments=[
+            "python",
+            "sql/moz-fx-data-shared-prod/bigeye_derived/collection_v2_service_v1/query.py",
+        ]
+        + [],
+        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
+        owner="phlee@mozilla.com",
+        email=["phlee@mozilla.com"],
+        secrets=[
+            bigeye_derived__collection_v2_service__v1_bqetl_bigeye_api_key,
+        ],
+    )
 
     bigeye_derived__dashboard_service__v1 = GKEPodOperator(
         task_id="bigeye_derived__dashboard_service__v1",

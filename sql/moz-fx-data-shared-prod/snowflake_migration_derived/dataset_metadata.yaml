@@ -12,3 +12,6 @@ workgroup_access:
       - workgroup:mozilla-confidential
       - workgroup:mozsoc-ml/service
       - workgroup:mozsoc-ml/developers
+  - role: roles/bigquery.dataEditor
+    members:
+      - workgroup:pocket/apps

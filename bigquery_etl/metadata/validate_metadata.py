@@ -428,10 +428,14 @@ def validate(target):
                     if not validate_public_data(metadata, path):
                         failed = True
 
+                    # root looks like .../sql/project/dataset/table
+                    project_id = Path(root).parent.parent.name
+
                     if not validate_change_control(
                         file_path=root,
                         metadata=metadata,
                         codeowners_file=CODEOWNERS_FILE,
+                        project_id=project_id,
                     ):
                         failed = True
 

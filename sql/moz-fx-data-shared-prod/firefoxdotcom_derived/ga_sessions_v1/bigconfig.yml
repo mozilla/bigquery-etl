@@ -6,7 +6,7 @@ tag_deployments:
     - slack: '#de-bigeye-triage'
   deployments:
   - column_selectors:
-    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1.submission_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1.session_date
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1.ga_client_id
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1.ga_session_id
     metrics:

@@ -5,6 +5,7 @@ import glob
 import os
 import re
 import sys
+import time
 from functools import partial
 from multiprocessing.pool import Pool
 from typing import List, Set, Tuple
@@ -13,7 +14,7 @@ import rich_click as click
 
 from ..cli.utils import billing_project_option, is_authenticated
 from ..config import ConfigLoader
-from ..dryrun import DryRun, get_credentials, get_id_token
+from ..dryrun import DryRun, get_credentials, get_id_token, DEFAULT_DRY_RUN_PROJECTS
 
 
 @click.command(
@@ -121,9 +122,10 @@ def dryrun(
         id_token=id_token,
         billing_project=billing_project,
     )
-
-    with Pool(8) as p:
+    start_time = time.time()
+    with Pool(12) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
+    print(f"Dryrun time: {time.time() - start_time:.2f}")
 
     failures = sorted([r[1] for r in result if not r[0]])
     if len(failures) > 0:

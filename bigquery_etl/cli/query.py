@@ -2563,7 +2563,7 @@ def validate_schema(
         id_token=id_token,
     )
 
-    with Pool(8) as p:
+    with Pool(12) as p:
         result = p.map(_validate_schema, query_files, chunksize=1)
 
     all_valid = True

@@ -64,6 +64,9 @@ def get_bigeye_data() -> pd.DataFrame:
     """Fetch data from Bigeye API for all workspaces and combine into a single DataFrame."""
     all_data = []
 
+    if not isinstance(WORKSPACE_IDS, list):
+        raise Exception("WORKSPACE_IDS is not a list")
+
     for workspace_id in WORKSPACE_IDS:
         try:
             response_data = make_api_request(workspace_id)
@@ -72,7 +75,6 @@ def get_bigeye_data() -> pd.DataFrame:
             logging.info(f"Successfully processed data for workspace {workspace_id}")
         except Exception as e:
             logging.info(f"Error processing workspace {workspace_id}: {str(e)}")
-            continue
 
     if not all_data:
         raise Exception("No data was successfully processed from any workspace")
@@ -84,15 +86,15 @@ def load_to_bigquery(project_id, dataset, table, df: pd.DataFrame) -> None:
     """Load DataFrame to BigQuery."""
     client = bigquery.Client(project_id)
 
-    TARGET_TABLE = f"{project_id}.{dataset}.{table}"
+    target_Table = f"{project_id}.{dataset}.{table}"
 
     job = client.load_table_from_dataframe(
         df,
-        TARGET_TABLE,
+        target_Table,
         job_config=bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE"),
     )
     job.result()
-    logging.info(f"Successfully loaded data to {TARGET_TABLE}")
+    logging.info(f"Successfully loaded data to {target_Table}")
 
 
 def main() -> None:

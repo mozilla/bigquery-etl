@@ -40,7 +40,7 @@ fields:
   name: user_picture_url
   type: STRING
 - description: |
-    refreshed_at associated with this record.
+    Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
   mode: NULLABLE
   name: refreshed_at
   type: TIMESTAMP

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 """Determine column sizes by performing dry runs."""
+import logging
 from argparse import ArgumentParser
 from fnmatch import fnmatchcase
+from functools import partial
 from multiprocessing.pool import ThreadPool
 
 from google.cloud import bigquery
@@ -31,6 +33,8 @@ parser.add_argument(
     help="Dry run parallelism per billing project",
 )
 
+logging.basicConfig(level=logging.INFO)
+
 
 def get_columns(client, project, dataset):
     """Return list of all columns in each table of a dataset."""
@@ -43,7 +47,7 @@ def get_columns(client, project, dataset):
         result = client.query(sql).result()
         return [(project, dataset, row.table_name, row.column_name) for row in result]
     except Exception as e:
-        print(f"Error querying dataset {dataset}")
+        logging.warning(f"Error querying dataset {dataset}")
 
     return []
 
@@ -114,6 +118,7 @@ def main():
     client_q = ClientQueue(
         billing_projects=billing_projects,
         parallelism=len(billing_projects) * args.parallelism,
+        connection_pool_max_size=args.parallelism,
     )
 
     datasets = [
@@ -128,15 +133,19 @@ def main():
         for dataset in datasets
         for column in get_columns(default_client, args.project, dataset)
     ]
+    column_sizes = []
 
     with ThreadPool(len(billing_projects) * args.parallelism) as p:
-        column_sizes = p.starmap(
-            client_q.with_client,
-            [(get_column_size_json, args.date, column) for column in table_columns],
+        results = p.imap_unordered(
+            partial(client_q.with_client, get_column_size_json, args.date),
+            table_columns,
             chunksize=1,
         )
-
-    column_sizes = [cs for cs in column_sizes if cs is not None]
+        for i, result in enumerate(results):
+            if result is not None:
+                column_sizes.append(result)
+            if i % 1000 == 0 or i == len(table_columns) - 1:
+                logging.info(f"Completed {i + 1}/{len(table_columns)} columns")
 
     save_column_sizes(
         default_client,

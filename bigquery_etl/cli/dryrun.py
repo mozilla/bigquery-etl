@@ -14,7 +14,7 @@ import rich_click as click
 
 from ..cli.utils import billing_project_option, is_authenticated
 from ..config import ConfigLoader
-from ..dryrun import DryRun, get_credentials, get_id_token, DEFAULT_DRY_RUN_PROJECTS
+from ..dryrun import DryRun, get_credentials, get_id_token
 
 
 @click.command(
@@ -125,7 +125,7 @@ def dryrun(
     start_time = time.time()
     with Pool(12) as p:
         result = p.map(sql_file_valid, sql_files, chunksize=1)
-    print(f"Dryrun time: {time.time() - start_time:.2f}")
+    print(f"Total dryrun time: {time.time() - start_time:.2f}s")
 
     failures = sorted([r[1] for r in result if not r[0]])
     if len(failures) > 0:

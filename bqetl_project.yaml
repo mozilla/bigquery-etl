@@ -182,18 +182,18 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v2/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/latest_versions/query.sql #
+  - sql/moz-fx-data-shared-prod/telemetry_derived/italy_covid19_outage_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql #
   - sql/moz-fx-data-shared-prod/telemetry_derived/fog_decision_support_percentiles_v1/query.sql
-  - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql
+  - sql/moz-fx-data-shared-prod/fenix_derived/android_onboarding_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/firefox_ios_derived/ios_onboarding_v1/query.sql #
   - sql/moz-fx-data-shared-prod/fenix_derived/nimbus_recorded_targeting_context_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/ech_adoption_rate_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/review_checker_clients_v1/query.sql
-  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_v1/query.sql
-  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_daily_v1/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/ech_adoption_rate_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/review_checker_clients_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/telemetry_derived/experiment_search_aggregates_v1/query.sql #
+  - sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_daily_v1/query.sql #
   # Query parameter not found
   - sql/moz-fx-data-shared-prod/telemetry_derived/experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_daily_scalar_aggregates_v1/query.sql

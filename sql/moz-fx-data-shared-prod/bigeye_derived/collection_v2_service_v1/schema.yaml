@@ -100,7 +100,7 @@ fields:
   name: monitoring_issues_count
   type: INTEGER
 - description: |
-    refreshed_at associated with this record.
+    Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
   mode: NULLABLE
   name: refreshed_at
   type: TIMESTAMP

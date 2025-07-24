@@ -1,0 +1,23 @@
+friendly_name: User Service
+description: |-
+  BigEye metadata for the user service docs: https://docs.bigeye.com/reference/getallusers
+owners:
+- phlee@mozilla.com
+labels:
+  application: bigeye
+  schedule: daily
+  table_type: aggregate
+  dag: bqetl_bigeye_derived
+  owner1: phlee
+scheduling:
+  dag_name: bqetl_bigeye_derived
+  secrets:
+  - deploy_target: BIGEYE_API_KEY
+    key: bqetl_bigeye_api_key
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

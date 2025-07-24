@@ -1,0 +1,111 @@
+fields:
+- description: |
+    id associated with this record.
+  mode: NULLABLE
+  name: id
+  type: INTEGER
+- description: |
+    name associated with this record.
+  mode: NULLABLE
+  name: name
+  type: STRING
+- description: |
+    created_by associated with this record.
+  mode: NULLABLE
+  name: created_by
+  type: INTEGER
+- description: |
+    created_by_epoch_seconds associated with this record.
+  mode: NULLABLE
+  name: created_by_epoch_seconds
+  type: INTEGER
+- description: |
+    updated_by associated with this record.
+  mode: NULLABLE
+  name: updated_by
+  type: INTEGER
+- description: |
+    updated_by_epoch_seconds associated with this record.
+  mode: NULLABLE
+  name: updated_by_epoch_seconds
+  type: INTEGER
+- description: |
+    owner associated with this record.
+  mode: NULLABLE
+  name: owner
+  type: INTEGER
+- description: |
+    metric_id associated with this record.
+  mode: REPEATED
+  name: metric_id
+  type: INTEGER
+- description: |
+    notification_channels associated with this record.
+  mode: REPEATED
+  name: notification_channels
+  type: STRING
+- description: |
+    muted_until_timestamp associated with this record.
+  mode: NULLABLE
+  name: muted_until_timestamp
+  type: INTEGER
+- description: |
+    is_favorite associated with this record.
+  mode: NULLABLE
+  name: is_favorite
+  type: BOOLEAN
+- description: |
+    tag associated with this record.
+  mode: REPEATED
+  name: tag
+  type: INTEGER
+- description: |
+    metrics_count associated with this record.
+  mode: NULLABLE
+  name: metrics_count
+  type: INTEGER
+- description: |
+    alerting_mnetrics_count associated with this record.
+  mode: NULLABLE
+  name: alerting_mnetrics_count
+  type: INTEGER
+- description: |
+    earliest_updated_metric_seconds associated with this record.
+  mode: NULLABLE
+  name: earliest_updated_metric_seconds
+  type: INTEGER
+- description: |
+    latest_updated_metric_seconds associated with this record.
+  mode: NULLABLE
+  name: latest_updated_metric_seconds
+  type: INTEGER
+- description: |
+    open_issues_count associated with this record.
+  mode: NULLABLE
+  name: open_issues_count
+  type: INTEGER
+- description: |
+    triage_issues_count associated with this record.
+  mode: NULLABLE
+  name: triage_issues_count
+  type: INTEGER
+- description: |
+    acknowledge_issues_count associated with this record.
+  mode: NULLABLE
+  name: acknowledge_issues_count
+  type: INTEGER
+- description: |
+    monitoring_issues_count associated with this record.
+  mode: NULLABLE
+  name: monitoring_issues_count
+  type: INTEGER
+- description: |
+    Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
+  mode: NULLABLE
+  name: refreshed_at
+  type: TIMESTAMP
+- description: |
+    description associated with this record.
+  mode: NULLABLE
+  name: description
+  type: STRING

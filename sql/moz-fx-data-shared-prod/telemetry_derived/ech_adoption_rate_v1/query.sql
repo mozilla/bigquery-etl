@@ -5,13 +5,14 @@ WITH unioned AS (
     'http3_ech_outcome' AS metric,
     h.key AS label,
     v.key AS key,
-    v.value AS value,
+    COUNT(DISTINCT client_info.client_id) AS client_count,
+    SUM(v.value) AS handshakes,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN SUM(v.value) >= 5000
+        OR COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`,
     UNNEST(metrics.labeled_custom_distribution.http3_ech_outcome) AS h,
@@ -25,7 +26,6 @@ WITH unioned AS (
     submission_date,
     label,
     key,
-    value,
     metadata.geo.country
   UNION ALL
   /* ---------- ssl_handshake_result_ech ---------- */
@@ -34,13 +34,14 @@ WITH unioned AS (
     'ssl_handshake_result_ech' AS metric,
     "" AS label,
     s.key AS key,
-    s.value AS value,
+    COUNT(DISTINCT client_info.client_id) AS client_count,
+    SUM(value) AS handshakes,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN SUM(value) >= 5000
+        OR COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`,
     UNNEST(metrics.custom_distribution.ssl_handshake_result_ech.values) AS s
@@ -53,7 +54,6 @@ WITH unioned AS (
     submission_date,
     label,
     key,
-    value,
     metadata.geo.country
   UNION ALL
   /* ---------- ssl_handshake_result_ech_grease ---------- */
@@ -62,13 +62,14 @@ WITH unioned AS (
     'ssl_handshake_result_ech_grease' AS metric,
     "" AS label,
     s.key AS key,
-    s.value AS value,
+    COUNT(DISTINCT client_info.client_id) AS client_count,
+    SUM(value) AS handshakes,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN SUM(value) >= 5000
+        OR COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`,
     UNNEST(metrics.custom_distribution.ssl_handshake_result_ech_grease.values) AS s
@@ -81,7 +82,6 @@ WITH unioned AS (
     submission_date,
     label,
     key,
-    value,
     metadata.geo.country
   UNION ALL
   /* ---------- ssl_handshake_privacy ---------- */
@@ -90,13 +90,14 @@ WITH unioned AS (
     'ssl_handshake_privacy' AS metric,
     "" AS label,
     s.key AS key,
-    s.value AS value,
+    COUNT(DISTINCT client_info.client_id) AS client_count,
+    SUM(value) AS handshakes,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN SUM(value) >= 5000
+        OR COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`,
     UNNEST(metrics.custom_distribution.ssl_handshake_privacy.values) AS s
@@ -109,7 +110,6 @@ WITH unioned AS (
     submission_date,
     label,
     key,
-    value,
     metadata.geo.country
 )
 SELECT
@@ -117,21 +117,16 @@ SELECT
   metric,
   label,
   key,
-  value,
-  country_code,
-  SUM(client_count) AS total_client_count
+  SUM(handshakes) AS handshakes,
+  SUM(client_count) AS total_client_count,
+  country_code
 FROM
   unioned
+WHERE
+  handshakes > 0
 GROUP BY
   submission_date,
   metric,
   label,
   key,
-  value,
   country_code
-ORDER BY
-  submission_date DESC,
-  metric,
-  country_code,
-  key,
-  value

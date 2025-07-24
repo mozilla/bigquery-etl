@@ -12,7 +12,7 @@ tag_deployments:
       metric_type:
         type: COUNT_ROWS
       filters:
-      - regexp_contains(visit_identifier,  r'^[0-9]+\\.{1}[0-9]+\\-{1}[0-9]+$' )
+      - regexp_contains(visit_identifier,  r'^[0-9]+\\.{1}[0-9]+\\-{1}[0-9]+$')
       threshold:
       - type: CONSTANT
         lower_bound: 0.0

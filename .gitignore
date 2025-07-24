@@ -8,7 +8,7 @@
 .idea/
 venv/
 target/
-
+*.python-version
 .probe_cache/
 
 # ignore locally generated docs

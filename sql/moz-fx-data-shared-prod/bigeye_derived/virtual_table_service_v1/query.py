@@ -20,7 +20,7 @@ def make_api_request(workspace_id: int) -> Dict[str, Any]:
     """Make API request to Bigeye for a specific workspace."""
     headers = {
         "accept": "application/json",
-        "authorization": BIGEYE_API_KEY,
+        "authorization": f"apikey {BIGEYE_API_KEY}",
     }
 
     response = requests.get(API_URL + str(workspace_id), headers=headers)

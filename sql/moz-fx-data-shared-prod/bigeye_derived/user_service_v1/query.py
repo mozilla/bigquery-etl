@@ -75,7 +75,7 @@ def main() -> None:
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="bigeye_derived")
-    parser.add_argument("--table", default="users")
+    parser.add_argument("--table", default="user_service_v1")
     args = parser.parse_args()
 
     df = get_bigeye_data()

@@ -637,7 +637,7 @@ with DAG(
             task_id="bqetl_desktop_retention_model__wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_desktop_retention_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -678,14 +678,14 @@ with DAG(
             task_id="bqetl_desktop_engagement_model__wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
             external_dag_id="bqetl_desktop_engagement_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
 
         ExternalTaskMarker(
             task_id="bqetl_desktop_retention_model__wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
             external_dag_id="bqetl_desktop_retention_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -726,14 +726,14 @@ with DAG(
             task_id="bqetl_desktop_engagement_model__wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_desktop_engagement_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
 
         ExternalTaskMarker(
             task_id="bqetl_desktop_retention_model__wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_desktop_retention_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
         )
 
         ExternalTaskMarker(

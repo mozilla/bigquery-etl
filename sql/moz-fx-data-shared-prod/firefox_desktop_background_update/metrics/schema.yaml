@@ -36869,10 +36869,10 @@ fields:
       mode: NULLABLE
       description: "Most recent exception reported by the Addons Manager this app\
         \ session.\nPreviously reported in the \"main\" ping `simpleMeasurements`.\n\
-        ```\n{\n  module: string module name,\n  context: string context, like the\
-        \ method name,\n  message: string message of the exception,\n  file: the file\
-        \ that the exception occured in,\n  line: the line number the exception was\
-        \ thrown from,\n}\n```\n"
+        ```text\n{\n  module: string module name,\n  context: string context, like\
+        \ the method name,\n  message: string message of the exception,\n  file: the\
+        \ file that the exception occured in,\n  line: the line number the exception\
+        \ was thrown from,\n}\n```\n"
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

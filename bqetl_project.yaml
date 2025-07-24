@@ -438,6 +438,10 @@ generate:
       - moso_mastodon_backend
       - mozphab
       - mozregression
+    app_ping_views:
+      skip:  # don't add the following pings to the combined-channel ping view
+      - org_mozilla_fennec_aurora.metrics
+      - org_mozilla_fenix_nightly.metrics
   stable_views:
     skip_datasets:
     - mlhackweek_search

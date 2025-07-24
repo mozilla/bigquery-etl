@@ -2313,7 +2313,8 @@ def _update_query_schema(
 
         if query_schema:
             updated_schema = existing_schema.merge(query_schema)
-            changed = not existing_schema.equal(old_schema)
+        existing_schema.to_yaml_file(existing_schema_path)
+        changed = not existing_schema.equal(old_schema)
     else:
         updated_schema = query_schema.merge(table_schema)
 

@@ -25,7 +25,7 @@
       ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id
     {% endif -%}
   FROM
-    `{{ dataset }}.metrics` AS m
+    `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m
   WHERE
     DATE(submission_timestamp) = @submission_date
   GROUP BY

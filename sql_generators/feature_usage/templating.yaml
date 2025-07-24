@@ -4,7 +4,7 @@
 # The general structure of this config file is as follows:
 #   sources:
 #     - name: <source_name>
-#       ref: <dataset>.<table>  # corresponds to BQ table identifier
+#       ref: <project>.<dataset>.<table>  # corresponds to BQ table identifier
 #       filters:              # optional, SQL filter statements
 #         - sql: <SQL snippet>
 #       group_by:             # optional, names of fields to GROUP BY
@@ -39,7 +39,7 @@
 sources:
   ### User Type ###
   - name: user_type
-    ref: telemetry.clients_last_seen
+    ref: moz-fx-data-shared-prod.telemetry.clients_last_seen
     filters:
       - sql: submission_date = @submission_date
       - sql: sample_id = 0
@@ -290,7 +290,7 @@ sources:
         type: INT64
   ### Main ###
   - name: main
-    ref: telemetry.main_remainder_1pct
+    ref: moz-fx-data-shared-prod.telemetry.main_remainder_1pct
     group_by: ["submission_date", "client_id"]
     filters:
       - sql: DATE(submission_timestamp) = @submission_date
@@ -742,7 +742,7 @@ sources:
         type: INT64
   ### Events ###
   - name: events
-    ref: telemetry.events
+    ref: moz-fx-data-shared-prod.telemetry.events
     group_by: ["submission_date", "client_id"]
     filters:
       - sql: submission_date = @submission_date
@@ -1001,7 +1001,7 @@ sources:
         type: INT64
   ### Activity Stream Events ###
   - name: activity_stream_events
-    ref: activity_stream.events
+    ref: moz-fx-data-shared-prod.activity_stream.events
     group_by: ["submission_date", "client_id"]
     filters:
       - sql: DATE(submission_timestamp) = @submission_date
@@ -1088,7 +1088,7 @@ sources:
         vetted: false
   ### Activity Stream Sessions ###
   - name: activity_stream_sessions
-    ref: activity_stream.sessions
+    ref: moz-fx-data-shared-prod.activity_stream.sessions
     group_by: ["submission_date", "client_id"]
     filters:
       - sql: DATE(submission_timestamp) = @submission_date
@@ -1128,7 +1128,7 @@ sources:
         vetted: false
   ### Addons ###
   - name: addons
-    ref: telemetry.addons
+    ref: moz-fx-data-shared-prod.telemetry.addons
     group_by: ["submission_date", "client_id"]
     filters:
       - sql: submission_date = @submission_date

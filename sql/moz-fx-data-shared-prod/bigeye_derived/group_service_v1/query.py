@@ -18,7 +18,7 @@ def make_api_request() -> Dict[str, Any]:
     """Make API request to Bigeye."""
     headers = {
         "accept": "application/json",
-        "authorization": BIGEYE_API_KEY,
+        "authorization": f"apikey {BIGEYE_API_KEY}",
     }
 
     response = requests.get(API_URL, headers=headers)

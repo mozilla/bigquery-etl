@@ -1,6 +1,6 @@
-friendly_name: Collection V2 Service
+friendly_name: Group Service
 description: |-
-  BigEye metadata for the collection service docs: https://docs.bigeye.com/reference/getcollectioninfosv2
+  BigEye metadata for the group service docs: https://docs.bigeye.com/reference/getallgroups
 owners:
 - phlee@mozilla.com
 labels:

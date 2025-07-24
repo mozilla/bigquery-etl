@@ -41,19 +41,7 @@ bigeye_derived__dashboard_service__v1_bqetl_bigeye_api_key = Secret(
     secret="airflow-gke-secrets",
     key="bqetl_bigeye_api_key",
 )
-bigeye_derived__user_service__v1_bqetl_bigeye_api_key = Secret(
-    deploy_type="env",
-    deploy_target="BIGEYE_API_KEY",
-    secret="airflow-gke-secrets",
-    key="bqetl_bigeye_api_key",
-)
 bigeye_derived__virtual_table_service__v1_bqetl_bigeye_api_key = Secret(
-    deploy_type="env",
-    deploy_target="BIGEYE_API_KEY",
-    secret="airflow-gke-secrets",
-    key="bqetl_bigeye_api_key",
-)
-bigeye_derived__workspace_service__v1_bqetl_bigeye_api_key = Secret(
     deploy_type="env",
     deploy_target="BIGEYE_API_KEY",
     secret="airflow-gke-secrets",
@@ -115,21 +103,6 @@ with DAG(
         ],
     )
 
-    bigeye_derived__user_service__v1 = GKEPodOperator(
-        task_id="bigeye_derived__user_service__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/bigeye_derived/user_service_v1/query.py",
-        ]
-        + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
-        secrets=[
-            bigeye_derived__user_service__v1_bqetl_bigeye_api_key,
-        ],
-    )
-
     bigeye_derived__virtual_table_service__v1 = GKEPodOperator(
         task_id="bigeye_derived__virtual_table_service__v1",
         arguments=[
@@ -142,20 +115,5 @@ with DAG(
         email=["phlee@mozilla.com"],
         secrets=[
             bigeye_derived__virtual_table_service__v1_bqetl_bigeye_api_key,
-        ],
-    )
-
-    bigeye_derived__workspace_service__v1 = GKEPodOperator(
-        task_id="bigeye_derived__workspace_service__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/bigeye_derived/workspace_service_v1/query.py",
-        ]
-        + [],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="phlee@mozilla.com",
-        email=["phlee@mozilla.com"],
-        secrets=[
-            bigeye_derived__workspace_service__v1_bqetl_bigeye_api_key,
         ],
     )

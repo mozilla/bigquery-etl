@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - firefox_crashreporter.metrics
+  - moz-fx-data-shared-prod.firefox_crashreporter.metrics
 monitoring:
   enabled: false
   collection: null

@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - accounts_cirrus.metrics
+  - moz-fx-data-shared-prod.accounts_cirrus.metrics
 monitoring:
   enabled: false
   collection: null

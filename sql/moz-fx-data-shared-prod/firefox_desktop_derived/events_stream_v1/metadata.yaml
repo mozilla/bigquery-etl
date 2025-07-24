@@ -48,5 +48,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query_supplemental.sql:
-  - firefox_desktop.events
+  - moz-fx-data-shared-prod.firefox_desktop.events
 require_column_descriptions: false

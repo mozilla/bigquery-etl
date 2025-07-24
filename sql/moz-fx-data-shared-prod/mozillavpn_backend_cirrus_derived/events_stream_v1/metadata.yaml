@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozillavpn_backend_cirrus.events
+  - moz-fx-data-shared-prod.mozillavpn_backend_cirrus.events
 require_column_descriptions: false

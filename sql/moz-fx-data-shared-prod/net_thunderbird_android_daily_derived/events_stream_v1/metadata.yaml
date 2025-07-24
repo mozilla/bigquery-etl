@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - net_thunderbird_android_daily.events
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily.events
 require_column_descriptions: false

@@ -33,10 +33,10 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - activity_stream.events
-  - activity_stream.sessions
-  - telemetry.addons
-  - telemetry.clients_last_seen
-  - telemetry.events
-  - telemetry.main_remainder_1pct
+  - moz-fx-data-shared-prod.activity_stream.events
+  - moz-fx-data-shared-prod.activity_stream.sessions
+  - moz-fx-data-shared-prod.telemetry.addons
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen
+  - moz-fx-data-shared-prod.telemetry.events
+  - moz-fx-data-shared-prod.telemetry.main_remainder_1pct
 require_column_descriptions: false

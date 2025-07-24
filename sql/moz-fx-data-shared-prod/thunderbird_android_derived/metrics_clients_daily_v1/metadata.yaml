@@ -29,9 +29,9 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - net_thunderbird_android.metrics
-  - net_thunderbird_android_beta.metrics
-  - net_thunderbird_android_daily.metrics
+  - moz-fx-data-shared-prod.net_thunderbird_android.metrics
+  - moz-fx-data-shared-prod.net_thunderbird_android_beta.metrics
+  - moz-fx-data-shared-prod.net_thunderbird_android_daily.metrics
 monitoring:
   enabled: false
   collection: null

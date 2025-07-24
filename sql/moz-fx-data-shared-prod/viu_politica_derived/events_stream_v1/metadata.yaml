@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - viu_politica.events
+  - moz-fx-data-shared-prod.viu_politica.events
 require_column_descriptions: false

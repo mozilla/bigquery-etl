@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - glean_dictionary.events
+  - moz-fx-data-shared-prod.glean_dictionary.events
 require_column_descriptions: false

@@ -40,8 +40,8 @@ bigquery:
 workgroup_access: []
 references:
   query.sql:
-  - klar_ios.deletion_request
   - moz-fx-data-shared-prod.klar_ios.clients_last_seen_joined
+  - moz-fx-data-shared-prod.klar_ios.deletion_request
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
   - mozdata.static.csa_gblmkt_languages
 deprecated: true

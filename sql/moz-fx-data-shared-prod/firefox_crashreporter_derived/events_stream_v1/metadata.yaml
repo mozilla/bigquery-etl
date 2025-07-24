@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - firefox_crashreporter.events
+  - moz-fx-data-shared-prod.firefox_crashreporter.events
 require_column_descriptions: false

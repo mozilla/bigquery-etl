@@ -26,7 +26,7 @@ bigquery:
 workgroup_access: []
 references:
   query.sql:
-  - org_mozilla_vrbrowser.metrics
+  - moz-fx-data-shared-prod.org_mozilla_vrbrowser.metrics
 deprecated: true
 monitoring:
   enabled: false

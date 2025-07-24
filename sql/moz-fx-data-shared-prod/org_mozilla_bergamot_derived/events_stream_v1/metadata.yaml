@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - org_mozilla_bergamot.events
+  - moz-fx-data-shared-prod.org_mozilla_bergamot.events
 require_column_descriptions: false

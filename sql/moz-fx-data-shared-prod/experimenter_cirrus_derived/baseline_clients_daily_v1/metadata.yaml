@@ -33,8 +33,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - experimenter_cirrus_derived.baseline_clients_first_seen_v1
-  - experimenter_cirrus_stable.baseline_v1
+  - moz-fx-data-shared-prod.experimenter_cirrus_derived.baseline_clients_first_seen_v1
+  - moz-fx-data-shared-prod.experimenter_cirrus_stable.baseline_v1
 monitoring:
   enabled: true
   collection: null

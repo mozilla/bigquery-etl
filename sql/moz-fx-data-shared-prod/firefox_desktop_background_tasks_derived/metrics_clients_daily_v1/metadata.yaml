@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - firefox_desktop_background_tasks.metrics
+  - moz-fx-data-shared-prod.firefox_desktop_background_tasks.metrics
 monitoring:
   enabled: true
   collection: null

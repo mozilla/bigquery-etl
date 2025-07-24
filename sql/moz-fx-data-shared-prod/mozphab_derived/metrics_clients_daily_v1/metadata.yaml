@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozphab.metrics
+  - moz-fx-data-shared-prod.mozphab.metrics
 monitoring:
   enabled: false
   collection: null

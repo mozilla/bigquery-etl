@@ -42,8 +42,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozillavpn_backend_cirrus_derived.baseline_clients_daily_v1
-  - mozillavpn_backend_cirrus_derived.baseline_clients_last_seen_v1
+  - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_derived.baseline_clients_daily_v1
+  - moz-fx-data-shared-prod.mozillavpn_backend_cirrus_derived.baseline_clients_last_seen_v1
 monitoring:
   enabled: false
   collection: null

@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozillavpn_backend_cirrus.metrics
+  - moz-fx-data-shared-prod.mozillavpn_backend_cirrus.metrics
 monitoring:
   enabled: false
   collection: null

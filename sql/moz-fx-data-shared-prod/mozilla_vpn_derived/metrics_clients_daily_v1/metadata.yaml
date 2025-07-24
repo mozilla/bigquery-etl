@@ -29,10 +29,10 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozillavpn.metrics
-  - org_mozilla_firefox_vpn.metrics
-  - org_mozilla_ios_firefoxvpn.metrics
-  - org_mozilla_ios_firefoxvpn_network_extension.metrics
+  - moz-fx-data-shared-prod.mozillavpn.metrics
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.metrics
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.metrics
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.metrics
 monitoring:
   enabled: false
   collection: null

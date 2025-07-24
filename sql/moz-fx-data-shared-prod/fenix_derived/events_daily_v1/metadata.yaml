@@ -30,8 +30,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - fenix.event_types
-  - org_mozilla_fenix.events
-  - org_mozilla_firefox.events
-  - org_mozilla_firefox_beta.events
+  - moz-fx-data-shared-prod.fenix.event_types
+  - moz-fx-data-shared-prod.org_mozilla_fenix.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.events
 require_column_descriptions: false

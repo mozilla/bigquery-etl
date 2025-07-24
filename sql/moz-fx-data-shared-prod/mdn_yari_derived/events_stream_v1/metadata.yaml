@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mdn_yari.events
+  - moz-fx-data-shared-prod.mdn_yari.events
 require_column_descriptions: false

@@ -33,8 +33,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - firefox_desktop_background_tasks_derived.baseline_clients_first_seen_v1
-  - firefox_desktop_background_tasks_stable.baseline_v1
+  - moz-fx-data-shared-prod.firefox_desktop_background_tasks_derived.baseline_clients_first_seen_v1
+  - moz-fx-data-shared-prod.firefox_desktop_background_tasks_stable.baseline_v1
 monitoring:
   enabled: true
   collection: null

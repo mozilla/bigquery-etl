@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - debug_ping_view.events
+  - moz-fx-data-shared-prod.debug_ping_view.events
 require_column_descriptions: false

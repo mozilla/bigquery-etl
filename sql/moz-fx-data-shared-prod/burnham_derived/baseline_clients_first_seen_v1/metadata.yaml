@@ -43,8 +43,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - burnham_derived.baseline_clients_first_seen_v1
-  - burnham_stable.baseline_v1
+  - moz-fx-data-shared-prod.burnham_derived.baseline_clients_first_seen_v1
+  - moz-fx-data-shared-prod.burnham_stable.baseline_v1
 monitoring:
   enabled: false
   collection: null

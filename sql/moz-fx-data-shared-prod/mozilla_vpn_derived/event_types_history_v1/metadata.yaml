@@ -29,9 +29,9 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozilla_vpn_derived.event_types_history_v1
-  - mozillavpn.main
-  - org_mozilla_firefox_vpn.main
-  - org_mozilla_ios_firefoxvpn.main
-  - org_mozilla_ios_firefoxvpn_network_extension.main
+  - moz-fx-data-shared-prod.mozilla_vpn_derived.event_types_history_v1
+  - moz-fx-data-shared-prod.mozillavpn.main
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.main
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.main
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.main
 require_column_descriptions: false

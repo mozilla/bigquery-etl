@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozillavpn.events
+  - moz-fx-data-shared-prod.mozillavpn.events
 require_column_descriptions: false

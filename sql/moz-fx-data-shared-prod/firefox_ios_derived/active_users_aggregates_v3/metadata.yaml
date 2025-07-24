@@ -57,7 +57,7 @@ references:
   - moz-fx-data-shared-prod.org_mozilla_ios_firefox_live.baseline_v1
   - moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_live.baseline_v1
   query.sql:
-  - firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios.active_users
+  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios.metrics_clients_last_seen
 require_column_descriptions: false

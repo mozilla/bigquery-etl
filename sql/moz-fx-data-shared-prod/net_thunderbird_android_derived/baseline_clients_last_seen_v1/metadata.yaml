@@ -46,8 +46,8 @@ references:
   - moz-fx-data-shared-prod.net_thunderbird_android_derived.baseline_clients_daily_v1
   - moz-fx-data-shared-prod.net_thunderbird_android_derived.baseline_clients_last_seen_v1
   query.sql:
-  - net_thunderbird_android_derived.baseline_clients_daily_v1
-  - net_thunderbird_android_derived.baseline_clients_last_seen_v1
+  - moz-fx-data-shared-prod.net_thunderbird_android_derived.baseline_clients_daily_v1
+  - moz-fx-data-shared-prod.net_thunderbird_android_derived.baseline_clients_last_seen_v1
 monitoring:
   enabled: false
   collection: null

@@ -33,8 +33,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozphab_derived.baseline_clients_first_seen_v1
-  - mozphab_stable.baseline_v1
+  - moz-fx-data-shared-prod.mozphab_derived.baseline_clients_first_seen_v1
+  - moz-fx-data-shared-prod.mozphab_stable.baseline_v1
 monitoring:
   enabled: false
   collection: null

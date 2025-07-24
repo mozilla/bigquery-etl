@@ -45,8 +45,8 @@ references:
   - ..baseline_clients_daily_v1
   - ..baseline_clients_last_seen_v1
   query.sql:
-  - org_mozilla_firefox_derived.baseline_clients_daily_v1
-  - org_mozilla_firefox_derived.baseline_clients_last_seen_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_derived.baseline_clients_daily_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_derived.baseline_clients_last_seen_v1
 monitoring:
   enabled: true
   collection: null

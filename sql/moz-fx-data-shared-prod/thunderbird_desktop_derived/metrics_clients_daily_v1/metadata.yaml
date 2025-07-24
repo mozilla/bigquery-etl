@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - thunderbird_desktop.metrics
+  - moz-fx-data-shared-prod.thunderbird_desktop.metrics
 monitoring:
   enabled: false
   collection: null

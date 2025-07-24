@@ -24,7 +24,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - firefox_ios.events_stream
-  - firefox_ios.firefox_ios_clients
+  - moz-fx-data-shared-prod.firefox_ios.events_stream
+  - moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients
   - moz-fx-data-shared-prod.firefox_ios.retention_clients
 require_column_descriptions: false

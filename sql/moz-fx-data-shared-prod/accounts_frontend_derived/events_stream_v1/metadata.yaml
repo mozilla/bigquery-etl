@@ -40,5 +40,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - accounts_frontend.events
+  - moz-fx-data-shared-prod.accounts_frontend.events
 require_column_descriptions: false

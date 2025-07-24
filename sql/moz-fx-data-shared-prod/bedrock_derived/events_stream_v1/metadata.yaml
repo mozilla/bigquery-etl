@@ -38,5 +38,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - bedrock.events
+  - moz-fx-data-shared-prod.bedrock.events
 require_column_descriptions: false

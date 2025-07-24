@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - mozilla_lockbox.metrics
+  - moz-fx-data-shared-prod.mozilla_lockbox.metrics
 monitoring:
   enabled: false
   collection: null

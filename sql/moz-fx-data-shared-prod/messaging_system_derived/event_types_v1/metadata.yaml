@@ -20,5 +20,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - messaging_system_derived.event_types_history_v1
+  - moz-fx-data-shared-prod.messaging_system_derived.event_types_history_v1
 require_column_descriptions: false

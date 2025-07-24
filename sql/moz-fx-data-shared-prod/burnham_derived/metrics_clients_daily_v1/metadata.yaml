@@ -29,7 +29,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - burnham.metrics
+  - moz-fx-data-shared-prod.burnham.metrics
 monitoring:
   enabled: false
   collection: null

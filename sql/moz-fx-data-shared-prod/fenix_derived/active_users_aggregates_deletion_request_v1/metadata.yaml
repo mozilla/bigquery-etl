@@ -40,8 +40,8 @@ bigquery:
 workgroup_access: []
 references:
   query.sql:
-  - fenix.deletion_request
   - moz-fx-data-shared-prod.fenix.clients_last_seen_joined
+  - moz-fx-data-shared-prod.fenix.deletion_request
   - moz-fx-data-shared-prod.search.mobile_search_clients_daily
   - mozdata.static.csa_gblmkt_languages
 deprecated: true

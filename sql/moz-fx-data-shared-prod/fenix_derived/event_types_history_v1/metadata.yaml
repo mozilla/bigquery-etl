@@ -29,8 +29,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - fenix_derived.event_types_history_v1
-  - org_mozilla_fenix.events
-  - org_mozilla_firefox.events
-  - org_mozilla_firefox_beta.events
+  - moz-fx-data-shared-prod.fenix_derived.event_types_history_v1
+  - moz-fx-data-shared-prod.org_mozilla_fenix.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox.events
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.events
 require_column_descriptions: false

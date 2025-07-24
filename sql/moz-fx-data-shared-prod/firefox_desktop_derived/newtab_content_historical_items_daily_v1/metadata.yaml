@@ -1,4 +1,7 @@
 friendly_name: Newtab Content Historical Items Daily
+description: |-
+  A combined daily aggregation of newtab content actions on content/items AND newtab actions on content/items
+  for Firefox desktop, partitioned by day, based on the cutover to the newtab-content ping in version 140.
 owners:
   - lmcfall@mozilla.com
 labels:

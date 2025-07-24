@@ -2,11 +2,12 @@ WITH events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     -- mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS app_version,
-    "MISSING" AS app_version,  -- Placeholder for app_version, adjust as needed
+    140 AS app_version,  -- Placeholder for app_version, adjust as needed
     normalized_channel AS channel,
     -- metrics.string.newtab_locale AS locale,
     "MISSING" AS locale,  -- Placeholder for locale, adjust as needed
     normalized_country_code AS country,
+    metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     timestamp AS event_timestamp,
     category AS event_category,
     name AS event_name,
@@ -18,9 +19,9 @@ WITH events_unnested AS (
     DATE(submission_timestamp) = @submission_date
     AND category IN ('newtab_content')
     AND name IN ('impression', 'click', 'dismiss')
-    AND mozfun.norm.browser_version_info(
-      client_info.app_display_version
-    ).major_version >= 140 -- Transitioned to the newtab-content ping in version 140, so we only want to include events after that version for this ping.
+    -- AND mozfun.norm.browser_version_info(
+    --   client_info.app_display_version
+    -- ).major_version >= 140 -- Transitioned to the newtab-content ping in version 140, so we only want to include events after that version for this ping.
 ),
 flattened_events AS (
   SELECT
@@ -30,6 +31,7 @@ flattened_events AS (
     channel,
     locale,
     country,
+    newtab_content_surface_id,
     event_category,
     event_name,
     mozfun.map.get_key(event_details, 'corpus_item_id') AS corpus_item_id,
@@ -53,7 +55,7 @@ SELECT
   channel,
   locale,
   country,
-  mozfun.newtab.scheduled_surface_id_v1(country, locale) AS scheduled_surface_id,
+  newtab_content_surface_id,
   corpus_item_id,
   position,
   is_sponsored,
@@ -75,7 +77,7 @@ GROUP BY
   channel,
   locale,
   country,
-  scheduled_surface_id,
+  newtab_content_surface_id,
   corpus_item_id,
   position,
   is_sponsored,

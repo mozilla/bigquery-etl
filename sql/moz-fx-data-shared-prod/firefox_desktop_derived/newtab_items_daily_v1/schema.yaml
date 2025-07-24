@@ -15,13 +15,11 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-- name: scheduled_surface_id
+- name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
   description: >
-    A content identifier. For organic Newtab recommendations it is an opaque id produced
-    by Newtab's recommendation systems that corresponds uniquely to a piece of content
-    scheduled for a specific day on a specific surface. This is the replacement for tile_id.
+    Surface id sent to the client from merino api
 - name: corpus_item_id
   type: STRING
   mode: NULLABLE

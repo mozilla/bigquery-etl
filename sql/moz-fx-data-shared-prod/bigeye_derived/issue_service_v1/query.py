@@ -29,7 +29,7 @@ def make_api_request(workspace_id: int) -> Dict[str, Any]:
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "authorization": BIGEYE_API_KEY,
+        "authorization": f"apikey {BIGEYE_API_KEY}",
     }
 
     response = requests.post(API_URL, json=payload, headers=headers)
@@ -102,7 +102,7 @@ def main() -> None:
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--project", default="moz-fx-data-shared-prod")
     parser.add_argument("--dataset", default="bigeye_derived")
-    parser.add_argument("--table", default="issues")
+    parser.add_argument("--table", default="issue_service_v1")
     args = parser.parse_args()
 
     df = get_bigeye_data()

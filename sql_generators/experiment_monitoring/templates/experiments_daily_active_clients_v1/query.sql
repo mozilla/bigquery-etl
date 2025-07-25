@@ -9,7 +9,7 @@ WITH
         e.value AS branch,
         client_id
       FROM
-        telemetry.clients_daily
+        `moz-fx-data-shared-prod.telemetry.clients_daily`
       CROSS JOIN
         UNNEST(experiments) AS e
     )

@@ -52,10 +52,10 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
+    wait_for_bigeye__firefoxdotcom_derived__gclid_conversions__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefoxdotcom_derived__gclid_conversions__v1",
         external_dag_id="bqetl_ga4_firefoxdotcom",
-        external_task_id="checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
+        external_task_id="bigeye__firefoxdotcom_derived__gclid_conversions__v1",
         execution_delta=datetime.timedelta(seconds=10800),
         check_existence=True,
         mode="reschedule",
@@ -135,7 +135,7 @@ with DAG(
     )
 
     firefoxdotcom_derived__ga_desktop_conversions__v1.set_upstream(
-        wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1
+        wait_for_bigeye__firefoxdotcom_derived__gclid_conversions__v1
     )
 
     mozilla_org_derived__ga_desktop_conversions__v1.set_upstream(

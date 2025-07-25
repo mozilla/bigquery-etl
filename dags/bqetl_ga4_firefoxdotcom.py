@@ -123,12 +123,10 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
-    checks__fail_firefoxdotcom_derived__ga_clients__v1 = bigquery_dq_check(
-        task_id="checks__fail_firefoxdotcom_derived__ga_clients__v1",
-        source_table="ga_clients_v1",
-        dataset_id="firefoxdotcom_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__firefoxdotcom_derived__ga_clients__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefoxdotcom_derived__ga_clients__v1",
+        table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.ga_clients_v1",
+        warehouse_id="1939",
         owner="mhirose@mozilla.com",
         email=[
             "kwindau@mozilla.com",
@@ -136,9 +134,63 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         depends_on_past=False,
-        task_concurrency=1,
-        parameters=["session_date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
+    bigeye__firefoxdotcom_derived__ga_sessions__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefoxdotcom_derived__ga_sessions__v1",
+        table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1",
+        warehouse_id="1939",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
+    bigeye__firefoxdotcom_derived__gclid_conversions__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefoxdotcom_derived__gclid_conversions__v1",
+        table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.gclid_conversions_v1",
+        warehouse_id="1939",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+    )
+
+    with TaskGroup(
+        "bigeye__firefoxdotcom_derived__gclid_conversions__v1_external",
+    ) as bigeye__firefoxdotcom_derived__gclid_conversions__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_census_feed__wait_for_bigeye__firefoxdotcom_derived__gclid_conversions__v1",
+            external_dag_id="bqetl_census_feed",
+            external_task_id="wait_for_bigeye__firefoxdotcom_derived__gclid_conversions__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        bigeye__firefoxdotcom_derived__gclid_conversions__v1_external.set_upstream(
+            bigeye__firefoxdotcom_derived__gclid_conversions__v1
+        )
+
+    bigeye__firefoxdotcom_derived__www_site_hits__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefoxdotcom_derived__www_site_hits__v1",
+        table_id="moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1",
+        warehouse_id="1939",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     checks__fail_firefoxdotcom_derived__gclid_conversions__v1 = bigquery_dq_check(
@@ -157,20 +209,6 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
     )
-
-    with TaskGroup(
-        "checks__fail_firefoxdotcom_derived__gclid_conversions__v1_external",
-    ) as checks__fail_firefoxdotcom_derived__gclid_conversions__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_census_feed__wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
-            external_dag_id="bqetl_census_feed",
-            external_task_id="wait_for_checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
-        )
-
-        checks__fail_firefoxdotcom_derived__gclid_conversions__v1_external.set_upstream(
-            checks__fail_firefoxdotcom_derived__gclid_conversions__v1
-        )
 
     checks__warn_firefoxdotcom_derived__ga_sessions__v1 = bigquery_dq_check(
         task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v1",
@@ -344,8 +382,20 @@ with DAG(
         depends_on_past=False,
     )
 
-    checks__fail_firefoxdotcom_derived__ga_clients__v1.set_upstream(
+    bigeye__firefoxdotcom_derived__ga_clients__v1.set_upstream(
         firefoxdotcom_derived__ga_clients__v1
+    )
+
+    bigeye__firefoxdotcom_derived__ga_sessions__v1.set_upstream(
+        firefoxdotcom_derived__ga_sessions__v1
+    )
+
+    bigeye__firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        firefoxdotcom_derived__gclid_conversions__v1
+    )
+
+    bigeye__firefoxdotcom_derived__www_site_hits__v1.set_upstream(
+        firefoxdotcom_derived__www_site_hits__v1
     )
 
     checks__fail_firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
@@ -361,15 +411,19 @@ with DAG(
     )
 
     firefoxdotcom_derived__firefox_whatsnew_summary__v1.set_upstream(
-        firefoxdotcom_derived__www_site_hits__v1
+        bigeye__firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__ga_clients__v1.set_upstream(
-        firefoxdotcom_derived__ga_sessions__v1
+        bigeye__firefoxdotcom_derived__ga_sessions__v1
     )
 
     firefoxdotcom_derived__ga_sessions__v1.set_upstream(
         wait_for_firefoxdotcom_events_table
+    )
+
+    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
+        bigeye__firefoxdotcom_derived__ga_sessions__v1
     )
 
     firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
@@ -378,10 +432,6 @@ with DAG(
 
     firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
         wait_for_clients_first_seen_v3
-    )
-
-    firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
-        firefoxdotcom_derived__ga_sessions__v1
     )
 
     firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
@@ -397,7 +447,7 @@ with DAG(
     )
 
     firefoxdotcom_derived__www_site_events_metrics__v1.set_upstream(
-        firefoxdotcom_derived__www_site_hits__v1
+        bigeye__firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__www_site_hits__v1.set_upstream(
@@ -405,11 +455,11 @@ with DAG(
     )
 
     firefoxdotcom_derived__www_site_landing_page_metrics__v1.set_upstream(
-        firefoxdotcom_derived__www_site_hits__v1
+        bigeye__firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__www_site_page_metrics__v1.set_upstream(
-        firefoxdotcom_derived__www_site_hits__v1
+        bigeye__firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__wwww_site_metrics_summary__v1.set_upstream(

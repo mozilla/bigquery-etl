@@ -16,7 +16,7 @@ labels:
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
-{%- endif -%}
+{%- endif %}
 bigquery:
   time_partitioning:
     type: day

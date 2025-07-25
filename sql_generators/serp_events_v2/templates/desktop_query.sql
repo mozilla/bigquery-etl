@@ -70,6 +70,7 @@ impressions AS (
       FALSE
     ) AS is_signed_in,
     mozfun.map.get_key(event.extra, 'provider') AS search_engine,
+    mozfun.map.get_key(event.extra, 'partner_code') AS partner_code,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
     COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool), FALSE) AS is_tagged
   FROM
@@ -202,6 +203,7 @@ SELECT
   engagements,
   component_impressions,
   impressions.profile_group_id AS profile_group_id,
+  partner_code
 FROM
   -- 1 row per impression_id
   impressions

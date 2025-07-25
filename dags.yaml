@@ -1517,7 +1517,7 @@ bqetl_pageload_v1:
     - repo/bigquery-etl
 
 bqetl_desktop_engagement_model:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 0 5 * * *
   description: Loads the desktop engagement model tables
   default_args:
     depends_on_past: false
@@ -1534,7 +1534,7 @@ bqetl_desktop_engagement_model:
     - impact/tier_2
 
 bqetl_desktop_retention_model:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 0 5 * * *
   description: Loads the desktop retention model tables
   default_args:
     depends_on_past: false

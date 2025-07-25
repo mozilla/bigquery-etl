@@ -11,7 +11,7 @@ WITH
         {{ measure.sql }} AS {{ measure.name }},
     {% endfor %}
     FROM
-        {{ source.ref }}
+        `{{ source.ref }}`
     WHERE
         {% for filter in source.filters %}
             {% if loop.first %}

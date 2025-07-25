@@ -649,7 +649,7 @@ def _backfill_query(
 )
 @click.option(
     "--checks_file_name",
-    "--checks_file_name",
+    "--checks-file-name",
     help="Name of a custom data checks file to run after each partition backfill. E.g. custom_checks.sql. Optional.",
     default=None,
 )

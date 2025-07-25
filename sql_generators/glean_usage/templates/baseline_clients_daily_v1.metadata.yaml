@@ -12,9 +12,11 @@ labels:
   incremental: true
   schedule: daily
   table_type: client_level
+{%- if not deprecated_app %}
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
+{%- endif -%}
 bigquery:
   time_partitioning:
     type: day

@@ -602,13 +602,13 @@ jobs:
                     cp -a sql/. /tmp/workspace/generated-sql/sql
                   fi
 
+                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/generated-sql/sql/"
                   PATH="venv/bin:$PATH" script/bqetl metadata update \
                     --sql-dir /tmp/workspace/generated-sql/sql/ \
                     /tmp/workspace/generated-sql/sql/
-                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
             - persist_to_workspace:
                 root: /tmp/workspace
@@ -808,9 +808,9 @@ jobs:
                   cd ~/private-bigquery-etl
 
                   $bqetl_script generate all --target-project moz-fx-data-shared-prod
+                  $bqetl_script format sql/
                   $bqetl_script dependency record --skip-existing sql/
                   $bqetl_script metadata update sql/
-                  $bqetl_script format sql/
                   $bqetl_script monitoring update sql/
 
                   mkdir -p /tmp/workspace/private-generated-sql
@@ -976,9 +976,9 @@ jobs:
                     cp -rn ~/remote-generated-sql/sql/. sql
                   fi
 
+                  $bqetl_script format sql/
                   $bqetl_script dependency record --skip-existing sql/
                   $bqetl_script metadata update sql/
-                  $bqetl_script format sql/
                   $bqetl_script monitoring update sql/
 
                   mkdir -p /tmp/workspace/main-generated-sql
@@ -988,9 +988,9 @@ jobs:
                   git clone --branch main --depth 1 git@github.com:mozilla/private-bigquery-etl.git ~/private-bigquery-etl
                   cd ~/private-bigquery-etl
                   $bqetl_script generate all --target-project moz-fx-data-shared-prod
+                  $bqetl_script format sql/
                   $bqetl_script dependency record --skip-existing sql/
                   $bqetl_script metadata update sql/
-                  $bqetl_script format sql/
                   $bqetl_script monitoring update sql/
                   cd "$bigquery_etl"
                   cp -rf ~/private-bigquery-etl/sql/. sql

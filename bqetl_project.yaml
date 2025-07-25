@@ -460,6 +460,7 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    - org_mozilla_firefoxreality
     skip_tables:
       telemetry:
       - modules

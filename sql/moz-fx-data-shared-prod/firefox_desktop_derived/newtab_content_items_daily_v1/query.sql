@@ -4,8 +4,6 @@ WITH events_unnested AS (
     -- mozfun.norm.browser_version_info(client_info.app_display_version).major_version AS app_version,
     140 AS app_version,  -- Placeholder for app_version, adjust as needed
     normalized_channel AS channel,
-    -- metrics.string.newtab_locale AS locale,
-    "MISSING" AS locale,  -- Placeholder for locale, adjust as needed
     normalized_country_code AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     timestamp AS event_timestamp,
@@ -29,7 +27,6 @@ flattened_events AS (
     -- SAFE_CAST(app_version AS INT64) AS app_version,
     app_version,  -- Use the placeholder directly
     channel,
-    locale,
     country,
     newtab_content_surface_id,
     event_category,
@@ -41,7 +38,6 @@ flattened_events AS (
       mozfun.map.get_key(event_details, 'is_secton_followed') AS BOOLEAN
     ) AS is_section_followed,
     mozfun.map.get_key(event_details, 'matches_selected_topic') AS matches_selected_topic,
-    mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, 'received_rank') AS INT64) AS received_rank,
     mozfun.map.get_key(event_details, 'section') AS section,
     SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT64) AS section_position,
@@ -53,7 +49,6 @@ SELECT
   submission_date,
   app_version,
   channel,
-  locale,
   country,
   newtab_content_surface_id,
   corpus_item_id,
@@ -67,7 +62,6 @@ SELECT
   topic,
   COUNTIF(event_name = 'impression') AS impression_count,
   COUNTIF(event_name = 'click') AS click_count,
-  COUNTIF(event_name = 'save') AS save_count,
   COUNTIF(event_name = 'dismiss') AS dismiss_count
 FROM
   flattened_events
@@ -75,7 +69,6 @@ GROUP BY
   submission_date,
   app_version,
   channel,
-  locale,
   country,
   newtab_content_surface_id,
   corpus_item_id,

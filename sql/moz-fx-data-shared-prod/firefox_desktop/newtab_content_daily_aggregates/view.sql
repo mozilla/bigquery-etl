@@ -1,0 +1,52 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.firefox_desktop.newtab_content_daily_aggregates`
+AS
+WITH unioned AS (
+  SELECT
+    submission_date,
+    app_version,
+    channel,
+    country,
+    newtab_content_surface_id,
+    corpus_item_id,
+    position,
+    is_sponsored,
+    is_section_followed,
+    matches_selected_topic,
+    received_rank,
+    section,
+    section_position,
+    topic,
+    impression_count,
+    click_count,
+    dismiss_count,
+    NULL AS save_count -- Save event does not exist in the newtab_content ping
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_v1`
+  UNION ALL
+  SELECT
+    submission_date,
+    app_version,
+    channel,
+    country,
+    newtab_content_surface_id,
+    corpus_item_id,
+    position,
+    is_sponsored,
+    is_section_followed,
+    matches_selected_topic,
+    received_rank,
+    section,
+    section_position,
+    topic,
+    impression_count,
+    click_count,
+    dismiss_count,
+    save_count
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_items_daily_v1`
+)
+SELECT
+  *
+FROM
+  unioned

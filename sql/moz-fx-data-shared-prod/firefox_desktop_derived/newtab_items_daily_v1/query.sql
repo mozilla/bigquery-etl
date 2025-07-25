@@ -20,6 +20,9 @@ WITH events_unnested AS (
     AND mozfun.norm.browser_version_info(
       client_info.app_display_version
     ).major_version >= 121 -- the [Pocket team started using Glean](https://github.com/Pocket/dbt-snowflake/pull/459) from this version on. This prevents duplicates for previous releases.
+    AND mozfun.norm.browser_version_info(
+      client_info.app_display_version
+    ).major_version < 140 -- Transitioned to the newtab-content ping in version 140, so we only want to include events before that version for this ping.
 ),
 flattened_events AS (
   SELECT

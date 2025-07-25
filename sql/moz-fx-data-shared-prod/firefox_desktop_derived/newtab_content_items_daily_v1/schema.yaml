@@ -9,9 +9,6 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
-- name: locale
-  type: STRING
-  mode: NULLABLE
 - name: country
   type: STRING
   mode: NULLABLE
@@ -67,10 +64,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of articles clicked on Newtab
-- name: save_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Count of article saves (Pocket) on Newtab
 - name: dismiss_count
   type: INTEGER
   mode: NULLABLE

@@ -12,7 +12,7 @@ fields:
   name: key
   type: STRING
 - mode: NULLABLE
-  name: value
+  name: handshakes
   type: INTEGER
 - mode: NULLABLE
   name: country_code

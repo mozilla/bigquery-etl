@@ -12,6 +12,8 @@ scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   date_partition_parameter: null
   parameters: ["session_date:DATE:{{ds}}"]
+monitoring:
+  enabled: true
 bigquery:
   clustering:
     fields: ["first_seen_date"]

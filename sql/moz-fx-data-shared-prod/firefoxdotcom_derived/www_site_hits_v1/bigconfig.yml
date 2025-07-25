@@ -8,7 +8,7 @@ tag_deployments:
   - column_selectors:
     - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.www_site_hits_v1.*
     metrics:
-    - metric_name: row_count_with_filter
+    - metric_name: row_count_match_regex_pattern
       metric_type:
         predefined_metric: COUNT_ROWS
       conditions:

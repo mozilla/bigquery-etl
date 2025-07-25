@@ -122,8 +122,6 @@ SELECT
   country_code
 FROM
   unioned
-WHERE
-  handshakes > 0
 GROUP BY
   submission_date,
   metric,

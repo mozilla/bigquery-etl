@@ -13,6 +13,7 @@ proxy the queries through the dry run service endpoint.
 
 import glob
 import json
+import random
 import re
 import sys
 import time
@@ -37,7 +38,6 @@ try:
 except ImportError:
     # python 3.7 compatibility
     from backports.cached_property import cached_property  # type: ignore
-
 
 QUERY_PARAMETER_TYPE_VALUES = {
     "DATE": "2019-01-01",
@@ -124,7 +124,14 @@ class DryRun:
         self.project = project
         self.dataset = dataset
         self.table = table
-        self.billing_project = billing_project
+        # if using cloud function and billing project isn't set, randomly select project to use
+        self.billing_project = (
+            billing_project
+            if billing_project or not use_cloud_function
+            else random.choice(
+                ConfigLoader.get("dry_run", "default_projects", fallback=[None])
+            )
+        )
         try:
             self.metadata = Metadata.of_query_file(self.sqlfile)
         except FileNotFoundError:
@@ -260,6 +267,7 @@ class DryRun:
                         query_parameter.to_api_repr()
                         for query_parameter in query_parameters
                     ],
+                    "billing_project": self.billing_project,
                 }
 
                 if self.table:

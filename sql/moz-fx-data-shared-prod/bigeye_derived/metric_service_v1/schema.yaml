@@ -1,0 +1,326 @@
+fields:
+- description: |
+    latest_metric_runs associated with this record.
+  mode: REPEATED
+  name: latest_metric_runs
+  type: STRING
+- description: |
+    is_snoozed associated with this record.
+  mode: NULLABLE
+  name: is_snoozed
+  type: BOOLEAN
+- description: |
+    status associated with this record.
+  mode: NULLABLE
+  name: status
+  type: STRING
+- description: |
+    group_count associated with this record.
+  mode: NULLABLE
+  name: group_count
+  type: INTEGER
+- description: |
+    critical_group_count associated with this record.
+  mode: NULLABLE
+  name: critical_group_count
+  type: INTEGER
+- description: |
+    can_backfill associated with this record.
+  mode: NULLABLE
+  name: can_backfill
+  type: BOOLEAN
+- description: |
+    collections associated with this record.
+  mode: REPEATED
+  name: collections
+  type: STRING
+- description: |
+    no_value_group_count associated with this record.
+  mode: NULLABLE
+  name: no_value_group_count
+  type: INTEGER
+- description: |
+    tags associated with this record.
+  mode: REPEATED
+  name: tags
+  type: INTEGER
+- description: |
+    metric_configuration_id associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_id
+  type: INTEGER
+- description: |
+    metric_configuration_filters associated with this record.
+  mode: REPEATED
+  name: metric_configuration_filters
+  type: STRING
+- description: |
+    metric_configuration_group_bys associated with this record.
+  mode: REPEATED
+  name: metric_configuration_group_bys
+  type: STRING
+- description: |
+    metric_configuration_thresholds associated with this record.
+  mode: REPEATED
+  name: metric_configuration_thresholds
+  type: STRING
+- description: |
+    metric_configuration_notification_channels associated with this record.
+  mode: REPEATED
+  name: metric_configuration_notification_channels
+  type: STRING
+- description: |
+    metric_configuration_warehouse_id associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_warehouse_id
+  type: INTEGER
+- description: |
+    metric_configuration_dataset_id associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_dataset_id
+  type: INTEGER
+- description: |
+    metric_configuration_metric_type_predefined_metric_metric_name associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_type_predefined_metric_metric_name
+  type: STRING
+- description: |
+    metric_configuration_metric_type_is_metadata_metric associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_type_is_metadata_metric
+  type: BOOLEAN
+- description: |
+    metric_configuration_metric_type_is_table_metric associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_type_is_table_metric
+  type: BOOLEAN
+- description: |
+    metric_configuration_parameters associated with this record.
+  mode: REPEATED
+  name: metric_configuration_parameters
+  type: STRING
+- description: |
+    metric_configuration_lookback_interval_type associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_lookback_interval_type
+  type: STRING
+- description: |
+    metric_configuration_lookback_interval_value associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_lookback_interval_value
+  type: FLOAT
+- description: |
+    metric_configuration_lookback_type associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_lookback_type
+  type: STRING
+- description: |
+    metric_configuration_metric_creation_state associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_creation_state
+  type: STRING
+- description: |
+    metric_configuration_grain_seconds associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_grain_seconds
+  type: INTEGER
+- description: |
+    metric_configuration_name associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_name
+  type: STRING
+- description: |
+    metric_configuration_description associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_description
+  type: STRING
+- description: |
+    metric_configuration_is_table_metric associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_is_table_metric
+  type: BOOLEAN
+- description: |
+    metric_configuration_metric_group_overrides associated with this record.
+  mode: REPEATED
+  name: metric_configuration_metric_group_overrides
+  type: INTEGER
+- description: |
+    metric_configuration_metric_schedule_named_schedule_id associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_schedule_named_schedule_id
+  type: FLOAT
+- description: |
+    metric_configuration_metric_schedule_named_schedule_name associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_schedule_named_schedule_name
+  type: STRING
+- description: |
+    metric_configuration_metric_schedule_named_schedule_cron associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_schedule_named_schedule_cron
+  type: STRING
+- description: |
+    metric_configuration_is_lookback_using_current_time associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_is_lookback_using_current_time
+  type: BOOLEAN
+- description: |
+    metric_metadata_statistic_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_statistic_name
+  type: STRING
+- description: |
+    metric_metadata_statistic_full_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_statistic_full_name
+  type: STRING
+- description: |
+    metric_metadata_dataset_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_dataset_name
+  type: STRING
+- description: |
+    metric_metadata_field_id associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_field_id
+  type: FLOAT
+- description: |
+    metric_metadata_field_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_field_name
+  type: STRING
+- description: |
+    metric_metadata_dataset_time_column_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_dataset_time_column_name
+  type: STRING
+- description: |
+    metric_metadata_warehouse_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_warehouse_name
+  type: STRING
+- description: |
+    metric_metadata_schema_id associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_schema_id
+  type: INTEGER
+- description: |
+    metric_metadata_schema_name associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_schema_name
+  type: STRING
+- description: |
+    metric_metadata_warehouse_id associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_warehouse_id
+  type: INTEGER
+- description: |
+    metric_metadata_dataset_id associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_dataset_id
+  type: INTEGER
+- description: |
+    metric_metadata_created_at associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_created_at
+  type: INTEGER
+- description: |
+    metric_metadata_companion_metrics associated with this record.
+  mode: REPEATED
+  name: metric_metadata_companion_metrics
+  type: STRING
+- description: |
+    metric_metadata_is_favorite associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_is_favorite
+  type: BOOLEAN
+- description: |
+    metric_metadata_metric_history_begin_at associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_metric_history_begin_at
+  type: INTEGER
+- description: |
+    metric_metadata_current_metric_status associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_current_metric_status
+  type: STRING
+- description: |
+    metric_metadata_workspace_id associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_workspace_id
+  type: INTEGER
+- description: |
+    metric_metadata_metric_history_end_at associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_metric_history_end_at
+  type: FLOAT
+- description: |
+    metric_metadata_run_at associated with this record.
+  mode: NULLABLE
+  name: metric_metadata_run_at
+  type: FLOAT
+- description: |
+    active_issue_id associated with this record.
+  mode: NULLABLE
+  name: active_issue_id
+  type: FLOAT
+- description: |
+    active_issue_display_name associated with this record.
+  mode: NULLABLE
+  name: active_issue_display_name
+  type: STRING
+- description: |
+    reason_cannot_backfill associated with this record.
+  mode: NULLABLE
+  name: reason_cannot_backfill
+  type: STRING
+- description: |
+    metric_configuration_rct_override associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_rct_override
+  type: STRING
+- description: |
+    metric_configuration_schedule_frequency_interval_type associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_schedule_frequency_interval_type
+  type: STRING
+- description: |
+    metric_configuration_schedule_frequency_interval_value associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_schedule_frequency_interval_value
+  type: FLOAT
+- description: |
+    metric_configuration_metric_type_template_metric_template_id associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_type_template_metric_template_id
+  type: FLOAT
+- description: |
+    metric_configuration_metric_type_template_metric_aggregation_type associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_type_template_metric_aggregation_type
+  type: STRING
+- description: |
+    metric_configuration_metric_type_template_metric_template_name associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_type_template_metric_template_name
+  type: STRING
+- description: |
+    metric_configuration_metric_schedule_schedule_frequency_interval_type associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_schedule_schedule_frequency_interval_type
+  type: STRING
+- description: |
+    metric_configuration_metric_schedule_schedule_frequency_interval_value associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_metric_schedule_schedule_frequency_interval_value
+  type: FLOAT
+- description: |
+    metric_configuration_bigconfig_namespace associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_bigconfig_namespace
+  type: STRING
+- description: |
+    Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
+  mode: NULLABLE
+  name: refreshed_at
+  type: TIMESTAMP

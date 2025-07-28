@@ -75,6 +75,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "snowflake_migration_derived__corpus_items_updated__v1_external",
+    ) as snowflake_migration_derived__corpus_items_updated__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_newtab__wait_for_snowflake_migration_derived__corpus_items_updated__v1",
+            external_dag_id="bqetl_newtab",
+            external_task_id="wait_for_snowflake_migration_derived__corpus_items_updated__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=1800)).isoformat() }}",
+        )
+
+        snowflake_migration_derived__corpus_items_updated__v1_external.set_upstream(
+            snowflake_migration_derived__corpus_items_updated__v1
+        )
+
     snowflake_migration_derived__dismissed_prospects__v1 = bigquery_etl_query(
         task_id="snowflake_migration_derived__dismissed_prospects__v1",
         destination_table="dismissed_prospects_v1",

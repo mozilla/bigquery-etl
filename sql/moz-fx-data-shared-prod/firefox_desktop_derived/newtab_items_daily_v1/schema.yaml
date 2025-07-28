@@ -61,6 +61,14 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The topic of the recommendation. Like "entertainment".
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: The title of the recommendation.
+- name: recommendation_url
+  type: STRING
+  mode: NULLABLE
+  description: The URL of the recommendation at the publisher's domain
 - name: impression_count
   type: INTEGER
   mode: NULLABLE

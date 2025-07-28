@@ -20,3 +20,6 @@ fields:
 - name: total_client_count
   type: INTEGER
   mode: NULLABLE
+- name: handshakes
+  type: INTEGER
+  mode: NULLABLE

@@ -73,6 +73,7 @@ WITH glean_final AS (
     'Reference Browser Baseline' AS app_name,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_reference_browser.baseline_clients_last_seen`
+/*
   UNION ALL
   SELECT
     submission_date,
@@ -109,6 +110,7 @@ WITH glean_final AS (
     'VR Browser Baseline' AS app_name,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_vrbrowser.baseline_clients_last_seen`
+*/
   UNION ALL
   SELECT
     submission_date,

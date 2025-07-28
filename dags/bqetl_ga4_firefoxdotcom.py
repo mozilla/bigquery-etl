@@ -210,37 +210,6 @@ with DAG(
         retries=0,
     )
 
-    checks__warn_firefoxdotcom_derived__ga_sessions__v1 = bigquery_dq_check(
-        task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v1",
-        source_table="ga_sessions_v1",
-        dataset_id="firefoxdotcom_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__warn_firefoxdotcom_derived__www_site_hits__v1 = bigquery_dq_check(
-        task_id="checks__warn_firefoxdotcom_derived__www_site_hits__v1",
-        source_table="www_site_hits_v1",
-        dataset_id="firefoxdotcom_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     firefoxdotcom_derived__firefox_whatsnew_summary__v1 = bigquery_etl_query(
         task_id="firefoxdotcom_derived__firefox_whatsnew_summary__v1",
         destination_table="firefox_whatsnew_summary_v1",
@@ -400,14 +369,6 @@ with DAG(
 
     checks__fail_firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
         firefoxdotcom_derived__gclid_conversions__v1
-    )
-
-    checks__warn_firefoxdotcom_derived__ga_sessions__v1.set_upstream(
-        firefoxdotcom_derived__ga_sessions__v1
-    )
-
-    checks__warn_firefoxdotcom_derived__www_site_hits__v1.set_upstream(
-        firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__firefox_whatsnew_summary__v1.set_upstream(

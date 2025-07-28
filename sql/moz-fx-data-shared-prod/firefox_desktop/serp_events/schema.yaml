@@ -96,6 +96,9 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+- name: partner_code
+  type: STRING
+  mode: NULLABLE
 - name: ad_components
   type: RECORD
   mode: REPEATED

@@ -13,11 +13,8 @@ owners:
 - ascholtz@mozilla.com
 labels:
   schedule: daily
-  dag: bqetl_glean_usage
   owner1: ascholtz
 scheduling:
-  dag_name: bqetl_glean_usage
-  task_group: firefox_reality
   depends_on_past: true
   date_partition_parameter: null
   parameters:

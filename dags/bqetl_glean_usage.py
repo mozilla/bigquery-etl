@@ -3769,33 +3769,9 @@ with DAG(
         task_group=task_group_firefox_echo_show,
     )
 
-    firefox_fire_tv_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
-        task_id="firefox_fire_tv_derived__clients_last_seen_joined__v1",
-        destination_table="clients_last_seen_joined_v1",
-        dataset_id="firefox_fire_tv_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_firefox_fire_tv,
-    )
-
     firefox_fire_tv_derived__metrics_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_fire_tv_derived__metrics_clients_daily__v1",
         destination_table="metrics_clients_daily_v1",
-        dataset_id="firefox_fire_tv_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_fire_tv,
-    )
-
-    firefox_fire_tv_derived__metrics_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="firefox_fire_tv_derived__metrics_clients_last_seen__v1",
-        destination_table="metrics_clients_last_seen_v1",
         dataset_id="firefox_fire_tv_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
@@ -3856,18 +3832,6 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
-    firefox_reality_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
-        task_id="firefox_reality_derived__clients_last_seen_joined__v1",
-        destination_table="clients_last_seen_joined_v1",
-        dataset_id="firefox_reality_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_firefox_reality,
-    )
-
     firefox_reality_derived__metrics_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_reality_derived__metrics_clients_daily__v1",
         destination_table="metrics_clients_daily_v1",
@@ -3880,45 +3844,9 @@ with DAG(
         task_group=task_group_firefox_reality,
     )
 
-    firefox_reality_derived__metrics_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="firefox_reality_derived__metrics_clients_last_seen__v1",
-        destination_table="metrics_clients_last_seen_v1",
-        dataset_id="firefox_reality_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_reality,
-    )
-
-    firefox_reality_pc_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
-        task_id="firefox_reality_pc_derived__clients_last_seen_joined__v1",
-        destination_table="clients_last_seen_joined_v1",
-        dataset_id="firefox_reality_pc_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_firefox_reality_pc,
-    )
-
     firefox_reality_pc_derived__metrics_clients_daily__v1 = bigquery_etl_query(
         task_id="firefox_reality_pc_derived__metrics_clients_daily__v1",
         destination_table="metrics_clients_daily_v1",
-        dataset_id="firefox_reality_pc_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_reality_pc,
-    )
-
-    firefox_reality_pc_derived__metrics_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="firefox_reality_pc_derived__metrics_clients_last_seen__v1",
-        destination_table="metrics_clients_last_seen_v1",
         dataset_id="firefox_reality_pc_derived",
         project_id="moz-fx-data-shared-prod",
         owner="ascholtz@mozilla.com",
@@ -5591,43 +5519,6 @@ with DAG(
         task_group=task_group_mozilla_vpn,
     )
 
-    org_mozilla_firefoxreality_derived__baseline_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefoxreality_derived__baseline_clients_daily__v1",
-        destination_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_reality_pc,
-    )
-
-    org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1",
-        destination_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=True,
-        parameters=["submission_date:DATE:{{ds}}"],
-        task_group=task_group_firefox_reality_pc,
-    )
-
-    org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1",
-        destination_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_firefox_reality_pc,
-    )
-
     org_mozilla_firefoxreality_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_firefoxreality_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -6759,67 +6650,6 @@ with DAG(
         task_group=task_group_org_mozilla_social_nightly,
     )
 
-    org_mozilla_tv_firefox_derived__baseline_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_tv_firefox_derived__baseline_clients_daily__v1",
-        destination_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_tv_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_fire_tv,
-    )
-
-    org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1 = (
-        bigquery_etl_query(
-            task_id="org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1",
-            destination_table="baseline_clients_first_seen_v1",
-            dataset_id="org_mozilla_tv_firefox_derived",
-            project_id="moz-fx-data-shared-prod",
-            owner="ascholtz@mozilla.com",
-            email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-            date_partition_parameter=None,
-            depends_on_past=True,
-            parameters=["submission_date:DATE:{{ds}}"],
-            task_group=task_group_firefox_fire_tv,
-        )
-    )
-
-    org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-        destination_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_tv_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_firefox_fire_tv,
-    )
-
-    with TaskGroup(
-        "org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external",
-        parent_group=task_group_firefox_fire_tv,
-    ) as org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_nondesktop__wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_nondesktop",
-            external_task_id="wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_gud__wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_gud",
-            external_task_id="wait_for_org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1_external.set_upstream(
-            org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
-        )
-
     org_mozilla_tv_firefox_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_tv_firefox_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -6837,65 +6667,6 @@ with DAG(
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_fire_tv,
     )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_vrbrowser_derived__baseline_clients_daily__v1",
-        destination_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_vrbrowser_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_firefox_reality,
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1",
-        destination_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_vrbrowser_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=True,
-        parameters=["submission_date:DATE:{{ds}}"],
-        task_group=task_group_firefox_reality,
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
-        destination_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_vrbrowser_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_firefox_reality,
-    )
-
-    with TaskGroup(
-        "org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1_external",
-        parent_group=task_group_firefox_reality,
-    ) as org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_nondesktop__wait_for_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_nondesktop",
-            external_task_id="wait_for_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_gud__wait_for_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_gud",
-            external_task_id="wait_for_org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
-        )
-
-        org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1_external.set_upstream(
-            org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1
-        )
 
     org_mozilla_vrbrowser_derived__events_stream__v1 = bigquery_etl_query(
         task_id="org_mozilla_vrbrowser_derived__events_stream__v1",
@@ -7840,20 +7611,8 @@ with DAG(
         firefox_echo_show_derived__metrics_clients_daily__v1
     )
 
-    firefox_fire_tv_derived__clients_last_seen_joined__v1.set_upstream(
-        firefox_fire_tv_derived__metrics_clients_last_seen__v1
-    )
-
-    firefox_fire_tv_derived__clients_last_seen_joined__v1.set_upstream(
-        org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1
-    )
-
     firefox_fire_tv_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    firefox_fire_tv_derived__metrics_clients_last_seen__v1.set_upstream(
-        firefox_fire_tv_derived__metrics_clients_daily__v1
     )
 
     firefox_ios_derived__clients_last_seen_joined__v1.set_upstream(
@@ -7880,36 +7639,12 @@ with DAG(
         bigeye__firefox_ios_derived__metrics_clients_daily__v1
     )
 
-    firefox_reality_derived__clients_last_seen_joined__v1.set_upstream(
-        firefox_reality_derived__metrics_clients_last_seen__v1
-    )
-
-    firefox_reality_derived__clients_last_seen_joined__v1.set_upstream(
-        org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1
-    )
-
     firefox_reality_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
-    firefox_reality_derived__metrics_clients_last_seen__v1.set_upstream(
-        firefox_reality_derived__metrics_clients_daily__v1
-    )
-
-    firefox_reality_pc_derived__clients_last_seen_joined__v1.set_upstream(
-        firefox_reality_pc_derived__metrics_clients_last_seen__v1
-    )
-
-    firefox_reality_pc_derived__clients_last_seen_joined__v1.set_upstream(
-        org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1
-    )
-
     firefox_reality_pc_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    firefox_reality_pc_derived__metrics_clients_last_seen__v1.set_upstream(
-        firefox_reality_pc_derived__metrics_clients_daily__v1
     )
 
     firefox_translations_derived__events_stream__v1.set_upstream(
@@ -8480,26 +8215,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_firefoxreality_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_firefoxreality_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1
-    )
-
-    org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_firefoxreality_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    org_mozilla_firefoxreality_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_firefoxreality_derived__baseline_clients_daily__v1
-    )
-
     org_mozilla_firefoxreality_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8864,48 +8579,8 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_tv_firefox_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_tv_firefox_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1
-    )
-
-    org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_tv_firefox_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    org_mozilla_tv_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_tv_firefox_derived__baseline_clients_daily__v1
-    )
-
     org_mozilla_tv_firefox_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    org_mozilla_vrbrowser_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_vrbrowser_derived__baseline_clients_daily__v1
     )
 
     org_mozilla_vrbrowser_derived__events_stream__v1.set_upstream(

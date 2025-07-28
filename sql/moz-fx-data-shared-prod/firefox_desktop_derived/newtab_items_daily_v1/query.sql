@@ -59,13 +59,18 @@ SELECT
   received_rank,
   section,
   section_position,
-  topic,
+  flattened_events.topic,
+  ANY_VALUE(corpus_items.title) AS title,
+  ANY_VALUE(corpus_items.url) AS recommendation_url,
   COUNTIF(event_name = 'impression') AS impression_count,
   COUNTIF(event_name = 'click') AS click_count,
   COUNTIF(event_name = 'save') AS save_count,
   COUNTIF(event_name = 'dismiss') AS dismiss_count
 FROM
   flattened_events
+LEFT OUTER JOIN
+  `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1` AS corpus_items
+  ON flattened_events.corpus_item_id = corpus_items.approved_corpus_item_external_id
 GROUP BY
   submission_date,
   app_version,

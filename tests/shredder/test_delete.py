@@ -95,6 +95,7 @@ COMMON_DELETE_ARGS = {
     "target": DeleteTarget(table="dataset.table_v1", field="client_id"),
     "use_dml": False,
     "temp_dataset": "project.tmp",
+    "reservation_override": None,
 }
 
 
@@ -212,6 +213,7 @@ def test_context_id_brace_normalization(mock_sql_table_id):
             use_sampling=False,
             temp_dataset="project.tmp",
             priority="INTERACTIVE",
+            reservation_override=None,
         )
     )
 

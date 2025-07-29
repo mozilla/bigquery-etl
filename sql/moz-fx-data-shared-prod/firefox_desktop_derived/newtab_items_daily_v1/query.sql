@@ -63,6 +63,7 @@ SELECT
   ANY_VALUE(corpus_items.title) AS title,
   ANY_VALUE(corpus_items.url) AS recommendation_url,
   ANY_VALUE(corpus_items.authors) AS authors,
+  ANY_VALUE(corpus_items.publisher) AS publisher,
   COUNTIF(event_name = 'impression') AS impression_count,
   COUNTIF(event_name = 'click') AS click_count,
   COUNTIF(event_name = 'save') AS save_count,

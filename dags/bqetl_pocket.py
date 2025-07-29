@@ -85,31 +85,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    pocket_derived__rolling_monthly_active_user_counts__v1 = bigquery_etl_query(
-        task_id="pocket_derived__rolling_monthly_active_user_counts__v1",
-        destination_table="rolling_monthly_active_user_counts_v1",
-        dataset_id="pocket_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-    )
-
-    pocket_derived__rolling_monthly_active_user_counts_history__v1 = GKEPodOperator(
-        task_id="pocket_derived__rolling_monthly_active_user_counts_history__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/pocket_derived/rolling_monthly_active_user_counts_history_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-    )
-
     pocket_derived__spoc_tile_ids__v1 = bigquery_etl_query(
         task_id="pocket_derived__spoc_tile_ids__v1",
         destination_table="spoc_tile_ids_v1",
@@ -135,41 +110,8 @@ with DAG(
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
     )
 
-    pocket_derived__twice_weekly_active_user_counts__v1 = bigquery_etl_query(
-        task_id="pocket_derived__twice_weekly_active_user_counts__v1",
-        destination_table="twice_weekly_active_user_counts_v1",
-        dataset_id="pocket_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-    )
-
-    pocket_derived__twice_weekly_active_user_counts_history__v1 = GKEPodOperator(
-        task_id="pocket_derived__twice_weekly_active_user_counts_history__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/pocket_derived/twice_weekly_active_user_counts_history_v1/query.py",
-        ]
-        + ["--date", "{{ ds }}"],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="kik@mozilla.com",
-        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-    )
-
     pocket_derived__pocket_usage__v1.set_upstream(wait_for_copy_deduplicate_all)
-
-    pocket_derived__rolling_monthly_active_user_counts__v1.set_upstream(
-        pocket_derived__rolling_monthly_active_user_counts_history__v1
-    )
 
     pocket_derived__spoc_tile_ids__v1.set_upstream(
         pocket_derived__spoc_tile_ids_history__v1
-    )
-
-    pocket_derived__twice_weekly_active_user_counts__v1.set_upstream(
-        pocket_derived__twice_weekly_active_user_counts_history__v1
     )

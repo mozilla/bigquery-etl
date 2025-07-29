@@ -6,13 +6,7 @@ owners:
 - kik@mozilla.com
 labels:
   table_type: aggregate
-  dag: bqetl_pocket
   owner1: kik
-scheduling:
-  dag_name: bqetl_pocket
-  date_partition_parameter: null
-  parameters:
-  - submission_date:DATE:{{ds}}
 bigquery: null
 workgroup_access: []
 references:

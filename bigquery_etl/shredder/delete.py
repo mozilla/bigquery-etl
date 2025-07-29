@@ -147,6 +147,13 @@ parser.add_argument(
     help="Dataset (project.dataset format) to write intermediate results of sampled queries to. "
     "Must be specified when --sampling-tables is set.",
 )
+parser.add_argument(
+    "--reservation-override",
+    "--reservation_override",
+    metavar="projects/{project}/locations/{location}/reservations/{reservation}",
+    help="Override the reservation assigned to the billing projects, e.g. "
+    "projects/moz-fx-bigquery-reserv-global/locations/US/reservations/shredder-all",
+)
 
 
 @dataclass
@@ -303,10 +310,15 @@ def delete_from_partition(
     sample_id: Optional[int] = None,
     temp_dataset: Optional[str] = None,
     clustering_fields: Optional[Iterable[str]] = None,
+    reservation_override: Optional[str] = None,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
-    job_config = bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
+    job_config = bigquery.QueryJobConfig(
+        dry_run=dry_run,
+        priority=priority,
+        reservation=reservation_override,
+    )
     # whole table operations must use DML to protect against dropping partitions in the
     # case of conflicting write operations in ETL, and special partitions must use DML
     # because they can't be set as a query destination.
@@ -432,6 +444,7 @@ def delete_from_partition_with_sampling(
     use_dml: bool,
     sampling_parallelism: int,
     temp_dataset: str,
+    reservation_override: str,
     **wait_for_job_kwargs,
 ):
     """Return callable to delete from a partition of a target table per sample id."""
@@ -459,6 +472,7 @@ def delete_from_partition_with_sampling(
                 sample_id=s,
                 clustering_fields=intermediate_clustering_fields,
                 check_table_existence=True,
+                reservation_override=reservation_override,
                 **{
                     **wait_for_job_kwargs,
                     # override task id with sample id suffix
@@ -621,6 +635,7 @@ def delete_from_table(
     sampling_parallelism,
     use_sampling,
     temp_dataset,
+    reservation_override,
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
@@ -658,6 +673,7 @@ def delete_from_table(
                 task_id=get_task_id(target, partition.id),
                 end_date=end_date,
                 temp_dataset=temp_dataset,
+                reservation_override=reservation_override,
                 **kwargs,
             ),
         )
@@ -777,6 +793,7 @@ def main():
             sampling_parallelism=args.sampling_parallelism,
             use_sampling=target.table in args.sampling_tables,
             temp_dataset=args.temp_dataset,
+            reservation_override=args.reservation_override,
         )
     ]
 

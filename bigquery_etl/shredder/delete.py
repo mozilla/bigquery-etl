@@ -14,7 +14,7 @@ from typing import Callable, Iterable, Optional, Tuple, Union
 
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
-from google.cloud.bigquery import QueryJob
+from google.cloud.bigquery import CopyJob, QueryJob
 
 from ..format_sql.formatter import reformat
 from ..util import standard_args
@@ -217,7 +217,7 @@ def wait_for_job(
         record_state(
             client=client, task_id=task_id, dry_run=dry_run, job=job, **state_kwargs
         )
-    if not dry_run and not job.ended:
+    if not dry_run and (not job.ended or isinstance(job, CopyJob)):
         logging.info(f"Waiting on {full_job_id(job)} for {task_id}")
         job.result()
 
@@ -314,9 +314,7 @@ def delete_from_partition(
         use_dml = True
     elif sample_id is not None:
         use_dml = False
-        job_config.destination = (
-            f"{temp_dataset}.{target.table_id}_{partition.id}__sample_{sample_id}"
-        )
+        job_config.destination = f"{temp_dataset}.{target.dataset_id}__{target.table_id}_{partition.id}__sample_{sample_id}"
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         job_config.clustering_fields = clustering_fields
     elif not use_dml:
@@ -496,7 +494,7 @@ def delete_from_partition_with_sampling(
             )
             # simulate query job properties for logging
             copy_job.total_bytes_processed = sum(
-                [r.total_bytes_processed for r in results]
+                [r.total_bytes_processed or 0 for r in results]
             )
             return copy_job
         else:

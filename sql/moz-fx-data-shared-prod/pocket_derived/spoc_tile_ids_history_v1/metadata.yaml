@@ -12,8 +12,8 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-scheduling:
-  dag_name: bqetl_pocket
-  arguments: ["--date", "{{ ds }}"]
-  referenced_tables: []
+#scheduling:
+#  dag_name: bqetl_pocket
+#  arguments: ["--date", "{{ ds }}"]
+#  referenced_tables: []
 deprecated: true

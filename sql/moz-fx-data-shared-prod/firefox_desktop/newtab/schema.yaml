@@ -629,6 +629,9 @@ fields:
     - name: newtab_selected_topics
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: text2
     type: RECORD
     mode: NULLABLE

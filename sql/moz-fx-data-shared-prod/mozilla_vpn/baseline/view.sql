@@ -27,6 +27,7 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     CAST(NULL AS STRUCT<`glean_validation_metrics_ping_count` INTEGER>) AS `counter`
   ) AS `metrics`,
   normalized_app_name,
@@ -68,6 +69,7 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.counter.glean_validation_metrics_ping_count) AS `counter`
   ) AS `metrics`,
   normalized_app_name,
@@ -129,6 +131,7 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     CAST(NULL AS STRUCT<`glean_validation_metrics_ping_count` INTEGER>) AS `counter`
   ) AS `metrics`,
   normalized_app_name,
@@ -170,6 +173,7 @@ SELECT
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
     STRUCT(metrics.timespan.glean_baseline_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     CAST(NULL AS STRUCT<`glean_validation_metrics_ping_count` INTEGER>) AS `counter`
   ) AS `metrics`,
   normalized_app_name,

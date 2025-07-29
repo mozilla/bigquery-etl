@@ -1245,6 +1245,9 @@ fields:
     - name: background_update_reasons_to_not_update
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: quantity
     type: RECORD
     mode: NULLABLE

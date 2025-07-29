@@ -64,7 +64,8 @@ SELECT
       metrics.timing_distribution.glean_validation_shutdown_wait,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_database_write_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   app_version_major,
   app_version_minor,

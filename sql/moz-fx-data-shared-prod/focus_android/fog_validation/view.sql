@@ -22,7 +22,8 @@ SELECT
       metrics.string.fog_validation_os_version,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`
+    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -58,7 +59,8 @@ SELECT
       metrics.string.fog_validation_os_version,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`
+    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -94,7 +96,8 @@ SELECT
       metrics.string.fog_validation_os_version,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`
+    STRUCT(metrics.uuid.fog_validation_legacy_telemetry_client_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

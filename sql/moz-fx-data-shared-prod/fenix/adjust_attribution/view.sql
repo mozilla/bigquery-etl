@@ -29,7 +29,8 @@ SELECT
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.adjust_attribution_adjust_attribution_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -72,7 +73,8 @@ SELECT
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.adjust_attribution_adjust_attribution_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -115,7 +117,8 @@ SELECT
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.adjust_attribution_adjust_attribution_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -158,7 +161,8 @@ SELECT
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.adjust_attribution_adjust_attribution_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -201,7 +205,8 @@ SELECT
     ) AS `string`,
     STRUCT(
       metrics.timing_distribution.adjust_attribution_adjust_attribution_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

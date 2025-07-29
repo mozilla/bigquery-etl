@@ -333,6 +333,9 @@ fields:
     - name: newtab_content_followed_sections
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -1715,7 +1715,8 @@ SELECT
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
       metrics.string_list.pkcs11_third_party_module_profile_entries,
-      metrics.string_list.xpi_database_startup_load_reasons
+      metrics.string_list.xpi_database_startup_load_reasons,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -3478,7 +3479,8 @@ SELECT
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
       metrics.string_list.pkcs11_third_party_module_profile_entries,
-      metrics.string_list.xpi_database_startup_load_reasons
+      metrics.string_list.xpi_database_startup_load_reasons,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -5241,7 +5243,8 @@ SELECT
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
       metrics.string_list.pkcs11_third_party_module_profile_entries,
-      metrics.string_list.xpi_database_startup_load_reasons
+      metrics.string_list.xpi_database_startup_load_reasons,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,

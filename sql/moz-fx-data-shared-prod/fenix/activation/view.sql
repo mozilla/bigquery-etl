@@ -24,7 +24,8 @@ SELECT
       metrics.string.activation_identifier,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`
+    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -62,7 +63,8 @@ SELECT
       metrics.string.activation_identifier,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`
+    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -120,7 +122,8 @@ SELECT
       metrics.string.activation_identifier,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`
+    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -187,7 +190,8 @@ SELECT
       metrics.string.activation_identifier,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`
+    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -234,7 +238,8 @@ SELECT
       metrics.string.activation_identifier,
       metrics.string.glean_client_annotation_experimentation_id
     ) AS `string`,
-    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`
+    STRUCT(metrics.uuid.activation_activation_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

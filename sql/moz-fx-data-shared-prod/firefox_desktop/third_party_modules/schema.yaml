@@ -519,6 +519,9 @@ fields:
     - name: windows_security_firewall
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: uuid
     type: RECORD
     mode: NULLABLE

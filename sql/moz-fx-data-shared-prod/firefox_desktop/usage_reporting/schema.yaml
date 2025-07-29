@@ -386,6 +386,13 @@ fields:
       description: 'The age of the current users home folder in days.
 
         '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

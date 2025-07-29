@@ -42,7 +42,8 @@ SELECT
       metrics.timing_distribution.windows_single_window_opened_time,
       metrics.timing_distribution.windows_triple_pri_window_opened_time,
       metrics.timing_distribution.windows_triple_window_opened_time
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

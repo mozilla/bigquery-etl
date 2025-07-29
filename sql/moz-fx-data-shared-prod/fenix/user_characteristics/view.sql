@@ -283,7 +283,10 @@ SELECT
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
       metrics.string.characteristics_pixel_ratio
     ) AS `string`,
-    STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
+    STRUCT(
+      metrics.string_list.characteristics_gamepads,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(
       metrics.text2.characteristics_audio_devices,
       metrics.text2.characteristics_canvasdata1,
@@ -643,7 +646,10 @@ SELECT
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
       metrics.string.characteristics_pixel_ratio
     ) AS `string`,
-    STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
+    STRUCT(
+      metrics.string_list.characteristics_gamepads,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(
       metrics.text2.characteristics_audio_devices,
       metrics.text2.characteristics_canvasdata1,
@@ -1003,7 +1009,10 @@ SELECT
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
       metrics.string.characteristics_pixel_ratio
     ) AS `string`,
-    STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
+    STRUCT(
+      metrics.string_list.characteristics_gamepads,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(
       metrics.text2.characteristics_audio_devices,
       metrics.text2.characteristics_canvasdata1,
@@ -1363,7 +1372,10 @@ SELECT
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
       metrics.string.characteristics_pixel_ratio
     ) AS `string`,
-    STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
+    STRUCT(
+      metrics.string_list.characteristics_gamepads,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(
       metrics.text2.characteristics_audio_devices,
       metrics.text2.characteristics_canvasdata1,
@@ -1723,7 +1735,10 @@ SELECT
       metrics.string.characteristics_fonts_variant_b_nonallowlisted,
       metrics.string.characteristics_pixel_ratio
     ) AS `string`,
-    STRUCT(metrics.string_list.characteristics_gamepads) AS `string_list`,
+    STRUCT(
+      metrics.string_list.characteristics_gamepads,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(
       metrics.text2.characteristics_audio_devices,
       metrics.text2.characteristics_canvasdata1,

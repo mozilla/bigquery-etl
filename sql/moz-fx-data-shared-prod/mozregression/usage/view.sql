@@ -35,7 +35,8 @@ SELECT
       metrics.datetime.raw_usage_good_date,
       metrics.datetime.usage_launch_date,
       metrics.datetime.raw_usage_launch_date
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

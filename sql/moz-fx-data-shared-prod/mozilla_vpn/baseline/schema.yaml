@@ -308,6 +308,13 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: counter
     type: RECORD
     mode: NULLABLE

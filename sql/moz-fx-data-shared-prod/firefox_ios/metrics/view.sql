@@ -248,7 +248,10 @@ SELECT
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
-    STRUCT(metrics.string_list.logins_store_migration_errors) AS `string_list`,
+    STRUCT(
+      metrics.string_list.logins_store_migration_errors,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(metrics.timespan.logins_store_migration_total_duration) AS `timespan`,
     STRUCT(
       metrics.timing_distribution.logins_store_read_query_time,
@@ -546,7 +549,10 @@ SELECT
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
-    STRUCT(metrics.string_list.logins_store_migration_errors) AS `string_list`,
+    STRUCT(
+      metrics.string_list.logins_store_migration_errors,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(metrics.timespan.logins_store_migration_total_duration) AS `timespan`,
     STRUCT(
       metrics.timing_distribution.logins_store_read_query_time,
@@ -844,7 +850,10 @@ SELECT
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
-    STRUCT(metrics.string_list.logins_store_migration_errors) AS `string_list`,
+    STRUCT(
+      metrics.string_list.logins_store_migration_errors,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(metrics.timespan.logins_store_migration_total_duration) AS `timespan`,
     STRUCT(
       metrics.timing_distribution.logins_store_read_query_time,

@@ -44,7 +44,8 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -102,7 +103,8 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -180,7 +182,8 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -267,7 +270,8 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -334,7 +338,8 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`
+    STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

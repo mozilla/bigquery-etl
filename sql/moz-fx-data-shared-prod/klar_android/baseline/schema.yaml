@@ -543,6 +543,13 @@ fields:
         **No longer reported set since Focus 124, where legacy telemetry was removed**.
 
         '
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

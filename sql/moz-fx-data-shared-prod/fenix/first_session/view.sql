@@ -49,6 +49,7 @@ SELECT
       metrics.text2.meta_attribution_data,
       metrics.text2.play_store_attribution_install_referrer_response
     ) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.text.meta_attribution_data,
       metrics.text.play_store_attribution_install_referrer_response
@@ -115,6 +116,7 @@ SELECT
       metrics.text2.meta_attribution_data,
       metrics.text2.play_store_attribution_install_referrer_response
     ) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.text.meta_attribution_data,
       metrics.text.play_store_attribution_install_referrer_response
@@ -181,6 +183,7 @@ SELECT
       metrics.text2.meta_attribution_data,
       metrics.text2.play_store_attribution_install_referrer_response
     ) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.text.meta_attribution_data,
       metrics.text.play_store_attribution_install_referrer_response
@@ -247,6 +250,7 @@ SELECT
       metrics.text2.meta_attribution_data,
       metrics.text2.play_store_attribution_install_referrer_response
     ) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.text.meta_attribution_data,
       metrics.text.play_store_attribution_install_referrer_response
@@ -313,6 +317,7 @@ SELECT
       metrics.text2.meta_attribution_data,
       metrics.text2.play_store_attribution_install_referrer_response
     ) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.text.meta_attribution_data,
       metrics.text.play_store_attribution_install_referrer_response

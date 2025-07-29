@@ -155,7 +155,8 @@ SELECT
         UNNEST(metrics.labeled_rate) AS `labeled_rate`
     ) AS `labeled_rate`,
     ARRAY(SELECT STRUCT(url.key, url.value) FROM UNNEST(metrics.url) AS `url`) AS `url`,
-    ARRAY(SELECT STRUCT(text.key, text.value) FROM UNNEST(metrics.text) AS `text`) AS `text`
+    ARRAY(SELECT STRUCT(text.key, text.value) FROM UNNEST(metrics.text) AS `text`) AS `text`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -295,7 +296,8 @@ SELECT
         >
     ) AS `labeled_rate`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
-    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -426,7 +428,8 @@ SELECT
         >
     ) AS `labeled_rate`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
-    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -557,7 +560,8 @@ SELECT
         >
     ) AS `labeled_rate`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
-    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -688,7 +692,8 @@ SELECT
         >
     ) AS `labeled_rate`,
     CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `url`,
-    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`
+    CAST(NULL AS ARRAY<STRUCT<`key` STRING, `value` STRING>>) AS `text`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

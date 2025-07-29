@@ -88,7 +88,8 @@ SELECT
     STRUCT(
       metrics.string.captcha_detection_network_cookie_cookiebehavior,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -190,7 +191,8 @@ SELECT
     STRUCT(
       metrics.string.captcha_detection_network_cookie_cookiebehavior,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -292,7 +294,8 @@ SELECT
     STRUCT(
       metrics.string.captcha_detection_network_cookie_cookiebehavior,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -394,7 +397,8 @@ SELECT
     STRUCT(
       metrics.string.captcha_detection_network_cookie_cookiebehavior,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -496,7 +500,8 @@ SELECT
     STRUCT(
       metrics.string.captcha_detection_network_cookie_cookiebehavior,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

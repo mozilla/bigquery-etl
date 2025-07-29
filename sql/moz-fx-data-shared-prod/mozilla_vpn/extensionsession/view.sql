@@ -28,7 +28,8 @@ SELECT
     STRUCT(
       metrics.quantity.extension_count_excluded,
       metrics.quantity.extension_count_geoprefed
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -70,7 +71,8 @@ SELECT
     STRUCT(
       metrics.quantity.extension_count_excluded,
       metrics.quantity.extension_count_geoprefed
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -112,7 +114,8 @@ SELECT
     STRUCT(
       metrics.quantity.extension_count_excluded,
       metrics.quantity.extension_count_geoprefed
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -154,7 +157,8 @@ SELECT
     STRUCT(
       metrics.quantity.extension_count_excluded,
       metrics.quantity.extension_count_geoprefed
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -307,6 +307,13 @@ fields:
     - name: top_sites_context_id
       type: STRING
       mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: url
     type: RECORD
     mode: NULLABLE

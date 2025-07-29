@@ -55,7 +55,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -124,7 +125,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -193,7 +195,8 @@ SELECT
       metrics.timing_distribution.glean_upload_send_success,
       metrics.timing_distribution.glean_validation_shutdown_dispatcher_wait,
       metrics.timing_distribution.glean_validation_shutdown_wait
-    ) AS `timing_distribution`
+    ) AS `timing_distribution`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

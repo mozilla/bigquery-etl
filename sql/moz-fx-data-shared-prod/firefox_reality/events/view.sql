@@ -20,7 +20,8 @@ SELECT
     STRUCT(
       metrics.string.distribution_channel_name,
       metrics.string.glean_client_annotation_experimentation_id
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -19,6 +19,7 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.url2.cookie_banner_report_site_domain) AS `url2`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.url.cookie_banner_report_site_domain) AS `url`
   ) AS `metrics`,
   normalized_app_name,

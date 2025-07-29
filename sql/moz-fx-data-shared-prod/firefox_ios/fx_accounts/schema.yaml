@@ -274,6 +274,13 @@ fields:
     - name: user_client_association_uid
       type: STRING
       mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

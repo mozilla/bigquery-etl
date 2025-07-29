@@ -66,7 +66,10 @@ SELECT
       metrics.quantity.memory_total_physical,
       metrics.quantity.memory_total_virtual
     ) AS `quantity`,
-    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
+    STRUCT(
+      metrics.string_list.environment_experimental_features,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -146,7 +149,10 @@ SELECT
       metrics.quantity.memory_total_physical,
       metrics.quantity.memory_total_virtual
     ) AS `quantity`,
-    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
+    STRUCT(
+      metrics.string_list.environment_experimental_features,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -226,7 +232,10 @@ SELECT
       metrics.quantity.memory_total_physical,
       metrics.quantity.memory_total_virtual
     ) AS `quantity`,
-    STRUCT(metrics.string_list.environment_experimental_features) AS `string_list`
+    STRUCT(
+      metrics.string_list.environment_experimental_features,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

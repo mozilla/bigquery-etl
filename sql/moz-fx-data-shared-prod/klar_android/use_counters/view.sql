@@ -2632,7 +2632,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value,
       metrics.labeled_counter.use_counter_error_unknown_counter
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

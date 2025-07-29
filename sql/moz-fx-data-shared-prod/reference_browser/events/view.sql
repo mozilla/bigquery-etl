@@ -24,7 +24,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_overflow
     ) AS `labeled_counter`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   app_version_major,
   app_version_minor,

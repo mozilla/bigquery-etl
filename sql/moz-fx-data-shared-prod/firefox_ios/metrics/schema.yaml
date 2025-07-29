@@ -1282,6 +1282,9 @@ fields:
     - name: logins_store_migration_errors
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: timespan
     type: RECORD
     mode: NULLABLE

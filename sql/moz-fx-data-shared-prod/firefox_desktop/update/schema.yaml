@@ -861,6 +861,9 @@ fields:
     - name: system_cpu_extensions
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

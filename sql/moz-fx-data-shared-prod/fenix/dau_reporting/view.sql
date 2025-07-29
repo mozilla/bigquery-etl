@@ -29,7 +29,8 @@ SELECT
       metrics.string.metrics_distribution_id,
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -72,7 +73,8 @@ SELECT
       metrics.string.metrics_distribution_id,
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -115,7 +117,8 @@ SELECT
       metrics.string.metrics_distribution_id,
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -158,7 +161,8 @@ SELECT
       metrics.string.metrics_distribution_id,
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -201,7 +205,8 @@ SELECT
       metrics.string.metrics_distribution_id,
       metrics.string.search_default_engine_code,
       metrics.string.search_default_engine_name
-    ) AS `string`
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

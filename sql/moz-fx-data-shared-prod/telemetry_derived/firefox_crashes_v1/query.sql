@@ -316,7 +316,8 @@ SELECT
       CAST(NULL AS ARRAY<STRING>) AS `dll_blocklist_list`,
       metrics.string_list.environment_experimental_features,
       CAST(NULL AS ARRAY<STRING>) AS `crash_utility_actors_name`,
-      CAST(NULL AS ARRAY<STRING>) AS `environment_nimbus_enrollments`
+      CAST(NULL AS ARRAY<STRING>) AS `environment_nimbus_enrollments`,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -402,7 +403,8 @@ SELECT
       CAST(NULL AS ARRAY<STRING>) AS `dll_blocklist_list`,
       metrics.string_list.environment_experimental_features,
       CAST(NULL AS ARRAY<STRING>) AS `crash_utility_actors_name`,
-      CAST(NULL AS ARRAY<STRING>) AS `environment_nimbus_enrollments`
+      CAST(NULL AS ARRAY<STRING>) AS `environment_nimbus_enrollments`,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
@@ -488,7 +490,8 @@ SELECT
       CAST(NULL AS ARRAY<STRING>) AS `dll_blocklist_list`,
       metrics.string_list.environment_experimental_features,
       CAST(NULL AS ARRAY<STRING>) AS `crash_utility_actors_name`,
-      CAST(NULL AS ARRAY<STRING>) AS `environment_nimbus_enrollments`
+      CAST(NULL AS ARRAY<STRING>) AS `environment_nimbus_enrollments`,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,

@@ -410,6 +410,13 @@ fields:
     - name: raw_pocket_newtab_creation_timestamp
       type: STRING
       mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: text
     type: RECORD
     mode: NULLABLE

@@ -52,7 +52,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -118,7 +119,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -184,7 +186,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -250,7 +253,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -316,7 +320,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr
-    ) AS `quantity`
+    ) AS `quantity`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -44,7 +44,8 @@ SELECT
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
     ) AS `custom_distribution`,
-    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -102,7 +103,8 @@ SELECT
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
     ) AS `custom_distribution`,
-    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -160,7 +162,8 @@ SELECT
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
     ) AS `custom_distribution`,
-    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -218,7 +221,8 @@ SELECT
       metrics.custom_distribution.connection_health_data_transferred_rx,
       metrics.custom_distribution.connection_health_data_transferred_tx
     ) AS `custom_distribution`,
-    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`
+    STRUCT(metrics.boolean.session_server_in_same_country) AS `boolean`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

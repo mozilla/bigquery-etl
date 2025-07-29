@@ -53,7 +53,8 @@ SELECT
       metrics.string_list.broken_site_report_browser_info_security_antispyware,
       metrics.string_list.broken_site_report_browser_info_security_antivirus,
       metrics.string_list.broken_site_report_browser_info_security_firewall,
-      metrics.string_list.broken_site_report_tab_info_languages
+      metrics.string_list.broken_site_report_tab_info_languages,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.text2.broken_site_report_browser_info_app_default_useragent_string,
@@ -141,7 +142,8 @@ SELECT
       metrics.string_list.broken_site_report_browser_info_security_antispyware,
       metrics.string_list.broken_site_report_browser_info_security_antivirus,
       metrics.string_list.broken_site_report_browser_info_security_firewall,
-      metrics.string_list.broken_site_report_tab_info_languages
+      metrics.string_list.broken_site_report_tab_info_languages,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.text2.broken_site_report_browser_info_app_default_useragent_string,
@@ -229,7 +231,8 @@ SELECT
       metrics.string_list.broken_site_report_browser_info_security_antispyware,
       metrics.string_list.broken_site_report_browser_info_security_antivirus,
       metrics.string_list.broken_site_report_browser_info_security_firewall,
-      metrics.string_list.broken_site_report_tab_info_languages
+      metrics.string_list.broken_site_report_tab_info_languages,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.text2.broken_site_report_browser_info_app_default_useragent_string,

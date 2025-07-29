@@ -32,7 +32,8 @@ SELECT
     STRUCT(
       metrics.datetime.installation_timestamp,
       metrics.datetime.raw_installation_timestamp
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -78,7 +79,8 @@ SELECT
     STRUCT(
       metrics.datetime.installation_timestamp,
       metrics.datetime.raw_installation_timestamp
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -124,7 +126,8 @@ SELECT
     STRUCT(
       metrics.datetime.installation_timestamp,
       metrics.datetime.raw_installation_timestamp
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -170,7 +173,8 @@ SELECT
     STRUCT(
       metrics.datetime.installation_timestamp,
       metrics.datetime.raw_installation_timestamp
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -216,7 +220,8 @@ SELECT
     STRUCT(
       metrics.datetime.installation_timestamp,
       metrics.datetime.raw_installation_timestamp
-    ) AS `datetime`
+    ) AS `datetime`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

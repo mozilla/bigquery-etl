@@ -1222,7 +1222,8 @@ SELECT
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
       metrics.string_list.pkcs11_third_party_module_profile_entries,
-      metrics.string_list.xpi_database_startup_load_reasons
+      metrics.string_list.xpi_database_startup_load_reasons,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.timing_distribution.geckoview_page_load_progress_time,
@@ -3209,7 +3210,8 @@ SELECT
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
       metrics.string_list.pkcs11_third_party_module_profile_entries,
-      metrics.string_list.xpi_database_startup_load_reasons
+      metrics.string_list.xpi_database_startup_load_reasons,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.timing_distribution.geckoview_page_load_progress_time,
@@ -5216,7 +5218,8 @@ SELECT
       metrics.string_list.intl_system_locales,
       metrics.string_list.system_cpu_extensions,
       metrics.string_list.pkcs11_third_party_module_profile_entries,
-      metrics.string_list.xpi_database_startup_load_reasons
+      metrics.string_list.xpi_database_startup_load_reasons,
+      metrics.string_list.glean_ping_uploader_capabilities
     ) AS `string_list`,
     STRUCT(
       metrics.timing_distribution.geckoview_page_load_progress_time,

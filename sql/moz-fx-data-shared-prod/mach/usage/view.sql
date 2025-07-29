@@ -46,7 +46,10 @@ SELECT
       metrics.string.mozbuild_project,
       metrics.string.mozbuild_target
     ) AS `string`,
-    STRUCT(metrics.string_list.mach_argv) AS `string_list`,
+    STRUCT(
+      metrics.string_list.mach_argv,
+      metrics.string_list.glean_ping_uploader_capabilities
+    ) AS `string_list`,
     STRUCT(
       metrics.timespan.mach_duration,
       metrics.timespan.mozbuild_tier_artifact_duration,

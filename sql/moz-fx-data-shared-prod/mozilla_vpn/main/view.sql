@@ -24,7 +24,8 @@ SELECT
       metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -99,7 +100,8 @@ SELECT
       metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -174,7 +176,8 @@ SELECT
       metrics.boolean.settings_using_dark_mode
     ) AS `boolean`,
     STRUCT(metrics.timing_distribution.performance_time_to_main_screen) AS `timing_distribution`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -285,7 +288,8 @@ SELECT
           >
         >
     ) AS `timing_distribution`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`
+    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -31,7 +31,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -72,7 +73,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -113,7 +115,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -154,7 +157,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -195,7 +199,8 @@ SELECT
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
     STRUCT(metrics.boolean.metrics_default_browser) AS `boolean`,
     STRUCT(metrics.datetime.usage_first_run_date) AS `datetime`,
-    STRUCT(metrics.timespan.usage_duration) AS `timespan`
+    STRUCT(metrics.timespan.usage_duration) AS `timespan`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

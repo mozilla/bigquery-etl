@@ -30,6 +30,7 @@ SELECT
       metrics.string.play_store_attribution_term
     ) AS `string`,
     STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -74,6 +75,7 @@ SELECT
       metrics.string.play_store_attribution_term
     ) AS `string`,
     STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -118,6 +120,7 @@ SELECT
       metrics.string.play_store_attribution_term
     ) AS `string`,
     STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -162,6 +165,7 @@ SELECT
       metrics.string.play_store_attribution_term
     ) AS `string`,
     STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -206,6 +210,7 @@ SELECT
       metrics.string.play_store_attribution_term
     ) AS `string`,
     STRUCT(metrics.text2.play_store_attribution_install_referrer_response) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.play_store_attribution_install_referrer_response) AS `text`
   ) AS `metrics`,
   normalized_app_name,

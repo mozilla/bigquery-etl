@@ -32,7 +32,8 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
-    STRUCT(metrics.counter.browser_total_uri_count) AS `counter`
+    STRUCT(metrics.counter.browser_total_uri_count) AS `counter`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

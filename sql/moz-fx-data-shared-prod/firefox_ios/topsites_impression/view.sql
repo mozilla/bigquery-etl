@@ -31,6 +31,7 @@ SELECT
       metrics.url2.top_sites_contile_reporting_url
     ) AS `url2`,
     STRUCT(metrics.uuid.top_site_context_id, metrics.uuid.top_sites_context_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.url.top_site_contile_reporting_url,
       metrics.url.top_sites_contile_reporting_url
@@ -79,6 +80,7 @@ SELECT
       metrics.url2.top_sites_contile_reporting_url
     ) AS `url2`,
     STRUCT(metrics.uuid.top_site_context_id, metrics.uuid.top_sites_context_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.url.top_site_contile_reporting_url,
       metrics.url.top_sites_contile_reporting_url
@@ -127,6 +129,7 @@ SELECT
       metrics.url2.top_sites_contile_reporting_url
     ) AS `url2`,
     STRUCT(metrics.uuid.top_site_context_id, metrics.uuid.top_sites_context_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(
       metrics.url.top_site_contile_reporting_url,
       metrics.url.top_sites_contile_reporting_url

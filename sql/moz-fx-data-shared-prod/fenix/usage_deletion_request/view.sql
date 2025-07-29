@@ -19,7 +19,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -48,7 +49,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -77,7 +79,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -106,7 +109,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -135,7 +139,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`
+    STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

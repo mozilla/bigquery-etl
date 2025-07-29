@@ -22,6 +22,7 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.text2.metrics_font_list_json) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.metrics_font_list_json) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -58,6 +59,7 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.text2.metrics_font_list_json) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.metrics_font_list_json) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -94,6 +96,7 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.text2.metrics_font_list_json) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.metrics_font_list_json) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -130,6 +133,7 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.text2.metrics_font_list_json) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.metrics_font_list_json) AS `text`
   ) AS `metrics`,
   normalized_app_name,
@@ -166,6 +170,7 @@ SELECT
     ) AS `labeled_counter`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.text2.metrics_font_list_json) AS `text2`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
     STRUCT(metrics.text.metrics_font_list_json) AS `text`
   ) AS `metrics`,
   normalized_app_name,

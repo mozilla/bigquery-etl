@@ -40851,6 +40851,9 @@ fields:
     - name: xpi_database_startup_load_reasons
       type: STRING
       mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
   - name: object
     type: RECORD
     mode: NULLABLE

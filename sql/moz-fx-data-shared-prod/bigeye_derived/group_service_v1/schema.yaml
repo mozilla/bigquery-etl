@@ -34,11 +34,19 @@ fields:
   mode: NULLABLE
   name: user_email
   type: STRING
-- description: |
-    user_groups associated with this record.
+- description: user_groups associated with this record.
+  fields:
+  - description: Display Name
+    mode: NULLABLE
+    name: displayName
+    type: STRING
+  - description: ID
+    mode: NULLABLE
+    name: id
+    type: INTEGER
   mode: REPEATED
   name: user_groups
-  type: STRING
+  type: RECORD
 - description: |
     user_picture_url associated with this record.
   mode: NULLABLE
@@ -74,10 +82,22 @@ fields:
   mode: NULLABLE
   name: role_role_type
   type: STRING
-- description: |
-    role_role_permissions associated with this record.
+- description: role_role_permissions associated with this record.
+  fields:
+  - description: The date associated with the ad_click value
+    mode: NULLABLE
+    name: actions
+    type: STRING
+  - description: The total number of ad_clicks for the submission_date
+    mode: NULLABLE
+    name: domains
+    type: STRING
   mode: REPEATED
   name: role_role_permissions
+  type: RECORD
+- description: Role Description
+  mode: NULLABLE
+  name: role_description
   type: STRING
 - description: |
     group_display_name associated with this record.
@@ -99,8 +119,3 @@ fields:
   mode: NULLABLE
   name: refreshed_at
   type: TIMESTAMP
-- description: |
-    role_description associated with this record.
-  mode: NULLABLE
-  name: role_description
-  type: STRING

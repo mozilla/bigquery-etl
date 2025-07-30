@@ -371,6 +371,11 @@ fields:
   name: metric_configuration_metric_schedule_schedule_frequency_interval_value
   type: FLOAT
 - description: |
+    metric_configuration_rct_override associated with this record.
+  mode: NULLABLE
+  name: metric_configuration_rct_override
+  type: STRING
+- description: |
     metric_configuration_is_lookback_using_current_time associated with this record.
   mode: NULLABLE
   name: metric_configuration_is_lookback_using_current_time
@@ -510,11 +515,6 @@ fields:
     metric_configuration_metric_schedule_named_schedule_cron associated with this record.
   mode: NULLABLE
   name: metric_configuration_metric_schedule_named_schedule_cron
-  type: STRING
-- description: |
-    metric_configuration_rct_override associated with this record.
-  mode: NULLABLE
-  name: metric_configuration_rct_override
   type: STRING
 - description: |
     metric_configuration_metric_type_template_metric_template_id associated with this record.

@@ -84,12 +84,12 @@ fields:
   type: STRING
 - description: role_role_permissions associated with this record.
   fields:
-  - description: The date associated with the ad_click value
-    mode: NULLABLE
+  - description: Actions
+    mode: REPEATED
     name: actions
     type: STRING
-  - description: The total number of ad_clicks for the submission_date
-    mode: NULLABLE
+  - description: Domains
+    mode: REPEATED
     name: domains
     type: STRING
   mode: REPEATED

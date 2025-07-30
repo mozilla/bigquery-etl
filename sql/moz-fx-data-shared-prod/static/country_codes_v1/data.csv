@@ -58,7 +58,7 @@ Croatia,HR,HRV,Europe,Southern Europe,FALSE,TRUE,FALSE,null,null
 Cuba,CU,CUB,North America,Caribbean,FALSE,FALSE,FALSE,null,null
 Curaçao,CW,CUW,North America,Caribbean,FALSE,FALSE,FALSE,null,null
 Cyprus,CY,CYP,Asia,Western Asia,FALSE,TRUE,FALSE,null,null
-Czech Republic,CZ,CZE,Europe,Eastern Europe,FALSE,TRUE,TRUE,null,2025-03-03
+Czech Republic,CZ,CZE,Europe,Eastern Europe,FALSE,TRUE,TRUE,tier 3,2025-03-03
 Denmark,DK,DNK,Europe,Northern Europe,FALSE,TRUE,FALSE,null,null
 Djibouti,DJ,DJI,Africa,Eastern Africa,FALSE,FALSE,FALSE,null,null
 Dominica,DM,DMA,North America,Caribbean,FALSE,FALSE,FALSE,null,null
@@ -99,11 +99,12 @@ Heard Island and McDonald Islands,HM,HMD,Oceania,Australia and New Zealand,FALSE
 Holy See (Vatican City State),VA,VAT,Europe,Southern Europe,FALSE,FALSE,FALSE,null,null
 Honduras,HN,HND,North America,Central America,FALSE,FALSE,FALSE,null,null
 Hong Kong,HK,HKG,Asia,Eastern Asia,FALSE,FALSE,FALSE,null,null
-Hungary,HU,HUN,Europe,Eastern Europe,FALSE,TRUE,TRUE,null,null
+Hungary,HU,HUN,Europe,Eastern Europe,FALSE,TRUE,TRUE,tier 3,2025-06-19
 Iceland,IS,ISL,Europe,Northern Europe,FALSE,FALSE,FALSE,null,null
 India,IN,IND,Asia,Southern Asia,TRUE,TRUE,TRUE,tier 3,2023-10-05
 Indonesia,ID,IDN,Asia,South-eastern Asia,FALSE,TRUE,FALSE,null,null
 "Iran, Islamic Republic of",IR,IRN,Asia,Southern Asia,FALSE,FALSE,FALSE,null,null
+Iraq,IQ,IRQ,Asia,Western Asia,FALSE,FALSE,FALSE,null,null
 Iraq,IQ,IRQ,Asia,Western Asia,FALSE,FALSE,FALSE,null,null
 Ireland,IE,IRL,Europe,Northern Europe,TRUE,TRUE,FALSE,null,null
 Isle of Man,IM,IMN,Europe,Northern Europe,FALSE,FALSE,FALSE,null,null
@@ -200,14 +201,14 @@ Seychelles,SC,SYC,Africa,Eastern Africa,FALSE,FALSE,FALSE,null,null
 Sierra Leone,SL,SLE,Africa,Western Africa,FALSE,FALSE,FALSE,null,null
 Singapore,SG,SGP,Asia,South-eastern Asia,FALSE,TRUE,TRUE,tier 3,2025-02-19
 Sint Maarten (Dutch part),SX,SXM,North America,Caribbean,FALSE,FALSE,FALSE,null,null
-Slovakia,SK,SVK,Europe,Eastern Europe,FALSE,TRUE,TRUE,null,null
+Slovakia,SK,SVK,Europe,Eastern Europe,FALSE,TRUE,TRUE,tier 3,2025-04-06
 Slovenia,SI,SVN,Europe,Southern Europe,FALSE,TRUE,FALSE,null,null
 Solomon Islands,SB,SLB,Oceania,Melanesia,FALSE,FALSE,FALSE,null,null
 Somalia,SO,SOM,Africa,Eastern Africa,FALSE,FALSE,FALSE,null,null
 South Africa,ZA,ZAF,Africa,Southern Africa,FALSE,TRUE,FALSE,null,null
 South Georgia and the South Sandwich Islands,GS,SGS,South America,South America,FALSE,FALSE,FALSE,null,null
 South Sudan,SS,SSD,Africa,Eastern Africa,FALSE,FALSE,FALSE,null,null
-Spain,ES,ESP,Europe,Southern Europe,TRUE,TRUE,TRUE,tier 2,null
+Spain,ES,ESP,Europe,Southern Europe,TRUE,TRUE,TRUE,tier 2,2023-03-01
 Sri Lanka,LK,LKA,Asia,Southern Asia,FALSE,FALSE,FALSE,null,null
 Sudan,SD,SDN,Africa,Northern Africa,FALSE,FALSE,FALSE,null,null
 Suriname,SR,SUR,South America,South America,FALSE,FALSE,FALSE,null,null
@@ -233,7 +234,7 @@ Tuvalu,TV,TUV,Oceania,Polynesia,FALSE,FALSE,FALSE,null,null
 Uganda,UG,UGA,Africa,Eastern Africa,FALSE,TRUE,FALSE,null,null
 Ukraine,UA,UKR,Europe,Eastern Europe,FALSE,TRUE,FALSE,null,null
 United Arab Emirates,AE,ARE,Asia,Western Asia,FALSE,FALSE,FALSE,null,null
-United Kingdom,GB,GBR,Europe,Northern Europe,TRUE,TRUE,TRUE,tier 2,null
+United Kingdom,GB,GBR,Europe,Northern Europe,TRUE,TRUE,TRUE,tier 2,2023-03-01
 United States,US,USA,North America,Northern America,TRUE,TRUE,TRUE,tier 1,2023-10-05
 United States Minor Outlying Islands,UM,UMI,Oceania,Micronesia,FALSE,FALSE,FALSE,null,2023-10-05
 Uruguay,UY,URY,South America,South America,FALSE,FALSE,FALSE,null,null

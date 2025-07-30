@@ -3,7 +3,7 @@ fields:
     latest_metric_runs associated with this record.
   mode: REPEATED
   name: latest_metric_runs
-  type: STRING
+  type: RECORD
 - description: |
     is_snoozed associated with this record.
   mode: NULLABLE
@@ -33,7 +33,7 @@ fields:
     collections associated with this record.
   mode: REPEATED
   name: collections
-  type: STRING
+  type: RECORD
 - description: |
     no_value_group_count associated with this record.
   mode: NULLABLE
@@ -63,12 +63,12 @@ fields:
     metric_configuration_thresholds associated with this record.
   mode: REPEATED
   name: metric_configuration_thresholds
-  type: STRING
+  type: RECORD
 - description: |
     metric_configuration_notification_channels associated with this record.
   mode: REPEATED
   name: metric_configuration_notification_channels
-  type: STRING
+  type: RECORD
 - description: |
     metric_configuration_warehouse_id associated with this record.
   mode: NULLABLE
@@ -98,7 +98,7 @@ fields:
     metric_configuration_parameters associated with this record.
   mode: REPEATED
   name: metric_configuration_parameters
-  type: STRING
+  type: RECORD
 - description: |
     metric_configuration_lookback_interval_type associated with this record.
   mode: NULLABLE
@@ -228,7 +228,7 @@ fields:
     metric_metadata_companion_metrics associated with this record.
   mode: REPEATED
   name: metric_metadata_companion_metrics
-  type: STRING
+  type: RECORD
 - description: |
     metric_metadata_is_favorite associated with this record.
   mode: NULLABLE
@@ -320,7 +320,7 @@ fields:
   name: metric_configuration_bigconfig_namespace
   type: STRING
 - description: |
-    Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
+    refreshed_at associated with this record.
   mode: NULLABLE
   name: refreshed_at
   type: TIMESTAMP

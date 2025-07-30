@@ -213,7 +213,7 @@ Sudan,SD,SDN,Africa,Northern Africa,FALSE,FALSE,FALSE,null,null
 Suriname,SR,SUR,South America,South America,FALSE,FALSE,FALSE,null,null
 Svalbard and Jan Mayen,SJ,SJM,Europe,Northern Europe,FALSE,FALSE,FALSE,null,null
 Swaziland,SZ,SWZ,Africa,Southern Africa,FALSE,FALSE,FALSE,null,null
-Sweden,SE,SWE,Europe,Northern Europe,FALSE,TRUE,TRUE,tier 2,null,2024-10-24
+Sweden,SE,SWE,Europe,Northern Europe,FALSE,TRUE,TRUE,tier 2,2024-10-24
 Switzerland,CH,CHE,Europe,Western Europe,TRUE,TRUE,TRUE,tier 2,2024-08-19
 Syrian Arab Republic,SY,SYR,Asia,Western Asia,FALSE,FALSE,FALSE,null,null
 "Taiwan, Province of China",TW,TWN,Asia,Eastern Asia,FALSE,TRUE,FALSE,null,null
@@ -234,7 +234,7 @@ Uganda,UG,UGA,Africa,Eastern Africa,FALSE,TRUE,FALSE,null,null
 Ukraine,UA,UKR,Europe,Eastern Europe,FALSE,TRUE,FALSE,null,null
 United Arab Emirates,AE,ARE,Asia,Western Asia,FALSE,FALSE,FALSE,null,null
 United Kingdom,GB,GBR,Europe,Northern Europe,TRUE,TRUE,TRUE,tier 2,null
-United States,US,USA,North America,Northern America,TRUE,TRUE,TRUE,tier 1,null
+United States,US,USA,North America,Northern America,TRUE,TRUE,TRUE,tier 1,2023-10-05
 United States Minor Outlying Islands,UM,UMI,Oceania,Micronesia,FALSE,FALSE,FALSE,null,2023-10-05
 Uruguay,UY,URY,South America,South America,FALSE,FALSE,FALSE,null,null
 Uzbekistan,UZ,UZB,Asia,Central Asia,FALSE,FALSE,FALSE,null,null

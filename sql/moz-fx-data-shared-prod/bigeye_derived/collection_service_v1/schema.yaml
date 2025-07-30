@@ -44,11 +44,24 @@ fields:
   mode: REPEATED
   name: collection_configuration_metric_ids
   type: INTEGER
-- description: |
-    collection_configuration_notification_channels associated with this record.
+- fields:
+  - mode: NULLABLE
+    name: email
+    type: STRING
+  - fields:
+      - mode: NULLABLE
+        name: channelId
+        type: STRING
+      - mode: NULLABLE
+        name: channelName
+        type: STRING
+    mode: NULLABLE
+    name: slackChannelInfo
+    type: RECORD
   mode: REPEATED
   name: collection_configuration_notification_channels
   type: RECORD
+  description: collection_configuration_notification_channels associated with this record.
 - description: |
     collection_configuration_muted_until_timestamp associated with this record.
   mode: NULLABLE

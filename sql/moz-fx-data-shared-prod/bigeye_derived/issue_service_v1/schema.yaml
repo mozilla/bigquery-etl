@@ -360,24 +360,31 @@ fields:
   mode: REPEATED
   name: assignee_groups
   type: RECORD
+  description: Assignee Groups
 - mode: NULLABLE
   name: assignee_picture_url
   type: STRING
+  description: Assignee Picture URL
 - mode: REPEATED
   name: assignee_idp_groups
   type: INTEGER
+  description: Assignee IDP Groups
 - mode: NULLABLE
   name: assignee_last_login_at
   type: FLOAT
+  description: Assignee Last Login At
 - mode: NULLABLE
   name: metric_configuration_schedule_frequency_interval_type
   type: STRING
+  description: Metric Configuration Schedule Frequency Interval Type
 - mode: NULLABLE
   name: metric_configuration_schedule_frequency_interval_value
   type: FLOAT
+  description: Metric Configuration Schedule Frequency Interval Value
 - mode: NULLABLE
   name: metric_configuration_metric_schedule_schedule_frequency_interval_type
   type: STRING
+  description: Metric Configuration Metric Schedule Schedule Frequency Interval Type
 - mode: NULLABLE
   name: metric_configuration_metric_schedule_schedule_frequency_interval_value
   type: FLOAT

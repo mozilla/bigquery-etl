@@ -49,15 +49,16 @@ fields:
     name: email
     type: STRING
   - fields:
-      - mode: NULLABLE
-        name: channelId
-        type: STRING
-      - mode: NULLABLE
-        name: channelName
-        type: STRING
+    - mode: NULLABLE
+      name: channelId
+      type: STRING
+    - mode: NULLABLE
+      name: channelName
+      type: STRING
     mode: NULLABLE
     name: slackChannelInfo
     type: RECORD
+    description: Slack Channel Information
   mode: REPEATED
   name: collection_configuration_notification_channels
   type: RECORD

@@ -36,9 +36,9 @@ fields:
   mode: REPEATED
   description: Map of columns with multiple descriptions and their descriptions.
   fields:
-    - name: column_name
-      type: STRING
-      mode: NULLABLE
-    - name: descriptions
-      type: STRING
-      mode: REPEATED
+  - name: column_name
+    type: STRING
+    mode: NULLABLE
+  - name: descriptions
+    type: STRING
+    mode: REPEATED

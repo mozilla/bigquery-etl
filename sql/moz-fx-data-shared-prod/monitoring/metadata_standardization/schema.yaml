@@ -24,16 +24,16 @@ fields:
   mode: NULLABLE
   description: Count of columns that have more than one description in different tables
     across the dataset.
-- name: completeness_percentage
+- name: dataset_completeness_percentage
   type: FLOAT
   mode: NULLABLE
   description: Percentage of columns_with_non_null_description compared to the total
-    count of columns.
-- name: standardization_percentage
+    count of columns, precalculated at dataset level.
+- name: dataset_standardization_percentage
   type: FLOAT
   mode: NULLABLE
   description: Percentage of columns_with_multiple_descriptions compared to the total
-    count of columns.
+    count of columns, precalculated at dataset level.
 - name: column_description_map
   type: RECORD
   mode: REPEATED

@@ -14,7 +14,7 @@ table_deployments:
           - column_name: external_id
             metrics:
               - saved_metric_id: is_not_null
-          - column_name: udpated_at
+          - column_name: updated_at
             metrics:
               - saved_metric_id: is_not_null
           - column_name: payload

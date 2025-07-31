@@ -51,7 +51,11 @@ dataset_summary AS (
     COUNTIF(
       EXISTS(SELECT 1 FROM UNNEST(descriptions) d WHERE d != 'NULL' AND TRIM(d) != '')
     ) AS columns_with_non_null_description,
-    COUNTIF(ARRAY_LENGTH(descriptions) > 1) AS columns_with_multiple_descriptions,
+    COUNTIF(
+      ARRAY_LENGTH(
+        ARRAY(SELECT d FROM UNNEST(descriptions) d WHERE d != 'NULL' AND TRIM(d) != '')
+      ) > 1
+    ) AS columns_with_multiple_descriptions,
     ARRAY_AGG(STRUCT(column_name, descriptions)) AS column_description_map
   FROM
     column_group
@@ -66,11 +70,14 @@ SELECT
   total_columns,
   columns_with_non_null_description,
   columns_with_multiple_descriptions,
-  ROUND(100 * (columns_with_non_null_description / total_columns), 2) AS completeness_percentage,
+  ROUND(
+    100 * (columns_with_non_null_description / total_columns),
+    2
+  ) AS dataset_completeness_percentage,
   ROUND(
     100 * (1 - (dataset_summary.columns_with_multiple_descriptions / total_columns)),
     2
-  ) AS standardization_percentage,
+  ) AS dataset_standardization_percentage,
   column_description_map
 FROM
   dataset_summary

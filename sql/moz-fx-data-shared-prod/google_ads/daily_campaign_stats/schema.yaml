@@ -38,3 +38,15 @@ fields:
 - name: last_updated_date
   type: DATE
   mode: NULLABLE
+- name: source_relation
+  type: STRING
+  mode: NULLABLE
+- name: conversions
+  type: FLOAT
+  mode: NULLABLE
+- name: conversions_value
+  type: FLOAT
+  mode: NULLABLE
+- name: view_through_conversions
+  type: INTEGER
+  mode: NULLABLE

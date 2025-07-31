@@ -1,0 +1,47 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when this summary is collected.
+- name: project_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the BigQuery project.
+- name: dataset_id
+  type: STRING
+  mode: NULLABLE
+  description: Name of the BigQuery dataset.
+- name: total_columns
+  type: INTEGER
+  mode: NULLABLE
+  description: Total count of distinct columns in the dataset.
+- name: columns_with_non_null_description
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of columns where the description is not NULL nor an empty string.
+- name: columns_with_multiple_descriptions
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of columns that have more than one description in different tables
+    across the dataset.
+- name: completeness_percentage
+  type: FLOAT
+  mode: NULLABLE
+  description: Percentage of columns_with_non_null_description compared to the total
+    count of columns.
+- name: standardization_percentage
+  type: FLOAT
+  mode: NULLABLE
+  description: Percentage of columns_with_multiple_descriptions compared to the total
+    count of columns.
+- name: column_description_map
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: column_name
+    type: STRING
+    mode: NULLABLE
+  - name: descriptions
+    type: STRING
+    mode: REPEATED
+  description: Map of columns with multiple descriptions and their descriptions.

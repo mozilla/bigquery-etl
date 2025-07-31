@@ -1,0 +1,39 @@
+friendly_name: Reported Content
+description: |-
+  Reported organic content
+
+  For each report, we collect
+    submission date
+    card type
+    corpus item id
+    report reason
+    section
+    section position
+    title
+    topic
+    url
+owners:
+- isegall@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: isegall
+  table_type: event_level
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

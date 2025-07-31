@@ -1,7 +1,16 @@
 friendly_name: Reported Content
-description: "Rerported organic content\nFor each report, we collect:\n  submission\
-  \ date\n  card type\n  corpus item id\n  report reason\n  section\n  section position\n\
-  \  title \n  topic\n  url"
+description: |-
+  Reported organic content
+  The granularity is one row per day per each of the following dimensions:
+      submission_date
+      card type
+      corpus item id
+      report reason
+      section
+      section position
+      title
+      topic
+      url
 owners:
 - isegall@mozilla.com
 labels:

@@ -1,0 +1,12 @@
+type: BIGCONFIG_FILE
+table_deployments:
+  - collection:
+      name: 'Operational Checks'
+      notification_channels:
+        - slack: '#de-bigeye-triage'
+
+    deployments:
+      - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.braze_external.users_previous_day_snapshot_v1
+        table_metrics:
+          - saved_metric_id: volume
+          - saved_metric_id: freshness

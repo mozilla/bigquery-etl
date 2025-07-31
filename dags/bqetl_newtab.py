@@ -106,6 +106,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "firefox_desktop_derived__newtab_clients_daily__v2_external",
+    ) as firefox_desktop_derived__newtab_clients_daily__v2_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads_monthly__wait_for_firefox_desktop_derived__newtab_clients_daily__v2",
+            external_dag_id="private_bqetl_ads_monthly",
+            external_task_id="wait_for_firefox_desktop_derived__newtab_clients_daily__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-2, seconds=68400)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__newtab_clients_daily__v2_external.set_upstream(
+            firefox_desktop_derived__newtab_clients_daily__v2
+        )
+
     firefox_desktop_derived__newtab_clients_daily_aggregates__v2 = bigquery_etl_query(
         task_id="firefox_desktop_derived__newtab_clients_daily_aggregates__v2",
         destination_table="newtab_clients_daily_aggregates_v2",

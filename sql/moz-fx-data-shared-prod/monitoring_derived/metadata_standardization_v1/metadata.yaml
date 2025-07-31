@@ -1,0 +1,20 @@
+friendly_name: Metadata Standardization
+description: |-
+  Summary of metrics related to the metadata of tables at dataset-level and for project shared-prod.
+owners:
+- lvargas@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_monitoring_weekly
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - dataset_id
+references: {}

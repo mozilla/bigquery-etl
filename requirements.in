@@ -30,7 +30,7 @@ mozilla-schema-generator==0.5.1
 pandas==2.3.1
 paramiko==3.5.1
 pathos==0.3.4
-pip-tools==7.4.1
+pip-tools==7.5.0
 pre-commit==4.2.0
 pyarrow==20.0.0
 pytest-black==0.6.0
@@ -46,7 +46,7 @@ smart_open==6.4.0
 sqlglot==25.28.0
 sqlparse==0.5.3
 stripe==6.4.0
-symbolic==12.16.0
+symbolic==12.16.1
 siggen==2.2.20241029
 tomli==2.2.1 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20250708

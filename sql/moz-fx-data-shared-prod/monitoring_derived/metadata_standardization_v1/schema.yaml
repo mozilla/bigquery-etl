@@ -24,13 +24,13 @@ fields:
   type: INTEGER
   description: Count of columns that have more than one description in different tables across the dataset.
 - mode: NULLABLE
-  name: completeness_percentage
+  name: dataset_completeness_percentage
   type: FLOAT
-  description: Percentage of columns_with_non_null_description compared to the total count of columns.
+  description: Percentage of columns_with_non_null_description compared to the total count of columns, precalculated at dataset level.
 - mode: NULLABLE
-  name: standardization_percentage
+  name: dataset_standardization_percentage
   type: FLOAT
-  description: Percentage of columns_with_multiple_descriptions compared to the total count of columns.
+  description: Percentage of columns_with_multiple_descriptions compared to the total count of columns, precalculated at dataset level.
 - name: column_description_map
   type: RECORD
   mode: REPEATED

@@ -45,3 +45,8 @@ fields:
     1, tier 2, etc.
   type: STRING
   mode: REQUIRED
+- name: date_sponsored_tiles_launched
+  description: Date in format 'yyyy-mm-dd'. Corresponds to when sponsored tiles were launched in
+    a given market.
+  type: DATE
+  mode: NULLABLE

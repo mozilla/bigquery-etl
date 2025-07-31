@@ -7,8 +7,8 @@ labels:
   incremental: false
   table_type: aggregate
   shredder_mitigation: false
-scheduling:
-  dag_name: bqetl_pocket
-  date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+#scheduling:
+#  dag_name: bqetl_pocket
+#  date_partition_parameter: null
+#  parameters: ["submission_date:DATE:{{ds}}"]
 deprecated: true

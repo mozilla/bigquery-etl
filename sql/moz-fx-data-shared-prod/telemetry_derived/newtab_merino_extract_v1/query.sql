@@ -42,10 +42,11 @@ flattened_newtab_events AS (
       SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
     ) > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
 ),
+/* Aggregate clicks and impressions by corpus_item_id and normalized_country_code. */
 aggregated_events AS (
   SELECT
-    corpus_item_id,
-    normalized_country_code,
+    fe.corpus_item_id,
+    fe.normalized_country_code,
     SUM(CASE WHEN fe.event_name = 'impression' THEN 1 ELSE 0 END) AS impression_count,
     SUM(CASE WHEN fe.event_name = 'click' THEN 1 ELSE 0 END) AS click_count
   FROM

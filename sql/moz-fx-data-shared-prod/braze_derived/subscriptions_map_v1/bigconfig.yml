@@ -1,0 +1,34 @@
+type: BIGCONFIG_FILE
+table_deployments:
+  - collection:
+      name: 'Operational Checks'
+      notification_channels:
+        - slack: '#de-bigeye-triage'
+
+    deployments:
+      - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.braze_derived.subscriptions_map_v1
+        table_metrics:
+          - saved_metric_id: volume
+          - saved_metric_id: freshness
+        columns:
+          - column_name: braze_subscription_name
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: description
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: mozilla_subscription_id
+            metrics:
+              - saved_metric_id: is_not_null
+              - saved_metric_id: is_unique
+          - column_name: firefox_subscription_id
+            metrics:
+              - saved_metric_id: is_not_null
+              - saved_metric_id: is_unique
+          - column_name: mozilla_dev_subscription_id
+            metrics:
+              - saved_metric_id: is_not_null
+              - saved_metric_id: is_unique
+          - column_name: basket_slug
+            metrics:
+              - saved_metric_id: is_not_null

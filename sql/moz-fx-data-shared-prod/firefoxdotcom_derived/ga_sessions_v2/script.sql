@@ -7,7 +7,7 @@ MERGE INTO
         user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_*`
       JOIN
         UNNEST(event_params) e
       WHERE
@@ -30,7 +30,7 @@ MERGE INTO
         user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
         DATETIME(
-          TIMESTAMP_MICROS(a.event_timestamp),
+          TIMESTAMP_MICROS(all_sess_strt_events.event_timestamp),
           "America/Los_Angeles"
         ) AS session_start_timestamp,
         (
@@ -62,12 +62,12 @@ MERGE INTO
         device.web_info.browser_version AS browser_version,
         PARSE_DATE('%Y%m%d', event_date) AS session_date
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_sess_strt_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
         all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
-        ON a.user_pseudo_id = c.ga_client_id
+        ON all_sess_strt_events.user_pseudo_id = c.ga_client_id
         AND CAST(e.value.int_value AS string) = c.ga_session_id
       WHERE
         e.key = 'ga_session_id'
@@ -85,8 +85,8 @@ MERGE INTO
     --search all time for all the client IDs, and get all campaigns we see and the session ID we see them for
     attr_info_from_event_params_in_session_staging AS (
       SELECT
-        a.user_pseudo_id AS ga_client_id,
-        a.event_timestamp,
+        all_events.user_pseudo_id AS ga_client_id,
+        all_events.event_timestamp,
         (
           SELECT
             `value`
@@ -138,10 +138,10 @@ MERGE INTO
             1
         ).string_value AS content_from_event_params,
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events
       JOIN
         distinct_ga_client_ids dist_clients
-        ON a.user_pseudo_id = dist_clients.ga_client_id
+        ON all_events.user_pseudo_id = dist_clients.ga_client_id
     ),
     attr_info_from_event_params_in_session AS (
       SELECT
@@ -203,9 +203,9 @@ MERGE INTO
       JOIN
         UNNEST(event_params) AS e
       JOIN
-        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
-        ON a.user_pseudo_id = c.ga_client_id
-        AND CAST(e.value.int_value AS string) = c.ga_session_id
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
+        ON a.user_pseudo_id = sess_with_new_events.ga_client_id
+        AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -287,8 +287,8 @@ MERGE INTO
       JOIN
         UNNEST(event_params) AS e
       JOIN
-        distinct_ga_client_ids c
-        ON a.user_pseudo_id = c.ga_client_id
+        distinct_ga_client_ids dist_clients
+        ON a.user_pseudo_id = dist_clients.ga_client_id
       WHERE
         event_name = 'stub_session_set'
         AND e.key = 'id'
@@ -338,12 +338,12 @@ MERGE INTO
         )[OFFSET(0)] AS page_location,
         event_timestamp
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events_with_entrances
       JOIN
         UNNEST(event_params) AS e
       JOIN
         distinct_ga_client_ids dist_clients
-        ON a.user_pseudo_id = dist_clients.ga_client_id
+        ON all_events_with_entrances.user_pseudo_id = dist_clients.ga_client_id
       WHERE
         e.key = 'entrances'
         AND e.value.int_value = 1
@@ -374,12 +374,12 @@ MERGE INTO
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_install_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
         all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
-        ON a.user_pseudo_id = sess_with_new_events.ga_client_id
+        ON all_install_events.user_pseudo_id = sess_with_new_events.ga_client_id
         AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'

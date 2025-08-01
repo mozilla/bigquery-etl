@@ -13,7 +13,7 @@ fields:
   description: The date the session started
 - name: session_start_timestamp
   mode: NULLABLE
-  type: TIMESTAMP
+  type: DATETIME
   description: The timestamp of the session_start event.
 - name: is_first_session
   mode: NULLABLE

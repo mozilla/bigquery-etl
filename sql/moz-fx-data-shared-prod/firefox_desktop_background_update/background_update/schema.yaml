@@ -402,6 +402,13 @@ fields:
         scalar update.suppress_prompts.
 
         '
+    - name: background_update_throttled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if this invocation of the background task was throttled and
+        did not attempt to actually update.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -641,6 +648,14 @@ fields:
         between versions.
 
         '
+    - name: background_update_days_since_last_browsed
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of days since the default profile was last used for
+        browsing, i.e., since `environment.currentDate` of the default profile''s
+        serialized targeting snapshot.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -653,6 +668,13 @@ fields:
         we restart automatically in order to do so. This probe counts the number of
         times the browser restarts to silently install a pending update. This metric
         was generated to correspond to the Legacy Telemetry scalar update.no_window_auto_restarts.
+
+        '
+    - name: background_update_debounced
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of debounced background task invocations between this
+        invocation and the last invocation that was not debounced.
 
         '
 - name: normalized_app_name

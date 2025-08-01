@@ -2,6 +2,9 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+- name: source_relation
+  type: STRING
+  mode: NULLABLE
 - name: account_name
   type: STRING
   mode: NULLABLE
@@ -37,9 +40,6 @@ fields:
   mode: NULLABLE
 - name: impressions
   type: INTEGER
-  mode: NULLABLE
-- name: source_relation
-  type: STRING
   mode: NULLABLE
 - name: conversions
   type: FLOAT

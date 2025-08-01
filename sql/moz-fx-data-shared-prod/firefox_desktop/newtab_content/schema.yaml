@@ -257,6 +257,15 @@ fields:
         expected time zone ranges for a surface.
 
         '
+    - name: newtab_content_ping_version
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Marks major revisions of data collection methods or format for
+        this ping. Because we are not recording Firefox version, this field has been
+        added to assist the data pipeline. To avoid user possible fingerprinting,
+        this should be updated only when necessary.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

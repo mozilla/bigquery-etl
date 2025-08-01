@@ -210,6 +210,20 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_firefoxdotcom_derived__ga_sessions__v2 = bigquery_dq_check(
+        task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v2",
+        source_table="ga_sessions_v2",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     firefoxdotcom_derived__firefox_whatsnew_summary__v1 = bigquery_etl_query(
         task_id="firefoxdotcom_derived__firefox_whatsnew_summary__v1",
         destination_table="firefox_whatsnew_summary_v1",
@@ -252,6 +266,19 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/firefoxdotcom_derived/ga_sessions_v1/script.sql",
+    )
+
+    firefoxdotcom_derived__ga_sessions__v2 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__ga_sessions__v2",
+        destination_table=None,
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/firefoxdotcom_derived/ga_sessions_v2/script.sql",
     )
 
     firefoxdotcom_derived__gclid_conversions__v1 = bigquery_etl_query(
@@ -371,6 +398,10 @@ with DAG(
         firefoxdotcom_derived__gclid_conversions__v1
     )
 
+    checks__warn_firefoxdotcom_derived__ga_sessions__v2.set_upstream(
+        firefoxdotcom_derived__ga_sessions__v2
+    )
+
     firefoxdotcom_derived__firefox_whatsnew_summary__v1.set_upstream(
         bigeye__firefoxdotcom_derived__www_site_hits__v1
     )
@@ -380,6 +411,10 @@ with DAG(
     )
 
     firefoxdotcom_derived__ga_sessions__v1.set_upstream(
+        wait_for_firefoxdotcom_events_table
+    )
+
+    firefoxdotcom_derived__ga_sessions__v2.set_upstream(
         wait_for_firefoxdotcom_events_table
     )
 

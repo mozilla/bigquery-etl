@@ -140,8 +140,8 @@ MERGE INTO
       FROM
         `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
       JOIN
-        distinct_ga_client_ids b
-        ON a.user_pseudo_id = b.ga_client_id
+        distinct_ga_client_ids dist_clients
+        ON a.user_pseudo_id = dist_clients.ga_client_id
     ),
     attr_info_from_event_params_in_session AS (
       SELECT
@@ -254,9 +254,9 @@ MERGE INTO
       JOIN
         UNNEST(event_params) AS e
       JOIN
-        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
-        ON a.user_pseudo_id = c.ga_client_id
-        AND CAST(e.value.int_value AS string) = c.ga_session_id
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
+        ON a.user_pseudo_id = sess_with_new_events.ga_client_id
+        AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -342,8 +342,8 @@ MERGE INTO
       JOIN
         UNNEST(event_params) AS e
       JOIN
-        distinct_ga_client_ids c
-        ON a.user_pseudo_id = c.ga_client_id
+        distinct_ga_client_ids dist_clients
+        ON a.user_pseudo_id = dist_clients.ga_client_id
       WHERE
         e.key = 'entrances'
         AND e.value.int_value = 1
@@ -378,9 +378,9 @@ MERGE INTO
       JOIN
         UNNEST(event_params) AS e
       JOIN
-        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
-        ON a.user_pseudo_id = c.ga_client_id
-        AND CAST(e.value.int_value AS string) = c.ga_session_id
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
+        ON a.user_pseudo_id = sess_with_new_events.ga_client_id
+        AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -433,14 +433,14 @@ MERGE INTO
       sess_strt.language,
       sess_strt.browser,
       sess_strt.browser_version,
-      campaigns.first_campaign_from_event_params,
-      campaigns.distinct_campaigns_from_event_params,
-      campaigns.first_source_from_event_params,
-      campaigns.distinct_sources_from_event_params,
-      campaigns.first_medium_from_event_params,
-      campaigns.distinct_mediums_from_event_params,
-      campaigns.first_content_from_event_params,
-      campaigns.distinct_contents_from_event_params,
+      session_attrs.first_campaign_from_event_params,
+      session_attrs.distinct_campaigns_from_event_params,
+      session_attrs.first_source_from_event_params,
+      session_attrs.distinct_sources_from_event_params,
+      session_attrs.first_medium_from_event_params,
+      session_attrs.distinct_mediums_from_event_params,
+      session_attrs.first_content_from_event_params,
+      session_attrs.distinct_contents_from_event_params,
       sess_strt.manual_campaign_id,
       sess_strt.manual_campaign_name,
       sess_strt.manual_source,
@@ -477,7 +477,7 @@ MERGE INTO
       click_aggregate clicks
       USING (ga_client_id, ga_session_id)
     LEFT JOIN
-      attr_info_by_session campaigns
+      attr_info_by_session session_attrs
       USING (ga_client_id, ga_session_id)
   ) S
   ON T.ga_client_id = S.ga_client_id

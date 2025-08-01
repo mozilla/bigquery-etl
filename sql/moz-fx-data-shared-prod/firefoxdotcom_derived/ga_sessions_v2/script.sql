@@ -66,9 +66,9 @@ MERGE INTO
       JOIN
         UNNEST(event_params) AS e
       JOIN
-        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days c
-        ON all_sess_strt_events.user_pseudo_id = c.ga_client_id
-        AND CAST(e.value.int_value AS string) = c.ga_session_id
+        all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
+        ON all_sess_strt_events.user_pseudo_id = sess_with_new_events.ga_client_id
+        AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'
         AND e.value.int_value IS NOT NULL
@@ -199,12 +199,12 @@ MERGE INTO
         CAST(e.value.int_value AS string) AS ga_session_id,
         collected_traffic_source.gclid AS gclid
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events_with_gclid
       JOIN
         UNNEST(event_params) AS e
       JOIN
         all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
-        ON a.user_pseudo_id = sess_with_new_events.ga_client_id
+        ON all_events_with_gclid.user_pseudo_id = sess_with_new_events.ga_client_id
         AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'
@@ -250,12 +250,12 @@ MERGE INTO
           ) AS boolean
         ) AS had_download_event
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
         all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sess_with_new_events
-        ON a.user_pseudo_id = sess_with_new_events.ga_client_id
+        ON all_events.user_pseudo_id = sess_with_new_events.ga_client_id
         AND CAST(e.value.int_value AS string) = sess_with_new_events.ga_session_id
       WHERE
         e.key = 'ga_session_id'
@@ -283,12 +283,12 @@ MERGE INTO
         ) AS ga_session_id,
         CAST(e.value.int_value AS string) AS stub_session_id
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` a
+        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_stub_session_set_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
         distinct_ga_client_ids dist_clients
-        ON a.user_pseudo_id = dist_clients.ga_client_id
+        ON all_stub_session_set_events.user_pseudo_id = dist_clients.ga_client_id
       WHERE
         event_name = 'stub_session_set'
         AND e.key = 'id'

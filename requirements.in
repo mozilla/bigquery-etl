@@ -30,7 +30,7 @@ mozilla-schema-generator==0.5.1
 pandas==2.3.1
 paramiko==3.5.1
 pathos==0.3.4
-pip-tools==7.4.1
+pip-tools==7.5.0
 pre-commit==4.2.0
 pyarrow==20.0.0
 pytest-black==0.6.0

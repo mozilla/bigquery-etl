@@ -29,7 +29,10 @@ MERGE INTO
       SELECT
         user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id,
-        TIMESTAMP_MICROS(a.event_timestamp) AS session_start_timestamp,
+        DATETIME(
+          TIMESTAMP_MICROS(a.event_timestamp),
+          "America/Los_Angeles"
+        ) AS session_start_timestamp,
         (
           SELECT
             `value`

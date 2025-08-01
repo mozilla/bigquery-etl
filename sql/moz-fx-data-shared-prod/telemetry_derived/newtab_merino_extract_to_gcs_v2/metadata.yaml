@@ -3,8 +3,8 @@ description: |-
   Newtab engagements aggregated on corpus_item_id are exported to a GCS bucket for Merino to consume.
   The table rebuilds every 20 minutes and aggregate one day of data.
 owners:
-- cbeck@mozilla.com
-- gkatre@mozilla.com
+- mmiermans@mozilla.com
+- rrando@mozilla.com
 labels:
   incremental: false
   owner1: cbeck

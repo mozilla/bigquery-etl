@@ -11781,6 +11781,9 @@ fields:
     - name: xpi_database_startup_error
       type: STRING
       mode: NULLABLE
+    - name: preferences_toolbar_mode_setting
+      type: STRING
+      mode: NULLABLE
   - name: string_list
     type: RECORD
     mode: NULLABLE

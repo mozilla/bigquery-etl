@@ -1189,7 +1189,8 @@ SELECT
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
-      metrics.string.xpi_database_startup_error
+      metrics.string.xpi_database_startup_error,
+      metrics.string.preferences_toolbar_mode_setting
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3177,7 +3178,8 @@ SELECT
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
-      metrics.string.xpi_database_startup_error
+      metrics.string.xpi_database_startup_error,
+      metrics.string.preferences_toolbar_mode_setting
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -5185,7 +5187,8 @@ SELECT
       metrics.string.system_os_version,
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
-      metrics.string.xpi_database_startup_error
+      metrics.string.xpi_database_startup_error,
+      metrics.string.preferences_toolbar_mode_setting
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,

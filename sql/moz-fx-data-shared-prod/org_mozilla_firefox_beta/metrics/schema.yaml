@@ -18872,6 +18872,12 @@ fields:
         Previously reported in "main" ping `simpleMeasurements`.
 
         '
+    - name: preferences_toolbar_mode_setting
+      type: STRING
+      mode: NULLABLE
+      description: 'The mode of the toolbar. Possible values are: simple or expanded.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

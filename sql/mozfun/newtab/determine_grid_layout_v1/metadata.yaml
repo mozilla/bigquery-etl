@@ -1,0 +1,5 @@
+description: |-
+  Determine the grid layout type for the Newtab
+  Context: this layout type can help in identifying the number of tiles that are displayed per row on the newtab
+  homepage
+friendly_name: Grid Layout Type

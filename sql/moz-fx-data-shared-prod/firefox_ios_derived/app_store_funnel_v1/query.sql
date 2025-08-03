@@ -48,13 +48,13 @@ store_stats AS (
 _new_profiles AS (
   SELECT
     first_seen_date AS `date`,
-    first_reported_country AS country,
-    COUNT(*) AS new_profiles,
+    country,
+    SUM(new_profiles) AS new_profiles,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
+    `moz-fx-data-shared-prod.firefox_ios.new_profiles`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-    AND channel = "release"
+    AND normalized_channel = "release"
   GROUP BY
     `date`,
     country

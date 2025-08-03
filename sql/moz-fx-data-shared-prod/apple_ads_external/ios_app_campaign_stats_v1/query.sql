@@ -38,12 +38,12 @@ activations AS (
     COUNTIF(clients.is_activated) AS activated,
     SUM(ltv.lifetime_value) AS lifetime_value,
   FROM
-    `mozdata.ltv.firefox_ios_client_ltv` AS ltv
+    `moz-fx-data-shared-prod.ltv.firefox_ios_client_ltv` AS ltv
   INNER JOIN
-    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients` AS clients
-    USING (client_id, sample_id)
+    `moz-fx-data-shared-prod.firefox_ios.new_profile_activation_clients` AS clients
+    USING (client_id)
   WHERE
-    clients.channel = "release"
+    clients.normalized_channel = "release"
   GROUP BY
     `date`,
     campaign_id,
@@ -54,16 +54,16 @@ retention_aggs AS (
     first_seen_date AS `date`,
     CAST(REGEXP_EXTRACT(adjust_campaign, r' \((\d+)\)$') AS INT64) AS campaign_id,
     CAST(REGEXP_EXTRACT(adjust_ad_group, r' \((\d+)\)$') AS INT64) AS ad_group_id,
-    SUM(repeat_user) AS repeat_users,
-    SUM(retained_week_4) AS retained_week_4,
+    SUM(repeat_profiles) AS repeat_users,
+    SUM(retained_week_4_new_profiles) AS retained_week_4,
   FROM
-    -- TODO: we should update this to use retention_clients view instead
-    `moz-fx-data-shared-prod.firefox_ios.funnel_retention_week_4`
+    `moz-fx-data-shared-prod.firefox_ios.retention`
   WHERE
     {% if is_init() %}
-      submission_date <= CURRENT_DATE
+      metric_date <= CURRENT_DATE
     {% else %}
-      submission_date = @submission_date
+      metric_date = @submission_date
+      AND first_seen_date = @submission_date
     {% endif %}
   GROUP BY
     `date`,

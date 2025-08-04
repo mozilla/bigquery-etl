@@ -83,6 +83,12 @@ fields:
 - name: distinct_contents_from_event_params
   type: STRING
   mode: REPEATED
+- name: first_term_from_event_params
+  type: STRING
+  mode: NULLABLE
+- name: distinct_terms_from_event_params
+  type: STRING
+  mode: REPEATED
 - name: manual_campaign_id
   type: STRING
   mode: NULLABLE
@@ -126,5 +132,41 @@ fields:
   type: STRING
   mode: REPEATED
 - name: landing_screen
+  type: STRING
+  mode: NULLABLE
+- name: ad_google_campaign
+  type: STRING
+  mode: NULLABLE
+- name: ad_google_campaign_id
+  type: STRING
+  mode: NULLABLE
+- name: ad_google_group
+  type: STRING
+  mode: NULLABLE
+- name: ad_google_group_id
+  type: STRING
+  mode: NULLABLE
+- name: ad_google_account
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_source
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_medium
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_campaign
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_campaign_id
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_source_platform
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_primary_channel_group
+  type: STRING
+  mode: NULLABLE
+- name: ad_crosschannel_default_channel_group
   type: STRING
   mode: NULLABLE

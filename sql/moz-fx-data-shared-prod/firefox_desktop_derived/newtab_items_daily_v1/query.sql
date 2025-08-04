@@ -5,7 +5,6 @@ WITH events_unnested AS (
     normalized_channel AS channel,
     metrics.string.newtab_locale AS locale,
     normalized_country_code AS country,
-    metrics.string.newtab_content_surface_id,
     timestamp AS event_timestamp,
     category AS event_category,
     name AS event_name,
@@ -20,9 +19,6 @@ WITH events_unnested AS (
     AND mozfun.norm.browser_version_info(
       client_info.app_display_version
     ).major_version >= 121 -- the [Pocket team started using Glean](https://github.com/Pocket/dbt-snowflake/pull/459) from this version on. This prevents duplicates for previous releases.
-    AND mozfun.norm.browser_version_info(
-      client_info.app_display_version
-    ).major_version < 140 -- Transitioned to the newtab-content ping in version 140, so we only want to include events before that version for this ping.
 ),
 flattened_events AS (
   SELECT
@@ -31,14 +27,13 @@ flattened_events AS (
     channel,
     locale,
     country,
-    newtab_content_surface_id,
     event_category,
     event_name,
     mozfun.map.get_key(event_details, 'corpus_item_id') AS corpus_item_id,
     SAFE_CAST(mozfun.map.get_key(event_details, 'position') AS INT64) AS position,
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     SAFE_CAST(
-      mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
+      mozfun.map.get_key(event_details, 'is_secton_followed') AS BOOLEAN
     ) AS is_section_followed,
     mozfun.map.get_key(event_details, 'matches_selected_topic') AS matches_selected_topic,
     mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
@@ -55,7 +50,7 @@ SELECT
   channel,
   locale,
   country,
-  newtab_content_surface_id,
+  mozfun.newtab.scheduled_surface_id_v1(country, locale) AS scheduled_surface_id,
   corpus_item_id,
   position,
   is_sponsored,
@@ -64,20 +59,27 @@ SELECT
   received_rank,
   section,
   section_position,
-  topic,
+  flattened_events.topic,
+  ANY_VALUE(corpus_items.title) AS title,
+  ANY_VALUE(corpus_items.url) AS recommendation_url,
+  ANY_VALUE(corpus_items.authors) AS authors,
+  ANY_VALUE(corpus_items.publisher) AS publisher,
   COUNTIF(event_name = 'impression') AS impression_count,
   COUNTIF(event_name = 'click') AS click_count,
   COUNTIF(event_name = 'save') AS save_count,
   COUNTIF(event_name = 'dismiss') AS dismiss_count
 FROM
   flattened_events
+LEFT OUTER JOIN
+  `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1` AS corpus_items
+  ON flattened_events.corpus_item_id = corpus_items.approved_corpus_item_external_id
 GROUP BY
   submission_date,
   app_version,
   channel,
   locale,
   country,
-  newtab_content_surface_id,
+  scheduled_surface_id,
   corpus_item_id,
   position,
   is_sponsored,

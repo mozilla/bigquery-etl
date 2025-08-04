@@ -137,6 +137,16 @@ MERGE INTO
           LIMIT
             1
         ).string_value AS content_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            key = 'term'
+          LIMIT
+            1
+        ).string_value AS term_from_event_params
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events
       JOIN
@@ -151,6 +161,7 @@ MERGE INTO
         source_from_event_params,
         medium_from_event_params,
         content_from_event_params,
+        term_from_event_params,
         event_timestamp
       FROM
         attr_info_from_event_params_in_session_staging
@@ -186,6 +197,10 @@ MERGE INTO
         ARRAY_AGG(content_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
           SAFE_OFFSET(0)
         ] AS first_content_from_event_params,
+        ARRAY_AGG(term_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
+          SAFE_OFFSET(0)
+        ] AS first_term_from_event_params,
+        ARRAY_AGG(DISTINCT term_from_event_params IGNORE NULLS) AS distinct_terms_from_event_params,
       FROM
         attr_info_from_event_params_in_session
       GROUP BY
@@ -494,7 +509,9 @@ MERGE INTO
       installs.all_reported_install_targets,
       stub_sessn_ids.last_reported_stub_session_id,
       stub_sessn_ids.all_reported_stub_session_ids,
-      lndg_pg.page_location AS landing_screen
+      lndg_pg.page_location AS landing_screen,
+      session_attrs.first_term_from_event_params,
+      session_attrs.distinct_terms_from_event_params
     FROM
       device_properties_at_session_start_event sess_strt
     JOIN
@@ -565,7 +582,9 @@ THEN
       all_reported_install_targets,
       last_reported_stub_session_id,
       all_reported_stub_session_ids,
-      landing_screen
+      landing_screen,
+      first_term_from_event_params,
+      distinct_terms_from_event_params
     )
   VALUES
     (
@@ -609,7 +628,9 @@ THEN
       S.all_reported_install_targets,
       S.last_reported_stub_session_id,
       S.all_reported_stub_session_ids,
-      S.landing_screen
+      S.landing_screen,
+      S.first_term_from_event_params,
+      S.distinct_terms_from_event_params
     )
   WHEN MATCHED
 THEN
@@ -654,4 +675,6 @@ THEN
     T.all_reported_install_targets = S.all_reported_install_targets,
     T.last_reported_stub_session_id = S.last_reported_stub_session_id,
     T.all_reported_stub_session_ids = S.all_reported_stub_session_ids,
-    T.landing_screen = S.landing_screen
+    T.landing_screen = S.landing_screen,
+    T.first_term_from_event_params = S.first_term_from_event_params,
+    T.distinct_terms_from_event_params = S.distinct_terms_from_event_params

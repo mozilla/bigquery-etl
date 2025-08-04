@@ -52,6 +52,18 @@ MERGE INTO
         collected_traffic_source.manual_medium AS manual_medium,
         collected_traffic_source.manual_term AS manual_term,
         collected_traffic_source.manual_content AS manual_content,
+        session_traffic_source_last_click.google_ads_campaign.campaign_name AS ad_google_campaign,
+        session_traffic_source_last_click.google_ads_campaign.campaign_id AS ad_google_campaign_id,
+        session_traffic_source_last_click.google_ads_campaign.ad_group_name AS ad_google_group,
+        session_traffic_source_last_click.google_ads_campaign.ad_group_id AS ad_google_group_id,
+        session_traffic_source_last_click.google_ads_campaign.account_name AS ad_google_account,
+        session_traffic_source_last_click.cross_channel_campaign.source AS ad_crosschannel_source,
+        session_traffic_source_last_click.cross_channel_campaign.medium AS ad_crosschannel_medium,
+        session_traffic_source_last_click.cross_channel_campaign.campaign_name AS ad_crosschannel_campaign,
+        session_traffic_source_last_click.cross_channel_campaign.campaign_id AS ad_crosschannel_campaign_id,
+        session_traffic_source_last_click.cross_channel_campaign.source_platform AS ad_crosschannel_source_platform,
+        session_traffic_source_last_click.cross_channel_campaign.primary_channel_group AS ad_crosschannel_primary_channel_group,
+        session_traffic_source_last_click.cross_channel_campaign.default_channel_group AS ad_crosschannel_default_channel_group,
         device.category AS device_category,
         device.mobile_model_name AS mobile_device_model,
         device.mobile_marketing_name AS mobile_device_string,
@@ -87,6 +99,8 @@ MERGE INTO
       SELECT
         all_events.user_pseudo_id AS ga_client_id,
         all_events.event_timestamp,
+        --below is new
+        ---above is new
         (
           SELECT
             `value`
@@ -137,6 +151,16 @@ MERGE INTO
           LIMIT
             1
         ).string_value AS content_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            key = 'term'
+          LIMIT
+            1
+        ).string_value AS term_from_event_params
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events
       JOIN
@@ -151,6 +175,7 @@ MERGE INTO
         source_from_event_params,
         medium_from_event_params,
         content_from_event_params,
+        term_from_event_params,
         event_timestamp
       FROM
         attr_info_from_event_params_in_session_staging
@@ -186,6 +211,10 @@ MERGE INTO
         ARRAY_AGG(content_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
           SAFE_OFFSET(0)
         ] AS first_content_from_event_params,
+        ARRAY_AGG(term_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
+          SAFE_OFFSET(0)
+        ] AS first_term_from_event_params,
+        ARRAY_AGG(DISTINCT term_from_event_params IGNORE NULLS) AS distinct_terms_from_event_params,
       FROM
         attr_info_from_event_params_in_session
       GROUP BY
@@ -494,7 +523,21 @@ MERGE INTO
       installs.all_reported_install_targets,
       stub_sessn_ids.last_reported_stub_session_id,
       stub_sessn_ids.all_reported_stub_session_ids,
-      lndg_pg.page_location AS landing_screen
+      lndg_pg.page_location AS landing_screen,
+      session_attrs.first_term_from_event_params,
+      session_attrs.distinct_terms_from_event_params,
+      sess_strt.ad_google_campaign,
+      sess_strt.ad_google_campaign_id,
+      sess_strt.ad_google_group,
+      sess_strt.ad_google_group_id,
+      sess_strt.ad_google_account,
+      sess_strt.ad_crosschannel_source,
+      sess_strt.ad_crosschannel_medium,
+      sess_strt.ad_crosschannel_campaign,
+      sess_strt.ad_crosschannel_campaign_id,
+      sess_strt.ad_crosschannel_source_platform,
+      sess_strt.ad_crosschannel_primary_channel_group,
+      sess_strt.ad_crosschannel_default_channel_group,
     FROM
       device_properties_at_session_start_event sess_strt
     JOIN
@@ -565,7 +608,21 @@ THEN
       all_reported_install_targets,
       last_reported_stub_session_id,
       all_reported_stub_session_ids,
-      landing_screen
+      landing_screen,
+      first_term_from_event_params,
+      distinct_terms_from_event_params,
+      ad_google_campaign,
+      ad_google_campaign_id,
+      ad_google_group,
+      ad_google_group_id,
+      ad_google_account,
+      ad_crosschannel_source,
+      ad_crosschannel_medium,
+      ad_crosschannel_campaign,
+      ad_crosschannel_campaign_id,
+      ad_crosschannel_source_platform,
+      ad_crosschannel_primary_channel_group,
+      ad_crosschannel_default_channel_group
     )
   VALUES
     (
@@ -609,7 +666,21 @@ THEN
       S.all_reported_install_targets,
       S.last_reported_stub_session_id,
       S.all_reported_stub_session_ids,
-      S.landing_screen
+      S.landing_screen,
+      S.first_term_from_event_params,
+      S.distinct_terms_from_event_params,
+      S.ad_google_campaign,
+      S.ad_google_campaign_id,
+      S.ad_google_group,
+      S.ad_google_group_id,
+      S.ad_google_account,
+      S.ad_crosschannel_source,
+      S.ad_crosschannel_medium,
+      S.ad_crosschannel_campaign,
+      S.ad_crosschannel_campaign_id,
+      S.ad_crosschannel_source_platform,
+      S.ad_crosschannel_primary_channel_group,
+      S.ad_crosschannel_default_channel_group
     )
   WHEN MATCHED
 THEN
@@ -654,4 +725,18 @@ THEN
     T.all_reported_install_targets = S.all_reported_install_targets,
     T.last_reported_stub_session_id = S.last_reported_stub_session_id,
     T.all_reported_stub_session_ids = S.all_reported_stub_session_ids,
-    T.landing_screen = S.landing_screen
+    T.landing_screen = S.landing_screen,
+    T.first_term_from_event_params = S.first_term_from_event_params,
+    T.distinct_terms_from_event_params = S.distinct_terms_from_event_params,
+    T.ad_google_campaign = S.ad_google_campaign,
+    T.ad_google_campaign_id = S.ad_google_campaign_id,
+    T.ad_google_group = S.ad_google_group,
+    T.ad_google_group_id = S.ad_google_group_id,
+    T.ad_google_account = S.ad_google_account,
+    T.ad_crosschannel_source = S.ad_crosschannel_source,
+    T.ad_crosschannel_medium = S.ad_crosschannel_medium,
+    T.ad_crosschannel_campaign = S.ad_crosschannel_campaign,
+    T.ad_crosschannel_campaign_id = S.ad_crosschannel_campaign_id,
+    T.ad_crosschannel_source_platform = S.ad_crosschannel_source_platform,
+    T.ad_crosschannel_primary_channel_group = S.ad_crosschannel_primary_channel_group,
+    T.ad_crosschannel_default_channel_group = S.ad_crosschannel_default_channel_group

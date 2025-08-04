@@ -251,6 +251,20 @@ with DAG(
         retries=0,
     )
 
+    checks__warn_mozilla_org_derived__ga_sessions__v3 = bigquery_dq_check(
+        task_id="checks__warn_mozilla_org_derived__ga_sessions__v3",
+        source_table="ga_sessions_v3",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__warn_mozilla_org_derived__www_site_hits__v2 = bigquery_dq_check(
         task_id="checks__warn_mozilla_org_derived__www_site_hits__v2",
         source_table="www_site_hits_v2",
@@ -366,6 +380,19 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v2/script.sql",
+    )
+
+    mozilla_org_derived__ga_sessions__v3 = bigquery_etl_query(
+        task_id="mozilla_org_derived__ga_sessions__v3",
+        destination_table=None,
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        sql_file_path="sql/moz-fx-data-shared-prod/mozilla_org_derived/ga_sessions_v3/script.sql",
     )
 
     mozilla_org_derived__gclid_conversions__v2 = bigquery_etl_query(
@@ -508,6 +535,10 @@ with DAG(
         mozilla_org_derived__ga_sessions__v2
     )
 
+    checks__warn_mozilla_org_derived__ga_sessions__v3.set_upstream(
+        mozilla_org_derived__ga_sessions__v3
+    )
+
     checks__warn_mozilla_org_derived__www_site_hits__v2.set_upstream(
         mozilla_org_derived__www_site_hits__v2
     )
@@ -545,6 +576,8 @@ with DAG(
     )
 
     mozilla_org_derived__ga_sessions__v2.set_upstream(wait_for_wmo_events_table)
+
+    mozilla_org_derived__ga_sessions__v3.set_upstream(wait_for_wmo_events_table)
 
     mozilla_org_derived__gclid_conversions__v2.set_upstream(
         wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1

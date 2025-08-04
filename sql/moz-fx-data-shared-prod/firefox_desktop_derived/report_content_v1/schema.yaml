@@ -1,0 +1,37 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Day the event was received in the newtab content ping
+- name: card_type
+  type: STRING
+  mode: NULLABLE
+  description: The type of the content card (e.g., "spoc", "organic")
+- name: corpus_item_id
+  type: STRING
+  mode: NULLABLE
+  description: content identifier
+- name: section
+  type: STRING
+  mode: NULLABLE
+  description: If click belongs in a section, the name of the section
+- name: section_position
+  type: STRING
+  mode: NULLABLE
+  description: If click belongs in a section, the numeric position of the section
+- name: report_reason
+  type: STRING
+  mode: NULLABLE
+  description: The reason selected by the user when reporting the content
+- name: title
+  type: STRING
+  mode: NULLABLE
+  description: Title of the recommendation.
+- name: topic
+  type: STRING
+  mode: NULLABLE
+  description: The topic of the recommendation. Like "entertainment".
+- name: url
+  type: STRING
+  description: URL of the recommendation.
+  mode: NULLABLE

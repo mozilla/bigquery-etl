@@ -16,8 +16,10 @@ labels:
   incremental: false
   schedule: daily
 scheduling:
+{%- if not deprecated_app %}
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
+{%- endif %}
   depends_on_past: true
   date_partition_parameter: null
   parameters:

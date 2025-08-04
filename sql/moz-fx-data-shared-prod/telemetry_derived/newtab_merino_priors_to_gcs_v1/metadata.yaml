@@ -4,12 +4,12 @@ description: |-
   bucket for Merino to consume. The table rebuilds daily and aggregates 7 days
   of data.
 owners:
-- cbeck@mozilla.com
-- gkatre@mozilla.com
+- mmiermans@mozilla.com
+- rrando@mozilla.com
 labels:
-  owner1: cbeck
+  owner1: mmiermans
   dag: bqetl_merino_newtab_priors_to_gcs
-  owner2: gkatre
+  owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   arguments:

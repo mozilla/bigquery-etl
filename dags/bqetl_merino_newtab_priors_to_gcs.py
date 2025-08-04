@@ -72,8 +72,13 @@ with DAG(
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+        owner="mmiermans@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "gkatre@mozilla.com",
+            "mmiermans@mozilla.com",
+            "rrando@mozilla.com",
+        ],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
@@ -84,8 +89,13 @@ with DAG(
         destination_table="newtab_merino_priors_v1",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+        owner="mmiermans@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "gkatre@mozilla.com",
+            "mmiermans@mozilla.com",
+            "rrando@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
@@ -106,8 +116,13 @@ with DAG(
             "--deletion-days-old=3",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+        owner="mmiermans@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "gkatre@mozilla.com",
+            "mmiermans@mozilla.com",
+            "rrando@mozilla.com",
+        ],
     )
 
     checks__fail_telemetry_derived__newtab_merino_priors__v1.set_upstream(

@@ -53,54 +53,69 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    checks__fail_telemetry_derived__newtab_merino_extract__v1 = bigquery_dq_check(
-        task_id="checks__fail_telemetry_derived__newtab_merino_extract__v1",
-        source_table="newtab_merino_extract_v1",
+    checks__fail_telemetry_derived__newtab_merino_extract__v2 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__newtab_merino_extract__v2",
+        source_table="newtab_merino_extract_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+        owner="mmiermans@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "gkatre@mozilla.com",
+            "mmiermans@mozilla.com",
+            "rrando@mozilla.com",
+        ],
         depends_on_past=False,
         task_concurrency=1,
         retries=0,
     )
 
-    telemetry_derived__newtab_merino_extract__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__newtab_merino_extract__v1",
-        destination_table="newtab_merino_extract_v1",
+    telemetry_derived__newtab_merino_extract__v2 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_merino_extract__v2",
+        destination_table="newtab_merino_extract_v2",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+        owner="mmiermans@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "gkatre@mozilla.com",
+            "mmiermans@mozilla.com",
+            "rrando@mozilla.com",
+        ],
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
     )
 
-    telemetry_derived__newtab_merino_extract_to_gcs__v1 = GKEPodOperator(
-        task_id="telemetry_derived__newtab_merino_extract_to_gcs__v1",
+    telemetry_derived__newtab_merino_extract_to_gcs__v2 = GKEPodOperator(
+        task_id="telemetry_derived__newtab_merino_extract_to_gcs__v2",
         arguments=[
             "python",
-            "sql/moz-fx-data-shared-prod/telemetry_derived/newtab_merino_extract_to_gcs_v1/query.py",
+            "sql/moz-fx-data-shared-prod/telemetry_derived/newtab_merino_extract_to_gcs_v2/query.py",
         ]
         + [
             "--source-project=moz-fx-data-shared-prod",
             "--source-dataset=telemetry_derived",
-            "--source-table=newtab_merino_extract_v1",
+            "--source-table=newtab_merino_extract_v2",
             "--destination-bucket=merino-airflow-data-prodpy",
             "--destination-prefix=newtab-merino-exports/engagement",
             "--deletion-days-old=3",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com", "gkatre@mozilla.com"],
+        owner="mmiermans@mozilla.com",
+        email=[
+            "cbeck@mozilla.com",
+            "gkatre@mozilla.com",
+            "mmiermans@mozilla.com",
+            "rrando@mozilla.com",
+        ],
     )
 
-    checks__fail_telemetry_derived__newtab_merino_extract__v1.set_upstream(
-        telemetry_derived__newtab_merino_extract__v1
+    checks__fail_telemetry_derived__newtab_merino_extract__v2.set_upstream(
+        telemetry_derived__newtab_merino_extract__v2
     )
 
-    telemetry_derived__newtab_merino_extract_to_gcs__v1.set_upstream(
-        checks__fail_telemetry_derived__newtab_merino_extract__v1
+    telemetry_derived__newtab_merino_extract_to_gcs__v2.set_upstream(
+        checks__fail_telemetry_derived__newtab_merino_extract__v2
     )

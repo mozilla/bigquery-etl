@@ -3,13 +3,13 @@ description: |-
   Aggregated Newtab events for Merino recommendations.
   See https://mozilla-hub.atlassian.net/browse/MC-1256
 owners:
-- cbeck@mozilla.com
-- gkatre@mozilla.com
+- mmiermans@mozilla.com
+- rrando@mozilla.com
 labels:
   owner: cbeck
   dag: bqetl_merino_newtab_extract_to_gcs
-  owner1: cbeck
-  owner2: gkatre
+  owner1: mmiermans
+  owner2: rrando
 scheduling:
   dag_name: bqetl_merino_newtab_extract_to_gcs
   date_partition_parameter: null

@@ -14,7 +14,7 @@ from typing import Callable, Iterable, Optional, Tuple, Union
 
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
-from google.cloud.bigquery import QueryJob
+from google.cloud.bigquery import CopyJob, QueryJob
 
 from ..format_sql.formatter import reformat
 from ..util import standard_args
@@ -147,6 +147,13 @@ parser.add_argument(
     help="Dataset (project.dataset format) to write intermediate results of sampled queries to. "
     "Must be specified when --sampling-tables is set.",
 )
+parser.add_argument(
+    "--reservation-override",
+    "--reservation_override",
+    metavar="projects/{project}/locations/{location}/reservations/{reservation}",
+    help="Override the reservation assigned to the billing projects, e.g. "
+    "projects/moz-fx-bigquery-reserv-global/locations/US/reservations/shredder-all",
+)
 
 
 @dataclass
@@ -217,7 +224,7 @@ def wait_for_job(
         record_state(
             client=client, task_id=task_id, dry_run=dry_run, job=job, **state_kwargs
         )
-    if not dry_run and not job.ended:
+    if not dry_run and (not job.ended or isinstance(job, CopyJob)):
         logging.info(f"Waiting on {full_job_id(job)} for {task_id}")
         job.result()
 
@@ -303,10 +310,15 @@ def delete_from_partition(
     sample_id: Optional[int] = None,
     temp_dataset: Optional[str] = None,
     clustering_fields: Optional[Iterable[str]] = None,
+    reservation_override: Optional[str] = None,
     **wait_for_job_kwargs,
 ):
     """Return callable to handle deletion requests for partitions of a target table."""
-    job_config = bigquery.QueryJobConfig(dry_run=dry_run, priority=priority)
+    job_config = bigquery.QueryJobConfig(
+        dry_run=dry_run,
+        priority=priority,
+        reservation=reservation_override,
+    )
     # whole table operations must use DML to protect against dropping partitions in the
     # case of conflicting write operations in ETL, and special partitions must use DML
     # because they can't be set as a query destination.
@@ -314,9 +326,7 @@ def delete_from_partition(
         use_dml = True
     elif sample_id is not None:
         use_dml = False
-        job_config.destination = (
-            f"{temp_dataset}.{target.table_id}_{partition.id}__sample_{sample_id}"
-        )
+        job_config.destination = f"{temp_dataset}.{target.dataset_id}__{target.table_id}_{partition.id}__sample_{sample_id}"
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         job_config.clustering_fields = clustering_fields
     elif not use_dml:
@@ -434,6 +444,7 @@ def delete_from_partition_with_sampling(
     use_dml: bool,
     sampling_parallelism: int,
     temp_dataset: str,
+    reservation_override: str,
     **wait_for_job_kwargs,
 ):
     """Return callable to delete from a partition of a target table per sample id."""
@@ -461,6 +472,7 @@ def delete_from_partition_with_sampling(
                 sample_id=s,
                 clustering_fields=intermediate_clustering_fields,
                 check_table_existence=True,
+                reservation_override=reservation_override,
                 **{
                     **wait_for_job_kwargs,
                     # override task id with sample id suffix
@@ -496,7 +508,7 @@ def delete_from_partition_with_sampling(
             )
             # simulate query job properties for logging
             copy_job.total_bytes_processed = sum(
-                [r.total_bytes_processed for r in results]
+                [r.total_bytes_processed or 0 for r in results]
             )
             return copy_job
         else:
@@ -623,6 +635,7 @@ def delete_from_table(
     sampling_parallelism,
     use_sampling,
     temp_dataset,
+    reservation_override,
     **kwargs,
 ) -> Iterable[Task]:
     """Yield tasks to handle deletion requests for a target table."""
@@ -660,6 +673,7 @@ def delete_from_table(
                 task_id=get_task_id(target, partition.id),
                 end_date=end_date,
                 temp_dataset=temp_dataset,
+                reservation_override=reservation_override,
                 **kwargs,
             ),
         )
@@ -779,6 +793,7 @@ def main():
             sampling_parallelism=args.sampling_parallelism,
             use_sampling=target.table in args.sampling_tables,
             temp_dataset=args.temp_dataset,
+            reservation_override=args.reservation_override,
         )
     ]
 

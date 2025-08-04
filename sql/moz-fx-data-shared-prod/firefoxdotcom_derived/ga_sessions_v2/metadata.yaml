@@ -1,6 +1,7 @@
-friendly_name: Google Analytics Sessions V1
+friendly_name: Google Analytics Sessions V2
 description: |-
   Contains 1 row for each Google Analytics 4 session
+  The primary key is a composite key (ga_client_id, ga_session_id)
 owners:
 - kwindau@mozilla.com
 labels:
@@ -14,8 +15,6 @@ scheduling:
   depends_on:
   - task_id: wait_for_firefoxdotcom_events_table
     dag_name: bqetl_ga4_firefoxdotcom
-monitoring:
-  enabled: true
 bigquery:
   time_partitioning:
     type: day
@@ -32,6 +31,5 @@ require_column_descriptions: true
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:dataops-managed/external-census
   - workgroup:google-managed/external-ads-datafusion
   - workgroup:google-managed/external-ads-dataproc

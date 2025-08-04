@@ -1,0 +1,18 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.ga_clients_v1.ga_client_id
+    metrics:
+    - saved_metric_id: is_unique
+      rct_overrides:
+      - session_date
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1.*
+    metrics:
+    - saved_metric_id: volume
+    - saved_metric_id: freshness

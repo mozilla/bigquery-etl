@@ -28,7 +28,7 @@ mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2025.7.1
 mozilla-schema-generator==0.5.1
 pandas==2.3.1
-paramiko==3.5.1
+paramiko==4.0.0
 pathos==0.3.4
 pip-tools==7.5.0
 pre-commit==4.2.0

@@ -181,3 +181,51 @@ fields:
   type: STRING
   mode: REPEATED
   description: "All non-null reported terms from event_params for this session."
+- name: ad_google_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Campaign Name reported during GA user's session_start event
+- name: ad_google_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Campaign ID reported during GA user's session_start event
+- name: ad_google_group
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Ad Group Name reported during GA user's session_start event
+- name: ad_google_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Group ID reported during GA user's session_start event
+- name: ad_google_account
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Account Name reported during GA user's session_start event
+- name: ad_crosschannel_source
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Campaign Source reported during GA user's session_start event
+- name: ad_crosschannel_medium
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Campaign Medium reported during GA user's session_start event
+- name: ad_crosschannel_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Campaign Name reported during GA user's session_start event
+- name: ad_crosschannel_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Campaign ID reported during GA user's session_start event
+- name: ad_crosschannel_source_platform
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Source Platform reported during GA user's session_start event
+- name: ad_crosschannel_primary_channel_group
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Primary Channel Group reported during GA user's session_start event
+- name: ad_crosschannel_default_channel_group
+  type: STRING
+  mode: NULLABLE
+  description: Google Ads Cross-Channel Default Channel Group reported during GA user's session_start event

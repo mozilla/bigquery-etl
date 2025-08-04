@@ -15,15 +15,13 @@ fields:
 - name: newtab_content_surface_id
   type: STRING
   mode: NULLABLE
-  description: >
-    Surface id sent to the client from merino api
+  description: Surface id sent to the client from merino api
 - name: corpus_item_id
   type: STRING
   mode: NULLABLE
-  description: >
-    A content identifier. For organic Newtab recommendations it is an opaque id produced
-    by Newtab's recommendation systems that corresponds uniquely to the URL.
-    This is the replacement for tile_id and scheduled_corpus_item_id.
+  description: A content identifier. For organic Newtab recommendations it is an
+    opaque id produced by Newtab''s recommendation systems that corresponds uniquely
+    to the URL. This is the replacement for tile_id and scheduled_corpus_item_id.
 - name: position
   type: INTEGER
   mode: NULLABLE
@@ -39,11 +37,13 @@ fields:
 - name: matches_selected_topic
   type: STRING
   mode: NULLABLE
-  description: Returns value based on if a the topic of the pocket recommendation matches one of the user-selected topic categories
+  description: Returns value based on if a the topic of the pocket recommendation
+    matches one of the user-selected topic categories
 - name: received_rank
   type: INTEGER
   mode: NULLABLE
-  description: The rank or order of the recommendation at the time it was sent to the client.
+  description: The rank or order of the recommendation at the time it was sent to
+    the client.
 - name: section
   type: STRING
   mode: NULLABLE
@@ -68,3 +68,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Count of articles dismissed on Newtab
+- name: content_redacted
+  type: STRING
+  mode: NULLABLE
+- name: newtab_content_ping_version
+  type: INTEGER
+  mode: NULLABLE

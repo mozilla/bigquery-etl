@@ -3,7 +3,7 @@ description: |-
   A daily aggregation of newtab content actions on content/items (example: impressions, clicks, dismissals)
   for Firefox desktop, partitioned by day.
 owners:
-  - lmcfall@mozilla.com
+- lmcfall@mozilla.com
 labels:
   application: newtab
   incremental: true
@@ -22,11 +22,12 @@ bigquery:
   range_partitioning: null
   clustering:
     fields:
-      - channel
-      - country
-references: {}
+    - channel
+    - country
 workgroup_access:
-  - role: roles/bigquery.dataViewer
-    members:
-      - workgroup:mozsoc-ml/service
-      - workgroup:mozsoc-ml/developers
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers
+references: {}
+require_column_descriptions: false

@@ -46,7 +46,19 @@ SELECT
   mo.all_reported_install_targets,
   mo.last_reported_stub_session_id,
   mo.all_reported_stub_session_ids,
-  mo.landing_screen
+  mo.landing_screen,
+  mo.ad_google_campaign,
+  mo.ad_google_campaign_id,
+  mo.ad_google_group,
+  mo.ad_google_group_id,
+  mo.ad_google_account,
+  mo.ad_crosschannel_source,
+  mo.ad_crosschannel_medium,
+  mo.ad_crosschannel_campaign,
+  mo.ad_crosschannel_campaign_id,
+  mo.ad_crosschannel_source_platform,
+  mo.ad_crosschannel_primary_channel_group,
+  mo.ad_crosschannel_default_channel_group
 FROM
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3` mo
 UNION ALL
@@ -95,6 +107,18 @@ SELECT
   fx.all_reported_install_targets,
   fx.last_reported_stub_session_id,
   fx.all_reported_stub_session_ids,
-  fx.landing_screen
+  fx.landing_screen,
+  fx.ad_google_campaign,
+  fx.ad_google_campaign_id,
+  fx.ad_google_group,
+  fx.ad_google_group_id,
+  fx.ad_google_account,
+  fx.ad_crosschannel_source,
+  fx.ad_crosschannel_medium,
+  fx.ad_crosschannel_campaign,
+  fx.ad_crosschannel_campaign_id,
+  fx.ad_crosschannel_source_platform,
+  fx.ad_crosschannel_primary_channel_group,
+  fx.ad_crosschannel_default_channel_group
 FROM
   `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2` fx

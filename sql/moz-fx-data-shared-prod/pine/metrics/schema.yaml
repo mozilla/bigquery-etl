@@ -19328,6 +19328,22 @@ fields:
         same as for the `contextmenu` labeled counter.
 
         '
+    - name: sap_impression_counts_contextmenu_visual
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of impressions of the visual search context menu item. The
+        counter''s label is the engine''s identifier if the engine is known at the
+        time of impression and it''s an app-provided engine. Otherwise the label is
+        "none".
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

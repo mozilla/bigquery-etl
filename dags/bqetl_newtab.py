@@ -116,6 +116,12 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-2, seconds=68400)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads_quarterly__wait_for_firefox_desktop_derived__newtab_clients_daily__v2",
+            external_dag_id="private_bqetl_ads_quarterly",
+            external_task_id="wait_for_firefox_desktop_derived__newtab_clients_daily__v2",
+        )
+
         firefox_desktop_derived__newtab_clients_daily__v2_external.set_upstream(
             firefox_desktop_derived__newtab_clients_daily__v2
         )

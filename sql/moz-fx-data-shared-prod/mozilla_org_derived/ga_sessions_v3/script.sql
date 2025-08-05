@@ -31,7 +31,7 @@ MERGE INTO
         CAST(e.value.int_value AS string) AS ga_session_id,
         DATETIME(
           TIMESTAMP_MICROS(all_sess_strt_events.event_timestamp),
-          "America/Los_Angeles"
+          "Europe/London"
         ) AS session_start_timestamp,
         (
           SELECT

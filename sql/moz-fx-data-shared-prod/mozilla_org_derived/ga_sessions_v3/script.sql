@@ -99,8 +99,6 @@ MERGE INTO
       SELECT
         all_events.user_pseudo_id AS ga_client_id,
         all_events.event_timestamp,
-        --below is new
-        ---above is new
         (
           SELECT
             `value`

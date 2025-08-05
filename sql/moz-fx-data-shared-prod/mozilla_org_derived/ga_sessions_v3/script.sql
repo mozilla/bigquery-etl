@@ -99,8 +99,6 @@ MERGE INTO
       SELECT
         all_events.user_pseudo_id AS ga_client_id,
         all_events.event_timestamp,
-        --below is new
-        ---above is new
         (
           SELECT
             `value`
@@ -604,6 +602,7 @@ THEN
       gclid,
       gclid_array,
       had_download_event,
+      firefox_desktop_downloads,
       last_reported_install_target,
       all_reported_install_targets,
       last_reported_stub_session_id,
@@ -662,6 +661,7 @@ THEN
       S.gclid,
       S.gclid_array,
       S.had_download_event,
+      S.firefox_desktop_downloads,
       S.last_reported_install_target,
       S.all_reported_install_targets,
       S.last_reported_stub_session_id,
@@ -721,6 +721,7 @@ THEN
     T.gclid = S.gclid,
     T.gclid_array = S.gclid_array,
     T.had_download_event = S.had_download_event,
+    T.firefox_desktop_downloads = S.firefox_desktop_downloads,
     T.last_reported_install_target = S.last_reported_install_target,
     T.all_reported_install_targets = S.all_reported_install_targets,
     T.last_reported_stub_session_id = S.last_reported_stub_session_id,

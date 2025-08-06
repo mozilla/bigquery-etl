@@ -1,9 +1,10 @@
-2025-08-05:
-  start_date: 2022-06-21
+2025-08-06:
+  start_date: 2023-06-23
   end_date: 2025-07-26
   reason: See https://mozilla-hub.atlassian.net/browse/DENG-9289
   watchers:
   - ctroy@mozilla.com
+  - chtroy@mozilla.com
   status: Initiate
   shredder_mitigation: false
   override_retention_limit: false

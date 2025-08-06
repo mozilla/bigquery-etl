@@ -163,6 +163,12 @@ def main():
     )
     labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
     dual_labeled_metric_names, _ = get_scalar_metrics(schema, "dual_labeled")
+    metrics_with_too_many_labels = get_etl_excluded_probes_quickfix("desktop")
+    dual_labeled_metric_names["dual_labeled_counter"] = [
+        name
+        for name in dual_labeled_metric_names["dual_labeled_counter"]
+        if name not in metrics_with_too_many_labels
+    ]
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
     dual_labeled_metrics = get_labeled_metrics_sql(dual_labeled_metric_names).strip()

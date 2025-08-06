@@ -47102,6 +47102,9 @@ fields:
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram SQLITE_STORE_OPEN.
 
+        Initially this metric also recorded the "success" category, but due to the
+        high volume of recording those, only failure categories are now tracked.
+
         '
     - name: sqlite_store_query
       type: RECORD
@@ -47124,6 +47127,9 @@ fields:
 
         This metric was generated to correspond to the Legacy Telemetry categorical
         histogram SQLITE_STORE_QUERY.
+
+        Initially this metric also recorded the "success" category, but due to the
+        high volume of recording those, only failure categories are now tracked.
 
         '
     - name: telemetry_send_failure_type_per_ping

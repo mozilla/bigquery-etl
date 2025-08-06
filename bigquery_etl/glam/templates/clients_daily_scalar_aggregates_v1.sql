@@ -119,6 +119,65 @@ flattened_labeled_metrics AS (
     UNNEST(metrics) AS metrics,
     UNNEST(metrics.value) AS value
 ),
+dual_labeled_metrics AS (
+  SELECT
+    {{ attributes }},
+    ARRAY<
+      STRUCT<
+        name STRING, 
+        type STRING, 
+        value ARRAY<
+          STRUCT<
+            key STRING, 
+            value ARRAY<
+              STRUCT<
+                key STRING, 
+                value INT64
+              >
+            >
+          >
+        >
+      >
+    >[
+        {{ dual_labeled_metrics }}
+    ] as metrics
+  FROM
+    extracted
+  WHERE
+    -- If you're changing this, then you'll also need to change probe_counts_v1,
+    -- where sampling is taken into account for counting clients.
+    channel IN ("nightly", "beta")
+    OR (channel = "release" AND os != "Windows")
+    OR (
+      channel = "release" AND
+      os = "Windows" AND
+      sample_id < 10)
+),
+flattened_dual_labeled_metrics AS (
+  SELECT
+    {{ attributes }},
+    metrics.name AS metric,
+    metrics.type AS metric_type,
+    CONCAT(value.key,'.',nested_value.key) AS key,
+    nested_value.value AS value
+  FROM
+    dual_labeled_metrics
+  CROSS JOIN
+    UNNEST(metrics) AS metrics,
+    UNNEST(metrics.value) AS value,
+    UNNEST(value.value) AS nested_value
+),
+flattened_unioned_labeled_metrics AS (
+  SELECT
+    *
+  FROM
+    flattened_labeled_metrics
+  UNION ALL
+  SELECT
+    *
+  FROM
+    flattened_dual_labeled_metrics
+),
 aggregated_labeled_metrics AS (
   SELECT
     {{ attributes }},
@@ -131,7 +190,7 @@ aggregated_labeled_metrics AS (
     SUM(value) AS sum,
     IF(MIN(value) IS NULL, NULL, COUNT(*)) AS count
   FROM
-    flattened_labeled_metrics
+    flattened_unioned_labeled_metrics
   GROUP BY
     {{ attributes }},
     metric,

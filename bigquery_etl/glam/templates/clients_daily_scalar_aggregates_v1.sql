@@ -126,11 +126,23 @@ dual_labeled_metrics AS (
     {{ attributes }},
     ARRAY<
       STRUCT<
-        name STRING,
-        type STRING,
-        value ARRAY<STRUCT<key STRING, value ARRAY<STRUCT<key STRING, value INT64>>>>
+        name STRING, 
+        type STRING, 
+        value ARRAY<
+          STRUCT<
+            key STRING, 
+            value ARRAY<
+              STRUCT<
+                key STRING, 
+                value INT64
+              >
+            >
+          >
+        >
       >
-    >[{{ dual_labeled_metrics }}] AS metrics
+    >[
+        {{ dual_labeled_metrics }}
+    ] as metrics
   FROM
     extracted
   WHERE
@@ -138,14 +150,17 @@ dual_labeled_metrics AS (
     -- where sampling is taken into account for counting clients.
     channel IN ("nightly", "beta")
     OR (channel = "release" AND os != "Windows")
-    OR (channel = "release" AND os = "Windows" AND sample_id < 10)
+    OR (
+      channel = "release" AND
+      os = "Windows" AND
+      sample_id < 10)
 ),
 flattened_dual_labeled_metrics AS (
   SELECT
     {{ attributes }},
     metrics.name AS metric,
     metrics.type AS metric_type,
-    CONCAT(value.key, '[', nested_value.key, ']') AS key,
+    CONCAT(value.key,'.',nested_value.key) AS key,
     nested_value.value AS value
   FROM
     dual_labeled_metrics

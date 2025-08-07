@@ -6,6 +6,9 @@
 /tests/sql/
 dags.yaml
 
+# require review on datasets, otherwise permissions could be changed without review
+**/dataset_metadata.yaml @mozilla/data-platform-infra-wg
+
 # These datasets are subject to the additional change control procedures
 # described in https://docs.google.com/document/d/1TTJi4ht7NuzX6BPG_KTr6omaZg70cEpxe9xlpfnHj9k/
 # Active Users

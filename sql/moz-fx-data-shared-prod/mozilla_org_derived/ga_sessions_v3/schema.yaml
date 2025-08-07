@@ -2,7 +2,7 @@ fields:
 - name: ga_client_id
   mode: NULLABLE
   type: STRING
-  description: Google Analytics Client Identifier, using a cookie on Firefox.com
+  description: Google Analytics Client Identifier, using a cookie on mozilla.org
 - name: ga_session_id
   mode: NULLABLE
   type: STRING

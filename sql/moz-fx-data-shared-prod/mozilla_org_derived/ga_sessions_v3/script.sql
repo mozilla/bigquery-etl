@@ -18,7 +18,7 @@ We essentially do 2 main things:
    For example, columns like first_campaign_from_event_params, first_term_from_event_params, etc.
 */
 MERGE INTO
-  `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2` T
+  `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3` T
   USING (
     --get all the unique "GA Client ID", "GA Session ID" combinations with events between 3 days prior to the submission date and the submission date
     WITH all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days AS (
@@ -26,7 +26,7 @@ MERGE INTO
         user_pseudo_id AS ga_client_id,
         CAST(e.value.int_value AS string) AS ga_session_id
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_*`
+        `moz-fx-data-marketing-prod.analytics_313696158.events_*`
       JOIN
         UNNEST(event_params) e
       WHERE
@@ -50,7 +50,7 @@ MERGE INTO
         CAST(e.value.int_value AS string) AS ga_session_id,
         DATETIME(
           TIMESTAMP_MICROS(all_sess_strt_events.event_timestamp),
-          "America/Los_Angeles"
+          "Europe/London"
         ) AS session_start_timestamp,
         (
           SELECT
@@ -91,9 +91,9 @@ MERGE INTO
         device.language AS `language`,
         device.web_info.browser AS browser,
         device.web_info.browser_version AS browser_version,
-        PARSE_DATE('%Y%m%d', event_date) AS session_date,
+        PARSE_DATE('%Y%m%d', event_date) AS session_date
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_sess_strt_events
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_sess_strt_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
@@ -179,7 +179,7 @@ MERGE INTO
             1
         ).string_value AS term_from_event_params
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events
       JOIN
         distinct_ga_client_ids dist_clients
         ON all_events.user_pseudo_id = dist_clients.ga_client_id
@@ -245,7 +245,7 @@ MERGE INTO
         CAST(e.value.int_value AS string) AS ga_session_id,
         collected_traffic_source.gclid AS gclid
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events_with_gclid
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events_with_gclid
       JOIN
         UNNEST(event_params) AS e
       JOIN
@@ -279,7 +279,46 @@ MERGE INTO
         COUNTIF(event_name = 'page_view') AS pageviews,
         MIN(event_timestamp) AS min_event_timestamp,
         MAX(event_timestamp) AS max_event_timestamp,
-        COUNTIF(event_name = 'firefox_download') AS firefox_desktop_downloads,
+        SUM(
+          CASE
+            WHEN (event_name = 'firefox_download' AND event_date >= '20240217')
+              OR (
+                event_name = 'product_download'
+                AND event_date < '20240217'
+                AND (
+                  SELECT
+                    `value`
+                  FROM
+                    UNNEST(event_params)
+                  WHERE
+                    key = 'product'
+                  LIMIT
+                    1
+                ).string_value = 'firefox'
+                AND (
+                  SELECT
+                    `value`
+                  FROM
+                    UNNEST(event_params)
+                  WHERE
+                    key = 'platform'
+                  LIMIT
+                    1
+                ).string_value IN (
+                  'win',
+                  'win64',
+                  'macos',
+                  'linux64',
+                  'win64-msi',
+                  'linux',
+                  'win-msi',
+                  'win64-aarch64'
+                ) --platform = desktop
+              )
+              THEN 1
+            ELSE 0
+          END
+        ) AS firefox_desktop_downloads,
         CAST(
           MAX(
             CASE
@@ -296,7 +335,7 @@ MERGE INTO
           ) AS boolean
         ) AS had_download_event
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
@@ -329,7 +368,7 @@ MERGE INTO
         ) AS ga_session_id,
         CAST(e.value.int_value AS string) AS stub_session_id
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_stub_session_set_events
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_stub_session_set_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
@@ -384,7 +423,7 @@ MERGE INTO
         )[OFFSET(0)] AS page_location,
         event_timestamp
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events_with_entrances
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events_with_entrances
       JOIN
         UNNEST(event_params) AS e
       JOIN
@@ -420,7 +459,7 @@ MERGE INTO
         event_timestamp,
         event_name AS install_event_name
       FROM
-        `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_install_events
+        `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_install_events
       JOIN
         UNNEST(event_params) AS e
       JOIN
@@ -515,7 +554,7 @@ MERGE INTO
       sess_strt.ad_crosschannel_campaign_id,
       sess_strt.ad_crosschannel_source_platform,
       sess_strt.ad_crosschannel_primary_channel_group,
-      sess_strt.ad_crosschannel_default_channel_group
+      sess_strt.ad_crosschannel_default_channel_group,
     FROM
       device_properties_at_session_start_event sess_strt
     JOIN

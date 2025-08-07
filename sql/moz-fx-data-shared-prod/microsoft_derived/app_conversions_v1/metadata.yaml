@@ -2,6 +2,7 @@ friendly_name: App Conversions
 description: |-
   This table represents acquisition data downloaded from the Microsoft Store for Firefox, FX Beta and FX Nightly
   The link for this data is here: https://manage.devcenter.microsoft.com/v1.0/my/analytics/appchannelconversions?
+  Note: this DAG often fails on the first or second run
 owners:
 - mhirose@mozilla.com
 labels:
@@ -24,4 +25,9 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references: {}
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: true
 require_column_descriptions: false

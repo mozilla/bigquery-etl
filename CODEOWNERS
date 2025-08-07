@@ -3,7 +3,6 @@
 
 # do not require review from data platform for the following files and directories
 /sql/
-/sql_generators/
 /tests/sql/
 dags.yaml
 

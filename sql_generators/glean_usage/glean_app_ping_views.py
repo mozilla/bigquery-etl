@@ -17,6 +17,7 @@ from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
 from pathos.multiprocessing import ThreadingPool
 
+from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.schema import Schema
 from bigquery_etl.util.common import get_table_dir, write_sql
@@ -83,6 +84,8 @@ class GleanAppPingViews(GleanTable):
         ):
             return
 
+        ignored_pings = ConfigLoader.get("generate", "glean_usage", "app_ping_views", "skip", fallback=[])
+
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
 
@@ -107,6 +110,10 @@ class GleanAppPingViews(GleanTable):
             for channel_app in app_info:
                 channel_dataset = channel_app["bq_dataset_family"]
                 channel_dataset_view = f"{channel_dataset}.{view_name}"
+
+                if channel_dataset_view in ignored_pings:
+                    continue
+
                 schema = Schema.for_table(
                     "moz-fx-data-shared-prod",
                     channel_dataset,

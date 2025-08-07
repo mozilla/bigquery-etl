@@ -1,0 +1,35 @@
+friendly_name: Google Analytics Sessions V3
+description: |-
+  Contains 1 row for each Google Analytics 4 session
+  The primary key is a composite key (ga_client_id, ga_session_id)
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+  depends_on:
+  - task_id: wait_for_wmo_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: session_date
+    require_partition_filter: false
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields:
+    - ga_client_id
+    - country
+references: {}
+require_column_descriptions: true
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc

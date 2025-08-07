@@ -1,0 +1,125 @@
+fields:
+- description: |
+    collection_configuration_id associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_id
+  type: INTEGER
+- description: |
+    collection_configuration_name associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_name
+  type: STRING
+- description: |
+    collection_configuration_description associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_description
+  type: STRING
+- description: |
+    collection_configuration_entity_info_created_by associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_entity_info_created_by
+  type: INTEGER
+- description: |
+    collection_configuration_entity_info_created_epoch_seconds associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_entity_info_created_epoch_seconds
+  type: INTEGER
+- description: |
+    collection_configuration_entity_info_updated_by associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_entity_info_updated_by
+  type: INTEGER
+- description: |
+    collection_configuration_entity_info_updated_epoch_seconds associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_entity_info_updated_epoch_seconds
+  type: INTEGER
+- description: |
+    collection_configuration_owner associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_owner
+  type: INTEGER
+- description: |
+    collection_configuration_metric_ids associated with this record.
+  mode: REPEATED
+  name: collection_configuration_metric_ids
+  type: INTEGER
+- fields:
+  - mode: NULLABLE
+    name: email
+    type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: channelId
+      type: STRING
+    - mode: NULLABLE
+      name: channelName
+      type: STRING
+    mode: NULLABLE
+    name: slackChannelInfo
+    type: RECORD
+    description: Slack Channel Information
+  mode: REPEATED
+  name: collection_configuration_notification_channels
+  type: RECORD
+  description: collection_configuration_notification_channels associated with this record.
+- description: |
+    collection_configuration_muted_until_timestamp associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_muted_until_timestamp
+  type: INTEGER
+- description: |
+    collection_configuration_is_favorite associated with this record.
+  mode: NULLABLE
+  name: collection_configuration_is_favorite
+  type: BOOLEAN
+- description: |
+    collection_configuration_tags associated with this record.
+  mode: REPEATED
+  name: collection_configuration_tags
+  type: INTEGER
+- description: |
+    collection_metric_status_metrics_count associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_metrics_count
+  type: INTEGER
+- description: |
+    collection_metric_status_alerting_metrics_count associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_alerting_metrics_count
+  type: INTEGER
+- description: |
+    collection_metric_status_earliest_updated_metric_seconds associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_earliest_updated_metric_seconds
+  type: INTEGER
+- description: |
+    collection_metric_status_latest_updated_metric_seconds associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_latest_updated_metric_seconds
+  type: INTEGER
+- description: |
+    collection_metric_status_open_issues_count associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_open_issues_count
+  type: INTEGER
+- description: |
+    collection_metric_status_triage_issues_count associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_triage_issues_count
+  type: INTEGER
+- description: |
+    collection_metric_status_acknowledge_issues_count associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_acknowledge_issues_count
+  type: INTEGER
+- description: |
+    collection_metric_status_monitoring_issues_count associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_monitoring_issues_count
+  type: INTEGER
+- description: |
+    Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
+  mode: NULLABLE
+  name: refreshed_at
+  type: TIMESTAMP

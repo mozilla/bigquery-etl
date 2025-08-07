@@ -161,6 +161,7 @@ bqetl_accounts_derived:
 
 bqetl_subplat:
   schedule_interval: 30 1 * * *
+  catchup: true
   description: |
     Daily imports for Subscription Platform data from Stripe, Firestore, and the Mozilla VPN
     operational DB as well as derived tables based on that data.
@@ -183,6 +184,7 @@ bqetl_subplat:
 
 bqetl_subplat_hourly:
   schedule_interval: 30 * * * *
+  catchup: true
   description: |
     Hourly imports for Subscription Platform data from Stripe and Firestore,
     as well as derived tables based on that data.
@@ -1515,7 +1517,7 @@ bqetl_pageload_v1:
     - repo/bigquery-etl
 
 bqetl_desktop_engagement_model:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 0 5 * * *
   description: Loads the desktop engagement model tables
   default_args:
     depends_on_past: false
@@ -1532,7 +1534,7 @@ bqetl_desktop_engagement_model:
     - impact/tier_2
 
 bqetl_desktop_retention_model:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 0 5 * * *
   description: Loads the desktop retention model tables
   default_args:
     depends_on_past: false
@@ -2435,3 +2437,20 @@ bqetl_ads_hourly:
     - impact/tier_3
     - repo/bigquery-etl
     - triage/confidential
+
+bqetl_bigeye_derived:
+  schedule_interval: 0 3 * * *
+  description: |
+    Pulls metadata from BigEye API
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+    start_date: '2025-07-14'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

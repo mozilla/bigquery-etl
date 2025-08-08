@@ -1,0 +1,5 @@
+labels:
+  authorized: true
+references:
+  view.sql:
+  - moz-fx-spacelift-poc-nonprod.dataset_a.table_a

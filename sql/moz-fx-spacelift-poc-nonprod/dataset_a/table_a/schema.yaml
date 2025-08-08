@@ -1,0 +1,4 @@
+fields:
+- name: foo
+  type: INTEGER
+  mode: NULLABLE

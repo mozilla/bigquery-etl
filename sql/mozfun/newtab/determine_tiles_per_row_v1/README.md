@@ -7,8 +7,8 @@ based on the layout type and window width.
 
 | Parameter Name             | Type    | Description                                                                                                                                                                                                                                                                        |
 |---------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `layout_type`             | STRING  | The layout style of the Newtab page. Can be one of `SECTION_GRID`, `NEW_GRID`, or `OLD_GRID` and is computed using the UDF `determine_grid_layout`.<br/> [README](sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF |
-| `newtab_window_inner_width` | INTEGER | The width (in pixels) of the Firefox browser window.                                                                                                                                                                                                                               |
+| `layout_type`             | STRING  | The layout style of the Newtab page. Can be one of `SECTION_GRID`, `NEW_GRID`, or `OLD_GRID` and is computed using the UDF `determine_grid_layout`.<br/> [README](https://github.com/mozilla/bigquery-etl/blob/main/sql/mozfun/newtab/determine_grid_layout_v1/README.md) for more information about the `determine_grid_layout` UDF |
+| `newtab_window_inner_width` | INTEGER | The width (in pixels) of the Firefox browser window. An attribute of the newtab `opened` event.                                                                                                                                                                                    |
 
 ## 📤 Output
 

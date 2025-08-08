@@ -1,4 +1,4 @@
-# UDF: Determination Tiles per row on Firefox Newtab Layout
+# UDF: Tiles per row on Firefox Newtab
 
 This UDF (`determine_tiles_per_row_v1`) determines the number of tiles displayed per row on the Firefox Newtab page,
 based on the layout type and window width.

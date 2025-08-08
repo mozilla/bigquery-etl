@@ -294,7 +294,25 @@ SELECT
     history.subscription.status AS provider_status,
     history.subscription_first_active_at AS started_at,
     history.subscription.ended_at,
-    -- TODO: ended_reason
+    CASE
+      WHEN (
+          history.subscription.cancellation_details.cancellation_details_reason IS NULL
+          AND history.valid_from < '2024-05-17'
+          AND (history.subscription.cancel_at_period_end IS NOT TRUE) = FALSE
+        )
+        OR history.subscription.cancellation_details.cancellation_details_reason = 'cancellation_requested'
+        OR history.subscription.metadata.cancellation_reason = 'fxa_user_requested_account_delete'
+        THEN 'User Initiated'
+      WHEN history.subscription.cancellation_details.cancellation_details_reason = 'payment_failed'
+        THEN 'Payment Failure'
+      WHEN history.subscription.metadata.cancellation_reason = 'fxa_admin_requested_account_delete'
+        THEN 'Admin Initiated'
+      WHEN history.subscription.cancellation_details.cancellation_details_reason = 'payment_disputed'
+        OR history.subscription.metadata.cancellation_reason = 'fxa_cleanup_account_delete'
+        OR history.subscription.metadata.cancellation_reason = 'fxa_unverified_account_delete'
+        THEN 'Other'
+      ELSE NULL
+    END AS ended_reason,
     IF(
       history.subscription.ended_at IS NULL,
       history.subscription.current_period_start,

@@ -14,7 +14,7 @@ historical_triplets AS (
     IFNULL(ga_client_id, "") AS ga_client_id,
     IFNULL(stub_session_id, "") AS stub_session_id,
     first_seen_date,
-    download_source
+    IFNULL(download_source, "") AS download_source
   FROM
     `moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v2`
 ),
@@ -25,7 +25,7 @@ new_downloads_stg AS (
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.visit_id), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
     CAST(@download_date AS date) AS first_seen_date,
-    CAST(NULL AS STRING) AS download_source --this was always null in GA3
+    IFNULL(CAST(NULL AS STRING), "") AS download_source --this was always null in GA3
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE
@@ -38,7 +38,10 @@ new_downloads_stg AS (
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.client_id_ga4), "") AS ga_client_id,
     IFNULL(mozfun.ga.nullify_string(jsonPayload.fields.session_id), "") AS stub_session_id,
     CAST(@download_date AS date) AS first_seen_date,
-    jsonPayload.fields.dlsource AS download_source --this only recently started getting filled in, during the transition to Firefox.com
+    IFNULL(
+      jsonPayload.fields.dlsource,
+      ""
+    ) AS download_source --this only recently started getting filled in, during the transition to Firefox.com
   FROM
     `moz-fx-stubattribut-prod-32a5.stubattribution_prod.stdout`
   WHERE

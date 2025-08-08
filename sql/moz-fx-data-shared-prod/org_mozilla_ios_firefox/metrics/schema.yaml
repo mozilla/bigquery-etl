@@ -506,6 +506,18 @@ fields:
       description: 'Is Firefox the default browser
 
         '
+    - name: user_ai_summarize_shake_gesture_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records if the user has shake to summarize option enabled
+
+        '
+    - name: user_ai_summarize_summarization_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records if the user has summarization enabled.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -3187,6 +3199,54 @@ fields:
           mode: NULLABLE
       description: 'Track the startup time of the application when the app was launched
         to open a url.
+
+        '
+    - name: ai_summarize_summarization_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Records the total time for generating the summary and showing
+        it to the user.
+
+        Starts when the user triggers summarization.
+
+        Ends when user sees the result or an error.
 
         '
   - name: quantity

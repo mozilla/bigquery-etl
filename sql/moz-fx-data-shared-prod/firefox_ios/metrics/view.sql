@@ -44,7 +44,9 @@ SELECT
       metrics.boolean.shopping_settings_user_has_onboarded,
       metrics.boolean.shopping_settings_disabled_ads,
       metrics.boolean.app_choice_screen_acquisition,
-      metrics.boolean.app_default_browser
+      metrics.boolean.app_default_browser,
+      metrics.boolean.user_ai_summarize_shake_gesture_enabled,
+      metrics.boolean.user_ai_summarize_summarization_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -268,7 +270,8 @@ SELECT
       metrics.timing_distribution.tabs_tab_switch,
       metrics.timing_distribution.webview_page_load,
       metrics.timing_distribution.glean_database_write_time,
-      metrics.timing_distribution.share_deeplink_open_url_startup_time
+      metrics.timing_distribution.share_deeplink_open_url_startup_time,
+      metrics.timing_distribution.ai_summarize_summarization_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -345,7 +348,9 @@ SELECT
       metrics.boolean.shopping_settings_user_has_onboarded,
       metrics.boolean.shopping_settings_disabled_ads,
       metrics.boolean.app_choice_screen_acquisition,
-      metrics.boolean.app_default_browser
+      metrics.boolean.app_default_browser,
+      metrics.boolean.user_ai_summarize_shake_gesture_enabled,
+      metrics.boolean.user_ai_summarize_summarization_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -569,7 +574,8 @@ SELECT
       metrics.timing_distribution.tabs_tab_switch,
       metrics.timing_distribution.webview_page_load,
       metrics.timing_distribution.glean_database_write_time,
-      metrics.timing_distribution.share_deeplink_open_url_startup_time
+      metrics.timing_distribution.share_deeplink_open_url_startup_time,
+      metrics.timing_distribution.ai_summarize_summarization_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,
@@ -646,7 +652,9 @@ SELECT
       metrics.boolean.shopping_settings_user_has_onboarded,
       metrics.boolean.shopping_settings_disabled_ads,
       metrics.boolean.app_choice_screen_acquisition,
-      metrics.boolean.app_default_browser
+      metrics.boolean.app_default_browser,
+      metrics.boolean.user_ai_summarize_shake_gesture_enabled,
+      metrics.boolean.user_ai_summarize_summarization_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.glean_error_preinit_tasks_overflow,
@@ -870,7 +878,8 @@ SELECT
       metrics.timing_distribution.tabs_tab_switch,
       metrics.timing_distribution.webview_page_load,
       metrics.timing_distribution.glean_database_write_time,
-      metrics.timing_distribution.share_deeplink_open_url_startup_time
+      metrics.timing_distribution.share_deeplink_open_url_startup_time,
+      metrics.timing_distribution.ai_summarize_summarization_time
     ) AS `timing_distribution`,
     STRUCT(
       metrics.quantity.tabs_normal_tabs_quantity,

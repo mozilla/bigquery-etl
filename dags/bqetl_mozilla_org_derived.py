@@ -88,6 +88,24 @@ with DAG(
             checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
         )
 
+    checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2 = bigquery_dq_check(
+        task_id="checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2",
+        source_table="dl_token_ga_attribution_lookup_v2",
+        dataset_id="stub_attribution_service_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["download_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_etl_query(
         task_id="stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
         destination_table="dl_token_ga_attribution_lookup_v1",
@@ -100,11 +118,30 @@ with DAG(
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
+        depends_on_past=True,
+        parameters=["download_date:DATE:{{ds}}"],
+    )
+
+    stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2 = bigquery_etl_query(
+        task_id="stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2",
+        destination_table="dl_token_ga_attribution_lookup_v2",
+        dataset_id="stub_attribution_service_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "frank@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=True,
         parameters=["download_date:DATE:{{ds}}"],
     )
 
     checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1.set_upstream(
         stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+    )
+
+    checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2.set_upstream(
+        stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2
     )

@@ -1,12 +1,13 @@
-friendly_name: DL Token GA Attribution Lookup
+friendly_name: Download Token Google Analytics Attribution Lookup V2
 description: |-
   This table lets you lookup GA attribution data for dl_tokens.
 
-  1 row per-(dl_token, ga_client_id, stub_session_id) triplet.
+  1 row per-(dl_token, ga_client_id, stub_session_id, download_source).
 
   dl_token - Available in Stub Attribution Service and Telemetry
   ga_client_id - Available in Stub Attribution Service and GA
   stub_session_id - Available in Stub Attribution Service and GA
+  download_source - Available in Stub Attribution Service
 owners:
 - kwindau@mozilla.com
 labels:

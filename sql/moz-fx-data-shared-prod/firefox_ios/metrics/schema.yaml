@@ -323,6 +323,12 @@ fields:
     - name: app_default_browser
       type: BOOLEAN
       mode: NULLABLE
+    - name: user_ai_summarize_shake_gesture_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: user_ai_summarize_summarization_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -1836,6 +1842,44 @@ fields:
           type: INTEGER
           mode: NULLABLE
     - name: share_deeplink_open_url_startup_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+    - name: ai_summarize_summarization_time
       type: RECORD
       mode: NULLABLE
       fields:

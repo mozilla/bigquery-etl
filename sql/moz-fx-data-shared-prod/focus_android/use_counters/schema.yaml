@@ -8060,6 +8060,12 @@ fields:
     - name: use_counter_page_js_error_capturestacktrace_uncallable_ctor
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_css_doc_css_text_decoration_trim
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_css_page_css_text_decoration_trim
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

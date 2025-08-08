@@ -36,6 +36,7 @@ dry_run:
   # TODO: once data observability platform assessment concludes this should be removed.
   - sql/data-observability-dev/**/**/*.sql
   # Access Denied
+  - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_standardization_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/metadata_completeness_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_desktop_derived/desktop_installs_v1/query.sql
   - sql/moz-fx-data-experiments/monitoring/query_cost_v1/query.sql
@@ -163,6 +164,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v2/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/glean_server_knob_experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
+  - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v2/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql

@@ -116,3 +116,24 @@
   reporting_url: https://example.com/duff-beer
   submission_timestamp: "2021-01-01T13:03:00+00:00"
   version: "134"
+- advertiser: omni consumer products
+  block_id: 205
+  browser: firefox(141)
+  context_id: cid15
+  country: US
+  form_factor: desktop
+  is_clicked: false
+  locale: en-US
+  normalized_channel: release
+  normalized_os: windows
+  normalized_os_version: 15.2
+  os_family: windows
+  position: 15
+  query: robot police
+  reporting_url: https://example.com/ocp
+  request_id: rid15
+  sequence_no: 15
+  session_id: sid15
+  submission_timestamp: "2021-01-01T13:05:00+00:00"
+  timestamp: "2021-01-01T13:05:00+00:00"
+  version: "141"

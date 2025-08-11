@@ -94,10 +94,11 @@ def get_scalar_metrics(
     Metric types are defined in the Glean documentation found here:
     https://mozilla.github.io/glean/book/user/metrics/index.html
     """
-    assert scalar_type in ("unlabeled", "labeled")
+    assert scalar_type in ("unlabeled", "labeled", "dual_labeled")
     metric_type_set = {
         "unlabeled": ["boolean", "counter", "quantity", "timespan"],
         "labeled": ["labeled_counter"],
+        "dual_labeled": ["dual_labeled_counter"],
     }
     scalars: Dict[str, List[str]] = {
         metric_type: [] for metric_type in metric_type_set[scalar_type]
@@ -161,8 +162,16 @@ def main():
         schema, "unlabeled"
     )
     labeled_metric_names, _ = get_scalar_metrics(schema, "labeled")
+    dual_labeled_metric_names, _ = get_scalar_metrics(schema, "dual_labeled")
+    metrics_with_too_many_labels = get_etl_excluded_probes_quickfix("desktop")
+    dual_labeled_metric_names["dual_labeled_counter"] = [
+        name
+        for name in dual_labeled_metric_names["dual_labeled_counter"]
+        if name not in metrics_with_too_many_labels
+    ]
     unlabeled_metrics = get_unlabeled_metrics_sql(unlabeled_metric_names).strip()
     labeled_metrics = get_labeled_metrics_sql(labeled_metric_names).strip()
+    dual_labeled_metrics = get_labeled_metrics_sql(dual_labeled_metric_names).strip()
     client_sampled_metrics_sql = {"labeled": [], "unlabeled": []}
     if args.product == "firefox_desktop":
         client_sampled_metrics_sql["unlabeled"] = get_unlabeled_metrics_sql(
@@ -180,6 +189,7 @@ def main():
             attributes=ATTRIBUTES,
             unlabeled_metrics=unlabeled_metrics,
             labeled_metrics=labeled_metrics,
+            dual_labeled_metrics=dual_labeled_metrics,
             ping_type=ping_type_from_table(args.source_table),
             client_sampled_unlabeled_metrics=client_sampled_metrics_sql["unlabeled"],
             client_sampled_labeled_metrics=client_sampled_metrics_sql["labeled"],

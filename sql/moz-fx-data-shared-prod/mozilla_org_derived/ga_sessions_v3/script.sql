@@ -1,3 +1,22 @@
+/*
+This script looks at all unique "GA Client ID" / "GA Session IDs" combos that 
+have had events between 3 days before the submission date and the submission date.
+
+For all these sessions, it re-calculates the session level information, 
+and inserts it into the table if not already in there, or,
+overwrites the session row with the latest data if it is already in the table.
+We only maintain a row for sessions that:
+1) have a session_start event
+2) have a non-null ga_session_id
+
+(This is nearly all sessions, but some sessions might be dropped if they don't meet this criteria).
+
+We essentially do 2 main things:
+1) Get the attributes of the user at the time of their "session_start" event
+   For example, columns like os, browser, manual_campaign_id, ad_google_campaign_id, etc.
+2) Get the attributes of the user based on the first non-null value found in the nested "event_params" field across that session.
+   For example, columns like first_campaign_from_event_params, first_term_from_event_params, etc.
+*/
 MERGE INTO
   `moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3` T
   USING (
@@ -31,7 +50,7 @@ MERGE INTO
         CAST(e.value.int_value AS string) AS ga_session_id,
         DATETIME(
           TIMESTAMP_MICROS(all_sess_strt_events.event_timestamp),
-          "America/Los_Angeles"
+          "Europe/London"
         ) AS session_start_timestamp,
         (
           SELECT
@@ -99,8 +118,6 @@ MERGE INTO
       SELECT
         all_events.user_pseudo_id AS ga_client_id,
         all_events.event_timestamp,
-        --below is new
-        ---above is new
         (
           SELECT
             `value`
@@ -604,6 +621,7 @@ THEN
       gclid,
       gclid_array,
       had_download_event,
+      firefox_desktop_downloads,
       last_reported_install_target,
       all_reported_install_targets,
       last_reported_stub_session_id,
@@ -662,6 +680,7 @@ THEN
       S.gclid,
       S.gclid_array,
       S.had_download_event,
+      S.firefox_desktop_downloads,
       S.last_reported_install_target,
       S.all_reported_install_targets,
       S.last_reported_stub_session_id,
@@ -721,6 +740,7 @@ THEN
     T.gclid = S.gclid,
     T.gclid_array = S.gclid_array,
     T.had_download_event = S.had_download_event,
+    T.firefox_desktop_downloads = S.firefox_desktop_downloads,
     T.last_reported_install_target = S.last_reported_install_target,
     T.all_reported_install_targets = S.all_reported_install_targets,
     T.last_reported_stub_session_id = S.last_reported_stub_session_id,

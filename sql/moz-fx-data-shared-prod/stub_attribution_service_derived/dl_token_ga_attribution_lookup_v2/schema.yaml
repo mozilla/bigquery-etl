@@ -15,3 +15,7 @@ fields:
     mode: NULLABLE
     type: DATE
     description: "The first date we saw this triplet."
+  - name: download_source
+    mode: NULLABLE
+    type: STRING
+    description: "A flag indicating which website the download came from (i.e. fxdotcom or mozorg)"

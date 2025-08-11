@@ -270,7 +270,10 @@ SELECT
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
       metrics.counter.networking_local_network_blocked_tracker,
-      metrics.counter.use_counter_top_level_content_documents_destroyed
+      metrics.counter.use_counter_top_level_content_documents_destroyed,
+      metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
+      metrics.counter.idb_maintenance_metadata_restored,
+      metrics.counter.idb_maintenance_unknown_metadata
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -1504,7 +1507,8 @@ SELECT
       metrics.timing_distribution.slow_script_warning_notify_delay,
       metrics.timing_distribution.webfont_download_time,
       metrics.timing_distribution.javascript_gc_time_between_minor,
-      metrics.timing_distribution.xpi_database_parses
+      metrics.timing_distribution.xpi_database_parses,
+      metrics.timing_distribution.fog_initializations
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -1577,7 +1581,8 @@ SELECT
       metrics.object.hdd_binary,
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
-      metrics.object.addons_manager_exception
+      metrics.object.addons_manager_exception,
+      metrics.object.fog_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -2034,7 +2039,10 @@ SELECT
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
       metrics.counter.networking_local_network_blocked_tracker,
-      metrics.counter.use_counter_top_level_content_documents_destroyed
+      metrics.counter.use_counter_top_level_content_documents_destroyed,
+      metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
+      metrics.counter.idb_maintenance_metadata_restored,
+      metrics.counter.idb_maintenance_unknown_metadata
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3268,7 +3276,8 @@ SELECT
       metrics.timing_distribution.slow_script_warning_notify_delay,
       metrics.timing_distribution.webfont_download_time,
       metrics.timing_distribution.javascript_gc_time_between_minor,
-      metrics.timing_distribution.xpi_database_parses
+      metrics.timing_distribution.xpi_database_parses,
+      metrics.timing_distribution.fog_initializations
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -3341,7 +3350,8 @@ SELECT
       metrics.object.hdd_binary,
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
-      metrics.object.addons_manager_exception
+      metrics.object.addons_manager_exception,
+      metrics.object.fog_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -3798,7 +3808,10 @@ SELECT
       metrics.counter.networking_doh_heuristics_pass_count,
       metrics.counter.quotamanager_restore_origin_directory_metadata_counter,
       metrics.counter.networking_local_network_blocked_tracker,
-      metrics.counter.use_counter_top_level_content_documents_destroyed
+      metrics.counter.use_counter_top_level_content_documents_destroyed,
+      metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
+      metrics.counter.idb_maintenance_metadata_restored,
+      metrics.counter.idb_maintenance_unknown_metadata
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -5032,7 +5045,8 @@ SELECT
       metrics.timing_distribution.slow_script_warning_notify_delay,
       metrics.timing_distribution.webfont_download_time,
       metrics.timing_distribution.javascript_gc_time_between_minor,
-      metrics.timing_distribution.xpi_database_parses
+      metrics.timing_distribution.xpi_database_parses,
+      metrics.timing_distribution.fog_initializations
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -5105,7 +5119,8 @@ SELECT
       metrics.object.hdd_binary,
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
-      metrics.object.addons_manager_exception
+      metrics.object.addons_manager_exception,
+      metrics.object.fog_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(

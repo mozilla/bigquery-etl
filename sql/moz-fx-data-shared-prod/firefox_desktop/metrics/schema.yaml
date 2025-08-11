@@ -3116,6 +3116,31 @@ fields:
         for which we do not count use counters (See `Document::ShouldIncludeInTelemetry`).
 
         '
+    - name: idb_maintenance_fallback_fullrestore_metadata
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Tracks the number of times we need to fallback to restore metadata
+        object by reading metadata-v2 file on disk when performing idle-maintenance
+        on IDB database.
+
+        '
+    - name: idb_maintenance_metadata_restored
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Counts the number of times we failed to load metadata object and
+        had to restore it
+
+        '
+    - name: idb_maintenance_unknown_metadata
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Increments upon encountering an unknown metadata object when performing
+        idle-maintenance on IDB database. During idle-maintenance, we iterate over
+        idb directories/files and construct a metadata object by calling QuotaManager::GetOriginMetadata
+        or LoadFullOriginMetadataWithRestore. It seems that in some cases, the metadata
+        object we get here can be invalid and this metric is used to track those instances.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -34422,6 +34447,49 @@ fields:
       description: 'Time that the user has the Taskbar Tab focused.
 
         '
+    - name: fog_initializations
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Time the FOG initializations take.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -46499,6 +46567,23 @@ fields:
         \ the method name,\n  message: string message of the exception,\n  file: the\
         \ file that the exception occured in,\n  line: the line number the exception\
         \ was thrown from,\n}\n```\n"
+    - name: fog_data_directory_info
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the data directories and files used by FOG.\n\
+        \nStructure is an array of objects, each containing the following properties:\n\
+        - `dir_name`: The name of the directory. This is the subdirectory name relative\
+        \ to the\n  FOG data directory and should only include \"db\", \"events\"\
+        , and \"pending_pings\".\n- `dir_exists`: Whether the directory exists. This\
+        \ should only be false on the first\n  run of FOG, or if the directory was\
+        \ deleted.\n- `dir_created`: The creation time of the directory, in seconds\
+        \ since the unix epoch. If\n  the directory does not exist, this will be `null`\
+        \ and if the time cannot be determined,\n  it will default to `0`.\n- `dir_modified`:\
+        \ The last modification time of the directory, in seconds since the unix\n\
+        \  epoch. If the directory does not exist, this will be `null` and if the\
+        \ time cannot be\n  determined, it will default to `0`.\n- `file_count`: The\
+        \ number of files in the directory. If the directory does not exist,\n  this\
+        \ will be `0`.\n- `files`: An array of objects, each containing:\n  - `fil"
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

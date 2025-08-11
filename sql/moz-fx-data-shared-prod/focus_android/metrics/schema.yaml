@@ -999,6 +999,15 @@ fields:
     - name: use_counter_top_level_content_documents_destroyed
       type: INTEGER
       mode: NULLABLE
+    - name: idb_maintenance_fallback_fullrestore_metadata
+      type: INTEGER
+      mode: NULLABLE
+    - name: idb_maintenance_metadata_restored
+      type: INTEGER
+      mode: NULLABLE
+    - name: idb_maintenance_unknown_metadata
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE
@@ -26635,6 +26644,44 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: fog_initializations
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -27179,6 +27226,9 @@ fields:
       type: JSON
       mode: NULLABLE
     - name: addons_manager_exception
+      type: JSON
+      mode: NULLABLE
+    - name: fog_data_directory_info
       type: JSON
       mode: NULLABLE
   - name: labeled_string

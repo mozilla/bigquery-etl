@@ -145,7 +145,7 @@ flattened_dual_labeled_metrics AS (
     {{ attributes }},
     metrics.name AS metric,
     metrics.type AS metric_type,
-    CONCAT(value.key, '.', nested_value.key) AS key,
+    CONCAT(value.key, '[', nested_value.key, ']') AS key,
     nested_value.value AS value
   FROM
     dual_labeled_metrics

@@ -113,7 +113,7 @@ with DAG(
             "--source-table=newtab_merino_priors_v1",
             "--destination-bucket=merino-airflow-data-prodpy",
             "--destination-prefix=newtab-merino-exports/priors",
-            "--deletion-days-old=3",
+            "--deletion-days-old=90",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="mmiermans@mozilla.com",

@@ -2630,7 +2630,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_text_decoration_trim,
       metrics.counter.use_counter_css_page_css_text_decoration_trim,
       metrics.counter.use_counter_css_doc_css_text_autospace,
-      metrics.counter.use_counter_css_page_css_text_autospace
+      metrics.counter.use_counter_css_page_css_text_autospace,
+      metrics.counter.use_counter_doc_js_use_asm,
+      metrics.counter.use_counter_page_js_use_asm
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5284,7 +5286,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_text_decoration_trim,
       metrics.counter.use_counter_css_page_css_text_decoration_trim,
       metrics.counter.use_counter_css_doc_css_text_autospace,
-      metrics.counter.use_counter_css_page_css_text_autospace
+      metrics.counter.use_counter_css_page_css_text_autospace,
+      metrics.counter.use_counter_doc_js_use_asm,
+      metrics.counter.use_counter_page_js_use_asm
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7938,7 +7942,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_text_decoration_trim,
       metrics.counter.use_counter_css_page_css_text_decoration_trim,
       metrics.counter.use_counter_css_doc_css_text_autospace,
-      metrics.counter.use_counter_css_page_css_text_autospace
+      metrics.counter.use_counter_css_page_css_text_autospace,
+      metrics.counter.use_counter_doc_js_use_asm,
+      metrics.counter.use_counter_page_js_use_asm
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10592,7 +10598,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_text_decoration_trim,
       metrics.counter.use_counter_css_page_css_text_decoration_trim,
       metrics.counter.use_counter_css_doc_css_text_autospace,
-      metrics.counter.use_counter_css_page_css_text_autospace
+      metrics.counter.use_counter_css_page_css_text_autospace,
+      metrics.counter.use_counter_doc_js_use_asm,
+      metrics.counter.use_counter_page_js_use_asm
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13246,7 +13254,9 @@ SELECT
       metrics.counter.use_counter_css_doc_css_text_decoration_trim,
       metrics.counter.use_counter_css_page_css_text_decoration_trim,
       metrics.counter.use_counter_css_doc_css_text_autospace,
-      metrics.counter.use_counter_css_page_css_text_autospace
+      metrics.counter.use_counter_css_page_css_text_autospace,
+      metrics.counter.use_counter_doc_js_use_asm,
+      metrics.counter.use_counter_page_js_use_asm
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

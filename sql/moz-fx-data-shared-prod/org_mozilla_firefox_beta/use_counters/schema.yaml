@@ -19826,6 +19826,22 @@ fields:
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
 
         '
+    - name: use_counter_doc_js_use_asm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document has instantiated a script containing "use asm"
+        either in the top level or a nested function. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_page_js_use_asm
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page has instantiated a script containing "use asm"
+        either in the top level or a nested function. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

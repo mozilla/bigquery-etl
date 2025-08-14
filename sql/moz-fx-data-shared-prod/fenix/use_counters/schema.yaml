@@ -8072,6 +8072,12 @@ fields:
     - name: use_counter_css_page_css_text_autospace
       type: INTEGER
       mode: NULLABLE
+    - name: use_counter_doc_js_use_asm
+      type: INTEGER
+      mode: NULLABLE
+    - name: use_counter_page_js_use_asm
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

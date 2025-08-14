@@ -11571,6 +11571,16 @@ fields:
       mode: NULLABLE
       description: Whether a page called Error.captureStackTrace with a non-callable
         constructor argument
+    - name: use_counter2_js_use_asm_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document has instantiated a script containing "use asm"
+        either in the top level or a nested function
+    - name: use_counter2_js_use_asm_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page has instantiated a script containing "use asm" either
+        in the top level or a nested function
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -22998,6 +23008,16 @@ fields:
           mode: NULLABLE
           description: Whether a page called Error.captureStackTrace with a non-callable
             constructor argument
+        - name: use_counter2_js_use_asm_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document has instantiated a script containing "use
+            asm" either in the top level or a nested function
+        - name: use_counter2_js_use_asm_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page has instantiated a script containing "use asm"
+            either in the top level or a nested function
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

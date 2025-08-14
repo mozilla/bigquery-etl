@@ -9,6 +9,7 @@ WITH events_unnested AS (
     normalized_channel AS channel,
     client_info.locale AS locale,
     normalized_country_code AS country,
+    sample_id,
     metrics.string.newtab_homepage_category AS homepage_category,
     metrics.string.newtab_newtab_category AS newtab_category,
     metrics.boolean.pocket_enabled AS organic_content_enabled,
@@ -16,6 +17,15 @@ WITH events_unnested AS (
     metrics.boolean.topsites_sponsored_enabled AS sponsored_topsites_enabled,
     metrics.boolean.topsites_enabled AS organic_topsites_enabled,
     metrics.boolean.newtab_search_enabled AS newtab_search_enabled,
+    metrics.boolean.newtab_weather_enabled AS newtab_weather_enabled,
+    metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
+    metadata.geo.subdivision1 AS geo_subdivision,
+    metrics.string.search_engine_default_engine_id AS default_search_engine,
+    metrics.string.search_engine_private_engine_id AS default_private_search_engine,
+    metrics.quantity.topsites_rows AS topsite_rows,
+    metrics.quantity.topsites_sponsored_tiles_configured AS topsite_sponsored_tiles_configured,
+    metrics.string_list.newtab_blocked_sponsors AS newtab_blocked_sponsors,
+    ping_info AS ping_info,
     mozfun.newtab.is_default_ui_v1(
       category,
       name,
@@ -25,6 +35,7 @@ WITH events_unnested AS (
     ) AS is_default_ui,
     category AS event_category,
     name AS event_name,
+    timestamp AS event_timestamp,
     extra AS event_details,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
@@ -37,19 +48,14 @@ WITH events_unnested AS (
       OR (category = 'newtab.search.ad' AND name IN ('click', 'impression'))
       OR (
         category = 'pocket'
-        AND name IN (
-          'click',
-          'impression',
-          'dismiss',
-          'thumb_voting_interaction',
-          'thumb_voting_interaction'
-        )
+        AND name IN ('click', 'impression', 'dismiss', 'thumb_voting_interaction')
       )
       OR (category = 'topsites' AND name IN ('click', 'impression', 'dismiss'))
       OR (
         category = 'newtab'
         AND name IN (
           'opened',
+          'closed',
           -- weather
           'weather_change_display',
           'weather_open_provider_url',
@@ -70,7 +76,9 @@ WITH events_unnested AS (
           'sections_follow_section',
           'sections_unblock_section',
           'sections_unfollow_section',
-          'inline_selection_click'
+          'sections_impression',
+          'inline_selection_click',
+          'inline_selection_impression'
         )
       )
     )
@@ -103,7 +111,7 @@ SELECT
   AND LOGICAL_OR(is_default_ui) AS is_search_ad_click,
   LOGICAL_OR(
     event_category = 'pocket'
-    AND event_name IN ('click', 'dismiss', 'thumb_voting_interaction', 'thumb_voting_interaction')
+    AND event_name IN ('click', 'dismiss', 'thumb_voting_interaction')
   )
   AND LOGICAL_OR(is_default_ui) AS is_content_interaction,
   LOGICAL_OR(event_category = 'pocket' AND event_name IN ('click'))
@@ -281,6 +289,293 @@ SELECT
     )
   )
   AND LOGICAL_OR(is_default_ui) AS is_other_interaction,
+  -- New fields added Aug 2025
+  ANY_VALUE(sample_id) AS sample_id,
+  ANY_VALUE(profile_group_id) AS profile_group_id,
+  ANY_VALUE(geo_subdivision) AS geo_subdivision,
+  ANY_VALUE(ping_info.experiments) AS experiments,
+  ANY_VALUE(newtab_weather_enabled) AS newtab_weather_enabled,
+  ANY_VALUE(default_search_engine) AS default_search_engine,
+  ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
+  ANY_VALUE(topsite_rows) AS topsite_rows,
+  ANY_VALUE(topsite_sponsored_tiles_configured) AS topsite_sponsored_tiles_configured,
+  ANY_VALUE(newtab_blocked_sponsors) AS newtab_blocked_sponsors,
+  LOGICAL_OR(
+    event_category = 'pocket'
+    AND event_name IN ('dismiss')
+    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_organic_content_dismissal,
+  LOGICAL_OR(
+    event_category = 'pocket'
+    AND event_name IN ('thumb_voting_interaction')
+    AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_organic_content_thumbs_up,
+  LOGICAL_OR(
+    event_category = 'pocket'
+    AND event_name IN ('thumb_voting_interaction')
+    AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_organic_content_thumbs_down,
+  LOGICAL_OR(
+    event_category = 'topsites'
+    AND event_name IN ('dismiss')
+    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_organic_topsite_dismissal,
+  LOGICAL_OR(
+    event_category = 'topsites'
+    AND event_name IN ('dismiss')
+    AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsite_dismissal,
+  LOGICAL_OR(event_category = 'newtab.search.ad' AND event_name = 'impression')
+  AND LOGICAL_OR(is_default_ui) AS is_search_ad_impression,
+  LOGICAL_OR(event_category = 'newtab' AND event_name IN ('weather_impression'))
+  AND LOGICAL_OR(is_default_ui) AS is_widget_impression,
+  LOGICAL_OR(
+    event_category = 'newtab'
+    AND event_name IN ('sections_impression', 'inline_selection_impression')
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_other_impression,
+  LOGICAL_OR(
+    event_category = 'pocket'
+    AND event_name IN ('impression')
+    AND mozfun.map.get_key(event_details, 'section_position') IS NOT NULL
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_section,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_name IN (
+        'click',
+        'dismiss',
+        'issued',
+        'thumb_voting_interaction',
+        'weather_change_display',
+        'weather_open_provider_url',
+        'weather_location_selected',
+        'wallpaper_click',
+        'wallpaper_category_click',
+        'wallpaper_highlight_cta_click',
+        'wallpaper_highlight_dismissed',
+        'topic_selection_open',
+        'topic_selection_dismiss',
+        'topic_selection_topics_saved',
+        'sections_block_section',
+        'sections_follow_section',
+        'sections_unblock_section',
+        'sections_unfollow_section',
+        'inline_selection_click'
+      )
+    ),
+    0
+  ) AS any_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'newtab.search'
+      AND event_name IN ('issued')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS search_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_name IN (
+        'click',
+        'dismiss',
+        'thumb_voting_interaction',
+        'weather_change_display',
+        'weather_open_provider_url',
+        'weather_location_selected',
+        'wallpaper_click',
+        'wallpaper_category_click',
+        'wallpaper_highlight_cta_click',
+        'wallpaper_highlight_dismissed',
+        'topic_selection_open',
+        'topic_selection_dismiss',
+        'topic_selection_topics_saved',
+        'sections_block_section',
+        'sections_follow_section',
+        'sections_unblock_section',
+        'sections_unfollow_section',
+        'inline_selection_click'
+      )
+    ),
+    0
+  ) AS nonsearch_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('click', 'dismiss', 'thumb_voting_interaction')
+    ),
+    0
+  ) AS any_content_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('click', 'dismiss', 'thumb_voting_interaction')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_content_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('click', 'dismiss')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS sponsored_content_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'topsites' AND event_name IN ('click', 'dismiss')),
+    0
+  ) AS any_topsite_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('click', 'dismiss')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_topsite_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('click', 'dismiss')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS sponsored_topsite_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('dismiss')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_content_dimissal_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('thumb_voting_interaction')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_content_thumbs_up_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('thumb_voting_interaction')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_content_thumbs_down_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('dismiss')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_topsite_dimissal_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('dismiss')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS sponsored_topsite_dimissal_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'newtab.search.ad' AND event_name IN ('click')),
+    0
+  ) AS search_ad_click_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'newtab.search.ad' AND event_name IN ('impression')),
+    0
+  ) AS search_ad_impression_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'newtab'
+      AND event_name IN (
+        'weather_change_display',
+        'weather_open_provider_url',
+        'weather_location_selected'
+      )
+    ),
+    0
+  ) AS widget_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(event_category = 'newtab' AND event_name IN ('weather_impression')),
+    0
+  ) AS widget_impression_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'newtab'
+      AND event_name IN (
+        'wallpaper_click',
+        'wallpaper_category_click',
+        'wallpaper_highlight_cta_click',
+        'wallpaper_highlight_dismissed',
+        'topic_selection_open',
+        'topic_selection_dismiss',
+        'topic_selection_topics_saved',
+        'sections_block_section',
+        'sections_follow_section',
+        'sections_unblock_section',
+        'sections_unfollow_section',
+        'inline_selection_click'
+      )
+    ),
+    0
+  ) AS other_interaction_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'newtab'
+      AND event_name IN ('sections_impression', 'inline_selection_impression')
+    ),
+    0
+  ) AS other_impression_count,
+  MAX(IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)) - MIN(
+    IF(event_category = 'newtab' AND event_name = "opened", event_timestamp, NULL)
+  ) AS newtab_visit_duration,
+  MIN(
+    IF(
+      event_category = 'newtab'
+      AND event_name = "opened",
+      SAFE_CAST(mozfun.map.get_key(event_details, "window_inner_height") AS INT),
+      NULL
+    )
+  ) AS newtab_window_inner_height,
+  MIN(
+    IF(
+      event_category = 'newtab'
+      AND event_name = "opened",
+      SAFE_CAST(mozfun.map.get_key(event_details, "window_inner_width") AS INT),
+      NULL
+    )
+  ) AS newtab_window_inner_width,
 FROM
   events_unnested
 GROUP BY

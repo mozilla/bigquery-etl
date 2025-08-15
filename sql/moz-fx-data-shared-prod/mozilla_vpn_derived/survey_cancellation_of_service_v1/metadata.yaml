@@ -3,26 +3,12 @@ friendly_name: Cancellation of Service - Firefox Private Network and Mozilla VPN
 description: >
   An import of survey data from Alchemer (SurveyGizmo) for Cancellation of
   Service -- Firefox Private Network and Mozilla VPN.
+
+  Survey extraction turned off in https://mozilla-hub.atlassian.net/browse/DENG-211
 owners:
   - amiyaguchi@mozilla.com
 labels:
   incremental: true
-  schedule: daily
-scheduling:
-  dag_name: bqetl_subplat
-  arguments:
-    [
-      "--date",
-      "{{ ds }}",
-      "--survey_id",
-      "5111573",
-      "--api_token",
-      "{{ var.value.surveygizmo_api_token }}",
-      "--api_secret",
-      "{{ var.value.surveygizmo_api_secret }}",
-      "--destination_table",
-      "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_cancellation_of_service_v1",
-    ]
 bigquery:
   time_partitioning:
     type: day

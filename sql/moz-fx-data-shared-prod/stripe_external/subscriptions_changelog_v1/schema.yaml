@@ -45,6 +45,23 @@ fields:
       will reflect the time of the most recent update request, not the end of the
       subscription period when the subscription is automatically moved to a canceled
       state.
+  - name: cancellation_details
+    type: RECORD
+    mode: REPEATED
+    description: Why this subscription was canceled.
+    fields:
+    - name: cancellation_details_comment
+      type: STRING
+      mode: NULLABLE
+      description: Cancellation comment of the subscription plan.
+    - name: cancellation_details_reason
+      type: STRING
+      mode: NULLABLE
+      description: Cancellation reason of the subscription plan.
+    - name: cancellation_details_feedback
+      type: STRING
+      mode: NULLABLE
+      description: Cancellation feedback of the subscription plan.
   - name: collection_method
     type: STRING
     mode: NULLABLE

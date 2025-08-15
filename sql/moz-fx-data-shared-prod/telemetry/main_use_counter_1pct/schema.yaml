@@ -8528,6 +8528,12 @@ fields:
     - name: use_counter2_js_error_capturestacktrace_uncallable_ctor_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_js_use_asm_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_js_use_asm_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16923,6 +16929,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_error_capturestacktrace_uncallable_ctor_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_use_asm_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_js_use_asm_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

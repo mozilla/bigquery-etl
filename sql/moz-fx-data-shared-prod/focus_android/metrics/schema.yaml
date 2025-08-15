@@ -233,6 +233,12 @@ fields:
     - name: glean_error_preinit_tasks_timeout
       type: BOOLEAN
       mode: NULLABLE
+    - name: mozilla_products_has_fenix_installed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: mozilla_products_is_fenix_default_browser
+      type: BOOLEAN
+      mode: NULLABLE
     - name: tracking_protection_has_advertising_blocked
       type: BOOLEAN
       mode: NULLABLE
@@ -246,12 +252,6 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
     - name: tracking_protection_has_social_blocked
-      type: BOOLEAN
-      mode: NULLABLE
-    - name: mozilla_products_has_fenix_installed
-      type: BOOLEAN
-      mode: NULLABLE
-    - name: mozilla_products_is_fenix_default_browser
       type: BOOLEAN
       mode: NULLABLE
     - name: browser_ui_proton_enabled
@@ -414,6 +414,9 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: browser_total_uri_count
+      type: INTEGER
+      mode: NULLABLE
     - name: glean_error_io
       type: INTEGER
       mode: NULLABLE
@@ -438,10 +441,10 @@ fields:
     - name: glean_validation_foreground_count
       type: INTEGER
       mode: NULLABLE
-    - name: settings_screen_whats_new_tapped
+    - name: settings_screen_autocomplete_domain_added
       type: INTEGER
       mode: NULLABLE
-    - name: settings_screen_autocomplete_domain_added
+    - name: settings_screen_whats_new_tapped
       type: INTEGER
       mode: NULLABLE
     - name: shortcuts_shortcut_added_counter
@@ -451,9 +454,6 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: tracking_protection_toolbar_shield_clicked
-      type: INTEGER
-      mode: NULLABLE
-    - name: browser_total_uri_count
       type: INTEGER
       mode: NULLABLE
     - name: autocomplete_domain_added
@@ -1052,6 +1052,36 @@ fields:
     type: RECORD
     mode: NULLABLE
     fields:
+    - name: browser_search_ad_clicks
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_search_in_content
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: browser_search_with_ads
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
     - name: crash_metrics_crash_count
       type: RECORD
       mode: REPEATED
@@ -1113,36 +1143,6 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: glean_validation_pings_submitted
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-    - name: browser_search_ad_clicks
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-    - name: browser_search_in_content
-      type: RECORD
-      mode: REPEATED
-      fields:
-      - name: key
-        type: STRING
-        mode: NULLABLE
-      - name: value
-        type: INTEGER
-        mode: NULLABLE
-    - name: browser_search_with_ads
       type: RECORD
       mode: REPEATED
       fields:
@@ -5486,151 +5486,6 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-  - name: string
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: browser_default_search_engine
-      type: STRING
-      mode: NULLABLE
-    - name: browser_locale_override
-      type: STRING
-      mode: NULLABLE
-    - name: ping_reason
-      type: STRING
-      mode: NULLABLE
-    - name: preferences_user_theme
-      type: STRING
-      mode: NULLABLE
-    - name: browser_install_source
-      type: STRING
-      mode: NULLABLE
-    - name: geckoview_validation_build_id
-      type: STRING
-      mode: NULLABLE
-    - name: geckoview_validation_version
-      type: STRING
-      mode: NULLABLE
-    - name: blocklist_mlbf_source
-      type: STRING
-      mode: NULLABLE
-    - name: extensions_quarantined_domains_listhash
-      type: STRING
-      mode: NULLABLE
-    - name: extensions_quarantined_domains_remotehash
-      type: STRING
-      mode: NULLABLE
-    - name: glean_client_annotation_experimentation_id
-      type: STRING
-      mode: NULLABLE
-    - name: glean_database_rkv_load_error
-      type: STRING
-      mode: NULLABLE
-    - name: gpu_process_feature_status
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_description
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_device_id
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_driver_date
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_driver_files
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_driver_vendor
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_driver_version
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_subsystem_id
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_adapter_primary_vendor_id
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_feature_webrender
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_status_compositor
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_status_last_compositor_gecko_version
-      type: STRING
-      mode: NULLABLE
-    - name: gecko_build_id
-      type: STRING
-      mode: NULLABLE
-    - name: gecko_version
-      type: STRING
-      mode: NULLABLE
-    - name: blocklist_mlbf_softblocks_source
-      type: STRING
-      mode: NULLABLE
-    - name: a11y_instantiators
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_linux_window_protocol
-      type: STRING
-      mode: NULLABLE
-    - name: startup_profile_database_version
-      type: STRING
-      mode: NULLABLE
-    - name: startup_profile_selection_reason
-      type: STRING
-      mode: NULLABLE
-    - name: region_home_region
-      type: STRING
-      mode: NULLABLE
-    - name: xpcom_abi
-      type: STRING
-      mode: NULLABLE
-    - name: system_cpu_name
-      type: STRING
-      mode: NULLABLE
-    - name: system_cpu_vendor
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_content_backend
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_features_compositor
-      type: STRING
-      mode: NULLABLE
-    - name: gfx_text_scale_factor
-      type: STRING
-      mode: NULLABLE
-    - name: system_apple_model_id
-      type: STRING
-      mode: NULLABLE
-    - name: system_os_distro
-      type: STRING
-      mode: NULLABLE
-    - name: system_os_distro_version
-      type: STRING
-      mode: NULLABLE
-    - name: system_os_locale
-      type: STRING
-      mode: NULLABLE
-    - name: system_os_name
-      type: STRING
-      mode: NULLABLE
-    - name: system_os_version
-      type: STRING
-      mode: NULLABLE
-    - name: system_win_package_family_name
-      type: STRING
-      mode: NULLABLE
-    - name: update_settings_channel
-      type: STRING
-      mode: NULLABLE
-    - name: xpi_database_startup_error
-      type: STRING
-      mode: NULLABLE
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -5817,6 +5672,151 @@ fields:
       mode: NULLABLE
     - name: system_virtual_memory
       type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser_default_search_engine
+      type: STRING
+      mode: NULLABLE
+    - name: browser_install_source
+      type: STRING
+      mode: NULLABLE
+    - name: browser_locale_override
+      type: STRING
+      mode: NULLABLE
+    - name: ping_reason
+      type: STRING
+      mode: NULLABLE
+    - name: preferences_user_theme
+      type: STRING
+      mode: NULLABLE
+    - name: geckoview_validation_build_id
+      type: STRING
+      mode: NULLABLE
+    - name: geckoview_validation_version
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_mlbf_source
+      type: STRING
+      mode: NULLABLE
+    - name: extensions_quarantined_domains_listhash
+      type: STRING
+      mode: NULLABLE
+    - name: extensions_quarantined_domains_remotehash
+      type: STRING
+      mode: NULLABLE
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+    - name: glean_database_rkv_load_error
+      type: STRING
+      mode: NULLABLE
+    - name: gpu_process_feature_status
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_description
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_device_id
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_driver_date
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_driver_files
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_driver_vendor
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_driver_version
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_subsystem_id
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_adapter_primary_vendor_id
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_feature_webrender
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_status_compositor
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_status_last_compositor_gecko_version
+      type: STRING
+      mode: NULLABLE
+    - name: gecko_build_id
+      type: STRING
+      mode: NULLABLE
+    - name: gecko_version
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_mlbf_softblocks_source
+      type: STRING
+      mode: NULLABLE
+    - name: a11y_instantiators
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_linux_window_protocol
+      type: STRING
+      mode: NULLABLE
+    - name: startup_profile_database_version
+      type: STRING
+      mode: NULLABLE
+    - name: startup_profile_selection_reason
+      type: STRING
+      mode: NULLABLE
+    - name: region_home_region
+      type: STRING
+      mode: NULLABLE
+    - name: xpcom_abi
+      type: STRING
+      mode: NULLABLE
+    - name: system_cpu_name
+      type: STRING
+      mode: NULLABLE
+    - name: system_cpu_vendor
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_content_backend
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_features_compositor
+      type: STRING
+      mode: NULLABLE
+    - name: gfx_text_scale_factor
+      type: STRING
+      mode: NULLABLE
+    - name: system_apple_model_id
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_distro
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_distro_version
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_locale
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_name
+      type: STRING
+      mode: NULLABLE
+    - name: system_os_version
+      type: STRING
+      mode: NULLABLE
+    - name: system_win_package_family_name
+      type: STRING
+      mode: NULLABLE
+    - name: update_settings_channel
+      type: STRING
+      mode: NULLABLE
+    - name: xpi_database_startup_error
+      type: STRING
       mode: NULLABLE
   - name: custom_distribution
     type: RECORD

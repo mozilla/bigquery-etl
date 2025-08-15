@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mozilla_vpn.vat_rates`
+  `moz-fx-data-shared-prod.subscription_platform.vat_rates`
 AS
 SELECT
   *

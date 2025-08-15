@@ -522,33 +522,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    mozilla_vpn_derived__survey_cancellation_of_service__v1 = GKEPodOperator(
-        task_id="mozilla_vpn_derived__survey_cancellation_of_service__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_cancellation_of_service_v1/query.py",
-        ]
-        + [
-            "--date",
-            "{{ ds }}",
-            "--survey_id",
-            "5111573",
-            "--api_token",
-            "{{ var.value.surveygizmo_api_token }}",
-            "--api_secret",
-            "{{ var.value.surveygizmo_api_secret }}",
-            "--destination_table",
-            "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_cancellation_of_service_v1",
-        ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="amiyaguchi@mozilla.com",
-        email=[
-            "amiyaguchi@mozilla.com",
-            "srose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-    )
-
     mozilla_vpn_derived__survey_intercept_q3__v1 = GKEPodOperator(
         task_id="mozilla_vpn_derived__survey_intercept_q3__v1",
         arguments=[
@@ -635,29 +608,6 @@ with DAG(
             "{{ var.value.surveygizmo_api_secret }}",
             "--destination_table",
             "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_market_fit_v1",
-        ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="srose@mozilla.com",
-        email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
-    )
-
-    mozilla_vpn_derived__survey_product_quality__v1 = GKEPodOperator(
-        task_id="mozilla_vpn_derived__survey_product_quality__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/mozilla_vpn_derived/survey_product_quality_v1/query.py",
-        ]
-        + [
-            "--date",
-            "{{ ds }}",
-            "--survey_id",
-            "5187896",
-            "--api_token",
-            "{{ var.value.surveygizmo_api_token }}",
-            "--api_secret",
-            "{{ var.value.surveygizmo_api_secret }}",
-            "--destination_table",
-            "moz-fx-data-shared-prod.mozilla_vpn_derived.survey_product_quality_v1",
         ],
         image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
         owner="srose@mozilla.com",

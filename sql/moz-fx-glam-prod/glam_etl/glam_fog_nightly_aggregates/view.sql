@@ -9,7 +9,7 @@ CREATE OR REPLACE VIEW
           mozfun.glam.histogram_cast_struct(histogram)
         ) AS struct_histogram,
         IF(
-          metric_type IN ("counter", "labeled_counter", "quantity")
+          metric_type IN ("counter", "labeled_counter", "dual_labeled_counter", "quantity")
           OR non_norm_percentiles IS NOT NULL,
           NULL,
           mozfun.glam.histogram_cast_struct(non_norm_histogram)
@@ -102,7 +102,7 @@ CREATE OR REPLACE VIEW
       total_sample,
       non_norm_histogram,
       IF(
-        metric_type IN ("counter", "labeled_counter", "quantity"),
+        metric_type IN ("counter", "labeled_counter", "dual_labeled_counter", "quantity"),
         percentiles,
         non_norm_percentiles
       ) AS non_norm_percentiles

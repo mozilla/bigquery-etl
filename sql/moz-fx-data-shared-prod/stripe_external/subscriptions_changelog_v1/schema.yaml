@@ -423,7 +423,7 @@ fields:
   - name: cancellation_details
     type: RECORD
     mode: NULLABLE
-    description: Why this subscription was canceled.
+    description: Details about why this subscription was cancelled.
     fields:
     - name: cancellation_details_comment
       type: STRING

@@ -43,6 +43,8 @@ WITH base AS (
     CAST(NULL AS STRING) AS attribution_ua,
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_stable.baseline_v1`
+  WHERE
+    client_info.client_id IS NOT NULL
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
   -- we initially excluded them from baseline_clients_daily so that we could measure
   -- effects on KPIs. On 2020-08-25, we removed the filter on reason and backfilled. See:

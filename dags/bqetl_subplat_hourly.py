@@ -67,216 +67,180 @@ with DAG(
         task_concurrency=1,
     )
 
-    checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1",
-        source_table="apple_logical_subscriptions_history_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__apple_logical_subscriptions_history__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__apple_logical_subscriptions_history__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.apple_logical_subscriptions_history_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1",
-        source_table="apple_subscriptions_changelog_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__apple_subscriptions_changelog__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__apple_subscriptions_changelog__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_changelog_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        arguments=["--append_table", "--noreplace"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__apple_subscriptions_history__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__apple_subscriptions_history__v1",
-        source_table="apple_subscriptions_history_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__apple_subscriptions_history__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__apple_subscriptions_history__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_history_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1",
-        source_table="apple_subscriptions_revised_changelog_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__apple_subscriptions_revised_changelog__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__apple_subscriptions_revised_changelog__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_revised_changelog_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        arguments=["--append_table", "--noreplace"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1",
-        source_table="google_logical_subscriptions_history_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__google_logical_subscriptions_history__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__google_logical_subscriptions_history__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.google_logical_subscriptions_history_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1",
-        source_table="google_subscriptions_changelog_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__google_subscriptions_changelog__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__google_subscriptions_changelog__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_changelog_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        arguments=["--append_table", "--noreplace"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__google_subscriptions_history__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__google_subscriptions_history__v1",
-        source_table="google_subscriptions_history_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__google_subscriptions_history__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__google_subscriptions_history__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_history_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1",
-        source_table="google_subscriptions_revised_changelog_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__google_subscriptions_revised_changelog__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__google_subscriptions_revised_changelog__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        arguments=["--append_table", "--noreplace"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_customers_history__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_customers_history__v1",
-        source_table="stripe_customers_history_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_customers_history__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_customers_history__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_customers_history_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_customers_revised_changelog__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_customers_revised_changelog__v1",
-        source_table="stripe_customers_revised_changelog_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_customers_revised_changelog__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_customers_revised_changelog__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_customers_revised_changelog_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1",
-        source_table="stripe_logical_subscriptions_attribution_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v2 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v2",
-        source_table="stripe_logical_subscriptions_attribution_v2",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v2 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v2",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1",
-        source_table="stripe_service_subscriptions_attribution_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v2 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v2",
-        source_table="stripe_service_subscriptions_attribution_v2",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v2 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v2",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_service_subscriptions_attribution_v2",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2",
-        source_table="stripe_subscriptions_history_v2",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_subscriptions_history__v2 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_subscriptions_history__v2",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        task_concurrency=1,
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
-    checks__fail_subscription_platform_derived__stripe_subscriptions_revised_changelog__v1 = bigquery_dq_check(
-        task_id="checks__fail_subscription_platform_derived__stripe_subscriptions_revised_changelog__v1",
-        source_table="stripe_subscriptions_revised_changelog_v1",
-        dataset_id="subscription_platform_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__subscription_platform_derived__stripe_subscriptions_revised_changelog__v1 = bigquery_bigeye_check(
+        task_id="bigeye__subscription_platform_derived__stripe_subscriptions_revised_changelog__v1",
+        table_id="moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_revised_changelog_v1",
+        warehouse_id="1939",
         owner="srose@mozilla.com",
         email=["srose@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     firefox_accounts_derived__recent_fxa_gcp_stderr_events__v1 = bigquery_etl_query(
@@ -1219,67 +1183,67 @@ with DAG(
             subscription_platform_derived__subplat_flow_events__v1
         )
 
-    checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
+    bigeye__subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__apple_logical_subscriptions_history__v1
     )
 
-    checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1.set_upstream(
+    bigeye__subscription_platform_derived__apple_subscriptions_changelog__v1.set_upstream(
         subscription_platform_derived__apple_subscriptions_changelog__v1
     )
 
-    checks__fail_subscription_platform_derived__apple_subscriptions_history__v1.set_upstream(
+    bigeye__subscription_platform_derived__apple_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__apple_subscriptions_history__v1
     )
 
-    checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1.set_upstream(
+    bigeye__subscription_platform_derived__apple_subscriptions_revised_changelog__v1.set_upstream(
         subscription_platform_derived__apple_subscriptions_revised_changelog__v1
     )
 
-    checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
+    bigeye__subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__google_logical_subscriptions_history__v1
     )
 
-    checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1.set_upstream(
+    bigeye__subscription_platform_derived__google_subscriptions_changelog__v1.set_upstream(
         subscription_platform_derived__google_subscriptions_changelog__v1
     )
 
-    checks__fail_subscription_platform_derived__google_subscriptions_history__v1.set_upstream(
+    bigeye__subscription_platform_derived__google_subscriptions_history__v1.set_upstream(
         subscription_platform_derived__google_subscriptions_history__v1
     )
 
-    checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1.set_upstream(
+    bigeye__subscription_platform_derived__google_subscriptions_revised_changelog__v1.set_upstream(
         subscription_platform_derived__google_subscriptions_revised_changelog__v1
     )
 
-    checks__fail_subscription_platform_derived__stripe_customers_history__v1.set_upstream(
+    bigeye__subscription_platform_derived__stripe_customers_history__v1.set_upstream(
         subscription_platform_derived__stripe_customers_history__v1
     )
 
-    checks__fail_subscription_platform_derived__stripe_customers_revised_changelog__v1.set_upstream(
+    bigeye__subscription_platform_derived__stripe_customers_revised_changelog__v1.set_upstream(
         subscription_platform_derived__stripe_customers_revised_changelog__v1
     )
 
-    checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1.set_upstream(
+    bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v1.set_upstream(
         subscription_platform_derived__stripe_logical_subscriptions_attribution__v1
     )
 
-    checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v2.set_upstream(
+    bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v2.set_upstream(
         subscription_platform_derived__stripe_logical_subscriptions_attribution__v2
     )
 
-    checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1.set_upstream(
+    bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v1.set_upstream(
         subscription_platform_derived__stripe_service_subscriptions_attribution__v1
     )
 
-    checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v2.set_upstream(
+    bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v2.set_upstream(
         subscription_platform_derived__stripe_service_subscriptions_attribution__v2
     )
 
-    checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
+    bigeye__subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
         subscription_platform_derived__stripe_subscriptions_history__v2
     )
 
-    checks__fail_subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
+    bigeye__subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(
         subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
     )
 
@@ -1386,7 +1350,7 @@ with DAG(
     stripe_external__tax_rate__v1.set_upstream(fivetran_stripe_sync_start)
 
     subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__apple_subscriptions_history__v1
+        bigeye__subscription_platform_derived__apple_subscriptions_history__v1
     )
 
     subscription_platform_derived__apple_logical_subscriptions_history__v1.set_upstream(
@@ -1402,19 +1366,19 @@ with DAG(
     )
 
     subscription_platform_derived__apple_subscriptions__v2.set_upstream(
-        checks__fail_subscription_platform_derived__apple_subscriptions_history__v1
+        bigeye__subscription_platform_derived__apple_subscriptions_history__v1
     )
 
     subscription_platform_derived__apple_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__apple_subscriptions_revised_changelog__v1
+        bigeye__subscription_platform_derived__apple_subscriptions_revised_changelog__v1
     )
 
     subscription_platform_derived__apple_subscriptions_revised_changelog__v1.set_upstream(
-        checks__fail_subscription_platform_derived__apple_subscriptions_changelog__v1
+        bigeye__subscription_platform_derived__apple_subscriptions_changelog__v1
     )
 
     subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__google_subscriptions_history__v1
+        bigeye__subscription_platform_derived__google_subscriptions_history__v1
     )
 
     subscription_platform_derived__google_logical_subscriptions_history__v1.set_upstream(
@@ -1430,31 +1394,31 @@ with DAG(
     )
 
     subscription_platform_derived__google_subscriptions__v2.set_upstream(
-        checks__fail_subscription_platform_derived__google_subscriptions_history__v1
+        bigeye__subscription_platform_derived__google_subscriptions_history__v1
     )
 
     subscription_platform_derived__google_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__google_subscriptions_revised_changelog__v1
+        bigeye__subscription_platform_derived__google_subscriptions_revised_changelog__v1
     )
 
     subscription_platform_derived__google_subscriptions_revised_changelog__v1.set_upstream(
-        checks__fail_subscription_platform_derived__google_subscriptions_changelog__v1
+        bigeye__subscription_platform_derived__google_subscriptions_changelog__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__apple_logical_subscriptions_history__v1
+        bigeye__subscription_platform_derived__apple_logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__google_logical_subscriptions_history__v1
+        bigeye__subscription_platform_derived__google_logical_subscriptions_history__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v1
+        bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v1
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_logical_subscriptions_attribution__v2
+        bigeye__subscription_platform_derived__stripe_logical_subscriptions_attribution__v2
     )
 
     subscription_platform_derived__logical_subscriptions_history__v1.set_upstream(
@@ -1498,11 +1462,11 @@ with DAG(
     )
 
     subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v1
+        bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v1
     )
 
     subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_service_subscriptions_attribution__v2
+        bigeye__subscription_platform_derived__stripe_service_subscriptions_attribution__v2
     )
 
     subscription_platform_derived__service_subscriptions_history__v1.set_upstream(
@@ -1518,7 +1482,7 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_customers_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_customers_revised_changelog__v1
+        bigeye__subscription_platform_derived__stripe_customers_revised_changelog__v1
     )
 
     subscription_platform_derived__stripe_customers_revised_changelog__v1.set_upstream(
@@ -1538,7 +1502,7 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_attribution__v2.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2
+        bigeye__subscription_platform_derived__stripe_subscriptions_history__v2
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_attribution__v2.set_upstream(
@@ -1546,7 +1510,7 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2
+        bigeye__subscription_platform_derived__stripe_subscriptions_history__v2
     )
 
     subscription_platform_derived__stripe_logical_subscriptions_history__v1.set_upstream(
@@ -1602,7 +1566,7 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_service_subscriptions_attribution__v2.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2
+        bigeye__subscription_platform_derived__stripe_subscriptions_history__v2
     )
 
     subscription_platform_derived__stripe_service_subscriptions_attribution__v2.set_upstream(
@@ -1610,15 +1574,15 @@ with DAG(
     )
 
     subscription_platform_derived__stripe_subscriptions__v2.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_subscriptions_history__v2
+        bigeye__subscription_platform_derived__stripe_subscriptions_history__v2
     )
 
     subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_customers_history__v1
+        bigeye__subscription_platform_derived__stripe_customers_history__v1
     )
 
     subscription_platform_derived__stripe_subscriptions_history__v2.set_upstream(
-        checks__fail_subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
+        bigeye__subscription_platform_derived__stripe_subscriptions_revised_changelog__v1
     )
 
     subscription_platform_derived__stripe_subscriptions_revised_changelog__v1.set_upstream(

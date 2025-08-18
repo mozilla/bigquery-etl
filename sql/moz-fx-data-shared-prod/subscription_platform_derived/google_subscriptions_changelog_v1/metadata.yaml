@@ -31,4 +31,9 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references: {}
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: true
 require_column_descriptions: true

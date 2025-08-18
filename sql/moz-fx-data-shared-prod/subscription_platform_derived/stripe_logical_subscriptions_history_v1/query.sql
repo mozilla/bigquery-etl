@@ -295,23 +295,26 @@ SELECT
     history.subscription_first_active_at AS started_at,
     history.subscription.ended_at,
     CASE
+      WHEN history.subscription.ended_at IS NULL
+        THEN NULL
       WHEN (
-          history.subscription.cancellation_details.cancellation_details_reason IS NULL
+          history.subscription.cancellation_details.reason IS NULL
           AND history.valid_from < '2024-05-17'
-          AND (history.subscription.cancel_at_period_end IS NOT TRUE) = FALSE
+          AND history.subscription.cancel_at_period_end IS TRUE
         )
-        OR history.subscription.cancellation_details.cancellation_details_reason = 'cancellation_requested'
+        OR history.subscription.cancellation_details.reason = 'cancellation_requested'
         OR history.subscription.metadata.cancellation_reason = 'fxa_user_requested_account_delete'
         THEN 'User Initiated'
-      WHEN history.subscription.cancellation_details.cancellation_details_reason = 'payment_failed'
+      WHEN (
+          history.valid_from < '2024-05-17'
+          AND history.subscription.collection_method IN ('charge_automatically', 'send_invoice')
+          AND history.subscription.status IN ('canceled', 'unpaid')
+        )
+        OR history.subscription.cancellation_details.reason = 'payment_failed'
         THEN 'Payment Failure'
       WHEN history.subscription.metadata.cancellation_reason = 'fxa_admin_requested_account_delete'
         THEN 'Admin Initiated'
-      WHEN history.subscription.cancellation_details.cancellation_details_reason = 'payment_disputed'
-        OR history.subscription.metadata.cancellation_reason = 'fxa_cleanup_account_delete'
-        OR history.subscription.metadata.cancellation_reason = 'fxa_unverified_account_delete'
-        THEN 'Other'
-      ELSE NULL
+      ELSE 'Other'
     END AS ended_reason,
     IF(
       history.subscription.ended_at IS NULL,

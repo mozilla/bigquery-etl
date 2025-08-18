@@ -26,11 +26,6 @@ fields:
   description: |-
     The logical subscription as it ostensibly was during the time range this history record is considered valid for.
   fields:
-  - name: cancellation_details_reason
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Cancellation reason of the subscription plan.
   - name: id
     type: STRING
     mode: NULLABLE

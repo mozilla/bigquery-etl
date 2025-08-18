@@ -240,9 +240,9 @@ SELECT
     subscriptions_history.cancel_at_period_end,
     subscriptions_history.canceled_at,
     STRUCT(
-      subscriptions_history.cancellation_details_comment,
-      subscriptions_history.cancellation_details_feedback,
-      subscriptions_history.cancellation_details_reason,
+      subscriptions_history.cancellation_details_comment AS comment,
+      subscriptions_history.cancellation_details_feedback AS feedback,
+      subscriptions_history.cancellation_details_reason AS reason
     ) AS cancellation_details,
     subscriptions_history.collection_method,
     subscriptions_history.created,

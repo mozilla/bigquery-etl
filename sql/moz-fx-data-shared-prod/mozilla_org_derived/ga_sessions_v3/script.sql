@@ -5,9 +5,8 @@ have had events between 3 days before the submission date and the submission dat
 For all these sessions, it re-calculates the session level information, 
 and inserts it into the table if not already in there, or,
 overwrites the session row with the latest data if it is already in the table.
-We only maintain a row for sessions that:
-1) have a session_start event
-2) have a non-null ga_session_id
+We only maintain a row for sessions that have a non-null ga_session_id
+
 
 (This is nearly all sessions, but some sessions might be dropped if they don't meet this criteria).
 
@@ -556,9 +555,9 @@ MERGE INTO
       sess_strt.ad_crosschannel_primary_channel_group,
       sess_strt.ad_crosschannel_default_channel_group,
     FROM
-      device_properties_at_session_start_event sess_strt
-    JOIN
       all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
+    LEFT JOIN
+      device_properties_at_session_start_event sess_strt
       USING (ga_client_id, ga_session_id)
     LEFT JOIN
       event_aggregates evnt

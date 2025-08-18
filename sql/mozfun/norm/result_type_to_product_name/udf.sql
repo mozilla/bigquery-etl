@@ -19,7 +19,7 @@ RETURNS STRING AS (
       THEN 'trending_suggestion'
     WHEN res IN ('history')
       THEN 'history'
-    WHEN res IN ('bookmark', 'keyword')
+    WHEN res IN ('bookmark', 'keyword', 'restrict_keyword_bookmarks')
       THEN 'bookmark'
     WHEN res IN ('tab')
       THEN 'open_tab'
@@ -55,6 +55,18 @@ RETURNS STRING AS (
       THEN 'pocket_collection'
     WHEN res IN ('rs_mdn', 'rust_mdn')
       THEN 'mdn'
+    WHEN res IN ('history_serp')
+      THEN 'history_serp'
+    WHEN res IN ('history_semantic')
+      THEN 'history_semantic'
+    WHEN res IN ('history_semantic_serp')
+      THEN 'history_semantic_serp'
+    WHEN res IN ('recent_search')
+      THEN 'recent_search'
+    WHEN res IN ('rust_vpn')
+      THEN 'vpn'
+    WHEN res IN ('merino_market')
+      THEN 'merino_market'
     ELSE 'other'
   END
 );

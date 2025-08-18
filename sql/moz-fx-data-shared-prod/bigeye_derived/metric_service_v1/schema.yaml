@@ -470,7 +470,7 @@ fields:
     metric_metadata_metric_history_begin_at associated with this record.
   mode: NULLABLE
   name: metric_metadata_metric_history_begin_at
-  type: INTEGER
+  type: FLOAT
 - description: |
     metric_metadata_current_metric_status associated with this record.
   mode: NULLABLE

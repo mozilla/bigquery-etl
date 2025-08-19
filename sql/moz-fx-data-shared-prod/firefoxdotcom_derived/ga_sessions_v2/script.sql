@@ -452,8 +452,8 @@ MERGE INTO
         ga_session_id
     )
     SELECT
-      sess_strt.ga_client_id,
-      sess_strt.ga_session_id,
+      sessions_to_update.ga_client_id,
+      sessions_to_update.ga_session_id,
       sess_strt.session_date,
       sess_strt.session_start_timestamp,
       CASE
@@ -518,25 +518,32 @@ MERGE INTO
       all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
     LEFT JOIN
       device_properties_at_session_start_event sess_strt
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = sess_strt.ga_client_id
+      AND sessions_to_update.ga_session_id = sess_strt.ga_session_id
     LEFT JOIN
       event_aggregates evnt
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = evnt.ga_client_id
+      AND sessions_to_update.ga_session_id = evnt.ga_session_id
     LEFT JOIN
       all_stub_session_ids stub_sessn_ids
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = stub_sessn_ids.ga_client_id
+      AND sessions_to_update.ga_session_id = stub_sessn_ids.ga_session_id
     LEFT JOIN
       landing_page_by_session lndg_pg
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = lndg_pg.ga_client_id
+      AND sessions_to_update.ga_session_id = lndg_pg.ga_session_id
     LEFT JOIN
       all_install_targets installs
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = installs.ga_client_id
+      AND sessions_to_update.ga_session_id = installs.ga_session_id
     LEFT JOIN
       click_aggregate clicks
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = clicks.ga_client_id
+      AND sessions_to_update.ga_session_id = clicks.ga_session_id
     LEFT JOIN
       attr_info_by_session session_attrs
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = session_attrs.ga_client_id
+      AND sessions_to_update.ga_session_id = session_attrs.ga_session_id
   ) S
   ON T.ga_client_id = S.ga_client_id
   AND T.ga_session_id = S.ga_session_id

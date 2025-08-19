@@ -116,6 +116,7 @@ MERGE INTO
       SELECT
         all_events.user_pseudo_id AS ga_client_id,
         all_events.event_timestamp,
+        all_events.geo.country AS country,
         (
           SELECT
             `value`
@@ -191,7 +192,8 @@ MERGE INTO
         medium_from_event_params,
         content_from_event_params,
         term_from_event_params,
-        event_timestamp
+        event_timestamp,
+        country
       FROM
         attr_info_from_event_params_in_session_staging
       WHERE
@@ -210,6 +212,7 @@ MERGE INTO
           TIMESTAMP_MICROS(MIN(event_timestamp)),
           "America/Los_Angeles"
         ) AS first_event_in_session_date,
+        ARRAY_AGG(country IGNORE NULLS ORDER BY event_timestamp ASC)[SAFE_OFFSET(0)] AS country,
         ARRAY_AGG(
           DISTINCT campaign_from_event_params IGNORE NULLS
         ) AS distinct_campaigns_from_event_params,
@@ -477,7 +480,7 @@ MERGE INTO
         (evnt.max_event_timestamp - evnt.min_event_timestamp) / 1000000 AS int64
       ) AS time_on_site,
       evnt.pageviews,
-      sess_strt.country,
+      COALESCE(sess_strt.country, session_attrs.country) AS country,
       sess_strt.region,
       sess_strt.city,
       sess_strt.device_category,

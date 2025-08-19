@@ -1,0 +1,26 @@
+friendly_name: app_store_syndicate
+description: |
+  Syndicated App Store data from Fivetran. User-facing views into this data can be found
+  in the app_store dataset.
+dataset_base_acl: syndicate
+user_facing: false
+syndication:
+  prod:
+    syndicated_project: "moz-fx-data-bq-fivetran"
+    syndicated_dataset: "firefox_app_store_v2"
+  syndicated_tables:
+    - app_store_discovery_and_engagement_detailed_daily
+    - app_store_discovery_and_engagement_standard_daily
+    - app_store_download_detailed_daily
+    - app_store_download_standard_daily
+    - app_store_installation_and_deletion_detailed_daily
+    - app_store_installation_and_deletion_standard_daily
+    - app_store_review
+    - app_crash_daily
+    - app_session_detailed_daily
+    - app_session_standard_daily
+  administer_views: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

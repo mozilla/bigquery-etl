@@ -2,68 +2,128 @@ country_code,country,vat,effective_date
 AE,United Arab Emirates,0.05,2024-02-07
 AL,Albania,0.2,2024-02-07
 AM,Armenia,0.2,2024-02-07
+AO,Angola,0.14,2025-08-12
 AR,Argentina,0.21,2024-02-07
 AS,American Samoa,0,2024-02-07
 AT,Austria,0.2,2021-01-01
 AU,Australia,0.1,2024-02-07
+AZ,Azerbaijan,0.18,2025-08-12
 BA,Bosnia and Herzegovina,0.17,2024-02-07
+BB,Barbados,0.175,2025-08-12
 BD,Bangladesh,0.15,2024-10-22
 BE,Belgium,0.21,2021-01-01
 BG,Bulgaria,0.2,2022-05-10
 BH,Bahrain,0.1,2024-02-07
+BO,Bolivia,0.13,2025-08-12
 BR,Brazil,0.17,2024-10-22
+BW,Botswana,0.14,2025-08-12
 BY,Belarus,0.2,2024-02-07
 CA,Canada,0.1,2021-01-01
 CA,Canada,0,2022-12-01
+CD,Democratic Republic of the Congo,0.16,2025-08-12
+CG,Congo,0.189,2025-08-12
 CH,Switzerland,0.077,2021-01-01
 CH,Switzerland,0.081,2024-01-01
+CI,Ivory Coast,0.18,2025-08-12
 CL,Chile,0.19,2024-02-07
 CM,Cameroon,0.1925,2024-02-07
 CN,China,0.13,2024-02-07
 CO,Colombia,0.19,2024-02-07
+CR,Costa Rica,0.13,2025-08-12
+CV,Cabo Verde,0.15,2025-08-12
 CY,Cyprus,0.19,2022-05-10
 CZ,Czech Republic,0.21,2022-05-10
 DE,Germany,0.19,2021-01-01
 DK,Denmark,0.25,2022-05-10
+DO,Dominican Republic,0.18,2025-08-12
+DZ,Algeria,0.19,2025-08-12
+EC,Ecuador,0.15,2025-08-12
 EE,Estonia,0.2,2022-05-10
+EE,Estonia,0.22,2024-01-01
+EE,Estonia,0.24,2025-07-01
 EG,Egypt,0.14,2024-02-07
 ES,Spain,0.21,2021-01-01
+ET,Ethiopia,0.15,2025-08-12
 FI,Finland,0.24,2022-01-01
+FI,Finland,0.255,2024-09-01
+FJ,Fiji,0.15,2025-08-12
 FR,France,0.2,2021-01-01
+GA,Gabon,0.18,2025-08-12
 GB,United Kingdom,0.2,2021-01-01
+GE,Georgia,0.18,2025-08-12
+GH,Ghana,0.15,2025-08-12
+GQ,Equatorial Guinea,0.15,2025-08-12
 GR,Greece,0.24,2022-05-10
+GT,Guatemala,0.12,2025-08-12
 GU,Guam,0,2024-02-07
+GY,Guyana,0.14,2025-08-12
 HK,Hong Kong,0,2024-02-07
+HN,Honduras,0.15,2025-08-12
 HR,Croatia,0.25,2022-05-10
 HU,Hungary,0.27,2022-05-10
 ID,Indonesia,0.11,2024-02-07
+ID,Indonesia,0.12,2025-01-01
 IE,Ireland,0.23,2021-01-01
 IL,Israel,0.17,2024-02-07
+IL,Israel,0.18,2025-01-01
+IM,Isle of Man,0.2,2025-08-12
 IN,India,0.18,2024-02-07
 IS,Iceland,0.24,2024-02-07
 IT,Italy,0.22,2021-01-01
+JE,Jersey,0.05,2025-08-12
+JM,Jamaica,0.15,2025-08-12
+JO,Jordan,0.16,2025-08-12
 JP,Japan,0.1,2024-02-07
 KE,Kenya,0.16,2024-10-22
+KG,Kyrgyzstan,0.12,2025-08-12
+KH,Cambodia,0.1,2025-08-12
 KR,Korea,0.1,2024-02-07
+KZ,Kazakhstan,0.12,2025-08-12
+LA,Lao PDR,0.1,2025-08-12
+LB,Lebanon,0.11,2025-08-12
+LC,Saint Lucia,0.125,2025-08-12
+LI,Liechtenstein,0.081,2025-08-12
 LT,Lithuania,0.21,2022-05-10
 LU,Luxembourg,0.17,2022-05-10
 LV,Latvia,0.21,2022-05-10
 MA,Morocco,0.2,2024-10-22
 MD,Moldova,0.2,2024-02-07
+ME,Montenegro,0.21,2025-08-12
+MG,Madagascar,0.2,2025-08-12
+MK,North Macedonia,0.18,2025-08-12
+MM,Myanmar,0,2025-08-12
+MN,Mongolia,0.1,2025-08-12
+MR,Mauritania,0.16,2025-08-12
 MT,Malta,0.18,2022-05-10
+MU,Mauritius,0.15,2025-08-12
+MW,Malawi,0.165,2025-08-12
 MX,Mexico,0.16,2024-02-07
 MY,Malaysia,0.06,2021-01-01
 MY,Malaysia,0.08,2024-03-01
+MY,Malaysia,0.1,2025-07-01
+MZ,Mozambique,0.16,2025-08-12
+NA,Namibia,0.15,2025-08-12
+NC,New Caledonia,0.11,2025-08-12
 NG,Nigeria,0.075,2024-10-22
+NI,Nicaragua,0.15,2025-08-12
 NL,Netherlands,0.21,2021-01-01
 NO,Norway,0.25,2024-02-07
 NZ,New Zealand,0.15,2021-01-01
+OM,Oman,0.05,2025-08-12
+PA,Panama,0.07,2025-08-12
+PE,Peru,0.18,2025-08-12
+PG,Papua New Guinea,0.1,2025-08-12
+PH,Philippines,0.12,2025-08-12
+PK,Pakistan,0.18,2025-08-12
 PL,Poland,0.23,2022-05-10
 PR,Puerto Rico,0.115,2024-02-07
+PS,Palestinian territories,0.16,2025-08-12
 PT,Portugal,0.23,2022-05-10
+PY,Paraguay,0.1,2025-08-12
 RO,Romania,0.19,2022-05-10
 RS,Serbia,0.2,2024-02-07
 RU,Russia,0.2,2024-02-07
+RW,Rwanda,0.18,2025-08-12
 SA,Saudi Arabia,0.15,2024-02-07
 SE,Sweden,0.25,2022-01-01
 SG,Singapore,0.07,2021-01-01
@@ -71,16 +131,30 @@ SG,Singapore,0.08,2023-01-01
 SG,Singapore,0.09,2024-01-01
 SI,Slovenia,0.22,2022-05-10
 SK,Slovakia,0.2,2022-05-10
+SK,Slovakia,0.23,2025-01-01
 SN,Senegal,0.18,2024-10-22
+SV,El Salvador,0.13,2025-08-12
+SZ,Eswatini,0.15,2025-08-12
+TD,Chad,0.18,2025-08-12
 TH,Thailand,0.07,2024-10-22
+TJ,Tajikistan,0.14,2025-08-12
+TL,Timor-Leste,0.025,2025-08-12
+TM,Turkmenistan,0.15,2025-08-12
+TN,Tunisia,0.19,2025-08-12
 TR,Turkey,0.2,2024-02-07
+TT,Trinidad and Tobago,0.125,2025-08-12
 TW,Taiwan,0.05,2024-02-07
+TZ,Tanzania,0.18,2025-08-12
 UA,Ukraine,0.2,2024-10-22
 UG,Uganda,0.18,2024-10-22
 US,United States,0,2021-01-01
 UY,Uruguay,0.22,2024-02-07
 UZ,Uzbekistan,0.12,2024-02-07
+VE,Venezuela,0.16,2025-08-12
 VT,Vietnam,0.1,2024-10-22
 XK,Kosovo,0.18,2024-02-07
 ZA,South Africa,0.15,2024-02-07
-ZW,Zimbabwe,0.145,2024-02-07
+ZM,Zambia,0.16,2025-08-12
+ZW,Zimbabwe,0.145,2020-02-19
+ZW,Zimbabwe,0.15,2023-01-01
+ZW,Zimbabwe,0.155,2025-05-01

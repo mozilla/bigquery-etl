@@ -5,9 +5,8 @@ have had events between 3 days before the submission date and the submission dat
 For all these sessions, it re-calculates the session level information, 
 and inserts it into the table if not already in there, or,
 overwrites the session row with the latest data if it is already in the table.
-We only maintain a row for sessions that:
-1) have a session_start event
-2) have a non-null ga_session_id
+We only maintain a row for sessions that have a non-null ga_session_id
+
 
 (This is nearly all sessions, but some sessions might be dropped if they don't meet this criteria).
 
@@ -118,6 +117,7 @@ MERGE INTO
       SELECT
         all_events.user_pseudo_id AS ga_client_id,
         all_events.event_timestamp,
+        all_events.geo.country AS country,
         (
           SELECT
             `value`
@@ -193,7 +193,8 @@ MERGE INTO
         medium_from_event_params,
         content_from_event_params,
         term_from_event_params,
-        event_timestamp
+        event_timestamp,
+        country
       FROM
         attr_info_from_event_params_in_session_staging
       WHERE
@@ -204,6 +205,15 @@ MERGE INTO
       SELECT
         ga_client_id,
         ga_session_id,
+        DATETIME(
+          TIMESTAMP_MICROS(MIN(event_timestamp)),
+          "Europe/London"
+        ) AS first_event_in_session_timestamp,
+        DATE(
+          TIMESTAMP_MICROS(MIN(event_timestamp)),
+          "Europe/London"
+        ) AS first_event_in_session_date,
+        ARRAY_AGG(country IGNORE NULLS ORDER BY event_timestamp ASC)[SAFE_OFFSET(0)] AS country,
         ARRAY_AGG(
           DISTINCT campaign_from_event_params IGNORE NULLS
         ) AS distinct_campaigns_from_event_params,
@@ -493,10 +503,13 @@ MERGE INTO
         ga_session_id
     )
     SELECT
-      sess_strt.ga_client_id,
-      sess_strt.ga_session_id,
-      sess_strt.session_date,
-      sess_strt.session_start_timestamp,
+      sessions_to_update.ga_client_id,
+      sessions_to_update.ga_session_id,
+      COALESCE(sess_strt.session_date, session_attrs.first_event_in_session_date) AS session_date,
+      COALESCE(
+        sess_strt.session_start_timestamp,
+        session_attrs.first_event_in_session_timestamp
+      ) AS session_start_timestamp,
       CASE
         WHEN sess_strt.ga_session_number = 1
           THEN TRUE
@@ -507,7 +520,7 @@ MERGE INTO
         (evnt.max_event_timestamp - evnt.min_event_timestamp) / 1000000 AS int64
       ) AS time_on_site,
       evnt.pageviews,
-      sess_strt.country,
+      COALESCE(sess_strt.country, session_attrs.country) AS country,
       sess_strt.region,
       sess_strt.city,
       sess_strt.device_category,
@@ -556,28 +569,35 @@ MERGE INTO
       sess_strt.ad_crosschannel_primary_channel_group,
       sess_strt.ad_crosschannel_default_channel_group,
     FROM
-      device_properties_at_session_start_event sess_strt
-    JOIN
       all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
-      USING (ga_client_id, ga_session_id)
+    LEFT JOIN
+      device_properties_at_session_start_event sess_strt
+      ON sessions_to_update.ga_client_id = sess_strt.ga_client_id
+      AND sessions_to_update.ga_session_id = sess_strt.ga_session_id
     LEFT JOIN
       event_aggregates evnt
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = evnt.ga_client_id
+      AND sessions_to_update.ga_session_id = evnt.ga_session_id
     LEFT JOIN
       all_stub_session_ids stub_sessn_ids
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = stub_sessn_ids.ga_client_id
+      AND sessions_to_update.ga_session_id = stub_sessn_ids.ga_session_id
     LEFT JOIN
       landing_page_by_session lndg_pg
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = lndg_pg.ga_client_id
+      AND sessions_to_update.ga_session_id = lndg_pg.ga_session_id
     LEFT JOIN
       all_install_targets installs
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = installs.ga_client_id
+      AND sessions_to_update.ga_session_id = installs.ga_session_id
     LEFT JOIN
       click_aggregate clicks
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = clicks.ga_client_id
+      AND sessions_to_update.ga_session_id = clicks.ga_session_id
     LEFT JOIN
       attr_info_by_session session_attrs
-      USING (ga_client_id, ga_session_id)
+      ON sessions_to_update.ga_client_id = session_attrs.ga_client_id
+      AND sessions_to_update.ga_session_id = session_attrs.ga_session_id
   ) S
   ON T.ga_client_id = S.ga_client_id
   AND T.ga_session_id = S.ga_session_id

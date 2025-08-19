@@ -1,0 +1,10 @@
+friendly_name: {{ app_name }} Clients City Seen
+description: |-
+owners:
+  - wichan@mozilla.com
+  - rbaffourawuah@mozilla.com
+labels:
+  change_controlled: true
+#scheduling:
+#  dag_name: bqetl_
+#  task_name: {{ app_name }}_{{ table_name }}

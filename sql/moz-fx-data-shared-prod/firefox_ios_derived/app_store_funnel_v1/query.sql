@@ -1,4 +1,3 @@
--- TODO: should we run this job with 7 day delay to make sure all data landed (a wider window to be on the safe side).
 WITH historical_store_data AS (
   WITH views_data AS (
     SELECT

@@ -295,7 +295,7 @@ fields:
   description: Visit duration in milliseconds (timestamp diff between close and open event)
 - name: newtab_window_inner_height
   type: INTEGER
-  description: The height of the browser window
+  description: The height of the browser window in pixels
 - name: newtab_window_inner_width
   type: INTEGER
   description: The width of the browser window

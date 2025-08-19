@@ -298,4 +298,4 @@ fields:
   description: The height of the browser window in pixels
 - name: newtab_window_inner_width
   type: INTEGER
-  description: The width of the browser window
+  description: The width of the browser window in pixels

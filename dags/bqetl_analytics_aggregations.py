@@ -435,6 +435,32 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        external_dag_id="bqetl_usage_reporting",
+        external_task_id="focus_android.bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        external_dag_id="bqetl_usage_reporting",
+        external_task_id="focus_ios.bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+        execution_delta=datetime.timedelta(seconds=900),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_telemetry_derived__clients_first_seen__v2 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_telemetry_derived__clients_first_seen__v2",
@@ -1089,6 +1115,23 @@ with DAG(
         parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
+    telemetry_derived__daily_active_users_by_product_category__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__daily_active_users_by_product_category__v1",
+        destination_table='daily_active_users_by_product_category_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="ascholtz@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "gkaberere@mozilla.com",
+            "lvargas@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
     telemetry_derived__desktop_cohort_daily_retention__v1 = bigquery_etl_query(
         task_id="telemetry_derived__desktop_cohort_daily_retention__v1",
         destination_table="desktop_cohort_daily_retention_v1",
@@ -1355,6 +1398,42 @@ with DAG(
 
     klar_ios_active_users_aggregates_v3.set_upstream(
         wait_for_klar_ios_derived__metrics_clients_last_seen__v1
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        checks__fail_fenix_derived__active_users_aggregates__v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        checks__fail_firefox_ios_derived__active_users_aggregates__v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        checks__fail_focus_android_derived__active_users_aggregates__v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        checks__fail_focus_ios_derived__active_users_aggregates__v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        checks__fail_klar_android_derived__active_users_aggregates__v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        checks__fail_klar_ios_derived__active_users_aggregates__v3
+    )
+
+    telemetry_derived__daily_active_users_by_product_category__v1.set_upstream(
+        firefox_desktop_active_users_aggregates_v4
     )
 
     telemetry_derived__desktop_cohort_daily_retention__v1.set_upstream(

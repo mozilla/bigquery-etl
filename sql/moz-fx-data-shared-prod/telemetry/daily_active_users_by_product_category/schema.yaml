@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: product_category
+  type: STRING
+  mode: NULLABLE
+  description: One of the product categories (desktop, mobile, other)
+- name: dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Daily active users for the product category

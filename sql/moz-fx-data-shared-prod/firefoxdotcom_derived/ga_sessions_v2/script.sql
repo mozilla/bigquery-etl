@@ -202,6 +202,14 @@ MERGE INTO
       SELECT
         ga_client_id,
         ga_session_id,
+        DATETIME(
+          TIMESTAMP_MICROS(MIN(event_timestamp)),
+          "America/Los_Angeles"
+        ) AS first_event_in_session_timestamp,
+        DATE(
+          TIMESTAMP_MICROS(MIN(event_timestamp)),
+          "America/Los_Angeles"
+        ) AS first_event_in_session_date,
         ARRAY_AGG(
           DISTINCT campaign_from_event_params IGNORE NULLS
         ) AS distinct_campaigns_from_event_params,
@@ -229,7 +237,7 @@ MERGE INTO
         ARRAY_AGG(term_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
           SAFE_OFFSET(0)
         ] AS first_term_from_event_params,
-        ARRAY_AGG(DISTINCT term_from_event_params IGNORE NULLS) AS distinct_terms_from_event_params,
+        ARRAY_AGG(DISTINCT term_from_event_params IGNORE NULLS) AS distinct_terms_from_event_params
       FROM
         attr_info_from_event_params_in_session
       GROUP BY
@@ -454,8 +462,11 @@ MERGE INTO
     SELECT
       sessions_to_update.ga_client_id,
       sessions_to_update.ga_session_id,
-      sess_strt.session_date,
-      sess_strt.session_start_timestamp,
+      COALESCE(sess_strt.session_date, session_attrs.first_event_in_session_date) AS session_date,
+      COALESCE(
+        sess_strt.session_start_timestamp,
+        session_attrs.first_event_in_session_timestamp
+      ) AS session_start_timestamp,
       CASE
         WHEN sess_strt.ga_session_number = 1
           THEN TRUE

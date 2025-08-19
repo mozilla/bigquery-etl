@@ -1,9 +1,9 @@
 WITH historical_store_data AS (
-  WITH views_data AS (
+  WITH impression_data AS (
     SELECT
       DATE(`date`) AS `date`,
       territory AS country_name,
-      SUM(impressions_unique_device) AS views,
+      SUM(impressions_unique_device) AS impressions,
     FROM
       `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
     WHERE
@@ -33,12 +33,12 @@ WITH historical_store_data AS (
   SELECT
     DATE(`date`) AS `date`,
     country_name,
-    COALESCE(views, 0) AS views,
+    COALESCE(impressions, 0) AS impressions,
     COALESCE(total_downloads, 0) AS total_downloads,
     COALESCE(first_time_downloads, 0) AS first_time_downloads,
     COALESCE(redownloads, 0) AS redownloads,
   FROM
-    views_data
+    impression_data
   FULL OUTER JOIN
     downloads_data
     USING (`date`, country_name)
@@ -47,7 +47,7 @@ app_store_data AS (
   SELECT
     date_day AS `date`,
     territory_long AS country_name,
-    SUM(impressions_unique_device) AS views,
+    SUM(impressions_unique_device) AS impressions,
     SUM(total_downloads) AS total_downloads,
     SUM(first_time_downloads) AS first_time_downloads,
     SUM(redownloads) AS redownloads,
@@ -64,7 +64,7 @@ combine_app_store_data AS (
   SELECT
     `date`,
     country_name,
-    views,
+    impressions,
     total_downloads,
     first_time_downloads,
     redownloads,
@@ -76,7 +76,7 @@ combine_app_store_data AS (
   SELECT
     `date`,
     country_name,
-    views,
+    impressions,
     total_downloads,
     first_time_downloads,
     redownloads,
@@ -89,7 +89,7 @@ normalize_country AS (
   SELECT
     `date`,
     country_names.code AS country,
-    views,
+    impressions,
     total_downloads,
     first_time_downloads,
     redownloads,
@@ -103,7 +103,7 @@ _new_profiles AS (
   SELECT
     first_seen_date AS `date`,
     country,
-    COALESCE(SUM(new_profiles), 0) AS new_profiles,
+    SUM(new_profiles) AS new_profiles,
   FROM
     `moz-fx-data-shared-prod.firefox_ios.new_profiles`
   WHERE
@@ -116,11 +116,11 @@ SELECT
   @submission_date AS submission_date,
   `date` AS first_seen_date,
   country,
-  views,
+  impressions,
   total_downloads,
   first_time_downloads,
   redownloads,
-  new_profiles,
+  COALESCE(new_profiles, 0) AS new_profiles,
 FROM
   normalize_country
 LEFT JOIN

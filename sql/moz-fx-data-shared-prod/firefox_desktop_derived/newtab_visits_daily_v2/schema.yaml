@@ -193,7 +193,7 @@ fields:
   description: Engine_id of the default search engine
 - name: default_private_search_engine
   type: STRING
-  description: Engine_id of the private search engine
+  description: Engine_id of the default private search engine
 - name: topsite_rows
   type: INTEGER
   description: The number of topsite tile rows configured to be shown on the newtab page

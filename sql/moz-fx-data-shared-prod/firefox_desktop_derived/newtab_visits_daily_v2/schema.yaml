@@ -205,31 +205,31 @@ fields:
   description: The advertiser names that have been dismissed by the user
 - name: is_organic_content_dismissal
   type: BOOLEAN
-  description: Whether an organic content got dismissed with default UI*
+  description: Whether an organic content got dismissed with default UI
 - name: is_organic_content_thumbs_up
   type: BOOLEAN
-  description: Whether an organic content got thumbs up with default UI*
+  description: Whether an organic content got thumbs up with default UI
 - name: is_organic_content_thumbs_down
   type: BOOLEAN
-  description: Whether an organic content got thumbs down with default UI*
+  description: Whether an organic content got thumbs down with default UI
 - name: is_organic_topsite_dismissal
   type: BOOLEAN
-  description: Whether an organic topsite got dismissed with default UI*
+  description: Whether an organic topsite got dismissed with default UI
 - name: is_sponsored_topsite_dismissal
   type: BOOLEAN
-  description: Whether a sponsored topsite got dismissed with default UI*
+  description: Whether a sponsored topsite got dismissed with default UI
 - name: is_search_ad_impression
   type: BOOLEAN
-  description: Whether a search ad was impressed with default UI*
+  description: Whether a search ad was impressed with default UI
 - name: is_widget_impression
   type: BOOLEAN
-  description: Whether a widget was impressed with default UI*
+  description: Whether a widget was impressed with default UI
 - name: is_other_impression
   type: BOOLEAN
-  description: Whether other misc events impressed with default UI*
+  description: Whether other misc events impressed with default UI
 - name: is_section
   type: BOOLEAN
-  description: Whether a visit had an impression that belonged to a section with default UI*
+  description: Whether a visit had an impression that belonged to a section with default UI
 - name: any_interaction_count
   type: INTEGER
   description: Count of any client interactions

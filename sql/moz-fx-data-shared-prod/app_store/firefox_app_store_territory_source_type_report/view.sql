@@ -15,14 +15,17 @@ SELECT
   impressions_unique_device,
   page_views,
   page_views_unique_device,
-  COALESCE(first_time_downloads, 0) AS first_time_downloads,
-  COALESCE(redownloads, 0) AS redownloads,
-  COALESCE(total_downloads, 0) AS total_downloads,
+  -- These fields did not exist in the previous version.
+  CAST(NULL AS INTEGER) AS first_time_downloads,
+  CAST(NULL AS INTEGER) AS redownloads,
+  CAST(NULL AS INTEGER) AS total_downloads,
 FROM
   `moz-fx-data-shared-prod.app_store_syndicate.app_store_territory_source_type_report`
 WHERE
   `date` < "2024-01-01"
 UNION ALL
+-- New connector's data. The schema is a bit different and the new one includes additional metrics:
+-- first_time_downloads, redownloads, and total_downloads.
 SELECT
   date_day AS `date`,
   app_id,

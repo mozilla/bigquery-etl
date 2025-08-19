@@ -334,10 +334,7 @@ SELECT
   AND LOGICAL_OR(is_default_ui) AS is_search_ad_impression,
   LOGICAL_OR(event_category = 'newtab' AND event_name IN ('weather_impression'))
   AND LOGICAL_OR(is_default_ui) AS is_widget_impression,
-  LOGICAL_OR(
-    event_category = 'newtab'
-    AND event_name IN ('sections_impression', 'inline_selection_impression')
-  )
+  LOGICAL_OR(event_category = 'newtab' AND event_name IN ('sections_impression'))
   AND LOGICAL_OR(is_default_ui) AS is_other_impression,
   LOGICAL_OR(
     event_category = 'pocket'
@@ -551,10 +548,7 @@ SELECT
   ) AS other_interaction_count,
   IF(
     LOGICAL_OR(is_default_ui),
-    COUNTIF(
-      event_category = 'newtab'
-      AND event_name IN ('sections_impression', 'inline_selection_impression')
-    ),
+    COUNTIF(event_category = 'newtab' AND event_name IN ('sections_impression')),
     0
   ) AS other_impression_count,
   MAX(IF(event_category = 'newtab' AND event_name = "closed", event_timestamp, NULL)) - MIN(

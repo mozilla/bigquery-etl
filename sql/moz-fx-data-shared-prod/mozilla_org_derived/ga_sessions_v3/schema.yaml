@@ -14,7 +14,8 @@ fields:
 - name: session_start_timestamp
   mode: NULLABLE
   type: DATETIME
-  description: The timestamp of the session_start event.
+  description: |-
+    The timestamp of the session_start event. If no session_start event, the minimum event timestamp for that session.
 - name: is_first_session
   mode: NULLABLE
   type: BOOLEAN
@@ -34,7 +35,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country reported during GA user's session_start event.
+  description: |-
+    Country reported during GA user's session_start event. If no session start event, first reported country in the session.
 - name: region
   type: STRING
   mode: NULLABLE

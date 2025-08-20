@@ -862,7 +862,7 @@ bqetl_newtab_late_morning:
     retries: 2
     retry_delay: 30m
     start_date: '2025-08-20'
-  description: Schedules newtab related queries.
+  description: Schedules newtab related queries to run later to capture more recent activity.
   schedule_interval: 0 10 * * *
   tags:
     - impact/tier_1

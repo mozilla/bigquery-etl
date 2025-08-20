@@ -326,6 +326,14 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True if this command is being run on Mozilla Automation/CI
+    - name: mach_system_crowdstrike_running
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True if CrowdStrike security software is running.
+    - name: mach_system_fleet_running
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True if FleetDM endpoint management tool is running.
   - name: counter
     type: RECORD
     mode: NULLABLE

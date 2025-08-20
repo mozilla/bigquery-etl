@@ -1254,6 +1254,15 @@ fields:
     - name: idb_maintenance_unknown_metadata
       type: INTEGER
       mode: NULLABLE
+    - name: terms_of_use_dismiss_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: terms_of_use_impression_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: terms_of_use_remind_me_later_count
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -11571,6 +11580,9 @@ fields:
       type: INTEGER
       mode: NULLABLE
     - name: system_virtual_memory
+      type: INTEGER
+      mode: NULLABLE
+    - name: terms_of_use_version
       type: INTEGER
       mode: NULLABLE
   - name: string
@@ -29357,6 +29369,12 @@ fields:
       type: TIMESTAMP
       mode: NULLABLE
     - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
+    - name: terms_of_use_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_terms_of_use_date
       type: STRING
       mode: NULLABLE
   - name: timespan

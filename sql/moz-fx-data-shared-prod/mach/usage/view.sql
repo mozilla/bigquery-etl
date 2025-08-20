@@ -23,7 +23,9 @@ SELECT
       metrics.boolean.mach_system_ssh_connection,
       metrics.boolean.mach_system_vscode_terminal,
       metrics.boolean.mach_system_vscode_running,
-      metrics.boolean.mach_moz_automation
+      metrics.boolean.mach_moz_automation,
+      metrics.boolean.mach_system_crowdstrike_running,
+      metrics.boolean.mach_system_fleet_running
     ) AS `boolean`,
     STRUCT(
       metrics.counter.mach_system_logical_cores,

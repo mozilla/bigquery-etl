@@ -3054,6 +3054,21 @@ fields:
         object we get here can be invalid and this metric is used to track those instances.
 
         '
+    - name: terms_of_use_dismiss_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Records the number of times the user dismissed the Terms of Use
+        prompt.
+    - name: terms_of_use_impression_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Records the number of Terms of Use prompt impressions the user
+        has had.
+    - name: terms_of_use_remind_me_later_count
+      type: INTEGER
+      mode: NULLABLE
+      description: Records the number of times the user clicked 'remind me later'
+        on the Terms of Use prompt.
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -19004,6 +19019,10 @@ fields:
         e.g. 134217728
 
         '
+    - name: terms_of_use_version
+      type: INTEGER
+      mode: NULLABLE
+      description: The version of the Terms of Use the user accepted.
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE
@@ -40187,6 +40206,13 @@ fields:
 
         '
     - name: raw_glean_validation_first_run_hour
+      type: STRING
+      mode: NULLABLE
+    - name: terms_of_use_date
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: The timestamp when the user accepted the Terms of Use.
+    - name: raw_terms_of_use_date
       type: STRING
       mode: NULLABLE
   - name: timespan

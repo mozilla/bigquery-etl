@@ -570,6 +570,12 @@ fields:
       mode: NULLABLE
       description: boolean, additional context-dependent (on event.name) info related
         to third party auth links
+    - name: event_cms_customization_enrollment
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the user has been enrolled in a CMS customization.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

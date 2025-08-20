@@ -358,7 +358,10 @@ SELECT
       metrics.counter.use_counter_top_level_content_documents_destroyed,
       metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
       metrics.counter.idb_maintenance_metadata_restored,
-      metrics.counter.idb_maintenance_unknown_metadata
+      metrics.counter.idb_maintenance_unknown_metadata,
+      metrics.counter.terms_of_use_dismiss_count,
+      metrics.counter.terms_of_use_impression_count,
+      metrics.counter.terms_of_use_remind_me_later_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -1119,7 +1122,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
-      metrics.quantity.system_virtual_memory
+      metrics.quantity.system_virtual_memory,
+      metrics.quantity.terms_of_use_version
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -1728,7 +1732,9 @@ SELECT
       metrics.datetime.blocklist_mlbf_stash_time_oldest,
       metrics.datetime.raw_blocklist_mlbf_stash_time_oldest,
       metrics.datetime.glean_validation_first_run_hour,
-      metrics.datetime.raw_glean_validation_first_run_hour
+      metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.terms_of_use_date,
+      metrics.datetime.raw_terms_of_use_date
     ) AS `datetime`,
     STRUCT(
       metrics.timespan.engine_kill_background_age,
@@ -2352,7 +2358,10 @@ SELECT
       metrics.counter.use_counter_top_level_content_documents_destroyed,
       metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
       metrics.counter.idb_maintenance_metadata_restored,
-      metrics.counter.idb_maintenance_unknown_metadata
+      metrics.counter.idb_maintenance_unknown_metadata,
+      metrics.counter.terms_of_use_dismiss_count,
+      metrics.counter.terms_of_use_impression_count,
+      metrics.counter.terms_of_use_remind_me_later_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -3113,7 +3122,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
-      metrics.quantity.system_virtual_memory
+      metrics.quantity.system_virtual_memory,
+      metrics.quantity.terms_of_use_version
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -3722,7 +3732,9 @@ SELECT
       metrics.datetime.blocklist_mlbf_stash_time_oldest,
       metrics.datetime.raw_blocklist_mlbf_stash_time_oldest,
       metrics.datetime.glean_validation_first_run_hour,
-      metrics.datetime.raw_glean_validation_first_run_hour
+      metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.terms_of_use_date,
+      metrics.datetime.raw_terms_of_use_date
     ) AS `datetime`,
     STRUCT(
       metrics.timespan.engine_kill_background_age,
@@ -4366,7 +4378,10 @@ SELECT
       metrics.counter.use_counter_top_level_content_documents_destroyed,
       metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
       metrics.counter.idb_maintenance_metadata_restored,
-      metrics.counter.idb_maintenance_unknown_metadata
+      metrics.counter.idb_maintenance_unknown_metadata,
+      metrics.counter.terms_of_use_dismiss_count,
+      metrics.counter.terms_of_use_impression_count,
+      metrics.counter.terms_of_use_remind_me_later_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -5127,7 +5142,8 @@ SELECT
       metrics.quantity.system_os_service_pack_minor,
       metrics.quantity.system_os_windows_build_number,
       metrics.quantity.system_os_windows_ubr,
-      metrics.quantity.system_virtual_memory
+      metrics.quantity.system_virtual_memory,
+      metrics.quantity.terms_of_use_version
     ) AS `quantity`,
     STRUCT(
       metrics.string.experiments_metrics_active_experiment,
@@ -5736,7 +5752,9 @@ SELECT
       metrics.datetime.blocklist_mlbf_stash_time_oldest,
       metrics.datetime.raw_blocklist_mlbf_stash_time_oldest,
       metrics.datetime.glean_validation_first_run_hour,
-      metrics.datetime.raw_glean_validation_first_run_hour
+      metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.terms_of_use_date,
+      metrics.datetime.raw_terms_of_use_date
     ) AS `datetime`,
     STRUCT(
       metrics.timespan.engine_kill_background_age,

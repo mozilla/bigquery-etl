@@ -854,7 +854,7 @@ bqetl_newtab_late_morning:
     depends_on_past: false
     email:
       - telemetry-alerts@mozilla.com
-      - mbowerman@mozilla.com
+      - ctroy@mozilla.com
     email_on_failure: true
     email_on_retry: true
     end_date: null

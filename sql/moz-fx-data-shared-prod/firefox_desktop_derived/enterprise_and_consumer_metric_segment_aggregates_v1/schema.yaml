@@ -1,0 +1,67 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Logical date corresponding to the partition (date when our server received the ping)
+    that was processed for generating the metrics.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: sample_id
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: current_policies_count
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: current_policies_is_enterprise
+  type: BOOLEAN
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: classification_policies_count
+  type: INTEGER
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: classification_policies_is_enterprise
+  type: BOOLEAN
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: classification_distribution_id
+  type: STRING
+  description: |
+    TODO
+
+- mode: NULLABLE
+  name: enterprise_classification
+  type: STRING
+  description: |
+    TODO

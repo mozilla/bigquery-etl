@@ -78,6 +78,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_telemetry_derived__newtab_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__newtab_clients_daily__v1",
+        external_dag_id="bqetl_newtab_late_morning",
+        external_task_id="telemetry_derived__newtab_clients_daily__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
         task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
         external_dag_id="bqetl_main_summary",
@@ -186,34 +199,6 @@ with DAG(
         depends_on_past=False,
     )
 
-    telemetry_derived__newtab_clients_daily__v1 = bigquery_etl_query(
-        task_id="telemetry_derived__newtab_clients_daily__v1",
-        destination_table="newtab_clients_daily_v1",
-        dataset_id="telemetry_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="cbeck@mozilla.com",
-        email=[
-            "cbeck@mozilla.com",
-            "mbowerman@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-    )
-
-    with TaskGroup(
-        "telemetry_derived__newtab_clients_daily__v1_external",
-    ) as telemetry_derived__newtab_clients_daily__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_ltv__wait_for_telemetry_derived__newtab_clients_daily__v1",
-            external_dag_id="bqetl_ltv",
-            external_task_id="wait_for_telemetry_derived__newtab_clients_daily__v1",
-        )
-
-        telemetry_derived__newtab_clients_daily__v1_external.set_upstream(
-            telemetry_derived__newtab_clients_daily__v1
-        )
-
     telemetry_derived__newtab_clients_daily_aggregates__v1 = bigquery_etl_query(
         task_id="telemetry_derived__newtab_clients_daily_aggregates__v1",
         destination_table="newtab_clients_daily_aggregates_v1",
@@ -299,6 +284,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-2, seconds=72000)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_newtab_late_morning__wait_for_telemetry_derived__newtab_visits__v1",
+            external_dag_id="bqetl_newtab_late_morning",
+            external_task_id="wait_for_telemetry_derived__newtab_visits__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
         telemetry_derived__newtab_visits__v1_external.set_upstream(
             telemetry_derived__newtab_visits__v1
         )
@@ -327,12 +319,8 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    telemetry_derived__newtab_clients_daily__v1.set_upstream(
-        telemetry_derived__newtab_visits__v1
-    )
-
     telemetry_derived__newtab_clients_daily_aggregates__v1.set_upstream(
-        telemetry_derived__newtab_clients_daily__v1
+        wait_for_telemetry_derived__newtab_clients_daily__v1
     )
 
     telemetry_derived__newtab_conditional_daily_aggregates__v1.set_upstream(

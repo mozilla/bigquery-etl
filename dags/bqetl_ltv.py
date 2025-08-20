@@ -93,8 +93,9 @@ with DAG(
 
     wait_for_telemetry_derived__newtab_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__newtab_clients_daily__v1",
-        external_dag_id="bqetl_newtab",
+        external_dag_id="bqetl_newtab_late_morning",
         external_task_id="telemetry_derived__newtab_clients_daily__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=50400),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),

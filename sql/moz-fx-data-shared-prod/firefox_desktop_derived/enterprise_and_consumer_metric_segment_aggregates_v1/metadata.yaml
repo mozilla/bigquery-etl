@@ -1,0 +1,23 @@
+friendly_name: Enterprise and Consumer Metric Segment (Aggregate)
+description: |-
+  Enterprise and Consumer Metric Segment aggregate.
+owners:
+- pissac@mozilla.com
+- kik@mozilla.com
+labels:
+  incremental: true
+  table_type: aggregate
+scheduling:
+  dag_name: TODO
+bigquery:
+  time_partitioning:
+    type: day
+    field: TODO
+    require_partition_filter: false
+    expiration_days: null
+  # clustering:
+  #   fields:
+  #   - app_name
+  #   - channel
+  #   - country
+deprecated: false

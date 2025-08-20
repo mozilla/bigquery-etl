@@ -121,7 +121,7 @@ WITH
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date DESC ) = 1)
 SELECT
-  '{{ app_name }}' AS app_name,
+  '{{ app_name }}' AS app_id,
   *
 FROM
   clients_city_first_seen_{{ app_name }} AS fs

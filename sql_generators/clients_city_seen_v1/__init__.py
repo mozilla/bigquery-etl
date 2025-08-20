@@ -118,7 +118,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         if browser.name == "fenix":
 
-            app_names = [
+            app_id_list = [
                 "org_mozilla_firefox",
                 "org_mozilla_fenix_nightly",
                 "org_mozilla_fennec_aurora",
@@ -131,10 +131,10 @@ def generate(target_project, output_dir, use_cloud_function):
                     project_id=target_project,
                     app_name=app_id,
                 )
-                for app_id in app_names
+                for app_id in app_id_list
             ]
 
-            query_sql = union_with_single_init(firefox_android_queries, app_names)
+            query_sql = union_with_single_init(firefox_android_queries, app_id_list)
 
         else:
             query_sql = reformat(

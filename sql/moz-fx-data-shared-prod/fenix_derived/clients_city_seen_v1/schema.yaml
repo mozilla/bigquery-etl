@@ -1,8 +1,8 @@
 fields:
-- name: app_name
+- name: app_id
   type: STRING
   mode: NULLABLE
-  description: Name of the browser app.
+  description: Name of the browser application.
 - name: client_id
   type: STRING
   mode: NULLABLE

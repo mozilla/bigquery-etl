@@ -133,7 +133,7 @@
       ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date DESC) = 1
   )
   SELECT
-    'firefox_desktop' AS app_name,
+    'firefox_desktop' AS app_id,
     *
   FROM
     clients_city_first_seen_firefox_desktop AS fs

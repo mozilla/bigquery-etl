@@ -10,7 +10,7 @@ fields:
 - name: first_seen_geo_date
   type: DATE
   mode: NULLABLE
-  description: Date when the first seen geo data were captured.
+  description: Date when the first seen geo data was captured.
 - name: first_seen_geo_city
   type: STRING
   mode: NULLABLE

@@ -6,8 +6,6 @@
     geo:
       country: US
       subdivision1: CA
-    user_agent:
-      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: false
@@ -34,8 +32,6 @@
     geo:
       country: US
       subdivision1: PA
-    user_agent:
-      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: true
@@ -62,8 +58,6 @@
     geo:
       country: US
       subdivision1: OR
-    user_agent:
-      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: false
@@ -90,8 +84,6 @@
     geo:
       country: US
       subdivision1: WA
-    user_agent:
-      version: "134"
   metrics:
     boolean:
       quick_suggest_is_clicked: true
@@ -118,8 +110,6 @@
     geo:
       country: null
       subdivision1: null
-    user_agent:
-      version: "141"
   metrics:
     boolean:
       quick_suggest_is_clicked: false

@@ -10,13 +10,14 @@ from uuid import uuid4
 from google.cloud import bigquery, storage
 
 QUERY_TEMPLATE = """\
-SELECT REGEXP_EXTRACT(pge.metrics.url2.page_path, r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)') AS Page,
-       COUNT(*) AS Pageviews,
-FROM `moz-fx-data-shared-prod.mdn_yari.page` AS pge
+SELECT REGEXP_EXTRACT(JSON_VALUE(event_extra.url), r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)') AS Page,
+       COUNT(*) AS Pageviews
+FROM mdn_fred.events_stream
 WHERE DATE(submission_timestamp) BETWEEN DATE_TRUNC(@submission_date, MONTH) AND LAST_DAY(@submission_date)
-  AND client_info.app_channel = 'prod'
-  AND REGEXP_CONTAINS(pge.metrics.url2.page_path, r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)')
-  AND pge.metrics.string.page_http_status = '200'
+  AND client_info.app_channel = "prod"
+  AND event_name = 'page_load'
+  AND JSON_VALUE(event_extra.url) LIKE "https://developer.mozilla.org/%/docs/%"
+  AND JSON_VALUE(event_extra.title) != 'Page not found | MDN'
 GROUP BY Page
 ORDER BY Pageviews DESC
 """

@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: mau
   type: INTEGER
@@ -46,23 +46,24 @@ fields:
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: Operating System
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: os_version
   type: STRING
@@ -70,7 +71,7 @@ fields:
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: country_name
   type: STRING

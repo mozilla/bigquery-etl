@@ -2,24 +2,32 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: A unique identifier (UUID) for the client.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: activity_segment
   type: STRING
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - mode: NULLABLE
   name: normalized_app_name
   type: STRING
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: country
   type: STRING
+  description: An ISO 3166-1 alpha-2 country code
 - mode: NULLABLE
   name: city
   type: STRING
@@ -38,6 +46,7 @@ fields:
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
@@ -47,6 +56,7 @@ fields:
 - mode: NULLABLE
   name: normalized_os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
@@ -65,15 +75,19 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: uri_count
   type: INTEGER
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: attribution_content
   type: STRING

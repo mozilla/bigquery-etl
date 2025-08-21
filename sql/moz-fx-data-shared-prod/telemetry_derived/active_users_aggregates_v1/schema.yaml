@@ -2,9 +2,12 @@ fields:
 - mode: NULLABLE
   name: segment
   type: STRING
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - mode: NULLABLE
   name: app_version
   type: STRING
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: attribution_medium
   type: STRING
@@ -17,21 +20,28 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - mode: NULLABLE
   name: app_name
   type: STRING
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: os_version
   type: STRING
@@ -44,6 +54,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: dau
   type: INTEGER

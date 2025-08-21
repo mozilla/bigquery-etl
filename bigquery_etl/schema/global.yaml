@@ -43,9 +43,15 @@ fields:
   aliases:
   - created_timestamp
   - created_date
+- name: distribution_id
+  type: STRING
+  description: The distribution id associated with the install of Firefox.
 - name: document_id
   type: STRING
   description: The document ID specified in the URI when the client sent this message.
+- name: is_default_browser
+  type: BOOLEAN
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - name: locale
   type: STRING
   description: Set of language- and/or country-based preferences for a user interface.
@@ -82,6 +88,13 @@ fields:
     for version "100.9.11", the minor is 9.
   aliases:
   - os_minor_version
+- name: profile_group_id
+  type: STRING
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+- name: sample_id
+  type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
 - name: source_column
   type: STRING
   description: Column name in the source used to ingest the data.

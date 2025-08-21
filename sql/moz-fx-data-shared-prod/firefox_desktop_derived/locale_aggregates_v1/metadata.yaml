@@ -21,3 +21,4 @@ bigquery:
     - channel
     - locale
 references: {}
+require_column_descriptions: true

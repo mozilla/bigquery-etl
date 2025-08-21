@@ -19,3 +19,4 @@ bigquery:
     fields:
     - isp_name
 references: {}
+require_column_descriptions: true

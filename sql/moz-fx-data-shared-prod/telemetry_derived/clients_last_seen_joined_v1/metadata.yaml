@@ -16,7 +16,7 @@ labels:
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
-  owner1: ascholtz
+  owner1: ascholtzs
   table_type: client_level
 scheduling:
   dag_name: bqetl_main_summary
@@ -28,10 +28,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
 references: {}
+require_column_descriptions: false

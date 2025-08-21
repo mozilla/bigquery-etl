@@ -5,7 +5,8 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
 bigquery:
@@ -21,3 +22,4 @@ bigquery:
     - first_seen_date
     - first_reported_country
 references: {}
+require_column_descriptions: true

@@ -1,9 +1,9 @@
 fields:
-- description: null
+- description: The date when the telemetry ping is received on the server side.
   mode: NULLABLE
   name: submission_date
   type: DATE
-- description: null
+- description: A unique identifier (UUID) for the client.
   mode: NULLABLE
   name: client_id
   type: STRING
@@ -112,7 +112,7 @@ fields:
   mode: NULLABLE
   name: app_build_id
   type: STRING
-- description: null
+- description: User visible version string (e.g. "1.0.3") for the browser.
   mode: NULLABLE
   name: app_display_version
   type: STRING
@@ -120,7 +120,7 @@ fields:
   mode: NULLABLE
   name: app_name
   type: STRING
-- description: null
+- description: User visible version string (e.g. "1.0.3") for the browser.
   mode: NULLABLE
   name: app_version
   type: STRING
@@ -164,7 +164,7 @@ fields:
   mode: NULLABLE
   name: blocklist_enabled
   type: BOOLEAN
-- description: null
+- description: The normalized channel the application is being distributed on.
   mode: NULLABLE
   name: channel
   type: STRING
@@ -272,7 +272,7 @@ fields:
   mode: NULLABLE
   name: devtools_toolbox_opened_count_sum
   type: INTEGER
-- description: null
+- description: The distribution id associated with the install of Firefox.
   mode: NULLABLE
   name: distribution_id
   type: STRING
@@ -337,7 +337,8 @@ fields:
   mode: NULLABLE
   name: flash_version
   type: STRING
-- description: null
+- description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
   mode: NULLABLE
   name: country
   type: STRING
@@ -505,7 +506,8 @@ fields:
   mode: NULLABLE
   name: install_year
   type: INTEGER
-- description: null
+- description: A flag indicating whether the browser is set as the default browser
+    on the client side.
   mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN
@@ -513,7 +515,7 @@ fields:
   mode: NULLABLE
   name: is_wow64
   type: BOOLEAN
-- description: null
+- description: Set of language- and/or country-based preferences for a user interface.
   mode: NULLABLE
   name: locale
   type: STRING
@@ -521,7 +523,7 @@ fields:
   mode: NULLABLE
   name: memory_mb
   type: INTEGER
-- description: null
+- description: The normalized channel the application is being distributed on.
   mode: NULLABLE
   name: normalized_channel
   type: STRING
@@ -529,7 +531,7 @@ fields:
   mode: NULLABLE
   name: normalized_os_version
   type: STRING
-- description: null
+- description: The normalized name of the operating system running at the client.
   mode: NULLABLE
   name: os
   type: STRING
@@ -593,7 +595,8 @@ fields:
   mode: NULLABLE
   name: push_api_notify_sum
   type: INTEGER
-- description: null
+- description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
   mode: NULLABLE
   name: sample_id
   type: INTEGER
@@ -2345,5 +2348,5 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

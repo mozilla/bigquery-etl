@@ -9,13 +9,14 @@ labels:
   owner: dthorn
   dag: bqetl_crash
   owner1: dthorn
-#scheduling:
-#  dag_name: bqetl_crash
-#  start_date: '2023-12-10'
 bigquery:
   time_partitioning:
     type: day
     field: submission_timestamp
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
+  clustering: null
+references: {}
 deprecated: true
+require_column_descriptions: false

@@ -2,27 +2,28 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: Client ID
+  description: A unique identifier (UUID) for the client.
 - mode: NULLABLE
   name: sample_id
-  type: INT64
-  description: Sample ID
+  type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: isp
   type: STRING
@@ -30,7 +31,8 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date - Date when the server first received any of the 3 ping types from this client
+  description: First Seen Date - Date when the server first received any of the 3
+    ping types from this client
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
@@ -58,15 +60,16 @@ fields:
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation (from clients last seen since unavailable in clients first seen)
+  description: Attribution Variation (from clients last seen since unavailable in
+    clients first seen)
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
@@ -74,11 +77,12 @@ fields:
 - mode: NULLABLE
   name: startup_profile_selection_reason
   type: STRING
-  description: Startup Profile Selection Reason - How the profile was selected during startup
+  description: Startup Profile Selection Reason - How the profile was selected during
+    startup
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: An ISO 3166-1 alpha-2 country code
 - mode: NULLABLE
   name: is_desktop
   type: BOOLEAN
@@ -98,4 +102,5 @@ fields:
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: Profile Group ID - A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

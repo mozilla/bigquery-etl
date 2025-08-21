@@ -2,33 +2,33 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The date when the ingestion edge server accepted this message.
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: UUID uniquely identifying a client.
+  description: A unique identifier (UUID) for the client.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: |-
-    A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
-  description: Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID - The distribution id associated with the install of Firefox.
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale - The locale of the application during initialization
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: |-
-    Application Version - The user visible version string (e.g. "1.0.3"). If the value was not provided through configuration, this metric gets set to Unknown.
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: isp
   type: STRING
   mode: NULLABLE
@@ -48,7 +48,8 @@ fields:
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
-  description: Attribution Download Source - identifier that indicate where installations of Firefox originate
+  description: Attribution Download Source - identifier that indicate where installations
+    of Firefox originate
 - name: attribution_medium
   type: STRING
   mode: NULLABLE
@@ -56,8 +57,8 @@ fields:
 - name: attribution_ua
   type: STRING
   mode: NULLABLE
-  description: |-
-    Attribution User Agent - identifier derived from the user agent downloading the installer e.g. chrome, Google Chrome 123
+  description: Attribution User Agent - identifier derived from the user agent downloading
+    the installer e.g. chrome, Google Chrome 123
 - name: attribution_experiment
   type: STRING
   mode: NULLABLE
@@ -65,16 +66,16 @@ fields:
 - name: attribution_variation
   type: STRING
   mode: NULLABLE
-  description: |-
-    Attribution Variation - name/id of the variation cohort used in the enrolled funnel experiment
+  description: Attribution Variation - name/id of the variation cohort used in the
+    enrolled funnel experiment
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -82,7 +83,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
@@ -90,15 +92,18 @@ fields:
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating client qualifies as a "Daily Active User" on this submission date
+  description: Flag indicating client qualifies as a "Daily Active User" on this submission
+    date
 - name: is_wau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating client qualifies as a "Weekly Active User" on this submission date
+  description: Flag indicating client qualifies as a "Weekly Active User" on this
+    submission date
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating client qualifies as a "Monthly Active User" on this submission date
+  description: Flag indicating client qualifies as a "Monthly Active User" on this
+    submission date
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE

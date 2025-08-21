@@ -1,0 +1,10 @@
+friendly_name: Clients First Seen with GA4 Attributes
+description: |-
+  This view starts with all clients from moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1,
+  and left joins to the stub attribution logs on download token.  From there, it joins to GA4 session attribution information
+  based on the GA client ID / stub session ID
+  associated with the download token in the stub attribution logs.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau@mozilla.com

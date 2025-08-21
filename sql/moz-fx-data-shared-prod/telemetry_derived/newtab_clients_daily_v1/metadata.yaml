@@ -9,11 +9,11 @@ labels:
   application: firefox
   incremental: true
   schedule: daily
-  dag: bqetl_newtab
+  dag: bqetl_newtab_late_morning
   owner1: mbowerman
   table_type: client_level
 scheduling:
-  dag_name: bqetl_newtab
+  dag_name: bqetl_newtab_late_morning
 bigquery:
   time_partitioning:
     type: day

@@ -12,12 +12,11 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: TODO
+    field: submission_date
     require_partition_filter: false
     expiration_days: 775
-  # clustering:
-  #   fields:
-  #   - app_name
-  #   - channel
-  #   - country
+  clustering:
+    fields:
+    - normalized_channel
+    - is_dau
 deprecated: false

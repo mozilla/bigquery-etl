@@ -7,8 +7,9 @@ owners:
 labels:
   incremental: true
   table_type: client_level
+  schedule: daily
 scheduling:
-  dag_name: TODO
+  dag_name: bqetl_firefox_enterprise
 bigquery:
   time_partitioning:
     type: day

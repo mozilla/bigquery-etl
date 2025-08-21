@@ -10,58 +10,42 @@ fields:
   name: client_id
   type: STRING
   description: |
-    TODO
+    A UUID uniquely identifying the client.
 
 - mode: NULLABLE
   name: sample_id
   type: STRING
   description: |
-    TODO
+    Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
 
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
   description: |
-    TODO
-
-- mode: NULLABLE
-  name: current_policies_count
-  type: INTEGER
-  description: |
-    TODO
-
-- mode: NULLABLE
-  name: current_policies_is_enterprise
-  type: BOOLEAN
-  description: |
-    TODO
+    Normalized channel the application is being distributed on. For example, release, beta, etc.
 
 - mode: NULLABLE
   name: distribution_id
   type: STRING
   description: |
-    TODO
+    The distribution id associated with the install of Firefox.
 
 - mode: NULLABLE
-  name: classification_policies_count
-  type: INTEGER
-  description: |
-    TODO
-
-- mode: NULLABLE
-  name: classification_policies_is_enterprise
+  name: is_dau
   type: BOOLEAN
   description: |
-    TODO
+    Indicates whether the client met our definition of dau on the day.
 
 - mode: NULLABLE
-  name: classification_distribution_id
-  type: STRING
+  name: policies_count
+  type: INTEGER
   description: |
-    TODO
+    A uint with the number of active enterprise policies, collected once at startup.
+    This metric was generated to correspond to the Legacy Telemetry scalar policies.count.
 
 - mode: NULLABLE
-  name: enterprise_classification
-  type: STRING
+  name: policies_is_enterprise
+  type: BOOLEAN
   description: |
-    TODO
+    Attempt to determine if the user is an enterprise user based on various signals.
+    This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise

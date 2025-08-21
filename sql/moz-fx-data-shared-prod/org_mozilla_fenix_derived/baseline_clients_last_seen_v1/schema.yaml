@@ -134,3 +134,28 @@ fields:
   name: attribution_ua
   type: STRING
   description: Identifier derived from the user agent downloading the installer.
+- mode: REPEATED
+  name: experiments
+  type: RECORD
+  description: A dictionary of active experiments.
+  fields:
+  - name: key
+    type: STRING
+    description: Experiment Key
+  - fields:
+      - name: branch
+        type: STRING
+        description: Experiment Branch
+      - fields:
+          - name: type
+            type: STRING
+            description: Experiment Type
+          - name: enrollment_id
+            type: STRING
+            description: Experiment Enrollment ID
+        name: extra
+        type: RECORD
+        description: Experiment Extras
+    name: value
+    type: RECORD
+    description: Experiment Value

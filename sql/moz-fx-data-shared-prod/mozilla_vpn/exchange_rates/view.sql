@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod`.mozilla_vpn_derived.exchange_rates_v1
+  `moz-fx-data-shared-prod.subscription_platform_derived.exchange_rates_v1`

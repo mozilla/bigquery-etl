@@ -19,6 +19,7 @@ client_baseline AS (
     client_id,
     sample_id,
     normalized_channel,
+    distribution_id,
     is_dau,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
@@ -47,6 +48,7 @@ SELECT
   client_id,
   sample_id,
   normalized_channel,
+  distribution_id,
   is_dau,
   -- TODO: it appears sometimes those two values can be null in the result,
   --       should we COALESCE them to 0 and FALSE respectively or should we leave them as null?

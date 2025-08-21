@@ -56,12 +56,19 @@ WITH events_unnested AS (
         AND name IN (
           'opened',
           'closed',
-          -- weather
+          -- widgets
           'weather_change_display',
           'weather_open_provider_url',
           'weather_location_selected',
           'weather_impression',
           'weather_load_error',
+          'widgets_lists_user_event',
+          'widgets_lists_change_display',
+          'widgets_timer_change_display',
+          'widgets_timer_toggle_notification',
+          'widgets_timer_user_event',
+          'widgets_lists_impression',
+          'widgets_timer_impression',
           -- wallpaper
           'wallpaper_click',
           'wallpaper_category_click',
@@ -257,7 +264,12 @@ SELECT
     AND event_name IN (
       'weather_change_display',
       'weather_open_provider_url',
-      'weather_location_selected'
+      'weather_location_selected',
+      'widgets_lists_user_event',
+      'widgets_lists_change_display',
+      'widgets_timer_change_display',
+      'widgets_timer_toggle_notification',
+      'widgets_timer_user_event'
     )
   )
   AND LOGICAL_OR(is_default_ui) AS is_widget_interaction,
@@ -332,7 +344,10 @@ SELECT
   AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsite_dismissal,
   LOGICAL_OR(event_category = 'newtab.search.ad' AND event_name = 'impression')
   AND LOGICAL_OR(is_default_ui) AS is_search_ad_impression,
-  LOGICAL_OR(event_category = 'newtab' AND event_name IN ('weather_impression'))
+  LOGICAL_OR(
+    event_category = 'newtab'
+    AND event_name IN ('weather_impression', 'widgets_lists_impression', 'widgets_timer_impression')
+  )
   AND LOGICAL_OR(is_default_ui) AS is_widget_impression,
   LOGICAL_OR(event_category = 'newtab' AND event_name IN ('sections_impression'))
   AND LOGICAL_OR(is_default_ui) AS is_other_impression,
@@ -353,6 +368,11 @@ SELECT
         'weather_change_display',
         'weather_open_provider_url',
         'weather_location_selected',
+        'widgets_lists_user_event',
+        'widgets_lists_change_display',
+        'widgets_timer_change_display',
+        'widgets_timer_toggle_notification',
+        'widgets_timer_user_event',
         'wallpaper_click',
         'wallpaper_category_click',
         'wallpaper_highlight_cta_click',
@@ -371,11 +391,7 @@ SELECT
   ) AS any_interaction_count,
   IF(
     LOGICAL_OR(is_default_ui),
-    COUNTIF(
-      event_category = 'newtab.search'
-      AND event_name IN ('issued')
-      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-    ),
+    COUNTIF(event_category = 'newtab.search' AND event_name IN ('issued')),
     0
   ) AS search_interaction_count,
   IF(
@@ -388,6 +404,11 @@ SELECT
         'weather_change_display',
         'weather_open_provider_url',
         'weather_location_selected',
+        'widgets_lists_user_event',
+        'widgets_lists_change_display',
+        'widgets_timer_change_display',
+        'widgets_timer_toggle_notification',
+        'widgets_timer_user_event',
         'wallpaper_click',
         'wallpaper_category_click',
         'wallpaper_highlight_cta_click',
@@ -515,14 +536,26 @@ SELECT
       AND event_name IN (
         'weather_change_display',
         'weather_open_provider_url',
-        'weather_location_selected'
+        'weather_location_selected',
+        'widgets_lists_user_event',
+        'widgets_lists_change_display',
+        'widgets_timer_change_display',
+        'widgets_timer_toggle_notification',
+        'widgets_timer_user_event'
       )
     ),
     0
   ) AS widget_interaction_count,
   IF(
     LOGICAL_OR(is_default_ui),
-    COUNTIF(event_category = 'newtab' AND event_name IN ('weather_impression')),
+    COUNTIF(
+      event_category = 'newtab'
+      AND event_name IN (
+        'weather_impression',
+        'widgets_lists_impression',
+        'widgets_timer_impression'
+      )
+    ),
     0
   ) AS widget_impression_count,
   IF(

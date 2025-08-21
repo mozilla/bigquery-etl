@@ -184,6 +184,7 @@ fields:
   description: First major country subdivision, typically a state, province, or county
 - name: experiments
   type: RECORD
+  mode: REPEATED
   description: Array of experiments to associate with each visit
 - name: newtab_weather_enabled
   type: BOOLEAN
@@ -202,7 +203,8 @@ fields:
   description: The number of topsite tiles configured to be shown on newtab
 - name: newtab_blocked_sponsors
   type: STRING
-  description: The advertiser names that have been dismissed by the user
+  mode: REPEATED
+  description: Array of advertiser names that have been dismissed by the user
 - name: is_organic_content_dismissal
   type: BOOLEAN
   description: Whether an organic content got dismissed with default UI

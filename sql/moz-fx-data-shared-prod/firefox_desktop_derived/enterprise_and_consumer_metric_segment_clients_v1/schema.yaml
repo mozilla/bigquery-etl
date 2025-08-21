@@ -14,7 +14,7 @@ fields:
 
 - mode: NULLABLE
   name: sample_id
-  type: STRING
+  type: INTEGER
   description: |
     Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
 

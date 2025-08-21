@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.monitoring.apple_store_territory_report`
+  `moz-fx-data-shared-prod.app_store_v2_syndicate.apple_store_territory_report`
 AS
 SELECT
   *

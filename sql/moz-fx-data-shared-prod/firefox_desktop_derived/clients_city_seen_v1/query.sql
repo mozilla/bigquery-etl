@@ -15,6 +15,7 @@
       metadata.geo.city,
       metadata.geo.subdivision1 AS geo_subdivision1,
       metadata.geo.subdivision2 AS geo_subdivision2,
+      normalized_channel
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -44,6 +45,7 @@
       with_date_offsets_firefox_desktop
     WHERE
       submission_date >= "2025-08-14"
+      AND submission_date <= "2025-08-19"
     GROUP BY
       submission_date,
       client_id
@@ -63,6 +65,9 @@
       `moz-fx-data-shared-prod.udf.mode_last`(
         ARRAY_AGG(geo_subdivision2) OVER w1
       ) AS geo_subdivision2,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(normalized_channel) OVER w1
+      ) AS normalized_channel,
     FROM
       with_date_offsets_firefox_desktop
     LEFT JOIN
@@ -71,6 +76,7 @@
     WHERE
       overactive_firefox_desktop.client_id IS NULL
       AND submission_date >= "2025-08-14"
+      AND submission_date <= "2025-08-19"
     WINDOW
       w1 AS (
         PARTITION BY
@@ -112,6 +118,7 @@
       city AS first_seen_geo_city,
       geo_subdivision1 AS first_seen_geo_subdivision1,
       geo_subdivision2 AS first_seen_geo_subdivision2,
+      normalized_channel
     FROM
       clients_daily_firefox_desktop
     WHERE
@@ -123,11 +130,13 @@
       client_id,
       city AS last_seen_geo_city,
       geo_subdivision1 AS last_seen_geo_subdivision1,
-      geo_subdivision2 AS last_seen_geo_subdivision2
+      geo_subdivision2 AS last_seen_geo_subdivision2,
+      normalized_channel
     FROM
       clients_daily_firefox_desktop
     WHERE
       submission_date >= "2025-08-14"
+      AND submission_date <= "2025-08-19"
       AND client_id IS NOT NULL
     QUALIFY
       ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date DESC) = 1
@@ -139,6 +148,6 @@
     clients_city_first_seen_firefox_desktop AS fs
   FULL JOIN
     clients_city_last_seen_firefox_desktop AS ls
-    USING (client_id)
+    USING (client_id, normalized_channel)
 {% else %}
 {% endif %}

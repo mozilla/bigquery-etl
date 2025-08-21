@@ -33,7 +33,7 @@ FINAL_UNION = (
     "  clients_city_first_seen_{app_name} AS fs\n"
     "FULL JOIN\n"
     "  clients_city_last_seen_{app_name} AS ls\n"
-    "USING (client_id)"
+    "USING (client_id, normalized_channel)"
 )
 
 

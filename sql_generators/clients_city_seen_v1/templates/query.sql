@@ -16,6 +16,7 @@ WITH
     metadata.geo.city,
     metadata.geo.subdivision1 AS geo_subdivision1,
     metadata.geo.subdivision2 AS geo_subdivision2,
+    normalized_channel
   FROM
     `{{ project_id }}.{{ app_name }}_stable.baseline_v1`
   WHERE
@@ -41,7 +42,7 @@ WITH
   FROM
     with_date_offsets_{{ app_name }}
   WHERE
-    submission_date >= "2025-08-14"
+    submission_date >= "2025-08-14" and submission_date <= "2025-08-19"
   GROUP BY
     submission_date,
     client_id
@@ -56,6 +57,7 @@ WITH
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(city) OVER w1) AS city,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision1) OVER w1) AS geo_subdivision1,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision2) OVER w1) AS geo_subdivision2,
+    `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(normalized_channel) OVER w1) AS normalized_channel,
   FROM
     with_date_offsets_{{ app_name }}
   LEFT JOIN
@@ -65,7 +67,7 @@ WITH
       client_id)
   WHERE
     overactive_{{ app_name }}.client_id IS NULL
-    AND submission_date >= "2025-08-14"
+    AND submission_date >= "2025-08-14"  and submission_date <= "2025-08-19"
   WINDOW
     w1 AS (
     PARTITION BY
@@ -102,6 +104,7 @@ WITH
     city AS first_seen_geo_city,
     geo_subdivision1 AS first_seen_geo_subdivision1,
     geo_subdivision2 AS first_seen_geo_subdivision2,
+    normalized_channel
   FROM
     clients_daily_{{ app_name }}
   WHERE
@@ -112,11 +115,12 @@ WITH
     client_id,
     city AS last_seen_geo_city,
     geo_subdivision1 AS last_seen_geo_subdivision1,
-    geo_subdivision2 AS last_seen_geo_subdivision2
+    geo_subdivision2 AS last_seen_geo_subdivision2,
+    normalized_channel
   FROM
     clients_daily_{{ app_name }}
   WHERE
-    submission_date >= "2025-08-14"
+    submission_date >= "2025-08-14" and submission_date <= "2025-08-19"
     AND client_id IS NOT NULL
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_date DESC ) = 1)
@@ -128,7 +132,7 @@ FROM
 FULL JOIN
   clients_city_last_seen_{{ app_name }} AS ls
 USING
-  (client_id)
+  (client_id, normalized_channel)
 {% raw %}
 {% else %}
 {% endif %}

@@ -18,11 +18,13 @@ fields:
 - name: first_seen_geo_subdivision1
   type: STRING
   mode: NULLABLE
-  description: First major country subdivision, typically a state, province, or county captured on first_seen_geo_date.
+  description: First major country subdivision, typically a state, province, or county
+    captured on first_seen_geo_date.
 - name: first_seen_geo_subdivision2
   type: STRING
   mode: NULLABLE
-  description: Second major country subdivision; not applicable for most countries captured on first_seen_geo_date.
+  description: Second major country subdivision; not applicable for most countries
+    captured on first_seen_geo_date.
 - name: last_seen_geo_date
   type: DATE
   mode: NULLABLE
@@ -34,8 +36,14 @@ fields:
 - name: last_seen_geo_subdivision1
   type: STRING
   mode: NULLABLE
-  description: First major country subdivision, typically a state, province, or county captured on last_seen_geo_city.
+  description: First major country subdivision, typically a state, province, or county
+    captured on last_seen_geo_city.
 - name: last_seen_geo_subdivision2
   type: STRING
   mode: NULLABLE
-  description: Second major country subdivision; not applicable for most countries captured on last_seen_geo_city.
+  description: Second major country subdivision; not applicable for most countries
+    captured on last_seen_geo_city.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.

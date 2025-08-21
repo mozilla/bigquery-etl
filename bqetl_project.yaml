@@ -8,6 +8,7 @@ default:
   - _external
   - _bi
   - _restricted
+  - _syndicate
   - glam_etl
   user_facing_project: mozdata
   backfill_project: moz-fx-data-backfill

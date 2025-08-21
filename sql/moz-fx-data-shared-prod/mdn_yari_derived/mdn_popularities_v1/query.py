@@ -14,14 +14,14 @@ WITH events_stream AS
   (SELECT JSON_VALUE(event_extra.url) AS url
    FROM `moz-fx-data-shared-prod.mdn_fred.events_stream`
    WHERE DATE(submission_timestamp) BETWEEN DATE_TRUNC(@submission_date, MONTH) AND LAST_DAY(@submission_date)
-     AND client_info.app_channel = "prod"
+     AND client_info.app_channel = 'prod'
      AND event_name = 'page_load'
      AND JSON_VALUE(event_extra.url) LIKE "https://developer.mozilla.org/%/docs/%"
      AND JSON_VALUE(event_extra.title) != 'Page not found | MDN'
    UNION ALL SELECT JSON_VALUE(event_extra.url) AS url
    FROM `moz-fx-data-shared-prod.mdn_yari.events_stream`
    WHERE DATE(submission_timestamp) BETWEEN DATE_TRUNC(@submission_date, MONTH) AND LAST_DAY(@submission_date)
-     AND client_info.app_channel = "prod"
+     AND client_info.app_channel = 'prod'
      AND event_name = 'page_load'
      AND JSON_VALUE(event_extra.url) LIKE "https://developer.mozilla.org/%/docs/%"
      AND JSON_VALUE(event_extra.title) NOT LIKE '%Page not found | MDN' )

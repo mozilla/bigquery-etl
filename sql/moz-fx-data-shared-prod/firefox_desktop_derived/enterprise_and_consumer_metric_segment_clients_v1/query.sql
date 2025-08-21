@@ -1,7 +1,7 @@
 WITH last_known_client_distribution_within_28_days AS (
   SELECT
     client_id,
-    normalized_channel,
+    normalized_channel AS channel,
     ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date DESC)[
       SAFE_OFFSET(0)
     ] AS distribution_id,
@@ -18,14 +18,14 @@ client_baseline AS (
   SELECT
     client_id,
     sample_id,
-    normalized_channel,
-    distribution_id,
+    channel AS normalized_channel,
+    last_known_client_distribution_within_28_days.distribution_id,
     is_dau,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
   LEFT JOIN
     last_known_client_distribution_within_28_days
-    USING (client_id, normalized_channel)
+    USING (client_id, channel)
   WHERE
     submission_date = @submission_date
     AND is_daily_user

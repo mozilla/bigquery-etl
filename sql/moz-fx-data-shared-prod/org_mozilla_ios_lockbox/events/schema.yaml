@@ -1,12 +1,4 @@
 fields:
-- name: normalized_app_id
-  type: STRING
-  mode: NULLABLE
-  description: App ID of the channel data was received from
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-  description: Normalized channel name
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -369,6 +361,10 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Set to "Other" if this message contained an unrecognized app name
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized channel name
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE

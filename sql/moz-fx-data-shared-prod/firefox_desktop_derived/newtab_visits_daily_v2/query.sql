@@ -318,7 +318,6 @@ SELECT
   ANY_VALUE(topsite_rows) AS topsite_rows,
   ANY_VALUE(topsite_sponsored_tiles_configured) AS topsite_sponsored_tiles_configured,
   ANY_VALUE(newtab_blocked_sponsors) AS newtab_blocked_sponsors,
-------------------------------
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(

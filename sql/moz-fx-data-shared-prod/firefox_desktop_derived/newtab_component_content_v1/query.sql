@@ -56,7 +56,7 @@ raw_content_info AS (
     CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     mozfun.map.get_key(event_details, 'format') AS format,
     CAST(LOGICAL_OR(event_name = 'impression') AS INT) AS impression_count,
-    COUNTIF(event_name = 'click') AS clicks_count,
+    CAST(LOGICAL_OR(event_name = 'click') AS INT) AS clicks_count,
     CAST(LOGICAL_OR(event_name = 'dismiss') AS INT) AS dismiss_count,
     CAST(
       LOGICAL_OR(

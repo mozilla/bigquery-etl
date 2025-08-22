@@ -28,11 +28,9 @@ fields:
 - name: consecutive_days_seen
   mode: NULLABLE
   type: INTEGER
-  description: 'Number of consecutive days this client has been seen. For example,
+  description: Number of consecutive days this client has been seen. For example,
     if they were missing two days ago but present yesterday & today, consecutive_days_seen
     would be 2.
-
-    '
 - name: days_seen_bytes
   mode: NULLABLE
   type: BYTES

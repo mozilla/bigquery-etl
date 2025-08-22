@@ -19,7 +19,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: shopping_product_page_visits
   type: INTEGER
   mode: NULLABLE

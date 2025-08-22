@@ -55,6 +55,7 @@ raw_content_info AS (
     CAST(mozfun.map.get_key(event_details, 'position') AS INT) AS position,
     CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     mozfun.map.get_key(event_details, 'format') AS format,
+    -- each interaction should happen at most 1 time so look for any event in the visit
     CAST(LOGICAL_OR(event_name = 'impression') AS INT) AS impression_count,
     CAST(LOGICAL_OR(event_name = 'click') AS INT) AS clicks_count,
     CAST(LOGICAL_OR(event_name = 'dismiss') AS INT) AS dismiss_count,
@@ -75,6 +76,7 @@ raw_content_info AS (
   GROUP BY
     ALL
 ),
+-- the purpose of the final CTEs is to apply the necessary UDFs to get rownumber
 content_and_visit_info AS (
   SELECT
     raw_content_info.*,
@@ -105,7 +107,9 @@ SELECT
   CAST(
     CASE
       WHEN layout_type = 'SECTION_GRID'
+        -- the row number is the same as the section position in sections
         THEN section_position
+        -- for grid, divide the postition by the number of tiles per row and take the floor
       ELSE FLOOR(position / num_tiles_per_row)
     END AS INT
   ) AS row_number

@@ -1508,7 +1508,8 @@ SELECT
       metrics.timing_distribution.webfont_download_time,
       metrics.timing_distribution.javascript_gc_time_between_minor,
       metrics.timing_distribution.xpi_database_parses,
-      metrics.timing_distribution.fog_initializations
+      metrics.timing_distribution.fog_initializations,
+      metrics.timing_distribution.perf_js_exec_asm_js
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

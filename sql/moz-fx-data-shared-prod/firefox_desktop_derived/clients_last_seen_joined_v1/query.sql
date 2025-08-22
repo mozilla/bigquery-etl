@@ -1,6 +1,6 @@
 WITH baseline AS (
   SELECT
-    * EXCEPT (profile_group_id),
+    * EXCEPT (profile_group_id, experiments),
     profile_group_id AS baseline_profile_group_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen`

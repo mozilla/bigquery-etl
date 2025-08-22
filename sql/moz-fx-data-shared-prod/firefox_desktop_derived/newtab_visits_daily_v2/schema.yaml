@@ -189,6 +189,27 @@ fields:
   type: RECORD
   mode: REPEATED
   description: Array of experiments to associate with each visit
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
 - name: newtab_weather_enabled
   type: BOOLEAN
   description: Whether the weather widget is enabled

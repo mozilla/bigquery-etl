@@ -1,0 +1,10 @@
+friendly_name: firefox_desktop Clients City Seen
+description: |-
+owners:
+  - wichan@mozilla.com
+  - rbaffourawuah@mozilla.com
+labels:
+  change_controlled: true
+#scheduling:
+#  dag_name: bqetl_
+#  task_name: firefox_desktop_clients_city_seen_v1

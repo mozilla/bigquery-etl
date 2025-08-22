@@ -1,0 +1,10 @@
+friendly_name: fenix Clients City Seen
+description: |-
+owners:
+  - wichan@mozilla.com
+  - rbaffourawuah@mozilla.com
+labels:
+  change_controlled: true
+#scheduling:
+#  dag_name: bqetl_
+#  task_name: fenix_clients_city_seen_v1

@@ -1,0 +1,45 @@
+fields:
+- name: app_id
+  type: STRING
+  mode: NULLABLE
+  description: Name of the browser application.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the client.
+- name: first_seen_geo_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the first seen geo data was captured.
+- name: first_seen_geo_city
+  type: STRING
+  mode: NULLABLE
+  description: First city captured from a client captured on first_seen_geo_date.
+- name: first_seen_geo_subdivision1
+  type: STRING
+  mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county captured on first_seen_geo_date.
+- name: first_seen_geo_subdivision2
+  type: STRING
+  mode: NULLABLE
+  description: Second major country subdivision; not applicable for most countries captured on first_seen_geo_date.
+- name: last_seen_geo_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the last seen geo data were captured.
+- name: last_seen_geo_city
+  type: STRING
+  mode: NULLABLE
+  description: Last city captured from a client on last_seen_geo_city.
+- name: last_seen_geo_subdivision1
+  type: STRING
+  mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county captured on last_seen_geo_city.
+- name: last_seen_geo_subdivision2
+  type: STRING
+  mode: NULLABLE
+  description: Second major country subdivision; not applicable for most countries captured on last_seen_geo_city.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.

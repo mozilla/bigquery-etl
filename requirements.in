@@ -51,7 +51,7 @@ siggen==2.2.20241029
 tomli==2.2.1 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20250708
 types-pytz==2025.2.0.20250809
-types-PyYAML==6.0.12.20250809
+types-PyYAML==6.0.12.20250822
 types-requests==2.32.4.20250809
 types-ujson==5.10.0.20250326
 typing==3.7.4.3

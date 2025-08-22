@@ -101,3 +101,12 @@ fields:
 - mode: NULLABLE
   name: collection_method
   type: STRING
+- mode: NULLABLE
+  name: cancellation_details_comment
+  type: STRING
+- mode: NULLABLE
+  name: cancellation_details_reason
+  type: STRING
+- mode: NULLABLE
+  name: cancellation_details_feedback
+  type: STRING

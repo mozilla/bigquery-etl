@@ -45,7 +45,10 @@ WITH impressions AS (
     sample_id,
     metrics.boolean.quick_suggest_is_clicked AS is_clicked,
     client_info.locale AS locale,
-    metadata.geo.country,
+    -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
+    -- receives geo information from the client rather than from Glean ingestion's
+    -- IP geolocation. We no longer send subdivision, only country.
+    COALESCE(metadata.geo.country, metrics.string.quick_suggest_country) AS country,
     metadata.geo.subdivision1 AS region,
     normalized_os,
     normalized_os_version,

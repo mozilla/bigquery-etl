@@ -120,7 +120,8 @@ combined AS (
       "impression"
     ) AS event_type,
     'phone' AS form_factor,
-    normalized_country_code AS country,
+    -- With shift to OHTTP, we expect to stop receiving normalized_country_code soon
+    COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
     metadata.geo.subdivision1 AS subdivision1,
     metrics.string.fx_suggest_advertiser AS advertiser,
     client_info.app_channel AS release_channel,

@@ -305,6 +305,12 @@ SELECT
   ANY_VALUE(sample_id) AS sample_id,
   ANY_VALUE(profile_group_id) AS profile_group_id,
   ANY_VALUE(geo_subdivision) AS geo_subdivision,
+  LOGICAL_OR(
+    event_category = 'pocket'
+    AND event_name IN ('impression')
+    AND mozfun.map.get_key(event_details, 'section_position') IS NOT NULL
+  )
+  AND LOGICAL_OR(is_default_ui) AS is_section,
   ANY_VALUE(ping_info.experiments) AS experiments,
   ANY_VALUE(newtab_weather_enabled) AS newtab_weather_enabled,
   ANY_VALUE(default_search_engine) AS default_search_engine,
@@ -312,51 +318,43 @@ SELECT
   ANY_VALUE(topsite_rows) AS topsite_rows,
   ANY_VALUE(topsite_sponsored_tiles_configured) AS topsite_sponsored_tiles_configured,
   ANY_VALUE(newtab_blocked_sponsors) AS newtab_blocked_sponsors,
-  LOGICAL_OR(
-    event_category = 'pocket'
-    AND event_name IN ('dismiss')
-    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_organic_content_dismissal,
-  LOGICAL_OR(
-    event_category = 'pocket'
-    AND event_name IN ('thumb_voting_interaction')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_organic_content_thumbs_up,
-  LOGICAL_OR(
-    event_category = 'pocket'
-    AND event_name IN ('thumb_voting_interaction')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_organic_content_thumbs_down,
-  LOGICAL_OR(
-    event_category = 'topsites'
-    AND event_name IN ('dismiss')
-    AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_organic_topsite_dismissal,
-  LOGICAL_OR(
-    event_category = 'topsites'
-    AND event_name IN ('dismiss')
-    AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_sponsored_topsite_dismissal,
-  LOGICAL_OR(event_category = 'newtab.search.ad' AND event_name = 'impression')
-  AND LOGICAL_OR(is_default_ui) AS is_search_ad_impression,
-  LOGICAL_OR(
-    event_category = 'newtab'
-    AND event_name IN ('weather_impression', 'widgets_lists_impression', 'widgets_timer_impression')
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_widget_impression,
-  LOGICAL_OR(event_category = 'newtab' AND event_name IN ('sections_impression'))
-  AND LOGICAL_OR(is_default_ui) AS is_other_impression,
-  LOGICAL_OR(
-    event_category = 'pocket'
-    AND event_name IN ('impression')
-    AND mozfun.map.get_key(event_details, 'section_position') IS NOT NULL
-  )
-  AND LOGICAL_OR(is_default_ui) AS is_section,
+------------------------------
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('dismiss')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_content_dismissal_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'pocket'
+      AND event_name IN ('dismiss')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS sponsored_content_dismissal_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('dismiss')
+      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS organic_topsite_dismissal_count,
+  IF(
+    LOGICAL_OR(is_default_ui),
+    COUNTIF(
+      event_category = 'topsites'
+      AND event_name IN ('dismiss')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
+    ),
+    0
+  ) AS sponsored_topsite_dismissal_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(
@@ -478,20 +476,11 @@ SELECT
     LOGICAL_OR(is_default_ui),
     COUNTIF(
       event_category = 'pocket'
-      AND event_name IN ('dismiss')
-      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-    ),
-    0
-  ) AS organic_content_dimissal_count,
-  IF(
-    LOGICAL_OR(is_default_ui),
-    COUNTIF(
-      event_category = 'pocket'
       AND event_name IN ('thumb_voting_interaction')
       AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
     ),
     0
-  ) AS organic_content_thumbs_up_count,
+  ) AS content_thumbs_up_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(
@@ -500,25 +489,7 @@ SELECT
       AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
     ),
     0
-  ) AS organic_content_thumbs_down_count,
-  IF(
-    LOGICAL_OR(is_default_ui),
-    COUNTIF(
-      event_category = 'topsites'
-      AND event_name IN ('dismiss')
-      AND NOT SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-    ),
-    0
-  ) AS organic_topsite_dimissal_count,
-  IF(
-    LOGICAL_OR(is_default_ui),
-    COUNTIF(
-      event_category = 'topsites'
-      AND event_name IN ('dismiss')
-      AND SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN)
-    ),
-    0
-  ) AS sponsored_topsite_dimissal_count,
+  ) AS content_thumbs_down_count,
   IF(
     LOGICAL_OR(is_default_ui),
     COUNTIF(event_category = 'newtab.search.ad' AND event_name IN ('click')),

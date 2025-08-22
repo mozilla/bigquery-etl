@@ -182,6 +182,9 @@ fields:
 - name: geo_subdivision
   type: STRING
   description: First major country subdivision, typically a state, province, or county
+- name: is_section
+  type: BOOLEAN
+  description: Whether a visit had an impression that belonged to a section with default UI
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -205,33 +208,18 @@ fields:
   type: STRING
   mode: REPEATED
   description: Array of advertiser names that have been dismissed by the user
-- name: is_organic_content_dismissal
-  type: BOOLEAN
-  description: Whether an organic content got dismissed with default UI
-- name: is_organic_content_thumbs_up
-  type: BOOLEAN
-  description: Whether an organic content got thumbs up with default UI
-- name: is_organic_content_thumbs_down
-  type: BOOLEAN
-  description: Whether an organic content got thumbs down with default UI
-- name: is_organic_topsite_dismissal
-  type: BOOLEAN
-  description: Whether an organic topsite got dismissed with default UI
-- name: is_sponsored_topsite_dismissal
-  type: BOOLEAN
-  description: Whether a sponsored topsite got dismissed with default UI
-- name: is_search_ad_impression
-  type: BOOLEAN
-  description: Whether a search ad was impressed with default UI
-- name: is_widget_impression
-  type: BOOLEAN
-  description: Whether a widget was impressed with default UI
-- name: is_other_impression
-  type: BOOLEAN
-  description: Whether other misc events impressed with default UI
-- name: is_section
-  type: BOOLEAN
-  description: Whether a visit had an impression that belonged to a section with default UI
+- name: organic_content_dismissal_count
+  type: INTEGER
+  description: Count of organic content dismissals
+- name: sponsored_content_dismissal_count
+  type: INTEGER
+  description: Count of sponsored content dismissals
+- name: organic_topsite_dismissal_count
+  type: INTEGER
+  description: Count of organic topsite dismissals
+- name: sponsored_topsite_dismissal_count
+  type: INTEGER
+  description: Count of sponsored topsite dismissals
 - name: any_interaction_count
   type: INTEGER
   description: Count of any client interactions
@@ -259,21 +247,12 @@ fields:
 - name: sponsored_topsite_interaction_count
   type: INTEGER
   description: Count of sponsored topsite interactions
-- name: organic_content_dimissal_count
-  type: INTEGER
-  description: Count of organic content dismissals
-- name: organic_content_thumbs_up_count
+- name: content_thumbs_up_count
   type: INTEGER
   description: Count of organic content thumbs up
-- name: organic_content_thumbs_down_count
+- name: content_thumbs_down_count
   type: INTEGER
   description: Count of organic content thumbs down
-- name: organic_topsite_dimissal_count
-  type: INTEGER
-  description: Count of organic topsite dismissals
-- name: sponsored_topsite_dimissal_count
-  type: INTEGER
-  description: Count of sponsored topsite dismissals
 - name: search_ad_click_count
   type: INTEGER
   description: Count of search ad clicks

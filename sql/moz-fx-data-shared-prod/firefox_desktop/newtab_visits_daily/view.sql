@@ -12,46 +12,13 @@ enriched AS (
     src.*,
     -- Precompute once for reuse
     mozfun.newtab.determine_grid_layout_v1(is_section, app_version, experiments) AS layout_type,
-    (
-      is_search_issued
-      OR is_content_interaction
-      OR is_topsite_interaction
-      OR is_widget_interaction
-      OR is_wallpaper_interaction
-      OR is_other_interaction
-    ) AS is_any_interaction,
-    (
-      is_content_interaction
-      OR is_topsite_interaction
-      OR is_widget_interaction
-      OR is_wallpaper_interaction
-      OR is_other_interaction
-    ) AS is_nonsearch_interaction,
-    (
-      is_content_interaction
-      AND NOT is_sponsored_content_interaction
-    ) AS is_organic_content_interaction,
-    (
-      is_topsite_interaction
-      AND NOT is_sponsored_topsite_interaction
-    ) AS is_organic_topsite_interaction,
   FROM
     src
 )
 SELECT
   'Firefox Desktop' AS app_name,
-  is_any_interaction,
-  is_nonsearch_interaction,
-  is_organic_content_interaction,
-  is_organic_topsite_interaction,
   layout_type,
   mozfun.newtab.determine_tiles_per_row_v1(layout_type, newtab_window_inner_width) AS tiles_per_row,
-  enriched.* EXCEPT (
-    is_any_interaction,
-    is_nonsearch_interaction,
-    is_organic_content_interaction,
-    is_organic_topsite_interaction,
-    layout_type
-  )
+  enriched.* EXCEPT (layout_type)
 FROM
   enriched

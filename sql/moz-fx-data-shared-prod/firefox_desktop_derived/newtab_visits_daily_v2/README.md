@@ -20,21 +20,22 @@ along with counts, impressions, window size, and visit duration.
    - `newtab.search` (`issued`), `newtab.search.ad` (`click`, `impression`)
    - `pocket` (`click`, `impression`, `dismiss`, `thumb_voting_interaction`)
    - `topsites` (`click`, `impression`, `dismiss`)
-   - `newtab` UI signals (`opened`, `closed`, weather*, wallpaper*, topic_selection*, sections*, inline_selection*)
+   - `newtab` UI signals (`opened`, `closed`, weather*, widgets*, wallpaper*, topic_selection*, sections*,
+     inline_selection*)
 2. **Visit-level rollups** using aggregate event flags & counts per `newtab_visit_id`.
 3. **Derived metrics**, including visit duration (close minus open) and window inner size captured at open.
 4. **New fields (Aug 2025):** sampling, legacy profile grouping, geo subdivision, experiment metadata, weather flag,
    search engine IDs, topsite configuration, blocked sponsors, and new dismissal/thumbs metrics across content and topsites.
 
-\* See schema for the full list of weather/wallpaper/sections/topic/inline events included.
+\* See schema for the full list of weather/widgets/wallpaper/sections/topic/inline events included.
 
 ## Output schema
 
 See `schema.yaml` for complete field names, types, and descriptions.
 
 Key examples:
-- Booleans like `is_search_issued`, `is_content_click`, `is_sponsored_topsite_impression` indicate **any** such event occurred in the visit (default UI only).
 - Count fields like `any_content_click_count`, `organic_topsite_impression_count`, `search_ad_impression_count` quantify event frequencies within the visit.
+- Prefixes `sponsored` and `organic` indicate the associated articles are sponsored or organic.
 - `newtab_visit_duration` is the timestamp difference between `newtab.opened` and `newtab.closed` (ms).
 - Window size at open: `newtab_window_inner_height`, `newtab_window_inner_width`.
 

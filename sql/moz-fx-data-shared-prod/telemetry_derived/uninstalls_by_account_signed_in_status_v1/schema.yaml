@@ -6,7 +6,7 @@ fields:
 - name: account_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: Account Enabled
+  description: Whether the user's logged in to an FxA account.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE

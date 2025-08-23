@@ -1,4 +1,8 @@
 fields:
+- name: account_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the user's logged in to an FxA account.
 - name: activity_segment
   type: STRING
   description: Classification of users based on their browsing activity.

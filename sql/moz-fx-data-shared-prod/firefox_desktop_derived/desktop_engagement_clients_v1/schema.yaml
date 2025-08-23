@@ -32,7 +32,8 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: Internet Service Provider Name
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -83,8 +84,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: Code of the country in which the activity took place, as determined by
+    the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

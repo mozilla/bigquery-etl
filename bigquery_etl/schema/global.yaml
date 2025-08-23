@@ -52,6 +52,11 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   description: A flag indicating whether the browser is set as the default browser on the client side.
+- name: isp_name
+  type: STRING
+  description: The name of the internet service provider associated with the client's IP address.
+  aliases:
+  - isp
 - name: locale
   type: STRING
   description: Set of language- and/or country-based preferences for a user interface.

@@ -6,7 +6,8 @@ fields:
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: ISP Name
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: nbr_clients_uninstalling
   type: INTEGER
   mode: NULLABLE

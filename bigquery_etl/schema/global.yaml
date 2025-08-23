@@ -21,6 +21,14 @@ fields:
   aliases:
   - version
   - app_display_version
+- name: app_version_major
+  type: INTEGER
+  description: The major version of the user visible app version string for the browser,
+    e.g. "142.1.3", has major version 142
+- name: app_version_minor
+  type: INTEGER
+  description: The minor version of the user visible app version string for the browser,
+    e.g. "142.1.3" has minor version 1
 - name: client_id
   type: STRING
   description: A unique identifier (UUID) for the client.

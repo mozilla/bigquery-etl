@@ -123,9 +123,11 @@ fields:
 - name: system_is_wow64
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether we're in Windows32-on-Windows64 mode. Windows only.
 - name: system_memory_mb
   type: FLOAT
   mode: NULLABLE
+  description: The physical memory size in MB (2^20 bytes). e.g. 32211
 - name: city
   type: STRING
   mode: NULLABLE

@@ -24,8 +24,8 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: Code of the country in which the activity took place, as determined by
+    the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - mode: NULLABLE
   name: locale
   type: STRING
@@ -95,7 +95,8 @@ fields:
 - mode: NULLABLE
   name: isp
   type: STRING
-  description: Internet Service Provider
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - mode: NULLABLE
   name: is_desktop
   type: BOOLEAN

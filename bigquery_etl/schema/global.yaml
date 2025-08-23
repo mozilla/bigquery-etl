@@ -87,12 +87,14 @@ fields:
     client. E.g. for version "100.9.11", the major is 100.
   aliases:
   - os_major_version
+  - os_version_major
 - name: os_minor
   type: INTEGER
   description: Minor part of the operating system version running at the client. E.g.
     for version "100.9.11", the minor is 9.
   aliases:
   - os_minor_version
+  - os_version_minor
 - name: profile_group_id
   type: STRING
   description: A UUID uniquely identifying the profile group, not shared with other telemetry data.

@@ -196,19 +196,19 @@ fields:
   mode: NULLABLE
   name: cpu_l3_cache_kb
   type: INTEGER
-- description: null
+- description: CPU model of the user's device.
   mode: NULLABLE
   name: cpu_model
   type: INTEGER
-- description: null
+- description: CPU speed in MHz.
   mode: NULLABLE
   name: cpu_speed_mhz
   type: INTEGER
-- description: null
+- description: CPU stepping.
   mode: NULLABLE
   name: cpu_stepping
   type: INTEGER
-- description: null
+- description: The CPU vendor (e.g. "GenuineIntel").
   mode: NULLABLE
   name: cpu_vendor
   type: STRING
@@ -354,7 +354,8 @@ fields:
   mode: NULLABLE
   name: geo_subdivision2
   type: STRING
-- description: null
+- description: The name of the internet service provider associated with the client's
+    IP address.
   mode: NULLABLE
   name: isp_name
   type: STRING
@@ -374,7 +375,13 @@ fields:
   mode: NULLABLE
   name: gfx_features_d3d11_status
   type: STRING
-- description: null
+- description: Information about the out-of-process compositing ("GPU Process") GFX
+    feature. unused - This feature has not been requested. unavailable - Safe Mode
+    or OS restriction prevents use. blocked - An internal condition (such as safe
+    mode) prevents use. blocklisted - Blocked due to a blocklist restriction. denied"
+    - Blocked due to allowlist restrictions. disabled - User explicitly disabled this
+    default feature. failed - Feature failed to initialize. available - User has this
+    feature available by default and it's in use.
   mode: NULLABLE
   name: gfx_features_gpu_process_status
   type: STRING
@@ -579,7 +586,8 @@ fields:
   mode: NULLABLE
   name: plugins_notification_shown_sum
   type: INTEGER
-- description: null
+- description: The Firefox build id the browser is updating from.
+    Follows the same format as application.buildId. Only valid for "update" pings with reason "success".
   mode: NULLABLE
   name: previous_build_id
   type: STRING
@@ -2336,6 +2344,8 @@ fields:
 - name: apple_model_id
   type: STRING
   mode: NULLABLE
+  description: The hw.model of the hardware running this software. Mac only. e.g.
+    "MacBookPro14,1"
 - name: max_subsession_counter
   type: INTEGER
   mode: NULLABLE

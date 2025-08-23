@@ -6,7 +6,8 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: Is Default Browser Indicator
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: os
   type: STRING
   mode: NULLABLE

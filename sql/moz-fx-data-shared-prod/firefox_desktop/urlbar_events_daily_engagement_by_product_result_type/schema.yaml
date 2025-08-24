@@ -2,12 +2,16 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: product_result_type
   type: STRING
   mode: NULLABLE
@@ -38,9 +42,12 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: firefox_suggest_enabled
   type: BOOLEAN
   mode: NULLABLE

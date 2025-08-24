@@ -2,11 +2,11 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: Client ID; uniquely identifies a client. Joinable with fenix.firefox_android_clients.
+  description: A unique identifier (UUID) for the client.
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission date, the date of the data. Also the partition key.
+  description: The date when the telemetry ping is received on the server side.
 - name: markov_states
   type: RECORD
   mode: NULLABLE
@@ -26,7 +26,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -43,11 +44,9 @@ fields:
 - name: consecutive_days_seen
   type: INTEGER
   mode: NULLABLE
-  description: 'Number of consecutive days this client has been seen. For example,
+  description: Number of consecutive days this client has been seen. For example,
     if they were missing two days ago but present yesterday & today, consecutive_days_seen
     would be 2.
-
-    '
 - name: days_seen_bytes
   type: BYTES
   mode: NULLABLE

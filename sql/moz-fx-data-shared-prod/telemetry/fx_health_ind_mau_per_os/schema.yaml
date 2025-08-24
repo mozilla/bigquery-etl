@@ -2,23 +2,23 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating System
+  description: The normalized name of the operating system running at the client.
 - name: dau
   type: INTEGER
   mode: NULLABLE
-  description: DAU
+  description: Daily Active Users
 - name: mau
   type: INTEGER
   mode: NULLABLE
-  description: MAU
+  description: Monthly Active Users
 - name: smoothed_dau
   type: FLOAT
   mode: NULLABLE
-  description: Smoothed DAU
+  description: Smoothed Daily Active Users
 - name: ER
   type: FLOAT
   mode: NULLABLE

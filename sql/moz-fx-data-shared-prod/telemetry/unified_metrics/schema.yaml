@@ -2,18 +2,25 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: activity_segment
   type: STRING
   mode: NULLABLE
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -29,24 +36,29 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: durations
   type: NUMERIC
   mode: NULLABLE
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: uri_count
   type: INTEGER
   mode: NULLABLE
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: ad_click
   type: INTEGER
   mode: NULLABLE
@@ -68,21 +80,27 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: city
   type: STRING
   mode: NULLABLE
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
 - name: os_version_patch
   type: INTEGER
   mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: attribution_content
   type: STRING
   mode: NULLABLE
@@ -110,6 +128,8 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: nbr_unique_clients_uninstalling
   type: INTEGER
   mode: NULLABLE

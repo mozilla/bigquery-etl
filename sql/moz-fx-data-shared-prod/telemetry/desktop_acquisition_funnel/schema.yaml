@@ -5,18 +5,23 @@ fields:
 - name: country_code
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: os_version
   type: NUMERIC
   mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: attribution_ua
   type: STRING
   mode: NULLABLE

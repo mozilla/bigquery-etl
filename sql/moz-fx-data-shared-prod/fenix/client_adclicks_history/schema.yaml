@@ -2,11 +2,12 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: Unique ID for the client installation.
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID to limit query results during an analysis.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: ad_click_history
   type: RECORD
   mode: REPEATED

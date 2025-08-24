@@ -2,19 +2,21 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: Client ID
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: Profile Group Id
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: metric_date
   type: DATE
   mode: NULLABLE
@@ -22,19 +24,20 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -74,7 +77,7 @@ fields:
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized OS
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -82,11 +85,12 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID
+  description: The distribution id associated with the install of Firefox.
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: ISP
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE

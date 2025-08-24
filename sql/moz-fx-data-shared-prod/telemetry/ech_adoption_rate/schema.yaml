@@ -2,6 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: metric
   type: STRING
   mode: NULLABLE

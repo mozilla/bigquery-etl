@@ -2,11 +2,12 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: searches_per_user_ratio
   type: FLOAT
   mode: NULLABLE

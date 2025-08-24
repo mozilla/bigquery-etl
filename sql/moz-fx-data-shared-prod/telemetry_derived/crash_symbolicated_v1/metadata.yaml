@@ -18,10 +18,6 @@ bigquery:
   range_partitioning: null
   clustering: null
 workgroup_access: []
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.crash_frames_v1
-  - moz-fx-data-shared-prod.telemetry_derived.crash_symbols_v1
-  - moz-fx-data-shared-prod.telemetry_stable.crash_v4
+references: {}
 deprecated: true
 require_column_descriptions: false

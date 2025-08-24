@@ -2,7 +2,7 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
-  description: Time when the ingestion edge server accepted this message
+  description: Timestamp when the ping is received on the server side.
 - name: additional_properties
   type: STRING
   mode: NULLABLE
@@ -11,13 +11,15 @@ fields:
 - name: addon_version
   type: STRING
   mode: NULLABLE
+  description: Addon Version
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: document_id
   type: STRING
   mode: NULLABLE
-  description: The document ID specified in the URI when the client sent this message
+  description: The document ID specified in the URI when the client sent this message.
 - name: event
   type: STRING
   mode: NULLABLE
@@ -41,9 +43,11 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: message_id
   type: STRING
   mode: NULLABLE
+  description: Message ID
 - name: metadata
   type: RECORD
   mode: NULLABLE
@@ -164,15 +168,16 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Set to "Other" if this message contained an unrecognized channel name
+  description: The normalized channel the application is being distributed on.
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: An ISO 3166-1 alpha-2 country code
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Set to "Other" if this message contained an unrecognized OS name
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -182,9 +187,12 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: browser_session_id
   type: STRING
   mode: NULLABLE
@@ -213,6 +221,7 @@ fields:
       - name: type
         type: STRING
         mode: NULLABLE
+  description: Experiment Information
 - name: attribution
   type: RECORD
   mode: NULLABLE

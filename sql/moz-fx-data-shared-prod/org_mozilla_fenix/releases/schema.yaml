@@ -2,28 +2,28 @@ fields:
 - name: build_number
   type: INTEGER
   mode: NULLABLE
-  description: null
+  description: Build Number
 - name: category
   type: STRING
   mode: NULLABLE
-  description: null
+  description: Category
 - name: date
   type: DATE
   mode: NULLABLE
-  description: null
+  description: Date
 - name: description
   type: STRING
   mode: NULLABLE
-  description: null
+  description: Description
 - name: is_security_driven
   type: BOOLEAN
   mode: NULLABLE
-  description: null
+  description: Is Security Driven
 - name: product
   type: STRING
   mode: NULLABLE
-  description: null
+  description: Product
 - name: version
   type: STRING
   mode: NULLABLE
-  description: null
+  description: Version

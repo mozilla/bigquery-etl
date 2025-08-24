@@ -8,21 +8,27 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
 - name: country_code
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: browser_version
   type: STRING
   mode: NULLABLE
@@ -281,9 +287,12 @@ fields:
 - name: activity_segment
   type: STRING
   mode: NULLABLE
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: had_non_search_engagement
   type: BOOLEAN
   mode: NULLABLE
@@ -371,8 +380,8 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: newtab_window_inner_height
   type: INTEGER
   mode: NULLABLE

@@ -71,7 +71,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
+  description: The date when the telemetry ping is received on the server side.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -127,7 +127,7 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: null
+  description: A unique identifier (UUID) for the client.
 - name: aborts_content_sum
   type: INTEGER
   mode: NULLABLE
@@ -236,7 +236,7 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: null
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -705,7 +705,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: null
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: sandbox_effective_content_process_level
   type: INTEGER
   mode: NULLABLE
@@ -2446,8 +2447,8 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: _sample_id_string
   type: STRING
   mode: NULLABLE

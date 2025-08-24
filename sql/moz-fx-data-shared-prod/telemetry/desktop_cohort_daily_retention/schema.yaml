@@ -5,9 +5,11 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: architecture
   type: STRING
   mode: NULLABLE
@@ -53,24 +55,30 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: db_version
   type: STRING
   mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -83,9 +91,13 @@ fields:
 - name: os_version_major
   type: INTEGER
   mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
 - name: os_version_minor
   type: INTEGER
   mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
 - name: num_clients_in_cohort
   type: INTEGER
   mode: NULLABLE

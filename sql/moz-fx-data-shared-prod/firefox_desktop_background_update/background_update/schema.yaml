@@ -677,6 +677,13 @@ fields:
         invocation and the last invocation that was not debounced.
 
         '
+    - name: background_update_throttling_prevented_updates
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times an update was available and we prevented installation
+        due to throttling.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

@@ -11,12 +11,12 @@ description: |-
   we received a main ping from that client on that day or in the preceding
   27 days.
 owners:
-- ascholtzs@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
   schedule: daily
   dag: bqetl_main_summary
-  owner1: ascholtzs
+  owner1: ascholtz
   table_type: client_level
 scheduling:
   dag_name: bqetl_main_summary

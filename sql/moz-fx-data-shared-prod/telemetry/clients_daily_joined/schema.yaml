@@ -5,11 +5,11 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: null
+  description: A unique identifier (UUID) for the client.
 - name: aborts_content_sum
   type: INTEGER
   mode: NULLABLE
@@ -110,7 +110,7 @@ fields:
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: null
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -118,7 +118,7 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: null
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -162,7 +162,7 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: null
+  description: The normalized channel the application is being distributed on.
 - name: client_clock_skew_mean
   type: FLOAT
   mode: NULLABLE
@@ -270,7 +270,7 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: null
+  description: The distribution id associated with the install of Firefox.
 - name: e10s_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -335,7 +335,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: null
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: city
   type: STRING
   mode: NULLABLE
@@ -499,7 +500,8 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: null
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: is_wow64
   type: BOOLEAN
   mode: NULLABLE
@@ -507,7 +509,7 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: null
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: memory_mb
   type: INTEGER
   mode: NULLABLE
@@ -515,7 +517,7 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: null
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -523,7 +525,7 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: null
+  description: The normalized name of the operating system running at the client.
 - name: os_service_pack_major
   type: INTEGER
   mode: NULLABLE
@@ -587,7 +589,7 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: null
+  description: A number, 0-99, that samples by client_id.
 - name: sandbox_effective_content_process_level
   type: INTEGER
   mode: NULLABLE
@@ -2028,8 +2030,8 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: browser_version_info
   type: RECORD
   mode: NULLABLE

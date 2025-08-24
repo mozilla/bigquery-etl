@@ -14,12 +14,14 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: impression_id
   type: STRING
   mode: NULLABLE
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: seen_whats_new
   type: BOOLEAN
   mode: NULLABLE
@@ -29,9 +31,13 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.

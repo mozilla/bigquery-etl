@@ -2,7 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: release_channel_stub_installs_count
   type: INTEGER
   mode: NULLABLE

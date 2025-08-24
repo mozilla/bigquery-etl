@@ -2,24 +2,32 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
+  description: Default Search Engine
 - name: profile_creation_month
   type: DATE
   mode: NULLABLE

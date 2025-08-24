@@ -45,20 +45,20 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: The ISO 3166-1 alpha-2 country code.
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The value of the `distribution.id` preference that identifies the Firefox
-    distribution.
+  description: The distribution id associated with the install of Firefox.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: The Firefox channel, set to Other for unrecognized channel names.
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The OS name, set to Other for unrecognized OS names.
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -66,11 +66,11 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: The application display version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: The best locale that the application should be localized to.
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: windows_version
   type: STRING
   mode: NULLABLE
@@ -90,3 +90,5 @@ fields:
 - name: city
   type: STRING
   mode: NULLABLE
+  description: Name of the city in which the activity took place, as determined by
+    the IP geolocation.

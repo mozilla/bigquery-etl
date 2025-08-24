@@ -15,7 +15,8 @@ fields:
   name: attribution_source
   type: STRING
   mode: NULLABLE
-- description: Identifier of the particular campaign that led to the download of the product.
+- description: Identifier of the particular campaign that led to the download of the
+    product.
   name: attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -27,11 +28,13 @@ fields:
   name: attribution_dlsource
   type: STRING
   mode: NULLABLE
-- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
+- description: Client's user agent, which corresponds to the web browser used to download
+    the Firefox installer.
   name: attribution_ua
   type: STRING
   mode: NULLABLE
-- description: True if attribution_medium is not null AND attribution_source is not null.
+- description: True if attribution_medium is not null AND attribution_source is not
+    null.
   name: attributed
   type: BOOLEAN
   mode: NULLABLE
@@ -39,19 +42,20 @@ fields:
   name: paid_vs_organic
   type: STRING
   mode: NULLABLE
-- description: The ISO 3166-1 alpha-2 country code.
+- description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
   name: country
   type: STRING
   mode: NULLABLE
-- description: The value of the `distribution.id` preference that identifies the Firefox distribution.
+- description: The distribution id associated with the install of Firefox.
   name: distribution_id
   type: STRING
   mode: NULLABLE
-- description: The Firefox channel, set to Other for unrecognized channel names.
+- description: The normalized channel the application is being distributed on.
   name: channel
   type: STRING
   mode: NULLABLE
-- description: The OS name, set to Other for unrecognized OS names.
+- description: The normalized name of the operating system running at the client.
   name: normalized_os
   type: STRING
   mode: NULLABLE
@@ -59,11 +63,11 @@ fields:
   name: normalized_os_version
   type: STRING
   mode: NULLABLE
-- description: The application display version
+- description: User visible version string (e.g. "1.0.3") for the browser.
   name: app_version
   type: STRING
   mode: NULLABLE
-- description: The best locale that the application should be localized to.
+- description: Set of language- and/or country-based preferences for a user interface.
   name: locale
   type: STRING
   mode: NULLABLE
@@ -83,3 +87,8 @@ fields:
   name: new_profiles
   type: INTEGER
   mode: NULLABLE
+- name: city
+  type: STRING
+  mode: NULLABLE
+  description: Name of the city in which the activity took place, as determined by
+    the IP geolocation.

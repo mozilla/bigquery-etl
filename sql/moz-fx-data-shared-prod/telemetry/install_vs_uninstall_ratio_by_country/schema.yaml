@@ -2,11 +2,12 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Normalized Country Code
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: uninstalls_count
   type: INTEGER
   mode: NULLABLE

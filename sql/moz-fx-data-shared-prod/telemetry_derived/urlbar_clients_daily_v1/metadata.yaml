@@ -23,8 +23,6 @@ bigquery:
     fields:
     - normalized_channel
 workgroup_access: []
-references:
-  query.sql:
-  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_joined_v1
+references: {}
 deprecated: true
 require_column_descriptions: false

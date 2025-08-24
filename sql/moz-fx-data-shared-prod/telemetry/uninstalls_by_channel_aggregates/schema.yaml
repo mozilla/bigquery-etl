@@ -2,11 +2,11 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: Channel
+  description: The normalized channel the application is being distributed on.
 - name: nbr_unique_clients_uninstalling
   type: INTEGER
   mode: NULLABLE

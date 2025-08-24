@@ -2,31 +2,33 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: Client ID
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: Distribution ID
+  description: The distribution id associated with the install of Firefox.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: ISP Name
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -64,11 +66,11 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -81,7 +83,7 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: An ISO 3166-1 alpha-2 country code
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
@@ -101,8 +103,8 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: Profile Group ID - A UUID identifying the profile's group on a single
-    device and allowing user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: lifecycle_stage
   type: STRING
   mode: NULLABLE

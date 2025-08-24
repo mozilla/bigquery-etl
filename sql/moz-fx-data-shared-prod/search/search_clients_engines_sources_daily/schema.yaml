@@ -5,9 +5,11 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: engine
   type: STRING
   mode: NULLABLE
@@ -23,12 +25,15 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: user_pref_browser_search_region
   type: STRING
   mode: NULLABLE
@@ -44,9 +49,12 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: profile_creation_date
   type: INTEGER
   mode: NULLABLE
@@ -71,6 +79,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: subsession_hours_sum
   type: FLOAT
   mode: NULLABLE
@@ -271,17 +281,23 @@ fields:
 - name: policies_is_enterprise
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if the user is an enterprise user based on various
+    signals.
 - name: os_version_major
   type: STRING
   mode: NULLABLE
+  description: Major or first part of the operating system version running at the
+    client. E.g. for version "100.9.11", the major is 100.
 - name: os_version_minor
   type: STRING
   mode: NULLABLE
+  description: Minor part of the operating system version running at the client. E.g.
+    for version "100.9.11", the minor is 9.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: normalized_engine
   type: STRING
   mode: NULLABLE

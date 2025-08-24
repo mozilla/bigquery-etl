@@ -2,11 +2,12 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: Unique ID for the client installation.
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID to limit query results during an analysis.
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -32,7 +33,7 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: The best locale that the application should be localized to.
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: platform_version
   type: STRING
   mode: NULLABLE
@@ -44,7 +45,7 @@ fields:
 - name: app_version
   type: STRING
   mode: NULLABLE
-  description: The application version.
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: xpcom_abi
   type: STRING
   mode: NULLABLE
@@ -60,8 +61,7 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The value of the `distribution.id` preference that identifies the Firefox
-    distribution.
+  description: The distribution id associated with the install of Firefox.
 - name: partner_distribution_version
   type: STRING
   mode: NULLABLE
@@ -162,11 +162,12 @@ fields:
 - name: isp_name
   type: STRING
   mode: NULLABLE
-  description: The name of the ISP.
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The Firefox channel, set to Other for unrecognized channel names.
+  description: The normalized channel the application is being distributed on.
 - name: country
   type: STRING
   mode: NULLABLE
@@ -174,7 +175,7 @@ fields:
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: The OS name, set to Other for unrecognized OS names.
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -241,7 +242,7 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: OS name - not normalized_os
+  description: The normalized name of the operating system running at the client.
 - name: os_version
   type: STRING
   mode: NULLABLE
@@ -279,8 +280,8 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

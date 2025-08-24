@@ -2,9 +2,11 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: block_nonsponsored_count
   type: INTEGER
   mode: NULLABLE
@@ -94,18 +96,25 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

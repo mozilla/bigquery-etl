@@ -87,8 +87,3 @@ fields:
   name: new_profiles
   type: INTEGER
   mode: NULLABLE
-- name: city
-  type: STRING
-  mode: NULLABLE
-  description: Name of the city in which the activity took place, as determined by
-    the IP geolocation.

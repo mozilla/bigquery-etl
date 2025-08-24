@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: installer_type
   type: STRING
   mode: NULLABLE

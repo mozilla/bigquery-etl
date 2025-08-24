@@ -5,7 +5,8 @@ owners:
 - frank@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: frank
+  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
 bigquery:
@@ -14,6 +15,10 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
-    fields: [first_reported_country, first_seen_date]
+    fields:
+    - first_reported_country
+    - first_seen_date
 references: {}
+require_column_descriptions: false

@@ -9,6 +9,8 @@ owners:
 labels:
   schedule: daily
   table_type: client_level
+  dag: bqetl_search
+  owner1: loines
 scheduling:
   dag_name: bqetl_search
   depends_on_past: true
@@ -21,8 +23,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - sample_id
     - client_id
+references: {}
+require_column_descriptions: false

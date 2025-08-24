@@ -47,7 +47,7 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Name of the country in which the activity took place, as determined
+  description: Code of the country in which the activity took place, as determined
     by the IP geolocation.
 - mode: NULLABLE
   name: device_model

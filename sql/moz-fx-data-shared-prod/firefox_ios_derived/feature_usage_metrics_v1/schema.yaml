@@ -9,21 +9,25 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: country
   type: STRING
   mode: NULLABLE
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  description: A string containing the Adjust network ID from which the user installed Firefox.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - name: logins_deleted_users
   type: INTEGER
   mode: NULLABLE
 - name: logins_deleted
   type: INTEGER
   mode: NULLABLE
+  description: A counter of the number of passwords that have been deleted.
 - name: logins_modified_users
   type: INTEGER
   mode: NULLABLE
@@ -36,12 +40,14 @@ fields:
 - name: logins_saved
   type: INTEGER
   mode: NULLABLE
+  description: A counter of the number of passwords that have been saved.
 - name: logins_saved_all_users
   type: INTEGER
   mode: NULLABLE
 - name: logins_saved_all
   type: INTEGER
   mode: NULLABLE
+  description: A counter of all the passwords that are currently stored.
 - name: credit_card_autofill_enabled_users
   type: INTEGER
   mode: NULLABLE
@@ -60,12 +66,14 @@ fields:
 - name: credit_card_deleted
   type: INTEGER
   mode: NULLABLE
+  description: A counter of the number of credit cards that have been deleted.
 - name: credit_card_modified_users
   type: INTEGER
   mode: NULLABLE
 - name: credit_card_modified
   type: INTEGER
   mode: NULLABLE
+  description: A counter of the number of credit cards that have been modified.
 - name: credit_card_saved_users
   type: INTEGER
   mode: NULLABLE
@@ -126,6 +134,7 @@ fields:
 - name: sync_create_account_pressed
   type: INTEGER
   mode: NULLABLE
+  description: The number of times a user taps on create account button in sync library view.
 - name: sync_open_tab_users
   type: INTEGER
   mode: NULLABLE

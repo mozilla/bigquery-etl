@@ -78,6 +78,7 @@ fields:
 - name: architecture
   type: STRING
   mode: NULLABLE
+  description: The architecture of the device, (e.g. "arm", "x86").
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
@@ -99,6 +100,7 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: The name of the internet service provider associated with the client's IP address.
 - name: distribution_id
   type: STRING
   mode: NULLABLE

@@ -1,6 +1,66 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
+  `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users` (
+
+days_since_desktop_active (description = "This is column 1"),
+days_since_seen (description = "This is column 1"),
+days_since_active (description = "This is column 1"),
+days_since_created_profile (description = "This is column 1"),
+days_since_seen_session_start (description = "This is column 1"),
+days_since_seen_session_end (description = "This is column 1"),
+days_seen_bits (description = "This is column 1"),
+days_created_profile_bits (description = "This is column 1"),
+submission_date (description = "The date when the telemetry ping is received on the server side."),
+client_id (description = "A unique identifier (UUID) for the client."),
+sample_id (description = "A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings."),
+first_run_date (description = "This is column 1"),
+durations (description = "This is column 1"),
+days_seen_session_start_bits (description = "This is column 1"),
+days_seen_session_end_bits (description = "This is column 1"),
+android_sdk_version (description = "The optional Android specific SDK version of the software running on this hardware device."),
+locale (description = "Set of language- and/or country-based preferences for a user interface."),
+city (description = "City in which the activity took place, as determined by the IP geolocation."),
+country (description = "Code of the country in which the activity took place, as determined by the IP geolocation."),
+app_build (description = "This is column 1"),
+app_channel (description = "This is column 1"),
+architecture (description = "This is column 1"),
+device_manufacturer (description = "This is column 1"),
+device_model (description = "This is column 1"),
+telemetry_sdk_build (description = "The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0)."),
+first_seen_date (description = "This is column 1"),
+is_new_profile (description = "This is column 1"),
+isp (description = "The name of the internet service provider associated with the client's IP address."),
+days_active_bits (description = "This is column 1"),
+geo_subdivision (description = "This is column 1"),
+profile_group_id (description = "A UUID uniquely identifying the profile group, not shared with other telemetry data."),
+install_source (description = "This is column 1"),
+days_desktop_active_bits (description = "This is column 1"),
+windows_build_number (description = "This is column 1"),
+browser_engagement_uri_count (description = "This is column 1"),
+browser_engagement_active_ticks (description = "This is column 1"),
+legacy_telemetry_client_id (description = "A unique identifier (UUID) for the client, that joins to legacy telemetry."),
+is_default_browser (description = "A flag indicating whether the browser is set as the default browser on the client side."),
+attribution_dltoken (description = "This is column 1"),
+attribution_dlsource (description = "This is column 1"),
+attribution_experiment (description = ""),
+attribution_variation (description = ""),
+attribution_ua (description = ""),
+experiments (description = ""),
+app_name (description = ""),
+app_version (description = "User visible version string (e.g. "1.0.3") for the browser."),
+app_version_major (description = ""),
+app_version_minor (description = ""),
+app_version_patch_revision (description = ""),
+app_version_is_major_release (description = ""),
+channel (description = "The normalized channel the application is being distributed on."),
+distribution_id (description = "The distribution id associated with the install of Firefox."),
+distribution_id_source (description = "")
+)
+OPTIONS (
+  description = "TBD"
+)
 AS
+--
 SELECT
   last_seen.* EXCEPT (
     app_display_version,

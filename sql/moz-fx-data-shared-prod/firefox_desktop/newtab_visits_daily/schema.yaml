@@ -222,3 +222,129 @@ fields:
   mode: NULLABLE
   description: TRUE if the user interacted with wallpaper, topic_selection or sections
     with newtab opened in default ui
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+- name: geo_subdivision
+  type: STRING
+  mode: NULLABLE
+- name: is_section
+  type: BOOLEAN
+  mode: NULLABLE
+- name: experiments
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: extra
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: type
+        type: STRING
+        mode: NULLABLE
+      - name: enrollment_id
+        type: STRING
+        mode: NULLABLE
+- name: newtab_weather_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+- name: default_private_search_engine
+  type: STRING
+  mode: NULLABLE
+- name: topsite_rows
+  type: INTEGER
+  mode: NULLABLE
+- name: topsite_sponsored_tiles_configured
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_blocked_sponsors
+  type: STRING
+  mode: REPEATED
+- name: organic_content_dismissal_count
+  type: INTEGER
+  mode: NULLABLE
+- name: sponsored_content_dismissal_count
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_topsite_dismissal_count
+  type: INTEGER
+  mode: NULLABLE
+- name: sponsored_topsite_dismissal_count
+  type: INTEGER
+  mode: NULLABLE
+- name: any_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: search_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: nonsearch_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: any_content_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_content_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: sponsored_content_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: any_topsite_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: organic_topsite_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: sponsored_topsite_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: content_thumbs_up_count
+  type: INTEGER
+  mode: NULLABLE
+- name: content_thumbs_down_count
+  type: INTEGER
+  mode: NULLABLE
+- name: search_ad_click_count
+  type: INTEGER
+  mode: NULLABLE
+- name: search_ad_impression_count
+  type: INTEGER
+  mode: NULLABLE
+- name: widget_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: widget_impression_count
+  type: INTEGER
+  mode: NULLABLE
+- name: other_interaction_count
+  type: INTEGER
+  mode: NULLABLE
+- name: other_impression_count
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_visit_duration
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_window_inner_height
+  type: INTEGER
+  mode: NULLABLE
+- name: newtab_window_inner_width
+  type: INTEGER
+  mode: NULLABLE

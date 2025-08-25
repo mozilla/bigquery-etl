@@ -324,12 +324,9 @@ fields:
 - name: ga4_all_reported_install_targets
   type: STRING
   mode: REPEATED
-- name: ga4_last_reported_stub_session_id
+- name: ga4_stub_session_id
   type: STRING
   mode: NULLABLE
-- name: ga4_all_reported_stub_session_ids
-  type: STRING
-  mode: REPEATED
 - name: ga4_landing_screen
   type: STRING
   mode: NULLABLE

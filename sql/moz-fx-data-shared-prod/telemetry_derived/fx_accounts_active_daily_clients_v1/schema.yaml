@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: The submission date of the Firefox Account ping.
+  description: The date when the telemetry ping is received on the server side.
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
@@ -23,7 +23,7 @@ fields:
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: The user visible version string (e.g. "1.0.3").
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: architecture
   type: STRING
   mode: NULLABLE
@@ -35,7 +35,7 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the client; also called Glean client ID
+  description: A unique identifier (UUID) for the client.
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
@@ -51,11 +51,11 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: The locale of the application during initialization (e.g. "es-ES").
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating System
+  description: The normalized name of the operating system running at the client.
 - name: os_version
   type: STRING
   mode: NULLABLE
@@ -309,7 +309,7 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -317,11 +317,13 @@ fields:
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
-  description: App Version - Major Version Number
+  description: The major version of the user visible app version string for the browser,
+    e.g. "142.1.3", has major version 142
 - name: app_version_minor
   type: NUMERIC
   mode: NULLABLE
-  description: App Version - Minor Version Number
+  description: The minor version of the user visible app version string for the browser,
+    e.g. "142.1.3" has minor version 1
 - name: app_version_patch
   type: NUMERIC
   mode: NULLABLE
@@ -329,7 +331,7 @@ fields:
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -337,12 +339,13 @@ fields:
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
-  description: Normalized Country Code
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Hashed version of client_id (if present) useful for partitioning; ranges
-    from 0 to 99
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: attribution
   type: RECORD
   mode: NULLABLE

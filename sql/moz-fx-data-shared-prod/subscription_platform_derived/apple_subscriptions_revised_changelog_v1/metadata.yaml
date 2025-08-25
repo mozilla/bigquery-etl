@@ -26,3 +26,5 @@ bigquery:
   clustering: null
 references: {}
 require_column_descriptions: true
+monitoring:
+  enabled: true

@@ -1,0 +1,18 @@
+type: BIGCONFIG_FILE
+table_deployments:
+- collection:
+    name: 'Subscription Platform'
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+    - email: 'phlee@mozilla.com, srose@mozilla.com'
+  deployments:
+  - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_revised_changelog_v1
+    table_metrics:
+    - saved_metric_id: freshness
+    - saved_metric_id: volume
+    columns:
+    - column_name: id
+      metrics:
+      - saved_metric_id: is_unique
+        rct_overrides:
+        - timestamp

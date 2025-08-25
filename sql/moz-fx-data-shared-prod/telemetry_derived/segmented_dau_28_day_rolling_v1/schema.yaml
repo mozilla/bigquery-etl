@@ -2,9 +2,11 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
 - name: app_name
   type: STRING
   mode: NULLABLE
@@ -23,18 +25,23 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: install_source
   type: STRING
   mode: NULLABLE
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: os_grouped
   type: STRING
   mode: NULLABLE
 - name: segment
   type: STRING
   mode: NULLABLE
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - name: dau
   type: INTEGER
   mode: NULLABLE

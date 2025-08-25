@@ -24,6 +24,7 @@ fields:
 - name: shopping_product_page_visits
   type: INTEGER
   mode: NULLABLE
+  description: A count of the number of eligible product pages the user has visited.
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -69,6 +70,7 @@ fields:
 - name: is_nimbus_disabled
   type: INTEGER
   mode: NULLABLE
+  description: Indicates if Nimbus has disabled the use the shopping component.
 - name: is_fx_dau
   type: INTEGER
   mode: NULLABLE

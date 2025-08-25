@@ -52,6 +52,7 @@ fields:
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
+  description: The optional Android specific SDK version of the software running on this hardware device.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -77,15 +78,19 @@ fields:
 - name: architecture
   type: STRING
   mode: NULLABLE
+  description: The architecture of the device, (e.g. "arm", "x86").
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
+  description: The manufacturer of the device the application is running on.
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The model of the device the application is running on.
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
+  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -95,6 +100,7 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: The name of the internet service provider associated with the client's IP address.
 - name: distribution_id
   type: STRING
   mode: NULLABLE

@@ -2,6 +2,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: window_start
   type: TIMESTAMP
   mode: NULLABLE
@@ -26,6 +27,7 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: version
   type: STRING
   mode: NULLABLE

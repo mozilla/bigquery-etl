@@ -8,15 +8,18 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: country
   type: STRING
   mode: NULLABLE
 - name: adjust_network
   type: STRING
   mode: NULLABLE
+  descriptin: The name of the Adjust Network that sourced this installation.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - name: logins_deleted_users
   type: INTEGER
   mode: NULLABLE

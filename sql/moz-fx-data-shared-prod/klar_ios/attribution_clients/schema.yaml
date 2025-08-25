@@ -2,19 +2,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: null
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: null
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: null
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: null
+  description: The normalized channel the application is being distributed on.
 - name: paid_vs_organic
   type: STRING
   mode: NULLABLE

@@ -5,12 +5,16 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_run_date
   type: DATE
   mode: NULLABLE
@@ -26,18 +30,23 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
+  description: The optional Android specific SDK version of the software running on
+    this hardware device.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: city
   type: STRING
   mode: NULLABLE
@@ -47,6 +56,8 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: app_build
   type: STRING
   mode: NULLABLE
@@ -59,12 +70,18 @@ fields:
 - name: architecture
   type: STRING
   mode: NULLABLE
+  description: The architecture of the device, (e.g. "arm", "x86").
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
+  description: The manufacturer of the device the application is running on. Not set
+    if the device manufacturer can't be determined (e.g. on Desktop).
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The model of the device the application is running on. On Android,
+    this is Build.MODEL, the user-visible marketing name, like "Pixel 2 XL". Not set
+    if the device model can't be determined (e.g. on Desktop).
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
@@ -77,12 +94,15 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: install_source
   type: STRING
   mode: NULLABLE
@@ -101,6 +121,8 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: attribution
   type: RECORD
   mode: NULLABLE

@@ -2,17 +2,11 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
-- name: is_any_interaction
-  type: BOOLEAN
+- name: layout_type
+  type: STRING
   mode: NULLABLE
-- name: is_nonsearch_interaction
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_organic_content_interaction
-  type: BOOLEAN
-  mode: NULLABLE
-- name: is_organic_topsite_interaction
-  type: BOOLEAN
+- name: tiles_per_row
+  type: INTEGER
   mode: NULLABLE
 - name: submission_date
   type: DATE
@@ -25,7 +19,7 @@ fields:
 - name: newtab_visit_id
   type: STRING
   mode: NULLABLE
-  description: The id of newtab visit
+  description: Unique identifier for the newtab visit
 - name: app_version
   type: INTEGER
   mode: NULLABLE
@@ -33,11 +27,11 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
-  description: OS name of the host system
+  description: Operating system of the host system
 - name: channel
   type: STRING
   mode: NULLABLE
-  description: Firefox Desktop deployment channel
+  description: Firefox Desktop deployment channel (e.g. release, beta)
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -45,15 +39,15 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: country where the newtab event is reported
+  description: Country where the newtab event is reported
 - name: homepage_category
   type: STRING
   mode: NULLABLE
-  description: user setting for the appearance of homepage or new window during open
+  description: "User\u2019s chosen homepage/new window appearance"
 - name: newtab_category
   type: STRING
   mode: NULLABLE
-  description: user setting for the appearance of a newtab during open
+  description: "User\u2019s chosen newtab appearance"
 - name: organic_content_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -225,15 +219,20 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: Hashed version of client_id (0-99). Useful for distribution analysis
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+  description: Legacy telemetry. Enables the calculation of metrics by profile_id
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county
 - name: is_section
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether a visit had an impression that belonged to a section with default
+    UI
 - name: experiments
   type: RECORD
   mode: REPEATED
@@ -258,93 +257,126 @@ fields:
       - name: enrollment_id
         type: STRING
         mode: NULLABLE
+  description: Array of experiments to associate with each visit
 - name: newtab_weather_enabled
   type: BOOLEAN
   mode: NULLABLE
+  description: Whether the weather widget is enabled
 - name: default_search_engine
   type: STRING
   mode: NULLABLE
+  description: Engine_id of the default search engine
 - name: default_private_search_engine
   type: STRING
   mode: NULLABLE
+  description: Engine_id of the default private search engine
 - name: topsite_rows
   type: INTEGER
   mode: NULLABLE
+  description: The number of topsite tile rows configured to be shown on the newtab
+    page
 - name: topsite_sponsored_tiles_configured
   type: INTEGER
   mode: NULLABLE
+  description: The number of topsite tiles configured to be shown on newtab
 - name: newtab_blocked_sponsors
   type: STRING
   mode: REPEATED
+  description: Array of advertiser names that have been dismissed by the user
 - name: organic_content_dismissal_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of organic content dismissals
 - name: sponsored_content_dismissal_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of sponsored content dismissals
 - name: organic_topsite_dismissal_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of organic topsite dismissals
 - name: sponsored_topsite_dismissal_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of sponsored topsite dismissals
 - name: any_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of any client interactions
 - name: search_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of search interactions
 - name: nonsearch_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of non-search interactions
 - name: any_content_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of any content interactions
 - name: organic_content_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of organic content interactions
 - name: sponsored_content_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of sponsored content interactions
 - name: any_topsite_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of any topsite interactions
 - name: organic_topsite_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of organic topsite interactions
 - name: sponsored_topsite_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of sponsored topsite interactions
 - name: content_thumbs_up_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of organic content thumbs up
 - name: content_thumbs_down_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of organic content thumbs down
 - name: search_ad_click_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of search ad clicks
 - name: search_ad_impression_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of search ad impressions
 - name: widget_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of widget interactions
 - name: widget_impression_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of widget impressions
 - name: other_interaction_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of other misc interactions
 - name: other_impression_count
   type: INTEGER
   mode: NULLABLE
+  description: Count of other misc impressions
 - name: newtab_visit_duration
   type: INTEGER
   mode: NULLABLE
+  description: Visit duration in milliseconds (timestamp diff between close and open
+    event)
 - name: newtab_window_inner_height
   type: INTEGER
   mode: NULLABLE
+  description: The height of the browser window in pixels
 - name: newtab_window_inner_width
   type: INTEGER
   mode: NULLABLE
+  description: The width of the browser window in pixels

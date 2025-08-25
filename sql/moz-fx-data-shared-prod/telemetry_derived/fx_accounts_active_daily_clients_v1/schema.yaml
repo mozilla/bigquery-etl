@@ -71,7 +71,7 @@ fields:
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
-  description: Telemetry SDK Build
+  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE

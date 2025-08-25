@@ -34,9 +34,11 @@ fields:
 - mode: NULLABLE
   name: sponsored_tiles_enabled
   type: BOOLEAN
+  description: Tracks if the user has enabled sponsored shortcuts.
 - mode: NULLABLE
   name: pocket_enabled
   type: BOOLEAN
+  description: Measures the state of the show Pocket stories preference.
 - mode: NULLABLE
   name: client_count
   type: INTEGER

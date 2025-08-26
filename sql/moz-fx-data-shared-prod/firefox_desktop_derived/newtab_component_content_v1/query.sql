@@ -1,3 +1,4 @@
+-- get the window width by visit, which is needed for rownumber
 WITH visit_window_width AS (
   SELECT
     MIN(
@@ -13,10 +14,11 @@ WITH visit_window_width AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = '2025-06-01'
+    DATE(submission_timestamp) = @submission_date
   GROUP BY
     newtab_visit_id
 ),
+-- unnest pocket events
 pocket_events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -34,9 +36,10 @@ pocket_events_unnested AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = '2025-06-01'
+    DATE(submission_timestamp) = @submission_date
     AND category = 'pocket'
 ),
+-- aggregate metrics to the visit_id level
 raw_content_info AS (
   SELECT
     submission_date,

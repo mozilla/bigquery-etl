@@ -1,6 +1,9 @@
 friendly_name: Newtab Component-level Content Table
-description: Contains information about content interactions, both organic and sponsored,
-  from the newtab ping.  Each record represents a specific content position during a specific visit
+description: |-
+    Contains information about content interactions, both organic and sponsored,
+    from the newtab ping.  Each record represents a specific content position during a specific visit.
+
+    Note that this is pulling data from the newtab ping and not the newtab_content ping
 owners:
   - jsnyder@mozilla.com
   - gkatre@mozilla.com
@@ -9,7 +12,6 @@ labels:
   incremental: true
   schedule: daily
   dag: bqetl_newtab
-  owner1: gkatre
   table_type: client_level
 scheduling:
   dag_name: bqetl_newtab

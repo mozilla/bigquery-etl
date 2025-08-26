@@ -51,24 +51,24 @@ raw_content_info AS (
     SAFE_CAST(
       mozfun.map.get_key_with_null(event_details, 'section_position') AS INT
     ) AS section_position,
-    CAST(
+    SAFE_CAST(
       mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
     ) AS is_section_followed,
     ANY_VALUE(ping_info.experiments) AS experiments,
-    CAST(mozfun.map.get_key(event_details, 'position') AS INT) AS position,
-    CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
+    SAFE_CAST(mozfun.map.get_key(event_details, 'position') AS INT) AS position,
+    SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     mozfun.map.get_key(event_details, 'format') AS format,
     -- each interaction should happen at most 1 time so look for any event in the visit
-    CAST(LOGICAL_OR(event_name = 'impression') AS INT) AS impression_count,
-    CAST(LOGICAL_OR(event_name = 'click') AS INT) AS clicks_count,
-    CAST(LOGICAL_OR(event_name = 'dismiss') AS INT) AS dismiss_count,
-    CAST(
+    SAFE_CAST(LOGICAL_OR(event_name = 'impression') AS INT) AS impression_count,
+    SAFE_CAST(LOGICAL_OR(event_name = 'click') AS INT) AS clicks_count,
+    SAFE_CAST(LOGICAL_OR(event_name = 'dismiss') AS INT) AS dismiss_count,
+    SAFE_CAST(
       LOGICAL_OR(
         event_name IN ('thumb_voting_interaction')
         AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
       ) AS INT
     ) AS thumbs_up_count,
-    CAST(
+    SAFE_CAST(
       LOGICAL_OR(
         event_name IN ('thumb_voting_interaction')
         AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
@@ -107,7 +107,7 @@ add_tiles_per_row AS (
 )
 SELECT
   add_tiles_per_row.*,
-  CAST(
+  SAFE_CAST(
     CASE
       WHEN layout_type = 'SECTION_GRID'
         -- the row number is the same as the section position in sections

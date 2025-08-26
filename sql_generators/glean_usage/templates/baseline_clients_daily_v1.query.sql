@@ -70,6 +70,7 @@ WITH base AS (
     CAST(NULL AS STRING) AS attribution_variation,
     CAST(NULL AS STRING) AS attribution_ua,
     {% endif %}
+    ping_info.experiments AS experiments
   FROM
     `{{ baseline_table }}`
   WHERE 
@@ -181,6 +182,7 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(attribution_experiment) OVER w1) AS attribution_experiment,
     udf.mode_last(ARRAY_AGG(attribution_variation) OVER w1) AS attribution_variation,
     udf.mode_last(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
+    LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments
   FROM
     with_date_offsets
   LEFT JOIN

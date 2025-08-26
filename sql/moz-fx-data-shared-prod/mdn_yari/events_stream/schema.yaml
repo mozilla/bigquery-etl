@@ -144,6 +144,9 @@ fields:
     - name: version
       type: STRING
       mode: NULLABLE
+- name: metrics
+  type: JSON
+  mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
@@ -187,6 +190,18 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+- name: app_version_major
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_minor
+  type: NUMERIC
+  mode: NULLABLE
+- name: app_version_patch
+  type: NUMERIC
+  mode: NULLABLE
+- name: is_bot_generated
+  type: BOOLEAN
+  mode: NULLABLE
 - name: client_id
   type: STRING
   mode: NULLABLE
@@ -195,6 +210,12 @@ fields:
   mode: NULLABLE
 - name: experiments
   type: JSON
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+- name: legacy_telemetry_client_id
+  type: STRING
   mode: NULLABLE
 - name: event_timestamp
   type: TIMESTAMP
@@ -210,25 +231,4 @@ fields:
   mode: NULLABLE
 - name: event_extra
   type: JSON
-  mode: NULLABLE
-- name: metrics
-  type: JSON
-  mode: NULLABLE
-- name: profile_group_id
-  type: STRING
-  mode: NULLABLE
-- name: legacy_telemetry_client_id
-  type: STRING
-  mode: NULLABLE
-- name: app_version_major
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_minor
-  type: NUMERIC
-  mode: NULLABLE
-- name: app_version_patch
-  type: NUMERIC
-  mode: NULLABLE
-- name: is_bot_generated
-  type: BOOLEAN
   mode: NULLABLE

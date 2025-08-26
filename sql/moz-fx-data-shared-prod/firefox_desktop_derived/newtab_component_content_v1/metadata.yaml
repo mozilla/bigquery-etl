@@ -6,7 +6,6 @@ description: |-
     Note that this is pulling data from the newtab ping and not the newtab_content ping
 owners:
   - jsnyder@mozilla.com
-  - gkatre@mozilla.com
 labels:
   application: newtab
   incremental: true

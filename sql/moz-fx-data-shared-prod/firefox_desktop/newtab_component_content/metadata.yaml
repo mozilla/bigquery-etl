@@ -3,4 +3,3 @@ description: Contains information about content interactions, both organic and s
   from the newtab ping.  Each record represents a specific content position during a specific visit
 owners:
   - jsnyder@mozilla.com
-  - gkatre@mozilla.com

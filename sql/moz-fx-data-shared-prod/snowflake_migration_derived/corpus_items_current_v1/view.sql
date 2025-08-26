@@ -8,7 +8,7 @@ WITH corpus_item_id_row_nums AS (
     url,
     authors,
     publisher,
-    reviewed_corpus_item_updated_at AS corpus_item_id_updated_at,
+    reviewed_corpus_item_updated_at AS corpus_item_updated_at,
     ROW_NUMBER() OVER (
       PARTITION BY
         approved_corpus_item_external_id

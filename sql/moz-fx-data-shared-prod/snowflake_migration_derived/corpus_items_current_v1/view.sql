@@ -3,12 +3,12 @@ CREATE OR REPLACE VIEW
 AS
 WITH corpus_item_id_row_nums AS (
   SELECT
-    approved_corpus_item_external_id,
+    approved_corpus_item_external_id AS corpus_item_id,
     title,
     url,
     authors,
     publisher,
-    reviewed_corpus_item_updated_at,
+    reviewed_corpus_item_updated_at AS corpus_item_id_updated_at,
     ROW_NUMBER() OVER (
       PARTITION BY
         approved_corpus_item_external_id

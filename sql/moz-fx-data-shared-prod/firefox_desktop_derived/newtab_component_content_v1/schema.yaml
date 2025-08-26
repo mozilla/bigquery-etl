@@ -85,19 +85,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of thumbs down interactions for position
-- name: layout_type
-  type: STRING
-  mode: NULLABLE
-  description: Layout of the newtab homepage the content appears on, can be "SECTION_GRID", "NEW_GRID" or "OLD_GRID"
 - name: newtab_window_inner_width
   type: INTEGER
   mode: NULLABLE
   description: Width of window in pixels
-- name: num_tiles_per_row
-  type: INTEGER
-  mode: NULLABLE
-  description: Number of tiles in each row
-- name: row_number
-  type: INTEGER
-  mode: NULLABLE
-  description: 0-index vertical position of the row the story appears in.

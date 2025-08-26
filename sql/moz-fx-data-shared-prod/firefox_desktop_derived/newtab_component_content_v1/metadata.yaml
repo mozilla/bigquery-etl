@@ -11,6 +11,7 @@ labels:
   incremental: true
   schedule: daily
   dag: bqetl_newtab
+  owner1: jsnyder
   table_type: client_level
 scheduling:
   dag_name: bqetl_newtab

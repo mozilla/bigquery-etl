@@ -38,83 +38,46 @@ pocket_events_unnested AS (
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND category = 'pocket'
-),
--- aggregate metrics to the visit_id level
-raw_content_info AS (
-  SELECT
-    submission_date,
-    sample_id,
-    country,
-    app_version,
-    client_id,
-    newtab_visit_id,
-    SAFE_CAST(
-      mozfun.map.get_key_with_null(event_details, 'section_position') AS INT
-    ) AS section_position,
-    SAFE_CAST(
-      mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
-    ) AS is_section_followed,
-    ANY_VALUE(ping_info.experiments) AS experiments,
-    SAFE_CAST(mozfun.map.get_key(event_details, 'position') AS INT) AS position,
-    SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
-    mozfun.map.get_key(event_details, 'format') AS format,
-    -- each interaction should happen at most 1 time so look for any event in the visit
-    SAFE_CAST(LOGICAL_OR(event_name = 'impression') AS INT) AS impression_count,
-    SAFE_CAST(LOGICAL_OR(event_name = 'click') AS INT) AS clicks_count,
-    SAFE_CAST(LOGICAL_OR(event_name = 'dismiss') AS INT) AS dismiss_count,
-    SAFE_CAST(
-      LOGICAL_OR(
-        event_name IN ('thumb_voting_interaction')
-        AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
-      ) AS INT
-    ) AS thumbs_up_count,
-    SAFE_CAST(
-      LOGICAL_OR(
-        event_name IN ('thumb_voting_interaction')
-        AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
-      ) AS INT
-    ) AS thumbs_down_count,
-  FROM
-    pocket_events_unnested
-  GROUP BY
-    ALL
-),
--- the purpose of the final CTEs is to apply the necessary UDFs to get rownumber
-content_and_visit_info AS (
-  SELECT
-    raw_content_info.*,
-    mozfun.newtab.determine_grid_layout_v1(
-      section_position IS NOT NULL,
-      app_version,
-      experiments
-    ) AS layout_type,
-    newtab_window_inner_width
-  FROM
-    raw_content_info
-  INNER JOIN
-    visit_window_width
-    USING (newtab_visit_id)
-),
-add_tiles_per_row AS (
-  SELECT
-    content_and_visit_info.*,
-    mozfun.newtab.determine_tiles_per_row_v1(
-      layout_type,
-      newtab_window_inner_width
-    ) AS num_tiles_per_row
-  FROM
-    content_and_visit_info
 )
+-- aggregate metrics to the visit_id level
 SELECT
-  add_tiles_per_row.*,
+  submission_date,
+  sample_id,
+  country,
+  app_version,
+  client_id,
+  newtab_visit_id,
+  newtab_window_inner_width,
   SAFE_CAST(
-    CASE
-      WHEN layout_type = 'SECTION_GRID'
-        -- the row number is the same as the section position in sections
-        THEN section_position
-        -- for grid, divide the postition by the number of tiles per row and take the floor
-      ELSE FLOOR(position / num_tiles_per_row)
-    END AS INT
-  ) AS row_number
+    mozfun.map.get_key_with_null(event_details, 'section_position') AS INT
+  ) AS section_position,
+  SAFE_CAST(
+    mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
+  ) AS is_section_followed,
+  ANY_VALUE(ping_info.experiments) AS experiments,
+  SAFE_CAST(mozfun.map.get_key(event_details, 'position') AS INT) AS position,
+  SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
+  mozfun.map.get_key(event_details, 'format') AS format,
+    -- each interaction should happen at most 1 time so look for any event in the visit
+  SAFE_CAST(LOGICAL_OR(event_name = 'impression') AS INT) AS impression_count,
+  SAFE_CAST(LOGICAL_OR(event_name = 'click') AS INT) AS clicks_count,
+  SAFE_CAST(LOGICAL_OR(event_name = 'dismiss') AS INT) AS dismiss_count,
+  SAFE_CAST(
+    LOGICAL_OR(
+      event_name IN ('thumb_voting_interaction')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
+    ) AS INT
+  ) AS thumbs_up_count,
+  SAFE_CAST(
+    LOGICAL_OR(
+      event_name IN ('thumb_voting_interaction')
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
+    ) AS INT
+  ) AS thumbs_down_count,
 FROM
-  add_tiles_per_row
+  pocket_events_unnested
+INNER JOIN
+  visit_window_width
+  USING (newtab_visit_id)
+GROUP BY
+  ALL

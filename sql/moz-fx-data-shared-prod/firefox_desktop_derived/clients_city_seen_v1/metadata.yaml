@@ -7,16 +7,16 @@ labels:
   incremental: true
   schedule: daily
   table_type: client_level
-#  dag: TODO
-#scheduling:
-#  dag_name: TODO
-#  task_group: firefox_desktop_clients_city_seen
-#  depends_on_past: true
-#  date_partition_parameter: null
-#  depends_on:
-#    - task_id: copy_deduplicate_all
-#      dag_name: copy_deduplicate
-#      execution_delta: 1h
+  dag: bqetl_clients_city_seen
+scheduling:
+  dag_name: bqetl_clients_city_seen
+  task_group: firefox_desktop_clients_city_seen
+  depends_on_past: true
+  date_partition_parameter: null
+  depends_on:
+    - task_id: copy_deduplicate_all
+      dag_name: copy_deduplicate
+      execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day

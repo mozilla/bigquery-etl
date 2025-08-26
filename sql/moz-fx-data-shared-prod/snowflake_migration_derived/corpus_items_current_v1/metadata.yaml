@@ -1,0 +1,7 @@
+friendly_name: Corpus Items Current V1
+description: |-
+  This table deduplicates and surfaces the most recent version of each corpus item from the
+  corpus_items_updated table. In effect, this table converts the fact table of updates into a
+  dimension table of the most current state.
+owners:
+- lmcfall@mozilla.com

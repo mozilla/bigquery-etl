@@ -2,11 +2,11 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: os
   type: STRING
-  description: Operating System
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: searches_per_user_ratio
   type: FLOAT

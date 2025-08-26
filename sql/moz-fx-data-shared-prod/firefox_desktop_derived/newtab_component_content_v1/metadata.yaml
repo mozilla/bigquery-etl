@@ -22,9 +22,9 @@ bigquery:
     require_partition_filter: true
   clustering:
     fields:
-      - channel
       - country
-      - newtab_category
+      - client_id
+      - newtab_visit_id
     expiration_days: 775
   range_partitioning: null
 references: {}

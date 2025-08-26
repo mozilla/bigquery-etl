@@ -187,6 +187,18 @@ fields:
 - name: ga4_distinct_terms_from_event_params
   type: STRING
   mode: REPEATED
+- name: ga4_first_experiment_id_from_event_params
+  type: STRING
+  mode: NULLABLE
+- name: ga4_distinct_experiment_ids_from_event_params
+  type: STRING
+  mode: REPEATED
+- name: ga4_first_experiment_branch_from_event_params
+  type: STRING
+  mode: NULLABLE
+- name: ga4_distinct_experiment_branches_from_event_params
+  type: STRING
+  mode: REPEATED
 - name: ga4_manual_campaign_id
   type: STRING
   mode: NULLABLE

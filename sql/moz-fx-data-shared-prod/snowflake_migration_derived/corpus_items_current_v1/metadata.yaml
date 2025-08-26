@@ -1,0 +1,24 @@
+friendly_name: Corpus Items Current V1
+description: |-
+  This table surfaces the most recent version of each corpus_item_id from the
+  corpus_items_updated table. In effect, this view converts the fact table of transactional updates into a
+  dimension model of the most current state. This will pick up updates to the publisher and title fields when
+  updated.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:pocket/apps
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1
+require_column_descriptions: false

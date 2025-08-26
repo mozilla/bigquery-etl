@@ -26,6 +26,10 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: For the section layout, the 0-indexed position of the section.  Null for the grid layout
+- name: is_section_followed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Indicates if position is in a section that is followed
 - name: position
   type: INTEGER
   mode: NULLABLE

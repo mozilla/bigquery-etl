@@ -3,7 +3,6 @@
 import os
 from enum import Enum
 from pathlib import Path
-from typing import List
 
 import click
 from jinja2 import Environment, FileSystemLoader
@@ -11,68 +10,17 @@ from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
+from sql_generators.glean_usage import get_app_info
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
 
-HEADER = (
-    "-- Query generated via sql_generators.clients_city_seen.\n"
-    "-- this mimics the logic used in baseline_clients_daily_v1.\n"
-    "-- some client_id do not have first_seen_geo_date since stable tables only have 2 years of data.\n"
-    "{% if is_init() %}"
-)
-FOOTER = "{% else %}\n" "{% endif %}"
-
-LINES_TO_STRIP = {"{% raw %}", "{% endraw %}", "WITH"}
-
-FINAL_UNION = (
-    "SELECT\n"
-    "'{app_name}' AS app_name,\n"
-    "  *\n"
-    "FROM\n"
-    "  clients_city_first_seen_{app_name} AS fs\n"
-    "FULL JOIN\n"
-    "  clients_city_last_seen_{app_name} AS ls\n"
-    "USING (client_id, normalized_channel)"
-)
-
-
-def clean(s: str) -> str:
-    """Clean a generated SQL statement, so it can be merged using UNION ALL."""
-    lines_to_remove = {
-        ln.strip() for ln in (HEADER + "\n" + FOOTER).splitlines() if ln.strip()
-    } | LINES_TO_STRIP
-
-    kept = [ln for ln in s.splitlines() if ln.strip() not in lines_to_remove]
-    s = "\n".join(kept).strip().rstrip(" ,;")
-
-    lines = s.splitlines()
-    if len(lines) >= 9:
-        s = "\n".join(lines[:-9])
-
-    return s
-
-
-def union_with_single_init(statements: List[str], app_names: List[str]) -> str:
-    """
-    Strip the given header/footer lines from each fragment.
-
-    UNION ALL the bodies, then wrap the whole result once with header+footer.
-    """
-    parts = "\nUNION ALL\n".join(
-        FINAL_UNION.format(app_name=a.strip()) for a in app_names if a and a.strip()
-    ).rstrip("\n")
-
-    bodies = ",\n".join(
-        b for b in (clean(s) for s in statements if s and s.strip()) if b
-    )
-
-    with_block = f"WITH\n{bodies}\n" if bodies else ""
-    return f"{HEADER}\n{with_block}{parts}\n{FOOTER}"
-
 
 class Browsers(Enum):
     """Enumeration with browser names and equivalent dataset names."""
+
+    # can be used to get all app_id:
+    # probe_scraper_app_info = get_app_info()
 
     firefox_desktop = "Firefox Desktop"
     fenix = "Fenix"
@@ -126,21 +74,18 @@ def generate(target_project, output_dir, use_cloud_function):
                 "org_mozilla_fenix",
             ]
 
-            firefox_android_queries = [
+            query_sql = reformat(
                 query_template.render(
                     project_id=target_project,
-                    app_name=app_id,
+                    app_names=app_id_list,
                 )
-                for app_id in app_id_list
-            ]
-
-            query_sql = union_with_single_init(firefox_android_queries, app_id_list)
+            )
 
         else:
             query_sql = reformat(
                 query_template.render(
                     project_id=target_project,
-                    app_name=browser.name,
+                    app_names=[browser.name],
                 )
             )
 
@@ -162,6 +107,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 metadata_template,
                 template_folder=THIS_PATH / "templates",
                 app_name=browser.name,
+                app_value=browser.value,
                 table_name=TABLE_NAME,
                 format=False,
             ),

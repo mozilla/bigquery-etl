@@ -2,15 +2,23 @@ fields:
 - name: app_id
   type: STRING
   mode: NULLABLE
-  description: Name of the browser application.
+  description: ID of the browser application.
 - name: client_id
   type: STRING
   mode: NULLABLE
   description: A UUID uniquely identifying the client.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: sample_id derived from client_id
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: first_seen_geo_date
   type: DATE
   mode: NULLABLE
-  description: Date when the first seen geo data was captured.
+  description: Date when the first seen geo data were captured.
 - name: first_seen_geo_city
   type: STRING
   mode: NULLABLE
@@ -39,7 +47,3 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Second major country subdivision; not applicable for most countries captured on last_seen_geo_city.
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-  description: The normalized channel the application is being distributed on.

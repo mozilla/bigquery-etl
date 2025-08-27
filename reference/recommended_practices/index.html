@@ -1909,6 +1909,29 @@
 </li>
 </ul>
 </li>
+<li>In order to run UDFs in <code>private-bigquery-etl</code> in the BigQuery Console, you will
+  need to not only write the UDF but also a dummy/stub file in <code>bigquery-etl</code>.<ul>
+<li><a href="https://github.com/mozilla/private-bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql">Actual UDF</a> in
+  <code>private-bigquery-etl</code>:
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">()</span>
+<span class="w">    </span><span class="k">RETURNS</span><span class="w"> </span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">     </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="s1">&#39;non-distribution&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">distribution_model</span><span class="p">)</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">      </span><span class="n">mozfun</span><span class="p">.</span><span class="n">assert</span><span class="p">.</span><span class="k">equals</span><span class="p">(</span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">(),</span><span class="w"> </span><span class="s1">&#39;non-distribution&#39;</span><span class="p">);</span>
+</code></pre></div></li>
+</ul>
+</li>
+<li><a href="https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql">Stub file</a>
+  <div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">()</span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="n">STRING</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">  </span><span class="s1">&#39;helloworld&#39;</span>
+<span class="p">);</span>
+
+<span class="k">SELECT</span>
+<span class="w">  </span><span class="n">mozfun</span><span class="p">.</span><span class="n">assert</span><span class="p">.</span><span class="k">equals</span><span class="p">(</span><span class="n">udf</span><span class="p">.</span><span class="n">distribution_model_ga_metrics</span><span class="p">(),</span><span class="w"> </span><span class="s1">&#39;helloworld&#39;</span><span class="p">);</span>
+</code></pre></div></li>
 <li>Should use <code>SQL</code> over <code>js</code> for performance</li>
 <li>UDFs are interpreted as <a href="https://jinja.palletsprojects.com/en/3.1.x/">Jinja</a> templates, so it is possible to use Jinja statements and expressions</li>
 </ul>

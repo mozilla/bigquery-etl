@@ -1089,6 +1089,54 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#timestamp_diff_complete_months-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      timestamp_diff_complete_months (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="timestamp_diff_complete_months (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timestamp_diff_complete_weeks-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      timestamp_diff_complete_weeks (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="timestamp_diff_complete_weeks (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1722,6 +1770,54 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#timestamp_diff_complete_months-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      timestamp_diff_complete_months (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="timestamp_diff_complete_months (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timestamp_diff_complete_weeks-udf" class="md-nav__link">
+    <span class="md-ellipsis">
+      timestamp_diff_complete_weeks (UDF)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="timestamp_diff_complete_weeks (UDF)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parameters_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1786,6 +1882,28 @@ This function returns "/" if there is no path.</p>
 <div class="highlight"><pre><span></span><code>STRING
 </code></pre></div>
 <p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/get_url_path">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/get_url_path/metadata.yaml">Edit</a></p>
+<h2 id="timestamp_diff_complete_months-udf">timestamp_diff_complete_months (UDF)</h2>
+<p>Gets the number of complete months between two timestamp values (<code>end_timestamp</code> - <code>start_timestamp</code>).
+If <code>end_timestamp</code> is earlier than <code>start_timestamp</code>, the output is negative.</p>
+<h3 id="parameters_3">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>end_timestamp TIMESTAMP, start_timestamp TIMESTAMP
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INTEGER
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/timestamp_diff_complete_months">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/timestamp_diff_complete_months/metadata.yaml">Edit</a></p>
+<h2 id="timestamp_diff_complete_weeks-udf">timestamp_diff_complete_weeks (UDF)</h2>
+<p>Gets the number of complete weeks between two timestamp values (<code>end_timestamp</code> - <code>start_timestamp</code>).
+If <code>end_timestamp</code> is earlier than <code>start_timestamp</code>, the output is negative.</p>
+<h3 id="parameters_4">Parameters</h3>
+<p><strong>INPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>end_timestamp TIMESTAMP, start_timestamp TIMESTAMP
+</code></pre></div>
+<p><strong>OUTPUTS</strong></p>
+<div class="highlight"><pre><span></span><code>INTEGER
+</code></pre></div>
+<p><a href="https://github.com/mozilla/bigquery-etl/blob/generated-sql/sql/mozfun/utils/timestamp_diff_complete_weeks">Source</a>  |  <a href="https://github.com/mozilla/bigquery-etl/edit/generated-sql/sql/mozfun/utils/timestamp_diff_complete_weeks/metadata.yaml">Edit</a></p>
 
 
 

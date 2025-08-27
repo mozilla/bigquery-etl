@@ -173,6 +173,29 @@ labels:
     publishing these UDFs to BigQuery
     - Changes made to UDFs need to be published manually in order for the
       dry run CI task to pass
+- In order for UDFs in `private-bigquery-etl` to run in the BigQuery Console, you will
+  need to not only write the UDF but also a dummy/stub file in `bigquery-etl`.
+  - [Actual UDF](https://github.com/mozilla/private-bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql) in
+    `private-bigquery-etl`:
+  ```sql
+      CREATE OR REPLACE FUNCTION udf.distribution_model_ga_metrics()
+      RETURNS STRING AS (
+       (SELECT 'non-distribution' AS distribution_model)
+      );
+
+      SELECT
+        mozfun.assert.equals(udf.distribution_model_ga_metrics(), 'non-distribution');
+  ```
+- [Stub file](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql)
+  ```sql
+  CREATE OR REPLACE FUNCTION udf.distribution_model_ga_metrics()
+  RETURNS STRING AS (
+    'helloworld'
+  );
+
+  SELECT
+    mozfun.assert.equals(udf.distribution_model_ga_metrics(), 'helloworld');
+  ```
 - Should use `SQL` over `js` for performance
 - UDFs are interpreted as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) templates, so it is possible to use Jinja statements and expressions
 

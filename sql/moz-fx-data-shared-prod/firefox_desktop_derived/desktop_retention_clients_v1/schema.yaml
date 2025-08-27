@@ -2,21 +2,21 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: Client ID - A UUID uniquely identifying the client.
+  description: A unique identifier (UUID) for the client.
 - mode: NULLABLE
   name: sample_id
-  type: INT64
-  description: |-
-    Hashed version of client_id (if present) useful for partitioning; ranges from 0 to 99
+  type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: |-
-     A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Date when the ingestion edge server accepted this message
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: metric_date
   type: DATE
@@ -24,19 +24,20 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: An ISO 3166-1 alpha-2 country code
+  description: Code of the country in which the activity took place, as determined by
+    the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale - The locale of the application during initialization.
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: The user visible version string (e.g. "1.0.3").
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel - The normalized channel the application is being distributed on.
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
@@ -52,7 +53,8 @@ fields:
 - mode: NULLABLE
   name: attribution_dlsource
   type: STRING
-  description: Attribution Download Source - Indicates where installations of Firefox originate from.
+  description: Attribution Download Source - Indicates where installations of Firefox
+    originate from.
 - mode: NULLABLE
   name: attribution_source
   type: STRING
@@ -72,11 +74,12 @@ fields:
 - mode: NULLABLE
   name: attribution_variation
   type: STRING
-  description: Attribution Variation - Name/id of the variation cohort used in the enrolled funnel experiment.
+  description: Attribution Variation - Name/id of the variation cohort used in the
+    enrolled funnel experiment.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
@@ -88,11 +91,12 @@ fields:
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: isp
   type: STRING
-  description: Internet Service Provider
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - mode: NULLABLE
   name: is_desktop
   type: BOOLEAN

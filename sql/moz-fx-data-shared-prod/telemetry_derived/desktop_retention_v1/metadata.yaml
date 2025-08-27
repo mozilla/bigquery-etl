@@ -5,9 +5,10 @@ owners:
 - mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: example
+  owner1: mhirose
   shredder_mitigation: true
   table_type: aggregate
+  dag: bqetl_desktop_retention_model
 scheduling:
   dag_name: bqetl_desktop_retention_model
   date_partition_parameter: metric_date
@@ -17,7 +18,7 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: 'metric_date'
+    field: metric_date
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
@@ -26,3 +27,4 @@ bigquery:
     - country
     - normalized_os
 references: {}
+require_column_descriptions: false

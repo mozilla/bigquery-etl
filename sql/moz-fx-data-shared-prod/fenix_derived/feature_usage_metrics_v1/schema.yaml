@@ -15,7 +15,7 @@ fields:
 - name: adjust_network
   type: STRING
   mode: NULLABLE
-  descriptin: The name of the Adjust Network that sourced this installation.
+  description: The name of the Adjust Network that sourced this installation.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE

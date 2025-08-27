@@ -1,3 +1,6 @@
+CREATE OR REPLACE VIEW
+  `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_v1`
+AS
 WITH newtab_events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
@@ -13,8 +16,7 @@ WITH newtab_events_unnested AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND category IN ('pocket')
+    category IN ('pocket')
     AND name IN ('impression', 'click', 'dismiss')
     AND mozfun.norm.browser_version_info(
       client_info.app_display_version
@@ -52,6 +54,37 @@ newtab_daily_agg AS (
     channel,
     country,
     '' AS newtab_content_surface_id,
+    newtab_flattened_events.corpus_item_id,
+    position,
+    is_sponsored,
+    is_section_followed,
+    matches_selected_topic,
+    received_rank,
+    section,
+    section_position,
+    topic,
+    content_redacted,
+    newtab_content_ping_version,
+    corpus_items.title AS title,
+    corpus_items.url AS recommendation_url,
+    corpus_items.authors AS authors,
+    corpus_items.publisher AS publisher,
+    COUNTIF(event_name = 'impression') AS impression_count,
+    COUNTIF(event_name = 'click') AS click_count,
+    COUNTIF(event_name = 'dismiss') AS dismiss_count
+  FROM
+    newtab_flattened_events
+  LEFT OUTER JOIN
+    `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_current_v1` AS corpus_items
+    ON newtab_flattened_events.corpus_item_id = corpus_items.corpus_item_id
+  WHERE
+    content_redacted = 'FALSE'
+  GROUP BY
+    submission_date,
+    app_version,
+    channel,
+    country,
+    newtab_content_surface_id,
     corpus_item_id,
     position,
     is_sponsored,
@@ -63,30 +96,10 @@ newtab_daily_agg AS (
     topic,
     content_redacted,
     newtab_content_ping_version,
-    COUNTIF(event_name = 'impression') AS impression_count,
-    COUNTIF(event_name = 'click') AS click_count,
-    COUNTIF(event_name = 'dismiss') AS dismiss_count
-  FROM
-    newtab_flattened_events
-  WHERE
-    content_redacted = 'FALSE'
-  GROUP BY
-    submission_date,
-    app_version,
-    channel,
-    country,
-  -- newtab_content_surface_id,
-    corpus_item_id,
-    position,
-    is_sponsored,
-    is_section_followed,
-    matches_selected_topic,
-    received_rank,
-    section,
-    section_position,
-    topic,
-    content_redacted,
-    newtab_content_ping_version
+    title,
+    recommendation_url,
+    authors,
+    publisher
 ),
 newtab_content_events_unnested AS (
   SELECT
@@ -103,8 +116,7 @@ newtab_content_events_unnested AS (
     `moz-fx-data-shared-prod.firefox_desktop.newtab_content`,
     UNNEST(events)
   WHERE
-    DATE(submission_timestamp) = @submission_date
-    AND category IN ('newtab_content')
+    category IN ('newtab_content')
     AND name IN ('impression', 'click', 'dismiss')
 ),
 newtab_content_flattened_events AS (
@@ -138,7 +150,7 @@ newtab_content_daily_agg AS (
     channel,
     country,
     newtab_content_surface_id,
-    corpus_item_id,
+    newtab_content_flattened_events.corpus_item_id,
     position,
     is_sponsored,
     is_section_followed,
@@ -149,11 +161,18 @@ newtab_content_daily_agg AS (
     topic,
     content_redacted,
     newtab_content_ping_version,
+    corpus_items.title AS title,
+    corpus_items.url AS recommendation_url,
+    corpus_items.authors AS authors,
+    corpus_items.publisher AS publisher,
     COUNTIF(event_name = 'impression') AS impression_count,
     COUNTIF(event_name = 'click') AS click_count,
     COUNTIF(event_name = 'dismiss') AS dismiss_count
   FROM
     newtab_content_flattened_events
+  LEFT OUTER JOIN
+    `moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_current_v1` AS corpus_items
+    ON newtab_content_flattened_events.corpus_item_id = corpus_items.corpus_item_id
   GROUP BY
     submission_date,
     app_version,
@@ -170,7 +189,11 @@ newtab_content_daily_agg AS (
     section_position,
     topic,
     content_redacted,
-    newtab_content_ping_version
+    newtab_content_ping_version,
+    title,
+    recommendation_url,
+    authors,
+    publisher
 )
 SELECT
   *

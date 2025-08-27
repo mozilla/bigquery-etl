@@ -425,15 +425,15 @@ fields:
     mode: NULLABLE
     description: Details about why this subscription was cancelled.
     fields:
-    - name: cancellation_details_comment
+    - name: comment
       type: STRING
       mode: NULLABLE
       description: Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
-    - name: cancellation_details_reason
-      type: STRING
-      mode: NULLABLE
-      description: Details about the reason this subscription was cancelled.
-    - name: cancellation_details_feedback
+    - name: feedback
       type: STRING
       mode: NULLABLE
       description: The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: Details about the reason this subscription was cancelled.

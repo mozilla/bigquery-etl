@@ -518,11 +518,11 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
-    - name: reason
-      type: STRING
-      mode: NULLABLE
-      description: Details about the reason this subscription was cancelled.
     - name: feedback
       type: STRING
       mode: NULLABLE
       description: The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+      description: Details about the reason this subscription was cancelled.

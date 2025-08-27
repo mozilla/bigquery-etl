@@ -239,11 +239,6 @@ SELECT
     subscriptions_history.cancel_at,
     subscriptions_history.cancel_at_period_end,
     subscriptions_history.canceled_at,
-    STRUCT(
-      subscriptions_history.cancellation_details_comment AS comment,
-      subscriptions_history.cancellation_details_feedback AS feedback,
-      subscriptions_history.cancellation_details_reason AS reason
-    ) AS cancellation_details,
     subscriptions_history.collection_method,
     subscriptions_history.created,
     subscriptions_history.current_period_end,
@@ -295,7 +290,12 @@ SELECT
     subscriptions_history.start_date,
     subscriptions_history.status,
     subscriptions_history.trial_end,
-    subscriptions_history.trial_start
+    subscriptions_history.trial_start,
+    STRUCT(
+      subscriptions_history.cancellation_details_comment AS comment,
+      subscriptions_history.cancellation_details_feedback AS feedback,
+      subscriptions_history.cancellation_details_reason AS reason
+    ) AS cancellation_details,
   ) AS subscription
 FROM
   subscriptions_history_with_plan_ids AS subscriptions_history

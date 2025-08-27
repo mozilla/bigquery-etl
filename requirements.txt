@@ -860,9 +860,9 @@ jmespath==1.0.1 \
     # via
     #   boto3
     #   botocore
-jsonschema==4.25.0 \
-    --hash=sha256:24c2e8da302de79c8b9382fee3e76b355e44d2a4364bb207159ce10b517bd716 \
-    --hash=sha256:e63acf5c11762c0e6672ffb61482bdf57f0876684d8d249c0fe2d730d48bc55f
+jsonschema==4.25.1 \
+    --hash=sha256:3fba0169e345c7175110351d456342c364814cfcf3b964ba4587f22915230a63 \
+    --hash=sha256:e4a9655ce0da0c0b67a085847e00a3a51449e1157f4f75e9fb5aa545e122eb85
     # via
     #   -r requirements.in
     #   mozilla-schema-generator
@@ -2261,9 +2261,9 @@ typer==0.12.5 \
     --hash=sha256:62fe4e471711b147e3365034133904df3e235698399bc4de2b36c8579298d52b \
     --hash=sha256:f592f089bedcc8ec1b974125d64851029c3b1af145f04aca64d69410f0c9b722
     # via bigeye-sdk
-types-python-dateutil==2.9.0.20250708 \
-    --hash=sha256:4d6d0cc1cc4d24a2dc3816024e502564094497b713f7befda4d5bc7a8e3fd21f \
-    --hash=sha256:ccdbd75dab2d6c9696c350579f34cffe2c281e4c5f27a585b2a2438dd1d5c8ab
+types-python-dateutil==2.9.0.20250809 \
+    --hash=sha256:69cbf8d15ef7a75c3801d65d63466e46ac25a0baa678d89d0a137fc31a608cc1 \
+    --hash=sha256:768890cac4f2d7fd9e0feb6f3217fce2abbfdfc0cadd38d11fba325a815e4b9f
     # via -r requirements.in
 types-pytz==2025.2.0.20250809 \
     --hash=sha256:222e32e6a29bb28871f8834e8785e3801f2dc4441c715cd2082b271eecbe21e5 \

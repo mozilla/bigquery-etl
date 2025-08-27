@@ -16,10 +16,10 @@ Built from bigquery-etl repo, [`dags/bqetl_experimenter_experiments_import.py`](
 
 #### Description
 
-Imports experiments from the Experimenter V4 and V6 API.
+Imports experiments from the Experimenter V8 API.
 
 Imported experiment data is used for experiment monitoring in
-[Grafana](https://grafana.telemetry.mozilla.org/d/XspgvdxZz/experiment-enrollment).
+[Looker](https://mozilla.cloud.looker.com/dashboards/experimentation::experiment_enrollments).
 
 *Triage notes*
 

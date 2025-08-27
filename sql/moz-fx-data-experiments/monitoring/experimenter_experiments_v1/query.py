@@ -103,7 +103,7 @@ class NimbusExperiment:
     outcomes: list[Outcome] | None = None
     segments: list[Segment] | None = None
     isEnrollmentPaused: bool | None = None
-    isFirefoxLabsOptIn: bool
+    isFirefoxLabsOptIn: bool = False
 
     @classmethod
     def from_dict(cls, d) -> "NimbusExperiment":

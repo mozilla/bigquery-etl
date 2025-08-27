@@ -1,4 +1,5 @@
-friendly_name: Private browsing mode users dashboard - Share of private URI loads for users of private windows
+friendly_name: Private browsing mode users dashboard - Share of private URI loads
+  for users of private windows
 description: |-
   Share of private URI loads for users of private windows
 owners:
@@ -8,6 +9,7 @@ labels:
   owner1: akommasani
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_fx_cert_error_privacy_dashboard
 scheduling:
   dag_name: bqetl_fx_cert_error_privacy_dashboard
 bigquery:
@@ -17,4 +19,6 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
+  clustering: null
 references: {}
+require_column_descriptions: true

@@ -173,7 +173,7 @@ labels:
     publishing these UDFs to BigQuery
     - Changes made to UDFs need to be published manually in order for the
       dry run CI task to pass
-- In order for UDFs in `private-bigquery-etl` to run in the BigQuery Console, you will
+- In order to run UDFs in `private-bigquery-etl` in the BigQuery Console, you will
   need to not only write the UDF but also a dummy/stub file in `bigquery-etl`.
   - [Actual UDF](https://github.com/mozilla/private-bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql) in
     `private-bigquery-etl`:

@@ -1,0 +1,27 @@
+type: DELTA_CONFIGURATION_FILE
+deltas:
+  - delta_name: TODO
+    fq_source_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_daily_v1
+    cron_schedule:
+      # name: Daily at 08:00 UTC
+      name: '0 8 * * *'
+    notification_channels:
+      - slack: '#de-bigeye-triage'
+    target_table_comparisons:
+      - fq_target_table_name: moz-fx-data-shared-prod.moz-fx-data-shares-prod.org_mozilla_ios_klar_derived.baseline_clients_last_seen_v1
+        delta_column_mapping:
+          - source_column_name: client_id
+            target_column_name: client_id
+            metrics:
+              - type: PREDEFINED
+                predefined_metric: COUNT_DISTINCT
+        source_filters:
+          - submission_date > DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY)
+          - sample_id IS NOT NULL
+        target_filters:
+          - submission_date > DATE_SUB(CURRENT_DATE, INTERVAL 2 DAY
+          - mozfun.bits28.days_since_seen(days_seen_bits) = 0
+        group_bys:
+          - source_column_name: submission_date
+            target_column_name: submission_date
+        tolerance: 0.01

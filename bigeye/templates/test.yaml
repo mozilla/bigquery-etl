@@ -1,0 +1,43 @@
+---
+source_name: moz-fx-data-shared-prod
+name: baseline_clients_last_seen
+body: |
+  WITH upstream AS (
+    SELECT
+      submission_date,
+      COUNT(DISTINCT client_id) AS client_count
+    FROM
+      `{{ upstream_table }}`
+    WHERE
+      submission_date = DATE({{ submission_date }})
+      AND sample_id IS NOT NULL
+    GROUP BY submission_date
+  )
+  downstream AS (
+    SELECT
+      submission_date,
+      COUNT(DISTINCT client_id) AS client_count
+    FROM
+      `{{ downstream_table }}`
+    WHERE
+      submission_date = DATE({{ submission_date }})
+      AND mozfun.bits28.days_since_seen(days_seen_bits) = 0
+    GROUP BY submission_date
+  ),
+  perc_delta AS (
+    SELECT
+      1 - (upstream.client_count / downstream.client_count) AS difference_perc
+    FROM upstream
+    FULL OUTER JOIN downstream
+      USING(submission_date)
+  )
+  SELECT
+    ABS(difference_perc) > {{ delta_threshold }}
+  FROM perc_delta
+parameters:
+  - upstream_table=STRING
+  - downstream_table=STRING
+  - delta_threshold=NUMBER
+  - submission_date=STRING
+#   - column_to_check=COLUMN_REFERENCE
+return_type: BOOLEAN

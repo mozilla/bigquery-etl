@@ -7,6 +7,7 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: client_level
+  dag: bqetl_desktop_engagement_model
 scheduling:
   dag_name: bqetl_desktop_engagement_model
 bigquery:
@@ -14,7 +15,7 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:

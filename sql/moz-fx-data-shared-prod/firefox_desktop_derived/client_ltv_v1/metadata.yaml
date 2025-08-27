@@ -5,13 +5,14 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
+  dag: bqetl_firefox_desktop_ad_click_history
 scheduling:
   dag_name: bqetl_firefox_desktop_ad_click_history
   depends_on_past: true
   date_partition_parameter: null
   parameters:
-  - "submission_date:DATE:{{ds}}"
+  - submission_date:DATE:{{ds}}
 bigquery:
   time_partitioning: null
   range_partitioning: null
@@ -19,3 +20,4 @@ bigquery:
     fields:
     - sample_id
 references: {}
+require_column_descriptions: false

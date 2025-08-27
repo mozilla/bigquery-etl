@@ -686,10 +686,10 @@ bqetl_search_terms_daily:
 bqetl_experimenter_experiments_import:
   schedule_interval: "*/10 * * * *"
   description: |
-    Imports experiments from the Experimenter V4 and V6 API.
+    Imports experiments from the Experimenter V8 API.
 
     Imported experiment data is used for experiment monitoring in
-    [Grafana](https://grafana.telemetry.mozilla.org/d/XspgvdxZz/experiment-enrollment).
+    [Looker](https://mozilla.cloud.looker.com/dashboards/experimentation::experiment_enrollments).
 
     *Triage notes*
 

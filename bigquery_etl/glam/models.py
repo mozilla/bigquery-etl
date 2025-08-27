@@ -145,7 +145,8 @@ def scalar_bucket_counts(**kwargs):
             "counter",
             "quantity",
             "labeled_counter",
-            "timespan"
+            "timespan",
+            "dual_labeled_counter"
         """,
         boolean_metric_types="""
             "boolean"
@@ -211,10 +212,14 @@ def probe_counts(**kwargs):
             "counter",
             "quantity",
             "labeled_counter",
-            "timespan"
+            "timespan",
+            "dual_labeled_counter"
         """,
         boolean_metric_types="""
             "boolean"
+        """,
+        dual_labeled_counter_metric_types="""
+            "dual_labeled_counter"
         """,
         **kwargs,
     )

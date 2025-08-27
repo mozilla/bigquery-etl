@@ -10,14 +10,19 @@ owners:
 labels:
   incremental: true
   table_type: client_level
+  owner1: skahmann
+  owner2: cmorales
+  owner3: akommasani
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
 references: {}
+require_column_descriptions: false

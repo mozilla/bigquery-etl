@@ -2,7 +2,7 @@ friendly_name: Newtab Conditional Daily Aggregates
 description: |-
   Conditional computations for daily aggregation for newtab.
 owners:
-  - gkatre@mozilla.com
+- gkatre@mozilla.com
 labels:
   application: firefox
   incremental: true
@@ -17,7 +17,9 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
-      - country_code
+    - country_code
 references: {}
+require_column_descriptions: false

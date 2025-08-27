@@ -8,6 +8,7 @@ default:
   - _external
   - _bi
   - _restricted
+  - _syndicate
   - glam_etl
   user_facing_project: mozdata
   backfill_project: moz-fx-data-backfill
@@ -44,6 +45,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
+  - sql/moz-fx-data-shared-prod/app_store_v2_syndicate/apple_store_territory_report/view.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql

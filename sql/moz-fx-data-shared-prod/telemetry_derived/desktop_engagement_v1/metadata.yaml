@@ -5,9 +5,10 @@ owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau@mozilla.com
+  owner1: kwindau
   shredder_mitigation: true
   table_type: aggregate
+  dag: bqetl_desktop_engagement_model
 scheduling:
   dag_name: bqetl_desktop_engagement_model
 bigquery:
@@ -22,3 +23,4 @@ bigquery:
     - country
     - normalized_os
 references: {}
+require_column_descriptions: true

@@ -17,11 +17,3 @@ fields:
 - name: triggerer_id
   type: INTEGER
   mode: NULLABLE
-- name: trigger_id
-  type: INTEGER
-  mode: NULLABLE
-  description: null
-- name: created_at
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: null

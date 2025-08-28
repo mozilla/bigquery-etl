@@ -158,6 +158,10 @@ newtab_content_daily_agg AS (
     COUNTIF(event_name = 'dismiss') AS dismiss_count
   FROM
     newtab_content_flattened_events
+  WHERE
+    -- Only including events from pings with a version
+    -- to ensure all events coming from this CTE are from the Newtab-Content ping
+    newtab_content_ping_version IS NOT NULL
   GROUP BY
     submission_date,
     app_version,

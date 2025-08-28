@@ -1,0 +1,13 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: conversion_type
+  type: STRING
+  mode: NULLABLE
+  description: Conversion Type
+- name: exchange_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: Exchange Rate

@@ -7,14 +7,20 @@ labels:
   incremental: true
   shredder_mitigation: true
   table_type: aggregate
+  dag: bqetl_gud
+  owner1: jklukas
 scheduling:
   dag_name: bqetl_gud
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: null
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - usage
     - id_bucket
+references: {}
+require_column_descriptions: false

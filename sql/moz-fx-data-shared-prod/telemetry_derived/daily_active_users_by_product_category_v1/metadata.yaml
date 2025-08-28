@@ -1,0 +1,19 @@
+friendly_name: Daily Active Users By Product Category
+description: |-
+  This query calculates the daily active users (DAU) by product category (desktop, mobile, other).
+  The main purpose of this query is to cache result for the KPI forecasts dashboard:
+  https://mozilla.cloud.looker.com/dashboards/1245
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+scheduling:
+  dag_name: bqetl_analytics_aggregations
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+  range_partitioning: null
+  clustering:
+    fields:
+    - product_category

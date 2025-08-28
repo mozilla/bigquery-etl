@@ -17,6 +17,32 @@ syndication:
   prod:
     syndicated_project: "moz-fx-data-taskclu-prod-8fbf"
     syndicated_dataset: "taskclusteretl"
+    syndicated_tables:
+      - artifact_list
+      - calculated_machtry_quantiles
+      - calculated_taskgroup_bins
+      - commit_log
+      - derived_costs_experiment
+      - derived_daily_cost_per_workertype
+      - derived_kind_costs
+      - derived_task_summary
+      - derived_taskgroup_costs
+      - derived_test_suite_costs
+      - derived_worker_concurrency
+      - derived_worker_metrics_utilization
+      - derived_workertype_costs
+      - error
+      - perfherder
+      - perfherder_alert
+      - person_mozilla_com
+      - pulse_task
+      - resource_monitor
+      - task_definition
+      - task_duration_estimates
+      - timing
+      - tmp_aws_instance_hours
+      - worker_metrics
+      - workerpool_capacity
   administer_views: true
 workgroup_access:
   - role: roles/bigquery.dataViewer

@@ -19,3 +19,4 @@ bigquery:
   clustering:
     fields:
     - version
+require_column_descriptions: true

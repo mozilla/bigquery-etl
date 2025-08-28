@@ -1,15 +1,16 @@
----
 friendly_name: Addon Aggregates
 description: |-
   Addon usages by clients, aggregated across unique sets of dimensions
   and partitioned by day.
 owners:
-  - kik@mozilla.com
+- kik@mozilla.com
 labels:
   application: addons
   schedule: daily
   incremental: true
   table_type: client_level
+  dag: bqetl_addons
+  owner1: kik
 scheduling:
   dag_name: bqetl_addons
 bigquery:
@@ -17,7 +18,10 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
-      - sample_id
+    - sample_id
+references: {}
+require_column_descriptions: false

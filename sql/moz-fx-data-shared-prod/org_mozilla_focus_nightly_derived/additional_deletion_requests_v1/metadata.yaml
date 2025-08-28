@@ -9,6 +9,8 @@ owners:
 labels:
   schedule: daily
   table_type: client_level
+  dag: bqetl_org_mozilla_focus_derived
+  owner1: akomar
 scheduling:
   dag_name: bqetl_org_mozilla_focus_derived
   depends_on_past: false
@@ -17,4 +19,8 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering: null
+references: {}
+require_column_descriptions: false

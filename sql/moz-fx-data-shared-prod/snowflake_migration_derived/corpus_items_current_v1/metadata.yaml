@@ -1,0 +1,8 @@
+friendly_name: Corpus Items Current V1
+description: |-
+  This table surfaces the most recent version of each corpus_item_id from the
+  corpus_items_updated table. In effect, this view converts the fact table of transactional updates into a
+  dimension model of the most current state. This will pick up updates to the publisher and title fields when
+  updated.
+owners:
+- lmcfall@mozilla.com

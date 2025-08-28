@@ -1,0 +1,5 @@
+friendly_name: VAT Rates
+description: |-
+  VAT rates for countries where SubPlat subscriptions are made available.
+owners:
+  - srose@mozilla.com

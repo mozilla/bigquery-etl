@@ -8,6 +8,8 @@ labels:
   incremental: true
   schedule: daily
   table_type: client_level
+  dag: bqetl_urlbar
+  owner1: akommasani
 scheduling:
   dag_name: bqetl_urlbar
 bigquery:
@@ -15,8 +17,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
+references: {}
 deprecated: true
+require_column_descriptions: false

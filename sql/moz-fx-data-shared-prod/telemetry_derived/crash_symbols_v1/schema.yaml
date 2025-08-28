@@ -3,6 +3,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: REQUIRED
+  description: The date when the telemetry ping is received on the server side.
 - name: request_timestamp
   type: TIMESTAMP
   mode: REQUIRED

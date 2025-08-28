@@ -7,10 +7,11 @@ description: |-
 
   See also: `baseline_clients_daily`
 owners:
-  - frank@mozilla.com
+- frank@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: frank
+  dag: bqetl_firefox_ios
 scheduling:
   dag_name: bqetl_firefox_ios
   depends_on_past: true
@@ -20,5 +21,10 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
-    fields: [normalized_channel, sample_id]
+    fields:
+    - normalized_channel
+    - sample_id
+references: {}
+require_column_descriptions: false

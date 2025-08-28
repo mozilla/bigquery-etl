@@ -7,6 +7,7 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: client_level
+  dag: bqetl_messaging_system
 scheduling:
   dag_name: bqetl_messaging_system
 bigquery:
@@ -14,9 +15,11 @@ bigquery:
     type: day
     field: submission_timestamp
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
 references: {}
+require_column_descriptions: false

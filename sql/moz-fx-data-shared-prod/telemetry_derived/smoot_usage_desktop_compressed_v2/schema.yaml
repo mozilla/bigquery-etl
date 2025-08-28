@@ -2,6 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: usage
   type: STRING
@@ -14,12 +15,14 @@ fields:
 - mode: NULLABLE
   name: locale
   type: STRING
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: os
   type: STRING
 - mode: NULLABLE
   name: channel
   type: STRING
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: attributed
   type: BOOLEAN

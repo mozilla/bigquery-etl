@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: lmcfall
+  dag: bqetl_firefox_desktop_new_profiles_aggregates
 scheduling:
   dag_name: bqetl_firefox_desktop_new_profiles_aggregates
 bigquery:
@@ -15,5 +16,6 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null
+  clustering: null
 references: {}
 require_column_descriptions: true

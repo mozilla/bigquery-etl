@@ -6,6 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -19,3 +20,4 @@ bigquery:
     fields:
     - isp_name
 references: {}
+require_column_descriptions: true

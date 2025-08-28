@@ -1,5 +1,5 @@
 fields:
-- description: Time when the ingestion edge server accepted this message
+- description: Timestamp when the ping is received on the server side.
   name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
@@ -8,13 +8,15 @@ fields:
   name: additional_properties
   type: STRING
   mode: NULLABLE
-- name: addon_version
+- description: Addon Version
+  name: addon_version
   type: STRING
   mode: NULLABLE
-- name: client_id
+- description: A unique identifier (UUID) for the client.
+  name: client_id
   type: STRING
   mode: NULLABLE
-- description: The document ID specified in the URI when the client sent this message
+- description: The document ID specified in the URI when the client sent this message.
   name: document_id
   type: STRING
   mode: NULLABLE
@@ -29,6 +31,7 @@ fields:
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: message_id
   type: STRING
   mode: NULLABLE
@@ -138,15 +141,16 @@ fields:
   mode: NULLABLE
   name: normalized_app_name
   type: STRING
-- description: Set to "Other" if this message contained an unrecognized channel name
+- description: The normalized channel the application is being distributed on.
   mode: NULLABLE
   name: normalized_channel
   type: STRING
-- description: An ISO 3166-1 alpha-2 country code
+- description: Code of the country in which the activity took place, as determined
+    by the IP geolocation. Unknown or NULL values are normally stored as '??'.
   mode: NULLABLE
   name: normalized_country_code
   type: STRING
-- description: Set to "Other" if this message contained an unrecognized OS name
+- description: The normalized name of the operating system running at the client.
   mode: NULLABLE
   name: normalized_os
   type: STRING
@@ -156,14 +160,15 @@ fields:
 - name: release_channel
   type: STRING
   mode: NULLABLE
-- description: Hashed version of client_id (if present) useful for partitioning; ranges
-    from 0 to 99
+- description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
   name: sample_id
   type: INTEGER
   mode: NULLABLE
 - name: version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: experiments
   type: RECORD
   mode: REPEATED

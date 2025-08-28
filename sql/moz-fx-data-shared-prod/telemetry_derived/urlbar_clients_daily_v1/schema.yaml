@@ -2,6 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: client_id
   type: STRING
@@ -103,4 +104,5 @@ fields:
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
-  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data

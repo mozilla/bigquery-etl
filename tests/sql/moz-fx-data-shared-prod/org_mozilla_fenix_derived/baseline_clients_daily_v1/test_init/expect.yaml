@@ -4,6 +4,7 @@
   sample_id: 0
   first_run_date: 2021-03-01
   durations: 60
+  experiments: []
   app_channel: release
   first_seen_date: 2021-03-01
   is_new_profile: false
@@ -14,6 +15,7 @@
   sample_id: 0
   first_run_date: 2021-03-01
   durations: 120
+  experiments: []
   app_channel: not-release
   first_seen_date: 2021-03-01
   is_new_profile: false
@@ -24,6 +26,7 @@
   sample_id: 0
   first_run_date: 2021-04-02
   durations: 60
+  experiments: []
   app_channel: release
   first_seen_date: 2021-04-02
   is_new_profile: true

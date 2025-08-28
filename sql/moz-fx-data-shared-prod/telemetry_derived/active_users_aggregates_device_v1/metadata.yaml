@@ -12,6 +12,8 @@ owners:
 - lvargas@mozilla.com
 labels:
   incremental: true
+  dag: bqetl_analytics_aggregations
+  owner1: lvargas
 scheduling:
   dag_name: bqetl_analytics_aggregations
   task_name: active_users_aggregates_device_v1
@@ -21,6 +23,7 @@ bigquery:
     field: submission_date
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - country
@@ -28,3 +31,4 @@ bigquery:
     - attribution_medium
     - channel
 references: {}
+require_column_descriptions: false

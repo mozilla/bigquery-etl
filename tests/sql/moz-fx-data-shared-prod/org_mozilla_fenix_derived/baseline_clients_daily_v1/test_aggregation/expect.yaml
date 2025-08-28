@@ -4,6 +4,7 @@
   sample_id: 0
   first_run_date: 2021-03-01
   durations: 60
+  experiments: []
   app_channel: release
   first_seen_date: 2021-03-01
   is_new_profile: false
@@ -14,8 +15,32 @@
   sample_id: 0
   first_run_date: 2021-04-01
   durations: 120
+  experiments: []
   app_channel: not-release
   first_seen_date: 2021-04-01
   is_new_profile: true
+  browser_engagement_active_ticks: 0
+  browser_engagement_uri_count: 0
+- submission_date: 2021-04-01
+  client_id: client-3
+  sample_id: 0
+  first_run_date: 2021-03-15
+  durations: 120
+  experiments:
+    - key: search-newtab
+      value:
+        branch: treatment
+        extra:
+          type: nimbus
+          enrollment_id: enroll-111
+    - key: onboarding-copy
+      value:
+        branch: variant_b
+        extra:
+          type: nimbus
+          enrollment_id: enroll-222
+  app_channel: release
+  first_seen_date: 2021-03-01
+  is_new_profile: false
   browser_engagement_active_ticks: 0
   browser_engagement_uri_count: 0

@@ -2,15 +2,16 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: Sample ID
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: os
   type: STRING
   mode: NULLABLE
-  description: Operating System
+  description: The normalized name of the operating system running at the client.
 - name: os_version
   type: STRING
   mode: NULLABLE
@@ -18,7 +19,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Country
+  description: Code of the country in which the activity took place, as determined by
+    the IP geolocation. Unknown or NULL values are normally stored as '??'.
 - name: client_used_private_mode
   type: BOOLEAN
   mode: NULLABLE
@@ -26,11 +28,13 @@ fields:
 - name: client_had_negative_uri_count_private
   type: BOOLEAN
   mode: NULLABLE
-  description: Client had negative private URI count on submission date (indicates bad data)
+  description: Client had negative private URI count on submission date (indicates
+    bad data)
 - name: client_negative_uri_count_normal
   type: BOOLEAN
   mode: NULLABLE
-  description: Client had negative normal URI count on submission date (indicates bad data)
+  description: Client had negative normal URI count on submission date (indicates
+    bad data)
 - name: total_uri_count_private_mode
   type: INTEGER
   mode: NULLABLE

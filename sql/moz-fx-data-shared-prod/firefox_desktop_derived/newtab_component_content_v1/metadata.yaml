@@ -1,0 +1,35 @@
+friendly_name: Newtab Component-level Content Table
+description: |-
+  Contains information about content interactions, both organic and sponsored,
+  from the newtab ping.  Each record represents a specific content position during a specific visit.
+
+  Note that this is pulling data from the newtab ping and not the newtab_content ping
+owners:
+- jsnyder@mozilla.com
+labels:
+  application: newtab
+  incremental: true
+  schedule: daily
+  dag: bqetl_newtab
+  owner1: jsnyder
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_newtab
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - country
+    - client_id
+    - newtab_visit_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

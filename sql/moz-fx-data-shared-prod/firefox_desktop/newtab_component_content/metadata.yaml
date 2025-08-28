@@ -1,0 +1,16 @@
+friendly_name: Newtab Component-level Content Table
+description: |-
+  Contains information about content interactions, both organic and sponsored, from the newtab ping.  Each record represents a specific content position during a specific visit
+owners:
+- jsnyder@mozilla.com
+labels:
+  owner1: jsnyder
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_component_content_v1
+require_column_descriptions: false

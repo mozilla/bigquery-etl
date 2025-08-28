@@ -36,7 +36,6 @@ newtab_flattened_events AS (
       mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
     ) AS is_section_followed,
     mozfun.map.get_key(event_details, 'matches_selected_topic') AS matches_selected_topic,
-    mozfun.map.get_key(event_details, 'newtab_visit_id') AS newtab_visit_id,
     SAFE_CAST(mozfun.map.get_key(event_details, 'received_rank') AS INT64) AS received_rank,
     mozfun.map.get_key(event_details, 'section') AS section,
     SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT64) AS section_position,
@@ -52,7 +51,7 @@ newtab_daily_agg AS (
     app_version,
     channel,
     country,
-    '' AS newtab_content_surface_id,
+    CAST(NULL AS STRING) AS newtab_content_surface_id,
     corpus_item_id,
     position,
     is_sponsored,
@@ -129,7 +128,7 @@ newtab_content_flattened_events AS (
     mozfun.map.get_key(event_details, 'section') AS section,
     SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT64) AS section_position,
     mozfun.map.get_key(event_details, 'topic') AS topic,
-    '' AS content_redacted,
+    CAST(NULL AS STRING) AS content_redacted,
     newtab_content_ping_version
   FROM
     newtab_content_events_unnested

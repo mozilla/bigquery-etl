@@ -193,23 +193,6 @@ with DAG(
         retries=1,
     )
 
-    checks__fail_firefoxdotcom_derived__gclid_conversions__v1 = bigquery_dq_check(
-        task_id="checks__fail_firefoxdotcom_derived__gclid_conversions__v1",
-        source_table="gclid_conversions_v1",
-        dataset_id="firefoxdotcom_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
-        owner="mhirose@mozilla.com",
-        email=[
-            "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
     checks__warn_firefoxdotcom_derived__ga_sessions__v2 = bigquery_dq_check(
         task_id="checks__warn_firefoxdotcom_derived__ga_sessions__v2",
         source_table="ga_sessions_v2",
@@ -392,10 +375,6 @@ with DAG(
 
     bigeye__firefoxdotcom_derived__www_site_hits__v1.set_upstream(
         firefoxdotcom_derived__www_site_hits__v1
-    )
-
-    checks__fail_firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
-        firefoxdotcom_derived__gclid_conversions__v1
     )
 
     checks__warn_firefoxdotcom_derived__ga_sessions__v2.set_upstream(

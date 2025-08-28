@@ -1,6 +1,5 @@
  -- Query generated via sql_generators.clients_city_seen.
  -- this mimics the logic used in baseline_clients_daily_v1.
- -- some client_id do not have first_seen_geo_date since stable tables only have 2 years of data.
 {% if is_init() %}
   WITH base_firefox_desktop AS (
     SELECT
@@ -168,6 +167,119 @@
     clients_city_last_seen_firefox_desktop cls
     ON cfs.client_id = cls.client_id
     AND cfs.sample_id = cls.sample_id
-    AND cfs.normalized_channel IS NOT DISTINCT FROM cls.normalized_channel --this avoids mulitple rows when normalized_channel iS NULL
+    AND cfs.normalized_channel IS NOT DISTINCT FROM cls.normalized_channel --this avoids multiple rows when normalized_channel iS NULL
 {% else %}
+  WITH _previous_firefox_desktop AS (
+    SELECT
+      *
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop_derived.clients_city_seen_v1`
+    WHERE
+      app_id = "firefox_desktop"
+  ),
+  _current_windowed_firefox_desktop AS (
+    SELECT
+      "firefox_desktop" AS app_id,
+      client_info.client_id AS client_id,
+      sample_id,
+      ROW_NUMBER() OVER w1_unframed AS _n,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(normalized_channel) OVER w1
+      ) AS normalized_channel,
+      @submission_date AS first_seen_geo_date,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(metadata.geo.city) OVER w1
+      ) AS first_seen_geo_city,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(metadata.geo.subdivision1) OVER w1
+      ) AS first_seen_geo_subdivision1,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(metadata.geo.subdivision2) OVER w1
+      ) AS first_seen_geo_subdivision2,
+      @submission_date AS last_seen_geo_date,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(metadata.geo.city) OVER w1
+      ) AS last_seen_geo_city,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(metadata.geo.subdivision1) OVER w1
+      ) AS last_seen_geo_subdivision1,
+      `moz-fx-data-shared-prod.udf.mode_last`(
+        ARRAY_AGG(metadata.geo.subdivision2) OVER w1
+      ) AS last_seen_geo_subdivision2,
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop_live.baseline_v1`
+    WHERE
+      DATE(submission_timestamp) = @submission_date
+      AND sample_id = 0
+    WINDOW
+      w1 AS (
+        PARTITION BY
+          sample_id,
+          client_info.client_id,
+          DATE(submission_timestamp)
+        ORDER BY
+          submission_timestamp
+        ROWS BETWEEN
+          UNBOUNDED PRECEDING
+          AND UNBOUNDED FOLLOWING
+      ),
+      w1_unframed AS (
+        PARTITION BY
+          sample_id,
+          client_info.client_id,
+          DATE(submission_timestamp)
+        ORDER BY
+          submission_timestamp
+      )
+  ),
+  _current_firefox_desktop AS (
+    SELECT
+      cw.* EXCEPT (_n),
+    FROM
+      _current_windowed_firefox_desktop AS cw
+    WHERE
+      _n = 1
+  )
+  SELECT
+    app_id,
+    client_id,
+    sample_id,
+    normalized_channel,
+    IF(_p.client_id IS NULL, _c.first_seen_geo_date, _p.first_seen_geo_date) AS first_seen_geo_date,
+    IF(_p.client_id IS NULL, _c.first_seen_geo_city, _p.first_seen_geo_city) AS first_seen_geo_city,
+    IF(
+      _p.client_id IS NULL,
+      _c.first_seen_geo_subdivision1,
+      _p.first_seen_geo_subdivision1
+    ) AS first_seen_geo_subdivision1,
+    IF(
+      _p.client_id IS NULL,
+      _c.first_seen_geo_subdivision2,
+      _p.first_seen_geo_subdivision2
+    ) AS first_seen_geo_subdivision2,
+    IF(
+      _p.last_seen_geo_date < _c.last_seen_geo_date,
+      _c.last_seen_geo_date,
+      _p.last_seen_geo_date
+    ) AS last_seen_geo_date,
+    IF(
+      _p.last_seen_geo_date < _c.last_seen_geo_date,
+      _c.last_seen_geo_city,
+      _p.last_seen_geo_city
+    ) AS last_seen_geo_city,
+    IF(
+      _p.last_seen_geo_date < _c.last_seen_geo_date,
+      _c.last_seen_geo_subdivision1,
+      _p.last_seen_geo_subdivision1
+    ) AS last_seen_geo_subdivision1,
+    IF(
+      _p.last_seen_geo_date < _c.last_seen_geo_date,
+      _c.last_seen_geo_subdivision2,
+      _p.last_seen_geo_subdivision2
+    ) AS last_seen_geo_subdivision2,
+  FROM
+    _current_firefox_desktop AS _c
+  FULL JOIN
+    _previous_firefox_desktop AS _p
+    USING (client_id, sample_id, app_id, normalized_channel)
 {% endif %}

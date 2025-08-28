@@ -1,5 +1,6 @@
 friendly_name: {{ app_value }} Clients City Seen
 description: |-
+  This table captures the first and last seen geo attributes for each client_id and normalized channel.
 owners:
   - wichan@mozilla.com
 labels:

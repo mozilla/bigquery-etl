@@ -69,15 +69,16 @@ def generate(target_project, output_dir, use_cloud_function):
             app_id_list = [
                 "org_mozilla_firefox",
                 "org_mozilla_fenix_nightly",
-                "org_mozilla_fennec_aurora",
-                "org_mozilla_firefox_beta",
-                "org_mozilla_fenix",
+                # "org_mozilla_fennec_aurora",
+                # "org_mozilla_firefox_beta",
+                # "org_mozilla_fenix",
             ]
 
             query_sql = reformat(
                 query_template.render(
                     project_id=target_project,
-                    app_names=app_id_list,
+                    app_id_list=app_id_list,
+                    app_name=browser.name,
                 )
             )
 
@@ -85,7 +86,8 @@ def generate(target_project, output_dir, use_cloud_function):
             query_sql = reformat(
                 query_template.render(
                     project_id=target_project,
-                    app_names=[browser.name],
+                    app_id_list=[browser.name],
+                    app_name=browser.name,
                 )
             )
 

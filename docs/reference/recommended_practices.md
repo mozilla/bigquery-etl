@@ -186,7 +186,7 @@ labels:
       SELECT
         mozfun.assert.equals(udf.distribution_model_ga_metrics(), 'non-distribution');
   ```
-  - [Stub file](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql)
+  - [Stub file](https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/udf/distribution_model_ga_metrics/udf.sql) in `bigquery-etl`:
   ```sql
       CREATE OR REPLACE FUNCTION udf.distribution_model_ga_metrics()
       RETURNS STRING AS (

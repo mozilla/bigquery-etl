@@ -1,19 +1,24 @@
 friendly_name: Firefox Desktop Clients City Seen
 description: |-
-  This table captures the first and last seen geo attributes for each client_id and normalized channel.
+  This table stores the first-seen and last-seen geo attributes for each (client_id, normalized_channel).
+  The table was initialized from stable tables (with ~2 years of retention), so the initial dates reflect the earliest/latest
+  observations within that window.  It then updates daily using live tables, replacing last-seen fields for existing
+  clients and adding new clients with first-seen geo attributes that do not yet exist in the table.
+  Implementation Plan: https://docs.google.com/document/d/1S8yVEwJjtJy3Pd8cn_BHRhgxllVnoxKylGCpuMyqWNQ/edit?usp=sharing
 owners:
   - wichan@mozilla.com
 labels:
-  change_controlled: true
   incremental: true
   schedule: daily
   table_type: client_level
   dag: bqetl_clients_city_seen
 scheduling:
   dag_name: bqetl_clients_city_seen
-  task_group: firefox_desktop_clients_city_seen
+  task_name: firefox_desktop_clients_city_seen_v1
   depends_on_past: true
   date_partition_parameter: null
+  parameters:
+    - submission_date:DATE:
   depends_on:
     - task_id: copy_deduplicate_all
       dag_name: copy_deduplicate
@@ -24,7 +29,6 @@ bigquery:
     field: last_seen_geo_date
     require_partition_filter: false
     expiration_days: null
-  range_partitioning: null
   clustering:
     fields:
       - sample_id

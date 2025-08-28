@@ -2456,7 +2456,7 @@ bqetl_bigeye_derived:
     - impact/tier_3
 
 bqetl_clients_city_seen:
-  schedule_interval: 0 2 * * *
+  schedule_interval: 0 4 * * *
   default_args:
     owner: wichan@mozilla.com
     start_date: "2025-08-25"

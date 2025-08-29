@@ -1,6 +1,6 @@
 WITH history AS (
   SELECT
-    *
+    * REPLACE ((SELECT AS STRUCT subscription.* EXCEPT (ended_reason)) AS subscription)
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_history_v1`
   UNION ALL

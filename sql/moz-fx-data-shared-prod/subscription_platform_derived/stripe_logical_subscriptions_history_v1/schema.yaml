@@ -169,6 +169,11 @@ fields:
     description: |-
       When the subscription ended.
       This will be null for active subscriptions.
+  - name: ended_reason
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Reason why the subscription ended.
   - name: current_period_started_at
     type: TIMESTAMP
     mode: NULLABLE

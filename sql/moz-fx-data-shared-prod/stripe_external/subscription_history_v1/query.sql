@@ -33,5 +33,8 @@ SELECT
   trial_end,
   trial_start,
   collection_method,
+  cancellation_details_comment,
+  cancellation_details_reason,
+  cancellation_details_feedback
 FROM
   `moz-fx-data-bq-fivetran`.stripe.subscription_history

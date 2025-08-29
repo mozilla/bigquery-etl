@@ -6,7 +6,7 @@ fields:
 - name: conversion_type
   type: STRING
   mode: NULLABLE
-  description: Conversion Type
+  description: Conversion Type - From Currency, To Currency
 - name: exchange_rate
   type: FLOAT
   mode: NULLABLE

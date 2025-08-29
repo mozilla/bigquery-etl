@@ -7,8 +7,9 @@ from fredapi import Fred
 from argparse import ArgumentParser
 
 # Define inputs
-# Series ID, From Currency, To Currency, Reverse Direction Before Storing in BQ?
-# Note - we are doing the "reverse" step because the series are only available in certain directions
+# Series ID, From Currency, To Currency, Reverse Direction Before Storing in BQ
+
+# Note: we are doing the "reverse" step because the series are only available in certain directions
 # but for ease of use, we'd like them all to be from different countries to the USD when we store in BQ
 exchange_rates = {
     "AU": ["DEXUSAL", "USD", "AUD", True],  # USD to AUD
@@ -38,11 +39,12 @@ if __name__ == "__main__":
         columns=["submission_date", "conversion_type", "exchange_rate"]
     )
 
-    #We want to always run for 2 days ago to give time for data to load
-    logical_dag_date= datetime.strptime(args.date, "%Y-%m-%d").date()
+    # We want to always run for 2 days ago to give time for data to load
+    logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     execution_date = logical_dag_date - timedelta(days=2)
-    print(f"Pulling data for execution_date: {execution_date} for logical dag date {logical_dag_date}")
-
+    print(
+        f"Pulling data for execution_date: {execution_date} for logical dag date {logical_dag_date}"
+    )
 
     for k, v in exchange_rates.items():
         country = k
@@ -50,7 +52,9 @@ if __name__ == "__main__":
 
         # Fetch the series for the date window
         series = fred.get_series(
-            series_id=series_id, observation_start=execution_date, observation_end=execution_date
+            series_id=series_id,
+            observation_start=execution_date,
+            observation_end=execution_date,
         )
 
         # Convert Series -> DataFrame with your schema
@@ -67,7 +71,7 @@ if __name__ == "__main__":
             new_data_df["exchange_rate"] = new_data_df["exchange_rate"]
         else:
             conversion_type = f"{to_currency}_to_{from_currency}"
-            new_data_df["exchange_rate"] = 1/new_data_df["exchange_rate"]
+            new_data_df["exchange_rate"] = 1 / new_data_df["exchange_rate"]
         new_data_df["conversion_type"] = conversion_type
         new_data_df["needs_to_be_reversed"] = needs_to_be_reversed
 
@@ -91,27 +95,21 @@ if __name__ == "__main__":
     # Open a BQ clieent
     client = bigquery.Client()
 
-    # If any data exists for the date in the BQ table, delete it
-    delete_data_for_date_from_bq = f"""DELETE FROM `moz-fx-data-shared-prod.external_derived.fred_daily_exchange_rates_v1`
-    WHERE submission_date = '{args.date}'"""
+    # Format partition decorator as YYYYMMDD
+    partition = execution_date.strftime("%Y%m%d")
 
-    del_job = client.query(delete_data_for_date_from_bq)
-    del_job.result()
-    print("Deleted anything already existing for this date from table")
+    # Point the load at just that partition
+    partitioned_table_id = f"{table_id}${partition}"
 
-    # Append the data to the BQ table
     job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_APPEND
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
     )
 
-    # Execute the load
     load_job = client.load_table_from_dataframe(
-        results_df, table_id, job_config=job_config
+        results_df,
+        partitioned_table_id,
+        job_config=job_config,
     )
+    load_job.result()  # waits for completion
 
-    load_job.result()  # Waits for the job to complete
-
-    print(
-        "Note - this ETL is expected to only have new data for business days, not weekends or holidays"
-    )
-    print(f"Loaded {results_df.shape[0]} rows into {table_id}.")
+    print(f"Replaced partition {execution_date} in {table_id}")

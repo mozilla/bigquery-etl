@@ -21,9 +21,15 @@ private_pings AS (
     submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
 ),
 combined_pings AS (
-  SELECT * FROM legacy_pings
+  SELECT
+    *
+  FROM
+    legacy_pings
   UNION ALL
-  SELECT * FROM private_pings
+  SELECT
+    *
+  FROM
+    private_pings
 ),
 deduplicated_pings AS (
   SELECT
@@ -113,9 +119,15 @@ country_aggregates AS (
 ),
 /* Combine the "global" (no region) with the "regional" breakdown. */
 combined_results AS (
-  SELECT * FROM global_aggregates
+  SELECT
+    *
+  FROM
+    global_aggregates
   UNION ALL
-  SELECT * FROM country_aggregates
+  SELECT
+    *
+  FROM
+    country_aggregates
 )
 SELECT
   *
@@ -124,4 +136,5 @@ FROM
 WHERE
   -- Only keep content that was recently shown to users (has impressions or clicks with recent recommended_at).
   -- This filters out reports for stale/cached content that hasn't been actively recommended.
-  impression_count > 0 OR click_count > 0;
+  impression_count > 0
+  OR click_count > 0;

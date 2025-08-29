@@ -26,15 +26,14 @@ add_tiles_per_row AS (
       layout_type,
       newtab_window_inner_width
     ) AS num_tiles_per_row,
-    -- get the width of the tiles used in rownumber calc
+    -- get the size of the tiles used in rownumber calc
     CASE
-    -- for non-sections, all have a width of 1
+    -- for non-sections, all have a size of 1
       WHEN layout_type != 'SECTION_GRID'
         THEN 1
       WHEN format IN ("spoc", "rectangle", "medium-card")
         THEN 1
-    -- technically small-card have the same width as medium
-    -- but it takes two to fill a medium-card spot to assign .5
+    -- it takes two small-card to fill a medium-card spot
       WHEN format = 'small-card'
         THEN 0.5
     -- large cards fill two spots
@@ -44,7 +43,7 @@ add_tiles_per_row AS (
       WHEN format = 'billboard'
         THEN mozfun.newtab.determine_tiles_per_row_v1(layout_type, newtab_window_inner_width)
       ELSE NULL
-    END AS tile_width
+    END AS tile_size
   FROM
     content_and_visit_info
 )
@@ -55,7 +54,7 @@ SELECT
   COALESCE(
     SAFE_CAST(
       FLOOR(
-        SUM(tile_width) OVER (
+        SUM(tile_size) OVER (
           -- include layout_type in the partition because some visits
           -- have both grid and section layouts, presumably because they occured
           -- during the transition between the two

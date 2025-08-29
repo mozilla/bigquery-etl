@@ -56,6 +56,9 @@ SELECT
     SAFE_CAST(
       FLOOR(
         SUM(tile_width) OVER (
+          -- include layout_type in the partition because some visits
+          -- have both grid and section layouts, presumably because they occured
+          -- during the transition between the two
           PARTITION BY
             newtab_visit_id,
             layout_type

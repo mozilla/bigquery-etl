@@ -13,11 +13,11 @@ scheduling:
   arguments:
   - --source-project=moz-fx-data-shared-prod
   - --source-dataset=telemetry_derived
-  - --source-table=newtab_merino_extract_v2
+  - --source-table=newtab_merino_extract_v3
   - --destination-bucket=merino-airflow-data-prodpy
   - --destination-prefix=newtab-merino-exports/engagement
   - --deletion-days-old=90
   referenced_tables:
-  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_extract_v2']
+  - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_extract_v3']
 bigquery: null
 references: {}

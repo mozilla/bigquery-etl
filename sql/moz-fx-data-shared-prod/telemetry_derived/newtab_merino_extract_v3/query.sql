@@ -1,4 +1,4 @@
-WITH deduplicated_pings AS (
+WITH legacy_pings AS (
   SELECT
     submission_timestamp,
     document_id,
@@ -8,6 +8,28 @@ WITH deduplicated_pings AS (
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1`
   WHERE
     submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
+),
+private_pings AS (
+  SELECT
+    submission_timestamp,
+    document_id,
+    events,
+    normalized_country_code
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
+  WHERE
+    submission_timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
+),
+combined_pings AS (
+  SELECT * FROM legacy_pings
+  UNION ALL
+  SELECT * FROM private_pings
+),
+deduplicated_pings AS (
+  SELECT
+    *
+  FROM
+    combined_pings
   QUALIFY
     ROW_NUMBER() OVER (
       PARTITION BY
@@ -32,8 +54,8 @@ flattened_newtab_events AS (
   CROSS JOIN
     UNNEST(dp.events) AS unnested_events
   WHERE
-    -- Filter to Pocket events only
-    unnested_events.category = 'pocket'
+    -- Filter to relevant events only
+    unnested_events.category IN ('pocket', 'newtab_content')
     AND unnested_events.name IN ('impression', 'click')
     -- Keep only rows with a non-null corpus_item_id
     AND mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') IS NOT NULL

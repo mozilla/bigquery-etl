@@ -247,7 +247,9 @@ SELECT
       metrics.datetime.app_last_opened_as_default_browser,
       metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
-      metrics.datetime.raw_glean_validation_first_run_hour
+      metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.termsofuse_date,
+      metrics.datetime.raw_termsofuse_date
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(
@@ -552,7 +554,9 @@ SELECT
       metrics.datetime.app_last_opened_as_default_browser,
       metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
-      metrics.datetime.raw_glean_validation_first_run_hour
+      metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.termsofuse_date,
+      metrics.datetime.raw_termsofuse_date
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(
@@ -857,7 +861,9 @@ SELECT
       metrics.datetime.app_last_opened_as_default_browser,
       metrics.datetime.raw_app_last_opened_as_default_browser,
       metrics.datetime.glean_validation_first_run_hour,
-      metrics.datetime.raw_glean_validation_first_run_hour
+      metrics.datetime.raw_glean_validation_first_run_hour,
+      metrics.datetime.termsofuse_date,
+      metrics.datetime.raw_termsofuse_date
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(

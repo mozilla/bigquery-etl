@@ -1274,6 +1274,12 @@ fields:
     - name: raw_glean_validation_first_run_hour
       type: STRING
       mode: NULLABLE
+    - name: termsofuse_date
+      type: TIMESTAMP
+      mode: NULLABLE
+    - name: raw_termsofuse_date
+      type: STRING
+      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE

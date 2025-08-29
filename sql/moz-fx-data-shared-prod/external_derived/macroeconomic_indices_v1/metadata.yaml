@@ -19,12 +19,6 @@ labels:
   incremental: true
   owner1: cmorales
   owner2: akommasani
-  dag: bqetl_reference
-scheduling:
-  dag_name: bqetl_reference
-  arguments:
-  - --market-date={{ ds }}
-  - --api-key={{ var.value.fmp_api_key }}
 bigquery:
   time_partitioning:
     type: day
@@ -33,10 +27,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:dataops-managed/external-fides
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references: {}
+deprecated: true
 require_column_descriptions: false

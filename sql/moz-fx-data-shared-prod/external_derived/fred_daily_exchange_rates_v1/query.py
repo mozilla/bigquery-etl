@@ -1,5 +1,5 @@
 # Load libraries
-# from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 import pandas as pd
 from google.cloud import bigquery
 import os
@@ -7,13 +7,16 @@ from fredapi import Fred
 from argparse import ArgumentParser
 
 # Define inputs
+# Series ID, From Currency, To Currency, Reverse Direction Before Storing in BQ?
+# Note - we are doing the "reverse" step because the series are only available in certain directions
+# but for ease of use, we'd like them all to be from different countries to the USD when we store in BQ
 exchange_rates = {
-    "AU": ["DEXUSAL", "USD", "AUD"],  # USD to AUD
-    "CA": ["DEXCAUS", "CAD", "USD"],  # CAD to USD
-    "CH": ["DEXSZUS", "CHF", "USD"],  # CHF to USD
-    "JP": ["DEXJPUS", "JPY", "USD"],  # JPY to USD
-    "GB": ["DEXUSUK", "USD", "GBP"],  # USD to GBP
-    "EU": ["DEXUSEU", "USD", "EUR"],  # USD to EUR
+    "AU": ["DEXUSAL", "USD", "AUD", True],  # USD to AUD
+    "CA": ["DEXCAUS", "CAD", "USD", False],  # CAD to USD
+    "CH": ["DEXSZUS", "CHF", "USD", False],  # CHF to USD
+    "JP": ["DEXJPUS", "JPY", "USD", False],  # JPY to USD
+    "GB": ["DEXUSUK", "USD", "GBP", True],  # USD to GBP
+    "EU": ["DEXUSEU", "USD", "EUR", True],  # USD to EUR
 }
 
 table_id = "moz-fx-data-shared-prod.external_derived.fred_daily_exchange_rates_v1"
@@ -35,17 +38,19 @@ if __name__ == "__main__":
         columns=["submission_date", "conversion_type", "exchange_rate"]
     )
 
-    # Start date and end date are the same (the logical DAG run date)
-    start_date = args.date
-    end_date = args.date
+    #We want to always run for 2 days ago to give time for data to load
+    logical_dag_date= datetime.strptime(args.date, "%Y-%m-%d").date()
+    execution_date = logical_dag_date - timedelta(days=2)
+    print(f"Pulling data for execution_date: {execution_date} for logical dag date {logical_dag_date}")
+
 
     for k, v in exchange_rates.items():
         country = k
-        series_id, from_currency, to_currency = v
+        series_id, from_currency, to_currency, needs_to_be_reversed = v
 
         # Fetch the series for the date window
         series = fred.get_series(
-            series_id=series_id, observation_start=start_date, observation_end=end_date
+            series_id=series_id, observation_start=execution_date, observation_end=execution_date
         )
 
         # Convert Series -> DataFrame with your schema
@@ -57,13 +62,22 @@ if __name__ == "__main__":
         new_data_df = new_data_df.dropna(subset=["exchange_rate"])
 
         # Add conversion_type column
-        conversion_type = f"{from_currency}_to_{to_currency}"
+        if needs_to_be_reversed is False:
+            conversion_type = f"{from_currency}_to_{to_currency}"
+            new_data_df["exchange_rate"] = new_data_df["exchange_rate"]
+        else:
+            conversion_type = f"{to_currency}_to_{from_currency}"
+            new_data_df["exchange_rate"] = 1/new_data_df["exchange_rate"]
         new_data_df["conversion_type"] = conversion_type
+        new_data_df["needs_to_be_reversed"] = needs_to_be_reversed
 
         # Reorder columns to match results_df
         new_data_df = new_data_df[
             ["submission_date", "conversion_type", "exchange_rate"]
         ]
+
+        print("new_data_df")
+        print(new_data_df)
 
         # Append
         results_df = pd.concat([results_df, new_data_df], ignore_index=True)

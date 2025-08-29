@@ -37,6 +37,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     results_df = pd.DataFrame(
         columns=["submission_date", "conversion_type", "exchange_rate"]
+    ).astype(
+        {
+            "submission_date": "object",  # store Python datetime.date here
+            "conversion_type": "string",
+            "exchange_rate": "float",
+        }
     )
 
     # We want to always run for 2 days ago to give time for data to load
@@ -65,6 +71,9 @@ if __name__ == "__main__":
         # Keep only rows with data
         new_data_df = new_data_df.dropna(subset=["exchange_rate"])
 
+        if new_data_df.empty:
+            continue
+
         # Add conversion_type column
         if needs_to_be_reversed is False:
             conversion_type = f"{from_currency}_to_{to_currency}"
@@ -79,17 +88,23 @@ if __name__ == "__main__":
             ["submission_date", "conversion_type", "exchange_rate"]
         ]
 
-        print("new_data_df")
-        print(new_data_df)
+        new_data_df = new_data_df.astype(
+            {
+                "submission_date": "object",
+                "conversion_type": "string",
+                "exchange_rate": "float",
+            }
+        )
 
         # Append
         results_df = pd.concat([results_df, new_data_df], ignore_index=True)
-        print(f"Fetched {len(new_data_df)} rows for {conversion_type} ({series_id})")
 
     # Convert from datetime to date
     results_df["submission_date"] = pd.to_datetime(
         results_df["submission_date"]
     ).dt.date
+
+    print(f"Fetched {len(results_df)} rows")
 
     # Open a BQ clieent
     client = bigquery.Client()

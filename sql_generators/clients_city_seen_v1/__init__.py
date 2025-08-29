@@ -1,35 +1,43 @@
 """Generate clients city seen per app.  This code is only used to initialize a derived table for each app."""
 
 import os
-from enum import Enum
+from collections import defaultdict
 from pathlib import Path
+from typing import Dict, List
 
 import click
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.cli.utils import use_cloud_function_option
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
-
-# from sql_generators.glean_usage import get_app_info
+from sql_generators.glean_usage import get_app_info
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
 
 
-class Browsers(Enum):
-    """Enumeration with browser names and equivalent dataset names."""
+def get_app_info_map() -> Dict[str, List[str]]:
+    """Build a map of app name to a list of bq_dataset_families."""
+    app_info = get_app_info()
 
-    # can be used to get all app_id:
-    # probe_scraper_app_info = get_app_info()
+    app_info = [
+        info
+        for name, info in app_info.items()
+        if name
+        not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
+    ]
 
-    firefox_desktop = "Firefox Desktop"
-    fenix = "Fenix"
-    # focus_ios = "Focus iOS"
-    # focus_android = "Focus Android"
-    # firefox_ios = "Firefox iOS"
-    # klar_ios = "Klar iOS"
-    # klar_android = "Klar Android"
+    app_info_map: Dict[str, List[str]] = defaultdict(list)
+
+    for app in app_info:
+        for app_dataset in app:
+            app_name = app_dataset["app_name"]
+            app_id = app_dataset["bq_dataset_family"]
+            app_info_map[app_name].append(app_id)
+
+    return app_info_map
 
 
 @click.command()
@@ -63,40 +71,38 @@ def generate(target_project, output_dir, use_cloud_function):
     # metadata template
     metadata_template = "metadata.yaml"
 
-    for browser in Browsers:
+    # can be used to get all app_id:
+    # app_info_map = get_app_info_map()
 
-        if browser.name == "fenix":
+    # TODO: listing only a few app_ids for testing
+    app_info_map = {
+        "firefox_desktop": ["firefox_desktop"],
+        "fenix": [
+            "org_mozilla_firefox",
+            "org_mozilla_fenix_nightly",
+            # 'org_mozilla_firefox_beta',
+            # 'org_mozilla_fenix',
+            # 'org_mozilla_fennec_aurora'
+        ],
+    }
 
-            # TODO: listing only a few app_ids for testing
-            app_id_list = [
-                "org_mozilla_firefox",
-                "org_mozilla_fenix_nightly",
-                # "org_mozilla_fennec_aurora",
-                # "org_mozilla_firefox_beta",
-                # "org_mozilla_fenix",
-            ]
+    # from pprint import pprint
+    # pprint(app_info_map, sort_dicts=True, width=120, compact=False)
 
-            query_sql = reformat(
-                query_template.render(
-                    project_id=target_project,
-                    app_id_list=app_id_list,
-                    app_name=browser.name,
-                )
+    for app_name, app_id_list in app_info_map.items():
+
+        query_sql = reformat(
+            query_template.render(
+                project_id=target_project,
+                app_id_list=app_id_list,
+                app_name=app_name,
             )
-
-        else:
-            query_sql = reformat(
-                query_template.render(
-                    project_id=target_project,
-                    app_id_list=[browser.name],
-                    app_name=browser.name,
-                )
-            )
+        )
 
         # Write query SQL files.
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            full_table_id=f"{target_project}.{app_name}_derived.{TABLE_NAME}",
             basename="query.sql",
             sql=query_sql,
             skip_existing=False,
@@ -105,13 +111,12 @@ def generate(target_project, output_dir, use_cloud_function):
         # Write metadata YAML files.
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            full_table_id=f"{target_project}.{app_name}_derived.{TABLE_NAME}",
             basename="metadata.yaml",
             sql=render(
                 metadata_template,
                 template_folder=THIS_PATH / "templates",
-                app_name=browser.name,
-                app_value=browser.value,
+                app_name=app_name,
                 table_name=TABLE_NAME,
                 format=False,
             ),
@@ -121,7 +126,7 @@ def generate(target_project, output_dir, use_cloud_function):
         # Write schema YAML files.
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}",
+            full_table_id=f"{target_project}.{app_name}_derived.{TABLE_NAME}",
             basename="schema.yaml",
             sql=render(
                 schema_template,

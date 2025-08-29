@@ -73,7 +73,6 @@ if __name__ == "__main__":
             conversion_type = f"{to_currency}_to_{from_currency}"
             new_data_df["exchange_rate"] = 1 / new_data_df["exchange_rate"]
         new_data_df["conversion_type"] = conversion_type
-        new_data_df["needs_to_be_reversed"] = needs_to_be_reversed
 
         # Reorder columns to match results_df
         new_data_df = new_data_df[
@@ -102,7 +101,28 @@ if __name__ == "__main__":
     partitioned_table_id = f"{table_id}${partition}"
 
     job_config = bigquery.LoadJobConfig(
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        schema=[
+            bigquery.SchemaField(
+                name="submission_date",
+                field_type="DATE",
+                mode="NULLABLE",
+                description="Submission Date",
+            ),
+            bigquery.SchemaField(
+                name="conversion_type",
+                field_type="STRING",
+                mode="NULLABLE",
+                description="Conversion Type - From Currency, To Currency",
+            ),
+            bigquery.SchemaField(
+                name="exchange_rate",
+                field_type="FLOAT",
+                mode="NULLABLE",
+                description="Exchange Rate",
+            ),
+        ],
+        autodetect=False,
     )
 
     load_job = client.load_table_from_dataframe(

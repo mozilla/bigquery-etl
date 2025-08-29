@@ -1,6 +1,7 @@
 friendly_name: FRED Daily Exchange Rates
 description: |-
   Daily currency exchange rates from the Federal Reserve Bank of St. Louis
+  Does not contain data every day, for example, no data available on weekends &  holidays
 owners:
 - kwindau@mozilla.com
 labels:

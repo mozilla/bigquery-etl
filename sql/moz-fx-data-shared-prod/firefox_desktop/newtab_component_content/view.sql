@@ -36,7 +36,7 @@ add_tiles_per_row AS (
     -- technically small-card have the same width as medium
     -- but it takes two to fill a medium-card spot to assign .5
       WHEN format = 'small-card'
-        THEN.5
+        THEN 0.5
     -- large cards fill two spots
       WHEN format = 'large-card'
         THEN 2

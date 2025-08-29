@@ -8,6 +8,7 @@
     string:
       fx_suggest_advertiser: ad4
       fx_suggest_ping_type: fxsuggest-impression
+      fx_suggest_country: null
     uuid:
       fx_suggest_context_id: fenix-b
   metadata:
@@ -18,6 +19,19 @@
   client_info:
     app_channel: release
   normalized_country_code: US
+- <<: *suggest_base
+  metrics:
+    <<: *suggest_metrics
+    string:
+      fx_suggest_advertiser: ad4
+      fx_suggest_ping_type: fxsuggest-impression
+      fx_suggest_country: VN
+  metadata:
+    geo:
+      subdivision1: null
+    user_agent:
+      os: Android
+  normalized_country_code: null
 - <<: *suggest_base
   metrics:
     <<: *suggest_metrics

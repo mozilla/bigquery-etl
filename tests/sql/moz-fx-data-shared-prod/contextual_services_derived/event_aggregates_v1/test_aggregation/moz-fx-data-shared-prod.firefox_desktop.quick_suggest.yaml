@@ -28,3 +28,15 @@
     string:
       <<: *click_strings
       quick_suggest_ping_type: quicksuggest-impression
+- <<: *click
+  metadata:
+    geo:
+      subdivision1: null
+    user_agent:
+      os: "Windows 11"
+  metrics:
+    <<: *click_metrics
+    string:
+      <<: *click_strings
+      quick_suggest_country: DE
+  normalized_country_code: null

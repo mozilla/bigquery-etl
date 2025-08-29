@@ -1,4 +1,4 @@
-friendly_name: Clients City Seen
+friendly_name: Baseline Clients City Seen
 description: |-
   This table stores the first-seen and last-seen geo attributes for each client_id.
   The table was initialized from stable tables (with ~2 years of retention), so the initial dates reflect the earliest/latest
@@ -17,7 +17,7 @@ labels:
   dag: bqetl_clients_city_seen
 scheduling:
   dag_name: bqetl_clients_city_seen
-  task_name: firefox_desktop_clients_city_seen_v1
+  task_name: fenix_baseline_clients_city_seen_v1
   depends_on_past: true
   date_partition_parameter: null
   parameters:

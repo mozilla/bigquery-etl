@@ -25,20 +25,53 @@ add_tiles_per_row AS (
     mozfun.newtab.determine_tiles_per_row_v1(
       layout_type,
       newtab_window_inner_width
-    ) AS num_tiles_per_row
+    ) AS num_tiles_per_row,
+    -- get the size of the tiles used in rownumber calc
+    CASE
+    -- for non-sections, all have a size of 1
+      WHEN layout_type != 'SECTION_GRID'
+        THEN 1
+      WHEN format IN ("spoc", "rectangle", "medium-card")
+        THEN 1
+    -- it takes two small-card to fill a medium-card spot
+      WHEN format = 'small-card'
+        THEN 0.5
+    -- large cards fill two spots
+      WHEN format = 'large-card'
+        THEN 2
+    -- billboard fills the entire row
+      WHEN format = 'billboard'
+        THEN mozfun.newtab.determine_tiles_per_row_v1(layout_type, newtab_window_inner_width)
+      ELSE NULL
+    END AS tile_size
   FROM
     content_and_visit_info
 )
 SELECT
   add_tiles_per_row.*,
-  SAFE_CAST(
-    CASE
-      WHEN layout_type = 'SECTION_GRID'
-        -- the row number is the same as the section position in sections
-        THEN section_position
-        -- for grid, divide the postition by the number of tiles per row and take the floor
-      ELSE FLOOR(position / num_tiles_per_row)
-    END AS INT
+  -- COALESCE with 0 because first element will return NULL due to range filter in partition
+  -- Will always be position 0
+  COALESCE(
+    SAFE_CAST(
+      FLOOR(
+        SUM(tile_size) OVER (
+          -- include layout_type in the partition because some visits
+          -- have both grid and section layouts, presumably because they occured
+          -- during the transition between the two
+          PARTITION BY
+            newtab_visit_id,
+            layout_type
+          ORDER BY
+            position
+          -- do not include row in sum, because the last element in the row will
+          -- sum to a multiple of the row number, and dividing will give the next row
+          RANGE BETWEEN
+            UNBOUNDED PRECEDING
+            AND 1 PRECEDING
+        ) / num_tiles_per_row
+      ) AS INT
+    ),
+    0
   ) AS row_number
 FROM
   add_tiles_per_row

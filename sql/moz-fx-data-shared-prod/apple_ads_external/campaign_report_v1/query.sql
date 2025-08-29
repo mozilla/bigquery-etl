@@ -9,9 +9,9 @@ SELECT
   start_at,
   end_at,
   taps,
-  tap_new_downloads AS new_downloads,
-  tap_redownloads AS redownloads,
-  tap_total_downloads AS total_downloads,
+  new_downloads,
+  redownloads,
+  total_downloads,
   impressions,
   spend,
 FROM

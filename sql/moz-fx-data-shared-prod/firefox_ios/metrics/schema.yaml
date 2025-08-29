@@ -1954,6 +1954,9 @@ fields:
     - name: windows_ipad_window_count
       type: INTEGER
       mode: NULLABLE
+    - name: termsofuse_version
+      type: INTEGER
+      mode: NULLABLE
   - name: rate
     type: RECORD
     mode: NULLABLE

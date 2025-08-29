@@ -12222,6 +12222,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: ssl_scts_from_tiled_logs_per_connection
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

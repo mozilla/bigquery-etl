@@ -12159,6 +12159,34 @@ fields:
       description: 'HTTP3 UDP number of segments per datagram sent.
 
         '
+    - name: ssl_scts_from_tiled_logs_per_connection
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Histogram of the number of Signed Certificate Timestamps from
+        tiled logs per TLS connection from all sources (embedded / OCSP Stapling /
+        TLS handshake). Bucket 0 counts the cases when no SCTs from tiled logs were
+        received, or none were extracted due to parsing errors.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -12531,8 +12559,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted

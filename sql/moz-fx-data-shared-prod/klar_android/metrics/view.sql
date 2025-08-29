@@ -1120,7 +1120,8 @@ SELECT
       metrics.custom_distribution.cert_pinning_failures_by_ca_2,
       metrics.custom_distribution.cert_validation_success_by_ca_2,
       metrics.custom_distribution.ssl_ct_policy_non_compliant_connections_by_ca_2,
-      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent
+      metrics.custom_distribution.networking_http_3_udp_datagram_segments_sent,
+      metrics.custom_distribution.ssl_scts_from_tiled_logs_per_connection
     ) AS `custom_distribution`,
     STRUCT(
       metrics.timespan.nimbus_experiments_nimbus_initial_fetch,

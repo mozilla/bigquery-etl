@@ -284,7 +284,8 @@ SELECT
       metrics.quantity.logins_saved_all,
       metrics.quantity.credit_card_saved_all,
       metrics.quantity.addresses_saved_all,
-      metrics.quantity.windows_ipad_window_count
+      metrics.quantity.windows_ipad_window_count,
+      metrics.quantity.termsofuse_version
     ) AS `quantity`,
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
@@ -588,7 +589,8 @@ SELECT
       metrics.quantity.logins_saved_all,
       metrics.quantity.credit_card_saved_all,
       metrics.quantity.addresses_saved_all,
-      metrics.quantity.windows_ipad_window_count
+      metrics.quantity.windows_ipad_window_count,
+      metrics.quantity.termsofuse_version
     ) AS `quantity`,
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
@@ -892,7 +894,8 @@ SELECT
       metrics.quantity.logins_saved_all,
       metrics.quantity.credit_card_saved_all,
       metrics.quantity.addresses_saved_all,
-      metrics.quantity.windows_ipad_window_count
+      metrics.quantity.windows_ipad_window_count,
+      metrics.quantity.termsofuse_version
     ) AS `quantity`,
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,

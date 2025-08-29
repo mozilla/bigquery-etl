@@ -2110,6 +2110,23 @@ bqetl_imf_cpi_data:
   repo: bigquery-etl
   schedule_interval: 23 0 15 * *
 
+bqetl_fred_daily_exchange_rate:
+  description: |
+    This DAG pulls currency exchange rate info from the FRED API.
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-08-27"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 30 23 * * *
 
 bqetl_us_bls_unemployment_data:
   description: |

@@ -1,0 +1,11 @@
+2025-08-28:
+  start_date: 2024-01-01
+  end_date: 2025-08-26
+  reason: initial backfill for component content table
+  watchers:
+  - cbeck@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false

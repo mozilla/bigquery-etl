@@ -1,0 +1,25 @@
+friendly_name: FRED Daily Exchange Rates
+description: |-
+  Daily currency exchange rates from the Federal Reserve Bank of St. Louis
+  Does not contain data every day, for example, no data available on weekends &  holidays
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_fred_daily_exchange_rate
+  date_partition_parameter: submission_date
+  arguments: ["--date", "{{ds}}"]
+  secrets:
+  - deploy_target: FRED_API_KEY
+    key: bqetl_fred_daily_exchange_rate__api_key
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+references: {}
+require_column_descriptions: true

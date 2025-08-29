@@ -4,9 +4,9 @@ SELECT
   organization_name,
   currency,
   taps,
-  new_downloads,
-  redownloads,
-  total_downloads,
+  tap_new_downloads AS new_downloads,
+  tap_redownloads AS redownloads,
+  tap_total_downloads AS total_downloads,
   impressions,
   spend,
 FROM

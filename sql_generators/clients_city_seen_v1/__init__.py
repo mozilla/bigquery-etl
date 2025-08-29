@@ -10,7 +10,8 @@ from jinja2 import Environment, FileSystemLoader
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
-from sql_generators.glean_usage import get_app_info
+
+# from sql_generators.glean_usage import get_app_info
 
 THIS_PATH = Path(os.path.dirname(__file__))
 TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
@@ -66,6 +67,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
         if browser.name == "fenix":
 
+            # TODO: listing only a few app_ids for testing
             app_id_list = [
                 "org_mozilla_firefox",
                 "org_mozilla_fenix_nightly",

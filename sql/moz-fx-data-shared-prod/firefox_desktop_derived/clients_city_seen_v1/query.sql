@@ -14,7 +14,6 @@
       metadata.geo.city,
       metadata.geo.subdivision1 AS geo_subdivision1,
       metadata.geo.subdivision2 AS geo_subdivision2,
-      normalized_channel
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -48,8 +47,7 @@
       submission_date >= '2018-01-01'
     GROUP BY
       submission_date,
-      client_id,
-      normalized_channel
+      client_id
     HAVING
       COUNT(*) > 150000
   ),
@@ -66,9 +64,6 @@
       `moz-fx-data-shared-prod.udf.mode_last`(
         ARRAY_AGG(geo_subdivision2) OVER w1
       ) AS geo_subdivision2,
-      `moz-fx-data-shared-prod.udf.mode_last`(
-        ARRAY_AGG(normalized_channel) OVER w1
-      ) AS normalized_channel,
     FROM
       with_date_offsets_firefox_desktop
     LEFT JOIN
@@ -110,7 +105,6 @@
     SELECT
       client_id,
       sample_id,
-      normalized_channel,
       submission_date AS first_seen_geo_date,
       city AS first_seen_geo_city,
       geo_subdivision1 AS first_seen_geo_subdivision1,
@@ -118,20 +112,12 @@
     FROM
       clients_daily_firefox_desktop
     QUALIFY
-      ROW_NUMBER() OVER (
-        PARTITION BY
-          client_id,
-          sample_id,
-          normalized_channel
-        ORDER BY
-          submission_date
-      ) = 1
+      ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date) = 1
   ),
   clients_city_last_seen_firefox_desktop AS (
     SELECT
       client_id,
       sample_id,
-      normalized_channel,
       submission_date AS last_seen_geo_date,
       city AS last_seen_geo_city,
       geo_subdivision1 AS last_seen_geo_subdivision1,
@@ -139,20 +125,12 @@
     FROM
       clients_daily_firefox_desktop
     QUALIFY
-      ROW_NUMBER() OVER (
-        PARTITION BY
-          client_id,
-          sample_id,
-          normalized_channel
-        ORDER BY
-          submission_date DESC
-      ) = 1
+      ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date DESC) = 1
   )
   SELECT
     "firefox_desktop" AS app_id,
     COALESCE(cfs.client_id, cls.client_id) AS client_id,
     COALESCE(cfs.sample_id, cls.sample_id) AS sample_id,
-    COALESCE(cfs.normalized_channel, cls.normalized_channel) AS normalized_channel,
     first_seen_geo_date,
     first_seen_geo_city,
     first_seen_geo_subdivision1,
@@ -167,7 +145,6 @@
     clients_city_last_seen_firefox_desktop cls
     ON cfs.client_id = cls.client_id
     AND cfs.sample_id = cls.sample_id
-    AND cfs.normalized_channel IS NOT DISTINCT FROM cls.normalized_channel --this avoids multiple rows when normalized_channel iS NULL
 {% else %}
   WITH _previous_firefox_desktop AS (
     SELECT
@@ -183,9 +160,6 @@
       client_info.client_id AS client_id,
       sample_id,
       ROW_NUMBER() OVER w1_unframed AS _n,
-      `moz-fx-data-shared-prod.udf.mode_last`(
-        ARRAY_AGG(normalized_channel) OVER w1
-      ) AS normalized_channel,
       @submission_date AS first_seen_geo_date,
       `moz-fx-data-shared-prod.udf.mode_last`(
         ARRAY_AGG(metadata.geo.city) OVER w1
@@ -244,7 +218,6 @@
     app_id,
     client_id,
     sample_id,
-    normalized_channel,
     IF(_p.client_id IS NULL, _c.first_seen_geo_date, _p.first_seen_geo_date) AS first_seen_geo_date,
     IF(_p.client_id IS NULL, _c.first_seen_geo_city, _p.first_seen_geo_city) AS first_seen_geo_city,
     IF(
@@ -281,5 +254,5 @@
     _current_firefox_desktop AS _c
   FULL JOIN
     _previous_firefox_desktop AS _p
-    USING (client_id, sample_id, app_id, normalized_channel)
+    USING (client_id, sample_id, app_id)
 {% endif %}

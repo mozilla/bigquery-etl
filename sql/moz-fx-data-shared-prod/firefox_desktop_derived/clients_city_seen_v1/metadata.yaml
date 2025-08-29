@@ -1,10 +1,13 @@
 friendly_name: Firefox Desktop Clients City Seen
 description: |-
-  This table stores the first-seen and last-seen geo attributes for each (client_id, normalized_channel).
+  This table stores the first-seen and last-seen geo attributes for each client_id.
   The table was initialized from stable tables (with ~2 years of retention), so the initial dates reflect the earliest/latest
-  observations within that window.  It then updates daily using live tables, replacing last-seen fields for existing
+  observations within that window.  It then updates daily using live tables, updating last-seen fields for existing
   clients and adding new clients with first-seen geo attributes that do not yet exist in the table.
+  This table should not be backfilled beyond 30 days which is the maximum retention of live tables.
+
   Implementation Plan: https://docs.google.com/document/d/1S8yVEwJjtJy3Pd8cn_BHRhgxllVnoxKylGCpuMyqWNQ/edit?usp=sharing
+  Data Model Design:  https://docs.google.com/document/d/1i5SkUC5waiZGWEPu7elDIaY3IxD5jNZgJy1moAKn7g0/edit?usp=sharing
 owners:
   - wichan@mozilla.com
 labels:
@@ -32,4 +35,3 @@ bigquery:
   clustering:
     fields:
       - sample_id
-      - normalized_channel

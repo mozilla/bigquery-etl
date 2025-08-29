@@ -11,10 +11,6 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
-- name: normalized_channel
-  type: STRING
-  mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
 - name: first_seen_geo_date
   type: DATE
   mode: NULLABLE

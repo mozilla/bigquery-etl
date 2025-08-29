@@ -10,4 +10,5 @@ fields:
 - name: exchange_rate
   type: FLOAT
   mode: NULLABLE
-  description: Exchange Rate
+  description: |-
+    For example, for CAD_to_USD, you would multiply CAD by this number to get USD on this submission date.

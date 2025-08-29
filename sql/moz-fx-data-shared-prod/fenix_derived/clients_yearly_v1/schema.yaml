@@ -78,6 +78,7 @@ fields:
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
+  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE

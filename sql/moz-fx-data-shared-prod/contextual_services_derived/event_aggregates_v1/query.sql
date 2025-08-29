@@ -126,7 +126,7 @@ combined AS (
     'remote settings' AS provider,
     -- Only standard suggestions are in use on mobile
     'firefox-suggest' AS match_type,
-    SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
+    'Android' AS normalized_os,
     -- This is the opt-in for Merino, not in use on mobile
     CAST(NULL AS BOOLEAN) AS suggest_data_sharing_enabled,
     blocks.query_type,

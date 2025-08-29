@@ -71,6 +71,8 @@ if __name__ == "__main__":
         # Keep only rows with data
         new_data_df = new_data_df.dropna(subset=["exchange_rate"])
 
+        # Some days will be empty (i.e. weekends & holidays)
+        # Skip so they don't concatenate
         if new_data_df.empty:
             continue
 

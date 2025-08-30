@@ -150,7 +150,7 @@
     SELECT
       *
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_derived.clients_city_seen_v1`
+      `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_city_seen_v1`
     WHERE
       app_id = "firefox_desktop"
   ),

@@ -295,7 +295,7 @@
     SELECT
       *
     FROM
-      `moz-fx-data-shared-prod.fenix_derived.clients_city_seen_v1`
+      `moz-fx-data-shared-prod.fenix_derived.baseline_clients_city_seen_v1`
     WHERE
       app_id = "org_mozilla_firefox"
   ),
@@ -363,7 +363,7 @@
     SELECT
       *
     FROM
-      `moz-fx-data-shared-prod.fenix_derived.clients_city_seen_v1`
+      `moz-fx-data-shared-prod.fenix_derived.baseline_clients_city_seen_v1`
     WHERE
       app_id = "org_mozilla_fenix_nightly"
   ),

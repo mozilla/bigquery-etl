@@ -148,7 +148,7 @@ _previous_{{ app_id }} AS (
     SELECT
       *
     FROM
-      `moz-fx-data-shared-prod.{{ app_name }}_derived.clients_city_seen_v1`
+      `moz-fx-data-shared-prod.{{ app_name }}_derived.{{ table_name }}`
     WHERE
       app_id = "{{ app_id }}"),
 _current_windowed_{{ app_id }} AS (

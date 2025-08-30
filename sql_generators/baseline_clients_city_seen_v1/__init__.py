@@ -96,6 +96,7 @@ def generate(target_project, output_dir, use_cloud_function):
                 project_id=target_project,
                 app_id_list=app_id_list,
                 app_name=app_name,
+                table_name=TABLE_NAME,
             )
         )
 

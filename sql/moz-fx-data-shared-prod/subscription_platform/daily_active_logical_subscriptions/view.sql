@@ -19,31 +19,6 @@ WITH daily_subscriptions AS (
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.recent_daily_active_logical_subscriptions_v1`
 ),
-vat_rates AS (
-  SELECT
-    country_code,
-    vat AS vat_rate,
-    effective_date,
-    LEAD(effective_date) OVER (
-      PARTITION BY
-        country_code
-      ORDER BY
-        effective_date
-    ) AS next_effective_date
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.vat_rates_v1`
-),
-usd_exchange_rates AS (
-  SELECT
-    base_currency,
-    price AS exchange_rate,
-    `date` AS effective_date,
-    LEAD(`date`) OVER (PARTITION BY base_currency ORDER BY `date`) AS next_effective_date
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.exchange_rates_v1`
-  WHERE
-    quote_currency = 'USD'
-),
 augmented_daily_subscriptions AS (
   SELECT
     daily_subscriptions.*,
@@ -52,20 +27,17 @@ augmented_daily_subscriptions AS (
   FROM
     daily_subscriptions
   LEFT JOIN
-    vat_rates
+    `moz-fx-data-shared-prod.subscription_platform.vat_rates_history` AS vat_rates
     ON daily_subscriptions.subscription.country_code = vat_rates.country_code
-    AND daily_subscriptions.date >= vat_rates.effective_date
-    AND (
-      daily_subscriptions.date < vat_rates.next_effective_date
-      OR vat_rates.next_effective_date IS NULL
-    )
+    AND (daily_subscriptions.date BETWEEN vat_rates.valid_from AND vat_rates.valid_to)
   LEFT JOIN
-    usd_exchange_rates
+    `moz-fx-data-shared-prod.subscription_platform.exchange_rates_history` AS usd_exchange_rates
     ON daily_subscriptions.subscription.plan_currency = usd_exchange_rates.base_currency
-    AND daily_subscriptions.date >= usd_exchange_rates.effective_date
+    AND usd_exchange_rates.quote_currency = 'USD'
     AND (
-      daily_subscriptions.date < usd_exchange_rates.next_effective_date
-      OR usd_exchange_rates.next_effective_date IS NULL
+      daily_subscriptions.date
+      BETWEEN usd_exchange_rates.valid_from
+      AND usd_exchange_rates.valid_to
     )
 ),
 augmented_daily_subscriptions_2 AS (

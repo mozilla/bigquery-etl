@@ -10,31 +10,6 @@ WITH subscriptions AS (
   WHERE
     valid_to = '9999-12-31 23:59:59.999999'
 ),
-vat_rates AS (
-  SELECT
-    country_code,
-    vat AS vat_rate,
-    effective_date,
-    LEAD(effective_date) OVER (
-      PARTITION BY
-        country_code
-      ORDER BY
-        effective_date
-    ) AS next_effective_date
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.vat_rates_v1`
-),
-usd_exchange_rates AS (
-  SELECT
-    base_currency,
-    price AS exchange_rate,
-    `date` AS effective_date,
-    LEAD(`date`) OVER (PARTITION BY base_currency ORDER BY `date`) AS next_effective_date
-  FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.exchange_rates_v1`
-  WHERE
-    quote_currency = 'USD'
-),
 augmented_subscriptions AS (
   SELECT
     subscriptions.*,
@@ -43,20 +18,17 @@ augmented_subscriptions AS (
   FROM
     subscriptions
   LEFT JOIN
-    vat_rates
+    `moz-fx-data-shared-prod.subscription_platform.vat_rates_history` AS vat_rates
     ON subscriptions.country_code = vat_rates.country_code
-    AND subscriptions.effective_date >= vat_rates.effective_date
-    AND (
-      subscriptions.effective_date < vat_rates.next_effective_date
-      OR vat_rates.next_effective_date IS NULL
-    )
+    AND (subscriptions.effective_date BETWEEN vat_rates.valid_from AND vat_rates.valid_to)
   LEFT JOIN
-    usd_exchange_rates
+    `moz-fx-data-shared-prod.subscription_platform.exchange_rates_history` AS usd_exchange_rates
     ON subscriptions.plan_currency = usd_exchange_rates.base_currency
-    AND subscriptions.effective_date >= usd_exchange_rates.effective_date
+    AND usd_exchange_rates.quote_currency = 'USD'
     AND (
-      subscriptions.effective_date < usd_exchange_rates.next_effective_date
-      OR usd_exchange_rates.next_effective_date IS NULL
+      subscriptions.effective_date
+      BETWEEN usd_exchange_rates.valid_from
+      AND usd_exchange_rates.valid_to
     )
 ),
 augmented_subscriptions_2 AS (

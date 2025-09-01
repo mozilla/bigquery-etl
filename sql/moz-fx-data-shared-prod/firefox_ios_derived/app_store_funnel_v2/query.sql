@@ -6,7 +6,7 @@
 WITH app_store_data AS (
   SELECT
     date_day AS `date`,
-    territory_long AS country_name,
+    territory_short AS country,
     SUM(impressions_unique_device) AS impressions,
     SUM(total_downloads) AS total_downloads,
     SUM(first_time_downloads) AS first_time_downloads,
@@ -19,20 +19,6 @@ WITH app_store_data AS (
     AND app_id = 989804926  -- Filter to only include the Firefox app
   GROUP BY
     ALL
-),
-normalize_country AS (
-  SELECT
-    `date`,
-    country_names.code AS country,
-    impressions,
-    total_downloads,
-    first_time_downloads,
-    redownloads,
-  FROM
-    app_store_data
-  LEFT JOIN
-    `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
-    ON app_store_data.country_name = country_names.name
 ),
 _new_profiles AS (
   SELECT
@@ -57,7 +43,7 @@ SELECT
   redownloads,
   COALESCE(new_profiles, 0) AS new_profiles,
 FROM
-  normalize_country
+  app_store_data
 LEFT JOIN
   _new_profiles
   USING (`date`, country)

@@ -1,133 +1,75 @@
--- https://developer.apple.com/help/app-store-connect/view-sales-and-trends/download-and-view-reports
--- "Time zone: Reports are based on Pacific Time (PT). A day includes transactions that happened from 12:00 a.m. to 11:59 p.m. PT.
--- However, the `date` timestamp field appear to always show midnight meaning if we do timezone conversion
--- we will end up moving all results 1 day back if we attempt conversion to UTC.
--- This is why we are not doing timezone converstions here.
-WITH historical_store_data AS (
-  WITH impression_data AS (
-    SELECT
-      DATE(`date`) AS `date`,
-      territory AS country_name,
-      SUM(impressions_unique_device) AS impressions,
-    FROM
-      `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
-    WHERE
-      DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-      AND source_type <> 'Institutional Purchase'
-      AND app_id = 989804926  -- Filter to only include the Firefox app
-    GROUP BY
-      `date`,
-      country_name
-  ),
-  downloads_data AS (
-    SELECT
-      DATE(`date`) AS `date`,
-      territory AS country_name,
-      SUM(total_downloads) AS total_downloads,
-      SUM(first_time_downloads) AS first_time_downloads,
-      SUM(redownloads) AS redownloads,
-    FROM
-      `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report`
-    WHERE
-      DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-      AND source_type <> 'Institutional Purchase'
-      AND app_id = 989804926  -- Filter to only include the Firefox app
-    GROUP BY
-      ALL
-  )
+-- TODO: should we run this job with 7 day delay to make sure all data landed (a wider window to be on the safe side).
+WITH views_data AS (
   SELECT
     DATE(`date`) AS `date`,
-    country_name,
-    COALESCE(impressions, 0) AS impressions,
-    COALESCE(total_downloads, 0) AS total_downloads,
-    COALESCE(first_time_downloads, 0) AS first_time_downloads,
-    COALESCE(redownloads, 0) AS redownloads,
+    territory AS country_name,
+    SUM(impressions_unique_device) AS views,
   FROM
-    impression_data
-  FULL OUTER JOIN
-    downloads_data
-    USING (`date`, country_name)
+    `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
+  WHERE
+    DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+  GROUP BY
+    `date`,
+    country_name
 ),
-app_store_data AS (
+downloads_data AS (
   SELECT
-    date_day AS `date`,
-    territory_long AS country_name,
-    SUM(impressions_unique_device) AS impressions,
+    DATE(`date`) AS `date`,
+    territory AS country_name,
     SUM(total_downloads) AS total_downloads,
     SUM(first_time_downloads) AS first_time_downloads,
     SUM(redownloads) AS redownloads,
   FROM
-    `moz-fx-data-bq-fivetran.firefox_app_store_v2_apple_store.apple_store__territory_report`
+    `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report`
   WHERE
-    DATE(date_day) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
+    DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
     AND source_type <> 'Institutional Purchase'
-    AND app_id = 989804926  -- Filter to only include the Firefox app
   GROUP BY
-    ALL
+    `date`,
+    country_name
 ),
-combine_app_store_data AS (
+store_stats AS (
   SELECT
-    `date`,
-    country_name,
-    impressions,
-    total_downloads,
-    first_time_downloads,
-    redownloads,
-  FROM
-    historical_store_data
-  WHERE
-    `date` < "2024-01-01"
-  UNION ALL
-  SELECT
-    `date`,
-    country_name,
-    impressions,
-    total_downloads,
-    first_time_downloads,
-    redownloads,
-  FROM
-    app_store_data
-  WHERE
-    `date` >= "2024-01-01"
-),
-normalize_country AS (
-  SELECT
-    `date`,
+    DATE(`date`) AS `date`,
     country_names.code AS country,
-    impressions,
+    views,
     total_downloads,
     first_time_downloads,
     redownloads,
   FROM
-    combine_app_store_data
+    views_data
+  FULL OUTER JOIN
+    downloads_data
+    USING (`date`, country_name)
   LEFT JOIN
     `moz-fx-data-shared-prod.static.country_names_v1` AS country_names
-    ON combine_app_store_data.country_name = country_names.name
+    ON country_names.name = views_data.country_name
 ),
 _new_profiles AS (
   SELECT
     first_seen_date AS `date`,
-    country,
-    SUM(new_profiles) AS new_profiles,
+    first_reported_country AS country,
+    COUNT(*) AS new_profiles,
   FROM
-    `moz-fx-data-shared-prod.firefox_ios.new_profiles`
+    `moz-fx-data-shared-prod.firefox_ios.firefox_ios_clients`
   WHERE
     first_seen_date = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-    AND normalized_channel = "release"
+    AND channel = "release"
   GROUP BY
-    ALL
+    `date`,
+    country
 )
 SELECT
   @submission_date AS submission_date,
   `date` AS first_seen_date,
   country,
-  impressions,
-  total_downloads,
-  first_time_downloads,
-  redownloads,
+  COALESCE(views, 0) AS impressions,
+  COALESCE(total_downloads, 0) AS total_downloads,
+  COALESCE(first_time_downloads, 0) AS first_time_downloads,
+  COALESCE(redownloads, 0) AS redownloads,
   COALESCE(new_profiles, 0) AS new_profiles,
 FROM
-  normalize_country
-LEFT JOIN
+  store_stats
+FULL OUTER JOIN
   _new_profiles
   USING (`date`, country)

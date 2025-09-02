@@ -6,6 +6,8 @@ WITH raw_content_info AS (
     *
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_component_content_v1`
+  WHERE
+    submission_date >= '2024-01-01'  -- earliest date in the table
 ),
 -- the purpose of the final CTEs is to apply the necessary UDFs to get rownumber
 content_and_visit_info AS (
@@ -15,7 +17,7 @@ content_and_visit_info AS (
       section_position IS NOT NULL,
       app_version,
       experiments
-    ) AS layout_type,
+    ) AS layout_type
   FROM
     raw_content_info
 ),

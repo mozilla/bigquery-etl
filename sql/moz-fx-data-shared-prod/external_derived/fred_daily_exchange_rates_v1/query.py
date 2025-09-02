@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # We want to always run for 4 days ago to give time for data to load
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-    execution_date = logical_dag_date - timedelta(days=4)
+    execution_date = logical_dag_date - timedelta(days=21)
     print(
         f"Pulling data for execution_date: {execution_date} for logical dag date {logical_dag_date}"
     )

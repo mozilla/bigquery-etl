@@ -17,7 +17,7 @@ content_and_visit_info AS (
       section_position IS NOT NULL,
       app_version,
       experiments
-    ) AS layout_type
+    ) AS layout_type,
   FROM
     raw_content_info
 ),

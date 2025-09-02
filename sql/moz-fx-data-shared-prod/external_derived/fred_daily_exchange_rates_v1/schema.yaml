@@ -1,0 +1,14 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: conversion_type
+  type: STRING
+  mode: NULLABLE
+  description: Conversion Type - From Currency, To Currency
+- name: exchange_rate
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    For example, for CAD_to_USD, you would multiply CAD by this number to get USD on this submission date.

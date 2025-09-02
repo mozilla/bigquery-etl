@@ -6,7 +6,7 @@ WITH staging AS (
     submission_date,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS new_years_day,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS australia_day,
-    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS orthodox_christmas,
+    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS orthodox_christmas,
     IF(
       submission_date IN (
         '2020-01-25',

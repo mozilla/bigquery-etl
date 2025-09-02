@@ -2385,6 +2385,14 @@ fields:
         object we get here can be invalid and this metric is used to track those instances.
 
         '
+    - name: media_mkv_content_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times MKV content is detected as a source for media
+        playback. This metric does not determine whether the MKV file is valid; it
+        is simply a count based on the sniffed MIME type.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

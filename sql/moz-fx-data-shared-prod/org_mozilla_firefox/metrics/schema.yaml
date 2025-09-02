@@ -3069,6 +3069,14 @@ fields:
       mode: NULLABLE
       description: Records the number of times the user clicked 'remind me later'
         on the Terms of Use prompt.
+    - name: media_mkv_content_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The number of times MKV content is detected as a source for media
+        playback. This metric does not determine whether the MKV file is valid; it
+        is simply a count based on the sniffed MIME type.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE
@@ -12559,7 +12567,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

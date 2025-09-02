@@ -1263,6 +1263,9 @@ fields:
     - name: terms_of_use_remind_me_later_count
       type: INTEGER
       mode: NULLABLE
+    - name: media_mkv_content_count
+      type: INTEGER
+      mode: NULLABLE
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

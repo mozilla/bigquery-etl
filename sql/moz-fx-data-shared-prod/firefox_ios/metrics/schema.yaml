@@ -711,6 +711,15 @@ fields:
     - name: logins_store_mirror_undecryptable_deleted
       type: INTEGER
       mode: NULLABLE
+    - name: termsofuse_dismiss_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: termsofuse_impression_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: termsofuse_remind_me_later_count
+      type: INTEGER
+      mode: NULLABLE
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

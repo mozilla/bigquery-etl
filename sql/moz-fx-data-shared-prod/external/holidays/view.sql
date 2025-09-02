@@ -6,7 +6,23 @@ WITH staging AS (
     submission_date,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS new_years_day,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS australia_day,
-    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS orthodox_christmas,
+    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS orthodox_christmas,
+    IF(
+      submission_date IN (
+        '2020-01-20',
+        '2021-01-18',
+        '2022-01-17',
+        '2023-01-16',
+        '2024-01-15',
+        '2025-01-20',
+        '2026-01-19',
+        '2027-01-18',
+        '2028-01-17',
+        '2029-01-15'
+      ),
+      1,
+      0
+    ) AS us_martin_luther_king_jr_day,
     IF(
       submission_date IN (
         '2020-01-25',
@@ -705,7 +721,8 @@ SELECT
     IF(stg.boxing_day = 1, ['BoxingDay'], []),
     IF(stg.hanukkah = 1, ['Hanukkah'], []),
     IF(stg.us_kwanzaa = 1, ['US_Kwanzaa'], []),
-    IF(stg.new_years_eve = 1, ['NewYearsEve'], [])
+    IF(stg.new_years_eve = 1, ['NewYearsEve'], []),
+    IF(stg.us_martin_luther_king_jr_day = 1, ['US_MLK_Jr_Day'], [])
   ) AS holiday_array
 FROM
   staging stg

@@ -216,6 +216,9 @@ fields:
     - name: usage_first_run_date
       type: STRING
       mode: NULLABLE
+    - name: termsofuse_date
+      type: STRING
+      mode: NULLABLE
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE
@@ -286,6 +289,13 @@ fields:
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: termsofuse_version
+      type: INTEGER
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

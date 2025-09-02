@@ -1008,6 +1008,9 @@ fields:
     - name: idb_maintenance_unknown_metadata
       type: INTEGER
       mode: NULLABLE
+    - name: media_mkv_content_count
+      type: INTEGER
+      mode: NULLABLE
   - name: datetime
     type: RECORD
     mode: NULLABLE

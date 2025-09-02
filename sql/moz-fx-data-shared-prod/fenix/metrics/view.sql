@@ -361,7 +361,8 @@ SELECT
       metrics.counter.idb_maintenance_unknown_metadata,
       metrics.counter.terms_of_use_dismiss_count,
       metrics.counter.terms_of_use_impression_count,
-      metrics.counter.terms_of_use_remind_me_later_count
+      metrics.counter.terms_of_use_remind_me_later_count,
+      metrics.counter.media_mkv_content_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -2363,7 +2364,8 @@ SELECT
       metrics.counter.idb_maintenance_unknown_metadata,
       metrics.counter.terms_of_use_dismiss_count,
       metrics.counter.terms_of_use_impression_count,
-      metrics.counter.terms_of_use_remind_me_later_count
+      metrics.counter.terms_of_use_remind_me_later_count,
+      metrics.counter.media_mkv_content_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,
@@ -4385,7 +4387,8 @@ SELECT
       metrics.counter.idb_maintenance_unknown_metadata,
       metrics.counter.terms_of_use_dismiss_count,
       metrics.counter.terms_of_use_impression_count,
-      metrics.counter.terms_of_use_remind_me_later_count
+      metrics.counter.terms_of_use_remind_me_later_count,
+      metrics.counter.media_mkv_content_count
     ) AS `counter`,
     STRUCT(
       metrics.custom_distribution.geckoview_document_site_origins,

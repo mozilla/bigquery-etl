@@ -1513,6 +1513,25 @@ fields:
         reasons that prevent us from decrypting the login
 
         '
+    - name: termsofuse_dismiss_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of times a user clicks to dismiss (does not
+        include tapping accept or remind me later).
+
+        '
+    - name: termsofuse_impression_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of ToU impressions the user has had.
+
+        '
+    - name: termsofuse_remind_me_later_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of times a user clicks "remind me later".
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -174,7 +174,10 @@ SELECT
       metrics.counter.password_generator_filled,
       metrics.counter.password_generator_shown,
       metrics.counter.logins_store_local_undecryptable_deleted,
-      metrics.counter.logins_store_mirror_undecryptable_deleted
+      metrics.counter.logins_store_mirror_undecryptable_deleted,
+      metrics.counter.termsofuse_dismiss_count,
+      metrics.counter.termsofuse_impression_count,
+      metrics.counter.termsofuse_remind_me_later_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -481,7 +484,10 @@ SELECT
       metrics.counter.password_generator_filled,
       metrics.counter.password_generator_shown,
       metrics.counter.logins_store_local_undecryptable_deleted,
-      metrics.counter.logins_store_mirror_undecryptable_deleted
+      metrics.counter.logins_store_mirror_undecryptable_deleted,
+      metrics.counter.termsofuse_dismiss_count,
+      metrics.counter.termsofuse_impression_count,
+      metrics.counter.termsofuse_remind_me_later_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -788,7 +794,10 @@ SELECT
       metrics.counter.password_generator_filled,
       metrics.counter.password_generator_shown,
       metrics.counter.logins_store_local_undecryptable_deleted,
-      metrics.counter.logins_store_mirror_undecryptable_deleted
+      metrics.counter.logins_store_mirror_undecryptable_deleted,
+      metrics.counter.termsofuse_dismiss_count,
+      metrics.counter.termsofuse_impression_count,
+      metrics.counter.termsofuse_remind_me_later_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

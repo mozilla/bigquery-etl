@@ -64,7 +64,7 @@ new_conversion_events AS (
     dl_token_to_telemetry_id b
     ON a.client_id = b.telemetry_client_id
   WHERE
-    (a.event_1 IS TRUE OR a.event_2 IS TRUE OR a.event_3 IS TRUE)
+    (a.event_1 IS TRUE OR a.event_2 IS TRUE OR a.event_3 IS TRUE) --fix this too
     AND a.report_date = @submission_date
     AND a.first_seen_date < @submission_date
 ),
@@ -90,14 +90,14 @@ old_events_staging AS (
     COUNT(DISTINCT(a.submission_date)) AS nbr_days_running_firefox,
     MAX(a.submission_date) AS most_recent_date_running_firefox
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` a --replace this
+    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1` a
   JOIN
     dl_token_to_telemetry_id b
     ON a.client_id = b.telemetry_client_id
   WHERE
     a.submission_date <= current_date
   GROUP BY
-    1
+    a.client_id
 ),
 --Step 6: Summarize this into the old event types
 old_events AS (

@@ -1,0 +1,17 @@
+fields:
+- name: country_code
+  type: STRING
+  mode: NULLABLE
+  description: ISO 3166 alpha-2 country code.
+- name: country_name
+  type: STRING
+  mode: NULLABLE
+- name: vat_rate
+  type: NUMERIC
+  mode: NULLABLE
+- name: valid_from
+  type: DATE
+  mode: NULLABLE
+- name: valid_to
+  type: DATE
+  mode: NULLABLE

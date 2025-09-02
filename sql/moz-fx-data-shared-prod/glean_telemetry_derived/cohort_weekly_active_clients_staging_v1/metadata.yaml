@@ -1,0 +1,23 @@
+friendly_name: Cohort Weekly Active Clients Staging
+description: |-
+  This is an intermediate physicalized table
+  used in the build of cohort_weekly_statistics_v1
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: true
+  owner1: mhirose
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_default
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775
+  range_partitioning: null
+  clustering:
+    fields: []
+references: {}
+require_column_descriptions: true

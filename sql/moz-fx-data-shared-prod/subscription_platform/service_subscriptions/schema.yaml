@@ -103,8 +103,6 @@ fields:
 - name: service
   type: RECORD
   mode: NULLABLE
-  description: The service provided by the subscription, as defined in the `services_v1`
-    ETL.
   fields:
   - name: id
     type: STRING
@@ -118,11 +116,11 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Service tier.
+  description: The service provided by the subscription, as defined in the `services_v1`
+    ETL.
 - name: other_services
   type: RECORD
   mode: REPEATED
-  description: Array of zero or more other services provided by the subscription,
-    as defined in the `services_v1` ETL.
   fields:
   - name: id
     type: STRING
@@ -136,6 +134,8 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Other service tier.
+  description: Array of zero or more other services provided by the subscription,
+    as defined in the `services_v1` ETL.
 - name: provider_product_id
   type: STRING
   mode: NULLABLE
@@ -316,10 +316,6 @@ fields:
 - name: first_touch_attribution
   type: RECORD
   mode: NULLABLE
-  description: 'Unbounded first-touch attribution for the service subscription (if
-    any).
-
-    This will be null for Google and Apple subscriptions.'
   fields:
   - name: impression_at
     type: TIMESTAMP
@@ -357,13 +353,13 @@ fields:
     type: STRING
     mode: NULLABLE
     description: First-touch attribution UTM term.
-- name: last_touch_attribution
-  type: RECORD
-  mode: NULLABLE
-  description: 'Unbounded last-touch attribution for the service subscription (if
+  description: 'Unbounded first-touch attribution for the service subscription (if
     any).
 
     This will be null for Google and Apple subscriptions.'
+- name: last_touch_attribution
+  type: RECORD
+  mode: NULLABLE
   fields:
   - name: impression_at
     type: TIMESTAMP
@@ -401,6 +397,10 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Last-touch attribution UTM term.
+  description: 'Unbounded last-touch attribution for the service subscription (if
+    any).
+
+    This will be null for Google and Apple subscriptions.'
 - name: country_vat_rate
   type: NUMERIC
   mode: NULLABLE

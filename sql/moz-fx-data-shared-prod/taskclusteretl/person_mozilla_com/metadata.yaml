@@ -1,0 +1,18 @@
+friendly_name: person_mozilla_com
+description: |-
+  See https://mozilla-hub.atlassian.net/browse/DENG-9313.
+owners:
+- telemetry-alerts@mozilla.com
+labels:
+  authorized: true
+  owner1: telemetry-alerts
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-bq-people.composer_workday.worker
+  - moz-fx-data-shared-prod.bugzilla_metrics.users
+require_column_descriptions: false

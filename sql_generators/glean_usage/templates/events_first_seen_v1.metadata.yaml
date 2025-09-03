@@ -1,0 +1,36 @@
+friendly_name: Events First Seen
+description: |-
+  Captures the earliest date that we observe an event for a particular client in the events_stream_v1 table.
+owners:
+  - kbammarito@mozilla.com
+  - vsabino@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: { { app_name } }
+  date_partition_parameter: null
+  destination_table: >-
+    {% raw %}events_first_seen_v1${{
+    (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
+    }}{% endraw %}
+  parameters:
+    - >-
+      {% raw %}submission_date:DATE:{{ds}}{% endraw %}
+  query_file_path:
+    # explicit query file path is necessary because the destination table
+    # includes a partition identifier that is not in the path
+    {{ output_dir }}/{{ app_name }}_derived/{{ events_first_seen_table }}/query.sql
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    clustering:
+      fields:
+        - event_category
+        - sample_id
+        - normalized_channel

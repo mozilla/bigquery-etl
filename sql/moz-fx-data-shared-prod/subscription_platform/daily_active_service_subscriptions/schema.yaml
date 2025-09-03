@@ -442,6 +442,45 @@ fields:
       mode: NULLABLE
       description: |-
         Last-touch attribution UTM term.
+  - name: country_vat_rate
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      VAT rate for the country the subscription is in (if any).
+  - name: plan_currency_usd_exchange_rate
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      Exchange rate for converting the subscription plan's currency into US dollars (if any).
+  - name: plan_amount_usd
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      Subscription plan's amount in US dollars.
+      For Apple subscriptions prior to 2024-10-30 this may have fallen back to assuming a USD amount due to a lack of source data (FXA-10549).
+  - name: current_period_discount_amount_usd
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      Current period discount amount in US dollars (if any).
+      This may be null for Apple subscriptions.
+  - name: ongoing_discount_amount_usd
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      Ongoing discount amount in US dollars (if any).
+      This may be null for Apple subscriptions.
+  - name: monthly_recurring_revenue_usd
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      Projected monthly recurring revenue for the subscription in US dollars.
+  - name: annual_recurring_revenue_usd
+    type: NUMERIC
+    mode: NULLABLE
+    description: |-
+      Projected annual recurring revenue for the subscription in US dollars.
+      This will be null for Stripe subscriptions prior to 2023-02-27 (DENG-754).
 - name: was_active_at_day_start
   type: BOOLEAN
   mode: NULLABLE

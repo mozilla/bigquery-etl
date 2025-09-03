@@ -4,16 +4,7 @@ description: |-
   This calculation only considers Desktop--Mobile's not in PingCentre.
 owners:
   - sbetancourt@mozilla.com
-  - cmorales@mozilla.com
-  - cbeck@mozilla.com
-  - lvargas@mozilla.com
-labels:
-  incremental: true
-  schedule: daily
-  shredder_mitigation: true
-  table_type: aggregate
-scheduling:
-  dag_name: bqetl_ads
+  - mozilla/ads_data_team
 bigquery:
   time_partitioning:
     field: submission_date

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_desktop.enterprise_and_consumer_metric_segment_clients`
+  `moz-fx-data-shared-prod.firefox_desktop.enterprise_metrics_clients`
 AS
 SELECT
   *,
@@ -31,4 +31,4 @@ SELECT
     ELSE "unexpected_classification" -- TODO: we should set up an alert for this, but not fail the query.
   END AS enterprise_classification,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.enterprise_and_consumer_metric_segment_clients_v1`
+  `moz-fx-data-shared-prod.firefox_desktop_derived.enterprise_metrics_clients_v1`

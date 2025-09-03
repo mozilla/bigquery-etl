@@ -406,6 +406,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=36000)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
         bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1_external.set_upstream(
             bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
         )

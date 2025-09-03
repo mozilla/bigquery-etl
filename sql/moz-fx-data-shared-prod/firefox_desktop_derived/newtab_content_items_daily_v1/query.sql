@@ -42,7 +42,7 @@ newtab_flattened_events AS (
     mozfun.map.get_key(event_details, 'section') AS section,
     SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT64) AS section_position,
     mozfun.map.get_key(event_details, 'topic') AS topic,
-    mozfun.map.get_key(event_details, 'content_redacted') AS content_redacted,
+    IFNULL(mozfun.map.get_key(event_details, 'content_redacted'), 'false') AS content_redacted,
     NULL AS newtab_content_ping_version
   FROM
     newtab_events_unnested
@@ -74,8 +74,8 @@ newtab_daily_agg AS (
   FROM
     newtab_flattened_events
   WHERE
-    -- Only options are 'true' and null, so this filters to just non-redacted events
-    content_redacted != 'true'
+    -- Filters out non-redacted events. Redacted events will be counted in the newtab_content ping data.
+    content_redacted = 'false'
   GROUP BY
     submission_date,
     app_version,
@@ -98,7 +98,7 @@ newtab_content_events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     normalized_channel AS channel,
-    metrics.string.newtab_content_country AS country,
+    IFNULL(metrics.string.newtab_content_country, normalized_country_code) AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     timestamp AS event_timestamp,
     category AS event_category,

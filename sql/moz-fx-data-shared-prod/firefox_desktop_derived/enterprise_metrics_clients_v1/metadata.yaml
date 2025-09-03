@@ -1,6 +1,6 @@
-friendly_name: Enterprise and Consumer Metric Segment (Clients)
+friendly_name: Enterprise Metrics (clients)
 description: |-
-  Enterprise and Consumer Metric Segment.
+  Enterprise Metrics (clients).
 owners:
 - pissac@mozilla.com
 - kik@mozilla.com

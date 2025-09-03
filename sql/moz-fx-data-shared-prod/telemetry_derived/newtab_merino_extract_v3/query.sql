@@ -14,7 +14,7 @@ private_pings AS (
     submission_timestamp,
     document_id,
     events,
-    normalized_country_code
+    metrics.string.newtab_content_country AS normalized_country_code
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_live.newtab_content_v1`
   WHERE

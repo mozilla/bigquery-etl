@@ -146,6 +146,8 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
         events_view=f"{prefix}.events",
         events_stream_table=f"{prefix}_derived.events_stream_v1",
         events_stream_view=f"{prefix}.events_stream",
+        events_first_seen_table=f"{prefix}_derived.events_first_seen_v1",
+        events_first_seen_view=f"{prefix}.events_first_seen",
     )
 
 
@@ -449,7 +451,7 @@ class GleanTable:
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_name,
             enable_monitoring=enable_monitoring,
-            deprecated_app = deprecated_app,
+            deprecated_app=deprecated_app,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

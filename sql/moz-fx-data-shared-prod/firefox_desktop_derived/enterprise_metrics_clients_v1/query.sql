@@ -1,45 +1,75 @@
-WITH last_known_client_distribution_within_28_days AS (
-  SELECT
-    client_id,
-    normalized_channel AS channel,
-    ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date DESC)[
-      SAFE_OFFSET(0)
-    ] AS distribution_id,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_clients_daily`
-  WHERE
-    submission_date
-    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
-    AND @submission_date
-  GROUP BY
-    ALL
-),
-client_baseline AS (
+WITH client_baseline AS (
+  WITH active_users_base AS (
+    SELECT
+      submission_date,
+      client_id,
+      sample_id,
+      channel,
+      distribution_id,
+      is_daily_user,
+      is_dau,
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
+    WHERE
+      submission_date
+      BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+      AND @submission_date
+  ),
+  last_observed_distribution_id_within_27_days AS (
+    SELECT
+      client_id,
+      sample_id,
+      channel,
+      ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date DESC)[
+        SAFE_OFFSET(0)
+      ] AS distribution_id,
+    FROM
+      active_users_base
+    GROUP BY
+      ALL
+  ),
+  daily_users AS (
+    SELECT
+      client_id,
+      sample_id,
+      channel,
+      is_dau,
+    FROM
+      active_users_base
+    WHERE
+      submission_date = @submission_date
+      AND is_daily_user
+  )
   SELECT
     client_id,
     sample_id,
     channel AS normalized_channel,
-    last_known_client_distribution_within_28_days.distribution_id,
+    distribution_id,
     is_dau,
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
+    daily_users
   LEFT JOIN
-    last_known_client_distribution_within_28_days
-    USING (client_id, channel)
-  WHERE
-    submission_date = @submission_date
-    AND is_daily_user
+    last_observed_distribution_id_within_27_days
+    USING (client_id, sample_id, channel)
 ),
-client_metrics AS (
+most_recent_client_policy_metrics AS (
   SELECT
     client_info.client_id,
     normalized_channel,
-    MAX(metrics.quantity.policies_count) AS policies_count,
-    MAX(metrics.boolean.policies_is_enterprise) AS policies_is_enterprise,
+    ARRAY_AGG(metrics.quantity.policies_count IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS policies_count,
+    ARRAY_AGG(
+      metrics.boolean.policies_is_enterprise IGNORE NULLS
+      ORDER BY
+        submission_timestamp DESC
+    )[SAFE_OFFSET(0)] AS policies_is_enterprise,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp)
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
+    AND @submission_date
   GROUP BY
     ALL
 )
@@ -57,5 +87,5 @@ SELECT
 FROM
   client_baseline
 LEFT JOIN
-  client_metrics
+  most_recent_client_policy_metrics
   USING (client_id, normalized_channel)

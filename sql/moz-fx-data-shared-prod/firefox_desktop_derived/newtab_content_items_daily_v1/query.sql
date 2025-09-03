@@ -53,7 +53,10 @@ newtab_daily_agg AS (
     app_version,
     channel,
     country,
-    newtab_content_surface_id,
+    IFNULL(
+      newtab_content_surface_id,
+      mozfun.newtab.scheduled_surface_id_v1(country, locale)
+    ) AS newtab_content_surface_id,
     corpus_item_id,
     position,
     is_sponsored,
@@ -95,7 +98,7 @@ newtab_content_events_unnested AS (
   SELECT
     DATE(submission_timestamp) AS submission_date,
     normalized_channel AS channel,
-    normalized_country_code AS country,
+    metrics.string.newtab_content_country AS country,
     metrics.string.newtab_content_surface_id AS newtab_content_surface_id,
     timestamp AS event_timestamp,
     category AS event_category,

@@ -1,0 +1,7 @@
+friendly_name: person_mozilla_com
+description: |-
+  See https://mozilla-hub.atlassian.net/browse/DENG-9313.
+owners:
+  - telemetry-alerts@mozilla.com
+labels:
+  authorized: true

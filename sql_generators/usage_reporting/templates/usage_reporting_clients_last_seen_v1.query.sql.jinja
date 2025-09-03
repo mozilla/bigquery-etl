@@ -3,7 +3,6 @@
 -- 28 days for each usage criterion as a single 64-bit integer.
 WITH _current AS (
   SELECT
-    usage_profile_id,
     -- The rightmost bit in 'days_since_seen' represents whether the user sent a usage_reporting ping on the submission_date.
     CAST(TRUE AS INT64) AS days_seen_bits,
     -- The rightmost bit in days_active_bits represents whether the user counts as active on the submission_date.
@@ -14,6 +13,7 @@ WITH _current AS (
     {% if channel_dataset == "org_mozilla_ios_focus" %}
       app_channel,
     {% endif %}
+    *,
   FROM
     `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
   WHERE
@@ -50,7 +50,7 @@ SELECT
       _previous.days_created_profile_bits,
       _current.days_created_profile_bits
     ) AS days_created_profile_bits
-  )
+  ),
 FROM
   _current
 FULL JOIN

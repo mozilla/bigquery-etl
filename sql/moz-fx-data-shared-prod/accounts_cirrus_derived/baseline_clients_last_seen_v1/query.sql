@@ -30,6 +30,7 @@
         DATE_DIFF(submission_date, first_run_date, DAY)
       ) AS days_created_profile_bits,
       isp,
+      CAST(browser_engagement_uri_count >= 1 AS INT64) AS days_visited_1_uri_bits,
       * EXCEPT (submission_date, isp)
     FROM
       `moz-fx-data-shared-prod.accounts_cirrus_derived.baseline_clients_daily_v1`
@@ -44,7 +45,15 @@
       days_active_bits,
       days_created_profile_bits,
       isp,
-      * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits, isp),
+      days_visited_1_uri_bits,
+      * EXCEPT (
+        submission_date,
+        days_seen_bits,
+        days_active_bits,
+        days_created_profile_bits,
+        isp,
+        days_visited_1_uri_bits
+      )
     FROM
       `moz-fx-data-shared-prod.accounts_cirrus_derived.baseline_clients_last_seen_v1`
     WHERE
@@ -76,7 +85,11 @@
       `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
         _previous.days_seen_session_end_bits,
         _current.days_seen_session_end_bits
-      ) AS days_seen_session_end_bits
+      ) AS days_seen_session_end_bits,
+      `moz-fx-data-shared-prod.udf.combine_adjacent_days_28_bits`(
+        _previous.days_visited_1_uri_bits,
+        _current.days_visited_1_uri_bits
+      ) AS days_visited_1_uri_bits
     )
   FROM
     _current

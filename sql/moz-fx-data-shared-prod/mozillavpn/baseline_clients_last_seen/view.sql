@@ -14,6 +14,9 @@ SELECT
   `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(
     days_seen_session_end_bits
   ) AS days_since_seen_session_end,
+  `moz-fx-data-shared-prod`.udf.pos_of_trailing_set_bit(
+    days_visited_1_uri_bits
+  ) AS days_since_visited_1_uri,
   *
 FROM
   `moz-fx-data-shared-prod.mozillavpn_derived.baseline_clients_last_seen_v1`

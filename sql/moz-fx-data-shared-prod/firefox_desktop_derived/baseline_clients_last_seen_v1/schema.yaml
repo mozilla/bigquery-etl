@@ -181,3 +181,6 @@ fields:
     name: value
     type: RECORD
     description: Experiment Value
+- name: days_visited_1_uri_bits
+  type: INTEGER
+  description: Days Visited 1 URI Bits

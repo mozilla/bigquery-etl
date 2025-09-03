@@ -8,7 +8,7 @@ deltas:
     notification_channels:
       - slack: '#de-bigeye-triage'
     target_table_comparisons:
-      - fq_target_table_name: moz-fx-data-shared-prod.moz-fx-data-shares-prod.org_mozilla_ios_klar_derived.baseline_clients_last_seen_v1
+      - fq_target_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.org_mozilla_ios_klar_derived.baseline_clients_last_seen_v1
         delta_column_mapping:
           - source_column_name: client_id
             target_column_name: client_id

@@ -82,6 +82,8 @@ fields:
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
+  description: The version of the Glean SDK at the time the ping was collected (e.g.
+    25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -109,12 +111,32 @@ fields:
 - name: browser_engagement_uri_count
   type: INTEGER
   mode: NULLABLE
+  description: 'The number of total non-unique http(s) URIs visited, including page
+    reloads, after the session has been restored.
+
+    URIs on minimized or background tabs may also be counted. Private browsing uris
+    are included.
+
+    Migrated from Telemetry''s `browser.engagement.total_uri_count_normal_and_private_mode`. '
 - name: browser_engagement_active_ticks
   type: INTEGER
   mode: NULLABLE
+  description: 'The number of five-second intervals (''ticks'') the user was considered
+    ''active''.
+
+    ''active'' means keyboard or mouse interaction with the application.
+
+    It doesn''t take into account whether or not the window has focus or is in the
+    foreground,
+
+    only if it is receiving these interaction events.
+
+    Migrated from Telemetry''s `browser.engagement.active_ticks`.'
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client, based on legacy telemetry
+    data.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE

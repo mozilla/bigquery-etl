@@ -9,7 +9,7 @@ labels:
   owner1: mhirose
   table_type: client_level
 scheduling:
-  dag_name: bqetl_default
+  dag_name: bqetl_cohort_retention
 bigquery:
   time_partitioning:
     type: day

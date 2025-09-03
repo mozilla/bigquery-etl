@@ -1,4 +1,4 @@
-friendly_name: Funnel iOS
+friendly_name: Funnel iOS (v2)
 description: |
   Derived dataset for supporting (Apple) app store funnel analysis (iOS).
 
@@ -10,18 +10,13 @@ labels:
   incremental: true
   table_type: aggregate
   shredder_mitigation: false
-# Deschduling as the upstream Fivetran connector
-# no longer exists. New data pullled using app_store_funnel_v2.
-# scheduling:
-#   dag_name: bqetl_firefox_ios
-#   depends_on_past: false
+scheduling:
+  dag_name: bqetl_firefox_ios
+  depends_on_past: false
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: false
-  clustering:
-    fields:
-    - country
 monitoring:
-  enabled: false
+  enabled: true

@@ -324,20 +324,9 @@ DELETE_TARGETS: DeleteIndex = {
         *FOCUS_ADDITIONAL_DELETIONS,
         *LEGACY_MOBILE_SOURCES,
     ),
-    DeleteTarget(
+    client_id_target(
         table="glean_telemetry_derived.cohort_weekly_active_clients_staging_v1",
-        field=(CLIENT_ID,) * 15,
-    ): (
-        DESKTOP_GLEAN_SRC,
-        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
-        *FOCUS_ADDITIONAL_DELETIONS,
-        *LEGACY_MOBILE_SOURCES,
-    ),
+    ): DESKTOP_GLEAN_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_active_clients_v1",
         field=(CLIENT_ID,) * 15,

@@ -969,6 +969,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
@@ -993,13 +1000,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -1150,6 +1150,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
@@ -1174,13 +1181,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -1331,6 +1331,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
@@ -1355,13 +1362,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -1512,6 +1512,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
@@ -1536,13 +1543,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -1693,6 +1693,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
@@ -1717,13 +1724,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -1883,6 +1883,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
@@ -1907,13 +1914,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2073,6 +2073,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
@@ -2097,13 +2104,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1_external.set_upstream(
@@ -2249,6 +2249,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
@@ -2273,13 +2280,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1_external.set_upstream(
@@ -2323,6 +2323,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
@@ -2347,13 +2354,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2686,6 +2686,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
@@ -2710,13 +2717,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1_external.set_upstream(
@@ -2762,6 +2762,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
@@ -2786,13 +2793,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -2852,6 +2852,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
@@ -2876,13 +2883,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1_external.set_upstream(
@@ -2970,6 +2970,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
@@ -3008,13 +3015,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -3096,6 +3096,13 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_fivetran_google_ads__wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
             external_dag_id="bqetl_fivetran_google_ads",
             external_task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
@@ -3134,13 +3141,6 @@ with DAG(
             external_dag_id="bqetl_cohort_daily_churn",
             external_task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=40200)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
         )
 
         ExternalTaskMarker(

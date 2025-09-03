@@ -509,6 +509,62 @@ with DAG(
         wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
     )
 
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
     telemetry_derived__cohort_daily_statistics__v2.set_upstream(
         wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
     )

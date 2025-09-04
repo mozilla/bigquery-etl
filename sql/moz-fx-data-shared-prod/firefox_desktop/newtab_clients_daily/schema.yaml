@@ -354,3 +354,4 @@ fields:
 - name: cumulative_newtab_visit_duration
   type: INTEGER
   mode: NULLABLE
+  description: Total duration of newtab visits on this day (ms)

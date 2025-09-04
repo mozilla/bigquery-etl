@@ -158,6 +158,9 @@ fields:
 - name: days_visited_1_uri_bits
   type: INTEGER
   mode: NULLABLE
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

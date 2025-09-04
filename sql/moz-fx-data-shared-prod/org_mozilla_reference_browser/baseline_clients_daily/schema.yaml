@@ -225,3 +225,10 @@ fields:
       description: Experiment Extras
     description: Experiment Value
   description: A dictionary of active experiments.
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+  description: 'Sum of Active Hours - calculated by taking the total active ticks
+    (the # of 5 second intervals a user was active)
+
+    and converting this to active hours'

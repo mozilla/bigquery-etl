@@ -71,11 +71,17 @@ SELECT
   ANY_VALUE(profile_group_id) AS profile_group_id,
   `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(geo_subdivision)) AS geo_subdivision,
   ANY_VALUE(experiments) AS experiments,
-  ANY_VALUE(newtab_weather_enabled) AS newtab_weather_enabled,
-  ANY_VALUE(default_search_engine) AS default_search_engine,
-  ANY_VALUE(default_private_search_engine) AS default_private_search_engine,
-  ANY_VALUE(topsite_rows) AS topsite_rows,
-  ANY_VALUE(topsite_sponsored_tiles_configured) AS topsite_sponsored_tiles_configured,
+  LOGICAL_OR(newtab_weather_enabled) AS newtab_weather_enabled,
+  `moz-fx-data-shared-prod.udf.mode_last`(
+    ARRAY_AGG(default_search_engine)
+  ) AS default_search_engine,
+  `moz-fx-data-shared-prod.udf.mode_last`(
+    ARRAY_AGG(default_private_search_engine)
+  ) AS default_private_search_engine,
+  `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(topsite_rows)) AS topsite_rows,
+  `moz-fx-data-shared-prod.udf.mode_last`(
+    ARRAY_AGG(topsite_sponsored_tiles_configured)
+  ) AS topsite_sponsored_tiles_configured,
   ANY_VALUE(newtab_blocked_sponsors) AS newtab_blocked_sponsors,
   COUNT(
     DISTINCT IF(search_interaction_count > 0, newtab_visit_id, NULL)
@@ -121,6 +127,7 @@ SELECT
   SUM(other_interaction_count) AS other_interaction_count,
   SUM(other_impression_count) AS other_impression_count,
   AVG(newtab_visit_duration) AS avg_newtab_visit_duration,
+  SUM(newtab_visit_duration) AS cumulative_newtab_visit_duration,
 FROM
   `moz-fx-data-shared-prod.firefox_desktop_derived.newtab_visits_daily_v2`
 WHERE

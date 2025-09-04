@@ -184,3 +184,8 @@ fields:
 - name: days_visited_1_uri_bits
   type: INTEGER
   description: Days Visited 1 URI Bits
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+  description: |-
+    Sum of the client's active hours on the most recent date the client was last seen in the last 28 days

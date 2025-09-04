@@ -241,6 +241,7 @@ joined as (
 )
 --
 SELECT
-  *
+  j.*,
+  j.browser_engagement_active_ticks / (3600 / 5) AS active_hours_sum
 FROM
-  joined
+  joined j

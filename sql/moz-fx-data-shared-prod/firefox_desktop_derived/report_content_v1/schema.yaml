@@ -16,7 +16,7 @@ fields:
   mode: NULLABLE
   description: If click belongs in a section, the name of the section
 - name: section_position
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
   description: If click belongs in a section, the numeric position of the section
 - name: report_reason

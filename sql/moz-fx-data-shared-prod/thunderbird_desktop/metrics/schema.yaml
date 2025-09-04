@@ -11186,6 +11186,42 @@ fields:
         received, or none were extracted due to parsing errors.
 
         '
+    - name: quotamanager_initialize_temporarystorage_non_persisted_zero_usage_origins
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'Logs the number of non-persisted origins that have zero quota-charged
+        usage after full temporary storage initialization. These origins do not store
+        any real data but still contribute to internal bookkeeping by having directories
+        and files created on disk, which can unnecessarily increase initialization
+        costs. Measuring how many such origins exist in the wild helps evaluate whether
+        the temporary storage cleanup logic should be updated to clear them. This
+        in turn can guide potential optimizations and improve the performance of temporary
+        storage initialization over time, while also helping to detect unexpected
+        regressions. Note: Non-persisted origins can be cleared when they have no
+        data, while persisted origins cannot be cleared even at zero usage because
+        the persisted flag is currently stored alongside the origin data and would
+        be lost.
+
+        '
   - name: datetime
     type: RECORD
     mode: NULLABLE

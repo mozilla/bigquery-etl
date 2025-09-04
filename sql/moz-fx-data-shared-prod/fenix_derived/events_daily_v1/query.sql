@@ -143,12 +143,28 @@ joined AS (
   INNER JOIN
     `moz-fx-data-shared-prod.fenix.event_types` event_types
     USING (category, event)
+),
+grouped AS (
+  -- Workaround for this query failing with `Cannot query rows larger than 100MB limit` error on some days.
+  -- Example is https://bugzilla.mozilla.org/show_bug.cgi?id=1986081 where we didn't have any aggregated rows
+  -- larger than 100MB, but query still failed.
+  -- It seems like adding this CTE forces a simpler, more stable query plan which succeeds.
+  SELECT
+    submission_date,
+    client_id,
+    sample_id
+  FROM
+    joined
+  GROUP BY
+    submission_date,
+    client_id,
+    sample_id
 )
 SELECT
-  submission_date,
-  client_id,
-  sample_id,
-  CONCAT(STRING_AGG(index, ',' ORDER BY timestamp ASC), ',') AS events,
+  j.submission_date,
+  j.client_id,
+  j.sample_id,
+  CONCAT(STRING_AGG(j.index, ',' ORDER BY timestamp ASC), ',') AS events,
   -- client info
   mozfun.stats.mode_last(ARRAY_AGG(android_sdk_version)) AS android_sdk_version,
   mozfun.stats.mode_last(ARRAY_AGG(app_build)) AS app_build,
@@ -171,8 +187,13 @@ SELECT
   -- ping info
   mozfun.map.mode_last(ARRAY_CONCAT_AGG(experiments)) AS experiments
 FROM
-  joined
+  joined AS j
+INNER JOIN
+  grouped AS g
+  ON j.submission_date = g.submission_date
+  AND j.client_id = g.client_id
+  AND j.sample_id IS NOT DISTINCT FROM g.sample_id
 GROUP BY
-  submission_date,
-  client_id,
-  sample_id
+  j.submission_date,
+  j.client_id,
+  j.sample_id

@@ -12245,6 +12245,26 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
+    - name: quotamanager_initialize_temporarystorage_non_persisted_zero_usage_origins
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
   - name: timespan
     type: RECORD
     mode: NULLABLE

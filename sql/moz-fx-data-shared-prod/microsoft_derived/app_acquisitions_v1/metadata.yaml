@@ -2,6 +2,7 @@ friendly_name: App Acquisitions
 description: |-
   This table represents acquisition data downloaded from the Microsoft Store for Firefox, FX Beta and FX Nightly
   The link for this data is here: https://manage.devcenter.microsoft.com/v1.0/my/analytics/appacquisitions?
+  Note: this DAG often fails on the first or second run
 owners:
 - mhirose@mozilla.com
 labels:
@@ -10,6 +11,11 @@ labels:
   table_type: aggregate
 scheduling:
   arguments: ["--date", "{{ ds }}"]
+tags:
+- impact/tier_3
+- triage/no_triage
+monitoring:
+  enabled: true
 bigquery:
   time_partitioning:
     type: day

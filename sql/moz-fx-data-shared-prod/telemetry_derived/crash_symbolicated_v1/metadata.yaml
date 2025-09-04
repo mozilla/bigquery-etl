@@ -18,4 +18,8 @@ bigquery:
     field: submission_timestamp
     require_partition_filter: true
     expiration_days: null
+  range_partitioning: null
+  clustering: null
+references: {}
 deprecated: true
+require_column_descriptions: false

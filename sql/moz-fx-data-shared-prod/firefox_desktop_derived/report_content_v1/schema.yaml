@@ -35,4 +35,3 @@ fields:
   type: STRING
   mode: NULLABLE
   description: URL of the recommendation.
-  

@@ -1,7 +1,6 @@
 friendly_name: Reported Content
-description:|-
+description: |-
   Reported organic content
-  
   For each report, we collect
     submission date
     card type
@@ -30,9 +29,5 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   range_partitioning: null
-  clustering:
-    fields:
-    - channel
-    - country
 references: {}
-require_column_descriptions: false
+require_column_descriptions: true

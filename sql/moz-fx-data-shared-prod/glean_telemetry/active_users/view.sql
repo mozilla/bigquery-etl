@@ -18,6 +18,8 @@ SELECT
   FALSE AS is_mobile
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
+WHERE
+  client_id <> '00000000-0000-0000-0000-000000000000' --exclude nil client ID
 UNION ALL
 SELECT
   submission_date,
@@ -36,3 +38,5 @@ SELECT
   is_mobile
 FROM
   `moz-fx-data-shared-prod.telemetry.mobile_active_users`
+WHERE
+  client_id <> '00000000-0000-0000-0000-000000000000' --exclude nil client ID

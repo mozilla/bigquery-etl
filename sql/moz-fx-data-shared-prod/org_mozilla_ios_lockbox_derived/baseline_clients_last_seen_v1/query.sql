@@ -31,7 +31,8 @@
       ) AS days_created_profile_bits,
       isp,
       CAST(browser_engagement_uri_count >= 1 AS INT64) AS days_visited_1_uri_bits,
-      * EXCEPT (submission_date, isp)
+      active_hours_sum,
+      * EXCEPT (submission_date, isp, active_hours_sum)
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.baseline_clients_daily_v1`
     WHERE
@@ -46,13 +47,15 @@
       days_created_profile_bits,
       isp,
       days_visited_1_uri_bits,
+      active_hours_sum,
       * EXCEPT (
         submission_date,
         days_seen_bits,
         days_active_bits,
         days_created_profile_bits,
         isp,
-        days_visited_1_uri_bits
+        days_visited_1_uri_bits,
+        active_hours_sum
       )
     FROM
       `moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.baseline_clients_last_seen_v1`

@@ -351,3 +351,6 @@ fields:
   type: FLOAT
   mode: NULLABLE
   description: Average duration of newtab visit (ms)
+- name: cumulative_newtab_visit_duration
+  type: INTEGER
+  mode: NULLABLE

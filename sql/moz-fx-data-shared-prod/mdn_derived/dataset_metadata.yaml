@@ -1,0 +1,9 @@
+friendly_name: MDN
+description: |-
+  Unified views of multiple MDN datasets.
+owners:
+- caugner@mozilla.com
+labels:
+  incremental: false
+workgroup_access:
+- role: roles/bigquery.dataViewer

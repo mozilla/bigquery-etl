@@ -1,0 +1,5 @@
+friendly_name: MDN Glean Events
+description: |-
+  Union of `mdn_yari.events_stream` and `mdn_fred.events_stream`.
+owners:
+  - caugner@mozilla.com

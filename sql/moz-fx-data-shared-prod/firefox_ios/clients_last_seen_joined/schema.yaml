@@ -181,3 +181,6 @@ fields:
 - name: days_since_visited_1_uri
   type: INTEGER
   mode: NULLABLE
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE

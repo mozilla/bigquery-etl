@@ -1,0 +1,26 @@
+friendly_name: MDN Legacy Action pings
+description: |-
+  This view unions Yari action pings (`mdn_yari.action`) with Fred element_click
+  events (`mdn_fred.events_stream`), reshaped to match the Yari ping schema.
+
+  Yari data mainly covers the MDN frontend before Fred's launch on 2025-08-19,
+  but it also continues to cover MDN Plus usage after that date.
+
+  The goal of this view is to ease migration of existing queries against `mdn_yari.action`.
+
+  For queries that do not require data before 2025-08-19 or MDN Plus data,
+  prefer using `mdn_fred.events_stream` directly.
+owners:
+- caugner@mozilla.com
+labels:
+  owner1: caugner
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mdn_fred.events_stream
+  - moz-fx-data-shared-prod.mdn_yari.action
+require_column_descriptions: false

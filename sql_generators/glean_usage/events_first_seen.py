@@ -1,17 +1,18 @@
 """Generate Events First Seen table."""
 
 import os
+from collections import namedtuple
 from enum import Enum
 from pathlib import Path
 
-from jinja2 import Environment, FileSystemLoader
+from bigquery_etl.config import ConfigLoader
+from sql_generators.glean_usage.common import (
+    GleanTable,
+    get_table_dir,
+    render,
+    write_sql,
+)
 
-from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.util.common import render, write_sql
-from sql_generators.glean_usage.common import GleanTable
-
-project_id = "moz-fx-data-shared-prod"
-BASE_TABLE = "events_stream_v1"
 TARGET_TABLE = "events_first_seen"
 VERSION = "v1"
 PREFIX = "events_first_seen"
@@ -27,87 +28,118 @@ class Browsers(Enum):
 class EventsFirstSeenTable(GleanTable):
     """Represents generated events_first_seen table."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize events_first_seen table."""
-        GleanTable.__init__(self)
-        self.target_table_id = f"{TARGET_TABLE}_{VERSION}"
+        self.per_app_id_enabled = False
+        self.per_app_enabled = False
+        self.across_apps_enabled = True
         self.prefix = PREFIX
+        self.target_table_id = f"{TARGET_TABLE}_{VERSION}"
         self.custom_render_kwargs = {}
+        self.base_table_name = "events_stream_v1"
 
     def generate_across_apps(
         self, project_id, apps, output_dir=None, use_cloud_function=True, parallelism=8
     ):
-        """Generate events_first_seen table.
+        """Generate a query across all apps."""
+        if not self.across_apps_enabled:
+            return
 
-        The parent folders will be created if not existing and existing files will be overwritten.
-        """
-        env = Environment(loader=FileSystemLoader(str(PATH / "templates")))
-        output_dir = Path(output_dir)
+        # output_dir = Path(output_dir)
         browser = Browsers["firefox_desktop"]
 
-        # firefox_desktop_derived/events_first_seen_v1/query.sql
-        query_template = env.get_template(f"{TARGET_TABLE}_{VERSION}.query.sql")
-
-        query_sql = reformat(
-            query_template.render(
-                project_id=project_id,
-                app_name=browser.name,
-                base_table=BASE_TABLE,
-                events_first_seen_table=f"{TARGET_TABLE}_{VERSION}",
-            )
+        # Include only selected apps to avoid too complex query
+        include_apps = ConfigLoader.get(
+            "generate", "glean_usage", "events_first_seen", "include_apps", fallback=[]
         )
 
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{project_id}.{browser.name}_derived.{TARGET_TABLE}_{VERSION}",
-            basename="query.sql",
-            sql=query_sql,
-            skip_existing=False,
+        apps = [app[0] for app in apps if app[0]["app_name"] in include_apps]
+
+        render_kwargs = dict(
+            project_id=project_id,
+            output_dir=Path(output_dir),
+            base_table=self.base_table_name,
+            app_name=browser.name,
+            events_first_seen_table=f"{TARGET_TABLE}_{VERSION}",
+            events_first_seen_view=f"{TARGET_TABLE}",
+            apps=apps,
+        )
+        render_kwargs.update(self.custom_render_kwargs)
+
+        skip_existing_artifacts = self.skip_existing(output_dir, project_id)
+
+        Artifact = namedtuple("Artifact", "table_id basename sql")
+
+        # firefox_desktop_derived/events_first_seen_v1/query.sql
+        query_filename = f"{TARGET_TABLE}_{VERSION}.query.sql"
+
+        query_sql = render(
+            query_filename, template_folder=PATH / "templates", **render_kwargs
         )
 
         # firefox_desktop_derived/events_first_seen_v1/metadata.yaml
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{project_id}.{browser.name}_derived.{TARGET_TABLE}_v1",
-            basename="metadata.yaml",
-            sql=render(
-                sql_filename=f"{TARGET_TABLE}_{VERSION}.metadata.yaml",
-                template_folder=PATH / "templates",
-                output_dir=output_dir,
-                app_name=browser.name,
-                events_first_seen_table=f"{TARGET_TABLE}_{VERSION}",
-                format=False,
-            ),
-            skip_existing=False,
+        metadatav1_filename = f"{TARGET_TABLE}_{VERSION}.metadata.yaml"
+
+        metadatav1 = render(
+            sql_filename=metadatav1_filename,
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+
+        # firefox_desktop_derived/events_first_seen_v1/schema.yaml
+        schema_filename = f"{TARGET_TABLE}_{VERSION}.schema.yaml"
+
+        schema = render(
+            sql_filename=schema_filename,
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
         )
 
         # firefox_desktop/events_first_seen/view.sql
-        view_template = env.get_template(f"{TARGET_TABLE}.view.sql")
+        view_filename = f"{TARGET_TABLE}.view.sql"
 
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{project_id}.{browser.name}.{TARGET_TABLE}",
-            basename="view.sql",
-            sql=reformat(
-                view_template.render(
-                    project_id=project_id,
-                    app_name=browser.name,
-                    events_first_seen_view=TARGET_TABLE,
-                    events_first_seen_table=f"{TARGET_TABLE}_{VERSION}",
+        view_sql = render(
+            sql_filename=view_filename,
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+
+        # firefox_desktop_derived/events_first_seen_v1/metadata.yaml
+        metadata_view_filename = f"{TARGET_TABLE}.metadata.yaml"
+
+        metadata_view = render(
+            sql_filename=metadata_view_filename,
+            template_folder=PATH / "templates",
+            format=False,
+            **render_kwargs,
+        )
+
+        table = f"{project_id}.{browser.name}_derived.{TARGET_TABLE}_{VERSION}"
+
+        view = f"{project_id}.{browser.name}.{TARGET_TABLE}"
+
+        if output_dir:
+            artifacts = [
+                Artifact(table, "metadata.yaml", metadatav1),
+                Artifact(table, "query.sql", query_sql),
+                Artifact(table, "schema.yaml", schema),
+                Artifact(view, "view.sql", view_sql),
+                Artifact(view, "metadata.yaml", metadata_view),
+            ]
+
+            for artifact in artifacts:
+                destination = (
+                    get_table_dir(output_dir, artifact.table_id) / artifact.basename
                 )
-            ),
-            skip_existing=False,
-        )
+                skip_existing = destination in skip_existing_artifacts
 
-        # firefox_desktop/events_first_seen/metadata.yaml
-        write_sql(
-            output_dir=output_dir,
-            full_table_id=f"{project_id}.{browser.name}.{TARGET_TABLE}",
-            basename="metadata.yaml",
-            sql=render(
-                sql_filename=f"{TARGET_TABLE}.metadata.yaml",
-                template_folder=PATH / "templates",
-                format=False,
-            ),
-            skip_existing=False,
-        )
+                write_sql(
+                    output_dir,
+                    artifact.table_id,
+                    artifact.basename,
+                    artifact.sql,
+                    skip_existing=skip_existing,
+                )

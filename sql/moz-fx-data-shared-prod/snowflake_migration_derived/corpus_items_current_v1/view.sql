@@ -5,7 +5,7 @@ WITH corpus_item_id_row_nums AS (
   SELECT
     approved_corpus_item_external_id AS corpus_item_id,
     title,
-    url,
+    url AS recommendation_url,
     authors,
     publisher,
     reviewed_corpus_item_updated_at AS corpus_item_updated_at,

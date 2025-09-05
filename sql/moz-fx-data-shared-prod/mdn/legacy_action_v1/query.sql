@@ -40,7 +40,21 @@ CREATE OR REPLACE VIEW
               CASE
                 WHEN JSON_VALUE(event_extra.label) IS NOT NULL
                   AND JSON_VALUE(event_extra.label) != ''
+                  AND JSON_VALUE(event_extra.type) IS NOT NULL
+                  AND JSON_VALUE(event_extra.type) != ''
+                  THEN CONCAT(
+                      JSON_VALUE(event_extra.id),
+                      ': ',
+                      JSON_VALUE(event_extra.type),
+                      ' -> ',
+                      JSON_VALUE(event_extra.label)
+                    )
+                WHEN JSON_VALUE(event_extra.label) IS NOT NULL
+                  AND JSON_VALUE(event_extra.label) != ''
                   THEN CONCAT(JSON_VALUE(event_extra.id), ': ', JSON_VALUE(event_extra.label))
+                WHEN JSON_VALUE(event_extra.type) IS NOT NULL
+                  AND JSON_VALUE(event_extra.type) != ''
+                  THEN CONCAT(JSON_VALUE(event_extra.id), ': ', JSON_VALUE(event_extra.type))
                 ELSE JSON_VALUE(event_extra.id)
               END AS value
             ),

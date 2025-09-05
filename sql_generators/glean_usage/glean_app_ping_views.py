@@ -19,7 +19,7 @@ from pathos.multiprocessing import ThreadingPool
 
 from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.schema import Schema
+from bigquery_etl.schema import Schema, SCHEMA_FILE
 from bigquery_etl.util.common import get_table_dir, write_sql
 from sql_generators.glean_usage.common import GleanTable
 
@@ -84,7 +84,9 @@ class GleanAppPingViews(GleanTable):
         ):
             return
 
-        ignored_pings = ConfigLoader.get("generate", "glean_usage", "app_ping_views", "skip", fallback=[])
+        ignored_pings = ConfigLoader.get(
+            "generate", "glean_usage", "app_ping_views", "skip", fallback=[]
+        )
 
         env = Environment(loader=FileSystemLoader(PATH / "templates"))
         view_template = env.get_template("app_ping_view.view.sql")
@@ -114,20 +116,51 @@ class GleanAppPingViews(GleanTable):
                 if channel_dataset_view in ignored_pings:
                     continue
 
-                schema = Schema.for_table(
-                    "moz-fx-data-shared-prod",
-                    channel_dataset,
-                    view_name,
-                    partitioned_by="submission_timestamp",
-                    use_cloud_function=use_cloud_function,
-                    id_token=id_token,
+                sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                existing_schema_path = (
+                    sql_dir
+                    / "moz-fx-data-shared-prod"
+                    / channel_dataset
+                    / view_name
+                    / SCHEMA_FILE
                 )
+
+                schema = None
+                if existing_schema_path.exists():
+                    schema = Schema.from_schema_file(existing_schema_path)
+
+                if (
+                    schema is None
+                    or "fields" not in schema.schema
+                    or schema.schema["fields"] == []
+                ):
+                    # fetch schema from BQ if not present in the repo, or empty
+                    for attempt in range(3):
+                        # try 3 times to account for transient errors
+                        try:
+                            schema = Schema.for_table(
+                                "moz-fx-data-shared-prod",
+                                channel_dataset,
+                                view_name,
+                                partitioned_by="submission_timestamp",
+                                use_cloud_function=use_cloud_function,
+                                id_token=id_token,
+                            )
+                            if schema.schema["fields"] != []:
+                                break
+                            print(
+                                f"Attempt {attempt + 1}: Empty schema for {channel_dataset_view}"
+                            )
+                        except Exception as e:
+                            print(
+                                f"Attempt {attempt + 1}: Failed to get schema for {channel_dataset_view}: {e}"
+                            )
+
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
                 if schema.schema["fields"] == []:
                     # check for empty schemas (e.g. restricted ones) and skip for now
-                    print(f"Cannot get schema for `{channel_dataset_view}`; Skipping")
-                    continue
+                    raise Exception(f"Cannot get schema for `{channel_dataset_view}`")
 
                 try:
                     unioned_schema.merge(

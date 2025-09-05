@@ -14,7 +14,10 @@ combined AS (
     metrics.uuid.quick_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
     'desktop' AS form_factor,
-    normalized_country_code AS country,
+    -- As of Firefox 141, the quick_suggest ping is sent via OHTTP and now
+    -- receives geo information from the client rather than from Glean ingestion's
+    -- IP geolocation. We no longer send subdivision, only country.
+    COALESCE(normalized_country_code, metrics.string.quick_suggest_country) AS country,
     LOWER(metrics.string.quick_suggest_advertiser) AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     client_info.app_channel AS release_channel,
@@ -102,7 +105,8 @@ combined AS (
     metrics.uuid.fx_suggest_context_id AS context_id,
     DATE(submission_timestamp) AS submission_date,
     'phone' AS form_factor,
-    normalized_country_code AS country,
+    -- With shift to OHTTP, we expect to stop receiving normalized_country_code soon
+    COALESCE(normalized_country_code, metrics.string.fx_suggest_country) AS country,
     metrics.string.fx_suggest_advertiser AS advertiser,
     SPLIT(metadata.user_agent.os, ' ')[SAFE_OFFSET(0)] AS normalized_os,
     client_info.app_channel AS release_channel,

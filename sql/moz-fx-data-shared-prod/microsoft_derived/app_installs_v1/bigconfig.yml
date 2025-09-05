@@ -1,0 +1,19 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.microsoft_derived.app_installs_v1.date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.microsoft_derived.app_installs_v1.successful_install_count
+    metrics:
+    - saved_metric_id: is_not_null
+      rct_overrides:
+      - date
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.microsoft_derived.app_installs_v1.*
+    metrics:
+    - saved_metric_id: volume
+    - saved_metric_id: freshness

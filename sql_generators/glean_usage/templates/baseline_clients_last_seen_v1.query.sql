@@ -46,9 +46,12 @@ WITH _current AS (
     CAST(browser_engagement_active_ticks > 0 AS INT64) AS days_desktop_active_bits,
     {% endif %}
     isp,
+    CAST( browser_engagement_uri_count >= 1 AS INT64) AS days_visited_1_uri_bits,
+    active_hours_sum,
     * EXCEPT(
         submission_date, 
-        isp
+        isp,
+        active_hours_sum
       )
   FROM
     `{{ daily_table }}`
@@ -66,6 +69,8 @@ _previous AS (
     {% endif %}
     days_created_profile_bits,
     isp,
+    days_visited_1_uri_bits,
+    active_hours_sum,
     * EXCEPT (
         submission_date,
         days_seen_bits,
@@ -74,8 +79,10 @@ _previous AS (
         days_desktop_active_bits,
         {% endif %}
         days_created_profile_bits,
-        isp
-      ),
+        isp,
+        days_visited_1_uri_bits,
+        active_hours_sum
+      )
   FROM
     `{{ last_seen_table }}`
   WHERE

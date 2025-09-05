@@ -70,8 +70,11 @@ WITH base AS (
     CAST(NULL AS STRING) AS attribution_variation,
     CAST(NULL AS STRING) AS attribution_ua,
     {% endif %}
+    ping_info.experiments AS experiments
   FROM
     `{{ baseline_table }}`
+  WHERE 
+    client_info.client_id IS NOT NULL
   -- Baseline pings with 'foreground' reason were first introduced in early April 2020;
   -- we initially excluded them from baseline_clients_daily so that we could measure
   -- effects on KPIs. On 2020-08-25, we removed the filter on reason and backfilled. See:
@@ -179,6 +182,7 @@ windowed AS (
     udf.mode_last(ARRAY_AGG(attribution_experiment) OVER w1) AS attribution_experiment,
     udf.mode_last(ARRAY_AGG(attribution_variation) OVER w1) AS attribution_variation,
     udf.mode_last(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
+    LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments
   FROM
     with_date_offsets
   LEFT JOIN
@@ -237,6 +241,7 @@ joined as (
 )
 --
 SELECT
-  *
+  j.*,
+  j.browser_engagement_active_ticks / (3600 / 5) AS active_hours_sum
 FROM
-  joined
+  joined j

@@ -2,15 +2,15 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: Normalized Channel
+  description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE

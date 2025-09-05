@@ -8,6 +8,7 @@ default:
   - _external
   - _bi
   - _restricted
+  - _syndicate
   - glam_etl
   user_facing_project: mozdata
   backfill_project: moz-fx-data-backfill
@@ -44,6 +45,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/bigquery_usage_v2/query.sql
   - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
   - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
+  - sql/moz-fx-data-shared-prod/app_store_v2_syndicate/apple_store_territory_report/view.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/nonprod_emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
@@ -164,6 +166,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/fenix_derived/ltv_state_values_v2/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/glean_server_knob_experiments_v1/query.sql
   - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v1/query.sql
+  - sql/moz-fx-data-shared-prod/stub_attribution_service_derived/dl_token_ga_attribution_lookup_v2/query.sql
   - sql/moz-fx-data-shared-prod/mozilla_org_derived/gclid_conversions_v2/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
   - sql/moz-fx-data-shared-prod/search_derived/mobile_search_aggregates_v1/query.sql
@@ -174,6 +177,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
   - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
   - sql/moz-fx-data-shared-prod/zoom/**/*.sql
+  - sql/moz-fx-data-shared-prod/taskclusteretl/person_mozilla_com/view.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF

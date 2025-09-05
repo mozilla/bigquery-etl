@@ -1,0 +1,15 @@
+type: BIGCONFIG_FILE
+table_deployments:
+- collection:
+    name: 'Subscription Platform'
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+    - email: 'phlee@mozilla.com, srose@mozilla.com'
+  deployments:
+  - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.subscription_platform_derived.stripe_logical_subscriptions_attribution_v2
+    columns:
+    - column_name: subscription_id
+      metrics:
+      - saved_metric_id: is_unique
+        rct_overrides:
+        - subscription_started_at

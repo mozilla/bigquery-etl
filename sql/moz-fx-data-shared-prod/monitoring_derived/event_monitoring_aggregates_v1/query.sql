@@ -24,7 +24,8 @@ WITH base_firefox_desktop_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_newtab_v1 AS (
   SELECT
@@ -51,7 +52,8 @@ base_firefox_desktop_newtab_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_profiles_v1 AS (
   SELECT
@@ -78,7 +80,8 @@ base_firefox_desktop_profiles_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_prototype_no_code_events_v1 AS (
   SELECT
@@ -105,7 +108,8 @@ base_firefox_desktop_prototype_no_code_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_sync_v1 AS (
   SELECT
@@ -132,7 +136,8 @@ base_firefox_desktop_sync_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_urlbar_keyword_exposure_v1 AS (
   SELECT
@@ -159,7 +164,8 @@ base_firefox_desktop_urlbar_keyword_exposure_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_urlbar_potential_exposure_v1 AS (
   SELECT
@@ -186,7 +192,8 @@ base_firefox_desktop_urlbar_potential_exposure_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 firefox_desktop_aggregated AS (
   SELECT
@@ -280,7 +287,8 @@ base_firefox_crashreporter_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 firefox_crashreporter_aggregated AS (
   SELECT
@@ -339,7 +347,8 @@ base_firefox_desktop_background_update_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 firefox_desktop_background_update_aggregated AS (
   SELECT
@@ -398,7 +407,8 @@ base_firefox_desktop_background_defaultagent_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 firefox_desktop_background_defaultagent_aggregated AS (
   SELECT
@@ -457,7 +467,8 @@ base_pine_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 pine_aggregated AS (
   SELECT
@@ -516,7 +527,8 @@ base_org_mozilla_firefox_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_home_v1 AS (
   SELECT
@@ -543,7 +555,8 @@ base_org_mozilla_firefox_home_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_metrics_v1 AS (
   SELECT
@@ -570,7 +583,8 @@ base_org_mozilla_firefox_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_firefox_aggregated AS (
   SELECT
@@ -644,7 +658,8 @@ base_org_mozilla_firefox_beta_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_beta_home_v1 AS (
   SELECT
@@ -671,7 +686,8 @@ base_org_mozilla_firefox_beta_home_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_beta_metrics_v1 AS (
   SELECT
@@ -698,7 +714,8 @@ base_org_mozilla_firefox_beta_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_firefox_beta_aggregated AS (
   SELECT
@@ -772,7 +789,8 @@ base_org_mozilla_fenix_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_fenix_home_v1 AS (
   SELECT
@@ -799,7 +817,8 @@ base_org_mozilla_fenix_home_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_fenix_metrics_v1 AS (
   SELECT
@@ -826,7 +845,8 @@ base_org_mozilla_fenix_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_fenix_aggregated AS (
   SELECT
@@ -900,7 +920,8 @@ base_org_mozilla_fenix_nightly_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_fenix_nightly_home_v1 AS (
   SELECT
@@ -927,7 +948,8 @@ base_org_mozilla_fenix_nightly_home_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_fenix_nightly_metrics_v1 AS (
   SELECT
@@ -954,7 +976,8 @@ base_org_mozilla_fenix_nightly_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_fenix_nightly_aggregated AS (
   SELECT
@@ -1028,7 +1051,8 @@ base_org_mozilla_fennec_aurora_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_fennec_aurora_home_v1 AS (
   SELECT
@@ -1055,7 +1079,8 @@ base_org_mozilla_fennec_aurora_home_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_fennec_aurora_metrics_v1 AS (
   SELECT
@@ -1082,7 +1107,8 @@ base_org_mozilla_fennec_aurora_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_fennec_aurora_aggregated AS (
   SELECT
@@ -1156,7 +1182,8 @@ base_org_mozilla_ios_firefox_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefox_first_session_v1 AS (
   SELECT
@@ -1183,7 +1210,8 @@ base_org_mozilla_ios_firefox_first_session_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefox_metrics_v1 AS (
   SELECT
@@ -1210,7 +1238,8 @@ base_org_mozilla_ios_firefox_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_firefox_aggregated AS (
   SELECT
@@ -1284,7 +1313,8 @@ base_org_mozilla_ios_firefoxbeta_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
   SELECT
@@ -1311,7 +1341,8 @@ base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxbeta_metrics_v1 AS (
   SELECT
@@ -1338,7 +1369,8 @@ base_org_mozilla_ios_firefoxbeta_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_firefoxbeta_aggregated AS (
   SELECT
@@ -1412,7 +1444,8 @@ base_org_mozilla_ios_fennec_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_fennec_first_session_v1 AS (
   SELECT
@@ -1439,7 +1472,8 @@ base_org_mozilla_ios_fennec_first_session_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_fennec_metrics_v1 AS (
   SELECT
@@ -1466,7 +1500,8 @@ base_org_mozilla_ios_fennec_metrics_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_fennec_aggregated AS (
   SELECT
@@ -1540,7 +1575,8 @@ base_org_mozilla_reference_browser_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_reference_browser_aggregated AS (
   SELECT
@@ -1599,7 +1635,8 @@ base_org_mozilla_tv_firefox_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_tv_firefox_aggregated AS (
   SELECT
@@ -1658,7 +1695,8 @@ base_org_mozilla_vrbrowser_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_vrbrowser_aggregated AS (
   SELECT
@@ -1717,7 +1755,8 @@ base_mozilla_lockbox_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mozilla_lockbox_aggregated AS (
   SELECT
@@ -1776,7 +1815,8 @@ base_org_mozilla_ios_lockbox_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_lockbox_aggregated AS (
   SELECT
@@ -1835,7 +1875,8 @@ base_org_mozilla_mozregression_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_mozregression_aggregated AS (
   SELECT
@@ -1894,7 +1935,8 @@ base_burnham_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 burnham_aggregated AS (
   SELECT
@@ -1953,7 +1995,8 @@ base_mozphab_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mozphab_aggregated AS (
   SELECT
@@ -2012,7 +2055,8 @@ base_org_mozilla_connect_firefox_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_connect_firefox_aggregated AS (
   SELECT
@@ -2071,7 +2115,8 @@ base_org_mozilla_firefoxreality_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_firefoxreality_aggregated AS (
   SELECT
@@ -2130,7 +2175,8 @@ base_mozilla_mach_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mozilla_mach_aggregated AS (
   SELECT
@@ -2189,7 +2235,8 @@ base_org_mozilla_ios_focus_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_focus_aggregated AS (
   SELECT
@@ -2248,7 +2295,8 @@ base_org_mozilla_ios_klar_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_klar_aggregated AS (
   SELECT
@@ -2307,7 +2355,8 @@ base_org_mozilla_focus_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_focus_aggregated AS (
   SELECT
@@ -2366,7 +2415,8 @@ base_org_mozilla_focus_beta_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_focus_beta_aggregated AS (
   SELECT
@@ -2425,7 +2475,8 @@ base_org_mozilla_focus_nightly_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_focus_nightly_aggregated AS (
   SELECT
@@ -2484,7 +2535,8 @@ base_org_mozilla_klar_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_klar_aggregated AS (
   SELECT
@@ -2543,7 +2595,8 @@ base_org_mozilla_bergamot_custom_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_bergamot_events_v1 AS (
   SELECT
@@ -2570,7 +2623,8 @@ base_org_mozilla_bergamot_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_bergamot_aggregated AS (
   SELECT
@@ -2639,7 +2693,8 @@ base_firefox_translations_custom_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_translations_events_v1 AS (
   SELECT
@@ -2666,7 +2721,8 @@ base_firefox_translations_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 firefox_translations_aggregated AS (
   SELECT
@@ -2735,7 +2791,8 @@ base_mozillavpn_daemonsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_mozillavpn_events_v1 AS (
   SELECT
@@ -2762,7 +2819,8 @@ base_mozillavpn_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_mozillavpn_extensionsession_v1 AS (
   SELECT
@@ -2789,7 +2847,8 @@ base_mozillavpn_extensionsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_mozillavpn_main_v1 AS (
   SELECT
@@ -2816,7 +2875,8 @@ base_mozillavpn_main_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_mozillavpn_vpnsession_v1 AS (
   SELECT
@@ -2843,7 +2903,8 @@ base_mozillavpn_vpnsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mozillavpn_aggregated AS (
   SELECT
@@ -2927,7 +2988,8 @@ base_org_mozilla_firefox_vpn_daemonsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_vpn_events_v1 AS (
   SELECT
@@ -2954,7 +3016,8 @@ base_org_mozilla_firefox_vpn_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
   SELECT
@@ -2981,7 +3044,8 @@ base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_vpn_main_v1 AS (
   SELECT
@@ -3008,7 +3072,8 @@ base_org_mozilla_firefox_vpn_main_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_firefox_vpn_vpnsession_v1 AS (
   SELECT
@@ -3035,7 +3100,8 @@ base_org_mozilla_firefox_vpn_vpnsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_firefox_vpn_aggregated AS (
   SELECT
@@ -3119,7 +3185,8 @@ base_org_mozilla_ios_firefoxvpn_daemonsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_events_v1 AS (
   SELECT
@@ -3146,7 +3213,8 @@ base_org_mozilla_ios_firefoxvpn_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
   SELECT
@@ -3173,7 +3241,8 @@ base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_main_v1 AS (
   SELECT
@@ -3200,7 +3269,8 @@ base_org_mozilla_ios_firefoxvpn_main_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_vpnsession_v1 AS (
   SELECT
@@ -3227,7 +3297,8 @@ base_org_mozilla_ios_firefoxvpn_vpnsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_firefoxvpn_aggregated AS (
   SELECT
@@ -3311,7 +3382,8 @@ base_org_mozilla_ios_firefoxvpn_network_extension_daemonsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
   SELECT
@@ -3338,7 +3410,8 @@ base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
   SELECT
@@ -3365,7 +3438,8 @@ base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
   SELECT
@@ -3392,7 +3466,8 @@ base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_vpnsession_v1 AS (
   SELECT
@@ -3419,7 +3494,8 @@ base_org_mozilla_ios_firefoxvpn_network_extension_vpnsession_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 org_mozilla_ios_firefoxvpn_network_extension_aggregated AS (
   SELECT
@@ -3503,7 +3579,8 @@ base_mozillavpn_backend_cirrus_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mozillavpn_backend_cirrus_aggregated AS (
   SELECT
@@ -3562,7 +3639,8 @@ base_glean_dictionary_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 glean_dictionary_aggregated AS (
   SELECT
@@ -3621,7 +3699,8 @@ base_mdn_fred_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mdn_fred_aggregated AS (
   SELECT
@@ -3680,7 +3759,8 @@ base_mdn_yari_action_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_mdn_yari_events_v1 AS (
   SELECT
@@ -3707,7 +3787,8 @@ base_mdn_yari_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 mdn_yari_aggregated AS (
   SELECT
@@ -3766,7 +3847,8 @@ base_bedrock_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_bedrock_interaction_v1 AS (
   SELECT
@@ -3793,7 +3875,8 @@ base_bedrock_interaction_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_bedrock_non_interaction_v1 AS (
   SELECT
@@ -3820,7 +3903,8 @@ base_bedrock_non_interaction_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 bedrock_aggregated AS (
   SELECT
@@ -3894,7 +3978,8 @@ base_viu_politica_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_viu_politica_main_events_v1 AS (
   SELECT
@@ -3921,7 +4006,8 @@ base_viu_politica_main_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_viu_politica_video_index_v1 AS (
   SELECT
@@ -3948,7 +4034,8 @@ base_viu_politica_video_index_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 viu_politica_aggregated AS (
   SELECT
@@ -4022,7 +4109,8 @@ base_treeherder_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 treeherder_aggregated AS (
   SELECT
@@ -4081,7 +4169,8 @@ base_firefox_desktop_background_tasks_background_tasks_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 base_firefox_desktop_background_tasks_events_v1 AS (
   SELECT
@@ -4108,7 +4197,8 @@ base_firefox_desktop_background_tasks_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 firefox_desktop_background_tasks_aggregated AS (
   SELECT
@@ -4177,7 +4267,8 @@ base_accounts_frontend_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 accounts_frontend_aggregated AS (
   SELECT
@@ -4236,7 +4327,8 @@ base_accounts_backend_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 accounts_backend_aggregated AS (
   SELECT
@@ -4295,7 +4387,8 @@ base_accounts_cirrus_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 accounts_cirrus_aggregated AS (
   SELECT
@@ -4354,7 +4447,8 @@ base_monitor_cirrus_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 monitor_cirrus_aggregated AS (
   SELECT
@@ -4413,7 +4507,8 @@ base_debug_ping_view_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 debug_ping_view_aggregated AS (
   SELECT
@@ -4472,7 +4567,8 @@ base_monitor_frontend_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 monitor_frontend_aggregated AS (
   SELECT
@@ -4531,7 +4627,8 @@ base_monitor_backend_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 monitor_backend_aggregated AS (
   SELECT
@@ -4590,7 +4687,8 @@ base_relay_backend_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 relay_backend_aggregated AS (
   SELECT
@@ -4649,7 +4747,8 @@ base_gleanjs_docs_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 gleanjs_docs_aggregated AS (
   SELECT
@@ -4708,7 +4807,8 @@ base_thunderbird_desktop_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 thunderbird_desktop_aggregated AS (
   SELECT
@@ -4767,7 +4867,8 @@ base_net_thunderbird_android_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 net_thunderbird_android_aggregated AS (
   SELECT
@@ -4826,7 +4927,8 @@ base_net_thunderbird_android_beta_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 net_thunderbird_android_beta_aggregated AS (
   SELECT
@@ -4885,7 +4987,8 @@ base_net_thunderbird_android_daily_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 net_thunderbird_android_daily_aggregated AS (
   SELECT
@@ -4944,7 +5047,8 @@ base_syncstorage_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 syncstorage_aggregated AS (
   SELECT
@@ -5003,7 +5107,8 @@ base_glam_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 glam_aggregated AS (
   SELECT
@@ -5062,7 +5167,8 @@ base_subscription_platform_backend_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 subscription_platform_backend_aggregated AS (
   SELECT
@@ -5121,7 +5227,8 @@ base_experimenter_cirrus_events_v1 AS (
         -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-    UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
 experimenter_cirrus_aggregated AS (
   SELECT

@@ -169,6 +169,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "firefox_desktop_derived__newtab_component_content__v1_external",
+    ) as firefox_desktop_derived__newtab_component_content__v1_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_firefox_desktop_derived__newtab_component_content__v1",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_firefox_desktop_derived__newtab_component_content__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=72000)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__newtab_component_content__v1_external.set_upstream(
+            firefox_desktop_derived__newtab_component_content__v1
+        )
+
     firefox_desktop_derived__newtab_items_daily__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__newtab_items_daily__v1",
         destination_table="newtab_items_daily_v1",
@@ -198,6 +212,20 @@ with DAG(
         date_partition_parameter="submission_date",
         depends_on_past=False,
     )
+
+    with TaskGroup(
+        "firefox_desktop_derived__newtab_visits_daily__v2_external",
+    ) as firefox_desktop_derived__newtab_visits_daily__v2_external:
+        ExternalTaskMarker(
+            task_id="private_bqetl_ads__wait_for_firefox_desktop_derived__newtab_visits_daily__v2",
+            external_dag_id="private_bqetl_ads",
+            external_task_id="wait_for_firefox_desktop_derived__newtab_visits_daily__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=72000)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__newtab_visits_daily__v2_external.set_upstream(
+            firefox_desktop_derived__newtab_visits_daily__v2
+        )
 
     firefox_desktop_derived__report_content__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__report_content__v1",

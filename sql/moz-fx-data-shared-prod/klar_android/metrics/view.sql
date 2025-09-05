@@ -637,7 +637,9 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_remote_settings_status,
       metrics.labeled_counter.network_retried_system_channel_telemetry_status,
       metrics.labeled_counter.network_retried_system_channel_update_status,
-      metrics.labeled_counter.devtools_console_javascript_error_displayed
+      metrics.labeled_counter.devtools_console_javascript_error_displayed,
+      metrics.labeled_counter.fog_subdir_entry_err,
+      metrics.labeled_counter.fog_subdir_entry_metadata_err
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1529,7 +1531,8 @@ SELECT
       metrics.labeled_boolean.widget_pointing_devices,
       metrics.labeled_boolean.devtools_tool_registered,
       metrics.labeled_boolean.networking_doh_heuristic_ever_tripped,
-      metrics.labeled_boolean.system_special_directory_appdata_fallback
+      metrics.labeled_boolean.system_special_directory_appdata_fallback,
+      metrics.labeled_boolean.fog_subdir_err
     ) AS `labeled_boolean`,
     STRUCT(
       metrics.rate.rtcrtpsender_setparameters_fail_length_changed,

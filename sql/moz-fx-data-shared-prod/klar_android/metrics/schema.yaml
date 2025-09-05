@@ -7771,6 +7771,38 @@ fields:
         This metric replaces the Legacy Telemetry boolean histogram DEVTOOLS_JAVASCRIPT_ERROR_DISPLAYED.
 
         '
+    - name: fog_subdir_entry_err
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many dir entries per data subdirectory errored while reporting
+        fog.data_diretory_info.
+
+        (Potentially because they were removed between `read_dir` and the iteration).
+
+        '
+    - name: fog_subdir_entry_metadata_err
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many dir entries per data subdirectory errored while retrieving
+        their metadata
+
+        while reporting fog.data_diretory_info.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -36634,6 +36666,23 @@ fields:
         to retrieve
 
         either %AppData% or %LocalAppData%.
+
+        '
+    - name: fog_subdir_err
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: BOOLEAN
+        mode: NULLABLE
+      description: 'Which data subdirectories suffered an err between is_dir and read_dir
+
+        while reporting fog.data_diretory_info.
+
+        (Potentially because they were removed in the interim).
 
         '
   - name: rate

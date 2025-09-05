@@ -26,4 +26,8 @@ monitoring:
   collection: Test
   partition_column: null
   partition_column_set: true
+  freshness:
+    blocking: false
+  volume:
+    blocking: true
 require_column_descriptions: false

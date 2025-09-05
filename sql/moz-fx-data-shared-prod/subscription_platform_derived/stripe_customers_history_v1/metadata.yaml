@@ -35,8 +35,6 @@ monitoring:
   collection: null
   partition_column: null
   partition_column_set: true
-  freshness:
-    blocking: false
-  volume:
-    blocking: true
+  freshness: null
+  volume: null
 require_column_descriptions: true

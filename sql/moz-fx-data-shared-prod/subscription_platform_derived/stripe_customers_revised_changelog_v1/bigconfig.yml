@@ -13,6 +13,3 @@ table_deployments:
       - saved_metric_id: is_unique
         rct_overrides:
         - timestamp
-    table_metrics:
-    - saved_metric_id: freshness
-    - saved_metric_id: volume

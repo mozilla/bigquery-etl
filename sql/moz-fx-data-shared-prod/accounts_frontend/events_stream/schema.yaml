@@ -48,6 +48,38 @@ fields:
   - name: session_count
     type: INTEGER
     mode: NULLABLE
+  - name: attribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: campaign
+      type: STRING
+      mode: NULLABLE
+    - name: content
+      type: STRING
+      mode: NULLABLE
+    - name: medium
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: term
+      type: STRING
+      mode: NULLABLE
+    - name: ext
+      type: JSON
+      mode: NULLABLE
+  - name: distribution
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: ext
+      type: JSON
+      mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE

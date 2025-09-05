@@ -9,5 +9,8 @@ fields:
   name: click_count
   type: INTEGER
 - mode: NULLABLE
+  name: report_count
+  type: INTEGER
+- mode: NULLABLE
   name: region
   type: STRING

@@ -406,6 +406,9 @@ generate:
       - focus_android
       - fenix
       - firefox_desktop
+    events_first_seen:
+      include_apps:
+      - firefox_desktop
     bigconfig:
       skip_apps:
       - firefox_echo_show
@@ -501,6 +504,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/fenix_derived/client_ltv_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/client_ltv_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/events_first_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/ltv_states_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/firefox_ios_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_ltv_v1

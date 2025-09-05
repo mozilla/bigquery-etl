@@ -26,6 +26,7 @@ eventsstream as (
     where
     -- initialize by looking over all of history
     date(submission_timestamp) >= date_sub(@submission_date, interval 1 day)
+    and profile_group_id is not null
     group by
     client_id,
     profile_group_id,
@@ -65,6 +66,7 @@ _current as (
     `{{ project_id }}.{{ app_name }}_derived.{{ base_table }}`
     where
     date(submission_timestamp) = @submission_date
+    and profile_group_id is not null
     group by
     submission_date,
     first_seen_date,

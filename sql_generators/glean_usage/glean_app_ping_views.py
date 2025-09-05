@@ -159,7 +159,6 @@ class GleanAppPingViews(GleanTable):
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
                 if schema.schema["fields"] == []:
-                    # check for empty schemas (e.g. restricted ones) and skip for now
                     raise Exception(f"Cannot get schema for `{channel_dataset_view}`")
 
                 try:

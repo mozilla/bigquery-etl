@@ -1,5 +1,23 @@
 friendly_name: MDN Glean Events
 description: |-
-  Union of `mdn_yari.events_stream` and `mdn_fred.events_stream`.
+  This view unions `mdn_fred.events_stream`, and `mdn_yari.events_stream`.
+
+  Yari data covers MDN page loads between 2024-04-23 and Fred's launch on
+  2025-08-19, but it also reflects MDN Plus page loads after that date.
+
+  Fred data covers MDN page loads and element clicks from 2025-08-19.
+
+  Important: Yari data only contains page loads, not Yari actions, whereas
+  Fred data contains both page loads as well as element clicks.
+
+  The goal of this view is to ease authoring of page load queries against
+  `mdn_fred.events_stream`, that should also cover the time before Fred.
+
+  For queries that do not require data before 2025-08-19 or MDN Plus data,
+  prefer using `mdn_fred.events_stream` directly.
+
+  For queries that should cover data going back as far as 2024-04-23,
+  consider using `mdn.legacy_page_v1` instead.
+
 owners:
   - caugner@mozilla.com

@@ -8,7 +8,7 @@ description: |-
 
   The goal of this view is to ease migration of existing queries against `mdn_yari.action`.
 
-  For new queries that do not require data before 2025-08-19 or MDN Plus data,
+  For queries that do not require data before 2025-08-19 or MDN Plus data,
   prefer using `mdn_fred.events_stream` directly.
 
 owners:

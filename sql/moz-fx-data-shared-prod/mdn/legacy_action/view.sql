@@ -64,7 +64,7 @@ CREATE OR REPLACE VIEW
               TO_JSON_STRING(UNIX_MICROS(event_timestamp)) AS `value`
             )
           ] AS extra,
-          'click' AS name,
+          'clicked' AS name,
           0 AS `timestamp`
         )
       ] AS events,

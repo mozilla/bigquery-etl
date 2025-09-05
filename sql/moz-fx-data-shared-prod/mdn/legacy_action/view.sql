@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mdn.legacy_action_v1` AS (
+  `moz-fx-data-shared-prod.mdn.legacy_action` AS (
     SELECT
       '{}' AS additional_properties,
       STRUCT(

@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.mdn.events_stream_v1` AS (
+  `moz-fx-data-shared-prod.mdn.events_stream` AS (
     SELECT
       *
     FROM

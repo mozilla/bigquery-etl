@@ -185,6 +185,22 @@ def qualify_table_references_in_file(path: Path) -> str:
             "Cannot qualify table_references of query scripts or UDFs"
         )
 
+    # INFORMATION_SCHEMA views that can be dataset qualified
+    # https://cloud.google.com/bigquery/docs/information-schema-intro#dataset_qualifier
+    # used to make a best-effort attempt to qualify with dataset when appropriate
+    DATASET_QUALIFIED_INFO_SCHEMA_VIEWS = (
+        "COLUMNS",
+        "COLUMN_FIELD_PATHS",
+        "MATERIALIZED_VIEWS",
+        "PARAMETERS",
+        "PARTITIONS",
+        "ROUTINES",
+        "ROUTINE_OPTIONS",
+        "TABLES",
+        "TABLE_OPTIONS",
+        "VIEWS",
+    )
+
     # determine the default target project and dataset from the path
     target_project = Path(path).parent.parent.parent.name
     default_dataset = Path(path).parent.parent.name
@@ -232,7 +248,9 @@ def qualify_table_references_in_file(path: Path) -> str:
             for table_expr in statement.find_all(sqlglot.exp.Table):
                 # existing table ref including backticks without alias
                 table_expr.set("alias", "")
-                reference_string = table_expr.sql(dialect="bigquery")
+                # as of sqlglot 26, dialect=bigquery puts backticks at only start and end
+                # if every part is quoted, so using dialect=None
+                reference_string = table_expr.sql(dialect=None).replace('"', "`?")
 
                 matched_cte = [
                     re.match(
@@ -244,17 +262,28 @@ def qualify_table_references_in_file(path: Path) -> str:
                 if any(matched_cte):
                     continue
 
-                # project id is parsed as the catalog attribute
-                # but information_schema region may also be parsed as catalog
-                if table_expr.catalog.startswith("region-"):
-                    project_name = f"{target_project}.{table_expr.catalog}"
+                # as of sqlglot 26, INFORMATION_SCHEMA.{VIEW_NAME} is parsed together as a table name
+                if table_expr.name.startswith("INFORMATION_SCHEMA."):
+                    if table_expr.db.lower().startswith("region-"):
+                        project_name = table_expr.catalog or target_project
+                        dataset_name = table_expr.db
+                    elif (
+                        table_expr.name.split(".")[1]
+                        in DATASET_QUALIFIED_INFO_SCHEMA_VIEWS
+                    ):  # add project and dataset
+                        project_name = target_project
+                        dataset_name = table_expr.db or default_dataset
+                    else:  # just add project
+                        project_name = ""
+                        dataset_name = table_expr.db or target_project
                 elif table_expr.catalog == "":  # no project id
                     project_name = target_project
+                    dataset_name = table_expr.db or default_dataset
                 else:  # project id exists
                     continue
 
                 # fully qualified table ref
-                replacement_string = f"`{project_name}.{table_expr.db or default_dataset}.{table_expr.name}`"
+                replacement_string = f"`{project_name}{'.' if project_name else ''}{dataset_name}.{table_expr.name}`"
 
                 table_replacements.add((reference_string, replacement_string))
 

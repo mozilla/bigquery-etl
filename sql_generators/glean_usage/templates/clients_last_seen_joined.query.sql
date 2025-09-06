@@ -68,7 +68,9 @@ metrics AS (
     normalized_channel,
     n_metrics_ping,
     days_sent_metrics_ping_bits,
-    profile_group_id
+    {% if app_name == "firefox_desktop" %}
+      profile_group_id
+    {% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
@@ -133,7 +135,9 @@ SELECT
   baseline.baseline_profile_group_id,
   metrics.n_metrics_ping,
   metrics.days_sent_metrics_ping_bits,
-  metrics.profile_group_id,
+  {% if app_name == "firefox_desktop" %}
+    metrics.profile_group_id
+  {% endif %}
   baseline.is_default_browser
 FROM
   baseline

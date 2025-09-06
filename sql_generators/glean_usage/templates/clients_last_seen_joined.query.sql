@@ -3,6 +3,9 @@ WITH baseline AS (
     {% if app_name == "firefox_desktop" %}
       days_since_desktop_active,
     {% endif %}
+    {% if app_name not in ["firefox_desktop", "mozphab", "burnham", "firefox_desktop_background_update"] %}
+      normalized_app_id,
+    {% endif %}
     days_since_seen,
     days_since_active,
     days_since_created_profile,
@@ -65,12 +68,15 @@ metrics AS (
     submission_date,
     client_id,
     sample_id,
+    {% if app_name == "firefox_desktop" %}
+      profile_group_id,
+    {% endif %}
+    {% if app_name == "firefox_ios" %}
+      uri_count,
+    {% endif %}
     normalized_channel,
     n_metrics_ping,
     days_sent_metrics_ping_bits,
-    {% if app_name == "firefox_desktop" %}
-      profile_group_id
-    {% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.metrics_clients_last_seen`
   WHERE
@@ -85,6 +91,12 @@ SELECT
   baseline.normalized_channel,
   {% if app_name == "firefox_desktop" %}
     baseline.days_since_desktop_active,
+  {% endif %}
+  {% if app_name not in ["firefox_desktop", "mozphab", "burnham", "firefox_desktop_background_update"] %}
+    baseline.normalized_app_id,
+  {% endif %}
+  {% if app_name == "firefox_ios" %}
+    metrics.uri_count,
   {% endif %}
   baseline.days_since_seen,
   baseline.days_since_active,

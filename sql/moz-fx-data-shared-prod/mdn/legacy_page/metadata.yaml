@@ -1,0 +1,15 @@
+friendly_name: MDN Legacy Page pings
+description: |-
+  This view unions Yari page pings (`mdn_yari.page`) with Fred page_load
+  events (`mdn_fred.events_stream`), reshaped to match the Yari ping schema.
+
+  Yari data mainly covers the MDN frontend before Fred's launch on 2025-08-19,
+  but it also continues to cover MDN Plus usage after that date.
+
+  The goal of this view is to ease migration of existing queries against `mdn_yari.page`.
+
+  For queries that do not require data before 2025-08-19 or MDN Plus data,
+  prefer using `mdn_fred.events_stream` directly.
+
+owners:
+  - caugner@mozilla.com

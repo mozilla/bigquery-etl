@@ -425,9 +425,20 @@ def _update_bigconfig(
                 metrics=[
                     SimpleMetricDefinition(
                         metric_name=(
-                            f"{metric.name}"
-                            if "volume" not in metric.name.lower()
-                            else f"{metric.name} [fail]"
+                            f"{metric.name} [fail]"
+                            if (
+                                (
+                                    "freshness" in metric.name.lower()
+                                    and metadata.monitoring.freshness
+                                    and metadata.monitoring.freshness.blocking
+                                )
+                                or (
+                                    "volume" in metric.name.lower()
+                                    and metadata.monitoring.volume
+                                    and metadata.monitoring.volume.blocking
+                                )
+                            )
+                            else metric.name
                         ),
                         metric_type=SimplePredefinedMetric(
                             type="PREDEFINED", predefined_metric=metric
@@ -492,16 +503,19 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
                 if (
                     metadata_file.parent / QUERY_FILE
                 ).exists() and "public_bigquery" not in metadata.labels:
+                    default_metrics = []
+                    if metadata.monitoring.freshness:
+                        default_metrics.append(SimplePredefinedMetricName.FRESHNESS)
+                    if metadata.monitoring.volume:
+                        default_metrics.append(SimplePredefinedMetricName.VOLUME)
+
                     _update_bigconfig(
                         bigconfig=bigconfig,
                         metadata=metadata,
                         project=project,
                         dataset=dataset,
                         table=table,
-                        default_metrics=[
-                            SimplePredefinedMetricName.FRESHNESS,
-                            SimplePredefinedMetricName.VOLUME,
-                        ],
+                        default_metrics=default_metrics,
                     )
 
                 bigconfig.save(

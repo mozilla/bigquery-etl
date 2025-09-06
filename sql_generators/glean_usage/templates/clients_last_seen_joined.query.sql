@@ -136,7 +136,7 @@ SELECT
   metrics.n_metrics_ping,
   metrics.days_sent_metrics_ping_bits,
   {% if app_name == "firefox_desktop" %}
-    metrics.profile_group_id
+    metrics.profile_group_id,
   {% endif %}
   baseline.is_default_browser
 FROM

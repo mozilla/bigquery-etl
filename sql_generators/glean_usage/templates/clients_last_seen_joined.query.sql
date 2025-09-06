@@ -52,7 +52,7 @@ WITH baseline AS (
     attribution_experiment,
     attribution_variation,
     attribution_ua,
-    baseline_profile_group_id
+    profile_group_id AS baseline_profile_group_id
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
   WHERE

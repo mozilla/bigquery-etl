@@ -1,6 +1,8 @@
 WITH baseline AS (
   SELECT
-    days_since_desktop_active,
+    {% if app_name == "firefox_desktop" %}
+      days_since_desktop_active,
+    {% endif %}
     days_since_seen,
     days_since_active,
     days_since_created_profile,
@@ -79,7 +81,9 @@ SELECT
   baseline.sample_id,
   baseline.submission_date,
   baseline.normalized_channel,
-  baseline.days_since_desktop_active,
+  {% if app_name == "firefox_desktop" %}
+    baseline.days_since_desktop_active,
+  {% endif %}
   baseline.days_since_seen,
   baseline.days_since_active,
   baseline.days_since_created_profile,

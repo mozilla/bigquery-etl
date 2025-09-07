@@ -71,7 +71,7 @@ metrics AS (
     {% if app_name == "firefox_desktop" %}
       profile_group_id,
     {% endif %}
-    {% if app_name == "firefox_ios" %}
+    {% if app_name in ["firefox_ios", "focus_ios", "fenix", "focus_android", "klar_ios"] %}
       uri_count,
     {% endif %}
     normalized_channel,
@@ -85,25 +85,14 @@ metrics AS (
     submission_date = DATE_ADD(@submission_date, INTERVAL 1 DAY)
 )
 SELECT
-  baseline.client_id,
-  baseline.sample_id,
   baseline.submission_date,
   baseline.normalized_channel,
-  {% if app_name == "firefox_desktop" %}
-    baseline.days_since_desktop_active,
-  {% endif %}
-  {% if app_name not in ["firefox_desktop", "mozphab", "burnham", "firefox_desktop_background_update"] %}
-    baseline.normalized_app_id,
-  {% endif %}
-  {% if app_name == "firefox_ios" %}
-    metrics.uri_count,
-  {% endif %}
+  baseline.client_id,
+  baseline.sample_id,
   baseline.days_since_seen,
-  baseline.days_since_active,
   baseline.days_since_created_profile,
   baseline.days_since_seen_session_start,
   baseline.days_since_seen_session_end,
-  baseline.days_since_visited_1_uri,
   baseline.days_seen_bits,
   baseline.days_created_profile_bits,
   baseline.first_run_date,
@@ -125,6 +114,17 @@ SELECT
   baseline.telemetry_sdk_build,
   baseline.first_seen_date,
   baseline.is_new_profile,
+  {% if app_name == "firefox_desktop" %}
+    baseline.days_since_desktop_active,
+  {% endif %}
+  {% if app_name not in ["firefox_desktop", "mozphab", "burnham", "firefox_desktop_background_update"] %}
+    baseline.normalized_app_id,
+  {% endif %}
+  {% if app_name in ["firefox_ios", "focus_ios", "fenix", "focus_android", "klar_ios"] %}
+    metrics.uri_count,
+  {% endif %}
+  baseline.days_since_active,
+  baseline.days_since_visited_1_uri,
   baseline.isp,
   baseline.days_active_bits,
   baseline.distribution_id,

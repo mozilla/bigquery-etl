@@ -129,9 +129,9 @@ SELECT
   {% if app_name == "firefox_desktop" %}
     baseline.days_since_desktop_active,
   {% endif %}
-  baseline.days_since_visited_1_uri,
   baseline.distribution_id,
   baseline.geo_subdivision,
+  baseline.baseline_profile_group_id,
   baseline.install_source,
   {% if app_name == "firefox_desktop" %}
     baseline.days_desktop_active_bits,
@@ -147,10 +147,10 @@ SELECT
   baseline.attribution_experiment,
   baseline.attribution_variation,
   baseline.attribution_ua,
-  baseline.baseline_profile_group_id,
   {% if app_name == "firefox_desktop" %}
     metrics.profile_group_id,
   {% endif %}
+  baseline.days_since_visited_1_uri,
 FROM
   baseline
 LEFT JOIN

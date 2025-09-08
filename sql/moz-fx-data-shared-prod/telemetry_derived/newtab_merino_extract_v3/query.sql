@@ -51,10 +51,7 @@ flattened_newtab_events AS (
     submission_timestamp,
     normalized_country_code,
     unnested_events.name AS event_name,
-    mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id,
-    TIMESTAMP_MILLIS(
-      SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
-    ) AS recommended_at
+    mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') AS corpus_item_id
   FROM
     deduplicated_pings dp
   CROSS JOIN
@@ -65,15 +62,6 @@ flattened_newtab_events AS (
     AND unnested_events.name IN ('impression', 'click', 'report_content_submit')
     -- Keep only rows with a non-null corpus_item_id
     AND mozfun.map.get_key(unnested_events.extra, 'corpus_item_id') IS NOT NULL
-    -- Only keep the last day's data (reports don't have recommended_at, so make it optional)
-    AND (
-      -- Report events lack recommended_at timestamp, so we include ALL reports here.
-      -- They'll be filtered later to only keep reports for content with recent impressions/clicks.
-      unnested_events.name = 'report_content_submit'
-      OR TIMESTAMP_MILLIS(
-        SAFE_CAST(mozfun.map.get_key(unnested_events.extra, 'recommended_at') AS INT64)
-      ) > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)
-    )
 ),
 /* Aggregate clicks, impressions, and reports by corpus_item_id and normalized_country_code. */
 aggregated_events AS (
@@ -133,8 +121,11 @@ SELECT
   *
 FROM
   combined_results
-WHERE
-  -- Only keep content that was recently shown to users (has impressions or clicks with recent recommended_at).
-  -- This filters out reports for stale/cached content that hasn't been actively recommended.
-  impression_count > 0
-  OR click_count > 0;
+ORDER BY
+  impression_count DESC
+LIMIT
+  -- This LIMIT was derived from the 4 MB payload size cap in Merino, the observed average
+  -- record size of ~113 bytes, and recall measurements. At ~20k rows the JSON blob stays
+  -- well below 4 MB while still retaining >99.9% of fresh impressions globally. Smaller
+  -- countries with lower traffic, like BE, still maintain an acceptable recall of about 97%.
+  20000;

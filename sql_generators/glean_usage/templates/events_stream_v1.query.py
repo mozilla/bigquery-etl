@@ -86,7 +86,7 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
 
     # update destination table schema if the source has changed
     temp_table_schema = client.get_table(temp_tables[0]).schema
-    if not temp_table_schema != destination_table.schema:
+    if temp_table_schema != destination_table.schema:
         logging.info(f"Updating {destination_table} schema")
         destination_table.schema = temp_table_schema
         destination_table = client.update_table(destination_table, ["schema"])

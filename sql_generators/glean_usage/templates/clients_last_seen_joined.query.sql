@@ -114,19 +114,22 @@ SELECT
   baseline.telemetry_sdk_build,
   baseline.first_seen_date,
   baseline.is_new_profile,
-  {% if app_name == "firefox_desktop" %}
-    baseline.days_since_desktop_active,
-  {% endif %}
-  {% if app_name not in ["firefox_desktop", "mozphab", "burnham", "firefox_desktop_background_update"] %}
-    baseline.normalized_app_id,
-  {% endif %}
+  metrics.n_metrics_ping,
+  metrics.days_sent_metrics_ping_bits,
   {% if app_name in ["firefox_ios", "focus_ios", "fenix", "focus_android", "klar_ios"] %}
     metrics.uri_count,
   {% endif %}
-  baseline.days_since_active,
-  baseline.days_since_visited_1_uri,
+  baseline.is_default_browser,
   baseline.isp,
+  {% if app_name not in ["firefox_desktop", "mozphab", "burnham", "firefox_desktop_background_update"] %}
+    baseline.normalized_app_id,
+  {% endif %}
   baseline.days_active_bits,
+  baseline.days_since_active,
+  {% if app_name == "firefox_desktop" %}
+    baseline.days_since_desktop_active,
+  {% endif %}
+  baseline.days_since_visited_1_uri,
   baseline.distribution_id,
   baseline.geo_subdivision,
   baseline.install_source,
@@ -145,12 +148,9 @@ SELECT
   baseline.attribution_variation,
   baseline.attribution_ua,
   baseline.baseline_profile_group_id,
-  metrics.n_metrics_ping,
-  metrics.days_sent_metrics_ping_bits,
   {% if app_name == "firefox_desktop" %}
     metrics.profile_group_id,
   {% endif %}
-  baseline.is_default_browser
 FROM
   baseline
 LEFT JOIN

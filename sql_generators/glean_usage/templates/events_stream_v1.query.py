@@ -64,7 +64,7 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
             query=query,
             job_config=bigquery.QueryJobConfig(
                 destination=temp_table,
-                write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+                write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
                 query_parameters=[
                     bigquery.ScalarQueryParameter(
                         "min_sample_id", "INT64", min_sample_id
@@ -76,6 +76,7 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
                         "submission_date", "DATE", submission_date.date()
                     ),
                 ],
+                schema_update_options=bigquery.SchemaUpdateOption.ALLOW_FIELD_ADDITION,
             ),
         )
         logging.info(

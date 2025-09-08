@@ -70,7 +70,6 @@ _current as (
     group by
     submission_date,
     first_seen_date,
-    sample_id,
     client_id,
     profile_group_id,
     sample_id,
@@ -82,6 +81,8 @@ _current as (
 -- query over all of history to see whether the client_id has shown up before
 _previous as (
     select
+    submission_date,
+    first_seen_date,
     client_id,
     profile_group_id,
     sample_id,

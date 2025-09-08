@@ -1,6 +1,6 @@
 WITH baseline AS (
   SELECT
-    * EXCEPT (profile_group_id, experiments, days_visited_1_uri_bits),
+    * EXCEPT (profile_group_id, experiments, days_visited_1_uri_bits, active_hours_sum),
     profile_group_id AS baseline_profile_group_id
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`
@@ -22,25 +22,21 @@ SELECT
   baseline.sample_id,
   baseline.submission_date,
   baseline.normalized_channel,
-  * EXCEPT(submission_date, normalized_channel, client_id, sample_id, is_default_browser),
+  * EXCEPT (submission_date, normalized_channel, client_id, sample_id, is_default_browser),
   baseline.is_default_browser,
 FROM
   baseline
-LEFT JOIN metrics
-ON baseline.client_id = metrics.client_id AND
-  baseline.sample_id = metrics.sample_id AND
-  (
-    baseline.normalized_channel = metrics.normalized_channel OR
-    (baseline.normalized_channel IS NULL AND metrics.normalized_channel IS NULL)
+LEFT JOIN
+  metrics
+  ON baseline.client_id = metrics.client_id
+  AND baseline.sample_id = metrics.sample_id
+  AND (
+    baseline.normalized_channel = metrics.normalized_channel
+    OR (baseline.normalized_channel IS NULL AND metrics.normalized_channel IS NULL)
   )
 -- In some rare cases we end up with the same client_id in multiple channels
 -- In those cases, this union can result in client_id duplicates.
 -- This logic ensures that the resulting table only includes the client from the channel
 -- we've seen first.
 QUALIFY
-  ROW_NUMBER() OVER (
-    PARTITION BY
-      client_id
-    ORDER BY
-      first_seen_date ASC
-) = 1
+  ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY first_seen_date ASC) = 1

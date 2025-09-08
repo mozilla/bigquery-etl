@@ -66,6 +66,7 @@ fields:
     Not set if the device model can't be determined (e.g. on Desktop).
 - name: telemetry_sdk_build
   type: STRING
+  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: first_seen_date
   type: DATE
 - name: is_new_profile
@@ -91,6 +92,7 @@ fields:
 - mode: NULLABLE
   name: windows_build_number
   type: INTEGER
+  description: The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms.
 - mode: NULLABLE
   name: browser_engagement_uri_count
   type: INTEGER
@@ -100,6 +102,7 @@ fields:
 - mode: NULLABLE
   name: legacy_telemetry_client_id
   type: STRING
+  description: A unique identifier (UUID) for the client, based on legacy telemetry data.
 - mode: NULLABLE
   name: is_default_browser
   type: BOOLEAN

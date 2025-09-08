@@ -18,6 +18,9 @@ fields:
 - mode: NULLABLE
   name: durations
   type: INTEGER
+  description: |-
+    The sum of the duration of the last foreground session in seconds across each unique baseline ping
+    received on this submission date.
 - mode: NULLABLE
   name: days_seen_session_start_bits
   type: INTEGER
@@ -83,6 +86,7 @@ fields:
 - mode: NULLABLE
   name: is_new_profile
   type: BOOLEAN
+  description: Indicates if the submission date is the same as the client's first seen date.
 - mode: NULLABLE
   name: isp
   type: STRING
@@ -104,13 +108,14 @@ fields:
 - mode: NULLABLE
   name: windows_build_number
   type: INTEGER
+  description: The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms.
 - mode: NULLABLE
   name: browser_engagement_uri_count
   type: INTEGER
   description: |-
     The number of total non-unique http(s) URIs visited, including page reloads, after the session has been restored.
     URIs on minimized or background tabs may also be counted. Private browsing uris are included.
-    Migrated from Telemetry's `browser.engagement.total_uri_count_normal_and_private_mode`. 
+    Migrated from Telemetry's `browser.engagement.total_uri_count_normal_and_private_mode`.
 - mode: NULLABLE
   name: browser_engagement_active_ticks
   type: INTEGER

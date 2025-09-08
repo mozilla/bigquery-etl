@@ -32,8 +32,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
 references:
-  backfill_deng9520.sql:
-  - moz-fx-data-shared-prod.monitoring_derived.event_monitoring_aggregates_v1
   query.sql:
   - moz-fx-data-shared-prod.accounts_backend_stable.events_v1
   - moz-fx-data-shared-prod.accounts_cirrus_stable.events_v1

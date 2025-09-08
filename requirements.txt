@@ -1033,8 +1033,8 @@ more-itertools==10.4.0 \
     --hash=sha256:0f7d9f83a0a8dcfa8a2694a770590d98a67ea943e3d9f5298309a484758c4e27 \
     --hash=sha256:fe0e63c4ab068eac62410ab05cccca2dc71ec44ba8ef29916a0090df061cf923
     # via jaraco-classes
-mozilla-metric-config-parser==2025.7.1 \
-    --hash=sha256:0fd9d21493a697ecdc488e6505f84d723a0f5a71225768253245884be1de3bf5
+mozilla-metric-config-parser==2025.8.1 \
+    --hash=sha256:659ec7ea9ab039557a821c5d012ab30e55b49608afc1216ecea7fa093bf7df09
     # via -r requirements.in
 mozilla-nimbus-schemas==2024.9.3 \
     --hash=sha256:5e1196637308fb0241a209eee027a436e986fc6220ad416eebb06b7162e226bc \
@@ -1723,9 +1723,9 @@ pyproject-hooks==1.0.0 \
     # via
     #   build
     #   pip-tools
-pytest==8.4.1 \
-    --hash=sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7 \
-    --hash=sha256:7c67fd69174877359ed9371ec3af8a3d2b04741818c51e5e99cc1742251fa93c
+pytest==8.4.2 \
+    --hash=sha256:86c0d0b93306b961d58d62a4db4879f27fe25513d4b969df351abdddb3c30e01 \
+    --hash=sha256:872f880de3fc3a5bdc88a11b39c9710c3497a547cfa9320bc3c5e62fbf272e79
     # via
     #   -r requirements.in
     #   pytest-black
@@ -2268,9 +2268,9 @@ typer==0.12.5 \
     --hash=sha256:62fe4e471711b147e3365034133904df3e235698399bc4de2b36c8579298d52b \
     --hash=sha256:f592f089bedcc8ec1b974125d64851029c3b1af145f04aca64d69410f0c9b722
     # via bigeye-sdk
-types-python-dateutil==2.9.0.20250809 \
-    --hash=sha256:69cbf8d15ef7a75c3801d65d63466e46ac25a0baa678d89d0a137fc31a608cc1 \
-    --hash=sha256:768890cac4f2d7fd9e0feb6f3217fce2abbfdfc0cadd38d11fba325a815e4b9f
+types-python-dateutil==2.9.0.20250822 \
+    --hash=sha256:849d52b737e10a6dc6621d2bd7940ec7c65fcb69e6aa2882acf4e56b2b508ddc \
+    --hash=sha256:84c92c34bd8e68b117bff742bc00b692a1e8531262d4507b33afcc9f7716cd53
     # via -r requirements.in
 types-pytz==2025.2.0.20250809 \
     --hash=sha256:222e32e6a29bb28871f8834e8785e3801f2dc4441c715cd2082b271eecbe21e5 \

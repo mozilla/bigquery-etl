@@ -272,3 +272,6 @@ fields:
 - name: avg_newtab_visit_duration
   type: FLOAT64
   description: Average duration of newtab visit (ms)
+- name: cumulative_newtab_visit_duration
+  type: INTEGER
+  description: Total duration of newtab visits on this day (ms)

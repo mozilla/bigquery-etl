@@ -6668,6 +6668,108 @@ WITH use_counts_by_day_version_and_country_stg AS (
     SUM(
       metrics.counter.use_counter_page_js_optimize_promise_lookup_fuse
     ) AS use_counter_page_js_optimize_promise_lookup_fuse,
+    SUM(
+      metrics.counter.use_counter_page_invalid_text_directives
+    ) AS use_counter_page_invalid_text_directives,
+    SUM(
+      metrics.counter.use_counter_page_text_directive_not_created
+    ) AS use_counter_page_text_directive_not_created,
+    SUM(
+      metrics.counter.use_counter_page_text_directive_pages
+    ) AS use_counter_page_text_directive_pages,
+    SUM(
+      metrics.counter.use_counter_doc_invalid_text_directives
+    ) AS use_counter_doc_invalid_text_directives,
+    SUM(
+      metrics.counter.use_counter_doc_text_directive_not_created
+    ) AS use_counter_doc_text_directive_not_created,
+    SUM(
+      metrics.counter.use_counter_doc_text_directive_pages
+    ) AS use_counter_doc_text_directive_pages,
+    SUM(metrics.counter.use_counter_doc_math_mlused) AS use_counter_doc_math_mlused,
+    SUM(metrics.counter.use_counter_page_math_mlused) AS use_counter_page_math_mlused,
+    SUM(
+      metrics.counter.use_counter_doc_animation_commitstyles
+    ) AS use_counter_doc_animation_commitstyles,
+    SUM(
+      metrics.counter.use_counter_doc_commit_styles_non_filling_final_value
+    ) AS use_counter_doc_commit_styles_non_filling_final_value,
+    SUM(
+      metrics.counter.use_counter_page_animation_commitstyles
+    ) AS use_counter_page_animation_commitstyles,
+    SUM(
+      metrics.counter.use_counter_page_commit_styles_non_filling_final_value
+    ) AS use_counter_page_commit_styles_non_filling_final_value,
+    SUM(
+      metrics.counter.use_counter_doc_js_regexp_symbol_protocol_on_primitive
+    ) AS use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+    SUM(
+      metrics.counter.use_counter_page_js_regexp_symbol_protocol_on_primitive
+    ) AS use_counter_page_js_regexp_symbol_protocol_on_primitive,
+    SUM(
+      metrics.counter.use_counter_doc_js_large_oom_recovered
+    ) AS use_counter_doc_js_large_oom_recovered,
+    SUM(
+      metrics.counter.use_counter_doc_js_large_oom_reported
+    ) AS use_counter_doc_js_large_oom_reported,
+    SUM(
+      metrics.counter.use_counter_doc_js_small_oom_recovered
+    ) AS use_counter_doc_js_small_oom_recovered,
+    SUM(
+      metrics.counter.use_counter_doc_js_small_oom_reported
+    ) AS use_counter_doc_js_small_oom_reported,
+    SUM(
+      metrics.counter.use_counter_page_js_large_oom_recovered
+    ) AS use_counter_page_js_large_oom_recovered,
+    SUM(
+      metrics.counter.use_counter_page_js_large_oom_reported
+    ) AS use_counter_page_js_large_oom_reported,
+    SUM(
+      metrics.counter.use_counter_page_js_small_oom_recovered
+    ) AS use_counter_page_js_small_oom_recovered,
+    SUM(
+      metrics.counter.use_counter_page_js_small_oom_reported
+    ) AS use_counter_page_js_small_oom_reported,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_view_transition_class
+    ) AS use_counter_css_doc_css_view_transition_class,
+    SUM(
+      metrics.counter.use_counter_css_page_css_view_transition_class
+    ) AS use_counter_css_page_css_view_transition_class,
+    SUM(
+      metrics.counter.use_counter_doc_js_error_capturestacktrace
+    ) AS use_counter_doc_js_error_capturestacktrace,
+    SUM(
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_ctor
+    ) AS use_counter_doc_js_error_capturestacktrace_ctor,
+    SUM(
+      metrics.counter.use_counter_doc_js_error_capturestacktrace_uncallable_ctor
+    ) AS use_counter_doc_js_error_capturestacktrace_uncallable_ctor,
+    SUM(
+      metrics.counter.use_counter_page_js_error_capturestacktrace
+    ) AS use_counter_page_js_error_capturestacktrace,
+    SUM(
+      metrics.counter.use_counter_page_js_error_capturestacktrace_ctor
+    ) AS use_counter_page_js_error_capturestacktrace_ctor,
+    SUM(
+      metrics.counter.use_counter_page_js_error_capturestacktrace_uncallable_ctor
+    ) AS use_counter_page_js_error_capturestacktrace_uncallable_ctor,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_text_decoration_trim
+    ) AS use_counter_css_doc_css_text_decoration_trim,
+    SUM(
+      metrics.counter.use_counter_css_page_css_text_decoration_trim
+    ) AS use_counter_css_page_css_text_decoration_trim,
+    SUM(
+      metrics.counter.use_counter_css_doc_css_text_autospace
+    ) AS use_counter_css_doc_css_text_autospace,
+    SUM(
+      metrics.counter.use_counter_css_page_css_text_autospace
+    ) AS use_counter_css_page_css_text_autospace,
+    SUM(metrics.counter.use_counter_doc_js_use_asm) AS use_counter_doc_js_use_asm,
+    SUM(metrics.counter.use_counter_page_js_use_asm) AS use_counter_page_js_use_asm,
+    SUM(metrics.counter.use_counter_css_doc_css_math_shift) AS use_counter_css_doc_css_math_shift,
+    SUM(metrics.counter.use_counter_css_page_css_math_shift) AS use_counter_css_page_css_math_shift,
   FROM
     `moz-fx-data-shared-prod.fenix.use_counters`
   WHERE
@@ -9262,7 +9364,45 @@ pivoted_raw AS (
         use_counter_page_js_optimize_array_species_fuse,
         use_counter_page_js_thenable_object_proto,
         use_counter_doc_js_optimize_promise_lookup_fuse,
-        use_counter_page_js_optimize_promise_lookup_fuse
+        use_counter_page_js_optimize_promise_lookup_fuse,
+        use_counter_page_invalid_text_directives,
+        use_counter_page_text_directive_not_created,
+        use_counter_page_text_directive_pages,
+        use_counter_doc_invalid_text_directives,
+        use_counter_doc_text_directive_not_created,
+        use_counter_doc_text_directive_pages,
+        use_counter_doc_math_mlused,
+        use_counter_page_math_mlused,
+        use_counter_doc_animation_commitstyles,
+        use_counter_doc_commit_styles_non_filling_final_value,
+        use_counter_page_animation_commitstyles,
+        use_counter_page_commit_styles_non_filling_final_value,
+        use_counter_doc_js_regexp_symbol_protocol_on_primitive,
+        use_counter_page_js_regexp_symbol_protocol_on_primitive,
+        use_counter_doc_js_large_oom_recovered,
+        use_counter_doc_js_large_oom_reported,
+        use_counter_doc_js_small_oom_recovered,
+        use_counter_doc_js_small_oom_reported,
+        use_counter_page_js_large_oom_recovered,
+        use_counter_page_js_large_oom_reported,
+        use_counter_page_js_small_oom_recovered,
+        use_counter_page_js_small_oom_reported,
+        use_counter_css_doc_css_view_transition_class,
+        use_counter_css_page_css_view_transition_class,
+        use_counter_doc_js_error_capturestacktrace,
+        use_counter_doc_js_error_capturestacktrace_ctor,
+        use_counter_doc_js_error_capturestacktrace_uncallable_ctor,
+        use_counter_page_js_error_capturestacktrace,
+        use_counter_page_js_error_capturestacktrace_ctor,
+        use_counter_page_js_error_capturestacktrace_uncallable_ctor,
+        use_counter_css_doc_css_text_decoration_trim,
+        use_counter_css_page_css_text_decoration_trim,
+        use_counter_css_doc_css_text_autospace,
+        use_counter_css_page_css_text_autospace,
+        use_counter_doc_js_use_asm,
+        use_counter_page_js_use_asm,
+        use_counter_css_doc_css_math_shift,
+        use_counter_css_page_css_math_shift
       )
     )
 ),

@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -40,7 +41,7 @@ query = (Path(__file__).parent / "query_supplemental.sql").read_text()
     help="Number of queries to split events stream query into, based on sample id",
 )
 def main(submission_date, billing_project, destination_table, temp_dataset, slices):
-    print(submission_date)
+    logging.info(submission_date)
     client = bigquery.Client(project=billing_project)
 
     sample_id_interval_size = 100 // slices
@@ -77,11 +78,18 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
                 ],
             ),
         )
-        print(
+        logging.info(
             f"Writing sample id {min_sample_id} to {max_sample_id} to {temp_table}: {job.path}"
         )
         job.result()
         temp_tables.append(job.destination)
+
+    # update destination table schema if the source has changed
+    temp_table_schema = client.get_table(temp_tables[0]).schema
+    if not temp_table_schema != destination_table.schema:
+        logging.info(f"Updating {destination_table} schema")
+        destination_table.schema = temp_table_schema
+        destination_table = client.update_table(destination_table, ["schema"])
 
     copy_job = client.copy_table(
         sources=temp_tables,
@@ -91,7 +99,7 @@ def main(submission_date, billing_project, destination_table, temp_dataset, slic
             create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
         ),
     )
-    print(
+    logging.info(
         f"Copying to {destination_table}${submission_date.strftime('%Y%m%d')}: {copy_job.path}"
     )
     copy_job.result()

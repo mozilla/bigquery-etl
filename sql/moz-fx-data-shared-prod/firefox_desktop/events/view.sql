@@ -6,7 +6,11 @@ SELECT
   * REPLACE (
     mozfun.norm.metadata(metadata) AS metadata,
     mozfun.norm.glean_ping_info(ping_info) AS ping_info,
-    (SELECT AS STRUCT metrics.* EXCEPT (jwe, labeled_rate, text, url)) AS metrics,
+    (
+      SELECT AS STRUCT
+        metrics.* EXCEPT (jwe, labeled_rate, text, url),
+        metrics.url2 AS url
+    ) AS metrics,
     'Firefox' AS normalized_app_name,
     mozfun.norm.glean_client_info_attribution(
       client_info,

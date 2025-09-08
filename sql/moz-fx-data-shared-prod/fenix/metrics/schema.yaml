@@ -536,6 +536,9 @@ fields:
     - name: contentblocking_tp_allowlist_convenience_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: preferences_isolated_content_processes_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -30169,6 +30172,9 @@ fields:
       type: JSON
       mode: NULLABLE
     - name: fog_data_directory_info
+      type: JSON
+      mode: NULLABLE
+    - name: glean_health_data_directory_info
       type: JSON
       mode: NULLABLE
   - name: labeled_string

@@ -616,6 +616,13 @@ fields:
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_health_data_directory_info
+      type: JSON
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

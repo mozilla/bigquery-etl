@@ -942,6 +942,27 @@ fields:
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_health_data_directory_info
+      type: JSON
+      mode: NULLABLE
+      description: "Information about the data directories and files used by FOG.\n\
+        \nStructure is an array of objects, each containing the following properties:\n\
+        - `dir_name`: The name of the directory. This is the subdirectory name relative\
+        \ to the\n  FOG data directory and should only include \"db\", \"events\"\
+        , and \"pending_pings\".\n- `dir_exists`: Whether the directory exists. This\
+        \ should only be false on the first\n  run of FOG, or if the directory was\
+        \ deleted.\n- `dir_created`: The creation time of the directory, in seconds\
+        \ since the unix epoch. If\n  the directory does not exist, this will be `null`\
+        \ and if the time cannot be determined,\n  it will default to `0`.\n- `dir_modified`:\
+        \ The last modification time of the directory, in seconds since the unix\n\
+        \  epoch. If the directory does not exist, this will be `null` and if the\
+        \ time cannot be\n  determined, it will default to `0`.\n- `file_count`: The\
+        \ number of files in the directory. If the directory does not exist,\n  this\
+        \ will be `0`.\n- `files`: An array of objects, each containing:\n  - `fil"
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE

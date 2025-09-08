@@ -27342,6 +27342,9 @@ fields:
     - name: fog_data_directory_info
       type: JSON
       mode: NULLABLE
+    - name: glean_health_data_directory_info
+      type: JSON
+      mode: NULLABLE
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

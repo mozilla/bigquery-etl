@@ -192,7 +192,7 @@ SELECT
 FROM
   combined
 WHERE
-  DATE(submission_timestamp) >= "2025-09-05"
+  DATE(submission_timestamp) >= "2025-09-08"
 GROUP BY
   submission_date,
   window_start,

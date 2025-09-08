@@ -443,6 +443,13 @@ fields:
         in a specific ad. Will be null for a Kevel supplied ad, use flight_id instead.
 
         '
+    - name: ad_internal_line_item_id
+      type: STRING
+      mode: NULLABLE
+      description: 'Internally generated identifier mapped to the ad partner line
+        item used for internal reporting.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

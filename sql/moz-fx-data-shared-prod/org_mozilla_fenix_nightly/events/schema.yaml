@@ -363,6 +363,19 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: region_home_region
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the detected home region of the user. This is the general
+        region of the user''s machine.
+
+        If a machine moves location, there is a minimum 2-week delay before this will
+        be updated.
+
+        See the [Region documentation](https://firefox-source-docs.mozilla.org/toolkit/modules/toolkit_modules/Region.html)
+        for more information about updates.
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -370,6 +383,18 @@ fields:
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: policies_is_enterprise
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Attempt to determine if the user is an enterprise user based on
+        various signals. This metric was generated to correspond to the Legacy Telemetry
+        scalar policies.is_enterprise.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

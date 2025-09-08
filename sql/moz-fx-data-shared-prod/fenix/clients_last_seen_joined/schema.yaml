@@ -116,9 +116,6 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
-- name: profile_group_id
-  type: STRING
-  mode: NULLABLE
 - name: baseline_profile_group_id
   type: STRING
   mode: NULLABLE
@@ -180,7 +177,4 @@ fields:
   mode: NULLABLE
 - name: days_since_visited_1_uri
   type: INTEGER
-  mode: NULLABLE
-- name: active_hours_sum
-  type: FLOAT
   mode: NULLABLE

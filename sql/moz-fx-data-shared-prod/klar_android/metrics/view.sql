@@ -1589,7 +1589,8 @@ SELECT
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
       metrics.object.addons_manager_exception,
-      metrics.object.fog_data_directory_info
+      metrics.object.fog_data_directory_info,
+      metrics.object.glean_health_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(

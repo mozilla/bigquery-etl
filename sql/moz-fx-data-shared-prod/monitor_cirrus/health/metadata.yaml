@@ -1,0 +1,23 @@
+friendly_name: Historical Pings for `monitor-cirrus/health`
+description: |-
+  A historical view of pings sent for the
+  `monitor-cirrus/health`
+  document type.
+
+  This view is guaranteed to contain only complete days
+  (per `submission_timestamp`)
+  and to contain only one row per distinct `document_id` within a given date.
+
+  Clustering fields: `normalized_channel`, `sample_id`
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.monitor_cirrus_stable.health_v1
+require_column_descriptions: false

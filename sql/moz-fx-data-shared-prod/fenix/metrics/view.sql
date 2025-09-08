@@ -118,7 +118,8 @@ SELECT
       metrics.boolean.update_settings_background,
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
-      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
+      metrics.boolean.preferences_isolated_content_processes_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1831,7 +1832,8 @@ SELECT
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
       metrics.object.addons_manager_exception,
-      metrics.object.fog_data_directory_info
+      metrics.object.fog_data_directory_info,
+      metrics.object.glean_health_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -2125,7 +2127,8 @@ SELECT
       metrics.boolean.update_settings_background,
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
-      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
+      metrics.boolean.preferences_isolated_content_processes_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3838,7 +3841,8 @@ SELECT
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
       metrics.object.addons_manager_exception,
-      metrics.object.fog_data_directory_info
+      metrics.object.fog_data_directory_info,
+      metrics.object.glean_health_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(
@@ -4152,7 +4156,8 @@ SELECT
       metrics.boolean.update_settings_background,
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
-      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled
+      metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
+      metrics.boolean.preferences_isolated_content_processes_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5865,7 +5870,8 @@ SELECT
       metrics.object.hdd_profile,
       metrics.object.hdd_system,
       metrics.object.addons_manager_exception,
-      metrics.object.fog_data_directory_info
+      metrics.object.fog_data_directory_info,
+      metrics.object.glean_health_data_directory_info
     ) AS `object`,
     STRUCT(metrics.labeled_string.cookie_banners_google_gdpr_choice_cookie) AS `labeled_string`,
     STRUCT(

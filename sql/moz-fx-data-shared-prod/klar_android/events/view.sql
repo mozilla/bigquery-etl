@@ -18,8 +18,12 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
-    STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
-    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
+    STRUCT(
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.region_home_region
+    ) AS `string`,
+    STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
+    STRUCT(metrics.boolean.policies_is_enterprise) AS `boolean`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

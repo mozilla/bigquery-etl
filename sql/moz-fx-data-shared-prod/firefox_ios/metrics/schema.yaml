@@ -2003,6 +2003,9 @@ fields:
     - name: nimbus_system_recorded_nimbus_context
       type: JSON
       mode: NULLABLE
+    - name: glean_health_data_directory_info
+      type: JSON
+      mode: NULLABLE
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

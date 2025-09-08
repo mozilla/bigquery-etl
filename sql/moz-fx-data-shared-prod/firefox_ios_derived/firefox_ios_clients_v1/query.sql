@@ -22,7 +22,7 @@
   first_session_ping_base AS (
     SELECT
       client_info.client_id,
-      sample_id,
+      sample_id AS sample_id,
       submission_timestamp,
       NULLIF(metrics.string.adjust_ad_group, "") AS adjust_ad_group,
       NULLIF(metrics.string.adjust_campaign, "") AS adjust_campaign,

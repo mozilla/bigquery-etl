@@ -2582,3 +2582,41 @@ use_counters:
   - name: use_counter_page_js_thenable_object_proto
   - name: use_counter_doc_js_optimize_promise_lookup_fuse
   - name: use_counter_page_js_optimize_promise_lookup_fuse
+  - name: use_counter_page_invalid_text_directives
+  - name: use_counter_page_text_directive_not_created
+  - name: use_counter_page_text_directive_pages
+  - name: use_counter_doc_invalid_text_directives
+  - name: use_counter_doc_text_directive_not_created
+  - name: use_counter_doc_text_directive_pages
+  - name: use_counter_doc_math_mlused
+  - name: use_counter_page_math_mlused
+  - name: use_counter_doc_animation_commitstyles
+  - name: use_counter_doc_commit_styles_non_filling_final_value
+  - name: use_counter_page_animation_commitstyles
+  - name: use_counter_page_commit_styles_non_filling_final_value
+  - name: use_counter_doc_js_regexp_symbol_protocol_on_primitive
+  - name: use_counter_page_js_regexp_symbol_protocol_on_primitive
+  - name: use_counter_doc_js_large_oom_recovered
+  - name: use_counter_doc_js_large_oom_reported
+  - name: use_counter_doc_js_small_oom_recovered
+  - name: use_counter_doc_js_small_oom_reported
+  - name: use_counter_page_js_large_oom_recovered
+  - name: use_counter_page_js_large_oom_reported
+  - name: use_counter_page_js_small_oom_recovered
+  - name: use_counter_page_js_small_oom_reported
+  - name: use_counter_css_doc_css_view_transition_class
+  - name: use_counter_css_page_css_view_transition_class
+  - name: use_counter_doc_js_error_capturestacktrace
+  - name: use_counter_doc_js_error_capturestacktrace_ctor
+  - name: use_counter_doc_js_error_capturestacktrace_uncallable_ctor
+  - name: use_counter_page_js_error_capturestacktrace
+  - name: use_counter_page_js_error_capturestacktrace_ctor
+  - name: use_counter_page_js_error_capturestacktrace_uncallable_ctor
+  - name: use_counter_css_doc_css_text_decoration_trim
+  - name: use_counter_css_page_css_text_decoration_trim
+  - name: use_counter_css_doc_css_text_autospace
+  - name: use_counter_css_page_css_text_autospace
+  - name: use_counter_doc_js_use_asm
+  - name: use_counter_page_js_use_asm
+  - name: use_counter_css_doc_css_math_shift
+  - name: use_counter_css_page_css_math_shift

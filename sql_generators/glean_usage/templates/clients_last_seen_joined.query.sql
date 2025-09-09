@@ -1,6 +1,12 @@
 WITH baseline AS (
   SELECT
-    * EXCEPT (profile_group_id, experiments, days_visited_1_uri_bits, active_hours_sum),
+    * EXCEPT (
+      profile_group_id,
+      experiments,
+      days_visited_1_uri_bits,
+      active_hours_sum,
+      days_interacted_bits
+    ),
     profile_group_id AS baseline_profile_group_id
   FROM
     `{{ project_id }}.{{ app_name }}.baseline_clients_last_seen`

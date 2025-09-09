@@ -62,6 +62,7 @@ class GleanAppPingViews(GleanTable):
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_baseline_tables_exist=None,
     ):
         """
         Generate per-app ping views across channels.

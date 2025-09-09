@@ -159,20 +159,24 @@ def generate(
         for baseline_table in get_tables(table_name=table.base_table_name)
     ]
 
+    baseline_tables = {}
+    unique_baseline_table_names = {table.base_table_name for table in GLEAN_TABLES}
+    for table_name in unique_baseline_table_names:
+        baseline_tables[table_name] = get_tables(table_name=table_name)
+
     def all_baseline_tables_exist(app_info, table_name="baseline_v1"):
-        """Check if baseline tables exist for all app datasets."""
-        baseline_tables = get_tables(table_name=table_name)
-        
+        """Check if baseline tables exist for all app datasets."""     
         # Extract dataset names from table names (format: project.dataset.table)
-        existing_datasets = {table.split(".")[1] for table in baseline_tables}
+        existing_datasets = {table.split(".")[1] for table in baseline_tables[table_name]}
         
         # Check if all app datasets have corresponding tables
         if isinstance(app_info, dict):
             required_datasets = {f"{app_info['bq_dataset_family']}_stable"}
         else:
             required_datasets = {f"{app['bq_dataset_family']}_stable" for app in app_info}
-        
+
         return all(dataset in existing_datasets for dataset in required_datasets)
+    
 
     # Parameters to generate per-app datasets consist of the function to be called
     # and app_info
@@ -185,9 +189,9 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
                 id_token=id_token,
+                all_baseline_tables_exist=all_baseline_tables_exist(info, table_name=table.base_table_name)
             ),
             info,
-            all_baseline_tables_exist(info, table_name=table.base_table_name),
         )
         for info in app_info
         for table in GLEAN_TABLES

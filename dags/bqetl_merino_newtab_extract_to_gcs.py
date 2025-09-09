@@ -53,9 +53,9 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    checks__fail_telemetry_derived__newtab_merino_extract__v2 = bigquery_dq_check(
-        task_id="checks__fail_telemetry_derived__newtab_merino_extract__v2",
-        source_table="newtab_merino_extract_v2",
+    checks__fail_telemetry_derived__newtab_merino_extract__v3 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__newtab_merino_extract__v3",
+        source_table="newtab_merino_extract_v3",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=True,
@@ -71,9 +71,9 @@ with DAG(
         retries=0,
     )
 
-    telemetry_derived__newtab_merino_extract__v2 = bigquery_etl_query(
-        task_id="telemetry_derived__newtab_merino_extract__v2",
-        destination_table="newtab_merino_extract_v2",
+    telemetry_derived__newtab_merino_extract__v3 = bigquery_etl_query(
+        task_id="telemetry_derived__newtab_merino_extract__v3",
+        destination_table="newtab_merino_extract_v3",
         dataset_id="telemetry_derived",
         project_id="moz-fx-data-shared-prod",
         owner="mmiermans@mozilla.com",
@@ -88,16 +88,16 @@ with DAG(
         task_concurrency=1,
     )
 
-    telemetry_derived__newtab_merino_extract_to_gcs__v2 = GKEPodOperator(
-        task_id="telemetry_derived__newtab_merino_extract_to_gcs__v2",
+    telemetry_derived__newtab_merino_extract_to_gcs__v3 = GKEPodOperator(
+        task_id="telemetry_derived__newtab_merino_extract_to_gcs__v3",
         arguments=[
             "python",
-            "sql/moz-fx-data-shared-prod/telemetry_derived/newtab_merino_extract_to_gcs_v2/query.py",
+            "sql/moz-fx-data-shared-prod/telemetry_derived/newtab_merino_extract_to_gcs_v3/query.py",
         ]
         + [
             "--source-project=moz-fx-data-shared-prod",
             "--source-dataset=telemetry_derived",
-            "--source-table=newtab_merino_extract_v2",
+            "--source-table=newtab_merino_extract_v3",
             "--destination-bucket=merino-airflow-data-prodpy",
             "--destination-prefix=newtab-merino-exports/engagement",
             "--deletion-days-old=90",
@@ -112,10 +112,10 @@ with DAG(
         ],
     )
 
-    checks__fail_telemetry_derived__newtab_merino_extract__v2.set_upstream(
-        telemetry_derived__newtab_merino_extract__v2
+    checks__fail_telemetry_derived__newtab_merino_extract__v3.set_upstream(
+        telemetry_derived__newtab_merino_extract__v3
     )
 
-    telemetry_derived__newtab_merino_extract_to_gcs__v2.set_upstream(
-        checks__fail_telemetry_derived__newtab_merino_extract__v2
+    telemetry_derived__newtab_merino_extract_to_gcs__v3.set_upstream(
+        checks__fail_telemetry_derived__newtab_merino_extract__v3
     )

@@ -1,0 +1,19 @@
+friendly_name: Newtab Content Items Daily Combined
+description: |-
+  A view of the combined (Newtab + Newtab-Content) daily aggregation of newtab content actions on content/items,
+  joined with the latest corpus item details from the corpus_items_current table so that the most current values for
+  the corpus item are available.
+owners:
+- lmcfall@mozilla.com
+labels:
+  owner1: lmcfall
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_current_v1
+require_column_descriptions: false

@@ -183,6 +183,21 @@ with DAG(
             firefox_desktop_derived__newtab_component_content__v1
         )
 
+    firefox_desktop_derived__newtab_content_items_daily__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__newtab_content_items_daily__v1",
+        destination_table="newtab_content_items_daily_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="lmcfall@mozilla.com",
+        email=[
+            "lmcfall@mozilla.com",
+            "mbowerman@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__newtab_items_daily__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__newtab_items_daily__v1",
         destination_table="newtab_items_daily_v1",
@@ -347,6 +362,10 @@ with DAG(
     )
 
     firefox_desktop_derived__newtab_component_content__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__newtab_content_items_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

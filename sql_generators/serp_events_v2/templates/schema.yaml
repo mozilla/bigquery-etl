@@ -1,0 +1,205 @@
+fields:
+  - mode: NULLABLE
+    name: impression_id
+    type: string
+  - mode: NULLABLE
+    name: submission_date
+    type: date
+  - mode: NULLABLE
+    name: glean_client_id
+    type: string
+  - mode: NULLABLE
+    name: legacy_telemetry_client_id
+    type: string
+  - mode: NULLABLE
+    name: ping_seq
+    type: integer
+  - mode: NULLABLE
+    name: event_timestamp
+    type: integer
+  - mode: NULLABLE
+    name: normalized_channel
+    type: string
+  - mode: NULLABLE
+    name: normalized_country_code
+    type: string
+  - mode: NULLABLE
+    name: os
+    type: string
+  - mode: NULLABLE
+    name: browser_version_info
+    type: record
+    fields:
+      - mode: NULLABLE
+        name: version
+        type: string
+      - mode: NULLABLE
+        name: major_version
+        type: numeric
+      - mode: NULLABLE
+        name: minor_version
+        type: numeric
+      - mode: NULLABLE
+        name: patch_revision
+        type: numeric
+      - mode: NULLABLE
+        name: is_major_release
+        type: boolean
+  - mode: NULLABLE
+    name: sample_id
+    type: integer
+  - mode: NULLABLE
+    name: experiments
+    type: record
+    fields:
+      - mode: NULLABLE
+        name: key
+        type: STRING
+      - mode: NULLABLE
+        name: value
+        type: record
+        fields:
+          - mode: NULLABLE
+            name: branch
+            type: string
+          - mode: NULLABLE
+            name: extra
+            type: record
+            fields:
+              - mode: NULLABLE
+                name: type
+                type: string
+              - mode: NULLABLE
+                name: enrollment_id
+                type: string
+  - mode: NULLABLE
+    name: is_shopping_page
+    type: boolean
+  - mode: NULLABLE
+    name: is_private
+    type: boolean
+  - mode: NULLABLE
+    name: is_signed_in
+    type: boolean
+  - mode: NULLABLE
+    name: search_engine
+    type: string
+  - mode: NULLABLE
+    name: sap_source
+    type: string
+  - mode: NULLABLE
+    name: is_tagged
+    type: boolean
+  - mode: NULLABLE
+    name: abandon_reason
+    type: string
+  - mode: NULLABLE
+    name: engagements
+    type: record
+    fields:
+      - mode: NULLABLE
+        name: component
+        type: string
+      - mode: NULLABLE
+        name: action
+        type: string
+      - mode: NULLABLE
+        name: num_engagements
+        type: integer
+  - mode: NULLABLE
+    name: component_impressions
+    type: record
+    fields:
+      - mode: NULLABLE
+        name: component
+        type: string
+      - mode: NULLABLE
+        name: num_elements_loaded
+        type: integer
+      - mode: NULLABLE
+        name: num_elements_visible
+        type: integer
+      - mode: NULLABLE
+        name: num_elements_blocked
+        type: integer
+      - mode: NULLABLE
+        name: num_elements_notshowing
+        type: integer
+  - mode: NULLABLE
+    name: profile_group_id
+    type: string
+  - mode: NULLABLE
+    name: partner_code
+    type: string
+  - mode: NULLABLE
+    name: distribution_id
+    type: string
+  - mode: NULLABLE
+    name: windows_build_number
+    type: integer
+  - mode: NULLABLE
+    name: channel
+    type: string
+  - mode: NULLABLE
+    name: locale
+    type: string
+  - mode: NULLABLE
+    name: os_version
+    type: string
+  - mode: NULLABLE
+    name: region_home_region
+    type: string
+  - mode: NULLABLE
+    name: policies_is_enterprise
+    type: boolean
+  - mode: NULLABLE
+    name: usage_is_default_browser
+    type: boolean
+  - mode: NULLABLE
+    name: search_engine_default_display_name
+    type: string
+  - mode: NULLABLE
+    name: search_engine_default_load_path
+    type: string
+  - mode: NULLABLE
+    name: search_engine_default_partner_code
+    type: string
+  - mode: NULLABLE
+    name: search_engine_default_provider_id
+    type: string
+  - mode: NULLABLE
+    name: search_engine_default_submission_url
+    type: string
+  - mode: NULLABLE
+    name: search_engine_default_overridden_by_third_party
+    type: string
+  - mode: NULLABLE
+    name: search_engine_private_display_name
+    type: string
+  - mode: NULLABLE
+    name: search_engine_private_load_path
+    type: string
+  - mode: NULLABLE
+    name: search_engine_private_partner_code
+    type: string
+  - mode: NULLABLE
+    name: search_engine_private_provider_id
+    type: string
+  - mode: NULLABLE
+    name: search_engine_private_submission_url
+    type: string
+  - mode: NULLABLE
+    name: search_engine_private_overridden_by_third_party
+    type: string
+  - mode: NULLABLE
+    name: browser_engagement_active_ticks
+    type: integer
+  - mode: NULLABLE
+    name: browser_engagement_uri_count
+    type: integer
+  - mode: NULLABLE
+    name: browser_engagement_tab_open_event_count
+    type: integer
+  - mode: NULLABLE
+    name: browser_engagement_max_concurrent_tab_count
+    type: integer

@@ -4,8 +4,10 @@ WITH baseline AS (
       profile_group_id,
       experiments,
       days_visited_1_uri_bits,
-      active_hours_sum,
-      days_interacted_bits
+      {% if app_name == "firefox_desktop" %}
+      days_interacted_bits,
+      {% endif %}
+      active_hours_sum
     ),
     profile_group_id AS baseline_profile_group_id
   FROM

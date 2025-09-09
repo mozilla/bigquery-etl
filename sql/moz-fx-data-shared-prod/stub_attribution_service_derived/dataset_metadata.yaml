@@ -8,5 +8,4 @@ labels: {}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:data-science/duet
-  - workgroup:data-science/developers
+  - workgroup:mozilla-confidential

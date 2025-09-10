@@ -15,7 +15,6 @@ from pathlib import Path
 import yaml
 from jinja2 import Environment, FileSystemLoader
 from mozilla_schema_generator.glean_ping import GleanPing
-from pathos.multiprocessing import ThreadingPool
 
 from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
@@ -299,10 +298,7 @@ class GleanAppPingViews(GleanTable):
 
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
 
-        # Using ThreadingPool instead of ProcessingPool here, due to issues with pickling the GleanAppPingViews class (self references),
-        # and ProcessingPools cannot be nested - glean_usage is using ProcessingPool to kick off generating the different tables per app
-        with ThreadingPool(parallelism) as pool:
-            pool.map(
-                _process_ping,
-                p.get_pings(),
-            )
+        # Using a simple loop instead of ThreadingPool to avoid threading complexity
+        # and potential pickling issues with the GleanAppPingViews class
+        for ping_name in p.get_pings():
+            _process_ping(ping_name)

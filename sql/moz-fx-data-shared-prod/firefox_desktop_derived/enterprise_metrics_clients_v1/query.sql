@@ -80,8 +80,6 @@ SELECT
   normalized_channel,
   distribution_id,
   is_dau,
-  -- TODO: it appears sometimes those two values can be null in the result,
-  --       should we COALESCE them to 0 and FALSE respectively or should we leave them as null?
   policies_count,
   policies_is_enterprise,
 FROM

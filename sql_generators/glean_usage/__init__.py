@@ -189,7 +189,9 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
                 id_token=id_token,
-                all_baseline_tables_exist=all_baseline_tables_exist(info, table_name=table.base_table_name)
+                all_baseline_tables_exist=all_baseline_tables_exist(info, table_name=table.base_table_name) 
+                if hasattr(table, 'per_app_requires_all_baseline_tables') and table.per_app_requires_all_baseline_tables 
+                else None
             ),
             info,
         )

@@ -71,13 +71,13 @@ def prod_schemas_uri():
 def get_stable_table_schemas() -> List[SchemaFile]:
     """Fetch last schema metadata per doctype by version."""
     schemas_uri = prod_schemas_uri()
-    
+
     # create cache file path based on the schemas URI
     commit_hash = schemas_uri.split("/")[-1].replace(".tar.gz", "")
     cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_schemas")
     os.makedirs(cache_dir, exist_ok=True)
     cache_file = os.path.join(cache_dir, f"schemas_{commit_hash}.pkl")
-    
+
     # check if cached file exists and load it
     if os.path.exists(cache_file):
         print(f"Loading cached schemas from {cache_file}")
@@ -86,7 +86,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
                 return pickle.load(f)
         except (pickle.PickleError, EOFError, OSError) as e:
             print(f"Failed to load cached schemas: {e}, re-downloading...")
-    
+
     print(f"Downloading schemas from {schemas_uri}")
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())

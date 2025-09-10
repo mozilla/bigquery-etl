@@ -8,7 +8,15 @@ WITH historical_store_data AS (
     SELECT
       DATE(`date`) AS `date`,
       territory AS country_name,
-      SUM(impressions_unique_device) AS impressions,
+      -- Apple used to count pageviews from these sources as impressions as well but no longer do in the new data they're sending back
+      -- for compatibility with the new report we only want to count impressions from specific source types?
+      SUM(
+        CASE
+          WHEN source_type IN ('App Referrer', 'Unavailable', 'Web Referrer')
+            THEN 0
+          ELSE impressions_unique_device
+        END
+      ) AS impressions,
     FROM
       `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
     WHERE

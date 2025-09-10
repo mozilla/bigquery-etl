@@ -32,17 +32,17 @@ from sql_generators.glean_usage.common import get_app_info, list_tables
 # list of methods for generating queries
 GLEAN_TABLES = [
     glean_app_ping_views.GleanAppPingViews(),
-    # baseline_clients_daily.BaselineClientsDailyTable(),
-    # baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
-    # baseline_clients_last_seen.BaselineClientsLastSeenTable(),
-    # events_unnested.EventsUnnestedTable(),
-    # metrics_clients_daily.MetricsClientsDaily(),
-    # metrics_clients_last_seen.MetricsClientsLastSeen(),
-    # clients_last_seen_joined.ClientsLastSeenJoined(),
-    # event_monitoring_live.EventMonitoringLive(),
-    # event_error_monitoring.EventErrorMonitoring(),
-    # event_flow_monitoring.EventFlowMonitoring(),
-    # events_stream.EventsStreamTable(),
+    baseline_clients_daily.BaselineClientsDailyTable(),
+    baseline_clients_first_seen.BaselineClientsFirstSeenTable(),
+    baseline_clients_last_seen.BaselineClientsLastSeenTable(),
+    events_unnested.EventsUnnestedTable(),
+    metrics_clients_daily.MetricsClientsDaily(),
+    metrics_clients_last_seen.MetricsClientsLastSeen(),
+    clients_last_seen_joined.ClientsLastSeenJoined(),
+    event_monitoring_live.EventMonitoringLive(),
+    event_error_monitoring.EventErrorMonitoring(),
+    event_flow_monitoring.EventFlowMonitoring(),
+    events_stream.EventsStreamTable(),
 ]
 
 

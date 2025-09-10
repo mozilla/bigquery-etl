@@ -73,7 +73,8 @@ with DAG(
         owner="akommasani@mozilla.com",
         email=[
             "akommasani@mozilla.com",
-            "dzeber@mozilla.com",
+            "betling@mozilla.com",
+            "kbammarito@mozilla.com",
             "pissac@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],

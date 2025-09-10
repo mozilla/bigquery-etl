@@ -10,6 +10,7 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_bigeye_derived
+  arguments: ['--schema_update_option=ALLOW_FIELD_ADDITION']
   secrets:
   - deploy_target: BIGEYE_API_KEY
     key: bqetl_bigeye_api_key

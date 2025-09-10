@@ -141,6 +141,9 @@ fields:
     name: channel
     type: string
   - mode: NULLABLE
+    name: normalized_app_name
+    type: string
+  - mode: NULLABLE
     name: locale
     type: string
   - mode: NULLABLE

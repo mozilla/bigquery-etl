@@ -119,7 +119,9 @@ SELECT
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
-      metrics.boolean.preferences_isolated_content_processes_enabled
+      metrics.boolean.preferences_isolated_content_processes_enabled,
+      metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
+      metrics.boolean.preferences_show_sponsor_suggestions_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1057,7 +1059,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_update_status,
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
-      metrics.labeled_counter.fog_subdir_entry_metadata_err
+      metrics.labeled_counter.fog_subdir_entry_metadata_err,
+      metrics.labeled_counter.media_mkv_codec_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -2128,7 +2131,9 @@ SELECT
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
-      metrics.boolean.preferences_isolated_content_processes_enabled
+      metrics.boolean.preferences_isolated_content_processes_enabled,
+      metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
+      metrics.boolean.preferences_show_sponsor_suggestions_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3066,7 +3071,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_update_status,
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
-      metrics.labeled_counter.fog_subdir_entry_metadata_err
+      metrics.labeled_counter.fog_subdir_entry_metadata_err,
+      metrics.labeled_counter.media_mkv_codec_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -4157,7 +4163,9 @@ SELECT
       metrics.boolean.update_settings_enabled,
       metrics.boolean.contentblocking_tp_allowlist_baseline_enabled,
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
-      metrics.boolean.preferences_isolated_content_processes_enabled
+      metrics.boolean.preferences_isolated_content_processes_enabled,
+      metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
+      metrics.boolean.preferences_show_sponsor_suggestions_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -5095,7 +5103,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_update_status,
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
-      metrics.labeled_counter.fog_subdir_entry_metadata_err
+      metrics.labeled_counter.fog_subdir_entry_metadata_err,
+      metrics.labeled_counter.media_mkv_codec_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

@@ -539,6 +539,12 @@ fields:
     - name: preferences_isolated_content_processes_enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: preferences_show_non_sponsor_suggestions_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: preferences_show_sponsor_suggestions_enabled
+      type: BOOLEAN
+      mode: NULLABLE
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11428,6 +11434,16 @@ fields:
         type: INTEGER
         mode: NULLABLE
     - name: fog_subdir_entry_metadata_err
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: media_mkv_codec_type
       type: RECORD
       mode: REPEATED
       fields:

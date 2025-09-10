@@ -1044,6 +1044,22 @@ fields:
       type: BOOLEAN
       mode: NULLABLE
       description: True when isolated content processes are enabled on the runtime.
+    - name: preferences_show_non_sponsor_suggestions_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the user has non sponsor search suggestions enabled
+
+        default: true
+
+        '
+    - name: preferences_show_sponsor_suggestions_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether or not the user has sponsor search suggestions enabled
+
+        default: true
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -17827,6 +17843,19 @@ fields:
         their metadata
 
         while reporting fog.data_diretory_info.
+
+        '
+    - name: media_mkv_codec_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the amount of the real world codec usage inside Matroska.
 
         '
   - name: quantity

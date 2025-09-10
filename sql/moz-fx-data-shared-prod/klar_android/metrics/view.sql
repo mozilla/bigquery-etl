@@ -639,7 +639,8 @@ SELECT
       metrics.labeled_counter.network_retried_system_channel_update_status,
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
-      metrics.labeled_counter.fog_subdir_entry_metadata_err
+      metrics.labeled_counter.fog_subdir_entry_metadata_err,
+      metrics.labeled_counter.media_mkv_codec_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

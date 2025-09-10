@@ -184,6 +184,3 @@ fields:
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE
-- name: days_interacted_bits
-  type: INTEGER
-  mode: NULLABLE

@@ -4545,6 +4545,16 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+    - name: media_mkv_codec_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

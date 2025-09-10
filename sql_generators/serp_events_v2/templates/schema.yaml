@@ -206,3 +206,6 @@ fields:
   - mode: NULLABLE
     name: browser_engagement_max_concurrent_tab_count
     type: INTEGER
+  - mode: NULLABLE
+    name: document_id
+    type: STRING

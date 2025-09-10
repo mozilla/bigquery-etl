@@ -2,9 +2,11 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: Client ID
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: Sample ID
 - name: date
   type: DATE
   mode: NULLABLE

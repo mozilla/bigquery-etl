@@ -23,21 +23,6 @@ RETURNS json AS (
   )
 );
 
--- convert array of key value pairs to a json object
--- values are nested structs and will be converted to json objects
-CREATE TEMP FUNCTION from_map_experiment(
-  input ARRAY<
-    STRUCT<key STRING, value STRUCT<branch STRING, extra STRUCT<type STRING, enrollment_id STRING>>>
-  >
-)
-RETURNS json AS (
-  IF(
-    ARRAY_LENGTH(input) = 0,
-    NULL,
-    JSON_OBJECT(ARRAY(SELECT key FROM UNNEST(input)), ARRAY(SELECT value FROM UNNEST(input)))
-  )
-);
-
 CREATE TEMP FUNCTION metrics_to_json(metrics JSON)
 RETURNS JSON AS (
   JSON_STRIP_NULLS(
@@ -98,7 +83,20 @@ WITH base AS (
     ),
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
-    from_map_experiment(ping_info.experiments) AS experiments,
+    IF(
+      ARRAY_LENGTH(ping_info.experiments) > 0,
+      (
+        SELECT
+          JSON_OBJECT(
+            ARRAY_AGG(experiment.key ORDER BY experiment_offset),
+            ARRAY_AGG(experiment.value ORDER BY experiment_offset)
+          )
+        FROM
+          UNNEST(ping_info.experiments) AS experiment
+          WITH OFFSET AS experiment_offset
+      ),
+      NULL
+    ) AS experiments,
     metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     metrics.uuid.legacy_telemetry_client_id AS legacy_telemetry_client_id,
   FROM

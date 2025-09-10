@@ -60,13 +60,13 @@ CREATE OR REPLACE VIEW
           JSON_VALUE(event_extra.referrer) AS page_referrer
         ) AS url2,
         STRUCT(
-          metadata.geo.country AS navigator_geo,
+          CAST(NULL AS STRING) AS navigator_geo,
           CAST(NULL AS STRING) AS navigator_subscription_type,
           CAST(NULL AS STRING) AS navigator_user_agent,
           CAST(NULL AS STRING) AS navigator_viewport_breakpoint,
           CAST(NULL AS STRING) AS page_http_status,
           CAST(NULL AS STRING) AS page_is_baseline,
-          CAST(NULL AS STRING) AS navigator_geo_iso,
+          metadata.geo.country AS navigator_geo_iso,
           CAST(NULL AS STRING) AS glean_client_annotation_experimentation_id
         ) AS `string`,
         STRUCT(

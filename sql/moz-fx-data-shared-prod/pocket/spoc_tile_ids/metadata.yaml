@@ -6,12 +6,7 @@ owners:
 labels:
   owner1: jklukas
 bigquery: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
-  - workgroup:pocket/prefect
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.pocket_derived.spoc_tile_ids_v1
+workgroup_access: []
+references: {}
+deprecated: true
 require_column_descriptions: false

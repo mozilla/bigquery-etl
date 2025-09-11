@@ -6,14 +6,7 @@ owners:
 labels:
   incremental: true
   table_type: tile_id
-  dag: bqetl_pocket
   owner1: kik
-scheduling:
-  dag_name: bqetl_pocket
-  arguments:
-  - --date
-  - '{{ ds }}'
-  referenced_tables: []
 bigquery:
   time_partitioning:
     type: day

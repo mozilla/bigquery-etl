@@ -189,6 +189,9 @@ fields:
 - name: subsession_counter
   type: INTEGER
   mode: NULLABLE
+- name: search_mode
+  type: STRING
+  mode: NULLABLE
 - name: ad_components
   type: RECORD
   mode: REPEATED

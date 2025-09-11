@@ -588,21 +588,6 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    with TaskGroup(
-        "bigeye__fenix_derived__new_profiles__v1_external",
-        parent_group=task_group_fenix,
-    ) as bigeye__fenix_derived__new_profiles__v1_external:
-        ExternalTaskMarker(
-            task_id="private_bqetl_device_partnerships__wait_for_bigeye__fenix_derived__new_profiles__v1",
-            external_dag_id="private_bqetl_device_partnerships",
-            external_task_id="wait_for_bigeye__fenix_derived__new_profiles__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
-        )
-
-        bigeye__fenix_derived__new_profiles__v1_external.set_upstream(
-            bigeye__fenix_derived__new_profiles__v1
-        )
-
     bigeye__fenix_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__retention__v1",
         table_id="moz-fx-data-shared-prod.fenix_derived.retention_v1",

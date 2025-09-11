@@ -1,0 +1,35 @@
+friendly_name: Enterprise Metrics (clients)
+description: |-
+  Enterprise Metrics (clients).
+owners:
+- pissac@mozilla.com
+- kik@mozilla.com
+labels:
+  incremental: true
+  table_type: client_level
+  schedule: daily
+  dag: bqetl_firefox_enterprise
+  owner1: pissac
+  owner2: kik
+scheduling:
+  dag_name: bqetl_firefox_enterprise
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - is_dau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_active_users
+  - moz-fx-data-shared-prod.firefox_desktop.metrics
+require_column_descriptions: false

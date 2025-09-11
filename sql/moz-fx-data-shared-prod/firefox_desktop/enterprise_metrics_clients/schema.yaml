@@ -1,0 +1,63 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Logical date corresponding to the partition (date when our server
+    received the ping)
+
+    that was processed for generating the metrics.
+
+    '
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: 'A UUID uniquely identifying the client.
+
+    '
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Hashed version of client_id (if present) useful for partitioning;
+    ranges from 0 to 99
+
+    '
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: 'Normalized channel the application is being distributed on. For example,
+    release, beta, etc.
+
+    '
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: 'The distribution id associated with the install of Firefox.
+
+    '
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Indicates whether the client met our definition of dau on the day.
+
+    '
+- name: policies_count
+  type: INTEGER
+  mode: NULLABLE
+  description: 'A uint with the number of active enterprise policies, collected once
+    at startup.
+
+    This metric was generated to correspond to the Legacy Telemetry scalar policies.count.
+
+    '
+- name: policies_is_enterprise
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Attempt to determine if the user is an enterprise user based on various
+    signals.
+
+    This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise
+
+    '
+- name: enterprise_classification
+  type: STRING
+  mode: NULLABLE

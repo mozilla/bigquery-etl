@@ -23,6 +23,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   materialized_view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_live.data_leak_blocker_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.events_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.newtab_v1
   - moz-fx-data-shared-prod.firefox_desktop_live.profiles_v1

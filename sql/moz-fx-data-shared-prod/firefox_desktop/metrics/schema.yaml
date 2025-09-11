@@ -34690,6 +34690,49 @@ fields:
         after the use counter is set then records the value in this histogram.
 
         '
+    - name: places_database_semantic_history_defragment_time
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: bucket_count
+        type: INTEGER
+        mode: NULLABLE
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: histogram_type
+        type: STRING
+        mode: NULLABLE
+      - name: overflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: range
+        type: FLOAT
+        mode: REPEATED
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: time_unit
+        type: STRING
+        mode: NULLABLE
+      - name: underflow
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'PLACES: Time to defragment the semantic database (ms)
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -35553,6 +35596,12 @@ fields:
         successfully locking the profile and starting the app.
 
         Previously collected in the "main" ping''s `simpleMeasurements`.
+
+        '
+    - name: places_database_semantic_history_wasted_percentage
+      type: INTEGER
+      mode: NULLABLE
+      description: 'PLACES: Semantic History database wasted space in percentage (0-100)
 
         '
   - name: labeled_boolean

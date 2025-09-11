@@ -148,6 +148,32 @@ with DAG(
         retry_delay=datetime.timedelta(seconds=1800),
     )
 
+    wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2",
+        external_dag_id="bqetl_mozilla_org_derived",
+        external_task_id="checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefoxdotcom_derived__ga_sessions__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefoxdotcom_derived__ga_sessions__v2",
+        external_dag_id="bqetl_ga4_firefoxdotcom",
+        external_task_id="firefoxdotcom_derived__ga_sessions__v2",
+        execution_delta=datetime.timedelta(days=-1, seconds=79200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v2",
         source_table="ga_clients_v2",
@@ -223,6 +249,19 @@ with DAG(
         checks__fail_mozilla_org_derived__gclid_conversions__v3_external.set_upstream(
             checks__fail_mozilla_org_derived__gclid_conversions__v3
         )
+
+    checks__fail_telemetry_derived__cfs_ga4_attr__v1 = bigquery_dq_check(
+        task_id="checks__fail_telemetry_derived__cfs_ga4_attr__v1",
+        source_table="cfs_ga4_attr_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        task_concurrency=1,
+        retries=0,
+    )
 
     checks__warn_mozilla_org_derived__blogs_goals__v2 = bigquery_dq_check(
         task_id="checks__warn_mozilla_org_derived__blogs_goals__v2",
@@ -515,6 +554,18 @@ with DAG(
         depends_on_past=False,
     )
 
+    telemetry_derived__cfs_ga4_attr__v1 = bigquery_etl_query(
+        task_id="telemetry_derived__cfs_ga4_attr__v1",
+        destination_table="cfs_ga4_attr_v1",
+        dataset_id="telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+    )
+
     checks__fail_mozilla_org_derived__ga_clients__v2.set_upstream(
         mozilla_org_derived__ga_clients__v2
     )
@@ -525,6 +576,10 @@ with DAG(
 
     checks__fail_mozilla_org_derived__gclid_conversions__v3.set_upstream(
         mozilla_org_derived__gclid_conversions__v3
+    )
+
+    checks__fail_telemetry_derived__cfs_ga4_attr__v1.set_upstream(
+        telemetry_derived__cfs_ga4_attr__v1
     )
 
     checks__warn_mozilla_org_derived__blogs_goals__v2.set_upstream(
@@ -640,3 +695,17 @@ with DAG(
     )
 
     sumo_ga_derived__ga4_events__v1.set_upstream(wait_for_sumo_events_table)
+
+    telemetry_derived__cfs_ga4_attr__v1.set_upstream(
+        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2
+    )
+
+    telemetry_derived__cfs_ga4_attr__v1.set_upstream(wait_for_clients_first_seen_v3)
+
+    telemetry_derived__cfs_ga4_attr__v1.set_upstream(
+        wait_for_firefoxdotcom_derived__ga_sessions__v2
+    )
+
+    telemetry_derived__cfs_ga4_attr__v1.set_upstream(
+        mozilla_org_derived__ga_sessions__v3
+    )

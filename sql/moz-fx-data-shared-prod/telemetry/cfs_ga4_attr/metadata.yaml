@@ -16,7 +16,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v2
-  - moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined
-  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
+  - moz-fx-data-shared-prod.telemetry_derived.cfs_ga4_attr_v1
 require_column_descriptions: false

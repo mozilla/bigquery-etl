@@ -106,6 +106,20 @@ with DAG(
         retries=0,
     )
 
+    with TaskGroup(
+        "checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2_external",
+    ) as checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_google_analytics_derived_ga4__wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2",
+            external_dag_id="bqetl_google_analytics_derived_ga4",
+            external_task_id="wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=50400)).isoformat() }}",
+        )
+
+        checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2_external.set_upstream(
+            checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v2
+        )
+
     stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1 = bigquery_etl_query(
         task_id="stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1",
         destination_table="dl_token_ga_attribution_lookup_v1",

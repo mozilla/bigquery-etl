@@ -1,0 +1,28 @@
+friendly_name: Client First Seen with GA4 Attributes
+description: |-
+  Starts with clients_first_seen and left joins to GA4 attribution information
+  on download token if a match is found.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
+  dag: bqetl_google_analytics_derived_ga4
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+  date_partition_parameter: null
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

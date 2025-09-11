@@ -602,13 +602,17 @@ jobs:
                     cp -a sql/. /tmp/workspace/generated-sql/sql
                   fi
 
+                  date
                   PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
+                  date
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/generated-sql/sql/"
+                  date
                   PATH="venv/bin:$PATH" script/bqetl metadata update \
                     --sql-dir /tmp/workspace/generated-sql/sql/ \
                     /tmp/workspace/generated-sql/sql/
+                  date
                   PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
             - persist_to_workspace:
                 root: /tmp/workspace

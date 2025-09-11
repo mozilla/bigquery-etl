@@ -118,12 +118,14 @@ class GleanAppPingViews(GleanTable):
                 if channel_dataset_view in ignored_pings:
                     continue
 
-                sql_dir = output_dir or Path(ConfigLoader.get("default", "sql_dir", fallback="sql")) / project_id
+                # look for schema in output_dir because bqetl generate all runs stable_views first
+                sql_dir = (
+                    output_dir
+                    or Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                    / project_id
+                )
                 existing_schema_path = (
-                    sql_dir
-                    / channel_dataset
-                    / view_name
-                    / SCHEMA_FILE
+                    sql_dir / channel_dataset / view_name / SCHEMA_FILE
                 )
 
                 schema = None

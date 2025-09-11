@@ -5,20 +5,25 @@ RETURNS json AS (
   IF(
     ARRAY_LENGTH(input) = 0,
     NULL,
-    JSON_OBJECT(
-      ARRAY(SELECT key FROM UNNEST(input)),
-      ARRAY(
-        SELECT
-          CASE
-            WHEN SAFE_CAST(value AS NUMERIC) IS NOT NULL
-              THEN TO_JSON(SAFE_CAST(value AS NUMERIC))
-            WHEN SAFE_CAST(value AS BOOL) IS NOT NULL
-              THEN TO_JSON(SAFE_CAST(value AS BOOL))
-            ELSE TO_JSON(value)
-          END
-        FROM
-          UNNEST(input)
-      )
+    (
+      SELECT
+        JSON_OBJECT(
+          ARRAY_AGG(key ORDER BY offset),
+          ARRAY_AGG(
+            CASE
+              WHEN SAFE_CAST(value AS NUMERIC) IS NOT NULL
+                THEN TO_JSON(SAFE_CAST(value AS NUMERIC))
+              WHEN SAFE_CAST(value AS BOOL) IS NOT NULL
+                THEN TO_JSON(SAFE_CAST(value AS BOOL))
+              ELSE TO_JSON(value)
+            END
+            ORDER BY
+              offset
+          )
+        )
+      FROM
+        UNNEST(input)
+        WITH OFFSET
     )
   )
 );

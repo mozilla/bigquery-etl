@@ -1,0 +1,9 @@
+2025-09-11:
+  start_date: 2023-07-30
+  end_date: 2025-09-11
+  reason: Initial backfill of the dataset.
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false

@@ -2470,3 +2470,20 @@ bqetl_bigeye_derived:
     retry_delay: 30m
   tags:
     - impact/tier_3
+
+bqetl_firefox_enterprise:
+  schedule_interval: 0 6 * * *
+  description: |
+    DAG for processing queries related to Firefox Enterprise.
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+    start_date: '2025-08-21'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

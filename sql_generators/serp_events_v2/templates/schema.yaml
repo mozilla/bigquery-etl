@@ -211,7 +211,7 @@ fields:
     type: STRING
   - mode: NULLABLE
     name: overridden_by_third_party
-    type: BOOLEAN
+    type: STRING
   - mode: NULLABLE
     name: subsession_start_time
     type: STRING

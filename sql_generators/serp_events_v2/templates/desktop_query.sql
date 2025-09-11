@@ -98,7 +98,11 @@ impressions AS (
     mozfun.map.get_key(event.extra, 'partner_code') AS partner_code,
     mozfun.map.get_key(event.extra, 'source') AS sap_source,
     COALESCE(SAFE_CAST(mozfun.map.get_key(event.extra, 'tagged') AS bool), FALSE) AS is_tagged,
-    document_id
+    document_id,
+    mozfun.map.get_key(event.extra, 'overridden_by_third_party') AS overridden_by_third_party,
+    ping_info.start_time as subsession_start_time,
+    ping_info.end_time as subsession_end_time,
+    ping_info.seq as subsession_counter
   FROM
     serp_events
   WHERE
@@ -255,7 +259,11 @@ SELECT
   browser_engagement_uri_count,
   browser_engagement_tab_open_event_count,
   browser_engagement_max_concurrent_tab_count,
-  document_id
+  document_id,
+  overridden_by_third_party,
+  subsession_start_time,
+  subsession_end_time,
+  subsession_counter
 FROM
   -- 1 row per impression_id
   impressions

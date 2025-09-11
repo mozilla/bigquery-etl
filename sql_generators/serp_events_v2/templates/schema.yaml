@@ -209,3 +209,15 @@ fields:
   - mode: NULLABLE
     name: document_id
     type: STRING
+  - mode: NULLABLE
+    name: overridden_by_third_party
+    type: BOOLEAN
+  - mode: NULLABLE
+    name: subsession_start_time
+    type: STRING
+  - mode: NULLABLE
+    name: subsession_end_time
+    type: STRING
+  - mode: NULLABLE
+    name: subsession_counter
+    type: INTEGER

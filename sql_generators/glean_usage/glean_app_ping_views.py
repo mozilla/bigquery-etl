@@ -157,6 +157,9 @@ class GleanAppPingViews(GleanTable):
                                 f"Attempt {attempt + 1}: Failed to get schema for {channel_dataset_view}: {e}"
                             )
 
+                if ping_name == "metrics" and target_dataset == "fenix":
+                    print(schema)
+
                 cached_schemas[channel_dataset] = deepcopy(schema)
 
                 if schema.schema["fields"] == []:
@@ -166,6 +169,9 @@ class GleanAppPingViews(GleanTable):
                     unioned_schema.merge(
                         schema, add_missing_fields=True, ignore_incompatible_fields=True
                     )
+                    if ping_name == "metrics" and target_dataset == "fenix":
+                        print("unioned")
+                        print(unioned_schema.schema)
                 except Exception as e:
                     # if schema incompatibilities are detected, then only generate for release channel
                     print(
@@ -226,6 +232,9 @@ class GleanAppPingViews(GleanTable):
                     " Regenerating SQL without restructured `metrics`."
                 )
                 view_sql = _generate_view_sql(restructure_metrics=False)
+
+            if ping_name == "metrics" and target_dataset == "fenix":
+                print(view_sql)
 
             # write generated SQL files to destination folders
             if output_dir:
@@ -296,6 +305,9 @@ class GleanAppPingViews(GleanTable):
                         "description": "Normalized channel name",
                     },
                 ] + unioned_schema.schema["fields"]
+
+                if ping_name == "metrics" and target_dataset == "fenix":
+                    print(unioned_schema.schema)
 
                 unioned_schema.to_yaml_file(schema_dir / "schema.yaml")
 

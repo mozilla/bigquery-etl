@@ -177,6 +177,18 @@ fields:
 - name: document_id
   type: STRING
   mode: NULLABLE
+- name: overridden_by_third_party
+  type: STRING
+  mode: NULLABLE
+- name: subsession_start_time
+  type: STRING
+  mode: NULLABLE
+- name: subsession_end_time
+  type: STRING
+  mode: NULLABLE
+- name: subsession_counter
+  type: INTEGER
+  mode: NULLABLE
 - name: ad_components
   type: RECORD
   mode: REPEATED

@@ -159,3 +159,95 @@ fields:
 - name: others_engagement_clients
   type: INTEGER
   description: Count of clients with any newtab visits using the default UI with any engagement with wallpaper, topic_selection, sections that day
+
+  # Phase 4 Fields
+- name: organic_content_dismissal_clients
+  type: INTEGER
+  description: Count of clients with at least one visit that dismissed organic content on the newtab in the default UI
+- name: organic_content_dismissal_visits
+  type: INTEGER
+  description: Count of visits with at least one dismissal of organic content on the newtab in the default UI
+- name: organic_content_dismissal_count
+  type: INTEGER
+  description: Total number of dismissals on organic content on the newtab in the default UI
+- name: sponsored_content_dismissal_clients
+  type: INTEGER
+  description: Count of clients with at least one visit that dismissed sponsored content on the newtab in the default UI
+- name: sponsored_content_dismissal_visits
+  type: INTEGER
+  description: Count of visits with at least one dismissal of sponsored content on the newtab in the default UI
+- name: sponsored_content_dismissal_count
+  type: INTEGER
+  description: Total number of dismissals on sponsored content on the newtab in the default UI
+- name: organic_topsite_dismissal_clients
+  type: INTEGER
+  description: Count of clients with at least one visit that dismissed an organic topsite on the newtab in the default UI
+- name: organic_topsite_dismissal_visits
+  type: INTEGER
+  description: Count of visits with at least one dismissal of organic topsites on the newtab in the default UI
+- name: organic_topsite_dismissal_count
+  type: INTEGER
+  description: Total number of dismissals on organic topsites on the newtab in the default UI
+- name: sponsored_topsite_dismissal_clients
+  type: INTEGER
+  description: Count of clients with at least one visit that dismissed a sponsored topsite on the newtab in the default UI
+- name: sponsored_topsite_dismissal_visits
+  type: INTEGER
+  description: Count of visits with at least one dismissal of sponsored topsites on the newtab in the default UI
+- name: sponsored_topsite_dismissal_count
+  type: INTEGER
+  description: Total number of dismissals on sponsored topsites on the newtab in the default UI
+- name: content_thumbs_up_clients
+  type: INTEGER
+  description: Count of clients with at least one visit giving a thumbs up to content on the newtab in the default UI
+- name: content_thumbs_up_visits
+  type: INTEGER
+  description: Count of visits with at least one thumbs up interaction on content on the newtab in the default UI
+- name: content_thumbs_up_count
+  type: INTEGER
+  description: Total number of thumbs up interactions on content on the newtab in the default UI
+- name: content_thumbs_down_clients
+  type: INTEGER
+  description: Count of clients with at least one visit giving a thumbs down to content on the newtab in the default UI
+- name: content_thumbs_down_visits
+  type: INTEGER
+  description: Count of visits with at least one thumbs down interaction on content on the newtab in the default UI
+- name: content_thumbs_down_count
+  type: INTEGER
+  description: Total number of thumbs down interactions on content on the newtab in the default UI
+- name: search_ad_click_clients
+  type: INTEGER
+  description: Count of clients with at least one visit that clicked a search ad on the newtab in the default UI
+- name: search_ad_click_visits
+  type: INTEGER
+  description: Count of visits with at least one search ad click on the newtab in the default UI
+- name: search_ad_click_count
+  type: INTEGER
+  description: Total number of search ad clicks on the newtab in the default UI
+- name: search_ad_impression_count
+  type: INTEGER
+  description: Total number of search ad impressions on the newtab in the default UI
+- name: search_engagement_clients
+  type: INTEGER
+  description: Count of clients with at least one visit having any search engagement on the newtab in the default UI
+- name: search_engagement_visits
+  type: INTEGER
+  description: Count of visits with any search engagement on the newtab in the default UI
+- name: search_interaction_count
+  type: INTEGER
+  description: Total number of search interactions on the newtab in the default UI
+- name: widget_interaction_count
+  type: INTEGER
+  description: Total number of widget interactions on the newtab in the default UI
+- name: widget_impression_count
+  type: INTEGER
+  description: Total number of widget impressions on the newtab in the default UI
+- name: other_engagement_visits
+  type: INTEGER
+  description: Count of visits associated with other interactions (e.g., wallpaper, topic_selection, sections) on the newtab in the default UI
+- name: other_interaction_count
+  type: INTEGER
+  description: Total number of interactions for other categories (e.g., wallpaper, topic_selection, sections) on the newtab in the default UI
+- name: other_impression_count
+  type: INTEGER
+  description: Total number of impressions for other categories (e.g., wallpaper, topic_selection, sections) on the newtab in the default UI

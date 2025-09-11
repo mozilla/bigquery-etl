@@ -94,6 +94,9 @@ class EventMonitoringLive(GleanTable):
         parallelism=8,
         id_token=None,
     ):
+        # Cache app_info to avoid repeated calls
+        cached_app_info = get_app_info()
+        
         # Get the app ID from the baseline_table name.
         # This is what `common.py` also does.
         app_id = re.sub(r"_stable\..+", "", baseline_table)
@@ -120,7 +123,7 @@ class EventMonitoringLive(GleanTable):
 
         app_name = [
             app_dataset["app_name"]
-            for _, app in get_app_info().items()
+            for _, app in cached_app_info.items()
             for app_dataset in app
             if dataset == app_dataset["bq_dataset_family"]
         ][0]
@@ -130,7 +133,7 @@ class EventMonitoringLive(GleanTable):
         else:
             v1_name = [
                 app_dataset["v1_name"]
-                for _, app in get_app_info().items()
+                for _, app in cached_app_info.items()
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0]
@@ -166,7 +169,7 @@ class EventMonitoringLive(GleanTable):
             current_date=datetime.today().strftime("%Y-%m-%d"),
             app_name=[
                 app_dataset["canonical_app_name"]
-                for _, app in get_app_info().items()
+                for _, app in cached_app_info.items()
                 for app_dataset in app
                 if dataset == app_dataset["bq_dataset_family"]
             ][0],
@@ -227,6 +230,9 @@ class EventMonitoringLive(GleanTable):
         if not self.across_apps_enabled:
             return
 
+        # Cache app_info to avoid repeated calls
+        cached_app_info = get_app_info()
+
         aggregate_table = "event_monitoring_aggregates_v1"
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
 
@@ -249,7 +255,7 @@ class EventMonitoringLive(GleanTable):
                 dataset = app_dataset["bq_dataset_family"]
                 app_name = [
                     app_dataset["app_name"]
-                    for _, app in get_app_info().items()
+                    for _, app in cached_app_info.items()
                     for app_dataset in app
                     if dataset == app_dataset["bq_dataset_family"]
                 ][0]
@@ -261,7 +267,7 @@ class EventMonitoringLive(GleanTable):
                 else:
                     v1_name = [
                         app_dataset["v1_name"]
-                        for _, app in get_app_info().items()
+                        for _, app in cached_app_info.items()
                         for app_dataset in app
                         if dataset == app_dataset["bq_dataset_family"]
                     ][0]

@@ -20,6 +20,7 @@ class MetricsClientsDaily(GleanTable):
         self.target_table_id = TARGET_TABLE_ID
         self.per_app_id_enabled = False
         self.cross_channel_template = None
+        self.per_app_requires_all_baseline_tables = True
 
         with open(
             Path(os.path.dirname(__file__)) / "templates" / "metrics_templating.yaml",

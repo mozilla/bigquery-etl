@@ -41,7 +41,13 @@ SELECT
   document_id,
   events,
   STRUCT(
-    metadata.geo,
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
     STRUCT(
       metadata.header.date,
       metadata.header.dnt,
@@ -56,7 +62,7 @@ SELECT
       CAST(NULL AS STRUCT<`tls_version` STRING, `tls_cipher_hex` STRING>) AS `parsed_x_lb_tags`
     ) AS `header`,
     metadata.user_agent,
-    metadata.isp
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`
   ) AS `metadata`,
   STRUCT(
     STRUCT(

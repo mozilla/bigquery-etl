@@ -10,9 +10,12 @@ fields:
 - name: additional_properties
   type: STRING
   mode: NULLABLE
+  description: A JSON string containing any payload properties not present in the
+    schema
 - name: document_id
   type: STRING
   mode: NULLABLE
+  description: The document ID specified in the URI when the client sent this message
 - name: events
   type: RECORD
   mode: REPEATED
@@ -50,15 +53,21 @@ fields:
     - name: country
       type: STRING
       mode: NULLABLE
+      description: An ISO 3166-1 alpha-2 country code
     - name: db_version
       type: STRING
       mode: NULLABLE
+      description: The specific geo database version used for this lookup
     - name: subdivision1
       type: STRING
       mode: NULLABLE
+      description: First major country subdivision, typically a state, province, or
+        county
     - name: subdivision2
       type: STRING
       mode: NULLABLE
+      description: Second major country subdivision; not applicable for most countries
+    description: Results of a geographic lookup based on the client's IP address
   - name: header
     type: RECORD
     mode: NULLABLE
@@ -66,27 +75,35 @@ fields:
     - name: date
       type: STRING
       mode: NULLABLE
+      description: Date HTTP header
     - name: dnt
       type: STRING
       mode: NULLABLE
+      description: DNT (Do Not Track) HTTP header
     - name: x_debug_id
       type: STRING
       mode: NULLABLE
+      description: X-Debug-Id HTTP header
     - name: x_foxsec_ip_reputation
       type: STRING
       mode: NULLABLE
+      description: X-Foxsec-IP-Reputation header
     - name: x_lb_tags
       type: STRING
       mode: NULLABLE
+      description: X-LB-Tags HTTP header
     - name: x_pingsender_version
       type: STRING
       mode: NULLABLE
+      description: X-PingSender-Version HTTP header
     - name: x_source_tags
       type: STRING
       mode: NULLABLE
+      description: X-Source-Tags HTTP header
     - name: x_telemetry_agent
       type: STRING
       mode: NULLABLE
+      description: X-Telemetry-Agent HTTP header
     - name: parsed_date
       type: TIMESTAMP
       mode: NULLABLE
@@ -103,6 +120,7 @@ fields:
       - name: tls_cipher_hex
         type: STRING
         mode: NULLABLE
+    description: Headers included in the client's HTTP request
   - name: isp
     type: RECORD
     mode: NULLABLE
@@ -110,12 +128,17 @@ fields:
     - name: db_version
       type: STRING
       mode: NULLABLE
+      description: The specific geo ISP database version used for this lookup
     - name: name
       type: STRING
       mode: NULLABLE
+      description: The name of the ISP associated with the client's IP address
     - name: organization
       type: STRING
       mode: NULLABLE
+      description: The name of a specific business entity associated with the client's
+        IP address when available; otherwise the ISP name
+    description: Results of ISP lookup based on the client's IP address
   - name: user_agent
     type: RECORD
     mode: NULLABLE
@@ -129,6 +152,7 @@ fields:
     - name: version
       type: STRING
       mode: NULLABLE
+    description: Parsed components of the client's user agent string
 - name: metrics
   type: RECORD
   mode: NULLABLE
@@ -140,57 +164,113 @@ fields:
     - name: characteristics_font_name_list_emoji_modified
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Whether the pref font.name-list.emoji was modified.
+
+        '
     - name: characteristics_inverted_colors
       type: BOOLEAN
       mode: NULLABLE
+      description: 'What LookAndFeel(InvertedColors) reports.
+
+        '
     - name: characteristics_monochrome
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Whether the user''s device is monochrome
+
+        '
     - name: characteristics_pdf_viewer
       type: BOOLEAN
       mode: NULLABLE
+      description: 'PDF viewer support reported by the navigator
+
+        '
     - name: characteristics_prefers_reduced_motion
       type: BOOLEAN
       mode: NULLABLE
+      description: 'What LookAndFeel(PrefersReducedMotion) reports.
+
+        '
     - name: characteristics_prefers_reduced_transparency
       type: BOOLEAN
       mode: NULLABLE
+      description: 'What LookAndFeel(PrefersReducedTransparency) reports.
+
+        '
     - name: characteristics_prefs_block_popups
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Block pop-up windows (The dom.disable_open_during_load pref)
+
+        '
     - name: characteristics_prefs_browser_display_use_document_fonts
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Allow pages to choose their own fonts.
+
+        '
     - name: characteristics_prefs_general_autoscroll
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Use autoscrolling
+
+        '
     - name: characteristics_prefs_general_smoothscroll
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Use smooth scrolling
+
+        '
     - name: characteristics_prefs_media_eme_enabled
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Value of the media.eme.enabled pref.
+
+        '
     - name: characteristics_prefs_overlay_scrollbars
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Use overlay scrollbars (or otherwise "Always show scrollbars")
+
+        '
     - name: characteristics_prefs_privacy_donottrackheader_enabled
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Sending "do not track" HTTP header
+
+        '
     - name: characteristics_prefs_privacy_globalprivacycontrol_enabled
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Sending "global privacy control" HTTP header
+
+        '
     - name: characteristics_prefs_zoom_text_only
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Text-only zoom enabled (vs. full-zoom)
+
+        '
     - name: characteristics_use_document_colors
       type: BOOLEAN
       mode: NULLABLE
+      description: 'This is the derived PreferenceSheet::Prefs::mUseDocumentColors
+        value.
+
+        '
     - name: characteristics_video_dynamic_range
       type: BOOLEAN
       mode: NULLABLE
+      description: 'What LookAndFeel(VideoDynamicRange) reports. Note that CSSVideoDynamicRange
+        has an additional dependency on Color Depth.
+
+        '
     - name: characteristics_using_accelerated_canvas
       type: BOOLEAN
       mode: NULLABLE
+      description: 'Whether the user''s device is using accelerated canvas
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -205,6 +285,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a metric was set with an invalid label.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: glean_error_invalid_overflow
       type: RECORD
       mode: REPEATED
@@ -215,6 +300,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a metric was set a value that overflowed.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: glean_error_invalid_state
       type: RECORD
       mode: REPEATED
@@ -225,6 +315,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a timing metric was used incorrectly.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
     - name: glean_error_invalid_value
       type: RECORD
       mode: REPEATED
@@ -235,6 +330,11 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
+      description: 'Counts the number of times a metric was set to an invalid value.
+
+        The labels are the `category.name` identifier of the metric.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE
@@ -242,348 +342,704 @@ fields:
     - name: characteristics_any_pointer_type
       type: INTEGER
       mode: NULLABLE
+      description: 'Union of pointers available. We apply union to determine if the
+        user have both coarse and fine pointer.
+
+        '
     - name: characteristics_audio_channels
       type: INTEGER
       mode: NULLABLE
+      description: 'Audio sampling rate
+
+        '
     - name: characteristics_audio_fingerprint
       type: INTEGER
       mode: NULLABLE
+      description: 'Audio fingerprint of the user. A float number multiplied by 10e7.
+
+        '
     - name: characteristics_audio_frames
       type: INTEGER
       mode: NULLABLE
+      description: 'Audio frames
+
+        '
     - name: characteristics_audio_rate
       type: INTEGER
       mode: NULLABLE
+      description: 'Audio sampling rate
+
+        '
     - name: characteristics_avail_height
       type: INTEGER
       mode: NULLABLE
+      description: 'Available height property
+
+        '
     - name: characteristics_avail_width
       type: INTEGER
       mode: NULLABLE
+      description: 'Available width property
+
+        '
     - name: characteristics_build_date
       type: INTEGER
       mode: NULLABLE
+      description: 'Firefox build''s build date in unix time
+
+        '
     - name: characteristics_color_accentcolor
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Accentcolor.
+
+        '
     - name: characteristics_color_accentcolortext
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Accentcolortext.
+
+        '
     - name: characteristics_color_canvas
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Canvas.
+
+        '
     - name: characteristics_color_canvastext
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Canvastext.
+
+        '
     - name: characteristics_color_depth
       type: INTEGER
       mode: NULLABLE
+      description: 'The Color Depth reported by CSS
+
+        '
     - name: characteristics_color_gamut
       type: INTEGER
       mode: NULLABLE
+      description: 'The Color Gamut reported by CSS
+
+        '
     - name: characteristics_color_highlight
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Highlight.
+
+        '
     - name: characteristics_color_highlighttext
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Highlighttext.
+
+        '
     - name: characteristics_color_scheme
       type: INTEGER
       mode: NULLABLE
+      description: 'The Color Scheme used for Content, from ContentPrefs() Preference
+        Sheet.
+
+        '
     - name: characteristics_color_selecteditem
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Selecteditem.
+
+        '
     - name: characteristics_color_selecteditemtext
       type: INTEGER
       mode: NULLABLE
+      description: 'The CSS system-color Selecteditemtext.
+
+        '
     - name: characteristics_font_default_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.default prefs.
+
+        '
     - name: characteristics_font_minimum_size_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.minimum-size prefs.
+
+        '
     - name: characteristics_font_name_list_cursive_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of modified font.name-list.cursive. prefs.
+
+        '
     - name: characteristics_font_name_list_monospace_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of modified font.name-list.monospace. prefs.
+
+        '
     - name: characteristics_font_name_list_sans_serif_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of modified font.name-list.sans-serif. prefs.
+
+        '
     - name: characteristics_font_name_list_serif_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of modified font.name-list.serif. prefs.
+
+        '
     - name: characteristics_font_name_monospace_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.name.monospace prefs.
+
+        '
     - name: characteristics_font_name_sans_serif_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.name.sans-serif prefs.
+
+        '
     - name: characteristics_font_name_serif_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.name.serif prefs.
+
+        '
     - name: characteristics_font_size_monospace_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.size.monospace prefs.
+
+        '
     - name: characteristics_font_size_variable_modified
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of other modified font.size.variable prefs.
+
+        '
     - name: characteristics_inner_height
       type: INTEGER
       mode: NULLABLE
+      description: 'Inner height of user''s browser.
+
+        '
     - name: characteristics_inner_width
       type: INTEGER
       mode: NULLABLE
+      description: 'Inner width of user''s browser.
+
+        '
     - name: characteristics_mathml1
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml10
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml2
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml3
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml4
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml5
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml6
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml7
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml8
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml9
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_max_touch_points
       type: INTEGER
       mode: NULLABLE
+      description: 'The number of touch points we will report to the web. On Android,
+        this is based on Android''s FEATURE_TOUCHSCREEN* constants - Mozilla caps
+        this at 5 as Android stops distinguishing between numbers greater than 5.  On
+        Windows this comes from the SM_MAXIMUMTOUCHES System Metric.
+
+        '
     - name: characteristics_motion_decimals
       type: INTEGER
       mode: NULLABLE
+      description: 'devicemotion event''s decimal places count
+
+        '
     - name: characteristics_motion_freq
       type: INTEGER
       mode: NULLABLE
+      description: 'devicemotion event''s frequency
+
+        '
     - name: characteristics_orientation_angle
       type: INTEGER
       mode: NULLABLE
+      description: 'Orientation angle of the screen
+
+        '
     - name: characteristics_orientation_decimals
       type: INTEGER
       mode: NULLABLE
+      description: 'deviceorientation event''s decimal places count
+
+        '
     - name: characteristics_orientation_freq
       type: INTEGER
       mode: NULLABLE
+      description: 'deviceorientation event''s frequency
+
+        '
     - name: characteristics_orientationabs_decimals
       type: INTEGER
       mode: NULLABLE
+      description: 'deviceorientationabsolute event''s decimal places count
+
+        '
     - name: characteristics_orientationabs_freq
       type: INTEGER
       mode: NULLABLE
+      description: 'deviceorientationabsolute event''s frequency
+
+        '
     - name: characteristics_outer_height
       type: INTEGER
       mode: NULLABLE
+      description: 'Outer height of user''s browser.
+
+        '
     - name: characteristics_outer_width
       type: INTEGER
       mode: NULLABLE
+      description: 'Outer width of user''s browser.
+
+        '
     - name: characteristics_pixel_depth
       type: INTEGER
       mode: NULLABLE
+      description: 'Screen pixel depth property
+
+        '
     - name: characteristics_pixel_ratio
       type: INTEGER
       mode: NULLABLE
+      description: 'The value of window.devicePixelRatio
+
+        '
     - name: characteristics_pointer_height
       type: INTEGER
       mode: NULLABLE
+      description: 'Height of user''s pointer
+
+        '
     - name: characteristics_pointer_tiltx
       type: INTEGER
       mode: NULLABLE
+      description: 'TiltX of user''s pointer
+
+        '
     - name: characteristics_pointer_tilty
       type: INTEGER
       mode: NULLABLE
+      description: 'TiltY of user''s pointer
+
+        '
     - name: characteristics_pointer_twist
       type: INTEGER
       mode: NULLABLE
+      description: 'Twist of user''s pointer
+
+        '
     - name: characteristics_pointer_type
       type: INTEGER
       mode: NULLABLE
+      description: 'Pointer type of the user''s primary pointer device.
+
+        '
     - name: characteristics_pointer_width
       type: INTEGER
       mode: NULLABLE
+      description: 'Width of user''s pointer
+
+        '
     - name: characteristics_posx
       type: INTEGER
       mode: NULLABLE
+      description: 'window.screen.left value. Provides us the position of the browser
+        and the width of any possible task/menu bar
+
+        '
     - name: characteristics_posy
       type: INTEGER
       mode: NULLABLE
+      description: 'window.screen.top value. Provides us the position of the browser
+        and the height of any possible task/menu bar
+
+        '
     - name: characteristics_prefers_contrast
       type: INTEGER
       mode: NULLABLE
+      description: 'What Gecko_MediaFeatures_PrefersContrast reports for a ContentDocument
+
+        '
     - name: characteristics_prefs_network_cookie_cookiebehavior
       type: INTEGER
       mode: NULLABLE
+      description: 'Value of the network.cookie.cookieBehavior pref.
+
+        '
     - name: characteristics_processor_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of processors.
+
+        '
     - name: characteristics_screen_height
       type: INTEGER
       mode: NULLABLE
+      description: 'Screen height from a window.
+
+        '
     - name: characteristics_screen_orientation
       type: INTEGER
       mode: NULLABLE
+      description: 'Orientation of the primary screen.
+
+        '
     - name: characteristics_screen_width
       type: INTEGER
       mode: NULLABLE
+      description: 'Screen width from a window.
+
+        '
     - name: characteristics_size_mode
       type: INTEGER
       mode: NULLABLE
+      description: 'Whether window is maximized, minimized, normal or fullscreen
+
+        '
     - name: characteristics_submission_schema
       type: INTEGER
       mode: NULLABLE
+      description: 'An incrementing constant that represents the current schema/source
+        of the data present in a ping. By referring to this value in a ping, one can
+        know for certain the provenance of other data present in the ping, and what
+        data may or may not be present.
+
+        '
     - name: characteristics_target_frame_rate
       type: INTEGER
       mode: NULLABLE
+      description: 'The target frame rate in frames-per-second.
+
+        '
     - name: characteristics_zoom_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of domains the users has a non-default zoom level.
+
+        '
     - name: characteristics_camera_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of cameras available on the device.
+
+        '
     - name: characteristics_gl_version
       type: INTEGER
       mode: NULLABLE
+      description: 'The version of OpenGL supported by the user''s system.
+
+        '
     - name: characteristics_group_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of device groups reported by the device.
+
+        '
     - name: characteristics_group_count_wo_speakers
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of device groups without speakers reported by the device.
+
+        '
     - name: characteristics_ice_order
       type: INTEGER
       mode: NULLABLE
+      description: 'Unique ICE foundations occurrence count
+
+        '
     - name: characteristics_ice_sd
       type: INTEGER
       mode: NULLABLE
+      description: 'ICE foundation discovery latency standard deviation sum multiplied
+        by 1000
+
+        '
     - name: characteristics_microphone_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of microphones available on the device.
+
+        '
     - name: characteristics_speaker_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of speakers available on the device.
+
+        '
     - name: characteristics_voices_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of speechSynthesis voices available to the user.
+
+        '
     - name: characteristics_voices_local_count
       type: INTEGER
       mode: NULLABLE
+      description: 'Number of local speechSynthesis voices available to the user.
+
+        '
     - name: characteristics_gl_version_software
       type: INTEGER
       mode: NULLABLE
+      description: 'The version of OpenGL supported by the user''s system.
+
+        '
     - name: characteristics_wgpu_maxbindgroups
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxBindGroups
+
+        '
     - name: characteristics_wgpu_maxbindgroupsplusvertexbuffers
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxBindGroupsPlusVertexBuffers
+
+        '
     - name: characteristics_wgpu_maxbindingsperbindgroup
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxBindingsPerBindGroup
+
+        '
     - name: characteristics_wgpu_maxbuffersize
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxBufferSize
+
+        '
     - name: characteristics_wgpu_maxcolorattachmentbytespersample
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxColorAttachmentBytesPerSample
+
+        '
     - name: characteristics_wgpu_maxcolorattachments
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxColorAttachments
+
+        '
     - name: characteristics_wgpu_maxcomputeinvocationsperworkgroup
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxComputeInvocationsPerWorkgroup
+
+        '
     - name: characteristics_wgpu_maxcomputeworkgroupsizex
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupSizeX
+
+        '
     - name: characteristics_wgpu_maxcomputeworkgroupsizey
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupSizeY
+
+        '
     - name: characteristics_wgpu_maxcomputeworkgroupsizez
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupSizeZ
+
+        '
     - name: characteristics_wgpu_maxcomputeworkgroupsperdimension
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupsPerDimension
+
+        '
     - name: characteristics_wgpu_maxcomputeworkgroupstoragesize
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxComputeWorkgroupStorageSize
+
+        '
     - name: characteristics_wgpu_maxdynamicstoragebuffersperpipelinelayout
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxDynamicStorageBuffersPerPipelineLayout
+
+        '
     - name: characteristics_wgpu_maxdynamicuniformbuffersperpipelinelayout
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxDynamicUniformBuffersPerPipelineLayout
+
+        '
     - name: characteristics_wgpu_maxinterstageshadervariables
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxInterStageShaderVariables
+
+        '
     - name: characteristics_wgpu_maxsampledtexturespershaderstage
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxSampledTexturesPerShaderStage
+
+        '
     - name: characteristics_wgpu_maxsamplerspershaderstage
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxSamplersPerShaderStage
+
+        '
     - name: characteristics_wgpu_maxstoragebufferbindingsize
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxStorageBufferBindingSize
+
+        '
     - name: characteristics_wgpu_maxstoragebufferspershaderstage
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxStorageBuffersPerShaderStage
+
+        '
     - name: characteristics_wgpu_maxstoragetexturespershaderstage
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxStorageTexturesPerShaderStage
+
+        '
     - name: characteristics_wgpu_maxtexturearraylayers
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxTextureArrayLayers
+
+        '
     - name: characteristics_wgpu_maxtexturedimension1d
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxTextureDimension1D
+
+        '
     - name: characteristics_wgpu_maxtexturedimension2d
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxTextureDimension2D
+
+        '
     - name: characteristics_wgpu_maxtexturedimension3d
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxTextureDimension3D
+
+        '
     - name: characteristics_wgpu_maxuniformbufferbindingsize
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxUniformBufferBindingSize
+
+        '
     - name: characteristics_wgpu_maxuniformbufferspershaderstage
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxUniformBuffersPerShaderStage
+
+        '
     - name: characteristics_wgpu_maxvertexattributes
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxVertexAttributes
+
+        '
     - name: characteristics_wgpu_maxvertexbufferarraystride
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxVertexBufferArrayStride
+
+        '
     - name: characteristics_wgpu_maxvertexbuffers
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit maxVertexBuffers
+
+        '
     - name: characteristics_wgpu_minstoragebufferoffsetalignment
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit minStorageBufferOffsetAlignment
+
+        '
     - name: characteristics_wgpu_minuniformbufferoffsetalignment
       type: INTEGER
       mode: NULLABLE
+      description: 'WebGPU limit minUniformBufferOffsetAlignment
+
+        '
     - name: characteristics_gl2_version_software
       type: INTEGER
       mode: NULLABLE
+      description: 'The version of OpenGL supported by the user''s system.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE
@@ -591,381 +1047,801 @@ fields:
     - name: characteristics_canvasdata1
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        simple organge box and used as a control image
+
+        '
     - name: characteristics_canvasdata10
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata10software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata11_webgl
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a WebGL canvas (instead
+        of Canvas2D). IT is a RGB gradient cube.
+
+        '
     - name: characteristics_canvasdata11_webglsoftware
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a WebGL canvas (instead
+        of Canvas2D). IT is a RGB gradient cube.
+
+        '
     - name: characteristics_canvasdata12_fingerprintjs1
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' text canvas
+
+        '
     - name: characteristics_canvasdata12_fingerprintjs1software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' text canvas
+
+        '
     - name: characteristics_canvasdata13_fingerprintjs2
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' geometry canvas
+
+        '
     - name: characteristics_canvasdata13_fingerprintjs2software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' geometry canvas
+
+        '
     - name: characteristics_canvasdata1software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        simple organge box and used as a control image
+
+        '
     - name: characteristics_canvasdata2
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        bordered triage, and used to test point interpolation
+
+        '
     - name: characteristics_canvasdata2software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        bordered triage, and used to test point interpolation
+
+        '
     - name: characteristics_canvasdata3
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata4
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is two
+        rotated, semi-transparenct overlapping squares, used to test transparency
+        and point interpolation.
+
+        '
     - name: characteristics_canvasdata4software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is two
+        rotated, semi-transparenct overlapping squares, used to test transparency
+        and point interpolation.
+
+        '
     - name: characteristics_canvasdata5
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered normally.
+
+        '
     - name: characteristics_canvasdata5software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered normally.
+
+        '
     - name: characteristics_canvasdata6
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata6software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata7
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered normally.
+
+        '
     - name: characteristics_canvasdata7software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered normally.
+
+        '
     - name: characteristics_canvasdata8
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata8software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata9
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered normally.
+
+        '
     - name: characteristics_canvasdata9software
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered normally.
+
+        '
     - name: characteristics_changed_media_prefs
       type: STRING
       mode: NULLABLE
+      description: 'Changed media prefs and their values.
+
+        '
     - name: characteristics_channel
       type: STRING
       mode: NULLABLE
+      description: 'Firefox build channel
+
+        '
     - name: characteristics_cpu_model
       type: STRING
       mode: NULLABLE
+      description: 'CPU model of the user''s device
+
+        '
     - name: characteristics_font_default_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.default.<default language group> pref
+
+        '
     - name: characteristics_font_default_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.default.x-western pref
+
+        '
     - name: characteristics_font_minimum_size_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.minimum-size.<default language group> pref
+
+        '
     - name: characteristics_font_minimum_size_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.minimum-size.x-western pref
+
+        '
     - name: characteristics_font_name_monospace_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.name.monospace.<default language group>
+        pref
+
+        '
     - name: characteristics_font_name_monospace_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.name.monospace.x-western pref
+
+        '
     - name: characteristics_font_name_sans_serif_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.name.sans-serif.<default language group>
+        pref
+
+        '
     - name: characteristics_font_name_sans_serif_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.name.sans-serif.x-western pref
+
+        '
     - name: characteristics_font_name_serif_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.name.serif.<default language group> pref
+
+        '
     - name: characteristics_font_name_serif_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.name.serif.x-western pref
+
+        '
     - name: characteristics_font_size_monospace_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.size.monospace.<default language group>
+        pref
+
+        '
     - name: characteristics_font_size_monospace_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.size.monospace.x-western pref
+
+        '
     - name: characteristics_font_size_variable_default_group
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.size.variable.<default language group> pref
+
+        '
     - name: characteristics_font_size_variable_western
       type: STRING
       mode: NULLABLE
+      description: 'The value of the font.size.variable.x-western pref
+
+        '
     - name: characteristics_intl_locale
       type: STRING
       mode: NULLABLE
+      description: 'Locale information provided by Intl
+
+        '
     - name: characteristics_keyboard_layout
       type: STRING
       mode: NULLABLE
+      description: 'Name of the current keyboard layout.
+
+        '
     - name: characteristics_languages
       type: STRING
       mode: NULLABLE
+      description: 'Languages the user set. Returns intl.accept_languages pref, if
+        it is empty, returns the first matched OS''s language or the default language.
+
+        '
     - name: characteristics_os_name
       type: STRING
       mode: NULLABLE
+      description: 'User''s OS name
+
+        '
     - name: characteristics_os_version
       type: STRING
       mode: NULLABLE
+      description: 'User''s OS version
+
+        '
     - name: characteristics_oscpu
       type: STRING
       mode: NULLABLE
+      description: 'User''s OS CPU reported by the navigator
+
+        '
     - name: characteristics_platform
       type: STRING
       mode: NULLABLE
+      description: 'Platform reported by the navigator
+
+        '
     - name: characteristics_pointer_pressure
       type: STRING
       mode: NULLABLE
+      description: 'Pressure of user''s pointer
+
+        '
     - name: characteristics_pointer_tangentinal_pressure
       type: STRING
       mode: NULLABLE
+      description: 'Tangential Pressure of user''s pointer
+
+        '
     - name: characteristics_prefs_intl_accept_languages
       type: STRING
       mode: NULLABLE
+      description: 'Value of the intl.accept_languages pref.
+
+        '
     - name: characteristics_scalings
       type: STRING
       mode: NULLABLE
+      description: 'Screen(s) scaling/zoom level
+
+        '
     - name: characteristics_system_locale
       type: STRING
       mode: NULLABLE
+      description: 'The locale used by the host OS for localization.
+
+        '
     - name: characteristics_text_anti_aliasing
       type: STRING
       mode: NULLABLE
+      description: 'Font anti aliasing level
+
+        '
     - name: characteristics_timezone
       type: STRING
       mode: NULLABLE
+      description: 'The the current timezone of the system
+
+        '
     - name: characteristics_touch_rotation_angle
       type: STRING
       mode: NULLABLE
+      description: 'Rotation angle of user''s touch
+
+        '
     - name: characteristics_version
       type: STRING
       mode: NULLABLE
+      description: 'Firefox build version
+
+        '
     - name: glean_client_annotation_experimentation_id
       type: STRING
       mode: NULLABLE
+      description: 'An experimentation identifier derived and provided by the application
+
+        for the purpose of experimentation enrollment.
+
+        '
     - name: characteristics_gl_fragment_shader
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
     - name: characteristics_gl_renderer
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
     - name: characteristics_gl_renderer_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
     - name: characteristics_gl_vendor
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
     - name: characteristics_gl_vendor_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
     - name: characteristics_gl_version_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
     - name: characteristics_gl_vertex_shader
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
     - name: characteristics_voices_all_ssdeep
       type: STRING
       mode: NULLABLE
+      description: 'ssdeep hash of all speechSynthesis voices.
+
+        '
     - name: characteristics_voices_default
       type: STRING
       mode: NULLABLE
+      description: 'The default speechSynthesis voice.
+
+        '
     - name: characteristics_voices_local_ssdeep
       type: STRING
       mode: NULLABLE
+      description: 'ssdeep hash of local speechSynthesis voices.
+
+        '
     - name: characteristics_voices_nonlocal_ssdeep
       type: STRING
       mode: NULLABLE
+      description: 'ssdeep hash of non-local speechSynthesis voices.
+
+        '
     - name: characteristics_gl_context_type
       type: STRING
       mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
     - name: characteristics_gl_context_type_software
       type: STRING
       mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
     - name: characteristics_gl_fragment_shader_software
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
     - name: characteristics_gl_renderer_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
     - name: characteristics_gl_renderer_software
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
     - name: characteristics_gl_vendor_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
     - name: characteristics_gl_vendor_software
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
     - name: characteristics_gl_version_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
     - name: characteristics_gl_vertex_shader_software
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
     - name: characteristics_canvasdata3avif
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3avifsoftware
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3cspsafe
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3cspsafesoftware
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3png
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3pngsoftware
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3webp
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata3webpsoftware
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvas_feature_status
       type: STRING
       mode: NULLABLE
+      description: 'Status of and failure id (if failed) of ACCELERATED_CANVAS2D feature
+
+        '
     - name: characteristics_wgpu_missing_features
       type: STRING
       mode: NULLABLE
+      description: 'Missing features of WebGPU as a bitset
+
+        '
     - name: characteristics_cpu_arch
       type: STRING
       mode: NULLABLE
+      description: 'Arch of the user''s device
+
+        '
     - name: characteristics_gl2_context_type
       type: STRING
       mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
     - name: characteristics_gl2_context_type_software
       type: STRING
       mode: NULLABLE
+      description: 'The type of the GL context (EGL, GLX, WGL, etc).
+
+        '
     - name: characteristics_gl2_fragment_shader
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
     - name: characteristics_gl2_fragment_shader_software
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the fragment shader.
+
+        '
     - name: characteristics_gl2_renderer
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
     - name: characteristics_gl2_renderer_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
     - name: characteristics_gl2_renderer_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL renderer string.
+
+        '
     - name: characteristics_gl2_renderer_software
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL renderer string.
+
+        '
     - name: characteristics_gl2_vendor
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
     - name: characteristics_gl2_vendor_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
     - name: characteristics_gl2_vendor_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL vendor string.
+
+        '
     - name: characteristics_gl2_vendor_software
       type: STRING
       mode: NULLABLE
+      description: 'The OpenGL vendor string.
+
+        '
     - name: characteristics_gl2_version_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
     - name: characteristics_gl2_version_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw OpenGL version string.
+
+        '
     - name: characteristics_gl2_vertex_shader
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
     - name: characteristics_gl2_vertex_shader_software
       type: STRING
       mode: NULLABLE
+      description: 'Hash of the transformed source of the vertex shader.
+
+        '
     - name: characteristics_mathml1
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml10
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml2
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml3
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml4
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml5
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml6
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml7
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml8
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_mathml9
       type: STRING
       mode: NULLABLE
+      description: 'Width of the drawn MathML element
+
+        '
     - name: characteristics_canvas_dpr
       type: STRING
       mode: NULLABLE
+      description: 'The device pixel ratio of the canvas rendering context
+
+        '
     - name: characteristics_machine_model_name
       type: STRING
       mode: NULLABLE
+      description: 'Machine model name
+
+        '
     - name: characteristics_fonts_fpjs_allowlisted
       type: STRING
       mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts queried by FPJS
+
+        '
     - name: characteristics_fonts_fpjs_nonallowlisted
       type: STRING
       mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts queried by FPJS
+
+        '
     - name: characteristics_fonts_variant_a_allowlisted
       type: STRING
       mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts queried of variant A
+
+        '
     - name: characteristics_fonts_variant_a_nonallowlisted
       type: STRING
       mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts queried of variant A
+
+        '
     - name: characteristics_fonts_variant_b_allowlisted
       type: STRING
       mode: NULLABLE
+      description: 'SHA256 of allowlisted fonts queried of variant B
+
+        '
     - name: characteristics_fonts_variant_b_nonallowlisted
       type: STRING
       mode: NULLABLE
+      description: 'SHA256 of non-allowlisted fonts queried of variant B
+
+        '
     - name: characteristics_pixel_ratio
       type: STRING
       mode: NULLABLE
+      description: 'The value of window.devicePixelRatio
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE
@@ -983,195 +1859,407 @@ fields:
     - name: characteristics_audio_devices
       type: STRING
       mode: NULLABLE
+      description: 'A JSON object containing sample rate and max channel count of
+        every audio device, and output latency of default device
+
+        '
     - name: characteristics_canvasdata1
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        simple organge box and used as a control image
+
+        '
     - name: characteristics_canvasdata10
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata11_webgl
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a WebGL canvas (instead
+        of Canvas2D). IT is a RGB gradient cube.
+
+        '
     - name: characteristics_canvasdata12_fingerprintjs1
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' text canvas
+
+        '
     - name: characteristics_canvasdata13_fingerprintjs2
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas, it is a copy of
+        fingerprintjs'' geometry canvas
+
+        '
     - name: characteristics_canvasdata2
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        bordered triage, and used to test point interpolation
+
+        '
     - name: characteristics_canvasdata3
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        stretched photographic image, used to test image operations.
+
+        '
     - name: characteristics_canvasdata4
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is two
+        rotated, semi-transparenct overlapping squares, used to test transparency
+        and point interpolation.
+
+        '
     - name: characteristics_canvasdata5
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered normally.
+
+        '
     - name: characteristics_canvasdata6
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        local font rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata7
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered normally.
+
+        '
     - name: characteristics_canvasdata8
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        system-ui font rendered with italics, rotation, and shadow-blur.
+
+        '
     - name: characteristics_canvasdata9
       type: STRING
       mode: NULLABLE
+      description: 'The sha1 hash of an image rendered on a canvas. The image is a
+        font shipped with Firefox rendered normally.
+
+        '
     - name: characteristics_errors
       type: STRING
       mode: NULLABLE
+      description: 'Errors occured on C++ side of data collection
+
+        '
     - name: characteristics_ice_foundations
       type: STRING
       mode: NULLABLE
+      description: 'Unique ICE foundations occurance count and the standard deviation
+        of latencies
+
+        '
     - name: characteristics_js_errors
       type: STRING
       mode: NULLABLE
+      description: 'Errors occured on JavaScript side of data collection
+
+        '
     - name: characteristics_math_ops
       type: STRING
       mode: NULLABLE
+      description: 'Result of fingerprintable math operations
+
+        '
     - name: characteristics_media_capabilities
       type: STRING
       mode: NULLABLE
+      description: 'Which, if any, media types are not supported, and whether they
+        can be run smoothly and power-efficiently.
+
+        '
     - name: characteristics_media_devices
       type: STRING
       mode: NULLABLE
+      description: 'A JSON object containing the number of audio input/output, video
+        input and the number of unique group ids.
+
+        '
     - name: characteristics_missing_fonts
       type: STRING
       mode: NULLABLE
+      description: 'If a Font List is available for the user''s platform, this string_list
+        contains the fonts that are missing from the user''s computer.
+
+        '
     - name: characteristics_voices
       type: STRING
       mode: NULLABLE
+      description: 'Available speechSynthesis voices.
+
+        '
     - name: characteristics_webglinfo
       type: STRING
       mode: NULLABLE
+      description: 'A JSON blob that contains information about the graphics hardware
+        exposed by WebGL.
+
+        '
     - name: characteristics_gl_extensions
       type: STRING
       mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl_extensions_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl_minimal_source
       type: STRING
       mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
     - name: characteristics_gl_params_extensions
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
     - name: characteristics_gl_params_v1
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
     - name: characteristics_gl_params_v2
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
     - name: characteristics_gl_precision_fragment
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
     - name: characteristics_gl_precision_vertex
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
     - name: characteristics_media_capabilities_h264
       type: STRING
       mode: NULLABLE
+      description: 'Levels of support for H264 codec.
+
+        '
     - name: characteristics_media_capabilities_not_efficient
       type: STRING
       mode: NULLABLE
+      description: 'Which, if any, media types are not power efficient.
+
+        '
     - name: characteristics_media_capabilities_not_smooth
       type: STRING
       mode: NULLABLE
+      description: 'Which, if any, media types are not smooth.
+
+        '
     - name: characteristics_media_capabilities_unsupported
       type: STRING
       mode: NULLABLE
+      description: 'Which, if any, media types are not supported.
+
+        '
     - name: characteristics_voices_sample
       type: STRING
       mode: NULLABLE
+      description: 'Names of 5 sample speechSynthesis voices.
+
+        '
     - name: characteristics_voices_sha1
       type: STRING
       mode: NULLABLE
+      description: 'SHA1 hash of all the voices.
+
+        '
     - name: characteristics_gl_extensions_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl_extensions_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl_minimal_source_software
       type: STRING
       mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
     - name: characteristics_gl_params_extensions_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
     - name: characteristics_gl_params_v1_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
     - name: characteristics_gl_params_v2_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
     - name: characteristics_gl_precision_fragment_software
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
     - name: characteristics_gl_precision_vertex_software
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
     - name: characteristics_user_agent
       type: STRING
       mode: NULLABLE
+      description: 'User agent string
+
+        '
     - name: characteristics_gl2_extensions
       type: STRING
       mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl2_extensions_raw
       type: STRING
       mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl2_extensions_raw_software
       type: STRING
       mode: NULLABLE
+      description: 'The raw list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl2_extensions_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of OpenGL extensions supported by the user''s system.
+
+        '
     - name: characteristics_gl2_minimal_source
       type: STRING
       mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
     - name: characteristics_gl2_minimal_source_software
       type: STRING
       mode: NULLABLE
+      description: 'Transformed source of the minimal shader.
+
+        '
     - name: characteristics_gl2_params
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
     - name: characteristics_gl2_params_extensions
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
     - name: characteristics_gl2_params_extensions_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of the extensions.
+
+        '
     - name: characteristics_gl2_params_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL2.
+
+        '
     - name: characteristics_gl2_precision_fragment
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
     - name: characteristics_gl2_precision_fragment_software
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the fragment shader.
+
+        '
     - name: characteristics_gl2_precision_vertex
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
     - name: characteristics_gl2_precision_vertex_software
       type: STRING
       mode: NULLABLE
+      description: 'Precisions of the vertex shader.
+
+        '
     - name: characteristics_gl_params
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
     - name: characteristics_gl_params_software
       type: STRING
       mode: NULLABLE
+      description: 'The list of GL parameters of GL1.
+
+        '
     - name: characteristics_math_ops_fdlibm
       type: STRING
       mode: NULLABLE
+      description: 'Windows only fdlibm math operation results
+
+        '
     - name: characteristics_screens
       type: STRING
       mode: NULLABLE
+      description: 'JSON string of screen properties
+
+        '
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -1179,24 +2267,35 @@ fields:
     - name: characteristics_client_identifier
       type: STRING
       mode: NULLABLE
+      description: 'A unique identifier for a user, not the same as the normal Telemetry
+        client_id, but needed so we can deduplicate reports and only take the most
+        recent one per user.
+
+        '
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized app name
 - name: normalized_country_code
   type: STRING
   mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: Set to "Other" if this message contained an unrecognized OS name
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: Hashed version of client_id (if present) useful for partitioning; ranges
+    from 0 to 99
 - name: submission_timestamp
   type: TIMESTAMP
   mode: NULLABLE
+  description: Time when the ingestion edge server accepted this message
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE

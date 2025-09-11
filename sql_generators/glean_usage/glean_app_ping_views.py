@@ -117,11 +117,13 @@ class GleanAppPingViews(GleanTable):
                     continue
 
                 # look for schema in output_dir because bqetl generate all runs stable_views first
-                existing_schema_path = (
+                sql_dir = (
                     output_dir
-                    / channel_dataset
-                    / view_name
-                    / SCHEMA_FILE
+                    or Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                    / project_id
+                )
+                existing_schema_path = (
+                    sql_dir / channel_dataset / view_name / SCHEMA_FILE
                 )
 
                 schema = None

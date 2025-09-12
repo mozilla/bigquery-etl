@@ -102,8 +102,11 @@ impressions AS (
     mozfun.map.get_key(event.extra, 'overridden_by_third_party') AS overridden_by_third_party,
     ping_info.start_time as subsession_start_time,
     ping_info.end_time as subsession_end_time,
-    ping_info.seq as subsession_counter,
-    mozfun.map.get_key(event.extra, 'search_mode') AS search_mode
+    ping_info.seq AS subsession_counter,
+    mozfun.map.get_key(event.extra, 'search_mode') AS search_mode,
+    normalized_os,
+    normalized_os_version,
+    client_info.first_run_date as first_run_date
   FROM
     serp_events
   WHERE
@@ -265,7 +268,10 @@ SELECT
   subsession_start_time,
   subsession_end_time,
   subsession_counter,
-  search_mode
+  search_mode,
+  normalized_os,
+  normalized_os_version,
+  first_run_date
 FROM
   -- 1 row per impression_id
   impressions

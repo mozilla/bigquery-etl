@@ -10,7 +10,7 @@ import pytest
 import yaml
 from click.exceptions import ClickException
 from click.testing import CliRunner
-from gcloud import bigquery  # type: ignore
+from google.cloud import bigquery  # type: ignore
 
 from bigquery_etl.backfill.shredder_mitigation import (
     PREVIOUS_DATE,
@@ -57,21 +57,21 @@ class TestClassifyColumns:
             "os_build",
         ]
         existing_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("app_name", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
-            bigquery.SchemaField("os", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("app_name", "STRING", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE"),
+            bigquery.SchemaField("os", "STRING", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
         ]
         new_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("app_name", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
-            bigquery.SchemaField("os_build", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("app_name", "STRING", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE"),
+            bigquery.SchemaField("os_build", "STRING", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
 
         expected_common_dimensions = [
@@ -164,21 +164,19 @@ class TestClassifyColumns:
             "is_default_browser",
         ]
         existing_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
         new_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
-            bigquery.SchemaField(
-                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
-            ),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE"),
+            bigquery.SchemaField("is_default_browser", "BOOLEAN", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
 
         expected_common_dimensions = [
@@ -257,23 +255,19 @@ class TestClassifyColumns:
         ]
         new_columns = ["submission_date", "channel", "is_default_browser"]
         existing_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
-            bigquery.SchemaField(
-                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
-            ),
-            bigquery.SchemaField("metric_integer", "INTEGER", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE"),
+            bigquery.SchemaField("is_default_browser", "BOOLEAN", "NULLABLE"),
+            bigquery.SchemaField("metric_integer", "INTEGER", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
         new_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField(
-                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
-            ),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("is_default_browser", "BOOLEAN", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
 
         expected_common_dimensions = [
@@ -361,26 +355,22 @@ class TestClassifyColumns:
             "segment",
         ]
         existing_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE", None, None),
-            bigquery.SchemaField(
-                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
-            ),
-            bigquery.SchemaField("metric_integer", "INTEGER", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("first_seen_year", "INT", "NULLABLE"),
+            bigquery.SchemaField("is_default_browser", "BOOLEAN", "NULLABLE"),
+            bigquery.SchemaField("metric_integer", "INTEGER", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
         new_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField(
-                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
-            ),
-            bigquery.SchemaField("os_version", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("os_version_build", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("segment", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("is_default_browser", "BOOLEAN", "NULLABLE"),
+            bigquery.SchemaField("os_version", "STRING", "NULLABLE"),
+            bigquery.SchemaField("os_version_build", "STRING", "NULLABLE"),
+            bigquery.SchemaField("segment", "STRING", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
 
         expected_common_dimensions = [
@@ -467,18 +457,18 @@ class TestClassifyColumns:
         existing_columns = ["submission_date", "channel"]
         new_columns = ["submission_date", "channel"]
         existing_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_bigint", "INTEGER", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_bigint", "INTEGER", "NULLABLE"),
         ]
         new_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_bigint", "INTEGER", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
+            bigquery.SchemaField("metric_numeric", "NUMERIC", "NULLABLE"),
+            bigquery.SchemaField("metric_bigint", "INTEGER", "NULLABLE"),
         ]
 
         expected_common_dimensions = [
@@ -543,18 +533,16 @@ class TestClassifyColumns:
         existing_columns = ["submission_date", "channel"]
         new_columns = ["submission_date", "channel", "os", "is_default_browser"]
         existing_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
         new_schema = [
-            bigquery.SchemaField("submission_date", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("channel", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField("os", "STRING", "NULLABLE", None, None),
-            bigquery.SchemaField(
-                "is_default_browser", "BOOLEAN", "NULLABLE", None, None
-            ),
-            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE", None, None),
+            bigquery.SchemaField("submission_date", "DATE", "NULLABLE"),
+            bigquery.SchemaField("channel", "STRING", "NULLABLE"),
+            bigquery.SchemaField("os", "STRING", "NULLABLE"),
+            bigquery.SchemaField("is_default_browser", "BOOLEAN", "NULLABLE"),
+            bigquery.SchemaField("metric_float", "FLOAT", "NULLABLE"),
         ]
         expected_exception_text = (
             "Existing dimensions don't match columns retrieved by query."
@@ -589,12 +577,10 @@ class TestClassifyColumns:
 
         new_row = {"column_1": "2024-01-01", "column_2": "Windows"}
         existing_columns = ["column_1"]
-        existing_schema = [
-            bigquery.SchemaField("column1", "DATE", "NULLABLE", None, None)
-        ]
+        existing_schema = [bigquery.SchemaField("column1", "DATE", "NULLABLE")]
         new_schema = [
-            bigquery.SchemaField("column1", "DATE", "NULLABLE", None, None),
-            bigquery.SchemaField("column2", "STRING", "NULLABLE", None, None),
+            bigquery.SchemaField("column1", "DATE", "NULLABLE"),
+            bigquery.SchemaField("column2", "STRING", "NULLABLE"),
         ]
         expected_exception_text = (
             f"\n\nMissing one or more required parameters. Received:\nnew_row= {new_row}\n"
@@ -650,9 +636,9 @@ class TestValidateTypes:
 
     columns = ["column1", "column2", "column3"]
     schema = [
-        bigquery.SchemaField("column1", "STRING", "NULLABLE", None, None),
-        bigquery.SchemaField("column2", "STRING", "NULLABLE", None, None),
-        bigquery.SchemaField("column3", "NUMERIC", "NULLABLE", None, None),
+        bigquery.SchemaField("column1", "STRING", "NULLABLE"),
+        bigquery.SchemaField("column2", "STRING", "NULLABLE"),
+        bigquery.SchemaField("column3", "NUMERIC", "NULLABLE"),
     ]
 
     def test_validate_types_match(self):
@@ -681,8 +667,8 @@ class TestValidateTypes:
         """Test function get_bigquery_type when columns are not found in schema file."""
         names = ["column1", "column2", "column_not_in_schema"]
         schema = [
-            bigquery.SchemaField("column1", "STRING", "NULLABLE", None),
-            bigquery.SchemaField("column2", "STRING", "NULLABLE", None),
+            bigquery.SchemaField("column1", "STRING", "NULLABLE"),
+            bigquery.SchemaField("column2", "STRING", "NULLABLE"),
         ]
         sample_row = {
             "column1": "abcd",

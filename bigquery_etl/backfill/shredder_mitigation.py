@@ -14,8 +14,8 @@ from typing import Any, Optional, Tuple
 import attrs
 import click
 from dateutil import parser
-from gcloud.exceptions import NotFound  # type: ignore
 from google.cloud import bigquery
+from google.cloud.exceptions import NotFound  # type: ignore
 from jinja2 import Environment, FileSystemLoader
 
 from bigquery_etl.format_sql.formatter import reformat

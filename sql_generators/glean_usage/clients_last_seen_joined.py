@@ -17,7 +17,7 @@ class ClientsLastSeenJoined(GleanTable):
         self.target_table_id = TARGET_TABLE_ID
         self.per_app_id_enabled = False
         self.cross_channel_template = None
-        self.per_app_requires_all_baseline_tables = True
+        self.per_app_requires_all_base_tables = True
 
     def generate_per_app(
         self,
@@ -27,7 +27,7 @@ class ClientsLastSeenJoined(GleanTable):
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
-        all_baseline_tables_exist=None,
+        all_base_tables_exist=None,
     ):
         """Generate per-app datasets."""
         skip_apps = ConfigLoader.get(
@@ -45,5 +45,5 @@ class ClientsLastSeenJoined(GleanTable):
             use_cloud_function,
             parallelism,
             id_token,
-            all_baseline_tables_exist,
+            all_base_tables_exist,
         )

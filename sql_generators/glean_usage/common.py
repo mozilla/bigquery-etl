@@ -186,7 +186,7 @@ class GleanTable:
         self.custom_render_kwargs = {}
         self.per_app_id_enabled = True
         self.per_app_enabled = True
-        self.per_app_requires_all_baseline_tables = False
+        self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
@@ -389,7 +389,7 @@ class GleanTable:
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
-        all_baseline_tables_exist=None,
+        all_base_tables_exist=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
@@ -400,7 +400,7 @@ class GleanTable:
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_name
         
-        if self.per_app_requires_all_baseline_tables and not all_baseline_tables_exist:
+        if self.per_app_requires_all_base_tables and not all_base_tables_exist:
             logging.info(
                 f"Skipping per-app generation for {target_dataset}.{target_view_name} as not all baseline tables exist"
             )

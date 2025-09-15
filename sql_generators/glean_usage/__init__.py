@@ -102,7 +102,7 @@ def generate(
 
     @cache
     def get_tables(table_name="baseline_v1"):
-        baseline_tables = list_tables(
+        tables = list_tables(
             project_id=target_project,
             only_tables=[only] if only else None,
             table_filter=table_filter,
@@ -111,9 +111,9 @@ def generate(
 
         # filter out skipped apps
         return [
-            baseline_table
-            for baseline_table in baseline_tables
-            if baseline_table.split(".")[1]
+            table
+            for table in tables
+            if table.split(".")[1]
             not in [
                 f"{skipped_app}_stable"
                 for skipped_app in ConfigLoader.get(
@@ -153,21 +153,21 @@ def generate(
                 parallelism=parallelism,
                 id_token=id_token,
             ),
-            baseline_table,
+            base_table,
         )
         for table in GLEAN_TABLES
-        for baseline_table in get_tables(table_name=table.base_table_name)
+        for base_table in get_tables(table_name=table.base_table_name)
     ]
 
-    baseline_tables = {}
-    unique_baseline_table_names = {table.base_table_name for table in GLEAN_TABLES}
-    for table_name in unique_baseline_table_names:
-        baseline_tables[table_name] = get_tables(table_name=table_name)
+    base_tables = {}
+    unique_base_table_names = {table.base_table_name for table in GLEAN_TABLES}
+    for table_name in unique_base_table_names:
+        base_tables[table_name] = get_tables(table_name=table_name)
 
-    def all_baseline_tables_exist(app_info, table_name="baseline_v1"):
+    def all_base_tables_exist(app_info, table_name="baseline_v1"):
         """Check if baseline tables exist for all app datasets."""     
         # Extract dataset names from table names (format: project.dataset.table)
-        existing_datasets = {table.split(".")[1] for table in baseline_tables[table_name]}
+        existing_datasets = {table.split(".")[1] for table in base_tables[table_name]}
         
         # Check if all app datasets have corresponding tables
         if isinstance(app_info, dict):
@@ -189,8 +189,8 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
                 id_token=id_token,
-                all_baseline_tables_exist=all_baseline_tables_exist(info, table_name=table.base_table_name) 
-                if hasattr(table, 'per_app_requires_all_baseline_tables') and table.per_app_requires_all_baseline_tables 
+                all_base_tables_exist=all_base_tables_exist(info, table_name=table.base_table_name) 
+                if hasattr(table, 'per_app_requires_all_base_tables') and table.per_app_requires_all_base_tables 
                 else None
             ),
             info,

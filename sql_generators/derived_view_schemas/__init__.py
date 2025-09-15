@@ -8,7 +8,6 @@ from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.dryrun import get_id_token
-from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 
 NON_USER_FACING_DATASET_SUBSTRINGS = (
     "_derived",

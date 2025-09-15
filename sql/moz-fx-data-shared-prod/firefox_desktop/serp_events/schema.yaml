@@ -192,6 +192,15 @@ fields:
 - name: search_mode
   type: STRING
   mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: first_run_date
+  type: STRING
+  mode: NULLABLE
 - name: ad_components
   type: RECORD
   mode: REPEATED

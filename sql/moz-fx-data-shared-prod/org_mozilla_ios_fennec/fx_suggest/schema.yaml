@@ -389,6 +389,13 @@ fields:
         for the purpose of experimentation enrollment.
 
         '
+    - name: fx_suggest_country
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the system region of the user, the same used for configuring
+        region specific search providers.
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE

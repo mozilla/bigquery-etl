@@ -25,7 +25,8 @@ SELECT
       metrics.string.fx_suggest_advertiser,
       metrics.string.fx_suggest_iab_category,
       metrics.string.fx_suggest_ping_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
@@ -70,7 +71,8 @@ SELECT
       metrics.string.fx_suggest_advertiser,
       metrics.string.fx_suggest_iab_category,
       metrics.string.fx_suggest_ping_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,
@@ -115,7 +117,8 @@ SELECT
       metrics.string.fx_suggest_advertiser,
       metrics.string.fx_suggest_iab_category,
       metrics.string.fx_suggest_ping_type,
-      metrics.string.glean_client_annotation_experimentation_id
+      metrics.string.glean_client_annotation_experimentation_id,
+      metrics.string.fx_suggest_country
     ) AS `string`,
     STRUCT(metrics.url2.fx_suggest_reporting_url) AS `url2`,
     STRUCT(metrics.uuid.fx_suggest_context_id) AS `uuid`,

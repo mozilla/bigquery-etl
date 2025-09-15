@@ -24,6 +24,13 @@ bigquery:
     fields:
     - normalized_channel
     - sample_id
+schema:
+  derived_from:
+  - table:
+    - moz-fx-data-shared-prod
+    - firefox_reality_pc
+    - metrics_clients_daily_v1
+    exclude: null
 workgroup_access: []
 references:
   query.sql:

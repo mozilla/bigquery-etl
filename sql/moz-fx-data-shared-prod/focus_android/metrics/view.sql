@@ -640,7 +640,8 @@ SELECT
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
       metrics.labeled_counter.fog_subdir_entry_metadata_err,
-      metrics.labeled_counter.media_mkv_codec_type
+      metrics.labeled_counter.media_mkv_codec_type,
+      metrics.labeled_counter.networking_local_network_access_prompts_shown
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2418,7 +2419,8 @@ SELECT
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
       metrics.labeled_counter.fog_subdir_entry_metadata_err,
-      metrics.labeled_counter.media_mkv_codec_type
+      metrics.labeled_counter.media_mkv_codec_type,
+      metrics.labeled_counter.networking_local_network_access_prompts_shown
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4196,7 +4198,8 @@ SELECT
       metrics.labeled_counter.devtools_console_javascript_error_displayed,
       metrics.labeled_counter.fog_subdir_entry_err,
       metrics.labeled_counter.fog_subdir_entry_metadata_err,
-      metrics.labeled_counter.media_mkv_codec_type
+      metrics.labeled_counter.media_mkv_codec_type,
+      metrics.labeled_counter.networking_local_network_access_prompts_shown
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

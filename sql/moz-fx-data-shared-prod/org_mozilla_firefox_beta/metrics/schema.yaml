@@ -12623,7 +12623,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -17856,6 +17857,20 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Count the amount of the real world codec usage inside Matroska.
+
+        '
+    - name: networking_local_network_access_prompts_shown
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count of permission prompts shown to users for local network access,
+        separated by localhost vs local network access types.
 
         '
   - name: quantity

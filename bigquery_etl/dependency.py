@@ -76,6 +76,7 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
 
     def _get_stable_views():
         nonlocal local_stable_views
+        global stable_views
         if local_stable_views is None:
             # lazy read stable views (works in both main thread and worker processes)
             local_stable_views = {

@@ -61,7 +61,10 @@ def metadata(ctx):
 @click.argument("name")
 @project_id_option()
 @sql_dir_option
-def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None:
+@parallelism_option()
+def update(
+    name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
+) -> None:
     """Update metadata yaml file."""
     table_metadata_files = paths_matching_name_pattern(
         name, sql_dir, project_id=project_id, files=["metadata.yaml"]
@@ -70,13 +73,28 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         "deprecation", "retain_dataset_roles", fallback=[]
     )
 
-    # create and populate the dataset metadata yaml file if it does not exist
-    for table_metadata_file in table_metadata_files:
+    if parallelism > 1:
+        with Pool(parallelism) as pool:
+            pool.map(
+                partial(_update_single_metadata_file, retained_dataset_roles),
+                table_metadata_files,
+            )
+    else:
+        for table_metadata_file in table_metadata_files:
+            _update_single_metadata_file(retained_dataset_roles, table_metadata_file)
+
+    return None
+
+
+def _update_single_metadata_file(retained_dataset_roles, table_metadata_file):
+    """Update a single metadata file."""
+    try:
         dataset_metadata_path = (
             Path(table_metadata_file).parent.parent / "dataset_metadata.yaml"
         )
         if not dataset_metadata_path.exists():
-            continue
+            return
+
         dataset_metadata = DatasetMetadata.from_file(dataset_metadata_path)
         table_metadata = Metadata.from_file(table_metadata_file)
 
@@ -168,8 +186,8 @@ def update(name: str, sql_dir: Optional[str], project_id: Optional[str]) -> None
         if table_metadata_updated:
             table_metadata.write(table_metadata_file)
             click.echo(f"Updated {table_metadata_file}")
-
-    return None
+    except Exception as e:
+        click.echo(f"Error processing {table_metadata_file}: {e}", err=True)
 
 
 @metadata.command(

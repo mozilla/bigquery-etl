@@ -602,7 +602,7 @@ jobs:
                     cp -a sql/. /tmp/workspace/generated-sql/sql
                   fi
 
-                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/ -p 32
+                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/generated-sql/sql/"

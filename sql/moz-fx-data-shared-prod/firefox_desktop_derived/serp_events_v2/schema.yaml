@@ -206,3 +206,30 @@ fields:
   - mode: NULLABLE
     name: browser_engagement_max_concurrent_tab_count
     type: INTEGER
+  - mode: NULLABLE
+    name: document_id
+    type: STRING
+  - mode: NULLABLE
+    name: overridden_by_third_party
+    type: STRING
+  - mode: NULLABLE
+    name: subsession_start_time
+    type: STRING
+  - mode: NULLABLE
+    name: subsession_end_time
+    type: STRING
+  - mode: NULLABLE
+    name: subsession_counter
+    type: INTEGER
+  - mode: NULLABLE
+    name: search_mode
+    type: STRING
+  - mode: NULLABLE
+    name: normalized_os
+    type: STRING
+  - mode: NULLABLE
+    name: normalized_os_version
+    type: STRING
+  - mode: NULLABLE
+    name: first_run_date
+    type: STRING

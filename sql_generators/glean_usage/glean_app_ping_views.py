@@ -53,6 +53,7 @@ class GleanAppPingViews(GleanTable):
         GleanTable.__init__(self)
         self.per_app_id_enabled = False
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
 
     def generate_per_app(
         self,
@@ -62,6 +63,7 @@ class GleanAppPingViews(GleanTable):
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None,
     ):
         """
         Generate per-app ping views across channels.

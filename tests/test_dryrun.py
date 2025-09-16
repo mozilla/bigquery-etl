@@ -1,6 +1,11 @@
 import os
+import tempfile
+import time
+from pathlib import Path
+from unittest.mock import mock_open, patch
 
 import pytest
+import yaml
 
 from bigquery_etl.dryrun import DryRun, Errors
 
@@ -192,3 +197,207 @@ class TestDryRun:
 
         dryrun = DryRun(sqlfile=str(query_file))
         assert dryrun.is_valid()
+
+    def test_cache_key_includes_ttl(self, tmp_query_path):
+        """Test that cache key includes TTL value so different TTLs create different cache entries."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        # Create two DryRun instances with different TTLs
+        dry_run1 = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=1)
+
+        dry_run2 = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=6)
+
+        # Get cache keys for the same SQL content
+        sql = dry_run1.get_sql()
+        cache_key1 = dry_run1._get_cache_key(sql)
+        cache_key2 = dry_run2._get_cache_key(sql)
+
+        # Cache keys should be different due to different TTL values
+        assert cache_key1 != cache_key2
+
+    def test_cache_file_path_generation(self, tmp_query_path):
+        """Test that cache file paths are generated correctly."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        dry_run = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=1)
+
+        sql = dry_run.get_sql()
+        cache_key = dry_run._get_cache_key(sql)
+        cache_file_path = dry_run._get_cache_file_path(cache_key)
+
+        # Should be in temp directory with correct naming pattern
+        assert cache_file_path.startswith(dry_run.cache_dir)
+        assert f"dryrun_cache_{cache_key}.pkl" in cache_file_path
+
+    def test_cache_validity_checks(self, tmp_query_path):
+        """Test cache validity checking logic."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        dry_run = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=1)
+
+        # Test with non-existent file
+        assert not dry_run._is_cache_valid("/non/existent/file.pkl")
+
+        # Test with None path
+        assert not dry_run._is_cache_valid(None)
+
+        # Test with empty string path
+        assert not dry_run._is_cache_valid("")
+
+    @patch("bigquery_etl.dryrun.exists")
+    @patch("bigquery_etl.dryrun.getmtime")
+    def test_cache_ttl_expiry(self, mock_getmtime, mock_exists, tmp_query_path):
+        """Test that cache correctly expires based on TTL."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        # Create metadata.yaml to avoid FileNotFoundError
+        metadata_file = tmp_query_path / "metadata.yaml"
+        metadata_file.write_text(
+            """friendly_name: Test Table
+description: Test description
+owners:
+  - test@example.com
+"""
+        )
+
+        dry_run = DryRun(
+            str(query_file), cache_enabled=True, cache_ttl_hours=1  # 1 hour TTL
+        )
+
+        cache_file_path = "/fake/cache/file.pkl"
+        current_time = time.time()
+
+        # Test cache within TTL (30 minutes old)
+        mock_exists.return_value = True
+        mock_getmtime.return_value = current_time - (30 * 60)  # 30 minutes ago
+        assert dry_run._is_cache_valid(cache_file_path)
+
+        # Test cache beyond TTL (2 hours old)
+        mock_getmtime.return_value = current_time - (2 * 60 * 60)  # 2 hours ago
+        assert not dry_run._is_cache_valid(cache_file_path)
+
+    def test_cache_key_different_for_different_content(self, tmp_query_path):
+        """Test that different SQL content generates different cache keys."""
+        query_file = tmp_query_path / "query.sql"
+
+        # Create metadata.yaml to avoid FileNotFoundError
+        metadata_file = tmp_query_path / "metadata.yaml"
+        metadata_file.write_text(
+            """friendly_name: Test Table
+description: Test description
+owners:
+  - test@example.com
+"""
+        )
+
+        dry_run = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=1)
+
+        # Different SQL content should produce different cache keys
+        sql1 = "SELECT 123"
+        sql2 = "SELECT 456"
+
+        cache_key1 = dry_run._get_cache_key(sql1)
+        cache_key2 = dry_run._get_cache_key(sql2)
+
+        assert cache_key1 != cache_key2
+
+    def test_cache_key_includes_parameters(self, tmp_query_path):
+        """Test that cache key includes all relevant parameters."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        # Create two DryRun instances with different parameters
+        dry_run1 = DryRun(
+            str(query_file),
+            cache_enabled=True,
+            project="project1",
+            dataset="dataset1",
+            billing_project="billing1",
+        )
+
+        dry_run2 = DryRun(
+            str(query_file),
+            cache_enabled=True,
+            project="project2",
+            dataset="dataset2",
+            billing_project="billing2",
+        )
+
+        sql = dry_run1.get_sql()
+        cache_key1 = dry_run1._get_cache_key(sql)
+        cache_key2 = dry_run2._get_cache_key(sql)
+
+        # Different parameters should produce different cache keys
+        assert cache_key1 != cache_key2
+
+    def test_cache_load_success(self, tmp_query_path):
+        """Test successful cache loading."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        dry_run = DryRun(
+            str(query_file),
+            cache_enabled=True,
+            project="project1",
+            dataset="dataset1",
+            billing_project="billing1",
+        )
+
+        expected_result = {"valid": True, "cached": True}
+        dry_run._save_to_cache("test_cache_key", expected_result)
+
+        result = dry_run._load_from_cache("test_cache_key")
+        assert result == expected_result
+
+    @patch("bigquery_etl.metadata.parse_metadata.Metadata.of_query_file")
+    def test_cache_disabled_behavior(self, mock_metadata, tmp_query_path):
+        """Test that caching is properly disabled when cache_enabled=False."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        # Mock metadata loading to avoid FileNotFoundError
+        mock_metadata.return_value = None
+
+        dry_run = DryRun(str(query_file), cache_enabled=False, cache_ttl_hours=1)
+
+        # Cache operations should return None when disabled
+        assert dry_run._load_from_cache("test_key") is None
+
+        # Save to cache should do nothing when disabled
+        dry_run._save_to_cache("test_key", {"test": "data"})  # Should not raise error
+
+    @patch("bigquery_etl.dryrun.getmtime")
+    def test_cache_key_includes_file_modification_time(
+        self, mock_getmtime, tmp_query_path
+    ):
+        """Test that cache key includes file modification time."""
+        query_file = tmp_query_path / "query.sql"
+        query_file.write_text("SELECT 123")
+
+        # Create metadata.yaml to avoid FileNotFoundError
+        metadata_file = tmp_query_path / "metadata.yaml"
+        metadata_file.write_text(
+            """friendly_name: Test Table
+description: Test description
+owners:
+  - test@example.com
+"""
+        )
+
+        dry_run = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=1)
+
+        sql = "SELECT 123"
+
+        # Test with different modification times
+        mock_getmtime.return_value = 1000000
+        cache_key1 = dry_run._get_cache_key(sql)
+
+        mock_getmtime.return_value = 2000000
+        cache_key2 = dry_run._get_cache_key(sql)
+
+        # Different modification times should produce different cache keys
+        assert cache_key1 != cache_key2

@@ -64,6 +64,23 @@ from ..dryrun import DryRun, get_credentials, get_id_token
     help="GCP project to perform dry run in when --use_cloud_function=False",
     default=ConfigLoader.get("default", "project", fallback="moz-fx-data-shared-prod"),
 )
+@click.option(
+    "--use-cache/--no-cache",
+    help="Enable or disable local caching of dry run results. Default is --no-cache.",
+    default=ConfigLoader.get("dry_run", "cache_enabled", fallback=False),
+)
+@click.option(
+    "--cache-ttl-hours",
+    help="Cache time-to-live in hours. Default is 1 hour.",
+    type=int,
+    default=ConfigLoader.get("dry_run", "cache_ttl_hours", fallback=1),
+)
+@click.option(
+    "--cache-dir",
+    help="Directory to store cache files. Default is system temp directory.",
+    type=click.Path(),
+    default=None,
+)
 @billing_project_option()
 def dryrun(
     paths: List[str],
@@ -71,6 +88,9 @@ def dryrun(
     validate_schemas: bool,
     respect_skip: bool,
     project: str,
+    use_cache: bool,
+    cache_ttl_hours: int,
+    cache_dir: str,
     billing_project: str,
 ):
     """Perform a dry run."""
@@ -118,6 +138,9 @@ def dryrun(
         use_cloud_function,
         respect_skip,
         validate_schemas,
+        use_cache,
+        cache_ttl_hours,
+        cache_dir,
         credentials=credentials,
         id_token=id_token,
         billing_project=billing_project,
@@ -141,6 +164,9 @@ def _sql_file_valid(
     use_cloud_function,
     respect_skip,
     validate_schemas,
+    use_cache,
+    cache_ttl_hours,
+    cache_dir,
     sqlfile,
     credentials,
     id_token,
@@ -154,6 +180,9 @@ def _sql_file_valid(
         respect_skip=respect_skip,
         id_token=id_token,
         billing_project=billing_project,
+        cache_enabled=use_cache,
+        cache_ttl_hours=cache_ttl_hours,
+        cache_dir=cache_dir,
     )
     if validate_schemas:
         try:

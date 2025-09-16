@@ -12,13 +12,17 @@ proxy the queries through the dry run service endpoint.
 """
 
 import glob
+import hashlib
 import json
+import os
+import pickle
 import random
 import re
 import sys
+import tempfile
 import time
 from enum import Enum
-from os.path import basename, dirname, exists
+from os.path import basename, dirname, exists, getmtime
 from pathlib import Path
 from typing import Optional, Set
 from urllib.request import Request, urlopen
@@ -105,6 +109,9 @@ class DryRun:
         dataset=None,
         table=None,
         billing_project=None,
+        cache_enabled=ConfigLoader.get("dry_run", "cache_enabled", fallback=False),
+        cache_ttl_hours=ConfigLoader.get("dry_run", "cache_ttl_hours", fallback=1),
+        cache_dir=None,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
@@ -146,6 +153,42 @@ class DryRun:
                 "and check that the project is set correctly."
             )
             sys.exit(1)
+
+        # set cache directory - prioritize: explicit parameter > env var > temp directory
+        if cache_dir:
+            self.cache_dir = cache_dir
+        elif os.environ.get("DRYRUN_CACHE_DIR"):
+            self.cache_dir = os.environ.get("DRYRUN_CACHE_DIR")
+        else:
+            self.cache_dir = os.path.join(
+                tempfile.gettempdir(), "bigquery_etl_dryrun_cache"
+            )
+
+        # check for global cache enable via environment variable
+        env_cache_enabled = os.environ.get("DRYRUN_CACHE_ENABLED", "").lower() in (
+            "true",
+            "1",
+            "yes",
+        )
+        self.cache_enabled = cache_enabled or env_cache_enabled
+
+        # set cache TTL - prioritize: explicit parameter > env var > default
+        if cache_ttl_hours is not None:
+            self.cache_ttl_hours = cache_ttl_hours
+        elif os.environ.get("DRYRUN_CACHE_TTL_HOURS"):
+            try:
+                self.cache_ttl_hours = float(os.environ.get("DRYRUN_CACHE_TTL_HOURS"))
+            except (ValueError, TypeError):
+                self.cache_ttl_hours = ConfigLoader.get(
+                    "dry_run", "cache_ttl_hours", fallback=1
+                )
+        else:
+            self.cache_ttl_hours = ConfigLoader.get(
+                "dry_run", "cache_ttl_hours", fallback=1
+            )
+
+        if self.cache_enabled:
+            os.makedirs(self.cache_dir, exist_ok=True)
 
     @cached_property
     def client(self):
@@ -196,6 +239,94 @@ class DryRun:
             sql_dir=self.sql_dir
         )
 
+    def _get_cache_key(self, sql):
+        """Generate cache key based on SQL content and file modification time."""
+        # create hash from SQL content and file modification time
+        content_hash = hashlib.sha256(sql.encode("utf-8")).hexdigest()
+
+        # include file modification time to invalidate cache when file changes
+        try:
+            file_mtime = getmtime(self.sqlfile) if exists(self.sqlfile) else 0
+        except OSError:
+            file_mtime = 0
+
+        # include relevant parameters that affect the dry run result
+        cache_params = {
+            "content_hash": content_hash,
+            "file_mtime": file_mtime,
+            "use_cloud_function": self.use_cloud_function,
+            "project": self.project,
+            "dataset": self.dataset,
+            "table": self.table,
+            "billing_project": self.billing_project,
+            "strip_dml": self.strip_dml,
+            "cache_ttl_hours": self.cache_ttl_hours,
+        }
+
+        cache_string = json.dumps(cache_params, sort_keys=True)
+        return hashlib.sha256(cache_string.encode("utf-8")).hexdigest()[:16]
+
+    def _get_cache_file_path(self, cache_key):
+        """Get the full path to the cache file."""
+        return os.path.join(self.cache_dir, f"dryrun_cache_{cache_key}.pkl")
+
+    def _is_cache_valid(self, cache_file_path):
+        """Check if cache file exists and is within TTL."""
+        if not cache_file_path or not exists(cache_file_path):
+            return False
+
+        try:
+            cache_age_hours = (time.time() - getmtime(cache_file_path)) / 3600
+            return cache_age_hours < self.cache_ttl_hours
+        except OSError:
+            return False
+
+    def _load_from_cache(self, cache_key):
+        """Load dry run result from cache if valid."""
+        if not self.cache_enabled:
+            return None
+
+        cache_file_path = self._get_cache_file_path(cache_key)
+
+        if not self._is_cache_valid(cache_file_path):
+            return None
+
+        try:
+            with open(cache_file_path, "rb") as f:
+                cached_result = pickle.load(f)
+                print(f"Using cached dry run result for {self.sqlfile}")
+                return cached_result
+        except (pickle.PickleError, OSError, EOFError) as e:
+            print(f"Failed to load cache for {self.sqlfile}: {e}")
+            # remove corrupted cache file
+            try:
+                os.remove(cache_file_path)
+            except OSError:
+                pass
+            return None
+
+    def _save_to_cache(self, cache_key, result):
+        """Save dry run result to cache."""
+        if not self.cache_enabled:
+            return
+
+        cache_file_path = self._get_cache_file_path(cache_key)
+
+        try:
+            temp_file_path = cache_file_path + ".tmp"
+            with open(temp_file_path, "wb") as f:
+                pickle.dump(result, f)
+            os.rename(temp_file_path, cache_file_path)
+            print(f"Cached dry run result for {self.sqlfile}")
+        except (pickle.PickleError, OSError) as e:
+            print(f"Failed to cache result for {self.sqlfile}: {e}")
+            # clean up temp file if it exists
+            try:
+                if os.path.exists(temp_file_path):
+                    os.remove(temp_file_path)
+            except OSError:
+                pass
+
     def get_sql(self):
         """Get SQL content."""
         if exists(self.sqlfile):
@@ -230,6 +361,12 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
+
+        # check cache first
+        cache_key = self._get_cache_key(sql)
+        cached_result = self._load_from_cache(cache_key)
+        if cached_result is not None:
+            return cached_result
 
         query_parameters = []
         scheduling_metadata = self.metadata.scheduling if self.metadata else {}
@@ -338,6 +475,9 @@ class DryRun:
                     }
 
             self.dry_run_duration = time.time() - start_time
+
+            self._save_to_cache(cache_key, result)
+
             return result
 
         except Exception as e:

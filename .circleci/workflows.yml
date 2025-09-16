@@ -35,10 +35,16 @@ executors:
     machine:
       image: ubuntu-2404:current
 
+# environment variables for caching
+environment: &cache_environment
+  DRYRUN_CACHE_ENABLED: "true"
+  DRYRUN_CACHE_DIR: "/tmp/workspace/dryrun_cache"
+
 jobs:
   build:
     docker: &docker
       - image: python:<< pipeline.parameters.python-version >>
+        environment: *cache_environment
     steps:
       - checkout
       - &restore_venv_cache
@@ -166,7 +172,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - &attach_generated_sql
+            - &attach_workspace_artifacts
               attach_workspace:
                 at: /tmp/workspace
             - &copy_staged_sql
@@ -181,6 +187,11 @@ jobs:
                 name: Run SQL tests
                 command: |
                     PATH="venv/bin:$PATH" script/entrypoint -m sql -n 8 -p no:bigquery_etl.pytest_plugin.routine
+            - &persist_dryrun_cache
+              persist_to_workspace:
+                root: /tmp/workspace
+                paths:
+                  - dryrun_cache
             - &copy_debug_sql
               run:
                 name: Copy generated SQL to save for debugging
@@ -214,7 +225,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *copy_staged_sql
             - *authenticate
             - run:
@@ -244,6 +255,7 @@ jobs:
                   echo $PATHS
                   PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
                 # yamllint enable rule:line-length
+            - *persist_dryrun_cache
             - *copy_debug_sql
             - *store_debug_artifacts
       - unless:
@@ -262,7 +274,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - &copy_generated_sql
               run:
                 name: Move generated-sql into place
@@ -293,7 +305,7 @@ jobs:
                 name: Validate workgroup access configuration on main
                 command: |
                   PATH="venv/bin:$PATH" script/bqetl metadata validate-workgroups sql/
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *copy_staged_sql
             - *authenticate
             - run:
@@ -341,7 +353,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *authenticate
             - &add_private_bigquery_etl_ssh_keys
               add_ssh_keys:
@@ -391,7 +403,7 @@ jobs:
                 name: Pull telemetry-airflow
                 command: |
                   git clone https://github.com/mozilla/telemetry-airflow.git ~/telemetry-airflow
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *copy_generated_sql
             - run:
                 name: Replace telemetry-airflow DAGs with BigQuery ETL DAGs
@@ -441,7 +453,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *copy_staged_sql
             - run:
                 name: Run routine tests
@@ -468,7 +480,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *copy_staged_sql
             - *authenticate
             - run:
@@ -491,7 +503,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - add_ssh_keys:
                 fingerprints:
                   - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
@@ -520,6 +532,7 @@ jobs:
             - *restore_venv_cache
             - *build
             - *authenticate
+            - *attach_workspace_artifacts
             - run:
                 name: Generate SQL content
                 command: |
@@ -614,6 +627,7 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
+                  - dryrun_cache
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -628,7 +642,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *copy_generated_sql
             - add_ssh_keys:
                 fingerprints:
@@ -664,6 +678,7 @@ jobs:
                 root: /tmp/workspace
                 paths:
                   - staged-generated-sql
+                  - dryrun_cache
             - *copy_debug_sql
             - *store_debug_artifacts
       - unless:
@@ -678,7 +693,7 @@ jobs:
             or:
               - << pipeline.parameters.deploy >>
           steps:
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - add_ssh_keys:
                 fingerprints:
                   - "22:b9:3c:1b:82:ab:3f:e4:b5:79:70:d1:7b:b9:28:d2"
@@ -790,7 +805,7 @@ jobs:
             - checkout
             - *restore_venv_cache
             - *build
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *authenticate
             - *add_private_bigquery_etl_ssh_keys
             - run:
@@ -824,6 +839,7 @@ jobs:
                 paths:
                   - private-generated-sql
                   - PRIVATE_BIGQUERY_ETL_SHA
+                  - dryrun_cache
       - unless:
           condition: *validate-sql
           steps:
@@ -834,7 +850,7 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - *add_private_bigquery_etl_ssh_keys
             - run:
                 name: Push to private-generated-sql branch
@@ -871,7 +887,7 @@ jobs:
           condition: *deploy
           steps:
             - checkout
-            - *attach_generated_sql
+            - *attach_workspace_artifacts
             - run:
                 name: Move generated-sql into place
                 command: |

@@ -244,21 +244,13 @@ class DryRun:
         # create hash from SQL content and file modification time
         content_hash = hashlib.sha256(sql.encode("utf-8")).hexdigest()
 
-        # include file modification time to invalidate cache when file changes
-        try:
-            file_mtime = getmtime(self.sqlfile) if exists(self.sqlfile) else 0
-        except OSError:
-            file_mtime = 0
-
         # include relevant parameters that affect the dry run result
         cache_params = {
             "content_hash": content_hash,
-            "file_mtime": file_mtime,
             "use_cloud_function": self.use_cloud_function,
             "project": self.project,
             "dataset": self.dataset,
             "table": self.table,
-            "billing_project": self.billing_project,
             "strip_dml": self.strip_dml,
             "cache_ttl_hours": self.cache_ttl_hours,
         }

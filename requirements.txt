@@ -2249,9 +2249,9 @@ types-pytz==2025.2.0.20250809 \
     --hash=sha256:222e32e6a29bb28871f8834e8785e3801f2dc4441c715cd2082b271eecbe21e5 \
     --hash=sha256:4f55ed1b43e925cf851a756fe1707e0f5deeb1976e15bf844bcaa025e8fbd0db
     # via -r requirements.in
-types-pyyaml==6.0.12.20250822 \
-    --hash=sha256:1fe1a5e146aa315483592d292b72a172b65b946a6d98aa6ddd8e4aa838ab7098 \
-    --hash=sha256:259f1d93079d335730a9db7cff2bcaf65d7e04b4a56b5927d49a612199b59413
+types-pyyaml==6.0.12.20250915 \
+    --hash=sha256:0f8b54a528c303f0e6f7165687dd33fafa81c807fcac23f632b63aa624ced1d3 \
+    --hash=sha256:e7d4d9e064e89a3b3cae120b4990cd370874d2bf12fa5f46c97018dd5d3c9ab6
     # via
     #   -r requirements.in
     #   bigeye-sdk

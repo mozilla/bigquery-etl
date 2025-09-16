@@ -1,11 +1,8 @@
 import os
-import tempfile
 import time
-from pathlib import Path
-from unittest.mock import mock_open, patch
+from unittest.mock import patch
 
 import pytest
-import yaml
 
 from bigquery_etl.dryrun import DryRun, Errors
 

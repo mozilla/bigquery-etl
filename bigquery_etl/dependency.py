@@ -13,7 +13,6 @@ import rich_click as click
 import sqlglot
 import yaml
 
-from bigquery_etl.cli.utils import parallelism_option
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import render
@@ -154,11 +153,11 @@ def _process_single_file(
             sql = render(path.name, template_folder=path.parent)
             return path, extract_table_references(sql)
     except (CalledProcessError, ImportError, ValueError) as e:
-        return path, f"ERROR: {e}"
+        return path, [f"ERROR: {e}"]
 
 
 def _get_references(
-    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = None
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 1
 ) -> Iterator[Tuple[Path, List[str]]]:
     file_paths = {
         path
@@ -230,7 +229,7 @@ def _get_references(
 
 
 def get_dependency_graph(
-    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = None
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 1
 ) -> Dict[str, List[str]]:
     """Return the query dependency graph."""
     refs = _get_references(paths, without_views=without_views, parallelism=parallelism)
@@ -265,12 +264,18 @@ def dependency():
     is_flag=True,
     help="recursively resolve view references to underlying tables",
 )
-@parallelism_option()
-def show(paths: Tuple[str, ...], without_views: bool, parallelism: int):
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
+def show(paths: Tuple[str, ...], without_views: bool, parallelism):
     """Show table references in sql files."""
     for path, table_references in _get_references(paths, without_views, parallelism):
         if table_references:
-            for table in table_references:
+            for table in sorted(table_references):
                 print(f"{path}: {table}")
         else:
             print(f"{path} contains no table references", file=sys.stderr)
@@ -291,8 +296,14 @@ def show(paths: Tuple[str, ...], without_views: bool, parallelism: int):
     is_flag=True,
     help="Skip files with existing references rather than failing",
 )
-@parallelism_option()
-def record(paths: Tuple[str, ...], skip_existing, parallelism: int):
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
+def record(paths: Tuple[str, ...], skip_existing, parallelism):
     """Record table references in metadata."""
     for parent, group in groupby(
         _get_references(paths, parallelism=parallelism), lambda e: e[0].parent

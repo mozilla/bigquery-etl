@@ -2263,10 +2263,6 @@ types-ujson==5.10.0.20250822 \
     --hash=sha256:0a795558e1f78532373cf3f03f35b1f08bc60d52d924187b97995ee3597ba006 \
     --hash=sha256:3e9e73a6dc62ccc03449d9ac2c580cd1b7a8e4873220db498f7dd056754be080
     # via -r requirements.in
-typing==3.7.4.3 \
-    --hash=sha256:1187fb9c82fd670d10aa07bbb6cfcfe4bdda42d6fab8d5134f04e8c4d0b71cc9 \
-    --hash=sha256:283d868f5071ab9ad873e5e52268d611e851c870a2ba354193026f2dfb29d8b5
-    # via -r requirements.in
 typing-extensions==4.12.2 \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
     --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8

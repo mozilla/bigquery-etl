@@ -66,8 +66,12 @@ def update(
     name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
 ) -> None:
     """Update metadata yaml file."""
-    table_metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    table_metadata_files = list(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
     )
     retained_dataset_roles = ConfigLoader.get(
         "deprecation", "retain_dataset_roles", fallback=[]
@@ -212,8 +216,12 @@ def publish(
     name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
 ) -> None:
     """Publish Bigquery metadata."""
-    table_metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    table_metadata_files = list(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
     )
 
     if parallelism > 0:
@@ -272,8 +280,12 @@ def deprecate(
     deletion_date: datetime,
 ) -> None:
     """Deprecate Bigquery table by updating metadata yaml file(s)."""
-    table_metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    table_metadata_files = list(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
     )
 
     for metadata_file in table_metadata_files:
@@ -310,8 +322,12 @@ def validate_workgroups(
     """Validate workgroup_access and default_table_workgroup_access configuration."""
     failed_files = set()
 
-    table_metadata_files = paths_matching_name_pattern(
-        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+    table_metadata_files = list(
+        set(
+            paths_matching_name_pattern(
+                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
+            )
+        )
     )
     skip_validation = ConfigLoader.get("metadata", "validation", "skip", fallback=[])
 

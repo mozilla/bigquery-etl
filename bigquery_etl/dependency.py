@@ -187,11 +187,14 @@ def _get_references(
                 path = future_to_path[future]
                 try:
                     result_path, table_references = future.result()
-                    if isinstance(
-                        table_references, str
-                    ) and table_references.startswith("ERROR:"):
+                    if (
+                        isinstance(table_references, list)
+                        and len(table_references) == 1
+                        and isinstance(table_references[0], str)
+                        and table_references[0].startswith("ERROR:")
+                    ):
                         fail = True
-                        error_msg = table_references[7:]  # Remove "ERROR: " prefix
+                        error_msg = table_references[0][7:]
                         if "failed to import jnius" in error_msg:
                             raise click.ClickException(
                                 f"failed to import jnius: {error_msg}"
@@ -273,7 +276,10 @@ def dependency():
 )
 def show(paths: Tuple[str, ...], without_views: bool, parallelism):
     """Show table references in sql files."""
-    for path, table_references in _get_references(paths, without_views, parallelism):
+    # Collect all results and sort by path for consistent output
+    results = list(_get_references(paths, without_views, parallelism))
+
+    for path, table_references in sorted(results, key=lambda x: x[0]):
         if table_references:
             for table in sorted(table_references):
                 print(f"{path}: {table}")
@@ -305,9 +311,11 @@ def show(paths: Tuple[str, ...], without_views: bool, parallelism):
 )
 def record(paths: Tuple[str, ...], skip_existing, parallelism):
     """Record table references in metadata."""
-    for parent, group in groupby(
-        _get_references(paths, parallelism=parallelism), lambda e: e[0].parent
-    ):
+    # Collect and sort results to ensure groupby works correctly
+    results = list(_get_references(paths, parallelism=parallelism))
+    results.sort(key=lambda e: e[0].parent)
+
+    for parent, group in groupby(results, lambda e: e[0].parent):
         references = {
             path.name: table_references
             for path, table_references in group

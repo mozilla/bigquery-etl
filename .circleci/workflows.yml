@@ -253,7 +253,7 @@ jobs:
                     PATHS="sql/bigquery-etl-integration-test"
                   fi
                   echo $PATHS
-                  PATH="venv/bin:$PATH" script/bqetl dryrun --validate-schemas $PATHS
+                  PATH="venv/bin:$PATH" script/bqetl dryrun --use-cache --validate-schemas $PATHS
                 # yamllint enable rule:line-length
             - *persist_dryrun_cache
             - *copy_debug_sql

@@ -105,6 +105,17 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    firefox_desktop_derived__enterprise_metrics__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__enterprise_metrics__v1",
+        destination_table="enterprise_metrics_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="pissac@mozilla.com",
+        email=["kik@mozilla.com", "pissac@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__enterprise_metrics_clients__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__enterprise_metrics_clients__v1",
         destination_table="enterprise_metrics_clients_v1",
@@ -114,6 +125,10 @@ with DAG(
         email=["kik@mozilla.com", "pissac@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__enterprise_metrics__v1.set_upstream(
+        firefox_desktop_derived__enterprise_metrics_clients__v1
     )
 
     firefox_desktop_derived__enterprise_metrics_clients__v1.set_upstream(

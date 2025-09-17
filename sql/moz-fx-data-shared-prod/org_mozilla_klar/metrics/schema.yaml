@@ -7822,6 +7822,34 @@ fields:
         separated by localhost vs local network access types.
 
         '
+    - name: urlclassifier_lookup_hit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times that a lookup hits a table. Keyed by
+        table name.
+
+        '
+    - name: urlclassifier_lookup_miss
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times that a lookup misses a table. Keyed
+        by table name.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

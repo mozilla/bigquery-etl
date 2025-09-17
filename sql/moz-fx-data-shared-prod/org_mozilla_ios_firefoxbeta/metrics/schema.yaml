@@ -1532,6 +1532,32 @@ fields:
       description: 'Records the number of times a user clicks "remind me later".
 
         '
+    - name: user_terms_of_use_dismissed_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of times a user taps to dismiss (does not include
+        tapping accept or remind me later).
+
+        **Developer Note**: This replaces the old `termsofuse.dismiss_count` metric.
+
+        '
+    - name: user_terms_of_use_remind_me_later_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of times a user taps "remind me later".
+
+        **Developer Note**: This replaces the old `termsofuse.remind_me_later_count`
+        metric.
+
+        '
+    - name: user_terms_of_use_shown_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Records the number of ToU impressions the user has had.
+
+        **Developer Note**: This replaces the old `termsofuse.impression_count` metric.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -2528,6 +2554,17 @@ fields:
     - name: raw_termsofuse_date
       type: STRING
       mode: NULLABLE
+    - name: user_terms_of_use_date_accepted
+      type: TIMESTAMP
+      mode: NULLABLE
+      description: 'The timestamp when the user accepted the Terms of Use.
+
+        **Developer Note**: This replaces the old `termsofuse.date` metric.
+
+        '
+    - name: raw_user_terms_of_use_date_accepted
+      type: STRING
+      mode: NULLABLE
   - name: uuid
     type: RECORD
     mode: NULLABLE
@@ -3364,6 +3401,14 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The version of the Terms of Use the user accepted.
+
+        '
+    - name: user_terms_of_use_version_accepted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The version of the Terms of Use the user accepted.
+
+        **Developer Note**: This replaces the old `termsofuse.version` metric.
 
         '
   - name: rate

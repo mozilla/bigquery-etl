@@ -177,7 +177,10 @@ SELECT
       metrics.counter.logins_store_mirror_undecryptable_deleted,
       metrics.counter.termsofuse_dismiss_count,
       metrics.counter.termsofuse_impression_count,
-      metrics.counter.termsofuse_remind_me_later_count
+      metrics.counter.termsofuse_remind_me_later_count,
+      metrics.counter.user_terms_of_use_dismissed_count,
+      metrics.counter.user_terms_of_use_remind_me_later_count,
+      metrics.counter.user_terms_of_use_shown_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -252,7 +255,9 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour,
       metrics.datetime.termsofuse_date,
-      metrics.datetime.raw_termsofuse_date
+      metrics.datetime.raw_termsofuse_date,
+      metrics.datetime.user_terms_of_use_date_accepted,
+      metrics.datetime.raw_user_terms_of_use_date_accepted
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(
@@ -290,7 +295,8 @@ SELECT
       metrics.quantity.credit_card_saved_all,
       metrics.quantity.addresses_saved_all,
       metrics.quantity.windows_ipad_window_count,
-      metrics.quantity.termsofuse_version
+      metrics.quantity.termsofuse_version,
+      metrics.quantity.user_terms_of_use_version_accepted
     ) AS `quantity`,
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
@@ -490,7 +496,10 @@ SELECT
       metrics.counter.logins_store_mirror_undecryptable_deleted,
       metrics.counter.termsofuse_dismiss_count,
       metrics.counter.termsofuse_impression_count,
-      metrics.counter.termsofuse_remind_me_later_count
+      metrics.counter.termsofuse_remind_me_later_count,
+      metrics.counter.user_terms_of_use_dismissed_count,
+      metrics.counter.user_terms_of_use_remind_me_later_count,
+      metrics.counter.user_terms_of_use_shown_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -565,7 +574,9 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour,
       metrics.datetime.termsofuse_date,
-      metrics.datetime.raw_termsofuse_date
+      metrics.datetime.raw_termsofuse_date,
+      metrics.datetime.user_terms_of_use_date_accepted,
+      metrics.datetime.raw_user_terms_of_use_date_accepted
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(
@@ -603,7 +614,8 @@ SELECT
       metrics.quantity.credit_card_saved_all,
       metrics.quantity.addresses_saved_all,
       metrics.quantity.windows_ipad_window_count,
-      metrics.quantity.termsofuse_version
+      metrics.quantity.termsofuse_version,
+      metrics.quantity.user_terms_of_use_version_accepted
     ) AS `quantity`,
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,
@@ -803,7 +815,10 @@ SELECT
       metrics.counter.logins_store_mirror_undecryptable_deleted,
       metrics.counter.termsofuse_dismiss_count,
       metrics.counter.termsofuse_impression_count,
-      metrics.counter.termsofuse_remind_me_later_count
+      metrics.counter.termsofuse_remind_me_later_count,
+      metrics.counter.user_terms_of_use_dismissed_count,
+      metrics.counter.user_terms_of_use_remind_me_later_count,
+      metrics.counter.user_terms_of_use_shown_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -878,7 +893,9 @@ SELECT
       metrics.datetime.glean_validation_first_run_hour,
       metrics.datetime.raw_glean_validation_first_run_hour,
       metrics.datetime.termsofuse_date,
-      metrics.datetime.raw_termsofuse_date
+      metrics.datetime.raw_termsofuse_date,
+      metrics.datetime.user_terms_of_use_date_accepted,
+      metrics.datetime.raw_user_terms_of_use_date_accepted
     ) AS `datetime`,
     STRUCT(metrics.uuid.legacy_ids_client_id) AS `uuid`,
     STRUCT(
@@ -916,7 +933,8 @@ SELECT
       metrics.quantity.credit_card_saved_all,
       metrics.quantity.addresses_saved_all,
       metrics.quantity.windows_ipad_window_count,
-      metrics.quantity.termsofuse_version
+      metrics.quantity.termsofuse_version,
+      metrics.quantity.user_terms_of_use_version_accepted
     ) AS `quantity`,
     STRUCT(
       metrics.rate.places_history_migration_migration_ended_rate,

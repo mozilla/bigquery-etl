@@ -26,12 +26,19 @@ SELECT
       metrics.string.usage_reason
     ) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
-    STRUCT(metrics.datetime.usage_first_run_date, metrics.datetime.termsofuse_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.usage_first_run_date,
+      metrics.datetime.termsofuse_date,
+      metrics.datetime.user_terms_of_use_date_accepted
+    ) AS `datetime`,
     STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
     STRUCT(metrics.timespan.usage_duration) AS `timespan`,
     STRUCT(metrics.boolean.usage_is_managed_device) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.quantity.termsofuse_version) AS `quantity`
+    STRUCT(
+      metrics.quantity.termsofuse_version,
+      metrics.quantity.user_terms_of_use_version_accepted
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -67,12 +74,19 @@ SELECT
       metrics.string.usage_reason
     ) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
-    STRUCT(metrics.datetime.usage_first_run_date, metrics.datetime.termsofuse_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.usage_first_run_date,
+      metrics.datetime.termsofuse_date,
+      metrics.datetime.user_terms_of_use_date_accepted
+    ) AS `datetime`,
     STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
     STRUCT(metrics.timespan.usage_duration) AS `timespan`,
     STRUCT(metrics.boolean.usage_is_managed_device) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.quantity.termsofuse_version) AS `quantity`
+    STRUCT(
+      metrics.quantity.termsofuse_version,
+      metrics.quantity.user_terms_of_use_version_accepted
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -108,12 +122,19 @@ SELECT
       metrics.string.usage_reason
     ) AS `string`,
     STRUCT(metrics.uuid.usage_profile_id) AS `uuid`,
-    STRUCT(metrics.datetime.usage_first_run_date, metrics.datetime.termsofuse_date) AS `datetime`,
+    STRUCT(
+      metrics.datetime.usage_first_run_date,
+      metrics.datetime.termsofuse_date,
+      metrics.datetime.user_terms_of_use_date_accepted
+    ) AS `datetime`,
     STRUCT(metrics.timing_distribution.usage_duration) AS `timing_distribution`,
     STRUCT(metrics.timespan.usage_duration) AS `timespan`,
     STRUCT(metrics.boolean.usage_is_managed_device) AS `boolean`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.quantity.termsofuse_version) AS `quantity`
+    STRUCT(
+      metrics.quantity.termsofuse_version,
+      metrics.quantity.user_terms_of_use_version_accepted
+    ) AS `quantity`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -317,6 +317,14 @@ fields:
       description: 'The timestamp when the user accepted the Terms of Use.
 
         '
+    - name: user_terms_of_use_date_accepted
+      type: STRING
+      mode: NULLABLE
+      description: 'The timestamp when the user accepted the Terms of Use.
+
+        **Developer Note**: This replaces the old `termsofuse.date` metric.
+
+        '
   - name: timing_distribution
     type: RECORD
     mode: NULLABLE
@@ -406,6 +414,14 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The version of the Terms of Use the user accepted.
+
+        '
+    - name: user_terms_of_use_version_accepted
+      type: INTEGER
+      mode: NULLABLE
+      description: 'The version of the Terms of Use the user accepted.
+
+        **Developer Note**: This replaces the old `termsofuse.version` metric.
 
         '
 - name: normalized_app_name

@@ -19,7 +19,11 @@ SELECT
             ) AS glean_validation_first_run_hour,
             metrics.datetime.glean_validation_first_run_hour AS raw_glean_validation_first_run_hour,
             mozfun.glean.parse_datetime(metrics.datetime.termsofuse_date) AS termsofuse_date,
-            metrics.datetime.termsofuse_date AS raw_termsofuse_date
+            metrics.datetime.termsofuse_date AS raw_termsofuse_date,
+            mozfun.glean.parse_datetime(
+              metrics.datetime.user_terms_of_use_date_accepted
+            ) AS user_terms_of_use_date_accepted,
+            metrics.datetime.user_terms_of_use_date_accepted AS raw_user_terms_of_use_date_accepted
           ) AS datetime
         )
     ) AS metrics,

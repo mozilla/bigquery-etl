@@ -1,0 +1,37 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Logical date corresponding to the partition (date when our server received the ping)
+    that was processed for generating the metrics.
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: |
+    Normalized channel the application is being distributed on. For example, release, beta, etc.
+
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: |
+    The distribution id associated with the install of Firefox.
+
+- mode: NULLABLE
+  name: enterprise_classification
+  type: STRING
+  description: |
+    Enterprise classification.
+
+- mode: NULLABLE
+  name: is_dau
+  type: BOOLEAN
+  description: |
+    Indicates whether the client met our definition of dau on the day.
+
+- mode: NULLABLE
+  name: client_count
+  type: INTEGER
+  description: |
+    Client count.

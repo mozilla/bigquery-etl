@@ -425,3 +425,15 @@ fields:
   name: metric_configuration_muted_until_epoch_seconds
   type: FLOAT
   description: Metric Configuration Muted Until Epoch Seconds
+- mode: NULLABLE
+  name: dimension_id
+  type: FLOAT
+  description: Dimension ID
+- mode: NULLABLE
+  name: metric_configuration_dimension_id
+  type: FLOAT
+  description: Metric Configuration Dimension ID
+- mode: NULLABLE
+  name: metric_configuration_dimension_display_name
+  type: STRING
+  description: Metric Configuration Dimension Display Name

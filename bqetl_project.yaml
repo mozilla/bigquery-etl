@@ -413,6 +413,32 @@ generate:
     events_first_seen:
       include_apps:
       - firefox_desktop
+    metrics_clients_last_seen:
+      skip_apps:
+      - accounts_cirrus
+      - experimenter_cirrus
+      - firefox_desktop_background_defaultagent
+      - firefox_desktop_background_tasks
+      - firefox_crashreporter
+      - monitor_cirrus
+      - mozilla_vpn
+      - mozillavpn_backend_cirrus
+      - pine
+      - thunderbird_android
+      - thunderbird_desktop
+    clients_last_seen_joined:
+      skip_apps:
+      - accounts_cirrus
+      - experimenter_cirrus
+      - firefox_desktop_background_defaultagent
+      - firefox_desktop_background_tasks
+      - firefox_crashreporter
+      - monitor_cirrus
+      - mozilla_vpn
+      - mozillavpn_backend_cirrus
+      - pine
+      - thunderbird_android
+      - thunderbird_desktop
     bigconfig:
       skip_apps:
       - firefox_echo_show

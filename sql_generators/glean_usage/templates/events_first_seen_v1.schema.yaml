@@ -34,10 +34,10 @@ fields:
     type: TIMESTAMP
   - mode: NULLABLE
     name: event_extra
-    type: STRING
+    type: JSON
   - mode: NULLABLE
     name: app_version_major
-    type: STRING
+    type: NUMERIC
   - mode: NULLABLE
     name: normalized_channel
     type: STRING

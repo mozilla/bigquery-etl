@@ -1153,26 +1153,6 @@ bqetl_default:
     - impact/tier_3
     - triage/no_triage
 
-bqetl_reference:
-  default_args:
-    depends_on_past: false
-    email:
-      - telemetry-alerts@mozilla.com
-      - cmorales@mozilla.com
-    email_on_failure: true
-    email_on_retry: true
-    end_date: null
-    owner: cmorales@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2023-09-18'
-  description: DAG to build reference data
-  repo: bigquery-etl
-  schedule_interval: daily
-  tags:
-    - impact/tier_1
-    - repo/bigquery-etl
-
 bqetl_generated_funnels:
   default_args:
     depends_on_past: false
@@ -2487,6 +2467,23 @@ bqetl_bigeye_derived:
       - phlee@mozilla.com
     start_date: '2025-07-14'
     retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
+bqetl_firefox_enterprise:
+  schedule_interval: 0 6 * * *
+  description: |
+    DAG for processing queries related to Firefox Enterprise.
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+    start_date: '2025-08-21'
+    retries: 1
     retry_delay: 30m
   tags:
     - impact/tier_3

@@ -3,20 +3,19 @@ authlib==1.6.3
 beautifulsoup4==4.13.4
 bigeye-sdk==0.6.5
 black==25.1.0
-cattrs==25.1.1
+cattrs==25.2.0
 click==8.2.1
-cryptography==45.0.6
+cryptography==45.0.7
 exceptiongroup==1.3.0 # for backwards compatibility with python < 3.11
 flake8<5 # pytest-flake8 does not support flake8 5+
 fredapi==0.5.2
 gcsfs==2025.3.2
-gcloud==0.18.3
 gitpython==3.1.45
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.
-google-cloud-bigquery==3.35.1
-google-cloud-bigquery-storage[fastavro]==2.32.0
+google-cloud-bigquery==3.36.0
+google-cloud-bigquery-storage[fastavro]==2.33.1
 google-cloud-datacatalog-lineage==0.3.14
-google-cloud-storage==3.3.0
+google-cloud-storage==3.3.1
 Jinja2==3.1.6
 jsonschema==4.25.1
 PyJWT==2.10.1
@@ -24,9 +23,9 @@ looker-sdk==25.10.0
 markdown-include==0.8.1
 mdx_truly_sane_lists==1.3
 mkdocs==1.6.1
-mkdocs-material==9.6.18
+mkdocs-material==9.6.19
 mkdocs-awesome-pages-plugin==2.10.1
-mozilla-metric-config-parser==2025.7.1
+mozilla-metric-config-parser==2025.8.1
 mozilla-schema-generator==0.5.1
 pandas==2.3.2
 paramiko==4.0.0
@@ -40,7 +39,7 @@ pytest-isort==4.0.0
 pytest-mypy==1.0.1
 pytest-pydocstyle==2.4.0
 pytest-xdist==3.8.0
-pytest==8.4.1
+pytest==8.4.2
 PyYAML==6.0.2
 rich-click==1.8.9
 smart_open==6.4.0
@@ -50,12 +49,11 @@ stripe==6.4.0
 symbolic==12.16.2
 siggen==2.2.20241029
 tomli==2.2.1 # for backwards compatibility with python < 3.11
-types-python-dateutil==2.9.0.20250809
+types-python-dateutil==2.9.0.20250822
 types-pytz==2025.2.0.20250809
-types-PyYAML==6.0.12.20250822
-types-requests==2.32.4.20250809
+types-PyYAML==6.0.12.20250915
+types-requests==2.32.4.20250913
 types-ujson==5.10.0.20250822
-typing==3.7.4.3
 ujson==5.11.0
 yamllint==1.37.1
 requests==2.32.5

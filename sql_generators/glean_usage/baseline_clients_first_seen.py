@@ -15,6 +15,7 @@ class BaselineClientsFirstSeenTable(GleanTable):
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
         self.custom_render_kwargs = {}
+        self.per_app_requires_all_base_tables = True
 
     def generate_per_app_id(
         self,

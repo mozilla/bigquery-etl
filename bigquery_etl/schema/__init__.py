@@ -363,16 +363,26 @@ class Schema:
 
                 if node_name in source_schema_nodes:  # field exists in app schema
                     # field matches, can query as-is
-                    if node == source_schema_nodes[node_name] and (
-                        # don't need to unnest scalar
-                        dtype != "RECORD"
-                        or not unnest_structs
-                        # reached max record depth to unnest
-                        or len(node_path) > max_unnest_depth > 0
-                        # field not in unnest allowlist
-                        or (
-                            unnest_allowlist is not None
-                            and node_path[0] not in unnest_allowlist
+                    if (
+                        dtype == source_schema_nodes[node["name"]]["type"]
+                        and (
+                            # fields must match for records, otherwise only type needs to match
+                            # note that this will be false if field descriptions don't match
+                            dtype != "RECORD"
+                            or node["fields"]
+                            == source_schema_nodes[node_name]["fields"]
+                        )
+                        and (
+                            # don't need to unnest scalar
+                            dtype != "RECORD"
+                            or not unnest_structs
+                            # reached max record depth to unnest
+                            or len(node_path) > max_unnest_depth > 0
+                            # field not in unnest allowlist
+                            or (
+                                unnest_allowlist is not None
+                                and node_path[0] not in unnest_allowlist
+                            )
                         )
                     ):
                         if (

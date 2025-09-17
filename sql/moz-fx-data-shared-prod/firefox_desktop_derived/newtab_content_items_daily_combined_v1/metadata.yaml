@@ -1,0 +1,12 @@
+friendly_name: Newtab Content Items Daily Combined
+description: |-
+  A view of the combined (Newtab + Newtab-Content) daily aggregation of newtab content actions on content/items,
+  joined with the latest corpus item details from the corpus_items_current table so that the most current values for
+  the corpus item are available.
+owners:
+- lmcfall@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers

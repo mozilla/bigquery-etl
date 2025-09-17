@@ -1,7 +1,6 @@
 SELECT
   submission_date,
   normalized_channel,
-  distribution_id,
   enterprise_classification,
   is_dau,
   COUNT(*) AS client_count,

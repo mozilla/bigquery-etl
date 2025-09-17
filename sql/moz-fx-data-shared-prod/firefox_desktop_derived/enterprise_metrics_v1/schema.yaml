@@ -10,13 +10,7 @@ fields:
   name: normalized_channel
   type: STRING
   description: |
-    Normalized channel the application is being distributed on. For example, release, beta, etc.
-
-- mode: NULLABLE
-  name: distribution_id
-  type: STRING
-  description: |
-    The distribution id associated with the install of Firefox.
+    Normalized channel the application is being distributed on. For enterprise this should be either "esr" or "release".
 
 - mode: NULLABLE
   name: enterprise_classification

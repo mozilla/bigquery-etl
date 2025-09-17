@@ -25,7 +25,7 @@ monitoring:
   enabled: true
   collection: Test
   partition_column: null
-  partition_column_set: true
+  partition_column_set: false
   freshness:
     blocking: false
   volume:

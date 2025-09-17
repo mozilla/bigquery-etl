@@ -13,6 +13,6 @@ default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
-  - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
 syndication: {}

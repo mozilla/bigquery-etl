@@ -48,7 +48,7 @@ monitoring:
   enabled: true
   collection: null
   partition_column: null
-  partition_column_set: true
+  partition_column_set: false
   freshness:
     blocking: false
   volume:

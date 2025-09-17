@@ -42,7 +42,7 @@ monitoring:
   enabled: true
   collection: Operational Checks
   partition_column: null
-  partition_column_set: true
+  partition_column_set: false
   freshness:
     blocking: false
   volume:

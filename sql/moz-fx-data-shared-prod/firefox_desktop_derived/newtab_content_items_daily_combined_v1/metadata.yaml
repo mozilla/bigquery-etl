@@ -5,3 +5,8 @@ description: |-
   the corpus item are available.
 owners:
 - lmcfall@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers

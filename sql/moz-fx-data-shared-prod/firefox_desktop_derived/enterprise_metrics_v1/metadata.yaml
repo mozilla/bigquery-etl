@@ -16,7 +16,4 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: null
-  clustering:
-    fields:
-    - normalized_channel
 deprecated: false

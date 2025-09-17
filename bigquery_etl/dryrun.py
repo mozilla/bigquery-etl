@@ -255,6 +255,8 @@ class DryRun:
             "cache_ttl_hours": self.cache_ttl_hours,
         }
 
+        print(f"Generated cache key for {self.sqlfile} ({cache_params})")
+
         cache_string = json.dumps(cache_params, sort_keys=True)
         return hashlib.sha256(cache_string.encode("utf-8")).hexdigest()[:16]
 
@@ -286,7 +288,7 @@ class DryRun:
         try:
             with open(cache_file_path, "rb") as f:
                 cached_result = pickle.load(f)
-                print(f"Using cached dry run result for {self.sqlfile}")
+                print(f"Using cached dry run result for {self.sqlfile} ({cache_key})")
                 return cached_result
         except (pickle.PickleError, OSError, EOFError) as e:
             print(f"Failed to load cache for {self.sqlfile}: {e}")
@@ -309,7 +311,7 @@ class DryRun:
             with open(temp_file_path, "wb") as f:
                 pickle.dump(result, f)
             os.rename(temp_file_path, cache_file_path)
-            print(f"Cached dry run result for {self.sqlfile}")
+            print(f"Cached dry run result for {self.sqlfile} ({cache_key})")
         except (pickle.PickleError, OSError) as e:
             print(f"Failed to cache result for {self.sqlfile}: {e}")
             # clean up temp file if it exists

@@ -75,7 +75,7 @@ def update(
     )
 
     # group table metadata files by dataset
-    datasets = {}
+    datasets: dict[Path, list[Path]] = {}
     for table_metadata_file in table_metadata_files:
         dataset_path = Path(table_metadata_file).parent.parent
         if dataset_path not in datasets:

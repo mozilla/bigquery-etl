@@ -1,0 +1,35 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: 'Logical date corresponding to the partition (date when our server
+    received the ping)
+
+    that was processed for generating the metrics.
+
+    '
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: 'Normalized channel the application is being distributed on. For enterprise
+    this should be either "esr" or "release".
+
+    '
+- name: enterprise_classification
+  type: STRING
+  mode: NULLABLE
+  description: 'Enterprise classification.
+
+    '
+- name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Indicates whether the client met our definition of dau on the day.
+
+    '
+- name: client_count
+  type: INTEGER
+  mode: NULLABLE
+  description: 'Client count.
+
+    '

@@ -66,13 +66,10 @@ def update(
     name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
 ) -> None:
     """Update metadata yaml file."""
-    table_metadata_files = list(
-        set(
-            paths_matching_name_pattern(
-                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
-            )
-        )
+    table_metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
+
     retained_dataset_roles = ConfigLoader.get(
         "deprecation", "retain_dataset_roles", fallback=[]
     )
@@ -192,6 +189,7 @@ def _update_single_metadata_file(retained_dataset_roles, table_metadata_file):
             click.echo(f"Updated {table_metadata_file}")
     except Exception as e:
         click.echo(f"Error processing {table_metadata_file}: {e}", err=True)
+        raise e
 
 
 @metadata.command(
@@ -216,12 +214,8 @@ def publish(
     name: str, sql_dir: Optional[str], project_id: Optional[str], parallelism: int
 ) -> None:
     """Publish Bigquery metadata."""
-    table_metadata_files = list(
-        set(
-            paths_matching_name_pattern(
-                name, sql_dir, project_id=project_id, files=["metadata.yaml"]
-            )
-        )
+    table_metadata_files = paths_matching_name_pattern(
+        name, sql_dir, project_id=project_id, files=["metadata.yaml"]
     )
 
     if parallelism > 0:

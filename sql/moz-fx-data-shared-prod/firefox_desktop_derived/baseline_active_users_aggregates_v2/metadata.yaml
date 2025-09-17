@@ -7,6 +7,9 @@ owners:
 labels:
   incremental: true
   table_type: aggregate
+  dag: bqetl_analytics_aggregations
+  owner1: kwindau
+  owner2: ago
 scheduling:
   dag_name: bqetl_analytics_aggregations
 bigquery:
@@ -21,3 +24,5 @@ bigquery:
     - app_name
     - channel
     - country
+references: {}
+require_column_descriptions: false

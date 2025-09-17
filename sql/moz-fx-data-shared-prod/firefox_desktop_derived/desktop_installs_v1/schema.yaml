@@ -30,7 +30,7 @@ fields:
 - mode: NULLABLE
   name: isp_name
   type: STRING
-  description: ISP Name - The internet service provider name
+  description: The name of the internet service provider associated with the client's IP address.
 - mode: NULLABLE
   name: isp_organization
   type: STRING

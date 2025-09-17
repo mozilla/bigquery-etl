@@ -7,7 +7,8 @@ labels:
   application: devtools
   schedule: daily
   table_type: aggregate
-  shredder_mitigation: false
+  dag: bqetl_devtools
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_devtools
   start_date: '2019-11-25'
@@ -15,5 +16,9 @@ bigquery:
   time_partitioning:
     type: day
     field: submission_date
-    require_partition_filter: null
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
   clustering: null
+references: {}
+require_column_descriptions: false

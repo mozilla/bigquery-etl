@@ -5,9 +5,11 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -29,21 +31,28 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: device_model
   type: STRING
   mode: NULLABLE
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -80,6 +89,8 @@ fields:
 - name: cohort_date_week
   type: DATE
   mode: NULLABLE
+  description: The week of this client's first_seen_date.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.

@@ -1,8 +1,8 @@
 /*
-This script looks at all unique "GA Client ID" / "GA Session IDs" combos that 
+This script looks at all unique "GA Client ID" / "GA Session IDs" combos that
 have had events between 3 days before the submission date and the submission date.
 
-For all these sessions, it re-calculates the session level information, 
+For all these sessions, it re-calculates the session level information,
 and inserts it into the table if not already in there, or,
 overwrites the session row with the latest data if it is already in the table.
 We only maintain a row for sessions that have a non-null ga_session_id
@@ -177,7 +177,27 @@ MERGE INTO
             key = 'term'
           LIMIT
             1
-        ).string_value AS term_from_event_params
+        ).string_value AS term_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            KEY = 'id'
+          LIMIT
+            1
+        ).string_value AS experiment_id_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            KEY = 'variant'
+          LIMIT
+            1
+        ).string_value AS experiment_branch_from_event_params
       FROM
         `moz-fx-data-marketing-prod.analytics_313696158.events_2*` all_events
       JOIN
@@ -193,6 +213,8 @@ MERGE INTO
         medium_from_event_params,
         content_from_event_params,
         term_from_event_params,
+        experiment_id_from_event_params,
+        experiment_branch_from_event_params,
         event_timestamp,
         country
       FROM
@@ -242,6 +264,18 @@ MERGE INTO
           SAFE_OFFSET(0)
         ] AS first_term_from_event_params,
         ARRAY_AGG(DISTINCT term_from_event_params IGNORE NULLS) AS distinct_terms_from_event_params,
+        ARRAY_AGG(experiment_id_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
+          SAFE_OFFSET(0)
+        ] AS first_experiment_id_from_event_params,
+        ARRAY_AGG(
+          DISTINCT experiment_id_from_event_params IGNORE NULLS
+        ) AS distinct_experiment_ids_from_event_params,
+        ARRAY_AGG(experiment_branch_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
+          SAFE_OFFSET(0)
+        ] AS first_experiment_branch_from_event_params,
+        ARRAY_AGG(
+          DISTINCT experiment_branch_from_event_params IGNORE NULLS
+        ) AS distinct_experiment_branches_from_event_params
       FROM
         attr_info_from_event_params_in_session
       GROUP BY
@@ -568,6 +602,10 @@ MERGE INTO
       sess_strt.ad_crosschannel_source_platform,
       sess_strt.ad_crosschannel_primary_channel_group,
       sess_strt.ad_crosschannel_default_channel_group,
+      session_attrs.first_experiment_id_from_event_params,
+      session_attrs.distinct_experiment_ids_from_event_params,
+      session_attrs.first_experiment_branch_from_event_params,
+      session_attrs.distinct_experiment_branches_from_event_params
     FROM
       all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
     LEFT JOIN
@@ -660,7 +698,11 @@ THEN
       ad_crosschannel_campaign_id,
       ad_crosschannel_source_platform,
       ad_crosschannel_primary_channel_group,
-      ad_crosschannel_default_channel_group
+      ad_crosschannel_default_channel_group,
+      first_experiment_id_from_event_params,
+      distinct_experiment_ids_from_event_params,
+      first_experiment_branch_from_event_params,
+      distinct_experiment_branches_from_event_params
     )
   VALUES
     (
@@ -719,7 +761,11 @@ THEN
       S.ad_crosschannel_campaign_id,
       S.ad_crosschannel_source_platform,
       S.ad_crosschannel_primary_channel_group,
-      S.ad_crosschannel_default_channel_group
+      S.ad_crosschannel_default_channel_group,
+      S.first_experiment_id_from_event_params,
+      S.distinct_experiment_ids_from_event_params,
+      S.first_experiment_branch_from_event_params,
+      S.distinct_experiment_branches_from_event_params
     )
   WHEN MATCHED
 THEN
@@ -779,4 +825,8 @@ THEN
     T.ad_crosschannel_campaign_id = S.ad_crosschannel_campaign_id,
     T.ad_crosschannel_source_platform = S.ad_crosschannel_source_platform,
     T.ad_crosschannel_primary_channel_group = S.ad_crosschannel_primary_channel_group,
-    T.ad_crosschannel_default_channel_group = S.ad_crosschannel_default_channel_group
+    T.ad_crosschannel_default_channel_group = S.ad_crosschannel_default_channel_group,
+    T.first_experiment_id_from_event_params = S.first_experiment_id_from_event_params,
+    T.distinct_experiment_ids_from_event_params = S.distinct_experiment_ids_from_event_params,
+    T.first_experiment_branch_from_event_params = S.first_experiment_branch_from_event_params,
+    T.distinct_experiment_branches_from_event_params = S.distinct_experiment_branches_from_event_params

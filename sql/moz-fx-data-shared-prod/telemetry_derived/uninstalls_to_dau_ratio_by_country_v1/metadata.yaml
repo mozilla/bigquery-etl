@@ -7,6 +7,7 @@ labels:
   incremental: true
   owner1: kwindau
   table_type: aggregate
+  dag: bqetl_fx_health_ind_dashboard
 scheduling:
   dag_name: bqetl_fx_health_ind_dashboard
 bigquery:
@@ -20,3 +21,4 @@ bigquery:
     fields:
     - normalized_country_code
 references: {}
+require_column_descriptions: true

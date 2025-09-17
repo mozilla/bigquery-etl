@@ -2,15 +2,18 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: os
   type: STRING
   mode: NULLABLE
 - name: app_version
   type: INTEGER
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: app_build_id
   type: STRING
   mode: NULLABLE

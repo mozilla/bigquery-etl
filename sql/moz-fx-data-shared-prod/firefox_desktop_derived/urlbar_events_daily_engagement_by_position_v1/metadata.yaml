@@ -8,6 +8,8 @@ labels:
   schedule: daily
   shredder_mitigation: true
   table_type: aggregate
+  dag: bqetl_urlbar
+  owner1: tbrooks
 scheduling:
   dag_name: bqetl_urlbar
 bigquery:
@@ -15,6 +17,10 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
+references: {}
+require_column_descriptions: true

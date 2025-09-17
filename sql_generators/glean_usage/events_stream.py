@@ -97,6 +97,7 @@ class EventsStreamTable(GleanTable):
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None
     ):
         """Generate the events_stream table query per app_name."""
         target_dataset = app_info[0]["app_name"]

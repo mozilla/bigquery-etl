@@ -67,6 +67,10 @@ SELECT
   ga4.distinct_contents_from_event_params AS ga4_distinct_contents_from_event_params,
   ga4.first_term_from_event_params AS ga4_first_term_from_event_params,
   ga4.distinct_terms_from_event_params AS ga4_distinct_terms_from_event_params,
+  ga4.first_experiment_id_from_event_params AS ga4_first_experiment_id_from_event_params,
+  ga4.distinct_experiment_ids_from_event_params AS ga4_distinct_experiment_ids_from_event_params,
+  ga4.first_experiment_branch_from_event_params AS ga4_first_experiment_branch_from_event_params,
+  ga4.distinct_experiment_branches_from_event_params AS ga4_distinct_experiment_branches_from_event_params,
   ga4.manual_campaign_id AS ga4_manual_campaign_id,
   ga4.manual_campaign_name AS ga4_manual_campaign_name,
   ga4.manual_source AS ga4_manual_source,
@@ -79,8 +83,7 @@ SELECT
   ga4.firefox_desktop_downloads AS ga4_firefox_desktop_downloads,
   ga4.last_reported_install_target AS ga4_last_reported_install_target,
   ga4.all_reported_install_targets AS ga4_all_reported_install_targets,
-  ga4.last_reported_stub_session_id AS ga4_last_reported_stub_session_id,
-  ga4.all_reported_stub_session_ids AS ga4_all_reported_stub_session_ids,
+  ga4.stub_session_id AS ga4_stub_session_id,
   ga4.landing_screen AS ga4_landing_screen,
   ga4.ad_google_campaign AS ga4_ad_google_campaign,
   ga4.ad_google_campaign_id AS ga4_ad_google_campaign_id,
@@ -115,6 +118,76 @@ LEFT JOIN
   ) stub_attr_logs
   ON JSON_VALUE(cfs.attribution_ext.dltoken) = stub_attr_logs.dl_token
 LEFT JOIN
-  `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined` ga4
+  (
+    SELECT
+      flag,
+      ga_client_id,
+      session_date,
+      session_start_timestamp,
+      country,
+      region,
+      city,
+      device_category,
+      mobile_device_model,
+      mobile_device_string,
+      os,
+      os_version,
+      `language`,
+      browser,
+      browser_version,
+      first_campaign_from_event_params,
+      distinct_campaigns_from_event_params,
+      first_source_from_event_params,
+      distinct_sources_from_event_params,
+      first_medium_from_event_params,
+      distinct_mediums_from_event_params,
+      first_content_from_event_params,
+      distinct_contents_from_event_params,
+      first_term_from_event_params,
+      distinct_terms_from_event_params,
+      manual_campaign_id,
+      manual_campaign_name,
+      manual_source,
+      manual_medium,
+      manual_term,
+      manual_content,
+      gclid,
+      gclid_array,
+      had_download_event,
+      firefox_desktop_downloads,
+      last_reported_install_target,
+      all_reported_install_targets,
+      landing_screen,
+      ad_google_campaign,
+      ad_google_campaign_id,
+      ad_google_group,
+      ad_google_group_id,
+      ad_google_account,
+      ad_crosschannel_source,
+      ad_crosschannel_medium,
+      ad_crosschannel_campaign,
+      ad_crosschannel_campaign_id,
+      ad_crosschannel_source_platform,
+      ad_crosschannel_primary_channel_group,
+      ad_crosschannel_default_channel_group,
+      stub_session_id,
+      IF(stub_session_id IS NOT NULL, 1, 0) AS has_stub_session_id,
+      first_experiment_id_from_event_params,
+      distinct_experiment_ids_from_event_params,
+      first_experiment_branch_from_event_params,
+      distinct_experiment_branches_from_event_params
+    FROM
+      `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined`
+    LEFT JOIN
+      UNNEST(all_reported_stub_session_ids) stub_session_id
+  ) ga4
   ON stub_attr_logs.ga_client_id = ga4.ga_client_id
-  AND stub_attr_logs.stub_session_id = ga4.last_reported_stub_session_id
+  AND stub_attr_logs.stub_session_id = ga4.stub_session_id
+QUALIFY
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      cfs.client_id
+    ORDER BY
+      COALESCE(has_stub_session_id, 0) DESC,
+      ga4.stub_session_id ASC
+  ) = 1

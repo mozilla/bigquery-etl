@@ -19,11 +19,6 @@ labels:
   incremental: true
   owner1: cmorales@mozilla.com
   owner2: akommasani@mozilla.com
-scheduling:
-  dag_name: bqetl_reference
-  arguments:
-    - --market-date={{ ds }}
-    - --api-key={{ var.value.fmp_api_key }}
 bigquery:
   time_partitioning:
     type: day
@@ -31,3 +26,4 @@ bigquery:
     expiration_days: null
     require_partition_filter: true
 references: {}
+deprecated: true

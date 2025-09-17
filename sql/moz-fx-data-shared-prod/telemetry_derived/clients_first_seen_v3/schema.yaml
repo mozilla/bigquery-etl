@@ -1,16 +1,19 @@
 fields:
-- description: Unique ID for the client installation.
+- description: A unique identifier (UUID) for the client.
   name: client_id
   type: STRING
   mode: NULLABLE
-- description: Sample ID to limit query results during an analysis.
+- description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
   name: sample_id
   type: INTEGER
   mode: NULLABLE
-- description: Date when the server first received either of the 3 pings from this client.
+- description: Date when the server first received either of the 3 pings from this
+    client.
   name: first_seen_date
   type: DATE
-- description: Second date when the server received either of the 3 pings from this client.
+- description: Second date when the server received either of the 3 pings from this
+    client.
   name: second_seen_date
   type: DATE
   mode: NULLABLE
@@ -26,7 +29,7 @@ fields:
   name: app_name
   type: STRING
   mode: NULLABLE
-- description: The best locale that the application should be localized to.
+- description: Set of language- and/or country-based preferences for a user interface.
   name: locale
   type: STRING
   mode: NULLABLE
@@ -38,13 +41,15 @@ fields:
   name: vendor
   type: STRING
   mode: NULLABLE
-- description: The application version.
+- description: User visible version string (e.g. "1.0.3") for the browser.
   name: app_version
   type: STRING
   mode: NULLABLE
-- description: 'A string tag identifying the binary ABI of the current processor and compiler vtable, as taken from the TARGET_XPCOM_ABI configure variable.
-  It may not be available on all platforms, especially unusual processor or compiler combinations. The result takes the form <processor>-<compilerABI>,
-  eg. x86-msvc, ppc-gcc3. This value should almost always be used in combination with the OS.'
+- description: A string tag identifying the binary ABI of the current processor and
+    compiler vtable, as taken from the TARGET_XPCOM_ABI configure variable. It may
+    not be available on all platforms, especially unusual processor or compiler combinations.
+    The result takes the form <processor>-<compilerABI>, eg. x86-msvc, ppc-gcc3. This
+    value should almost always be used in combination with the OS.
   name: xpcom_abi
   type: STRING
   mode: NULLABLE
@@ -52,27 +57,32 @@ fields:
   name: document_id
   type: STRING
   mode: NULLABLE
-- description: The value of the `distribution.id` preference that identifies the Firefox distribution.
+- description: The distribution id associated with the install of Firefox.
   name: distribution_id
   type: STRING
   mode: NULLABLE
-- description: The value selected for the `distribution.version` preference in the Partner Distribution Configuration File.
+- description: The value selected for the `distribution.version` preference in the
+    Partner Distribution Configuration File.
   name: partner_distribution_version
   type: STRING
   mode: NULLABLE
-- description: The value of the `app.distributor` preference in the Partner Distribution Configuration File.
+- description: The value of the `app.distributor` preference in the Partner Distribution
+    Configuration File.
   name: partner_distributor
   type: STRING
   mode: NULLABLE
-- description: The value of the `app.distributor.channel` preference in the Partner Distribution Configuration File.
+- description: The value of the `app.distributor.channel` preference in the Partner
+    Distribution Configuration File.
   name: partner_distributor_channel
   type: STRING
   mode: NULLABLE
-- description: The value of the `mozilla.partner.id` preference in the Partner Distribution Configuration File.
+- description: The value of the `mozilla.partner.id` preference in the Partner Distribution
+    Configuration File.
   name: partner_id
   type: STRING
   mode: NULLABLE
-- description: Identifier of the particular campaign that led to the download of the product.
+- description: Identifier of the particular campaign that led to the download of the
+    product.
   name: attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -100,15 +110,18 @@ fields:
   name: attribution_source
   type: STRING
   mode: NULLABLE
-- description: Client's user agent, which corresponds to the web browser used to download the Firefox installer.
+- description: Client's user agent, which corresponds to the web browser used to download
+    the Firefox installer.
   name: attribution_ua
   type: STRING
   mode: NULLABLE
-- description: Variation of the identifier that indicates where installations of Firefox originated.
+- description: Variation of the identifier that indicates where installations of Firefox
+    originated.
   name: attribution_variation
   type: STRING
   mode: NULLABLE
-- description: The anonymized path of the engine xml file. For details on the components refer to the metadata for telemetry.new_profile.
+- description: The anonymized path of the engine xml file. For details on the components
+    refer to the metadata for telemetry.new_profile.
   name: engine_data_load_path
   type: STRING
   mode: NULLABLE
@@ -116,13 +129,15 @@ fields:
   name: engine_data_name
   type: STRING
   mode: NULLABLE
-- description: 'The origin of the search engine. The value will be default for engines that are built-in or from distribution partners,
-  verified for user-installed engines with valid verification hashes, unverified for non-default engines without verification hash,
-  and invalid for engines with broken verification hashes.'
+- description: The origin of the search engine. The value will be default for engines
+    that are built-in or from distribution partners, verified for user-installed engines
+    with valid verification hashes, unverified for non-default engines without verification
+    hash, and invalid for engines with broken verification hashes.
   name: engine_data_origin
   type: STRING
   mode: NULLABLE
-- description: The HTTP url we would use to search. For privacy, we don’t record this for user-installed engines.
+- description: "The HTTP url we would use to search. For privacy, we don\u2019t record\
+    \ this for user-installed engines."
   name: engine_data_submission_url
   type: STRING
   mode: NULLABLE
@@ -130,7 +145,8 @@ fields:
   name: apple_model_id
   type: STRING
   mode: NULLABLE
-- description: City retrieved as a result of a geographic lookup based on the client's IP address.
+- description: City retrieved as a result of a geographic lookup based on the client's
+    IP address.
   name: city
   type: STRING
 - description: The specific geo database version used.
@@ -141,11 +157,12 @@ fields:
   name: subdivision1
   type: STRING
   mode: NULLABLE
-- description: The name of the ISP.
+- description: The name of the internet service provider associated with the client's
+    IP address.
   name: isp_name
   type: STRING
   mode: NULLABLE
-- description: The Firefox channel, set to Other for unrecognized channel names.
+- description: The normalized channel the application is being distributed on.
   name: normalized_channel
   type: STRING
   mode: NULLABLE
@@ -153,7 +170,7 @@ fields:
   name: country
   type: STRING
   mode: NULLABLE
-- description: The OS name, set to Other for unrecognized OS names.
+- description: The normalized name of the operating system running at the client.
   name: normalized_os
   type: STRING
   mode: NULLABLE
@@ -162,12 +179,17 @@ fields:
   type: STRING
   mode: NULLABLE
 - description: 'How the profile was selected during startup. Possible reasons are:
-   unknown: Generally should not happen, set as a default in case no other reason occurred. profile-manager: The profile was selected by the profile manager.
-   profile-reset: The profile was selected for reset, normally this would mean a restart. restart: The user restarted the application,
-   the same profile as previous will be used. argument-profile: The profile was selected by the --profile command line argument.
-   argument-p: The profile was selected by the -p command line argument. firstrun-claimed-default: A first run of a dedicated profiles build chose the old
-   default profile to be the default for this install. firstrun-skipped-default: A first run of a dedicated profiles build skipped over the old default profile
-   and created a new profile. restart-claimed-default: A first run of a dedicated profiles build after a restart chose the old default.'
+    unknown: Generally should not happen, set as a default in case no other reason
+    occurred. profile-manager: The profile was selected by the profile manager. profile-reset:
+    The profile was selected for reset, normally this would mean a restart. restart:
+    The user restarted the application, the same profile as previous will be used.
+    argument-profile: The profile was selected by the --profile command line argument.
+    argument-p: The profile was selected by the -p command line argument. firstrun-claimed-default:
+    A first run of a dedicated profiles build chose the old default profile to be
+    the default for this install. firstrun-skipped-default: A first run of a dedicated
+    profiles build skipped over the old default profile and created a new profile.
+    restart-claimed-default: A first run of a dedicated profiles build after a restart
+    chose the old default.'
   name: startup_profile_selection_reason
   type: STRING
   mode: NULLABLE
@@ -215,7 +237,7 @@ fields:
   name: installation_first_seen_version
   type: STRING
   mode: NULLABLE
-- description: OS name - not normalized_os
+- description: The normalized name of the operating system running at the client.
   name: os
   type: STRING
   mode: NULLABLE
@@ -225,14 +247,14 @@ fields:
   mode: NULLABLE
 - description: Windows build number
   name: windows_build_number
-  type: FLOAT64
+  type: FLOAT
   mode: NULLABLE
 - description: Combo of os, os_version, windows_build_number, NULL if not windows
   name: windows_version
   type: STRING
   mode: NULLABLE
-- description: A collection of pings - which ping is reported in the table as well as a record of all other
-    pings in the data for this one particular client
+- description: A collection of pings - which ping is reported in the table as well
+    as a record of all other pings in the data for this one particular client
   name: metadata
   type: RECORD
   mode: NULLABLE
@@ -256,4 +278,5 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

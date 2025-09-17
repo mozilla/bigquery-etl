@@ -104,7 +104,8 @@ pre_fivetran_changelog AS (
         JSON_VALUE(metadata.userid_sha256) AS userid_sha256
       ) AS metadata,
       CAST(NULL AS STRUCT<address STRUCT<country STRING>>) AS shipping,
-      CAST(NULL AS STRING) AS tax_exempt
+      CAST(NULL AS STRING) AS tax_exempt,
+      CAST(NULL AS STRUCT<default_payment_method_id STRING>) AS invoice_settings
     ) AS customer,
     1 AS customer_change_number
   FROM

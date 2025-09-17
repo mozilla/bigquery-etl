@@ -5,22 +5,27 @@ description: |-
   as those are all calculated in the main ping-based clients_daily.
   We join main ping and event data together in clients_daily_joined_v1,
   which then becomes the source for the user-facing view.
+owners:
+- ascholtz@mozilla.com
 labels:
   application: firefox
   schedule: daily
   table_type: client_level
-owners:
-  - ascholtz@mozilla.com
+  dag: bqetl_main_summary
+  owner1: ascholtz
 scheduling:
   dag_name: bqetl_main_summary
-  start_date: "2021-01-19"
+  start_date: '2021-01-19'
   priority: 85
 bigquery:
   time_partitioning:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
-      - sample_id
+    - sample_id
+references: {}
+require_column_descriptions: false

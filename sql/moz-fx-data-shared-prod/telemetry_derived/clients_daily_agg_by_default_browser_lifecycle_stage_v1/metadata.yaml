@@ -5,9 +5,10 @@ owners:
 - wichan@mozilla.com
 labels:
   incremental: true
-  owner1: wichan@mozilla.com
+  owner1: wichan
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_default_browser_aggregates
 scheduling:
   dag_name: bqetl_default_browser_aggregates
 bigquery:
@@ -21,3 +22,4 @@ bigquery:
     fields:
     - normalized_os_version
 references: {}
+require_column_descriptions: false

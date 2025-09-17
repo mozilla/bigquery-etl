@@ -29,3 +29,57 @@
     client_id: client-2
     first_run_date: 2021-04-01T01:00:00
     app_channel: not-release
+
+# ---------------------------------------------------------------------------
+# experiments LAST_VALUE test: later submission_timestamp should "win"
+# Uses a fresh client_id to avoid interfering with other tests.
+# Both rows are on the same submission_date (2021-04-01).
+# ---------------------------------------------------------------------------
+
+# earlier ping for client-3
+- <<: *ping
+  submission_timestamp: 2021-04-01T02:00:00
+  client_info:
+    <<: *client_info
+    client_id: client-3
+    first_run_date: 2021-03-15T00:00:00
+    app_channel: release
+  ping_info:
+    end_time: 2021-04-01T02:05:00
+    experiments:
+      - key: search-newtab
+        value:
+          branch: control
+          extra:
+            type: nimbus
+            enrollment_id: enroll-111
+      - key: onboarding-copy
+        value:
+          branch: variant_a
+          extra:
+            type: nimbus
+            enrollment_id: enroll-222
+
+# later ping for client-3 (this row's experiments should be selected by LAST_VALUE)
+- <<: *ping
+  submission_timestamp: 2021-04-01T02:34:56
+  client_info:
+    <<: *client_info
+    client_id: client-3
+    first_run_date: 2021-03-15T00:00:00
+    app_channel: release
+  ping_info:
+    end_time: 2021-04-01T02:40:00
+    experiments:
+      - key: search-newtab
+        value:
+          branch: treatment    # changed from "control"
+          extra:
+            type: nimbus
+            enrollment_id: enroll-111
+      - key: onboarding-copy
+        value:
+          branch: variant_b    # changed from "variant_a"
+          extra:
+            type: nimbus
+            enrollment_id: enroll-222

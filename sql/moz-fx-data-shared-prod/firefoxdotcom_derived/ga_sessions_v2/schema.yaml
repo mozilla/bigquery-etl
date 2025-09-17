@@ -231,3 +231,19 @@ fields:
   type: STRING
   mode: NULLABLE
   description: Google Ads Cross-Channel Default Channel Group reported during GA user's session_start event
+- name: first_experiment_id_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null reported experiment ID from event_params for this session.
+- name: distinct_experiment_ids_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All non-null reported experiment IDs from event_params for this session.
+- name: first_experiment_branch_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null reported experiment branch from event_params for this session.
+- name: distinct_experiment_branches_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All non-null reported experiment branches from event_params for this session.

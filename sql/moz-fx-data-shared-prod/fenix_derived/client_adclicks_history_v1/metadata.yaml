@@ -15,12 +15,18 @@ owners:
 - frank@mozilla.com
 labels:
   incremental: true
-  owner1: frank@mozilla.com
+  owner1: frank
+  dag: bqetl_org_mozilla_firefox_derived
 scheduling:
   dag_name: bqetl_org_mozilla_firefox_derived
   date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
+  parameters:
+  - submission_date:DATE:{{ds}}
 bigquery:
+  time_partitioning: null
+  range_partitioning: null
   clustering:
-    fields: [sample_id]
+    fields:
+    - sample_id
 references: {}
+require_column_descriptions: false

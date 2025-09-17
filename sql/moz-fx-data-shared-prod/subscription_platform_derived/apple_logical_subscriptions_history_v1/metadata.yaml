@@ -27,3 +27,5 @@ references: {}
 require_column_descriptions: true
 monitoring:
   enabled: true
+  freshness: null
+  volume: null

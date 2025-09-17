@@ -541,3 +541,11 @@ fields:
   mode: NULLABLE
   name: refreshed_at
   type: TIMESTAMP
+- mode: NULLABLE
+  name: metric_configuration_dimension_id
+  type: FLOAT
+  description: Metric Configuration Dimension ID
+- mode: NULLABLE
+  name: metric_configuration_dimension_display_name
+  type: STRING
+  description: Metric Configuration Dimension Display Name

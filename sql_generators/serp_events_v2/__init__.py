@@ -44,6 +44,7 @@ def generate(target_project, output_dir, use_cloud_function):
     env = Environment(loader=FileSystemLoader(str(THIS_PATH / "templates")))
     desktop_query_template = env.get_template("desktop_query.sql")
     metadata_template = "metadata.yaml"
+    schema_template = "schema.yaml"
     view_template = env.get_template("view.sql")
     output_dir = Path(output_dir) / target_project
     browser = Browsers["firefox_desktop"]
@@ -69,6 +70,20 @@ def generate(target_project, output_dir, use_cloud_function):
         basename="metadata.yaml",
         sql=render(
             metadata_template,
+            template_folder=THIS_PATH / "templates",
+            app_value=browser.value,
+            app_name=browser.name,
+            format=False,
+        ),
+        skip_existing=False,
+    )
+
+    write_sql(
+        output_dir=output_dir,
+        full_table_id=f"{target_project}.{browser.name}_derived.{TABLE_NAME}_v2",
+        basename="schema.yaml",
+        sql=render(
+            schema_template,
             template_folder=THIS_PATH / "templates",
             app_value=browser.value,
             app_name=browser.name,

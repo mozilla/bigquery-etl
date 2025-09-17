@@ -8,6 +8,7 @@ labels:
   owner1: kwindau
   table_type: aggregate
   shredder_mitigation: true
+  dag: bqetl_dynamic_dau
 scheduling:
   dag_name: bqetl_dynamic_dau
 bigquery:
@@ -17,4 +18,6 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
+  clustering: null
 references: {}
+require_column_descriptions: false

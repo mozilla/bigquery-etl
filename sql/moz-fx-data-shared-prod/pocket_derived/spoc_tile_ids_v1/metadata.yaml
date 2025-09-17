@@ -7,11 +7,8 @@ labels:
   incremental: false
   table_type: tile_id
   shredder_mitigation: false
-scheduling:
-  dag_name: bqetl_pocket
-  date_partition_parameter: null
-  parameters: ["submission_date:DATE:{{ds}}"]
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:
       - workgroup:pocket/prefect
+deprecated: true

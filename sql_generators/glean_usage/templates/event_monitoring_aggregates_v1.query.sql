@@ -28,7 +28,8 @@ WITH
         -- Add one more for aggregating events across all experiments
         UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
       LEFT JOIN
-        UNNEST(event.extra) AS event_extra
+        -- Add * extra to every event to get total event count
+        UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
     ),
   {% endfor %}
   {{ dataset['bq_dataset_family'] }}_aggregated AS (

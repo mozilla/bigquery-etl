@@ -149,24 +149,6 @@ def table_names_from_baseline(baseline_table, include_project_id=True):
     )
 
 
-def referenced_table_exists(view_sql, id_token=None):
-    """Dry run the given view SQL to see if its referent exists."""
-    dryrun = DryRun("foo/bar/view.sql", content=view_sql, id_token=id_token)
-    # 403 is returned if referenced dataset doesn't exist; we need to check that the 403 is due to dataset not existing
-    # since dryruns on views will also return 403 due to the table CREATE
-    # 404 is returned if referenced table or view doesn't exist
-    return not any(
-        [
-            404 == e.get("code")
-            or (
-                403 == e.get("code")
-                and "bigquery.tables.create denied" not in e.get("message")
-            )
-            for e in dryrun.errors()
-        ]
-    )
-
-
 def _contains_glob(patterns):
     return any({"*", "?", "["}.intersection(pattern) for pattern in patterns)
 
@@ -204,6 +186,7 @@ class GleanTable:
         self.custom_render_kwargs = {}
         self.per_app_id_enabled = True
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
@@ -361,10 +344,7 @@ class GleanTable:
         if query_python:
             artifacts.append(Artifact(table, "query.py", query_python))
 
-        if not (referenced_table_exists(view_sql, id_token)):
-            logging.info("Skipping view for table which doesn't exist:" f" {table}")
-        else:
-            artifacts.append(Artifact(view, "view.sql", view_sql))
+        artifacts.append(Artifact(view, "view.sql", view_sql))
 
         skip_existing_artifact = self.skip_existing(output_dir, project_id)
 
@@ -409,15 +389,22 @@ class GleanTable:
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
-
+        
         app_name = app_info[0]["app_name"]
 
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_name
+        
+        if self.per_app_requires_all_base_tables and not all_base_tables_exist:
+            logging.info(
+                f"Skipping per-app generation for {target_dataset}.{target_view_name} as not all baseline tables exist"
+            )
+            return
 
         datasets = [
             (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
@@ -465,10 +452,6 @@ class GleanTable:
             )
             view = f"{project_id}.{target_dataset}.{target_view_name}"
 
-            if not (referenced_table_exists(sql, id_token=id_token)):
-                logging.info("Skipping view for table which doesn't exist:" f" {view}")
-                return
-
             if output_dir:
                 write_dataset_metadata(output_dir, view)
 
@@ -499,13 +482,6 @@ class GleanTable:
 
             table = f"{project_id}.{target_dataset}_derived.{self.target_table_id}"
             view = f"{project_id}.{target_dataset}.{target_view_name}"
-
-            if not (referenced_table_exists(query_sql, id_token=id_token)):
-                logging.info(
-                    "Skipping query for table which doesn't exist:"
-                    f" {self.target_table_id}"
-                )
-                return
 
             if output_dir:
                 artifacts = [

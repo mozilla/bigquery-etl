@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - name: profile_age_at_time_of_uninstall
   type: STRING
   mode: NULLABLE

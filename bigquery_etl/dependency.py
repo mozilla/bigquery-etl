@@ -2,6 +2,7 @@
 
 import re
 import sys
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from glob import glob
 from itertools import groupby
 from pathlib import Path
@@ -68,7 +69,25 @@ def extract_table_references(sql: str) -> List[str]:
 
 def extract_table_references_without_views(path: Path) -> Iterator[str]:
     """Recursively search for non-view tables referenced in the given SQL file."""
+    # handle both global and local stable_views for thread/process safety
     global stable_views
+    local_stable_views = stable_views
+
+    def _get_stable_views():
+        nonlocal local_stable_views
+        global stable_views
+        if local_stable_views is None:
+            # lazy read stable views (works in both main thread and worker processes)
+            local_stable_views = {
+                tuple(schema.user_facing_view.split(".")): tuple(
+                    schema.stable_table.split(".")
+                )
+                for schema in get_stable_table_schemas()
+            }
+            # update global variable if we're in the main thread and it's still None
+            if stable_views is None:
+                stable_views = local_stable_views
+        return local_stable_views
 
     sql = render(path.name, template_folder=path.parent)
     for table in extract_table_references(sql):
@@ -112,26 +131,33 @@ def extract_table_references_without_views(path: Path) -> Iterator[str]:
                     ),
                 ),
             ):
-                if stable_views is None:
-                    # lazy read stable views
-                    stable_views = {
-                        tuple(schema.user_facing_view.split(".")): tuple(
-                            schema.stable_table.split(".")
-                        )
-                        for schema in get_stable_table_schemas()
-                    }
-                if parts[-2:] in stable_views:
+                stable_views_dict = _get_stable_views()
+                if parts[-2:] in stable_views_dict:
                     parts = (
                         ConfigLoader.get(
                             "default", "project", fallback="moz-fx-data-shared-prod"
                         ),
-                        *stable_views[parts[-2:]],
+                        *stable_views_dict[parts[-2:]],
                     )
             yield ".".join(parts)
 
 
+def _process_single_file(
+    path: Path, without_views: bool = False
+) -> Tuple[Path, List[str]]:
+    """Process a single SQL file to extract table references."""
+    try:
+        if without_views:
+            return path, list(extract_table_references_without_views(path))
+        else:
+            sql = render(path.name, template_folder=path.parent)
+            return path, extract_table_references(sql)
+    except (CalledProcessError, ImportError, ValueError) as e:
+        return path, [f"ERROR: {e}"]
+
+
 def _get_references(
-    paths: Tuple[str, ...], without_views: bool = False
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 1
 ) -> Iterator[Tuple[Path, List[str]]]:
     file_paths = {
         path
@@ -143,31 +169,73 @@ def _get_references(
         )
         if not path.name.endswith(".template.sql")  # skip templates
     }
+
     fail = False
-    for path in sorted(file_paths):
-        try:
-            if without_views:
-                yield path, list(extract_table_references_without_views(path))
-            else:
-                sql = render(path.name, template_folder=path.parent)
-                yield path, extract_table_references(sql)
-        except CalledProcessError as e:
-            raise click.ClickException(f"failed to import jnius: {e}")
-        except ImportError as e:
-            raise click.ClickException(*e.args)
-        except ValueError as e:
-            fail = True
-            print(f"Failed to parse file {path}: {e}", file=sys.stderr)
+    sorted_paths = sorted(file_paths)
+
+    if parallelism is None:
+        parallelism = 1
+
+    if parallelism and parallelism > 1 and len(sorted_paths) > 1:
+        with ProcessPoolExecutor(max_workers=parallelism) as executor:
+            future_to_path = {
+                executor.submit(_process_single_file, path, without_views): path
+                for path in sorted_paths
+            }
+
+            for future in as_completed(future_to_path):
+                path = future_to_path[future]
+                try:
+                    result_path, table_references = future.result()
+                    if (
+                        isinstance(table_references, list)
+                        and len(table_references) == 1
+                        and isinstance(table_references[0], str)
+                        and table_references[0].startswith("ERROR:")
+                    ):
+                        fail = True
+                        error_msg = table_references[0][7:]
+                        if "failed to import jnius" in error_msg:
+                            raise click.ClickException(
+                                f"failed to import jnius: {error_msg}"
+                            )
+                        elif "ImportError" in error_msg:
+                            raise click.ClickException(error_msg)
+                        else:
+                            print(
+                                f"Failed to parse file {path}: {error_msg}",
+                                file=sys.stderr,
+                            )
+                    else:
+                        yield result_path, table_references
+                except Exception as e:
+                    fail = True
+                    print(f"Failed to process file {path}: {e}", file=sys.stderr)
+    else:
+        for path in sorted_paths:
+            try:
+                if without_views:
+                    yield path, list(extract_table_references_without_views(path))
+                else:
+                    sql = render(path.name, template_folder=path.parent)
+                    yield path, extract_table_references(sql)
+            except CalledProcessError as e:
+                raise click.ClickException(f"failed to import jnius: {e}")
+            except ImportError as e:
+                raise click.ClickException(*e.args)
+            except ValueError as e:
+                fail = True
+                print(f"Failed to parse file {path}: {e}", file=sys.stderr)
 
     if fail:
         raise click.ClickException("Some paths could not be analyzed")
 
 
 def get_dependency_graph(
-    paths: Tuple[str, ...], without_views: bool = False
+    paths: Tuple[str, ...], without_views: bool = False, parallelism: int = 1
 ) -> Dict[str, List[str]]:
     """Return the query dependency graph."""
-    refs = _get_references(paths, without_views=without_views)
+    refs = _get_references(paths, without_views=without_views, parallelism=parallelism)
     dependency_graph = {}
 
     for ref in refs:
@@ -199,11 +267,21 @@ def dependency():
     is_flag=True,
     help="recursively resolve view references to underlying tables",
 )
-def show(paths: Tuple[str, ...], without_views: bool):
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
+def show(paths: Tuple[str, ...], without_views: bool, parallelism):
     """Show table references in sql files."""
-    for path, table_references in _get_references(paths, without_views):
+    # Collect all results and sort by path for consistent output
+    results = list(_get_references(paths, without_views, parallelism))
+
+    for path, table_references in sorted(results, key=lambda x: x[0]):
         if table_references:
-            for table in table_references:
+            for table in sorted(table_references):
                 print(f"{path}: {table}")
         else:
             print(f"{path} contains no table references", file=sys.stderr)
@@ -224,9 +302,20 @@ def show(paths: Tuple[str, ...], without_views: bool):
     is_flag=True,
     help="Skip files with existing references rather than failing",
 )
-def record(paths: Tuple[str, ...], skip_existing):
+@click.option(
+    "--parallelism",
+    "-p",
+    default=8,
+    type=int,
+    help="Number of threads for parallel processing",
+)
+def record(paths: Tuple[str, ...], skip_existing, parallelism):
     """Record table references in metadata."""
-    for parent, group in groupby(_get_references(paths), lambda e: e[0].parent):
+    # Collect and sort results to ensure groupby works correctly
+    results = list(_get_references(paths, parallelism=parallelism))
+    results.sort(key=lambda e: e[0].parent)
+
+    for parent, group in groupby(results, lambda e: e[0].parent):
         references = {
             path.name: table_references
             for path, table_references in group

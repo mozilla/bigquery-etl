@@ -89,16 +89,6 @@ fields:
   name: collection_metric_status_alerting_metrics_count
   type: INTEGER
 - description: |
-    collection_metric_status_earliest_updated_metric_seconds associated with this record.
-  mode: NULLABLE
-  name: collection_metric_status_earliest_updated_metric_seconds
-  type: INTEGER
-- description: |
-    collection_metric_status_latest_updated_metric_seconds associated with this record.
-  mode: NULLABLE
-  name: collection_metric_status_latest_updated_metric_seconds
-  type: INTEGER
-- description: |
     collection_metric_status_open_issues_count associated with this record.
   mode: NULLABLE
   name: collection_metric_status_open_issues_count
@@ -118,6 +108,16 @@ fields:
   mode: NULLABLE
   name: collection_metric_status_monitoring_issues_count
   type: INTEGER
+- description: |
+    collection_metric_status_earliest_updated_metric_seconds associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_earliest_updated_metric_seconds
+  type: FLOAT
+- description: |
+    collection_metric_status_latest_updated_metric_seconds associated with this record.
+  mode: NULLABLE
+  name: collection_metric_status_latest_updated_metric_seconds
+  type: FLOAT
 - description: |
     Refers to the approximate time of when the data was processed from BigEye API just before loading it into BigQuery.
   mode: NULLABLE

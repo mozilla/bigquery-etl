@@ -9,6 +9,9 @@ labels:
   incremental: true
   schedule: daily
   table_type: client_level
+  dag: bqetl_review_checker
+  owner1: akommasani
+  owner2: betling
 scheduling:
   dag_name: bqetl_review_checker
   task_name: org_mozilla_ios_firefox_review_checker_events__v1
@@ -17,8 +20,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
+references: {}
+require_column_descriptions: false

@@ -4,10 +4,12 @@ description: |-
   as historically GLEAN did not collect this information.
   This information is required for DAU analysis based off GLEAN telemetry.
 owners:
-  - gkatre@mozilla.com
+- gkatre@mozilla.com
 labels:
   incremental: true
   schedule: daily
+  dag: bqetl_analytics_tables
+  owner1: gkatre
 scheduling:
   dag_name: bqetl_analytics_tables
 bigquery:
@@ -15,6 +17,13 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: true
-    expiration_days: 775
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering: null
+references: {}
 monitoring:
   enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false
+require_column_descriptions: false

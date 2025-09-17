@@ -2303,20 +2303,20 @@ def _update_query_schema(
     )
 
     changed = True
-    updated_schema = None
 
     if existing_schema_path.is_file():
         existing_schema = Schema.from_schema_file(existing_schema_path)
         old_schema = copy.deepcopy(existing_schema)
         if table_schema:
-            updated_schema = existing_schema.merge(table_schema)
+            existing_schema.merge(table_schema)
 
         if query_schema:
-            updated_schema = existing_schema.merge(query_schema)
+            existing_schema.merge(query_schema)
         existing_schema.to_yaml_file(existing_schema_path)
         changed = not existing_schema.equal(old_schema)
     else:
-        updated_schema = query_schema.merge(table_schema)
+        query_schema.merge(table_schema)
+        query_schema.to_yaml_file(existing_schema_path)
 
     if use_dataset_schema or use_global_schema:
         # Use standard schemas to update column descriptions, if requested.
@@ -2324,8 +2324,9 @@ def _update_query_schema(
             existing_schema, dataset_name, use_dataset_schema, use_global_schema
         )
 
-    if updated_schema:
-        updated_schema.to_yaml_file(existing_schema_path)
+        if updated_schema:
+            updated_schema.to_yaml_file(existing_schema_path)
+
     click.echo(f"Schema {existing_schema_path} updated.")
     return changed
 

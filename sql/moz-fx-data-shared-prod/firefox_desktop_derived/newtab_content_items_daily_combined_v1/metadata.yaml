@@ -12,6 +12,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
 references:
   view.sql:
   - moz-fx-data-shared-prod.firefox_desktop_derived.newtab_content_items_daily_v1

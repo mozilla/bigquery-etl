@@ -3009,11 +3009,21 @@ Options:
 <p>Show table references in sql files.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>show<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--without_views:<span class="w"> </span>recursively<span class="w"> </span>resolve<span class="w"> </span>view<span class="w"> </span>references<span class="w"> </span>to<span class="w"> </span>underlying<span class="w"> </span>tables
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
 </code></pre></div>
 <h4 id="record"><code>record</code></h4>
 <p>Record table references in metadata. Fails if metadata already contains references section.</p>
 <p><strong>Usage</strong></p>
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>./bqetl<span class="w"> </span>dependency<span class="w"> </span>record<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span><span class="o">[</span>paths<span class="o">]</span>
+
+Options:
+
+--skip_existing:<span class="w"> </span>Skip<span class="w"> </span>files<span class="w"> </span>with<span class="w"> </span>existing<span class="w"> </span>references<span class="w"> </span>rather<span class="w"> </span>than<span class="w"> </span>failing
+--parallelism:<span class="w"> </span>Number<span class="w"> </span>of<span class="w"> </span>threads<span class="w"> </span><span class="k">for</span><span class="w"> </span>parallel<span class="w"> </span>processing
 </code></pre></div>
 <h3 id="dryrun"><code>dryrun</code></h3>
 <p>Dry run SQL.

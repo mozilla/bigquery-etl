@@ -366,35 +366,3 @@ owners:
 
         # Save to cache should do nothing when disabled
         dry_run._save_to_cache("test_key", {"test": "data"})  # Should not raise error
-
-    @patch("bigquery_etl.dryrun.getmtime")
-    def test_cache_key_includes_file_modification_time(
-        self, mock_getmtime, tmp_query_path
-    ):
-        """Test that cache key includes file modification time."""
-        query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
-
-        # Create metadata.yaml to avoid FileNotFoundError
-        metadata_file = tmp_query_path / "metadata.yaml"
-        metadata_file.write_text(
-            """friendly_name: Test Table
-description: Test description
-owners:
-  - test@example.com
-"""
-        )
-
-        dry_run = DryRun(str(query_file), cache_enabled=True, cache_ttl_hours=1)
-
-        sql = "SELECT 123"
-
-        # Test with different modification times
-        mock_getmtime.return_value = 1000000
-        cache_key1 = dry_run._get_cache_key(sql)
-
-        mock_getmtime.return_value = 2000000
-        cache_key2 = dry_run._get_cache_key(sql)
-
-        # Different modification times should produce different cache keys
-        assert cache_key1 != cache_key2

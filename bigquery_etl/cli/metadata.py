@@ -151,7 +151,7 @@ def _update_single_metadata_file(retained_dataset_roles, table_metadata_file):
                     dataset_metadata.workgroup_access.append(
                         {
                             "role": "roles/bigquery.metadataViewer",
-                            "members": data_viewer.get("members", []),
+                            "members": sorted(data_viewer.get("members", [])),
                         }
                     )
         else:
@@ -179,7 +179,7 @@ def _update_single_metadata_file(retained_dataset_roles, table_metadata_file):
                     table_metadata.workgroup_access.append(
                         WorkgroupAccessMetadata(
                             role=default_workgroup_access["role"],
-                            members=default_workgroup_access.get("members", []),
+                            members=sorted(default_workgroup_access.get("members", [])),
                         )
                     )
                     table_metadata_updated = True

@@ -103,7 +103,7 @@ _previous as (
     where
     first_seen_date > '2023-01-01'
     and first_seen_date < @submission_date
-    and submission_date = @submission_date
+    and submission_date = @submission_date -- added this because it needs a partition filter
 ),
 _joined as (
   --switch to using separate if statements instead of 1

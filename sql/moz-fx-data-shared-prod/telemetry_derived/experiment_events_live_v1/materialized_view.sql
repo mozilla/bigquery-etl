@@ -14,6 +14,7 @@ WITH experiment_events AS (
     event.f3_ AS `type`,
     event.f4_ AS experiment,
     IF(event_map_value.key = 'branch', event_map_value.value, NULL) AS branch,
+    normalized_channel,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
     CAST(
@@ -52,6 +53,7 @@ SELECT
   `type`,
   experiment,
   branch,
+  normalized_channel,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
@@ -84,5 +86,6 @@ GROUP BY
   `type`,
   experiment,
   branch,
+  normalized_channel,
   window_start,
   window_end

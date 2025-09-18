@@ -5,6 +5,7 @@ WITH org_mozilla_firefox_beta AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -27,6 +28,7 @@ org_mozilla_fenix AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -49,6 +51,7 @@ org_mozilla_firefox AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -71,6 +74,7 @@ org_mozilla_ios_firefox AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -93,6 +97,7 @@ org_mozilla_ios_firefoxbeta AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -115,6 +120,7 @@ org_mozilla_ios_fennec AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -148,6 +154,7 @@ telemetry AS (
     event_object AS `type`,
     event_string_value AS experiment,
     mozfun.map.get_key(event_map_values, 'branch') AS branch,
+    normalized_channel,
     event_method,
         -- Before version 109 (in desktop), clients evaluated schema
         -- before targeting, so validation_errors are invalid
@@ -168,6 +175,7 @@ org_mozilla_klar AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -190,6 +198,7 @@ org_mozilla_focus AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -212,6 +221,7 @@ org_mozilla_focus_nightly AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -234,6 +244,7 @@ org_mozilla_focus_beta AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -256,6 +267,7 @@ org_mozilla_ios_klar AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -278,6 +290,7 @@ org_mozilla_ios_focus AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
@@ -300,6 +313,7 @@ monitor_cirrus AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
     TRUE AS validation_errors_valid
   FROM
@@ -315,6 +329,7 @@ accounts_cirrus AS (
     event.category AS `type`,
     mozfun.map.get_key(event.extra, 'experiment') AS experiment,
     mozfun.map.get_key(event.extra, 'branch') AS branch,
+    normalized_channel,
     event.name AS event_method,
     TRUE AS validation_errors_valid
   FROM
@@ -404,6 +419,7 @@ SELECT
   `type`,
   experiment,
   branch,
+  normalized_channel,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
@@ -429,5 +445,6 @@ GROUP BY
   `type`,
   experiment,
   branch,
+  normalized_channel,
   window_start,
   window_end

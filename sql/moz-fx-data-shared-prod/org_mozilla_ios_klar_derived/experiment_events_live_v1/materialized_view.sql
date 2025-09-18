@@ -11,6 +11,7 @@ WITH all_events AS (
   SELECT
     submission_timestamp,
     events,
+    normalized_channel,
       -- Before version 109 (in desktop), clients evaluated schema
       -- before targeting, so validation_errors are invalid
     CAST(REGEXP_EXTRACT(client_info.app_display_version, r"^([0-9]+).*") AS NUMERIC) >= 109
@@ -24,6 +25,7 @@ experiment_events AS (
     event.category AS `type`,
     CAST(event.extra[SAFE_OFFSET(i)].value AS STRING) AS branch,
     CAST(event.extra[SAFE_OFFSET(j)].value AS STRING) AS experiment,
+    normalized_channel,
     event.name AS event_method,
     validation_errors_valid
   FROM
@@ -45,6 +47,7 @@ SELECT
   `type`,
   experiment,
   branch,
+  normalized_channel,
   TIMESTAMP_ADD(
     TIMESTAMP_TRUNC(`timestamp`, HOUR),
     -- Aggregates event counts over 5-minute intervals
@@ -77,5 +80,6 @@ GROUP BY
   `type`,
   experiment,
   branch,
+  normalized_channel,
   window_start,
   window_end

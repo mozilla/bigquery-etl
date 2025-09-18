@@ -137,7 +137,7 @@ LEFT JOIN
     FROM
       `moz-fx-data-shared-prod.telemetry.mobile_new_profile_clients`
     WHERE
-      first_seen_date >= "2025-06-01"
+      first_seen_date = @submission_date
     QUALIFY
       ROW_NUMBER() OVER (PARTITION BY client_id) = 1
   ) mnpc

@@ -25,3 +25,4 @@ class BaselineClientsLastSeenTable(GleanTable):
         self.custom_render_kwargs = dict(
             usage_types=USAGE_TYPES,
         )
+        self.per_app_requires_all_base_tables = True

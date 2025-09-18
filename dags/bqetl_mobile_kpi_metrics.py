@@ -490,17 +490,17 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__fenix_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_bigeye__fenix_derived__attribution_clients__v1",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__fenix_derived__attribution_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
         )
 
         bigeye__fenix_derived__attribution_clients__v1_external.set_upstream(
@@ -636,17 +636,17 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
         )
 
         bigeye__firefox_ios_derived__attribution_clients__v1_external.set_upstream(
@@ -928,17 +928,17 @@ with DAG(
         parent_group=task_group_focus_android,
     ) as focus_android_derived__attribution_clients__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_focus_android_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_focus_android_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_focus_android_derived__attribution_clients__v1",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_focus_android_derived__attribution_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_focus_android_derived__attribution_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_focus_android_derived__attribution_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
         )
 
         focus_android_derived__attribution_clients__v1_external.set_upstream(
@@ -1036,17 +1036,17 @@ with DAG(
         parent_group=task_group_focus_ios,
     ) as focus_ios_derived__attribution_clients__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_focus_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_focus_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_focus_ios_derived__attribution_clients__v1",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_focus_ios_derived__attribution_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_focus_ios_derived__attribution_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_focus_ios_derived__attribution_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
         )
 
         focus_ios_derived__attribution_clients__v1_external.set_upstream(
@@ -1144,17 +1144,17 @@ with DAG(
         parent_group=task_group_klar_android,
     ) as klar_android_derived__attribution_clients__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_klar_android_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_klar_android_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_klar_android_derived__attribution_clients__v1",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_klar_android_derived__attribution_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_klar_android_derived__attribution_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_klar_android_derived__attribution_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
         )
 
         klar_android_derived__attribution_clients__v1_external.set_upstream(
@@ -1252,17 +1252,17 @@ with DAG(
         parent_group=task_group_klar_ios,
     ) as klar_ios_derived__attribution_clients__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_klar_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_klar_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_cohort_retention__wait_for_klar_ios_derived__attribution_clients__v1",
             external_dag_id="bqetl_cohort_retention",
             external_task_id="wait_for_klar_ios_derived__attribution_clients__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_klar_ios_derived__attribution_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_klar_ios_derived__attribution_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
         )
 
         klar_ios_derived__attribution_clients__v1_external.set_upstream(

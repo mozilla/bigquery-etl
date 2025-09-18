@@ -3745,6 +3745,21 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
+    with TaskGroup(
+        "firefox_desktop_derived__clients_last_seen_joined__v1_external",
+        parent_group=task_group_firefox_desktop,
+    ) as firefox_desktop_derived__clients_last_seen_joined__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_firefox_desktop_derived__clients_last_seen_joined__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_firefox_desktop_derived__clients_last_seen_joined__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=22800)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__clients_last_seen_joined__v1_external.set_upstream(
+            firefox_desktop_derived__clients_last_seen_joined__v1
+        )
+
     firefox_desktop_derived__events_stream__v1 = GKEPodOperator(
         task_id="firefox_desktop_derived__events_stream__v1",
         arguments=[

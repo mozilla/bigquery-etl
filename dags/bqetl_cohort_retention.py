@@ -273,19 +273,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
-        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
-        execution_delta=datetime.timedelta(seconds=63600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_bigeye__fenix_derived__attribution_clients__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
@@ -304,6 +291,19 @@ with DAG(
         external_dag_id="bqetl_mobile_kpi_metrics",
         external_task_id="firefox_ios.bigeye__firefox_ios_derived__attribution_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_firefox_desktop_derived__clients_last_seen_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__clients_last_seen_joined__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.firefox_desktop_derived__clients_last_seen_joined__v1",
+        execution_delta=datetime.timedelta(seconds=63600),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -356,6 +356,19 @@ with DAG(
         external_dag_id="bqetl_mobile_kpi_metrics",
         external_task_id="klar_ios.klar_ios_derived__attribution_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_checks__fail_telemetry_derived__clients_last_seen__v2 = ExternalTaskSensor(
+        task_id="wait_for_checks__fail_telemetry_derived__clients_last_seen__v2",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="checks__fail_telemetry_derived__clients_last_seen__v2",
+        execution_delta=datetime.timedelta(seconds=63600),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),
@@ -419,6 +432,17 @@ with DAG(
             date_partition_parameter="submission_date",
             depends_on_past=False,
         )
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1 = bigquery_etl_query(
+        task_id="glean_telemetry_derived__rolling_cohorts__v1",
+        destination_table="rolling_cohorts_v1",
+        dataset_id="glean_telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     telemetry_derived__cohort_daily_statistics__v2 = bigquery_etl_query(
@@ -563,6 +587,102 @@ with DAG(
 
     glean_telemetry_derived__cohort_weekly_active_clients_staging__v1.set_upstream(
         wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__fenix_derived__attribution_clients__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_firefox_desktop_derived__clients_last_seen_joined__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_focus_android_derived__attribution_clients__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_focus_ios_derived__attribution_clients__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_klar_android_derived__attribution_clients__v1
+    )
+
+    glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
+        wait_for_klar_ios_derived__attribution_clients__v1
     )
 
     telemetry_derived__cohort_daily_statistics__v2.set_upstream(

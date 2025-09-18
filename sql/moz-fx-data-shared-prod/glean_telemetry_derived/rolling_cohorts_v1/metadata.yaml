@@ -1,4 +1,4 @@
-friendly_name: Rolling Cohorts
+friendly_name: Rolling Cohorts - Glean based telemetry
 description: |-
   Rolling Cohorts consists of one row per client & row_source per date (each date
   representing a new cohort) i.e. all the clients that had their first

@@ -57,27 +57,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    firefox_desktop_background_update_derived__event_monitoring_live__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_background_update_derived__event_monitoring_live__v1",
-        destination_table=None,
-        dataset_id="firefox_desktop_background_update_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=[
-            "akomar@mozilla.com",
-            "ascholtz@mozilla.com",
-            "bewu@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=[
-            "--use_legacy_sql=false",
-            "--billing-project=moz-fx-data-backfill-3",
-        ],
-        sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_background_update_derived/event_monitoring_live_v1/script.sql",
-    )
-
     firefox_desktop_derived__event_monitoring_live__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__event_monitoring_live__v1",
         destination_table=None,

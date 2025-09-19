@@ -355,66 +355,6 @@ firefox_crashreporter_aggregated AS (
     experiment,
     experiment_branch
 ),
-base_firefox_desktop_background_update_events_v1 AS (
-  SELECT
-    submission_timestamp,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    "Firefox for Desktop Background Update Task" AS normalized_app_name,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_background_update_stable.events_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-),
-firefox_desktop_background_update_aggregated AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-          -- Aggregates event counts over 60-minute intervals
-      INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
-    ) AS window_start,
-    TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-      INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
-    ) AS window_end,
-    * EXCEPT (submission_timestamp),
-    COUNT(*) AS total_events,
-  FROM
-    (SELECT * FROM base_firefox_desktop_background_update_events_v1)
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    normalized_app_name,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
 base_firefox_desktop_background_defaultagent_events_v1 AS (
   SELECT
     submission_timestamp,
@@ -5304,11 +5244,6 @@ SELECT
   *
 FROM
   firefox_crashreporter_aggregated
-UNION ALL
-SELECT
-  *
-FROM
-  firefox_desktop_background_update_aggregated
 UNION ALL
 SELECT
   *

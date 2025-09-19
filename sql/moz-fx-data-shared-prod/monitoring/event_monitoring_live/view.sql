@@ -55,26 +55,6 @@ SELECT
   experiment_branch,
   total_events
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_background_update_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
   `moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142

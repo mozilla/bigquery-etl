@@ -1,7 +1,6 @@
 -- Generated via ./bqetl generate experiment_monitoring
-CREATE MATERIALIZED VIEW
-IF
-  NOT EXISTS {{ dataset }}_derived.{{ destination_table }}
+CREATE OR REPLACE MATERIALIZED VIEW
+  {{ dataset }}_derived.{{ destination_table }}
   PARTITION BY DATE(partition_date)
   OPTIONS
     (enable_refresh = TRUE, refresh_interval_minutes = 5)

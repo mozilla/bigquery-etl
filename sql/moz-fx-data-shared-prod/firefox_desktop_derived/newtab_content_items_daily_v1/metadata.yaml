@@ -2,6 +2,13 @@ friendly_name: Newtab Content Items Daily
 description: |-
   A daily aggregation of newtab content actions on content/items (example: impressions, clicks, dismissals)
   for Firefox desktop, partitioned by day.
+
+  Related documentation:
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9057?focusedCommentId=1106194
+  - Proposal Doc: https://docs.google.com/document/d/1dQfwddq1_3WoLctFqmT4L2aFiNgeFNsSd78PnV0GpmU/edit?usp=sharing
+  - Data Model README: ./README.md
+  - Newtab Content Ping: https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/pings/newtab-content
+  - Newtab Content Ping Rollout Doc: https://mozilla-hub.atlassian.net/wiki/spaces/FPS/pages/1517617439/Rollout+of+NewTab+Content+Ping
 owners:
 - lmcfall@mozilla.com
 labels:

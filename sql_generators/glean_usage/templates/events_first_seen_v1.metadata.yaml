@@ -29,7 +29,7 @@ bigquery:
   time_partitioning:
     type: day
     field: first_seen_date
-    require_partition_filter: true
+    require_partition_filter: false
     clustering:
       fields:
         - event_category

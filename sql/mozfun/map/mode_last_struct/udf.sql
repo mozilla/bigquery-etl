@@ -92,7 +92,6 @@ SELECT
     )
   ),
 -- 5) Tie between NULL struct and a non-NULL struct; latest wins -> expect Berlin
-SELECT
   assert.equals(
     TO_JSON_STRING(
       STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country)

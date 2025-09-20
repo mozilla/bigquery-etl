@@ -10,11 +10,6 @@ labels:
 scheduling:
   dag_name: bqetl_glean_usage
   task_group: {{ app_name }}
-  date_partition_parameter: null
-  destination_table: >-
-    {% raw %}events_first_seen_v1${{
-    (execution_date - macros.timedelta(hours=24)).strftime("%Y%m%d")
-    }}{% endraw %}
   parameters:
     - >-
       {% raw %}submission_date:DATE:{{ds}}{% endraw %}

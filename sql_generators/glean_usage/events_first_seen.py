@@ -107,7 +107,7 @@ class EventsFirstSeenTable(GleanTable):
             **render_kwargs,
         )
 
-        # firefox_desktop_derived/events_first_seen_v1/metadata.yaml
+        # firefox_desktop/events_first_seen_v1/metadata.yaml
         metadata_view_filename = f"{TARGET_TABLE}.metadata.yaml"
 
         metadata_view = render(

@@ -1,6 +1,6 @@
 /*
 Return the most frequent STRUCT from an array, breaking ties by latest occurrence
-(i.e., mode_last over whole structs). Use to keep related fields aggregated together.
+(i.e., mode_last_retain_nulls over whole structs). Use to keep related fields aggregated together.
 See also: `map.mode_last`, which determines each value using `stats.mode_last`.
 */
 CREATE OR REPLACE FUNCTION map.mode_last_struct_retain_nulls(entries ANY TYPE) AS (

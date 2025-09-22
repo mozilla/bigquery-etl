@@ -4,7 +4,7 @@
   reason: Intitial backfill for newtab_content_items_daily_v1 table. First attempt tried to go back further than 775 days, violating the retention policy.
   watchers:
   - lmcfall@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

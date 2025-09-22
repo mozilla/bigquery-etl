@@ -47,7 +47,12 @@ SELECT
   -- 2) Tie -> latest wins (Berlin x2, Munich x2, last element is Munich)
   assert.equals(
     TO_JSON_STRING(
-      STRUCT('Munich' AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+      STRUCT(
+        'Munich' AS city,
+        'BY' AS subdivision1,
+        CAST(NULL AS STRING) AS subdivision2,
+        'DE' AS country
+      )
     ),
     TO_JSON_STRING(
       map.mode_last_struct(
@@ -83,7 +88,12 @@ SELECT
   -- 4) Single element returns itself
   assert.equals(
     TO_JSON_STRING(
-      STRUCT('Cologne' AS city, 'NW' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+      STRUCT(
+        'Cologne' AS city,
+        'NW' AS subdivision1,
+        CAST(NULL AS STRING) AS subdivision2,
+        'DE' AS country
+      )
     ),
     TO_JSON_STRING(
       map.mode_last_struct(
@@ -94,7 +104,12 @@ SELECT
 -- 5) Tie between NULL struct and a non-NULL struct; latest wins -> expect Berlin
   assert.equals(
     TO_JSON_STRING(
-      STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+      STRUCT(
+        'Berlin' AS city,
+        'BE' AS subdivision1,
+        CAST(NULL AS STRING) AS subdivision2,
+        'DE' AS country
+      )
     ),
     TO_JSON_STRING(
       map.mode_last_struct(
@@ -122,7 +137,7 @@ SELECT
   ),
 -- 6) NULL struct occurs most frequently -> expect NULL
   assert.equals(
-    TO_JSON_STRING(NULL),
+    TO_JSON_STRING(CAST(NULL AS STRING)),
     TO_JSON_STRING(
       map.mode_last_struct(
         [
@@ -144,7 +159,12 @@ SELECT
 -- 7) City is NULL but other fields present; that exact struct is most frequent -> expect that struct (with city = NULL)
   assert.equals(
     TO_JSON_STRING(
-      STRUCT(NULL AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+      STRUCT(
+        CAST(NULL AS STRING) AS city,
+        'BY' AS subdivision1,
+        CAST(NULL AS STRING) AS subdivision2,
+        'DE' AS country
+      )
     ),
     TO_JSON_STRING(
       map.mode_last_struct(

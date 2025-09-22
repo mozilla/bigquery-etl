@@ -536,6 +536,13 @@ with DAG(
         parent_group=task_group_fenix,
     ) as bigeye__fenix_derived__new_profile_activation_clients__v1_external:
         ExternalTaskMarker(
+            task_id="private_bqetl_device_partnerships__wait_for_bigeye__fenix_derived__new_profile_activation_clients__v1",
+            external_dag_id="private_bqetl_device_partnerships",
+            external_task_id="wait_for_bigeye__fenix_derived__new_profile_activation_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_marketing_analysis__wait_for_bigeye__fenix_derived__new_profile_activation_clients__v1",
             external_dag_id="bqetl_marketing_analysis",
             external_task_id="wait_for_bigeye__fenix_derived__new_profile_activation_clients__v1",

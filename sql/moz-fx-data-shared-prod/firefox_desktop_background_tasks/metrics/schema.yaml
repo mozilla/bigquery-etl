@@ -1446,7 +1446,7 @@ fields:
         \  epoch. If the directory does not exist, this will be `null` and if the\
         \ time cannot be\n  determined, it will default to `0`.\n- `file_count`: The\
         \ number of files in the directory. If the directory does not exist,\n  this\
-        \ will be `0`.\n- `files`: An array of objects, each containing:\n  - `fil"
+        \ will be `0`.\n- `error_message`: If there was an error accessing the di"
 - name: normalized_app_name
   type: STRING
   mode: NULLABLE

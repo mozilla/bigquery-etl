@@ -1,0 +1,240 @@
+fields:
+- name: additional_properties
+  type: STRING
+  mode: NULLABLE
+- name: document_id
+  type: STRING
+  mode: NULLABLE
+- name: events
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: category
+    type: STRING
+    mode: NULLABLE
+  - name: extra
+    type: RECORD
+    mode: REPEATED
+    fields:
+    - name: key
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+  - name: name
+    type: STRING
+    mode: NULLABLE
+  - name: timestamp
+    type: INTEGER
+    mode: NULLABLE
+- name: metadata
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: geo
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: city
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision1
+      type: STRING
+      mode: NULLABLE
+    - name: subdivision2
+      type: STRING
+      mode: NULLABLE
+  - name: header
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date
+      type: STRING
+      mode: NULLABLE
+    - name: dnt
+      type: STRING
+      mode: NULLABLE
+    - name: x_debug_id
+      type: STRING
+      mode: NULLABLE
+    - name: x_foxsec_ip_reputation
+      type: STRING
+      mode: NULLABLE
+    - name: x_lb_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_pingsender_version
+      type: STRING
+      mode: NULLABLE
+    - name: x_source_tags
+      type: STRING
+      mode: NULLABLE
+    - name: x_telemetry_agent
+      type: STRING
+      mode: NULLABLE
+  - name: isp
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: db_version
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+  - name: user_agent
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: browser
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+- name: metrics
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: labeled_counter
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_error_invalid_label
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_overflow
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_state
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+    - name: glean_error_invalid_value
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+  - name: object
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: newtab_content_active_experiments
+      type: JSON
+      mode: NULLABLE
+    - name: newtab_content_active_rollouts
+      type: JSON
+      mode: NULLABLE
+    - name: newtab_content_enrollments_map
+      type: JSON
+      mode: NULLABLE
+    - name: newtab_content_inferred_interests
+      type: JSON
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: newtab_content_utc_offset
+      type: INTEGER
+      mode: NULLABLE
+    - name: newtab_content_ping_version
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: glean_client_annotation_experimentation_id
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_coarse_os
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_coarse_os_version
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_surface_id
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_country
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_experiment_branch
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_experiment_name
+      type: STRING
+      mode: NULLABLE
+    - name: newtab_content_inferred_interests
+      type: STRING
+      mode: NULLABLE
+  - name: string_list
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: newtab_content_followed_sections
+      type: STRING
+      mode: REPEATED
+    - name: glean_ping_uploader_capabilities
+      type: STRING
+      mode: REPEATED
+- name: normalized_app_name
+  type: STRING
+  mode: NULLABLE
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+- name: normalized_country_code
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+- name: submission_timestamp
+  type: TIMESTAMP
+  mode: NULLABLE

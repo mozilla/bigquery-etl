@@ -6,7 +6,8 @@ description: |-
 
   Clustering fields: `submission_timestamp`
 owners: []
-labels: {}
+labels:
+  authorized: true
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

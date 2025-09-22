@@ -31,6 +31,15 @@ IF
         LEFT JOIN
           -- Add * extra to every event to get total event count
           UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+        {% if dataset == "firefox_desktop" and events_table == "events_v1" %}
+          WHERE
+            -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+            AND (
+              event.category = "uptake.remotecontent.result"
+              AND event.name IN ("uptake_remotesettings", "uptake_normandy")
+              AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+            ) IS FALSE
+        {% endif %}
       ){{ "," if not loop.last }}
     {% endfor -%},
     combined AS (

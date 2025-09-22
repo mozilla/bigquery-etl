@@ -42,9 +42,24 @@ SELECT
     TO_JSON_STRING(
       map.mode_last_struct_retain_nulls(
         [
-          STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          STRUCT('Munich' AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+          STRUCT(
+            'Berlin' AS city,
+            'BE' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
+          STRUCT(
+            'Munich' AS city,
+            'BY' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
+          STRUCT(
+            'Berlin' AS city,
+            'BE' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          )
         ]
       )
     )
@@ -62,13 +77,28 @@ SELECT
     TO_JSON_STRING(
       map.mode_last_struct_retain_nulls(
         [
-          STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          STRUCT('Munich' AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
+          STRUCT(
+            'Berlin' AS city,
+            'BE' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
           STRUCT(
             'Munich' AS city,
             'BY' AS subdivision1,
-            NULL AS subdivision2,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
+          STRUCT(
+            'Berlin' AS city,
+            'BE' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
+          STRUCT(
+            'Munich' AS city,
+            'BY' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
             'DE' AS country
           )  -- latest among the tied
         ]
@@ -102,7 +132,14 @@ SELECT
     ),
     TO_JSON_STRING(
       map.mode_last_struct_retain_nulls(
-        [STRUCT('Cologne' AS city, 'NW' AS subdivision1, NULL AS subdivision2, 'DE' AS country)]
+        [
+          STRUCT(
+            'Cologne' AS city,
+            'NW' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          )
+        ]
       )
     )
   ),
@@ -119,21 +156,28 @@ SELECT
     TO_JSON_STRING(
       map.mode_last_struct_retain_nulls(
         [
-          CAST(
-            NULL
-            AS
-              STRUCT<city STRING, subdivision1 STRING, subdivision2 STRING, country STRING>
-          ),
-          STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          CAST(
-            NULL
-            AS
-              STRUCT<city STRING, subdivision1 STRING, subdivision2 STRING, country STRING>
+          STRUCT(
+            CAST(NULL AS STRING) AS city,
+            CAST(NULL AS STRING) AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            CAST(NULL AS STRING) AS country
           ),
           STRUCT(
             'Berlin' AS city,
             'BE' AS subdivision1,
-            NULL AS subdivision2,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
+          STRUCT(
+            CAST(NULL AS STRING) AS city,
+            CAST(NULL AS STRING) AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            CAST(NULL AS STRING) AS country
+          ),
+          STRUCT(
+            'Berlin' AS city,
+            'BE' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
             'DE' AS country
           )   -- latest among the tied
         ]
@@ -142,20 +186,34 @@ SELECT
   ),
 -- 6) NULL struct occurs most frequently -> expect NULL
   assert.equals(
-    TO_JSON_STRING(CAST(NULL AS STRING)),
+    TO_JSON_STRING(
+      STRUCT(
+        CAST(NULL AS STRING) AS city,
+        CAST(NULL AS STRING) AS subdivision1,
+        CAST(NULL AS STRING) AS subdivision2,
+        CAST(NULL AS STRING) AS country
+      )
+    ),
     TO_JSON_STRING(
       map.mode_last_struct_retain_nulls(
         [
-          CAST(
-            NULL
-            AS
-              STRUCT<city STRING, subdivision1 STRING, subdivision2 STRING, country STRING>
+          STRUCT(
+            CAST(NULL AS STRING) AS city,
+            CAST(NULL AS STRING) AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            CAST(NULL AS STRING) AS country
           ),
-          STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          CAST(
-            NULL
-            AS
-              STRUCT<city STRING, subdivision1 STRING, subdivision2 STRING, country STRING>
+          STRUCT(
+            'Berlin' AS city,
+            'BE' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
+          STRUCT(
+            CAST(NULL AS STRING) AS city,
+            CAST(NULL AS STRING) AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            CAST(NULL AS STRING) AS country
           )
         ]
       )
@@ -172,11 +230,21 @@ SELECT
       )
     ),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [
-          STRUCT(NULL AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
+          STRUCT(
+            CAST(NULL AS STRING) AS city,
+            'BY' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          ),
           STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
-          STRUCT(NULL AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+          STRUCT(
+            CAST(NULL AS STRING) AS city,
+            'BY' AS subdivision1,
+            CAST(NULL AS STRING) AS subdivision2,
+            'DE' AS country
+          )
         ]
       )
     )

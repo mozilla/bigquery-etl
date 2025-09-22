@@ -1,0 +1,14 @@
+---
+# yamllint disable rule:line-length
+friendly_name: Live Pings for `firefox-desktop/newtab_content`
+description: |-
+  A live view of pings sent for the
+  `firefox-desktop/newtab_content`
+  document type.
+
+  Clustering fields: `submission_timestamp`
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+authorized: true

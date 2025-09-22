@@ -1,4 +1,4 @@
-{{ header }}
+{{ header }} -- the header doesn't seem to work properly
 
 {% raw %}
 {% if is_init() %}

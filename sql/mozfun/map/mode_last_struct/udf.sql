@@ -32,7 +32,12 @@ SELECT
   -- 1) Most frequent wins (Berlin appears twice)
   assert.equals(
     TO_JSON_STRING(
-      STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country)
+      STRUCT(
+        'Berlin' AS city,
+        'BE' AS subdivision1,
+        CAST(NULL AS STRING) AS subdivision2,
+        'DE' AS country
+      )
     ),
     TO_JSON_STRING(
       map.mode_last_struct(

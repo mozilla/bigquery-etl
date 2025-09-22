@@ -3,7 +3,7 @@ Return the most frequent STRUCT from an array, breaking ties by latest occurrenc
 (i.e., mode_last over whole structs). Use to keep related fields aggregated together.
 See also: `map.mode_last`, which determines each value using `stats.mode_last`.
 */
-CREATE OR REPLACE FUNCTION map.mode_last_struct(entries ANY TYPE) AS (
+CREATE OR REPLACE FUNCTION map.mode_last_struct_retain_nulls(entries ANY TYPE) AS (
   (
     SELECT AS STRUCT
       s.*
@@ -40,7 +40,7 @@ SELECT
       )
     ),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [
           STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
           STRUCT('Munich' AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
@@ -60,7 +60,7 @@ SELECT
       )
     ),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [
           STRUCT('Berlin' AS city, 'BE' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
           STRUCT('Munich' AS city, 'BY' AS subdivision1, NULL AS subdivision2, 'DE' AS country),
@@ -81,7 +81,7 @@ SELECT
       STRUCT('Berlin' AS city, 'BE' AS subdivision1, 'A' AS subdivision2, 'DE' AS country)
     ),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [
           STRUCT('Berlin' AS city, 'BE' AS subdivision1, 'A' AS subdivision2, 'DE' AS country),
           STRUCT('Berlin' AS city, 'BE' AS subdivision1, 'B' AS subdivision2, 'DE' AS country),
@@ -101,7 +101,7 @@ SELECT
       )
     ),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [STRUCT('Cologne' AS city, 'NW' AS subdivision1, NULL AS subdivision2, 'DE' AS country)]
       )
     )
@@ -117,7 +117,7 @@ SELECT
       )
     ),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [
           CAST(
             NULL
@@ -144,7 +144,7 @@ SELECT
   assert.equals(
     TO_JSON_STRING(CAST(NULL AS STRING)),
     TO_JSON_STRING(
-      map.mode_last_struct(
+      map.mode_last_struct_retain_nulls(
         [
           CAST(
             NULL

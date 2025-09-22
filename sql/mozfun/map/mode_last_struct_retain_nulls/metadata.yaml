@@ -1,4 +1,5 @@
 ---
 description: Given an array of structs, return the most frequently occurring full struct;
  break ties by the latest occurrence (mode-last). Equality is on the entire struct, not per-field.
-friendly_name: Map Mode Last Struct
+ Nulls are retained.
+friendly_name: Map Mode Last Struct Retain Nulls

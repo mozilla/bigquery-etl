@@ -19,6 +19,7 @@ RESULTS_FPATH = "IMF_QUARTERLY_CPI/imf_quarterly_cpi_data_%s.csv"
 
 # Define a function to rebase data to the mean of 2010
 def rebase_to_2010(df, value_col="consumer_price_index", period_col="report_period"):
+    """Rebases the data to the year 2010, using the average for the quarters in 2010"""
     df = df.copy()
     dt = pd.to_datetime(df[period_col], errors="coerce")
 

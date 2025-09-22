@@ -40,10 +40,9 @@ def pull_quarterly_cpi_data_from_imf(country_code, start_month):
     Inputs:
         Country Code - 2 letter country code, for example, US
         Start Month - YYYY-MM - for example, 2023-10
-        End Month - YYYY-MM - for example, 2023-12
 
     Output:
-      JSON with data for this country for the quarters between start month and end month
+      Dataframe for this country for the quarters from the year of the start month, to the present
     """
     api_url = f"https://api.db.nomics.world/v22/series/IMF/CPI/Q.{country_code}.PCPI_IX"
     params = {
@@ -105,7 +104,7 @@ def main():
     start_month = start_month_stg.replace(day=1).strftime("%Y-%m")
     print("start_month: ", start_month)
 
-    print('start_year: ', str(start_month[:4]))
+    print("start_year: ", str(start_month[:4]))
 
     # Initialize a results dataframe
     results_df = pd.DataFrame(

@@ -2,6 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: metric
   type: STRING
@@ -12,7 +13,7 @@ fields:
   name: key
   type: STRING
 - mode: NULLABLE
-  name: value
+  name: handshakes
   type: INTEGER
 - mode: NULLABLE
   name: country_code

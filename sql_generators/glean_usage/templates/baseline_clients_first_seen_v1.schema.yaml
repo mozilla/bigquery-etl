@@ -2,15 +2,19 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
 - mode: NULLABLE
   name: client_id
   type: STRING
+  description: A unique identifier (UUID) for the client.
 - mode: NULLABLE
   name: attribution
   type: RECORD
@@ -57,14 +61,52 @@ fields:
   name: legacy_telemetry_client_id
   type: STRING
   description: |-
-    The client_id according to Telemetry. 
-    Might not always have a value due to being too early for it to have loaded. 
-    Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0` in pings near when 
-    the data upload pref is disabled (if Telemetry gets to go first), or between when a client_id 
-    has been removed and when it has been regenerated. 
+    The client_id according to Telemetry.
+    Might not always have a value due to being too early for it to have loaded.
+    Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0` in pings near when
+    the data upload pref is disabled (if Telemetry gets to go first), or between when a client_id
+    has been removed and when it has been regenerated.
     Does not need to be sent in the Glean "deletion-request" ping.
 - mode: NULLABLE
   name: legacy_telemetry_profile_group_id
   type: STRING
   description: A UUID identifying the profile's group on a single device and allowing user-oriented correlation of data
+- mode: NULLABLE
+  name: country
+  type: STRING
+  description: First Seen Country
+- mode: NULLABLE
+  name: distribution_id
+  type: STRING
+  description: The distribution ID associated with the install of Firefox.
+- mode: NULLABLE
+  name: windows_build_number
+  type: INTEGER
+  description: The optional Windows build number, reported by Windows (e.g. 22000) and not set for other platforms.
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: |-
+    The locale of the application during initialization (e.g. "es-ES"). If the locale can't be determined on the system, the value is "und", to indicate "undetermined".
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: Set to "Other" if this message contained an unrecognized OS name
+- mode: NULLABLE
+  name: app_display_version
+  type: STRING
+  description: |-
+    The user visible version string (e.g. "1.0.3"). If the value was not provided through configuration, this metric gets set to Unknown.
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: The normalized channel the application is being distributed on.
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: The normalized operating system version.
+- mode: NULLABLE
+  name: isp
+  type: STRING
+  description: Internet Service Provider
 {% endif %}

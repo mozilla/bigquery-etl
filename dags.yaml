@@ -161,6 +161,7 @@ bqetl_accounts_derived:
 
 bqetl_subplat:
   schedule_interval: 30 1 * * *
+  catchup: true
   description: |
     Daily imports for Subscription Platform data from Stripe, Firestore, and the Mozilla VPN
     operational DB as well as derived tables based on that data.
@@ -183,6 +184,7 @@ bqetl_subplat:
 
 bqetl_subplat_hourly:
   schedule_interval: 30 * * * *
+  catchup: true
   description: |
     Hourly imports for Subscription Platform data from Stripe and Firestore,
     as well as derived tables based on that data.
@@ -684,10 +686,10 @@ bqetl_search_terms_daily:
 bqetl_experimenter_experiments_import:
   schedule_interval: "*/10 * * * *"
   description: |
-    Imports experiments from the Experimenter V4 and V6 API.
+    Imports experiments from the Experimenter V8 API.
 
     Imported experiment data is used for experiment monitoring in
-    [Grafana](https://grafana.telemetry.mozilla.org/d/XspgvdxZz/experiment-enrollment).
+    [Looker](https://mozilla.cloud.looker.com/dashboards/experimentation::experiment_enrollments).
 
     *Triage notes*
 
@@ -843,6 +845,25 @@ bqetl_newtab:
     start_date: '2022-07-01'
   description: Schedules newtab related queries.
   schedule_interval: daily
+  tags:
+    - impact/tier_1
+
+bqetl_newtab_late_morning:
+# Facilitates new tab metrics populated from the current calendar day in US time zones
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - ctroy@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: mbowerman@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-08-20'
+  description: Schedules newtab related queries to run later to capture more recent activity.
+  schedule_interval: 0 10 * * *
   tags:
     - impact/tier_1
 
@@ -1131,26 +1152,6 @@ bqetl_default:
   tags:
     - impact/tier_3
     - triage/no_triage
-
-bqetl_reference:
-  default_args:
-    depends_on_past: false
-    email:
-      - telemetry-alerts@mozilla.com
-      - cmorales@mozilla.com
-    email_on_failure: true
-    email_on_retry: true
-    end_date: null
-    owner: cmorales@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2023-09-18'
-  description: DAG to build reference data
-  repo: bigquery-etl
-  schedule_interval: daily
-  tags:
-    - impact/tier_1
-    - repo/bigquery-etl
 
 bqetl_generated_funnels:
   default_args:
@@ -1515,7 +1516,7 @@ bqetl_pageload_v1:
     - repo/bigquery-etl
 
 bqetl_desktop_engagement_model:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 0 5 * * *
   description: Loads the desktop engagement model tables
   default_args:
     depends_on_past: false
@@ -1532,7 +1533,7 @@ bqetl_desktop_engagement_model:
     - impact/tier_2
 
 bqetl_desktop_retention_model:
-  schedule_interval: 0 12 * * *
+  schedule_interval: 0 5 * * *
   description: Loads the desktop retention model tables
   default_args:
     depends_on_past: false
@@ -1543,23 +1544,6 @@ bqetl_desktop_retention_model:
     email_on_failure: true
     email_on_retry: false
     start_date: "2024-05-14"
-    retries: 2
-    retry_delay: 30m
-  tags:
-    - impact/tier_2
-
-bqetl_ios_campaign_reporting:
-  schedule_interval: 0 12 * * *
-  description: Loads the apple ads ios_app_campaign_stats table
-  default_args:
-    depends_on_past: false
-    owner: kwindau@mozilla.com
-    email:
-      - kwindau@mozilla.com
-      - telemetry-alerts@mozilla.com
-    email_on_failure: true
-    email_on_retry: false
-    start_date: "2024-05-08"
     retries: 2
     retry_delay: 30m
   tags:
@@ -1869,6 +1853,21 @@ bqetl_shredder_impact_measurement:
   tags:
     - impact/tier_2
 
+bqetl_cohort_daily_churn:
+  schedule_interval: 50 14 * * 7
+  description: |
+    This DAG populates a table that measures churn of new users
+    Currently set to run weekly since it's an intensive query
+  default_args:
+    owner: kwindau@mozilla.com
+    email: ["kwindau@mozilla.com"]
+    start_date: "2025-07-01"
+    email_on_failure: true
+    email_on_retry: false
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_2
 
 bqetl_addons_moderations:
   default_args:
@@ -2091,6 +2090,23 @@ bqetl_imf_cpi_data:
   repo: bigquery-etl
   schedule_interval: 23 0 15 * *
 
+bqetl_fred_daily_exchange_rate:
+  description: |
+    This DAG pulls currency exchange rate info from the FRED API.
+  default_args:
+    depends_on_past: false
+    owner: kwindau@mozilla.com
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    start_date: "2025-08-27"
+    retries: 2
+    retry_delay: 25m
+  tags:
+    - impact/tier_3
+  repo: bigquery-etl
+  schedule_interval: 30 23 * * *
 
 bqetl_us_bls_unemployment_data:
   description: |
@@ -2416,3 +2432,58 @@ bqetl_crashes:
   tags:
     - impact/tier_1
     - repo/bigquery-etl
+
+bqetl_ads_hourly:
+  default_args:
+    depends_on_past: false
+    email:
+      - cbeck@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    owner: cbeck@mozilla.com
+    retries: 2
+    retry_delay: 10m
+    start_date: '2025-07-10'
+  description: Hourly tables for ad reporting
+  repo: bigquery-etl
+  schedule_interval: hourly
+  catchup: false
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl
+    - triage/confidential
+
+bqetl_bigeye_derived:
+  schedule_interval: 0 3 * * *
+  description: |
+    Pulls metadata from BigEye API
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: phlee@mozilla.com
+    email:
+      - phlee@mozilla.com
+    start_date: '2025-07-14'
+    retries: 2
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
+bqetl_firefox_enterprise:
+  schedule_interval: 0 6 * * *
+  description: |
+    DAG for processing queries related to Firefox Enterprise.
+  default_args:
+    depends_on_past: false
+    email_on_failure: true
+    email_on_retry: false
+    owner: kik@mozilla.com
+    email:
+      - kik@mozilla.com
+    start_date: '2025-08-21'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3

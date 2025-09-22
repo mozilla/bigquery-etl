@@ -7,9 +7,10 @@ tag_deployments:
         - slack: '{{ bigeye_notification_slack_channel }}'
     deployments:
       - column_selectors:
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.submission_date
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.client_id
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.sample_id
         metrics:
-          - saved_metric_id: is_unique
           - saved_metric_id: is_not_null
       - column_selectors:
         - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.normalized_channel
@@ -22,8 +23,12 @@ tag_deployments:
             parameters:
               - key: col_1
                 column_name: client_id
+              - key: col_1_string
+                string_value: client_id
               - key: col_2
                 column_name: normalized_channel
+              - key: col_2_string
+                string_value: normalized_channel
               - key: table
                 string_value: {{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}
             rct_overrides:

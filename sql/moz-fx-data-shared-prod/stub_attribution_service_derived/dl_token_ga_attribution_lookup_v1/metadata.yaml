@@ -17,6 +17,7 @@ scheduling:
   dag_name: bqetl_mozilla_org_derived
   date_partition_parameter: null
   parameters: ["download_date:DATE:{{ds}}"]
+  depends_on_past: true
 bigquery:
   clustering:
     fields: [first_seen_date]

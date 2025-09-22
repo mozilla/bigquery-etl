@@ -1,0 +1,4 @@
+friendly_name: Timestamp Diff Complete Months
+description: |-
+  Gets the number of complete months between two timestamp values (`end_timestamp` - `start_timestamp`).
+  If `end_timestamp` is earlier than `start_timestamp`, the output is negative.

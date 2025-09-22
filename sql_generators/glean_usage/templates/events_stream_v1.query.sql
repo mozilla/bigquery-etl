@@ -5,36 +5,26 @@ RETURNS json AS (
   IF(
     ARRAY_LENGTH(input) = 0,
     NULL,
-    JSON_OBJECT(
-      ARRAY(SELECT key FROM UNNEST(input)),
-      ARRAY(
-        SELECT
-          CASE
-            WHEN SAFE_CAST(value AS NUMERIC) IS NOT NULL
-              THEN TO_JSON(SAFE_CAST(value AS NUMERIC))
-            WHEN SAFE_CAST(value AS BOOL) IS NOT NULL
-              THEN TO_JSON(SAFE_CAST(value AS BOOL))
-            ELSE TO_JSON(value)
-          END
-        FROM
-          UNNEST(input)
-      )
+    (
+      SELECT
+        JSON_OBJECT(
+          ARRAY_AGG(key ORDER BY offset),
+          ARRAY_AGG(
+            CASE
+              WHEN SAFE_CAST(value AS NUMERIC) IS NOT NULL
+                THEN TO_JSON(SAFE_CAST(value AS NUMERIC))
+              WHEN SAFE_CAST(value AS BOOL) IS NOT NULL
+                THEN TO_JSON(SAFE_CAST(value AS BOOL))
+              ELSE TO_JSON(value)
+            END
+            ORDER BY
+              offset
+          )
+        )
+      FROM
+        UNNEST(input)
+        WITH OFFSET
     )
-  )
-);
-
--- convert array of key value pairs to a json object
--- values are nested structs and will be converted to json objects
-CREATE TEMP FUNCTION from_map_experiment(
-  input ARRAY<
-    STRUCT<key STRING, value STRUCT<branch STRING, extra STRUCT<type STRING, enrollment_id STRING>>>
-  >
-)
-RETURNS json AS (
-  IF(
-    ARRAY_LENGTH(input) = 0,
-    NULL,
-    JSON_OBJECT(ARRAY(SELECT key FROM UNNEST(input)), ARRAY(SELECT value FROM UNNEST(input)))
   )
 );
 
@@ -73,8 +63,10 @@ WITH base AS (
         client_info.app_channel AS app_channel,
         client_info.app_display_version AS app_display_version,
         client_info.architecture AS architecture,
+        client_info.attribution AS attribution,
         client_info.device_manufacturer AS device_manufacturer,
         client_info.device_model AS device_model,
+        client_info.distribution AS distribution,
         client_info.first_run_date AS first_run_date,
         client_info.locale AS locale,
         client_info.os AS os,
@@ -99,7 +91,20 @@ WITH base AS (
     ),
     client_info.client_id AS client_id,
     ping_info.reason AS reason,
-    from_map_experiment(ping_info.experiments) AS experiments,
+    IF(
+      ARRAY_LENGTH(ping_info.experiments) > 0,
+      (
+        SELECT
+          JSON_OBJECT(
+            ARRAY_AGG(experiment.key ORDER BY experiment_offset),
+            ARRAY_AGG(experiment.value ORDER BY experiment_offset)
+          )
+        FROM
+          UNNEST(ping_info.experiments) AS experiment
+          WITH OFFSET AS experiment_offset
+      ),
+      NULL
+    ) AS experiments,
     {% if has_profile_group_id %}
       metrics.uuid.legacy_telemetry_profile_group_id AS profile_group_id,
     {% else %}
@@ -132,34 +137,36 @@ SELECT
 FROM
   base
 CROSS JOIN
-  {% if app_name == "firefox_desktop_background_update" %}
-  -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
-  -- Filtering out nimbus and normandy events that are emitted due to 'invalid-feature'.
-  -- The number of these events is too large to be processed, invalid-feature has also
-  -- been removed in more recent versions.
-  UNNEST(
-    ARRAY(
-      SELECT event
-      FROM UNNEST(events) AS event
-      WHERE (
-        app_version_major IN (138, 139)
-        AND (
-          (event.category = 'nimbus_events' AND event.name = 'validation_failed')
-          OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
-        )
-      ) IS NOT TRUE
-    )
-  ) AS event
-  {% else %}
   UNNEST(events) AS event
-  {% endif %}
   {% if app_name == "firefox_desktop" %}
-    -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
     WHERE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
       NOT (
         normalized_channel = 'release'
         AND event.category = 'security'
         AND event.name = 'unexpected_load'
         AND app_version_major BETWEEN 132 AND 135
+      )
+      -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1974286
+      AND NOT (
+        event.category = 'nimbus_events'
+        AND event.name = 'enrollment_status'
+        AND app_version_major = 140
+      )
+  {% elif app_name == "firefox_desktop_background_update" %}
+    WHERE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
+      NOT (
+        app_version_major IN (138, 139)
+          AND (
+            (event.category = 'nimbus_events' AND event.name = 'validation_failed')
+            OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
+          )
+      )
+      -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1974286
+      AND NOT (
+        event.category = 'nimbus_events'
+        AND event.name = 'enrollment_status'
+        AND app_version_major = 140
       )
   {% endif %}

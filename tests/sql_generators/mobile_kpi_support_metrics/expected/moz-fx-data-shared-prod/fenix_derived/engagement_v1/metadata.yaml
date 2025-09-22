@@ -1,0 +1,34 @@
+friendly_name: Profile / Client Engagement - Fenix (Aggregated)
+description: |-
+  Profile / Client Engagement (Fenix) aggregated metrics
+
+  Grouped by all dimensions to generate dau, wau, mau metrics.
+
+  Notes:
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  shredder_mitigation: false
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: fenix
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+  clustering:
+    fields:
+      - app_name
+      - country
+      - first_seen_date
+monitoring:
+  enabled: true
+  collection: Operational Checks

@@ -80,7 +80,7 @@ class TestDryRun:
     def test_get_referenced_tables(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
         query_file.write_text(
-            "SELECT * FROM telemetry_derived.clients_daily_v6 "
+            "SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` "
             "WHERE submission_date = '2020-01-01'"
         )
         query_dryrun = DryRun(str(query_file)).get_referenced_tables()

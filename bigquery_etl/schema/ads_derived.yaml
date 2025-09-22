@@ -1,0 +1,352 @@
+fields:
+- name: cpm
+  type: FLOAT
+  description: Cost Per Mille (1,000 impressions).
+- name: ad_id
+  type: INTEGER
+  description: The advertiser/partner-provided identifier for an ad. In ads telemetry,
+    it should not be null for most formats (native, rectangle, billboard, leaderboard)
+    but may be null for sponsored tiles provided by adMarketplace.
+- name: ad_url
+  type: STRING
+  description: A uniform resource locator that points to the ad.
+- name: admarketplace_date
+  type: DATE
+  description: Date as reported by the advertising partner adMarketplace inside a
+    report file.
+  aliases:
+  - adm_date
+  - amp_date
+- name: advertiser
+  type: STRING
+  description: Name of the advertiser or entity that creates the ad campaign to promote
+    its product or service. In Kevel data, it corresponds to the campaign sponsor,
+    which may be the same advertiser or a third party.
+  aliases:
+  - advertiser_name
+- name: advertiser_id
+  type: INTEGER
+  description: A unique identifier of the advertiser or entity that creates the ad campaign to promote
+    its product or service. In Kevel data, it corresponds to the campaign sponsor,
+    which may be the same advertiser or a third party.
+- name: average_rate
+  type: FLOAT
+  description: Average rate for the month, based on the rates reported by the partner.
+- name: avg_pub_cpc
+  type: FLOAT
+  description: The average amount the publisher (Mozilla) earns each time a user clicks on an ad.
+    This is a key performance metric for revenue performance, calculated as total_revenue/total_clicks.
+- name: campaign_id
+  type: INTEGER
+  description: The identifier of the campaign associated with an ad as set by the
+    partner. A campaign is a collection of an advertiser’s ads, which is made up of
+    one or more flights. Typically the flights in a campaign have a common theme,
+    such as product or promotion.
+- name: campaign_name
+  type: STRING
+  description: The name of the campaign associated with an ad. A campaign is a collection
+    of an advertiser’s ads, which is made up of one or more flights. Typically the
+    flights in a campaign have a common theme, such as product or promotion.
+- name: click_rate
+  type: FLOAT
+  description: A rate calculated by the sum of the number of clicks on a piece of
+    content divided by the sum of the number of impressions, e.g. sum(click_count)/sum(impression_count).
+- name: content_url
+  type: STRING
+  description: The URL or destination where users will be taken after clicking on an ad.
+- name: creative_id
+  type: INTEGER
+  description: A unique identifier assigned to the creative.
+    Creatives are files or code provided by the advertiser and shown to the user
+    as the ad, e.g. image files, JavaScript, HTML tags, raw data.
+- name: creative_title
+  type: STRING
+  description: A human-readable name assigned to the creative.
+    Creatives are files or code provided by the advertiser and shown to the user
+    as the ad, e.g. image files, JavaScript, HTML tags, raw data.
+- name: creative_type
+  type: STRING
+  description: The name of the flight associated with an ad. Referred elsewhere as
+    flight name.
+  aliases:
+  - flight_name
+- name: creative_url
+  type: STRING
+  description: A unique resource locator used to identify the location of the ad content.
+- name: dau
+  type: INTEGER
+  description: Daily active users.
+  aliases:
+  - total_active
+- name: dismiss_rate
+  type: FLOAT
+  description: A rate calculated by the sum of the number of dismisses divided by
+    the sum of the number of impressions i.e. sum(dismiss_count)/sum(impression_count).
+- name: dismissals
+  type: INTEGER
+  description: A sum of the number of times that a piece of content was dismissed.
+  aliases:
+  - dismisses
+- name: display_fail_reason
+  type: STRING
+  description: 'String reason for why a certain ad failed to be displayed. Possible values: "dismissed", "oversold".
+
+    display_fail_reason = "dismissed" corresponds to tiles we fail to display as advertiser
+    is in client blocklist.
+
+    display_fail_reason = "oversold" corresponds to tiles we fail to display as all
+    eligible positions have already been filled.'
+- name: eligible_newtab_visits
+  type: INTEGER
+  description: Sum of newtab visits where the client has enabled topsites_enabled
+    and sponsored_topsites_enabled.
+- name: file_date
+  type: DATE
+  description: Date of the report file used to ingest the data. For ad partner adMarketplace,
+    it is extracted from the report name.
+  aliases:
+  - report_date
+- name: fill_rate
+  type: FLOAT
+  description: Quotient of sponsored impressions on Glean and total impressions on
+    Glean. Used to forecast sponsored impressions on UAPI for the purpose of calculating
+    metrics
+- name: flight_id
+  type: INTEGER
+  description: A unique identifier for a flight in interactions with Kevel ads. Null for other partners.
+    A flight is a collection of rules for one or more creatives that determine how an ad is served.
+    E.g. impression goals, tracking methods, dates to run, and targeting.
+- name: flight_name
+  type: STRING
+  description: The name of a flight in interactions with Kevel ads. Null for other partners.
+    A flight is a collection of rules for one or more creatives that determine how an ad is served.
+    E.g. impression goals, tracking methods, dates to run, and targeting.
+- name: format
+  type: STRING
+  description: Format of the ad interacted with. Should not be null.
+- name: has_reporting_url
+  type: BOOLEAN
+  description: Whether the ping contained a reporting URL (clients with UAPI enabled
+    omit the reporting URL from client pings to avoid double-counting impressions
+    and clicks). For older backfilled data, always null
+- name: image_url
+  type: STRING
+  description: A uniform resource locator that points to the thumbnail image for an ad.
+- mode: REQUIRED
+  name: interaction_count
+  type: INTEGER
+  description: The number of interactions for the aggregated bucket. Should not be null.
+- name: interaction_type
+  type: STRING
+  description: The type of ad interaction. One of 'impression', 'click'. Should not be null.
+- name: is_duplicate_tile_interaction
+  type: BOOLEAN
+  description: Whether the interaction is a duplicated native pings created when a
+    Kevel-provided tile interaction.
+    See https://docs.google.com/document/d/1dpwcWxVoK8LP7XKwaXwDl4egXeqrQONODbTYqfKQ9-A
+    for incident report that describes this issue.
+  aliases:
+  - is_duplicate
+  - duplicate_tile_interaction
+- name: last_observed_date
+  type: DATE
+  description: Latest date in the training data for a given model, that uniquely identifies
+    different models in a forecast.
+- name: legacy_telemetry_client_id
+  type: STRING
+  description: Legacy client identifier.
+- name: newtab_visit_id
+  type: STRING
+  description: Identifier for the corresponding Newtab visit.
+- name: newtab_visits_per_client
+  type: FLOAT
+  description: Quotient of newtab visits and dau.
+- name: partner_name
+  type: STRING
+  description: The name of an external partner that processes or provides data.
+  aliases:
+  - partner
+- name: payout
+  type: FLOAT
+  description: null
+- name: placement
+  type: STRING
+  description: Value identifying the surface; provided by the client when requesting
+    an ad (e.g. newtab). Should not be null.
+- name: position
+  type: INTEGER
+  description: 'Position in the page where an ad is displayed, normalized to
+    a 1-indexed integer.
+
+    For reference, the raw value for position in the source data is formatted as follows:
+    Tiles desktop: 1-indexed integer
+    Tiles mobile: 0-indexed integer
+    SPOCs desktop: 0-indexed integer
+    SPOCs mobile: string in the format [n1]x[n2], where n1 is the
+    position on the screen and n2 is the number of times the user has swiped
+    the recommended stories widget (both 0-indexed).'
+  aliases:
+  - slot
+  - position_string
+- name: position_raw
+  type: STRING
+  description: Position as reported by Glean. This original data is retained in case
+    future changes are needed. It is normalized in column `position`.
+- name: price
+  type: FLOAT
+  description: Price.
+- name: product
+  type: STRING
+  description: Name of the ad product where the campaign was served, that determines
+    how the Ad is presented to the users e.g. tile, spoc, billboard, rectangle.
+  aliases:
+  - ad_product
+- name: profile_group_id
+  type: STRING
+  description: A UUID identifying the profile's group on a single device and allowing
+    user-oriented correlation of data.
+- name: provider
+  type: STRING
+  description: Ad partner who provided the ad. Either "kevel" or "amp" (adMarketplace).
+- name: rate
+  type: FLOAT
+  description: The actual cost or pricing metric charged for displaying ads, calculated
+    based on the pricing model (e.g., CPC, CPM, CPA) and used to determine the financial
+    expense of ad campaigns based on their performance metrics like impressions, clicks,
+    or saves. The reported rate may vary in the case of ad partners that use auctions
+    e.g. adMarketplace, but should not be lower than the contractual rate.
+- name: rate_type
+  type: STRING
+  description: Pricing model applied to an ad (Flat/CPM/CPC/CPA). If CPC, revenue
+    is calculated per clicks, if CPM it is calculated per impressions.
+  aliases:
+  - pricing_model
+- name: region_code
+  type: STRING
+  description: Region code associated with the client when the ad was requested. May
+    be null.
+- name: revenue
+  type: FLOAT
+  description: Total revenue calculated at the grain of the table.
+- name: rpm_rate
+  type: NUMERIC
+  description: Revenue Per Mille (RPM) rate calculated from revenue/impressions*1000.
+    A mille is equivalent to 1,000 impressions.
+- name: save_rate
+  type: FLOAT
+  description: A rate calculated by the sum of the number of saves divided by the
+    sum of the number of impressions i.e. sum(save_count)/sum(impression_count).
+- name: saves
+  type: INTEGER
+  description: A sum of the number of times that a piece of content was saved.
+- name: site_id_count
+  type: INTEGER
+  description: Count of sites. A site is the website(s) where ad(s) will display.
+- name: site_name
+  type: STRING
+  description: 'The name of the site associated with this ad. A site is the website(s)
+    where ad(s) will display. Examples of sites include "Firefox Production", "Firefox
+    Staging", "Pocket Web Production", "MDN Production".
+
+    Ads can be associated with multiple sites. If this ad is associated with one site,
+    that single site name will be in this column. If this ad is associated with multiple
+    sites, one of which is Firefox Production, then it will be attributed to the Firefox
+    Production site.
+
+    If an ad has multiple sites, none of which is the default Firefox Production site,
+    this column will show "Multiple Sites". If the ad is not associated with a site,
+    this column will be NULL.'
+- name: sites
+  description: The websites where ad will display. It can be either a domain that users
+     manage or a platform like Android, iOS, Desktop.
+- name: source_file
+  type: STRING
+  description: Full name of the report file used to ingest the data.
+- name: source_value
+  type: STRING
+  description: The value as reported by the partner or ad server.
+- name: spend
+  type: FLOAT
+  description: The spend amount for the advertiser.
+- name: spoc_id
+  type: INTEGER
+  description: A numeric identifier for each ad. In kevel this field is named ad_id.
+- name: sponsor
+  type: STRING
+  description: The name of the entity that sponsors the campaign. It may be the same
+    advertiser or a third party.
+- name: sponsored_clicks
+  type: INTEGER
+  description: Total sponsored clicks as reported by Glean telemetry. A clicks is
+    counted when the client clicks on a sponsored impression.
+- name: sponsored_impressions
+  type: INTEGER
+  description: Total sponsored impressions as reported by Glean telemetry. An impression
+    is counted when an ad is viewed once by the client.
+- name: surface
+  type: STRING
+  description: Surface in which the client operating system runs, e.g. Desktop, Mobile.
+  aliases:
+  - form_factor
+- name: targets_default_site
+  type: BOOL
+  description: Flag to identify if an Ad with one or multiple sites can be uniquely
+    associated with the default site 'Firefox Production'.
+- name: targets_default_zone
+  type: BOOL
+  description: Flag to identify if an Ad with one or multiple zones can be uniquely
+    attributed to the default zone '3x7'.
+- name: tile_id
+  type: INTEGER
+  description: Advertiser/partner-provided identifier for a specific ad. Should not
+    be null for Kevel-provided ads, may be null otherwise
+- name: title
+  type: STRING
+  description: The title of an ad, as shown to the user.
+- name: uapi_click_factor
+  type: FLOAT
+  description: The quotient of uapi clicks and the sponsored clicks as reported by
+    Glean.
+- name: uapi_clicks
+  type: INTEGER
+  description: Total impressions as reported by the unified API.
+- name: uapi_enabled
+  type: BOOLEAN
+  description: True if the client associated with the interaction has UAPI enabled.
+    Used when combining this data with UAPI data to avoid double-counting. Derived
+    from source, version, provider, has_reporting_url, and ad_id.
+- name: uapi_impressions
+  type: INTEGER
+  description: Total impressions as reported by the unified API.
+- name: valid_clicks
+  type: INTEGER
+  description: Count of times that an ad is clicked once by the client.
+  aliases:
+  - clicks
+- name: valid_impressions
+  type: INTEGER
+  description: Number of times an ad is seen once by the client, or is displayed once on a web page.
+  aliases:
+  - impressions
+- name: vertical
+  type: STRING
+  description: The industry sector or topic associated with an ad.
+- name: zone_id_count
+  type: INTEGER
+  description: Count of zones.
+- name: zone_name
+  type: STRING
+  description: 'The name of the zone associated with this ad. A zone is the section
+    of a site where the Flight or the Ad will display. Examples of zones include "3x7",
+    "SponsoredCollection". Ads can be associated with multiple zones. If this ad is
+    associated with one zone, that single zone ID will be in this column.
+
+    If this ad is associated with multiple zones, one of which is 3x7, then it will
+    be attributed to the 3x7 zone.
+
+    If an ad has multiple zones, none of which is the default 3x7 zone, this column
+    will show "Multiple Zones". If the ad is not associated with a zone, this column
+    will be NULL.'
+- name: zones
+  description: List of zones where the Ad is targeted. A zone is the section of a
+    site where the Flight or the Ad will display.

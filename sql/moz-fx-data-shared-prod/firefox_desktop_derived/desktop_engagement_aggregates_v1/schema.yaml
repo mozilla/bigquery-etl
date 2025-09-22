@@ -2,7 +2,7 @@ fields:
 - mode: NULLABLE
   name: submission_date
   type: DATE
-  description: Submission Date
+  description: The date when the telemetry ping is received on the server side.
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
@@ -10,15 +10,15 @@ fields:
 - mode: NULLABLE
   name: distribution_id
   type: STRING
-  description: Distribution ID - Identifies the Firefox distribution
+  description: The distribution id associated with the install of Firefox.
 - mode: NULLABLE
   name: locale
   type: STRING
-  description: Locale
+  description: Set of language- and/or country-based preferences for a user interface.
 - mode: NULLABLE
   name: app_version
   type: STRING
-  description: App Version
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
@@ -50,11 +50,11 @@ fields:
 - mode: NULLABLE
   name: normalized_channel
   type: STRING
-  description: Normalized Channel - The Firefox channel, set to Other for unrecognized channel names
+  description: The normalized channel the application is being distributed on.
 - mode: NULLABLE
   name: normalized_os
   type: STRING
-  description: Normalized Operating System
+  description: The normalized name of the operating system running at the client.
 - mode: NULLABLE
   name: normalized_os_version
   type: STRING
@@ -66,20 +66,21 @@ fields:
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - mode: NULLABLE
   name: is_desktop
   type: BOOLEAN
   description: Indicates if the client is included in the desktop KPI
 - mode: NULLABLE
   name: dau
-  type: INT64
+  type: INTEGER
   description: Number of daily active users
 - mode: NULLABLE
   name: wau
-  type: INT64
+  type: INTEGER
   description: Number of weekly active users
 - mode: NULLABLE
   name: mau
-  type: INT64
+  type: INTEGER
   description: Number of monthly active users

@@ -153,6 +153,13 @@ class ExternalDataMetadata:
 
 
 @attr.s(auto_attribs=True)
+class MonitoringMetricMetadata:
+    """Metadata for specifying observability and monitoring metric configuration."""
+
+    blocking: bool = attr.ib()
+
+
+@attr.s(auto_attribs=True)
 class MonitoringMetadata:
     """Metadata for specifying observability and monitoring configuration."""
 
@@ -160,6 +167,12 @@ class MonitoringMetadata:
     collection: Optional[str] = attr.ib(None)
     partition_column: Optional[str] = attr.ib(None)
     partition_column_set: bool = attr.ib(False)
+    freshness: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=False)
+    )
+    volume: Optional[MonitoringMetricMetadata] = attr.ib(
+        MonitoringMetricMetadata(blocking=True)
+    )
 
 
 @attr.s(auto_attribs=True)

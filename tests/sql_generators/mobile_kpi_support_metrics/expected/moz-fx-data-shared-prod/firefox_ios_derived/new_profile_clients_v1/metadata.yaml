@@ -1,0 +1,38 @@
+friendly_name: New profile clients - Firefox iOS
+description: |-
+  New profile clients (Firefox iOS) metrics
+
+  Table grain: client_id, normalized_channel
+  Table population: all clients
+
+  Partitioned by: first_seen_date
+  Clustered by: app_name, normalized_channel
+
+  Notes:
+  - 2024-03-05: `device_type` and `device_manufacturer` fields added
+
+owners:
+  - mozilla/kpi_table_reviewers
+  - kik@mozilla.com
+labels:
+  schedule: daily
+  incremental: true
+  shredder_mitigation: false
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_mobile_kpi_metrics
+  depends_on_past: false
+  task_group: firefox_ios
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: 775
+  clustering:
+    fields:
+      - app_name
+      - normalized_channel
+monitoring:
+  enabled: true
+  collection: Operational Checks

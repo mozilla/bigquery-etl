@@ -1,0 +1,14 @@
+2025-09-11:
+  start_date: 2023-11-21
+  end_date: 2025-09-09
+  reason: A bug was causing experiment `type` and `enrollment_id` values to be swapped (DENG-9632).
+    That bug was fixed in https://github.com/mozilla/bigquery-etl/pull/8084.
+  watchers:
+  - srose@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  # Using on-demand billing is cheaper for this ETL.
+  billing_project: moz-fx-data-backfill-2

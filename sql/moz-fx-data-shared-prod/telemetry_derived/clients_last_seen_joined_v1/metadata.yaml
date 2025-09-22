@@ -11,7 +11,7 @@ description: |-
   we received a main ping from that client on that day or in the preceding
   27 days.
 owners:
-- ascholtzs@mozilla.com
+- ascholtz@mozilla.com
 labels:
   application: firefox
   schedule: daily
@@ -28,10 +28,11 @@ bigquery:
     type: day
     field: submission_date
     require_partition_filter: false
-    expiration_days: 775
+    expiration_days: 775.0
   range_partitioning: null
   clustering:
     fields:
     - normalized_channel
     - sample_id
 references: {}
+require_column_descriptions: false

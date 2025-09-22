@@ -15,6 +15,8 @@ scheduling:
   dag_name: bqetl_ga4_firefoxdotcom
   date_partition_parameter: submission_date
   date_partition_offset: 0
+monitoring:
+  enabled: true
 bigquery:
   time_partitioning:
     type: day

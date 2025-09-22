@@ -190,7 +190,7 @@ def main():
             "filter_version": True,
             "num_versions_to_keep": 3,
             "total_users": 10,
-            "minimum_client_count": 300,
+            "minimum_client_count": 50,
         },
         "firefox_desktop_glam_beta": {
             "build_date_udf": "mozfun.glam.build_hour_to_datetime",
@@ -272,12 +272,17 @@ def main():
         ),
         init(
             "clients_histogram_aggregates_v1",
-            **models.clients_histogram_aggregates(parameterize=True),
+            **models.clients_histogram_aggregates(
+                parameterize=True,
+                channel=channel_prefixes[args.prefix],
+            ),
         ),
         table(
             "clients_histogram_aggregates_v1",
             **models.clients_histogram_aggregates(
-                parameterize=True, **config[args.prefix]
+                parameterize=True,
+                **config[args.prefix],
+                channel=channel_prefixes[args.prefix],
             ),
         ),
         table(

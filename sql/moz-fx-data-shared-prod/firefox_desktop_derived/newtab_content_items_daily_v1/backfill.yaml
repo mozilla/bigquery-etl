@@ -1,10 +1,22 @@
+2025-09-22:
+  start_date: 2023-08-10
+  end_date: 2025-08-07
+  reason: Intitial backfill for newtab_content_items_daily_v1 table. First attempt tried to go back further than 775 days, violating the retention policy.
+  watchers:
+  - lmcfall@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+
 2025-09-18:
   start_date: 2023-01-01
   end_date: 2025-08-07
   reason: Intitial backfill for newtab_content_items_daily_v1 table.
   watchers:
   - lmcfall@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
   override_depends_on_past_end_date: false

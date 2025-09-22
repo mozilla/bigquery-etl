@@ -34,7 +34,7 @@ IF
         {% if dataset == "firefox_desktop" and events_table == "events_v1" %}
           WHERE
             -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
-            AND (
+            (
               event.category = "uptake.remotecontent.result"
               AND event.name IN ("uptake_remotesettings", "uptake_normandy")
               AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143

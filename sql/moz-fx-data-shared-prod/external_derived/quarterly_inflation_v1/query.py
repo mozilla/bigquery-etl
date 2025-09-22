@@ -16,44 +16,81 @@ GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 GCS_BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 RESULTS_FPATH = "IMF_QUARTERLY_CPI/imf_quarterly_cpi_data_%s.csv"
 
+
+# Define a function to rebase data to the mean of 2010
+def rebase_to_2010(df, value_col="consumer_price_index", period_col="report_period"):
+    """Rebases the data to the year 2010, using the average for the quarters in 2010"""
+    df = df.copy()
+    dt = pd.to_datetime(df[period_col], errors="coerce")
+
+    mask_2010 = dt.notna() & (dt.dt.year == 2010)
+    y2010 = pd.to_numeric(df.loc[mask_2010, value_col], errors="coerce")
+
+    if y2010.dropna().empty:
+        raise ValueError("No 2010 observations to compute a 2010=100 base.")
+
+    factor = 100.0 / y2010.mean()  # annual average 2010 -> 100
+    df[value_col] = pd.to_numeric(df[value_col], errors="coerce") * factor
+    df["base_year"] = "2010=100"
+    return df
+
+
 # Define function to pull CPI data
-def pull_quarterly_cpi_data_from_imf(country_code, start_month, end_month):
+def pull_quarterly_cpi_data_from_imf(country_code, start_month):
     """
     Inputs:
         Country Code - 2 letter country code, for example, US
         Start Month - YYYY-MM - for example, 2023-10
-        End Month - YYYY-MM - for example, 2023-12
 
     Output:
-      JSON with data for this country for the quarters between start month and end month
+      Dataframe for this country for the quarters from the year of the start month, to the present
     """
-    api_url = f"http://dataservices.imf.org/REST/SDMX_JSON.svc/CompactData/IFS/Q.{country_code}.PCPI_IX.?startPeriod={start_month}&endPeriod={end_month}"
+    api_url = f"https://api.db.nomics.world/v22/series/IMF/CPI/Q.{country_code}.PCPI_IX"
+    params = {
+        "observations": 1,  # include observations in the payload
+        "format": "json",  # optional; JSON is the default
+    }
 
-    response = requests.get(api_url, timeout=10)
+    response = requests.get(api_url, params=params, timeout=20)
     inflation_data = response.json()
+    doc = (inflation_data.get("series", {}) or {}).get("docs", [None])[0]
+    if doc is None:
+        raise ValueError("Series doc not found in payload")
 
-    series = (
-        inflation_data.get("CompactData", {}).get("DataSet", {}).get("Series", None)
+    # Build a tidy DataFrame
+    observations_df = pd.DataFrame(
+        {
+            "report_period": doc["period"],
+            "consumer_price_index": pd.to_numeric(doc["value"], errors="coerce"),
+            "country": [country_code] * len(doc["period"]),
+        }
     )
 
-    base_year = series.get("@BASE_YEAR", "Unknown Base Year")
-
-    observations = series.get("Obs", [])
-    observations_df = pd.DataFrame(observations)
-    observations_df["country"] = country_code
-    observations_df["base_year"] = base_year
-
-    # Rename to friendlier names
-    observations_df.rename(
-        columns={"@TIME_PERIOD": "report_period", "@OBS_VALUE": "consumer_price_index"},
-        inplace=True,
+    observations_rebased_to_2010 = rebase_to_2010(
+        observations_df, value_col="consumer_price_index", period_col="report_period"
     )
 
-    # Reorder cols to match schema order
-    observations_df = observations_df[
+    observations_rebased_to_2010["base_year"] = "2010=100"
+
+    # Filter to only quarters in year of start month or greater
+    observations_rebased_to_2010["report_year"] = (
+        observations_rebased_to_2010["report_period"].astype(str).str[:4]
+    )
+
+    # Get the string version of the start month
+    start_year = int(start_month[:4])
+
+    # Filter to year of start month forward
+    filtered = observations_rebased_to_2010.loc[
+        pd.to_numeric(observations_rebased_to_2010["report_year"], errors="coerce")
+        >= start_year
+    ]
+
+    filtered = filtered[
         ["report_period", "consumer_price_index", "country", "base_year"]
     ]
-    return observations_df
+
+    return filtered
 
 
 def main():
@@ -68,10 +105,7 @@ def main():
     start_month = start_month_stg.replace(day=1).strftime("%Y-%m")
     print("start_month: ", start_month)
 
-    # Calculate end month = month 1 month ago
-    end_month_stg = today.replace(day=1) - timedelta(days=END_LOOKBACK_DAYS)
-    end_month = end_month_stg.strftime("%Y-%m")
-    print("end_month: ", end_month)
+    print("start_year: ", str(start_month[:4]))
 
     # Initialize a results dataframe
     results_df = pd.DataFrame(
@@ -82,9 +116,7 @@ def main():
     for country in countries:
         print("pulling data for current country: ", country)
         # Pull the CPI data
-        curr_country_infl_df = pull_quarterly_cpi_data_from_imf(
-            country, start_month, end_month
-        )
+        curr_country_infl_df = pull_quarterly_cpi_data_from_imf(country, start_month)
 
         # Append it to the results dataframe
         results_df = pd.concat([results_df, curr_country_infl_df])

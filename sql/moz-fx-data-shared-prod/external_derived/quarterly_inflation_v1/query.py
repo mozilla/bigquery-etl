@@ -22,7 +22,7 @@ def rebase_to_2010(df, value_col="consumer_price_index", period_col="report_peri
     df = df.copy()
     dt = pd.to_datetime(df[period_col], errors="coerce")
 
-    mask_2010 = dt.notna() & (dt.dt.year == 2010)  # <- key line
+    mask_2010 = dt.notna() & (dt.dt.year == 2010)
     y2010 = pd.to_numeric(df.loc[mask_2010, value_col], errors="coerce")
 
     if y2010.dropna().empty:

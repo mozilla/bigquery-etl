@@ -13,7 +13,7 @@ WITH
     sample_id,
     mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
     `moz-fx-data-shared-prod.udf.glean_timespan_seconds`( metrics.timespan.glean_baseline_duration ) AS duration,
-    metadata.geo.city,
+    metadata.geo.city AS city,
     metadata.geo.subdivision1 AS subdivision1,
     metadata.geo.subdivision2 AS subdivision2,
     metadata.geo.country AS country,
@@ -59,10 +59,10 @@ WITH
     ROW_NUMBER() OVER w1_unframed AS _n,
     `moz-fx-data-shared-prod.udf.mode_last_retain_nulls`(
       ARRAY_AGG(STRUCT(
-        city AS city,
-        subdivision1 AS subdivision1,
-        subdivision2 AS subdivision2,
-        country AS country
+        city,
+        subdivision1,
+        subdivision2,
+        country
         )
       ) OVER w1
     ) AS geo,
@@ -170,10 +170,10 @@ _current_windowed_{{ app_id }} AS (
     @submission_date AS submission_date,
     `moz-fx-data-shared-prod.udf.mode_last_retain_nulls`(
       ARRAY_AGG(STRUCT(
-        city AS city,
-        subdivision1 AS subdivision1,
-        subdivision2 AS subdivision2,
-        country AS country
+        metadata.geo.city AS city,
+        metadata.geo.subdivision1 AS subdivision1,
+        metadata.geo.subdivision2 AS subdivision2,
+        metadata.geo.country AS country
         )
       ) OVER w1
     ) AS geo,

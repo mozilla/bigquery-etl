@@ -243,6 +243,11 @@ IF
   _p.first_seen_subdivision2
   ) AS first_seen_subdivision2,
 IF
+  (_p.client_id IS NULL,
+  _c.first_seen_country,
+  _p.first_seen_country
+  ) AS first_seen_country,
+IF
   (_p.last_seen_city_date < _c.last_seen_city_date,
   _c.last_seen_city_date,
   _p.last_seen_city_date
@@ -262,6 +267,11 @@ IF
   _c.last_seen_subdivision2,
   _p.last_seen_subdivision2
   ) AS last_seen_subdivision2,
+IF
+  (_p.client_id IS NULL,
+  _c.last_seen_country,
+  _p.last_seen_country
+  ) AS last_seen_country,
 FROM
   _current_{{ app_id }} AS _c
 FULL JOIN

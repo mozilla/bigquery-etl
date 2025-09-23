@@ -206,6 +206,20 @@ def main():
             "total_users": 100,
             "minimum_client_count": 450000,
         },
+        "thunderbird_desktop_glam_esr": {
+            "build_date_udf": "mozfun.glam.build_hour_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 3,
+            "total_users": 100,
+            "minimum_client_count": 90000,
+        },
+        "thunderbird_desktop_glam_release": {
+            "build_date_udf": "mozfun.glam.build_hour_to_datetime",
+            "filter_version": True,
+            "num_versions_to_keep": 3,
+            "total_users": 100,
+            "minimum_client_count": 20000,
+        },
     }
 
     channel_prefixes = {
@@ -215,6 +229,8 @@ def main():
         "org_mozilla_fenix_glam_nightly": "nightly",
         "org_mozilla_fenix_glam_beta": "beta",
         "org_mozilla_fenix_glam_release": "release",
+        "thunderbird_desktop_glam_esr": "esr",
+        "thunderbird_desktop_glam_release": "release",
     }
     validate(instance=config, schema=config_schema)
 

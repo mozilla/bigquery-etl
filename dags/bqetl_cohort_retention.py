@@ -417,6 +417,21 @@ with DAG(
             checks__fail_telemetry_derived__rolling_cohorts__v2
         )
 
+    glean_telemetry_derived__cohort_daily_statistics__v1 = bigquery_etl_query(
+        task_id="glean_telemetry_derived__cohort_daily_statistics__v1",
+        destination_table="cohort_daily_statistics_v1",
+        dataset_id="glean_telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     glean_telemetry_derived__cohort_weekly_active_clients__v1 = bigquery_etl_query(
         task_id="glean_telemetry_derived__cohort_weekly_active_clients__v1",
         destination_table="cohort_weekly_active_clients_v1",
@@ -553,6 +568,78 @@ with DAG(
 
     checks__fail_telemetry_derived__rolling_cohorts__v2.set_upstream(
         telemetry_derived__rolling_cohorts__v2
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
+    )
+
+    glean_telemetry_derived__cohort_daily_statistics__v1.set_upstream(
+        glean_telemetry_derived__rolling_cohorts__v1
     )
 
     glean_telemetry_derived__cohort_weekly_active_clients__v1.set_upstream(

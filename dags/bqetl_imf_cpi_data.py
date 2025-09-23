@@ -53,6 +53,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    checks__fail_external_derived__gdp__v1 = bigquery_dq_check(
+        task_id="checks__fail_external_derived__gdp__v1",
+        source_table="gdp_v1",
+        dataset_id="external_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__fail_external_derived__monthly_inflation__v1 = bigquery_dq_check(
         task_id="checks__fail_external_derived__monthly_inflation__v1",
         source_table="monthly_inflation_v1",
@@ -114,6 +127,8 @@ with DAG(
         owner="kwindau@mozilla.com",
         email=["kwindau@mozilla.com"],
     )
+
+    checks__fail_external_derived__gdp__v1.set_upstream(external_derived__gdp__v1)
 
     checks__fail_external_derived__monthly_inflation__v1.set_upstream(
         external_derived__monthly_inflation__v1

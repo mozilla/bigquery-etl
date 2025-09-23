@@ -129,16 +129,16 @@ CROSS JOIN
   UNNEST(events) AS event
 WHERE
       -- See https://mozilla-hub.atlassian.net/browse/DENG-8432
-  NOT (
+  (
     app_version_major IN (138, 139)
     AND (
       (event.category = 'nimbus_events' AND event.name = 'validation_failed')
       OR (event.category = 'normandy' AND event.name = 'validation_failed_nimbus_experiment')
     )
-  )
+  ) IS NOT TRUE
       -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1974286
-  AND NOT (
+  AND (
     event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
     AND app_version_major = 140
-  )
+  ) IS NOT TRUE

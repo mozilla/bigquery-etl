@@ -129,17 +129,17 @@ CROSS JOIN
   UNNEST(events) AS event
 WHERE
       -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
-  NOT (
+  (
     normalized_channel = 'release'
     AND event.category = 'security'
     AND event.name = 'unexpected_load'
     AND app_version_major
     BETWEEN 132
     AND 135
-  )
+  ) IS NOT TRUE
       -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1974286
-  AND NOT (
+  AND (
     event.category = 'nimbus_events'
     AND event.name = 'enrollment_status'
     AND app_version_major = 140
-  )
+  ) IS NOT TRUE

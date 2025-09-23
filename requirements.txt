@@ -2007,9 +2007,9 @@ rich==12.6.0 \
     # via
     #   rich-click
     #   typer
-rich-click==1.8.9 \
-    --hash=sha256:c3fa81ed8a671a10de65a9e20abf642cfdac6fdb882db1ef465ee33919fbcfe2 \
-    --hash=sha256:fd98c0ab9ddc1cf9c0b7463f68daf28b4d0033a74214ceb02f761b3ff2af3136
+rich-click==1.9.1 \
+    --hash=sha256:4f2620589d7287f86265432e6a909de4f281de909fe68d8c835fbba49265d268 \
+    --hash=sha256:ea6114a9e081b7d68cc07b315070398f806f01bb0e0c49da56f129e672877817
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \
@@ -2317,7 +2317,6 @@ typing-extensions==4.12.2 \
     #   pydantic
     #   pydantic-core
     #   pydantic-yaml
-    #   rich-click
     #   stripe
     #   typer
 tzdata==2023.3 \

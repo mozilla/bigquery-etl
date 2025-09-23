@@ -53,6 +53,7 @@ class GleanAppPingViews(GleanTable):
         GleanTable.__init__(self)
         self.per_app_id_enabled = False
         self.per_app_enabled = True
+        self.per_app_requires_all_base_tables = False
 
     def generate_per_app(
         self,
@@ -62,6 +63,7 @@ class GleanAppPingViews(GleanTable):
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        all_base_tables_exist=None,
     ):
         """
         Generate per-app ping views across channels.
@@ -116,13 +118,14 @@ class GleanAppPingViews(GleanTable):
                 if channel_dataset_view in ignored_pings:
                     continue
 
-                sql_dir = Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                # look for schema in output_dir because bqetl generate all runs stable_views first
+                sql_dir = (
+                    output_dir
+                    or Path(ConfigLoader.get("default", "sql_dir", fallback="sql"))
+                    / project_id
+                )
                 existing_schema_path = (
-                    sql_dir
-                    / "moz-fx-data-shared-prod"
-                    / channel_dataset
-                    / view_name
-                    / SCHEMA_FILE
+                    sql_dir / channel_dataset / view_name / SCHEMA_FILE
                 )
 
                 schema = None

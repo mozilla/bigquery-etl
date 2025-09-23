@@ -134,7 +134,6 @@ def paths_matching_name_pattern(
             all_matching_files.extend(
                 map(Path, glob(f"{sql_path}/**/{file}", recursive=True))
             )
-
         for query_file in all_matching_files:
             match = file_regex.match(str(query_file))
             if match:
@@ -150,7 +149,7 @@ def paths_matching_name_pattern(
     if len(matching_files) == 0:
         print(f"No files matching: {pattern}, {files}")
 
-    return matching_files
+    return list(set(matching_files))
 
 
 sql_dir_option = click.option(

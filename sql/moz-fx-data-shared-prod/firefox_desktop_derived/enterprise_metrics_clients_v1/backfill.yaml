@@ -1,0 +1,19 @@
+2025-09-21:
+  start_date: 2023-08-10
+  end_date: 2025-09-21
+  reason: Need to redo backfill to make sure the data matches the query.
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false
+
+2025-09-11:
+  start_date: 2023-07-30
+  end_date: 2025-09-11
+  reason: Initial backfill of the dataset.
+  watchers:
+  - kik@mozilla.com
+  status: Complete
+  shredder_mitigation: false
+  override_retention_limit: false

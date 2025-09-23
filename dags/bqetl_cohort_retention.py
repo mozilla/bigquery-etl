@@ -494,6 +494,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "glean_telemetry_derived__rolling_cohorts__v1_external",
+    ) as glean_telemetry_derived__rolling_cohorts__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_daily_churn__wait_for_glean_telemetry_derived__rolling_cohorts__v1",
+            external_dag_id="bqetl_cohort_daily_churn",
+            external_task_id="wait_for_glean_telemetry_derived__rolling_cohorts__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=17400)).isoformat() }}",
+        )
+
+        glean_telemetry_derived__rolling_cohorts__v1_external.set_upstream(
+            glean_telemetry_derived__rolling_cohorts__v1
+        )
+
     telemetry_derived__cohort_daily_statistics__v2 = bigquery_etl_query(
         task_id="telemetry_derived__cohort_daily_statistics__v2",
         destination_table="cohort_daily_statistics_v2",

@@ -167,7 +167,7 @@ _current_windowed_{{ app_id }} AS (
     client_info.client_id AS client_id,
     sample_id,
     ROW_NUMBER() OVER w1_unframed AS _n,
-    submission_date,
+    @submission_date AS submission_date,
     `moz-fx-data-shared-prod.udf.mode_last_retain_nulls`(
       ARRAY_AGG(STRUCT(
         city AS city,
@@ -180,7 +180,7 @@ _current_windowed_{{ app_id }} AS (
   FROM
     `moz-fx-data-shared-prod.{{ app_id }}_live.baseline_v1`
   WHERE
-    DATE(submission_timestamp)= @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND sample_id = 0
   WINDOW
     w1 AS (

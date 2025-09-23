@@ -1,0 +1,53 @@
+fields:
+- name: app_id
+  type: STRING
+  mode: NULLABLE
+  description: ID of the browser application.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the client.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+- name: first_seen_city_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the first seen city was captured.
+- name: first_seen_city
+  type: STRING
+  mode: NULLABLE
+  description: City captured on first_seen_city_date.
+- name: first_seen_subdivision1
+  type: STRING
+  mode: NULLABLE
+  description: Major country subdivision, typically a state, province, or county captured on first_seen_city_date.
+- name: first_seen_subdivision2
+  type: STRING
+  mode: NULLABLE
+  description: Second major country subdivision; not applicable for most countries captured on first_seen_city_date.
+- name: first_seen_country
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code captured on first_seen_city_date.
+- name: last_seen_city_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the last seen city was captured.
+- name: last_seen_city
+  type: STRING
+  mode: NULLABLE
+  description: City captured on last_seen_city_date.
+- name: last_seen_subdivision1
+  type: STRING
+  mode: NULLABLE
+  description: Major country subdivision, typically a state, province, or county captured on last_seen_city_date.
+- name: last_seen_subdivision2
+  type: STRING
+  mode: NULLABLE
+  description: Second major country subdivision; not applicable for most countries captured on last_seen_city_date.
+- name: last_seen_country
+  type: STRING
+  mode: NULLABLE
+  description: An ISO 3166-1 alpha-2 country code captured on last_seen_city_date.

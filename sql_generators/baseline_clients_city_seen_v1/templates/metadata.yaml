@@ -1,0 +1,40 @@
+friendly_name: Baseline Clients City Seen
+description: |-
+  This table stores the first-seen and last-seen geo attributes for each client_id.
+  The table was initialized from stable tables (with ~2 years of retention),
+  so the initial dates reflect the earliest/latest observations within that window.
+  After initialization, the city fields in the stable tables are nullified and
+  the one-time initialization code is no longer relevant.  The table is updated daily using live tables,
+  updating last-seen fields for existing clients and adding new clients with first-seen geo attributes
+  that do not yet exist in the table.
+  This table should not be backfilled beyond 30 days which is the maximum retention of live tables.
+
+  Implementation Plan: https://docs.google.com/document/d/1S8yVEwJjtJy3Pd8cn_BHRhgxllVnoxKylGCpuMyqWNQ
+  Data Model Design:  https://docs.google.com/document/d/1i5SkUC5waiZGWEPu7elDIaY3IxD5jNZgJy1moAKn7g0
+owners:
+  - wichan@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_baseline_clients_city_seen
+scheduling:
+  dag_name: bqetl_baseline_clients_city_seen
+  task_name: {{ app_name }}_{{ table_name }}
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+    - {% raw %}submission_date:DATE:{{ds}}{% endraw %}
+  depends_on:
+    - task_id: copy_deduplicate_all
+      dag_name: copy_deduplicate
+      execution_delta: 1h
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_city_date
+    require_partition_filter: false
+    expiration_days: null
+  clustering:
+    fields:
+      - sample_id

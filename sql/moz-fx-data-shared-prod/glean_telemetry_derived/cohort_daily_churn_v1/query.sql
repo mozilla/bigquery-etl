@@ -4,7 +4,7 @@ WITH submission_date_activity AS (
     client_id,
     submission_date AS activity_date
   FROM
-    `moz-fx-data-shared-prod.telemetry.active_users`
+    `moz-fx-data-shared-prod.glean_telemetry.active_users`
   WHERE
     submission_date >= DATE_SUB(@submission_date, INTERVAL 180 DAY)
     AND is_dau IS TRUE

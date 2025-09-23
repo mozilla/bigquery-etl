@@ -35,6 +35,7 @@ references:
   - moz-fx-data-shared-prod.accounts_db_external.fxa_devices_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_email_bounces_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1 FOR SYSTEM_TIME
+  - moz-fx-data-shared-prod.accounts_db_external.fxa_key_fetch_tokens_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_linked_accounts_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_codes_v1 FOR SYSTEM_TIME
   - moz-fx-data-shared-prod.accounts_db_external.fxa_oauth_refresh_tokens_v1 FOR SYSTEM_TIME

@@ -155,9 +155,10 @@ CROSS JOIN
       ) IS NOT TRUE
       -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
       AND (
-        event.category = "uptake.remotecontent.result"
-        AND event.name IN ("uptake_remotesettings", "uptake_normandy")
-        AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+        normalized_channel = 'release'
+        AND event.category = 'uptake.remotecontent.result'
+        AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
+        AND app_version_major >= 143
       ) IS NOT TRUE
   {% elif app_name == "firefox_desktop_background_update" %}
     WHERE

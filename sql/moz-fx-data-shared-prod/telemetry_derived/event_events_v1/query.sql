@@ -60,7 +60,7 @@ WHERE
     AND mozfun.norm.extract_version(app_version, 'major')
     BETWEEN 84
     AND 87
-  ) IS FALSE
+  ) IS NOT TRUE
   -- See https://bugzilla.mozilla.org/show_bug.cgi?id=1803833
   AND (
     event_category = 'normandy'
@@ -68,7 +68,7 @@ WHERE
     AND mozfun.map.get_key(event_map_values, 'reason') = 'invalid-feature'
     AND mozfun.map.get_key(event_map_values, 'feature') IN ('nimbus-qa-1', 'nimbus-qa-2')
     AND mozfun.norm.extract_version(app_version, 'major') <= 108
-  ) IS FALSE
+  ) IS NOT TRUE
   -- See https://mozilla-hub.atlassian.net/browse/DENG-7513
   AND (
     event_category = 'security'
@@ -77,10 +77,11 @@ WHERE
     AND mozfun.norm.extract_version(app_version, 'major')
     BETWEEN 133
     AND 135
-  ) IS FALSE
+  ) IS NOT TRUE
   -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
   AND (
     event_category = "uptake.remotecontent.result"
     AND event_method = "uptake"
+    AND normalized_channel = 'release'
     AND mozfun.norm.extract_version(app_version, 'major') >= 143
-  ) IS FALSE
+  ) IS NOT TRUE

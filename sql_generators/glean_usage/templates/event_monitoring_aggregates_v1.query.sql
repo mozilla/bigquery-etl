@@ -9,15 +9,8 @@ WITH
     base_{{ dataset['bq_dataset_family'] }}_{{ events_table }} AS (
       SELECT
         @submission_date AS submission_date,
-        TIMESTAMP_ADD(
-          TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-            -- Aggregates event counts over 60-minute intervals
-          INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
-        ) AS window_start,
-        TIMESTAMP_ADD(
-          TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-          INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
-        ) AS window_end,
+        TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+        TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
         event.category AS event_category,
         event.name AS event_name,
         event_extra.key AS event_extra_key,
@@ -47,7 +40,7 @@ WITH
             event.category = "uptake.remotecontent.result"
             AND event.name IN ("uptake_remotesettings", "uptake_normandy")
             AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
-          ) IS FALSE
+          ) IS NOT TRUE
         {% endif %}
       GROUP BY
         submission_date,
@@ -57,17 +50,27 @@ WITH
         event_name,
         event_extra_key,
         country,
-        normalized_app_name,
         channel,
         version,
         experiment,
-      experiment_branch
+        experiment_branch
     ),
   {% endfor %}
   {{ dataset['bq_dataset_family'] }}_aggregated AS (
     SELECT
+      submission_date,
+      window_start,
+      window_end,
+      event_category,
+      event_name,
+      event_extra_key,
+      country,
       "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
-      * REPLACE (SUM(total_events) AS total_events),
+      channel,
+      version,
+      experiment,
+      experiment_branch,
+      SUM(total_events) AS total_events,
     FROM
       (
         {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}

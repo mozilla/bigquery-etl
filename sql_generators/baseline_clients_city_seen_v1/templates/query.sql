@@ -3,6 +3,7 @@
 WITH
 {% for app_id in app_id_list -%}
   base_{{ app_id }} AS (
+  -- Live table dedup logic mimics copy_deduplicate
   SELECT
     submission_timestamp,
     DATE(submission_timestamp) AS submission_date,
@@ -49,6 +50,8 @@ WITH
   with_dates_{{ app_id }} AS (
   SELECT
     *,
+    -- For explanation of session start time calculation, see Glean docs:
+    -- https://mozilla.github.io/glean/book/user/pings/baseline.html#contents
     DATE(SAFE.TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
     DATE(parsed_end_time) AS session_end_date
   FROM
@@ -62,6 +65,8 @@ WITH
   FROM
     with_dates_{{ app_id }} ),
   overactive_{{ app_id }} AS (
+  -- Find client_ids with over 150 000 pings in a day,
+  -- which could cause errors in the next step due to aggregation overflows.
   SELECT
     submission_date,
     client_id
@@ -90,7 +95,7 @@ WITH
     submission_date,
     client_id,
     sample_id,
-    `moz-fx-data-shared-prod.udf.mode_last`( -- will return struct with all null values if most freq
+    `moz-fx-data-shared-prod.udf.mode_last`(
       ARRAY_AGG(STRUCT(
         city,
         subdivision1,
@@ -109,7 +114,9 @@ WITH
       client_id)
   WHERE
     overactive_{{ app_id }}.client_id IS NULL
-    AND COALESCE(city, subdivision1, subdivision2, country) IS NOT NULL -- remove rows with all null geo values
+    -- `mode_last` can result in struct with all null values if it’s most frequent (or latest among ties).
+    -- This exclude structs with all null values so there will always be one non-NULL field.
+    AND COALESCE(city, subdivision1, subdivision2, country) IS NOT NULL
     {% raw %}
     {% if is_init() %}
     {% endraw %}
@@ -220,6 +227,7 @@ FULL OUTER JOIN
 {% endraw %}
 {% for app_id in app_id_list -%}
 SELECT
+-- _p.* fields are NULL for clients that are not yet captured in the baseline_city_seen derived table.
 IF
   (_p.app_id IS NULL,
   _c.app_id,

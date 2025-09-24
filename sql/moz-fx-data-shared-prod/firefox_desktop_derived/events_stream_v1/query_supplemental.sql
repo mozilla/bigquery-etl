@@ -143,3 +143,11 @@ WHERE
     AND event.name = 'enrollment_status'
     AND app_version_major = 140
   ) IS NOT TRUE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+  AND (
+    normalized_channel = 'release'
+    AND event.category = 'uptake.remotecontent.result'
+    AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
+    AND app_version_major >= 143
+    AND sample_id != 0
+  ) IS NOT TRUE

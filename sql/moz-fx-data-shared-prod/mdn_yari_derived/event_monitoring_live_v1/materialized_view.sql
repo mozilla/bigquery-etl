@@ -79,15 +79,8 @@ combined AS (
 SELECT
       -- used for partitioning, only allows TIMESTAMP columns
   TIMESTAMP_TRUNC(submission_timestamp, DAY) AS submission_date,
-  TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-        -- Aggregates event counts over 60-minute intervals
-    INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
-  ) AS window_start,
-  TIMESTAMP_ADD(
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-    INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
-  ) AS window_end,
+  TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+  TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
   * EXCEPT (submission_timestamp),
   COUNT(*) AS total_events,
 FROM

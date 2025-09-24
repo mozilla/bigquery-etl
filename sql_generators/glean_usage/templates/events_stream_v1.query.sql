@@ -75,7 +75,7 @@ WITH base AS (
         client_info.build_date AS build_date,
         client_info.session_id AS session_id,
         client_info.session_count AS session_count,
-        client_info.windows_build_number AS windows_build_number,
+        client_info.windows_build_number AS windows_build_number
       ) AS client_info,
       STRUCT(
         ping_info.seq,

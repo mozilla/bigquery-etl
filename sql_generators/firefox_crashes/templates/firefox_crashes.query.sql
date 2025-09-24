@@ -37,7 +37,7 @@ WITH
   )
 
 SELECT
-  *
+  unioned_pings.*
 FROM
   unioned_pings
 LEFT JOIN

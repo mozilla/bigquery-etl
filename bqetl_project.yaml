@@ -300,6 +300,8 @@ view:
     - sql/moz-fx-data-shared-prod/activity_stream/tile_id_types/view.sql
     - sql/moz-fx-data-shared-prod/pocket/pocket_reach_mau/view.sql
     - sql/moz-fx-data-shared-prod/telemetry/buildhub2/view.sql
+    # https://bugzilla.mozilla.org/show_bug.cgi?id=1990074
+    - sql/moz-fx-data-shared-prod/monitoring/event_monitoring_live/view.sql
     # Dataset glam-fenix-dev:glam_etl was not found
     # TODO: this should be removed if views are to be automatically deployed
     - sql/glam-fenix-dev/glam_etl/**/view.sql

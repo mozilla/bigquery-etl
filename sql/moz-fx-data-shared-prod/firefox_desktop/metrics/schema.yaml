@@ -1103,6 +1103,14 @@ fields:
         being mapped from.
 
         '
+    - name: urlbar_pref_switch_tabs_search_all_containers
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether the "Switch to Tab" feature searches across all containers.
+        Corresponds to the value of the `browser.urlbar.switchTabs.searchAllContainers`
+        pref.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -46057,6 +46065,32 @@ fields:
         be lost.
 
         '
+    - name: webrtcdtls_key_exchange_algorithm
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL Handshake Key Exchange Algorithm (null=0, rsa=1, dh=2, ecdh=4,
+        ecdh_hybrid=8)
+
+        '
   - name: url2
     type: RECORD
     mode: NULLABLE
@@ -49452,15 +49486,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine when not using OHTTP. Keys in this histogram are the search engine
-        identifier for configuration provided search engines and ''other'' for search
-        engines installed via other methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

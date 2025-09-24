@@ -549,6 +549,9 @@ fields:
     - name: glean_ping_uploader_capabilities
       type: STRING
       mode: REPEATED
+    - name: broken_site_report_tab_info_antitracking_blocked_origins
+      type: STRING
+      mode: REPEATED
   - name: text2
     type: RECORD
     mode: NULLABLE

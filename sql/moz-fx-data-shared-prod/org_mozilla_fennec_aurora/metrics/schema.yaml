@@ -12251,6 +12251,32 @@ fields:
         be lost.
 
         '
+    - name: webrtcdtls_key_exchange_algorithm
+      type: RECORD
+      mode: NULLABLE
+      fields:
+      - name: count
+        type: INTEGER
+        mode: NULLABLE
+        description: This was accidentally sent in the past and is now deprecated.
+          See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+      - name: sum
+        type: INTEGER
+        mode: NULLABLE
+      - name: values
+        type: RECORD
+        mode: REPEATED
+        fields:
+        - name: key
+          type: STRING
+          mode: NULLABLE
+        - name: value
+          type: INTEGER
+          mode: NULLABLE
+      description: 'SSL Handshake Key Exchange Algorithm (null=0, rsa=1, dh=2, ecdh=4,
+        ecdh_hybrid=8)
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

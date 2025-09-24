@@ -40,6 +40,7 @@ WITH
             event.category = "uptake.remotecontent.result"
             AND event.name IN ("uptake_remotesettings", "uptake_normandy")
             AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+            AND sample_id != 0
           ) IS NOT TRUE
         {% endif %}
       GROUP BY

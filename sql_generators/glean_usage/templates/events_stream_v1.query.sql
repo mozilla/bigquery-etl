@@ -159,6 +159,7 @@ CROSS JOIN
         AND event.category = 'uptake.remotecontent.result'
         AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
         AND app_version_major >= 143
+        AND sample_id != 0
       ) IS NOT TRUE
   {% elif app_name == "firefox_desktop_background_update" %}
     WHERE

@@ -84,4 +84,5 @@ WHERE
     AND event_method = "uptake"
     AND normalized_channel = 'release'
     AND mozfun.norm.extract_version(app_version, 'major') >= 143
+    AND sample_id != 0
   ) IS NOT TRUE

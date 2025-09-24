@@ -214,3 +214,26 @@ fields:
   mode: NULLABLE
   description: Platform Type - For product download events, what platform type was
     the download requested from
+- name: event_params
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: string_value
+      type: STRING
+      mode: NULLABLE
+    - name: int_value
+      type: INTEGER
+      mode: NULLABLE
+    - name: float_value
+      type: FLOAT
+      mode: NULLABLE
+    - name: double_value
+      type: FLOAT
+      mode: NULLABLE

@@ -4,7 +4,7 @@
   reason: Need to redo backfill to make sure the data matches the query.
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
 

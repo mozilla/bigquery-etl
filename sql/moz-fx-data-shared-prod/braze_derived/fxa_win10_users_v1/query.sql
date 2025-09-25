@@ -1,35 +1,50 @@
 WITH win10_users AS (
-  SELECT
+  SELECT DISTINCT
     TO_HEX(SHA256(metrics.string.client_association_uid)) AS fxa_id_sha256,
-    client_info.os AS os,
-    client_info.os_version AS os_version
+    FIRST_VALUE(client_info.os) OVER (
+      PARTITION BY
+        TO_HEX(SHA256(metrics.string.client_association_uid))
+      ORDER BY
+        submission_timestamp DESC
+    ) AS os,
+    FIRST_VALUE(client_info.os_version) OVER (
+      PARTITION BY
+        TO_HEX(SHA256(metrics.string.client_association_uid))
+      ORDER BY
+        submission_timestamp DESC
+    ) AS os_version,
+    FIRST_VALUE(client_info.locale) OVER (
+      PARTITION BY
+        TO_HEX(SHA256(metrics.string.client_association_uid))
+      ORDER BY
+        submission_timestamp DESC
+    ) AS locale
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.os = 'Windows'
     AND client_info.os_version = '10.0'
-  GROUP BY
-    1,
-    2,
-    3
 ),
 last_seen_14_days AS (
-  SELECT
-    *
+  SELECT DISTINCT
+    user_id_sha256
   FROM
     `moz-fx-data-shared-prod.accounts_backend_derived.users_services_last_seen_v1`
   WHERE
     submission_date = @submission_date
-    -- bit pattern 10000000000000, last seen 14 days from submission date
-    AND days_seen_bits = 8192
+    -- bit pattern 100000000000000, last seen 14 days from submission date
+    AND days_seen_bits >= 16384
+    -- bit pattern 1000000000000000000000, last seen 21 days from submission date
+    -- Only useful for the initial pull of these users, they will already be in the table for subsquent runs
+    AND days_seen_bits < 2097152
 ),
 inactive_win10_users AS (
   SELECT
     last_seen.user_id_sha256,
     win10.os,
     win10.os_version,
-    last_seen.days_seen_bits
+    win10.locale
   FROM
     last_seen_14_days AS last_seen
   LEFT JOIN
@@ -40,17 +55,18 @@ inactive_win10_users AS (
     win10.fxa_id_sha256 IS NOT NULL
 )
 SELECT
-  inactive.submission_date,
-  -- if user is in our braze users table use their external_id, otherwise generate a braze external_id
-  IFNULL(braze_users.external_id, GENERATE_UUID()) AS external_id,
+  braze_users.external_id AS external_id,
   -- if user is in our braze users table use their email, otherwise use the email associated with their fxa_id
   IFNULL(braze_users.email, fxa_emails.normalizedEmail) AS email,
-  inactive.fxa_id_sha256
+  inactive.user_id_sha256,
+  inactive.locale
 FROM
   inactive_win10_users AS inactive
 LEFT JOIN
   `moz-fx-data-shared-prod.braze_derived.users_v1` AS braze_users
   ON inactive.user_id_sha256 = braze_users.fxa_id_sha256
 LEFT JOIN
-  `moz-fx-data-shared-prod.accounts_db_external.fxa_emails_v1` AS fxa_emails
-  ON inactive.fxa_id_sha256 = fxa_emails.uid
+  `moz-fx-data-shared-prod.accounts_backend_external.emails_v1` AS fxa_emails
+  ON inactive.user_id_sha256 = TO_HEX(SHA256(fxa_emails.uid))
+  -- some users have multiple email addresses in this table, only use primary
+  AND fxa_emails.isPrimary = TRUE

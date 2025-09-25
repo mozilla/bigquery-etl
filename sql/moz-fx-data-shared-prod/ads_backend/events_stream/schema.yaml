@@ -80,6 +80,9 @@ fields:
     - name: ext
       type: JSON
       mode: NULLABLE
+  - name: windows_build_number
+    type: INTEGER
+    mode: NULLABLE
 - name: document_id
   type: STRING
   mode: NULLABLE

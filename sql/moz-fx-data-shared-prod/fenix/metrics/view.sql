@@ -1064,7 +1064,8 @@ SELECT
       metrics.labeled_counter.media_mkv_codec_type,
       metrics.labeled_counter.networking_local_network_access_prompts_shown,
       metrics.labeled_counter.urlclassifier_lookup_hit,
-      metrics.labeled_counter.urlclassifier_lookup_miss
+      metrics.labeled_counter.urlclassifier_lookup_miss,
+      metrics.labeled_counter.profiles_creation_place
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3080,7 +3081,8 @@ SELECT
       metrics.labeled_counter.media_mkv_codec_type,
       metrics.labeled_counter.networking_local_network_access_prompts_shown,
       metrics.labeled_counter.urlclassifier_lookup_hit,
-      metrics.labeled_counter.urlclassifier_lookup_miss
+      metrics.labeled_counter.urlclassifier_lookup_miss,
+      metrics.labeled_counter.profiles_creation_place
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6454,7 +6456,8 @@ SELECT
       metrics.labeled_counter.media_mkv_codec_type,
       metrics.labeled_counter.networking_local_network_access_prompts_shown,
       metrics.labeled_counter.urlclassifier_lookup_hit,
-      metrics.labeled_counter.urlclassifier_lookup_miss
+      metrics.labeled_counter.urlclassifier_lookup_miss,
+      metrics.labeled_counter.profiles_creation_place
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,

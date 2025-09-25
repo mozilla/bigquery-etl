@@ -75,26 +75,6 @@ SELECT
   experiment_branch,
   total_events
 FROM
-  `moz-fx-data-shared-prod.pine_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
@@ -136,46 +116,6 @@ SELECT
   total_events
 FROM
   `moz-fx-data-shared-prod.org_mozilla_fenix_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_fenix_nightly_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_fennec_aurora_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
           -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
@@ -275,86 +215,6 @@ SELECT
   experiment_branch,
   total_events
 FROM
-  `moz-fx-data-shared-prod.org_mozilla_tv_firefox_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_vrbrowser_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.mozilla_lockbox_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_ios_lockbox_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
   `moz-fx-data-shared-prod.org_mozilla_mozregression_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
@@ -375,67 +235,7 @@ SELECT
   experiment_branch,
   total_events
 FROM
-  `moz-fx-data-shared-prod.burnham_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
   `moz-fx-data-shared-prod.mozphab_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_connect_firefox_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_firefoxreality_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
           -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
@@ -576,46 +376,6 @@ SELECT
   total_events
 FROM
   `moz-fx-data-shared-prod.org_mozilla_klar_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.org_mozilla_bergamot_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.firefox_translations_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
           -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
@@ -796,46 +556,6 @@ SELECT
   total_events
 FROM
   `moz-fx-data-shared-prod.bedrock_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.viu_politica_derived.event_monitoring_live_v1`
-WHERE
-          -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
-          -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)
-  DATE(submission_date) > '2025-09-15'
-UNION ALL
-SELECT
-  window_start,
-  window_end,
-  event_category,
-  event_name,
-  event_extra_key,
-  country,
-  normalized_app_name,
-  channel,
-  version,
-  experiment,
-  experiment_branch,
-  total_events
-FROM
-  `moz-fx-data-shared-prod.treeherder_derived.event_monitoring_live_v1`
 WHERE
           -- workaround for event_monitoring_aggregates outage https://bugzilla.mozilla.org/show_bug.cgi?id=1989142
           -- DATE(submission_date) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY)

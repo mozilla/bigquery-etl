@@ -14,8 +14,8 @@ from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import render, write_sql
 from sql_generators.glean_usage import get_app_info
 
-THIS_PATH = Path(os.path.dirname(__file__))
-TABLE_NAME = os.path.basename(os.path.normpath(THIS_PATH))
+THIS_PATH = Path(__file__).parent
+TABLE_NAME = THIS_PATH.name
 BASE_NAME = "_".join(TABLE_NAME.split("_")[:-1])
 
 

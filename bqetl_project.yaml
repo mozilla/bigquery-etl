@@ -522,7 +522,10 @@ generate:
       focus_ios:
         channels:
         - release
-
+  baseline_clients_city_seen:
+    apps:
+    - firefox_desktop
+    - fenix
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

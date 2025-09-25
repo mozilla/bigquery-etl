@@ -20,22 +20,36 @@ BASE_NAME = "_".join(TABLE_NAME.split("_")[:-1])
 
 
 def get_app_info_map() -> Dict[str, List[str]]:
-    """Build a map of app name to a list of bq_dataset_families."""
-    app_info = get_app_info()
+    """Return a dict where key is the app name and the value a list of all the channel app id(s).
 
+    e.g. {
+        "firefox_desktop": ["firefox_desktop"],
+        "fenix": [
+            "org_mozilla_firefox",
+            "org_mozilla_fenix_nightly",
+            'org_mozilla_firefox_beta',
+            'org_mozilla_fenix',
+            'org_mozilla_fennec_aurora'
+        ],
+    }
+    """
+    app_info = get_app_info()
+    # TODO: listing only a few app in config for testing
     app_info = [
         info
         for name, info in app_info.items()
         if name
-        not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
+        in ConfigLoader.get(
+            "generate", "baseline_clients_city_seen", "apps", fallback=[]
+        )
     ]
 
     app_info_map: Dict[str, List[str]] = defaultdict(list)
 
-    for app in app_info:
-        for app_dataset in app:
-            app_name = app_dataset["app_name"]
-            app_id = app_dataset["bq_dataset_family"]
+    for info in app_info:
+        for app in info:
+            app_name = app["app_name"]
+            app_id = app["bq_dataset_family"]
             app_info_map[app_name].append(app_id)
 
     return app_info_map
@@ -71,24 +85,18 @@ def generate(target_project, output_dir, use_cloud_function):
     schema_template = "schema.yaml"
     metadata_template = "metadata.yaml"
 
-    # can be used to get all app_id:
     app_info_map = get_app_info_map()
-    # browser_app_list = ["firefox_desktop", "fenix"]
-    # app_info_map = {k: app_info_map[k] for k in browser_app_list if k in app_info_map}
 
-    # TODO: listing only a few app_ids for testing
-    app_info_map = {
-        "firefox_desktop": ["firefox_desktop"],
-        "fenix": [
-            "org_mozilla_firefox",
-            "org_mozilla_fenix_nightly",
-            # 'org_mozilla_firefox_beta',
-            # 'org_mozilla_fenix',
-            # 'org_mozilla_fennec_aurora'
-        ],
-    }
+    # app_info_map = {
+    #     "firefox_desktop": ["firefox_desktop"],
+    #     "fenix": [
+    #             "org_mozilla_firefox",
+    #             "org_mozilla_fenix",
+    #     ],
+    # }
 
     for app_name, app_id_list in app_info_map.items():
+        print(f"{app_name} : {app_id_list}")
 
         query_sql = reformat(
             query_template.render(

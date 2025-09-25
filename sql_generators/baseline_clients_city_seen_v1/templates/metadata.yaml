@@ -25,10 +25,6 @@ scheduling:
   date_partition_parameter: null
   parameters:
     - {% raw %}submission_date:DATE:{{ds}}{% endraw %}
-  depends_on:
-    - task_id: copy_deduplicate_all
-      dag_name: copy_deduplicate
-      execution_delta: 1h
 bigquery:
   time_partitioning:
     type: day

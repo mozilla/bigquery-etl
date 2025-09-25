@@ -483,6 +483,23 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    glean_telemetry_derived__cohort_weekly_statistics__v1 = bigquery_etl_query(
+        task_id="glean_telemetry_derived__cohort_weekly_statistics__v1",
+        destination_table="cohort_weekly_statistics_v1",
+        dataset_id="glean_telemetry_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="mhirose@mozilla.com",
+        email=[
+            "kwindau@mozilla.com",
+            "mhirose@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        task_concurrency=1,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
     glean_telemetry_derived__rolling_cohorts__v1 = bigquery_etl_query(
         task_id="glean_telemetry_derived__rolling_cohorts__v1",
         destination_table="rolling_cohorts_v1",
@@ -730,6 +747,14 @@ with DAG(
 
     glean_telemetry_derived__cohort_weekly_cfs_staging__v1.set_upstream(
         glean_telemetry_derived__rolling_cohorts__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+        glean_telemetry_derived__cohort_weekly_active_clients__v1
+    )
+
+    glean_telemetry_derived__cohort_weekly_statistics__v1.set_upstream(
+        glean_telemetry_derived__cohort_weekly_cfs_staging__v1
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(

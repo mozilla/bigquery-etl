@@ -115,12 +115,12 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
 
-        deprecated = [
-            app_dataset.get("deprecated", False)
-            for _, app in cached_app_info.items()
+        deprecated = all([
+            app_dataset.get("deprecated", False) is True
+            for app in cached_app_info.values()
             for app_dataset in app
             if dataset == app_dataset["bq_dataset_family"]
-        ][0] is True
+        ])
 
         # Skip any not-allowed or deprecated app
         if (

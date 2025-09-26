@@ -1,0 +1,19 @@
+---
+friendly_name: Gecko Trace Traces
+description: |-
+  Complete traces from Gecko across all Firefox applications.
+
+  This view provides a unified interface to trace data from multiple Firefox
+  applications including Firefox Desktop, Firefox for Android (Fenix Nightly),
+  and Firefox for Android (Beta). Each row represents a complete trace with
+  an additional application field to identify the source.
+
+  Each trace contains a hierarchical tree structure of spans with their
+  parent-child relationships preserved in the root_span field. This enables
+  analysis of complete execution flows, performance bottlenecks, and
+  behavioral patterns across different Firefox applications. The signature
+  field allows grouping traces with similar execution patterns for
+  comparative performance analysis.
+
+owners:
+  - mvanstraten@mozilla.com

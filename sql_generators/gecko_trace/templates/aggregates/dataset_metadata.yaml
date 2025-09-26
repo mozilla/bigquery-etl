@@ -1,0 +1,15 @@
+---
+friendly_name: Gecko Trace
+description: |-
+  Unified views of spans and traces from the Gecko Firefox engine across all Firefox applications.
+
+  This dataset provides aggregate views that combine trace data from Firefox Desktop,
+  Firefox for Android (Fenix Nightly), and Firefox for Android (Beta) into unified
+  interfaces for cross-application analysis and monitoring.
+labels: {}
+dataset_base_acl: view
+user_facing: true
+workgroup_access:
+  - role: roles/bigquery.dataViewer
+    members:
+      - workgroup:mozilla-confidential

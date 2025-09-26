@@ -81,6 +81,15 @@ WITH table_counts AS (
     )
   UNION ALL
   SELECT
+    'key_fetch_tokens' AS table_name,
+    COUNT(*) AS total_rows
+  FROM
+    `moz-fx-data-shared-prod.accounts_db_external.fxa_key_fetch_tokens_v1` FOR SYSTEM_TIME AS OF TIMESTAMP(
+      @as_of_date + 1,
+      'UTC'
+    )
+  UNION ALL
+  SELECT
     'linked_accounts' AS table_name,
     COUNT(*) AS total_rows
   FROM

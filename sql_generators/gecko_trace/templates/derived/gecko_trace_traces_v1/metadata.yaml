@@ -1,0 +1,35 @@
+---
+friendly_name: Gecko Trace Traces
+description: |-
+  Complete Gecko traces with hierarchical span structures and calculated signatures.
+
+  This table combines individual spans into complete traces, building the
+  hierarchical tree structure of spans within each trace. Each row represents
+  a single trace containing:
+  - Root span with nested child spans in a tree structure
+  - Total trace duration calculated from span timings
+  - Signature hash for grouping traces with similar execution patterns
+
+  The root_span field contains the complete hierarchical structure of all
+  spans within the trace, with child spans nested in childSpans arrays.
+
+owners:
+  - mvanstraten@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - trace_id
+      - signature

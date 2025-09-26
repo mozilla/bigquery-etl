@@ -1,0 +1,36 @@
+---
+fields:
+  - name: submission_timestamp
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      The earliest submission timestamp for any span within this trace.
+      Used to determine when the trace was first observed.
+  - name: trace_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Unique identifier for the trace. All spans within a trace share
+      the same trace_id.
+  - name: duration_nano
+    type: INT64
+    mode: NULLABLE
+    description: |-
+      Total duration of the trace in nanoseconds, calculated as the
+      difference between the latest end time and earliest start time
+      across all spans in the trace.
+  - name: root_span
+    type: JSON
+    mode: NULLABLE
+    description: |-
+      Complete hierarchical structure of the trace as a JSON object.
+      Contains the root span with all child spans nested in childSpans
+      arrays, preserving the parent-child relationships and timing
+      information for the entire trace execution flow.
+  - name: signature
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Calculated hash signature for the trace based on its structure
+      and span attributes. Traces with identical signatures represent
+      similar execution patterns and can be grouped for analysis.

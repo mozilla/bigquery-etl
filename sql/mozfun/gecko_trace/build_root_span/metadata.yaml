@@ -1,0 +1,14 @@
+---
+friendly_name: Gecko Trace Build Root Span
+description: |-
+  Builds a root span tree structure from an array of span objects.
+
+  Takes an array of JSON span objects and constructs a hierarchical tree structure
+  by linking spans with their parent-child relationships. Returns the root span
+  with all child spans nested in a `childSpans` array property.
+
+  If no root span is found, the function will attempt to find a single "missing"
+  root span. If there are multiple or no missing roots, an error is thrown.
+
+  This function is used for processing Gecko trace data to reconstruct the
+  hierarchical structure of spans within a trace.

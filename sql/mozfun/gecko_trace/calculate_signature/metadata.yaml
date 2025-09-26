@@ -1,0 +1,15 @@
+---
+friendly_name: Gecko Trace Calculate Signature
+description: |-
+  Calculates a signature hash for a trace based on its root span structure.
+
+  Uses a fast hash function (cyrb64) to generate a deterministic signature
+  based on the hierarchical structure and attributes of spans in a trace.
+  The signature is calculated by traversing the span tree and hashing:
+  - Resource attributes (excluding certain internal IDs like gecko_process_internal_id)
+  - Scope names
+  - Span names
+  - Event names and attributes
+
+  The function returns a string hash that can be used to identify traces with
+  similar execution patterns.

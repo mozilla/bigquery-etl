@@ -294,7 +294,29 @@ SELECT
     history.subscription.status AS provider_status,
     history.subscription_first_active_at AS started_at,
     history.subscription.ended_at,
-    -- TODO: ended_reason
+    CASE
+      WHEN history.subscription.ended_at IS NULL
+        THEN NULL
+      WHEN history.subscription.metadata.cancellation_reason = 'fxa_admin_requested_account_delete'
+        THEN 'Admin Initiated'
+      WHEN (
+          history.subscription.cancellation_details.reason IS NULL
+          AND history.valid_from < '2024-05-17'
+          AND history.subscription.cancel_at_period_end IS TRUE
+        )
+        OR (
+          history.subscription.cancellation_details.reason = 'cancellation_requested'
+          AND history.subscription.metadata.cancellation_reason IS NULL
+        )
+        OR history.subscription.cancellation_details.reason = 'payment_disputed'
+        OR history.subscription.metadata.cancellation_reason = 'fxa_user_requested_account_delete'
+        THEN 'User Initiated'
+      WHEN history.subscription.cancellation_details.reason = 'payment_failed'
+        OR latest_invoices.status = 'uncollectible'
+        OR latest_invoice_charges.status = 'failed'
+        THEN 'Payment Failure'
+      ELSE 'Other'
+    END AS ended_reason,
     IF(
       history.subscription.ended_at IS NULL,
       history.subscription.current_period_start,
@@ -361,3 +383,10 @@ LEFT JOIN
 LEFT JOIN
   subscriptions_history_ongoing_discounts AS ongoing_discounts
   ON history.id = ongoing_discounts.subscriptions_history_id
+LEFT JOIN
+  `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS latest_invoices
+  ON history.subscription.latest_invoice_id = latest_invoices.id
+LEFT JOIN
+  `moz-fx-data-shared-prod.stripe_external.charge_v1` AS latest_invoice_charges
+  ON latest_invoices.charge_id = latest_invoice_charges.id
+  AND latest_invoice_charges.created < history.valid_to

@@ -1,0 +1,33 @@
+---
+friendly_name: Gecko Trace Spans
+description: |-
+  Individual spans extracted from Gecko traces in Firefox applications.
+
+  This table contains flattened span data from Gecko trace telemetry, where each
+  row represents a single span within a trace. Spans represent units of work or
+  operations within Firefox, such as DOM parsing, network requests, JavaScript
+  execution, or rendering operations.
+
+  Each span includes timing information, hierarchical relationships (via parent_span_id),
+  and contextual metadata through resource and scope fields.
+
+owners:
+  - mvanstraten@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+      - trace_id
+      - span_id

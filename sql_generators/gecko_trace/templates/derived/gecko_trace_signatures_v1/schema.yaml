@@ -1,0 +1,21 @@
+---
+fields:
+  - name: signature
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Hash signature calculated from the trace structure and span attributes.
+      Traces with identical signatures have similar execution patterns.
+  - name: average_duration_nano
+    type: FLOAT64
+    mode: NULLABLE
+    description: |-
+      Average duration in nanoseconds for all traces with this signature.
+      Calculated as the time between the earliest start time and latest end time
+      across all spans in the trace.
+  - name: hits
+    type: INT64
+    mode: NULLABLE
+    description: |-
+      Number of traces that share this signature within the time period.
+      Higher hit counts indicate more common execution patterns.

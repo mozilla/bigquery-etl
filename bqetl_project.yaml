@@ -32,6 +32,8 @@ dry_run:
   function_accounts:
   - bigquery-etl-dryrun@moz-fx-data-shared-prod.iam.gserviceaccount.com
   - bigquery-etl-dryrun@moz-fx-data-shar-nonprod-efed.iam.gserviceaccount.com
+  cache_enabled: false
+  cache_ttl_hours: 1
   skip:
   ## skip all data-observability-dev queries due to CI lacking permissions in that project.
   # TODO: once data observability platform assessment concludes this should be removed.

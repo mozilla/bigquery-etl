@@ -277,6 +277,9 @@ class Metadata:
         monitoring = None
         require_column_descriptions = False
 
+        if metadata_file is None or not os.path.exists(metadata_file):
+            raise FileNotFoundError(f"Metadata file {metadata_file} not found.")
+
         with open(metadata_file, "r") as yaml_stream:
             try:
                 metadata = yaml.safe_load(yaml_stream)

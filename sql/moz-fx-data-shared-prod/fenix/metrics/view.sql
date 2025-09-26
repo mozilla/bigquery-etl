@@ -1679,7 +1679,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between_minor,
       metrics.timing_distribution.xpi_database_parses,
       metrics.timing_distribution.fog_initializations,
-      metrics.timing_distribution.perf_js_exec_asm_js
+      metrics.timing_distribution.perf_js_exec_asm_js,
+      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -3696,7 +3697,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between_minor,
       metrics.timing_distribution.xpi_database_parses,
       metrics.timing_distribution.fog_initializations,
-      metrics.timing_distribution.perf_js_exec_asm_js
+      metrics.timing_distribution.perf_js_exec_asm_js,
+      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -5733,7 +5735,8 @@ SELECT
       metrics.timing_distribution.javascript_gc_time_between_minor,
       metrics.timing_distribution.xpi_database_parses,
       metrics.timing_distribution.fog_initializations,
-      metrics.timing_distribution.perf_js_exec_asm_js
+      metrics.timing_distribution.perf_js_exec_asm_js,
+      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri
     ) AS `timing_distribution`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

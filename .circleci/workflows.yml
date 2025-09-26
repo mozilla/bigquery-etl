@@ -648,7 +648,7 @@ jobs:
                     PATHS="$(git diff --no-index --name-only --diff-filter=d generated-sql/sql sql)" || true
                     echo $PATHS
                     PATH="venv/bin:$PATH" script/bqetl stage deploy \
-                      --dataset-suffix=$CIRCLE_SHA1 \
+                      --dataset-suffix="${CIRCLE_SHA1}_${CIRCLE_WORKFLOW_ID:0:8}" \
                       --remove-updated-artifacts \
                       $PATHS
                   fi
@@ -1052,12 +1052,13 @@ jobs:
           steps:
             - *skip_forked_pr
             - checkout
+            - *restore_venv_cache
             - *build
             - *authenticate
             - run:
                 name: "Delete stage datasets"
                 command: |
-                  PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix=$CIRCLE_SHA1 --delete-expired
+                  PATH="venv/bin:$PATH" script/bqetl stage clean --dataset-suffix="${CIRCLE_SHA1}_${CIRCLE_WORKFLOW_ID:0:8}" --delete-expired
       - unless:
           condition: *validate-sql-or-routines
           steps:

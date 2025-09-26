@@ -1,0 +1,11 @@
+friendly_name: Win10 Users Sync
+description: |-
+  This table will sync inactive Windows 10 Firefox users to Braze to be contacted
+  in the Win10 Inactive User Campaign.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+scheduling:
+  dag_name: bqetl_braze

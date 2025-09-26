@@ -115,12 +115,14 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
 
-        deprecated = all([
-            app_dataset.get("deprecated", False) is True
-            for app in cached_app_info.values()
-            for app_dataset in app
-            if dataset == app_dataset["bq_dataset_family"]
-        ])
+        deprecated = all(
+            [
+                app_dataset.get("deprecated", False) is True
+                for app in cached_app_info.values()
+                for app_dataset in app
+                if dataset == app_dataset["bq_dataset_family"]
+            ]
+        )
 
         # Skip any not-allowed or deprecated app
         if (
@@ -258,6 +260,14 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
 
+        manual_refresh_apps = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "manual_refresh",
+            fallback=[],
+        )
+
         for app in apps:
             for app_dataset in app:
                 if (
@@ -312,6 +322,7 @@ class EventMonitoringLive(GleanTable):
             apps=apps,
             prod_datasets=self._get_prod_datasets_with_event(),
             event_tables_per_dataset=event_tables_per_dataset,
+            manual_refresh_apps=manual_refresh_apps,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

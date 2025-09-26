@@ -1,0 +1,17 @@
+---
+friendly_name: Gecko Trace Spans
+description: |-
+  Individual spans from Gecko traces across all Firefox applications.
+
+  This view provides a unified interface to span data from multiple Firefox
+  applications including Firefox Desktop, Firefox for Android (Fenix Nightly),
+  and Firefox for Android (Beta). Each row represents a single span within
+  a trace, with an additional application field to identify the source.
+
+  Spans represent units of work or operations within Firefox, such as DOM
+  parsing, network requests, JavaScript execution, or rendering operations.
+  Each span includes timing information, hierarchical relationships, and
+  contextual metadata for performance analysis and debugging.
+
+owners:
+  - mvanstraten@mozilla.com

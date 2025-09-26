@@ -16,7 +16,7 @@ fields:
   mode: NULLABLE
   description: If click belongs in a section, the name of the section
 - name: section_position
-  type: STRING
+  type: INTEGER
   mode: NULLABLE
   description: If click belongs in a section, the numeric position of the section
 - name: report_reason
@@ -33,5 +33,5 @@ fields:
   description: The topic of the recommendation. Like "entertainment".
 - name: url
   type: STRING
-  description: URL of the recommendation.
   mode: NULLABLE
+  description: URL of the recommendation.

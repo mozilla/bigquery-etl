@@ -1,0 +1,30 @@
+---
+friendly_name: Gecko Trace Signatures
+description: |-
+  Statistics for Gecko traces grouped by signature.
+
+  This table groups traces with similar execution patterns (same signature)
+  and provides summary statistics including average duration and hit counts.
+  Signatures are calculated based on the hierarchical structure and attributes
+  of spans within each trace, allowing identification of common execution
+  patterns.
+
+owners:
+  - mvanstraten@mozilla.com
+
+labels:
+  incremental: true
+  schedule: daily
+
+scheduling:
+  dag_name: bqetl_gecko_trace
+  task_group: {{ app_id }}
+
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+  clustering:
+    fields:
+    - signature

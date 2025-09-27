@@ -1,0 +1,5 @@
+friendly_name: Desktop Active Users
+description: |-
+  Data used for reporting DAU, WAU, and MAU KPIs.
+  Based on legacy telemetry data.
+  Rows are at a client ID, submission date grain.

@@ -60,7 +60,10 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -146,7 +149,10 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -240,7 +246,10 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,
@@ -314,7 +323,10 @@ SELECT
       metrics.timing_distribution.glean_database_write_time
     ) AS `timing_distribution`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

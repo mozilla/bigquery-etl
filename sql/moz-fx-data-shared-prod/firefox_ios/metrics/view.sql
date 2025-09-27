@@ -304,7 +304,8 @@ SELECT
     ) AS `rate`,
     STRUCT(
       metrics.object.nimbus_system_recorded_nimbus_context,
-      metrics.object.glean_health_data_directory_info
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
     ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
@@ -623,7 +624,8 @@ SELECT
     ) AS `rate`,
     STRUCT(
       metrics.object.nimbus_system_recorded_nimbus_context,
-      metrics.object.glean_health_data_directory_info
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
     ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
@@ -942,7 +944,8 @@ SELECT
     ) AS `rate`,
     STRUCT(
       metrics.object.nimbus_system_recorded_nimbus_context,
-      metrics.object.glean_health_data_directory_info
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
     ) AS `object`
   ) AS `metrics`,
   normalized_app_name,

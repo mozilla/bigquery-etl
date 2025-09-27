@@ -344,6 +344,12 @@ fields:
         This does not include deletion-request pings.
 
         '
+    - name: glean_health_init_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'A running count of how many times the Glean SDK has been initialized.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

@@ -67,7 +67,10 @@ SELECT
       metrics.datetime.raw_glean_validation_first_run_hour
     ) AS `datetime`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`
   ) AS `metrics`,
   normalized_app_name,
   normalized_country_code,

@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: event_date
+  type: DATE
+  description: Event Date
+- name: page_title
+  type: STRING
+  mode: NULLABLE
+  description: Page Title - Value parsed from event_params where key = page_title
+- name: nbr_key_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Count of key events, where key events is defined as
+- name: page_views
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of page views
+- name: nbr_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Sessions
+- name: views_per_session
+  type: FLOAT
+  mode: NULLABLE
+  description: Views per Session

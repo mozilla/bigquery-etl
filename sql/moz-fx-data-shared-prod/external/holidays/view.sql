@@ -512,6 +512,12 @@ WITH staging AS (
       0
     ) AS dussehra,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 11, 1, 0) AS us_veterans_day,
+    IF(
+      calendar_month = 11
+      AND EXTRACT(day FROM submission_date) IN (1, 2),
+      1,
+      0
+    ) AS dia_de_los_muertos,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
     IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
     IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,
@@ -662,6 +668,7 @@ SELECT
   stg.in_diwali,
   stg.dussehra,
   stg.us_veterans_day,
+  stg.dia_de_los_muertos,
   stg.mx_revolution_day,
   stg.halloween,
   stg.christmas_eve,
@@ -723,7 +730,8 @@ SELECT
     IF(stg.hanukkah = 1, ['Hanukkah'], []),
     IF(stg.us_kwanzaa = 1, ['US_Kwanzaa'], []),
     IF(stg.new_years_eve = 1, ['NewYearsEve'], []),
-    IF(stg.us_martin_luther_king_jr_day = 1, ['US_MLK_Jr_Day'], [])
+    IF(stg.us_martin_luther_king_jr_day = 1, ['US_MLK_Jr_Day'], []),
+    IF(stg.dia_de_los_muertos = 1, ['DiaDeLosMuertos'], [])
   ) AS holiday_array
 FROM
   staging stg

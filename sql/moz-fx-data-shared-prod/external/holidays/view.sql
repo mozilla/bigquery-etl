@@ -387,6 +387,22 @@ WITH staging AS (
     IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
     IF(
       submission_date IN (
+        '2020-10-01',
+        '2021-09-21',
+        '2022-09-10',
+        '2023-09-29',
+        '2024-09-17',
+        '2025-10-06',
+        '2026-09-25',
+        '2027-09-15',
+        '2028-10-03',
+        '2029-09-22'
+      ),
+      1,
+      0
+    ) AS mid_autumn_festival,
+    IF(
+      submission_date IN (
         '2020-11-26',
         '2021-11-25',
         '2022-11-24',
@@ -659,6 +675,7 @@ SELECT
   stg.prophets_birthday,
   stg.br_independence_day,
   stg.mx_independence_day,
+  stg.mid_autumn_festival,
   stg.us_thanksgiving,
   stg.us_blackfriday,
   stg.us_cybermonday,
@@ -731,7 +748,8 @@ SELECT
     IF(stg.us_kwanzaa = 1, ['US_Kwanzaa'], []),
     IF(stg.new_years_eve = 1, ['NewYearsEve'], []),
     IF(stg.us_martin_luther_king_jr_day = 1, ['US_MLK_Jr_Day'], []),
-    IF(stg.dia_de_los_muertos = 1, ['DiaDeLosMuertos'], [])
+    IF(stg.dia_de_los_muertos = 1, ['DiaDeLosMuertos'], []),
+    IF(stg.mid_autumn_festival = 1, ['MidAutumnFestival'], [])
   ) AS holiday_array
 FROM
   staging stg

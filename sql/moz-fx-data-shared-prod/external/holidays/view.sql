@@ -620,6 +620,7 @@ SELECT
   stg.new_years_day,
   stg.australia_day,
   stg.orthodox_christmas,
+  stg.us_martin_luther_king_jr_day,
   stg.lunar_new_year,
   stg.in_republic_day,
   stg.us_superbowl,

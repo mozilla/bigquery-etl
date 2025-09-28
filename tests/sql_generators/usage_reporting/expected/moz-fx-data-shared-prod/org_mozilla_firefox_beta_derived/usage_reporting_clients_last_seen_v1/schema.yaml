@@ -29,5 +29,3 @@ fields:
   type: INTEGER
   description: |
     bit field indicating how many days lapsed since profile creation.
-
-

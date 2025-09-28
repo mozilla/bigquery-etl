@@ -31,6 +31,17 @@ def generate_funnels(target_project, path, output_dir):
         config = converter.structure(toml.load(config_file), FunnelConfig)
         table_name = bq_normalize_name(config_file.stem)
 
+        match = re.match(r".+_v(\d+)$", table_name)
+        if match:
+            # file name ends with version number, check if it matches the version in the config
+            name_version = match.groups()[0]
+            if name_version != config.version:
+                raise ValueError(
+                    f"Version in file name ({table_name}) does not match version in config ({config.version})"
+                )
+        else:
+            table_name = f"{table_name}_v{config.version}"
+
         env = Environment(loader=FileSystemLoader(TEMPLATES_PATH))
         sql_template = env.get_template("funnel.sql")
 
@@ -45,7 +56,7 @@ def generate_funnels(target_project, path, output_dir):
         )
         write_sql(
             output_dir=output_dir,
-            full_table_id=f"{target_project}.{config.destination_dataset}.{table_name}_v{config.version}",
+            full_table_id=f"{target_project}.{config.destination_dataset}.{table_name}",
             basename="query.sql",
             sql=funnel_sql,
             skip_existing=False,
@@ -59,10 +70,7 @@ def generate_funnels(target_project, path, output_dir):
             }
         )
         (
-            output_dir
-            / config.destination_dataset
-            / f"{table_name}_v{config.version}"
-            / "metadata.yaml"
+            output_dir / config.destination_dataset / f"{table_name}" / "metadata.yaml"
         ).write_text(rendered_metadata + "\n")
 
 

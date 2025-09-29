@@ -12,6 +12,9 @@ fields:
 - name: orthodox_christmas
   type: INTEGER
   mode: NULLABLE
+- name: us_martin_luther_king_jr_day
+  type: INTEGER
+  mode: NULLABLE
 - name: lunar_new_year
   type: INTEGER
   mode: NULLABLE
@@ -108,6 +111,9 @@ fields:
 - name: mx_independence_day
   type: INTEGER
   mode: NULLABLE
+- name: mid_autumn_festival
+  type: INTEGER
+  mode: NULLABLE
 - name: us_thanksgiving
   type: INTEGER
   mode: NULLABLE
@@ -133,6 +139,9 @@ fields:
   type: INTEGER
   mode: NULLABLE
 - name: us_veterans_day
+  type: INTEGER
+  mode: NULLABLE
+- name: dia_de_los_muertos
   type: INTEGER
   mode: NULLABLE
 - name: mx_revolution_day

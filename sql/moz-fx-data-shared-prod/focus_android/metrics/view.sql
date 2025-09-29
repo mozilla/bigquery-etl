@@ -1521,7 +1521,8 @@ SELECT
       metrics.timing_distribution.xpi_database_parses,
       metrics.timing_distribution.fog_initializations,
       metrics.timing_distribution.perf_js_exec_asm_js,
-      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri
+      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
+      metrics.timing_distribution.perf_cold_applink_main_to_load_uri
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -3306,7 +3307,8 @@ SELECT
       metrics.timing_distribution.xpi_database_parses,
       metrics.timing_distribution.fog_initializations,
       metrics.timing_distribution.perf_js_exec_asm_js,
-      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri
+      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
+      metrics.timing_distribution.perf_cold_applink_main_to_load_uri
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,
@@ -5091,7 +5093,8 @@ SELECT
       metrics.timing_distribution.xpi_database_parses,
       metrics.timing_distribution.fog_initializations,
       metrics.timing_distribution.perf_js_exec_asm_js,
-      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri
+      metrics.timing_distribution.perf_cold_applink_process_launch_to_load_uri,
+      metrics.timing_distribution.perf_cold_applink_main_to_load_uri
     ) AS `timing_distribution`,
     STRUCT(
       metrics.labeled_boolean.cookie_banners_normal_window_service_mode,

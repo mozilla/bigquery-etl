@@ -25,6 +25,16 @@ WITH staging AS (
       LIMIT
         1
     ).string_value AS page_title,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'session_engaged'
+      LIMIT
+        1
+    ).string_value AS session_engaged_indicator,
     COUNTIF(event_name = 'page_view') AS page_views
   FROM
     `moz-fx-data-marketing-prod.analytics_314399816.events_*`
@@ -38,7 +48,8 @@ WITH staging AS (
     event_name,
     ga_session_id,
     user_pseudo_id,
-    page_title
+    page_title,
+    session_engaged_indicator
 )
 SELECT
   PARSE_DATE('%Y%m%d', event_date) AS event_date,
@@ -54,7 +65,16 @@ SELECT
     )
   ) AS nbr_key_events,
   SUM(page_views) AS page_views,
-  COUNT(DISTINCT(ga_session_id || ' - ' || user_pseudo_id)) AS nbr_sessions
+  COUNT(DISTINCT(ga_session_id || ' - ' || user_pseudo_id)) AS nbr_sessions,
+  COUNT(
+    DISTINCT(
+      CASE
+        WHEN session_engaged_indicator = '1'
+          THEN ga_session_id || ' - ' || user_pseudo_id
+        ELSE NULL
+      END
+    )
+  ) AS nbr_engaged_sessions
 FROM
   staging
 GROUP BY

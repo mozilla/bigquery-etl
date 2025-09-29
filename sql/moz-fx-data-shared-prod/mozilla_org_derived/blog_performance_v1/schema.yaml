@@ -10,7 +10,8 @@ fields:
 - name: nbr_key_events
   type: INTEGER
   mode: NULLABLE
-  description: Count of key events, where key events is defined as
+  description: Count of key events, where key events include the following,
+    click, cta_click, download_click, newsletter_subscribe, scroll, and social_share
 - name: page_views
   type: INTEGER
   mode: NULLABLE

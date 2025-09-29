@@ -1,4 +1,3 @@
---note to self - still need to add engagement rate & figure out key events list
 WITH staging AS (
   SELECT
     event_date,
@@ -44,9 +43,15 @@ WITH staging AS (
 SELECT
   PARSE_DATE('%Y%m%d', event_date) AS event_date,
   page_title,
-  --placeholder, waiting for list of actual key events from Stephen
   COUNTIF(
-    event_name IN ('link_click', 'download_click', 'scroll', 'cta_click', 'click', 'search')
+    event_name IN (
+      'click',
+      'cta_click',
+      'download_click',
+      'newsletter_subscribe',
+      'scroll',
+      'social_share'
+    )
   ) AS nbr_key_events,
   SUM(page_views) AS page_views,
   COUNT(DISTINCT(ga_session_id || ' - ' || user_pseudo_id)) AS nbr_sessions

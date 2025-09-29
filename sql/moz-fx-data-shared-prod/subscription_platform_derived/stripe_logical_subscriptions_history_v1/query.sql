@@ -77,14 +77,6 @@ plan_services AS (
   GROUP BY
     plan_id
 ),
-paypal_subscriptions AS (
-  SELECT DISTINCT
-    subscription_id
-  FROM
-    `moz-fx-data-shared-prod.stripe_external.invoice_v1`
-  WHERE
-    JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
-),
 subscriptions_history_charge_summaries AS (
   SELECT
     history.id AS subscriptions_history_id,
@@ -226,7 +218,11 @@ SELECT
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
     ) AS id,
     'Stripe' AS provider,
-    IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
+    IF(
+      history.subscription.collection_method = 'send_invoice',
+      'PayPal',
+      'Stripe'
+    ) AS payment_provider,
     history.subscription.id AS provider_subscription_id,
     subscription_item.id AS provider_subscription_item_id,
     history.subscription.created AS provider_subscription_created_at,
@@ -247,7 +243,7 @@ SELECT
             charge_summaries.latest_card_country
           )
       -- SubPlat copies the PayPal billing agreement country to the customer's address.
-      WHEN paypal_subscriptions.subscription_id IS NOT NULL
+      WHEN history.subscription.collection_method = 'send_invoice'
         THEN NULLIF(history.subscription.customer.address.country, '')
       ELSE charge_summaries.latest_card_country
     END AS country_code,
@@ -344,9 +340,6 @@ CROSS JOIN
 LEFT JOIN
   plan_services
   ON subscription_item.plan.id = plan_services.plan_id
-LEFT JOIN
-  paypal_subscriptions
-  ON history.subscription.id = paypal_subscriptions.subscription_id
 LEFT JOIN
   subscriptions_history_charge_summaries AS charge_summaries
   ON history.id = charge_summaries.subscriptions_history_id

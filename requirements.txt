@@ -523,9 +523,7 @@ filelock==3.16.1 \
 flake8==4.0.1 \
     --hash=sha256:479b1304f72536a55948cb40a32dce8bb0ffe3501e26eaf292c7e60eb5e0428d \
     --hash=sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d
-    # via
-    #   -r requirements.in
-    #   pytest-flake8
+    # via pytest-flake8
 fredapi==0.5.2 \
     --hash=sha256:405ca048abed4207d93dbc9b7ee8c46d6b473483650323e2f1c094af83d4b247 \
     --hash=sha256:961817ec8d70e58886ff7302d3dda908614ad99f77831a59833c4fc3f6150155

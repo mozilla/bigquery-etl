@@ -19,7 +19,3 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of Sessions
-- name: views_per_session
-  type: FLOAT
-  mode: NULLABLE
-  description: Views per Session

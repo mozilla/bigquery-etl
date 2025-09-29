@@ -49,11 +49,7 @@ SELECT
     event_name IN ('link_click', 'download_click', 'scroll', 'cta_click', 'click', 'search')
   ) AS nbr_key_events,
   SUM(page_views) AS page_views,
-  COUNT(DISTINCT(ga_session_id || ' - ' || user_pseudo_id)) AS nbr_sessions,
-  SAFE_DIVIDE(
-    SUM(page_views),
-    COUNT(DISTINCT(ga_session_id || ' - ' || user_pseudo_id))
-  ) AS views_per_session
+  COUNT(DISTINCT(ga_session_id || ' - ' || user_pseudo_id)) AS nbr_sessions
 FROM
   staging
 GROUP BY

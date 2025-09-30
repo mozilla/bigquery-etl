@@ -23,7 +23,7 @@
     {% endif -%}
     {% if app_name == "firefox_desktop" -%}
       ANY_VALUE(metrics.uuid.legacy_telemetry_profile_group_id) AS profile_group_id,
-      COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar) kv), 0) + 
+      SUM(COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar) kv), 0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_searchmode) kv),0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_contextmenu) kv),0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_about_home) kv),0) + 
@@ -35,7 +35,7 @@
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_reload) kv),0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_unknown) kv),0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_handoff) kv),0) + 
-      COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_persisted) kv),0)  AS search_with_ads_count_all
+      COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_persisted) kv),0)) AS search_with_ads_count_all
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

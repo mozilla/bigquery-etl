@@ -36,17 +36,29 @@ WITH all_submission_date_events AS (
       LIMIT
         1
     ).string_value AS page_location,
-    CAST(
+    COALESCE(
       (
         SELECT
-          `value`
+          ep.value.int_value
         FROM
-          UNNEST(event_params)
+          UNNEST(event_params) ep
         WHERE
-          key = 'session_engaged'
+          ep.key = 'session_engaged'
         LIMIT
           1
-      ).string_value AS int
+      ),
+      SAFE_CAST(
+        (
+          SELECT
+            ep.value.string_value
+          FROM
+            UNNEST(event_params) ep
+          WHERE
+            ep.key = 'session_engaged'
+          LIMIT
+            1
+        ) AS INT64
+      )
     ) AS session_engaged_indicator,
     CASE
       WHEN event_name IN (

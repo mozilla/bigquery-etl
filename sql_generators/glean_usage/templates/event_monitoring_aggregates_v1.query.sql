@@ -8,17 +8,19 @@ WITH
   {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}
     base_{{ dataset['bq_dataset_family'] }}_{{ events_table }} AS (
       SELECT
-        submission_timestamp,
+        @submission_date AS submission_date,
+        TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+        TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
         event.category AS event_category,
         event.name AS event_name,
         event_extra.key AS event_extra_key,
         normalized_country_code AS country,
-        "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
         client_info.app_channel AS channel,
         client_info.app_display_version AS version,
         -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
         COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
         COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch, '*') AS experiment_branch,
+        COUNT(*) AS total_events,
       FROM
         `{{ project_id }}.{{ dataset['bq_dataset_family'] }}_stable.{{ events_table }}`
       CROSS JOIN
@@ -30,22 +32,46 @@ WITH
       LEFT JOIN
         -- Add * extra to every event to get total event count
         UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+      WHERE
+        DATE(submission_timestamp) = @submission_date
+        {% if dataset['app_name'] == "firefox_desktop" and events_table == "events_v1" %}
+          -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+          AND (
+            event.category = "uptake.remotecontent.result"
+            AND event.name IN ("uptake_remotesettings", "uptake_normandy")
+            AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+            AND sample_id != 0
+          ) IS NOT TRUE
+        {% endif %}
+      GROUP BY
+        submission_date,
+        window_start,
+        window_end,
+        event_category,
+        event_name,
+        event_extra_key,
+        country,
+        channel,
+        version,
+        experiment,
+        experiment_branch
     ),
   {% endfor %}
   {{ dataset['bq_dataset_family'] }}_aggregated AS (
     SELECT
-      @submission_date AS submission_date,
-      TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-          -- Aggregates event counts over 60-minute intervals
-        INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
-      ) AS window_start,
-      TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-        INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
-      ) AS window_end,
-      * EXCEPT (submission_timestamp),
-      COUNT(*) AS total_events,
+      submission_date,
+      window_start,
+      window_end,
+      event_category,
+      event_name,
+      event_extra_key,
+      country,
+      "{{ dataset['canonical_app_name'] }}" AS normalized_app_name,
+      channel,
+      version,
+      experiment,
+      experiment_branch,
+      SUM(total_events) AS total_events,
     FROM
       (
         {% for events_table in event_tables_per_dataset[dataset['bq_dataset_family']] -%}
@@ -56,8 +82,6 @@ WITH
           {{ "UNION ALL" if not loop.last }}
         {% endfor -%}
       )
-    WHERE
-      DATE(submission_timestamp) = @submission_date
     GROUP BY
       submission_date,
       window_start,

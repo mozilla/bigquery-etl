@@ -119,6 +119,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_firefox_desktop_derived__event_monitoring_live__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__event_monitoring_live__v1",
+        external_dag_id="bqetl_materialized_view_refresh",
+        external_task_id="firefox_desktop_derived__event_monitoring_live__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=4500),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     glean_server_knob_experiments__v1 = bigquery_etl_query(
         task_id="glean_server_knob_experiments__v1",
         destination_table="glean_server_knob_experiments_v1",
@@ -473,6 +486,10 @@ with DAG(
 
     monitoring_derived__event_monitoring_aggregates__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    monitoring_derived__event_monitoring_aggregates__v1.set_upstream(
+        wait_for_firefox_desktop_derived__event_monitoring_live__v1
     )
 
     monitoring_derived__schema_error_counts__v2.set_upstream(

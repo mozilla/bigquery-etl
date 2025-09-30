@@ -1,422 +1,8 @@
 -- Generated via ./bqetl generate glean_usage
-WITH base_firefox_desktop_data_leak_blocker_v1 AS (
+WITH firefox_desktop_aggregated AS (
+      -- Use event_monitoring_live_v1 for apps that use manual refreshes
   SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.data_leak_blocker_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_events_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.events_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-          -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
-    AND (
-      event.category = "uptake.remotecontent.result"
-      AND event.name IN ("uptake_remotesettings", "uptake_normandy")
-      AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
-      AND sample_id != 0
-    ) IS NOT TRUE
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_newtab_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_profiles_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.profiles_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_prototype_no_code_events_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.prototype_no_code_events_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_sync_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.sync_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_urlbar_keyword_exposure_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_keyword_exposure_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-base_firefox_desktop_urlbar_potential_exposure_v1 AS (
-  SELECT
-    @submission_date AS submission_date,
-    TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
-    TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
-    event.category AS event_category,
-    event.name AS event_name,
-    event_extra.key AS event_extra_key,
-    normalized_country_code AS country,
-    client_info.app_channel AS channel,
-    client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
-    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
-    COALESCE(
-      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
-      '*'
-    ) AS experiment_branch,
-    COUNT(*) AS total_events,
-  FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.urlbar_potential_exposure_v1`
-  CROSS JOIN
-    UNNEST(events) AS event
-  CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
-    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
-  LEFT JOIN
-        -- Add * extra to every event to get total event count
-    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
-  WHERE
-    DATE(submission_timestamp) = @submission_date
-  GROUP BY
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    channel,
-    version,
-    experiment,
-    experiment_branch
-),
-firefox_desktop_aggregated AS (
-  SELECT
-    submission_date,
-    window_start,
-    window_end,
-    event_category,
-    event_name,
-    event_extra_key,
-    country,
-    "Firefox for Desktop" AS normalized_app_name,
-    channel,
-    version,
-    experiment,
-    experiment_branch,
-    SUM(total_events) AS total_events,
-  FROM
-    (
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_data_leak_blocker_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_events_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_newtab_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_profiles_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_prototype_no_code_events_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_sync_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_urlbar_keyword_exposure_v1
-      UNION ALL
-      SELECT
-        *
-      FROM
-        base_firefox_desktop_urlbar_potential_exposure_v1
-    )
-  GROUP BY
-    submission_date,
+    DATE(submission_date) AS submission_date,
     window_start,
     window_end,
     event_category,
@@ -427,11 +13,16 @@ firefox_desktop_aggregated AS (
     channel,
     version,
     experiment,
-    experiment_branch
+    experiment_branch,
+    total_events,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.event_monitoring_live_v1`
+  WHERE
+    DATE(submission_date) = @submission_date
 ),
 base_firefox_crashreporter_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -440,7 +31,7 @@ base_firefox_crashreporter_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -452,11 +43,11 @@ base_firefox_crashreporter_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -506,7 +97,7 @@ firefox_crashreporter_aggregated AS (
 ),
 base_firefox_desktop_background_defaultagent_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -515,7 +106,7 @@ base_firefox_desktop_background_defaultagent_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -527,11 +118,11 @@ base_firefox_desktop_background_defaultagent_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -581,7 +172,7 @@ firefox_desktop_background_defaultagent_aggregated AS (
 ),
 base_org_mozilla_firefox_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -590,7 +181,7 @@ base_org_mozilla_firefox_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -602,11 +193,11 @@ base_org_mozilla_firefox_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -625,7 +216,7 @@ base_org_mozilla_firefox_events_v1 AS (
 ),
 base_org_mozilla_firefox_home_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -634,7 +225,7 @@ base_org_mozilla_firefox_home_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -646,11 +237,11 @@ base_org_mozilla_firefox_home_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -669,7 +260,7 @@ base_org_mozilla_firefox_home_v1 AS (
 ),
 base_org_mozilla_firefox_metrics_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -678,7 +269,7 @@ base_org_mozilla_firefox_metrics_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -690,11 +281,11 @@ base_org_mozilla_firefox_metrics_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -759,7 +350,7 @@ org_mozilla_firefox_aggregated AS (
 ),
 base_org_mozilla_firefox_beta_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -768,7 +359,7 @@ base_org_mozilla_firefox_beta_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -780,11 +371,11 @@ base_org_mozilla_firefox_beta_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -803,7 +394,7 @@ base_org_mozilla_firefox_beta_events_v1 AS (
 ),
 base_org_mozilla_firefox_beta_home_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -812,7 +403,7 @@ base_org_mozilla_firefox_beta_home_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -824,11 +415,11 @@ base_org_mozilla_firefox_beta_home_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -847,7 +438,7 @@ base_org_mozilla_firefox_beta_home_v1 AS (
 ),
 base_org_mozilla_firefox_beta_metrics_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -856,7 +447,7 @@ base_org_mozilla_firefox_beta_metrics_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -868,11 +459,11 @@ base_org_mozilla_firefox_beta_metrics_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -937,7 +528,7 @@ org_mozilla_firefox_beta_aggregated AS (
 ),
 base_org_mozilla_fenix_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -946,7 +537,7 @@ base_org_mozilla_fenix_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -958,11 +549,11 @@ base_org_mozilla_fenix_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -981,7 +572,7 @@ base_org_mozilla_fenix_events_v1 AS (
 ),
 base_org_mozilla_fenix_home_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -990,7 +581,7 @@ base_org_mozilla_fenix_home_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1002,11 +593,11 @@ base_org_mozilla_fenix_home_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1025,7 +616,7 @@ base_org_mozilla_fenix_home_v1 AS (
 ),
 base_org_mozilla_fenix_metrics_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1034,7 +625,7 @@ base_org_mozilla_fenix_metrics_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1046,11 +637,11 @@ base_org_mozilla_fenix_metrics_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1115,7 +706,7 @@ org_mozilla_fenix_aggregated AS (
 ),
 base_org_mozilla_ios_firefox_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1124,7 +715,7 @@ base_org_mozilla_ios_firefox_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1136,11 +727,11 @@ base_org_mozilla_ios_firefox_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1159,7 +750,7 @@ base_org_mozilla_ios_firefox_events_v1 AS (
 ),
 base_org_mozilla_ios_firefox_first_session_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1168,7 +759,7 @@ base_org_mozilla_ios_firefox_first_session_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1180,11 +771,11 @@ base_org_mozilla_ios_firefox_first_session_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1203,7 +794,7 @@ base_org_mozilla_ios_firefox_first_session_v1 AS (
 ),
 base_org_mozilla_ios_firefox_metrics_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1212,7 +803,7 @@ base_org_mozilla_ios_firefox_metrics_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1224,11 +815,11 @@ base_org_mozilla_ios_firefox_metrics_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1293,7 +884,7 @@ org_mozilla_ios_firefox_aggregated AS (
 ),
 base_org_mozilla_ios_firefoxbeta_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1302,7 +893,7 @@ base_org_mozilla_ios_firefoxbeta_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1314,11 +905,11 @@ base_org_mozilla_ios_firefoxbeta_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1337,7 +928,7 @@ base_org_mozilla_ios_firefoxbeta_events_v1 AS (
 ),
 base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1346,7 +937,7 @@ base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1358,11 +949,11 @@ base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1381,7 +972,7 @@ base_org_mozilla_ios_firefoxbeta_first_session_v1 AS (
 ),
 base_org_mozilla_ios_firefoxbeta_metrics_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1390,7 +981,7 @@ base_org_mozilla_ios_firefoxbeta_metrics_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1402,11 +993,11 @@ base_org_mozilla_ios_firefoxbeta_metrics_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1471,7 +1062,7 @@ org_mozilla_ios_firefoxbeta_aggregated AS (
 ),
 base_org_mozilla_ios_fennec_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1480,7 +1071,7 @@ base_org_mozilla_ios_fennec_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1492,11 +1083,11 @@ base_org_mozilla_ios_fennec_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1515,7 +1106,7 @@ base_org_mozilla_ios_fennec_events_v1 AS (
 ),
 base_org_mozilla_ios_fennec_first_session_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1524,7 +1115,7 @@ base_org_mozilla_ios_fennec_first_session_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1536,11 +1127,11 @@ base_org_mozilla_ios_fennec_first_session_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1559,7 +1150,7 @@ base_org_mozilla_ios_fennec_first_session_v1 AS (
 ),
 base_org_mozilla_ios_fennec_metrics_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1568,7 +1159,7 @@ base_org_mozilla_ios_fennec_metrics_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1580,11 +1171,11 @@ base_org_mozilla_ios_fennec_metrics_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1649,7 +1240,7 @@ org_mozilla_ios_fennec_aggregated AS (
 ),
 base_org_mozilla_reference_browser_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1658,7 +1249,7 @@ base_org_mozilla_reference_browser_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1670,11 +1261,11 @@ base_org_mozilla_reference_browser_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1724,7 +1315,7 @@ org_mozilla_reference_browser_aggregated AS (
 ),
 base_org_mozilla_mozregression_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1733,7 +1324,7 @@ base_org_mozilla_mozregression_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1745,11 +1336,11 @@ base_org_mozilla_mozregression_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1799,7 +1390,7 @@ org_mozilla_mozregression_aggregated AS (
 ),
 base_mozphab_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1808,7 +1399,7 @@ base_mozphab_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1820,11 +1411,11 @@ base_mozphab_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1874,7 +1465,7 @@ mozphab_aggregated AS (
 ),
 base_mozilla_mach_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1883,7 +1474,7 @@ base_mozilla_mach_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1895,11 +1486,11 @@ base_mozilla_mach_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -1949,7 +1540,7 @@ mozilla_mach_aggregated AS (
 ),
 base_org_mozilla_ios_focus_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -1958,7 +1549,7 @@ base_org_mozilla_ios_focus_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -1970,11 +1561,11 @@ base_org_mozilla_ios_focus_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2024,7 +1615,7 @@ org_mozilla_ios_focus_aggregated AS (
 ),
 base_org_mozilla_ios_klar_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2033,7 +1624,7 @@ base_org_mozilla_ios_klar_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2045,11 +1636,11 @@ base_org_mozilla_ios_klar_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2099,7 +1690,7 @@ org_mozilla_ios_klar_aggregated AS (
 ),
 base_org_mozilla_focus_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2108,7 +1699,7 @@ base_org_mozilla_focus_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2120,11 +1711,11 @@ base_org_mozilla_focus_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2174,7 +1765,7 @@ org_mozilla_focus_aggregated AS (
 ),
 base_org_mozilla_focus_beta_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2183,7 +1774,7 @@ base_org_mozilla_focus_beta_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2195,11 +1786,11 @@ base_org_mozilla_focus_beta_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2249,7 +1840,7 @@ org_mozilla_focus_beta_aggregated AS (
 ),
 base_org_mozilla_focus_nightly_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2258,7 +1849,7 @@ base_org_mozilla_focus_nightly_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2270,11 +1861,11 @@ base_org_mozilla_focus_nightly_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2324,7 +1915,7 @@ org_mozilla_focus_nightly_aggregated AS (
 ),
 base_org_mozilla_klar_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2333,7 +1924,7 @@ base_org_mozilla_klar_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2345,11 +1936,11 @@ base_org_mozilla_klar_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2399,7 +1990,7 @@ org_mozilla_klar_aggregated AS (
 ),
 base_mozillavpn_daemonsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2408,7 +1999,7 @@ base_mozillavpn_daemonsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2420,11 +2011,11 @@ base_mozillavpn_daemonsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2443,7 +2034,7 @@ base_mozillavpn_daemonsession_v1 AS (
 ),
 base_mozillavpn_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2452,7 +2043,7 @@ base_mozillavpn_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2464,11 +2055,11 @@ base_mozillavpn_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2487,7 +2078,7 @@ base_mozillavpn_events_v1 AS (
 ),
 base_mozillavpn_extensionsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2496,7 +2087,7 @@ base_mozillavpn_extensionsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2508,11 +2099,11 @@ base_mozillavpn_extensionsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2531,7 +2122,7 @@ base_mozillavpn_extensionsession_v1 AS (
 ),
 base_mozillavpn_main_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2540,7 +2131,7 @@ base_mozillavpn_main_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2552,11 +2143,11 @@ base_mozillavpn_main_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2575,7 +2166,7 @@ base_mozillavpn_main_v1 AS (
 ),
 base_mozillavpn_vpnsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2584,7 +2175,7 @@ base_mozillavpn_vpnsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2596,11 +2187,11 @@ base_mozillavpn_vpnsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2675,7 +2266,7 @@ mozillavpn_aggregated AS (
 ),
 base_org_mozilla_firefox_vpn_daemonsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2684,7 +2275,7 @@ base_org_mozilla_firefox_vpn_daemonsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2696,11 +2287,11 @@ base_org_mozilla_firefox_vpn_daemonsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2719,7 +2310,7 @@ base_org_mozilla_firefox_vpn_daemonsession_v1 AS (
 ),
 base_org_mozilla_firefox_vpn_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2728,7 +2319,7 @@ base_org_mozilla_firefox_vpn_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2740,11 +2331,11 @@ base_org_mozilla_firefox_vpn_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2763,7 +2354,7 @@ base_org_mozilla_firefox_vpn_events_v1 AS (
 ),
 base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2772,7 +2363,7 @@ base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2784,11 +2375,11 @@ base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2807,7 +2398,7 @@ base_org_mozilla_firefox_vpn_extensionsession_v1 AS (
 ),
 base_org_mozilla_firefox_vpn_main_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2816,7 +2407,7 @@ base_org_mozilla_firefox_vpn_main_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2828,11 +2419,11 @@ base_org_mozilla_firefox_vpn_main_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2851,7 +2442,7 @@ base_org_mozilla_firefox_vpn_main_v1 AS (
 ),
 base_org_mozilla_firefox_vpn_vpnsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2860,7 +2451,7 @@ base_org_mozilla_firefox_vpn_vpnsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2872,11 +2463,11 @@ base_org_mozilla_firefox_vpn_vpnsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2951,7 +2542,7 @@ org_mozilla_firefox_vpn_aggregated AS (
 ),
 base_org_mozilla_ios_firefoxvpn_daemonsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -2960,7 +2551,7 @@ base_org_mozilla_ios_firefoxvpn_daemonsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -2972,11 +2563,11 @@ base_org_mozilla_ios_firefoxvpn_daemonsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -2995,7 +2586,7 @@ base_org_mozilla_ios_firefoxvpn_daemonsession_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3004,7 +2595,7 @@ base_org_mozilla_ios_firefoxvpn_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3016,11 +2607,11 @@ base_org_mozilla_ios_firefoxvpn_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3039,7 +2630,7 @@ base_org_mozilla_ios_firefoxvpn_events_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3048,7 +2639,7 @@ base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3060,11 +2651,11 @@ base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3083,7 +2674,7 @@ base_org_mozilla_ios_firefoxvpn_extensionsession_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_main_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3092,7 +2683,7 @@ base_org_mozilla_ios_firefoxvpn_main_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3104,11 +2695,11 @@ base_org_mozilla_ios_firefoxvpn_main_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3127,7 +2718,7 @@ base_org_mozilla_ios_firefoxvpn_main_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_vpnsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3136,7 +2727,7 @@ base_org_mozilla_ios_firefoxvpn_vpnsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3148,11 +2739,11 @@ base_org_mozilla_ios_firefoxvpn_vpnsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3227,7 +2818,7 @@ org_mozilla_ios_firefoxvpn_aggregated AS (
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_daemonsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3236,7 +2827,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_daemonsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3248,11 +2839,11 @@ base_org_mozilla_ios_firefoxvpn_network_extension_daemonsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3271,7 +2862,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_daemonsession_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3280,7 +2871,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3292,11 +2883,11 @@ base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3315,7 +2906,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_events_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3324,7 +2915,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3336,11 +2927,11 @@ base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3359,7 +2950,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_extensionsession_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3368,7 +2959,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3380,11 +2971,11 @@ base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3403,7 +2994,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_main_v1 AS (
 ),
 base_org_mozilla_ios_firefoxvpn_network_extension_vpnsession_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3412,7 +3003,7 @@ base_org_mozilla_ios_firefoxvpn_network_extension_vpnsession_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3424,11 +3015,11 @@ base_org_mozilla_ios_firefoxvpn_network_extension_vpnsession_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3503,7 +3094,7 @@ org_mozilla_ios_firefoxvpn_network_extension_aggregated AS (
 ),
 base_mozillavpn_backend_cirrus_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3512,7 +3103,7 @@ base_mozillavpn_backend_cirrus_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3524,11 +3115,11 @@ base_mozillavpn_backend_cirrus_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3578,7 +3169,7 @@ mozillavpn_backend_cirrus_aggregated AS (
 ),
 base_glean_dictionary_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3587,7 +3178,7 @@ base_glean_dictionary_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3599,11 +3190,11 @@ base_glean_dictionary_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3653,7 +3244,7 @@ glean_dictionary_aggregated AS (
 ),
 base_mdn_fred_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3662,7 +3253,7 @@ base_mdn_fred_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3674,11 +3265,11 @@ base_mdn_fred_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3728,7 +3319,7 @@ mdn_fred_aggregated AS (
 ),
 base_mdn_yari_action_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3737,7 +3328,7 @@ base_mdn_yari_action_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3749,11 +3340,11 @@ base_mdn_yari_action_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3772,7 +3363,7 @@ base_mdn_yari_action_v1 AS (
 ),
 base_mdn_yari_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3781,7 +3372,7 @@ base_mdn_yari_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3793,11 +3384,11 @@ base_mdn_yari_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3847,7 +3438,7 @@ mdn_yari_aggregated AS (
 ),
 base_bedrock_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3856,7 +3447,7 @@ base_bedrock_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3868,11 +3459,11 @@ base_bedrock_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3891,7 +3482,7 @@ base_bedrock_events_v1 AS (
 ),
 base_bedrock_interaction_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3900,7 +3491,7 @@ base_bedrock_interaction_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3912,11 +3503,11 @@ base_bedrock_interaction_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -3935,7 +3526,7 @@ base_bedrock_interaction_v1 AS (
 ),
 base_bedrock_non_interaction_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -3944,7 +3535,7 @@ base_bedrock_non_interaction_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -3956,11 +3547,11 @@ base_bedrock_non_interaction_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4025,7 +3616,7 @@ bedrock_aggregated AS (
 ),
 base_firefox_desktop_background_tasks_background_tasks_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4034,7 +3625,7 @@ base_firefox_desktop_background_tasks_background_tasks_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4046,11 +3637,11 @@ base_firefox_desktop_background_tasks_background_tasks_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4069,7 +3660,7 @@ base_firefox_desktop_background_tasks_background_tasks_v1 AS (
 ),
 base_firefox_desktop_background_tasks_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4078,7 +3669,7 @@ base_firefox_desktop_background_tasks_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4090,11 +3681,11 @@ base_firefox_desktop_background_tasks_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4154,7 +3745,7 @@ firefox_desktop_background_tasks_aggregated AS (
 ),
 base_accounts_frontend_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4163,7 +3754,7 @@ base_accounts_frontend_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4175,11 +3766,11 @@ base_accounts_frontend_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4229,7 +3820,7 @@ accounts_frontend_aggregated AS (
 ),
 base_accounts_backend_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4238,7 +3829,7 @@ base_accounts_backend_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4250,11 +3841,11 @@ base_accounts_backend_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4304,7 +3895,7 @@ accounts_backend_aggregated AS (
 ),
 base_accounts_cirrus_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4313,7 +3904,7 @@ base_accounts_cirrus_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4325,11 +3916,11 @@ base_accounts_cirrus_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4379,7 +3970,7 @@ accounts_cirrus_aggregated AS (
 ),
 base_monitor_cirrus_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4388,7 +3979,7 @@ base_monitor_cirrus_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4400,11 +3991,11 @@ base_monitor_cirrus_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4454,7 +4045,7 @@ monitor_cirrus_aggregated AS (
 ),
 base_debug_ping_view_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4463,7 +4054,7 @@ base_debug_ping_view_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4475,11 +4066,11 @@ base_debug_ping_view_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4529,7 +4120,7 @@ debug_ping_view_aggregated AS (
 ),
 base_monitor_frontend_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4538,7 +4129,7 @@ base_monitor_frontend_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4550,11 +4141,11 @@ base_monitor_frontend_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4604,7 +4195,7 @@ monitor_frontend_aggregated AS (
 ),
 base_monitor_backend_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4613,7 +4204,7 @@ base_monitor_backend_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4625,11 +4216,11 @@ base_monitor_backend_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4679,7 +4270,7 @@ monitor_backend_aggregated AS (
 ),
 base_relay_backend_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4688,7 +4279,7 @@ base_relay_backend_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4700,11 +4291,11 @@ base_relay_backend_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4754,7 +4345,7 @@ relay_backend_aggregated AS (
 ),
 base_gleanjs_docs_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4763,7 +4354,7 @@ base_gleanjs_docs_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4775,11 +4366,11 @@ base_gleanjs_docs_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4829,7 +4420,7 @@ gleanjs_docs_aggregated AS (
 ),
 base_thunderbird_desktop_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4838,7 +4429,7 @@ base_thunderbird_desktop_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4850,11 +4441,11 @@ base_thunderbird_desktop_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4904,7 +4495,7 @@ thunderbird_desktop_aggregated AS (
 ),
 base_net_thunderbird_android_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4913,7 +4504,7 @@ base_net_thunderbird_android_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -4925,11 +4516,11 @@ base_net_thunderbird_android_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -4979,7 +4570,7 @@ net_thunderbird_android_aggregated AS (
 ),
 base_net_thunderbird_android_beta_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -4988,7 +4579,7 @@ base_net_thunderbird_android_beta_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -5000,11 +4591,11 @@ base_net_thunderbird_android_beta_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -5054,7 +4645,7 @@ net_thunderbird_android_beta_aggregated AS (
 ),
 base_net_thunderbird_android_daily_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -5063,7 +4654,7 @@ base_net_thunderbird_android_daily_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -5075,11 +4666,11 @@ base_net_thunderbird_android_daily_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -5129,7 +4720,7 @@ net_thunderbird_android_daily_aggregated AS (
 ),
 base_syncstorage_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -5138,7 +4729,7 @@ base_syncstorage_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -5150,11 +4741,11 @@ base_syncstorage_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -5204,7 +4795,7 @@ syncstorage_aggregated AS (
 ),
 base_glam_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -5213,7 +4804,7 @@ base_glam_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -5225,11 +4816,11 @@ base_glam_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -5279,7 +4870,7 @@ glam_aggregated AS (
 ),
 base_subscription_platform_backend_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -5288,7 +4879,7 @@ base_subscription_platform_backend_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -5300,11 +4891,11 @@ base_subscription_platform_backend_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date
@@ -5354,7 +4945,7 @@ subscription_platform_backend_aggregated AS (
 ),
 base_experimenter_cirrus_events_v1 AS (
   SELECT
-    @submission_date AS submission_date,
+    DATE(@submission_date) AS submission_date,
     TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
     TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
     event.category AS event_category,
@@ -5363,7 +4954,7 @@ base_experimenter_cirrus_events_v1 AS (
     normalized_country_code AS country,
     client_info.app_channel AS channel,
     client_info.app_display_version AS version,
-        -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
     COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
     COALESCE(
       ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
@@ -5375,11 +4966,11 @@ base_experimenter_cirrus_events_v1 AS (
   CROSS JOIN
     UNNEST(events) AS event
   CROSS JOIN
-        -- Iterator for accessing experiments.
-        -- Add one more for aggregating events across all experiments
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
     UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
   LEFT JOIN
-        -- Add * extra to every event to get total event count
+          -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
   WHERE
     DATE(submission_timestamp) = @submission_date

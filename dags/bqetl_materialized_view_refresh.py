@@ -77,3 +77,17 @@ with DAG(
         ],
         sql_file_path="sql/moz-fx-data-shared-prod/firefox_desktop_derived/event_monitoring_live_v1/script.sql",
     )
+
+    with TaskGroup(
+        "firefox_desktop_derived__event_monitoring_live__v1_external",
+    ) as firefox_desktop_derived__event_monitoring_live__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_monitoring__wait_for_firefox_desktop_derived__event_monitoring_live__v1",
+            external_dag_id="bqetl_monitoring",
+            external_task_id="wait_for_firefox_desktop_derived__event_monitoring_live__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=81900)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__event_monitoring_live__v1_external.set_upstream(
+            firefox_desktop_derived__event_monitoring_live__v1
+        )

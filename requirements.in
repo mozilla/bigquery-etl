@@ -1,6 +1,6 @@
 attrs==25.3.0
 authlib==1.6.4
-beautifulsoup4==4.13.4
+beautifulsoup4==4.14.0
 bigeye-sdk==0.6.5
 black==25.9.0
 cattrs==25.2.0

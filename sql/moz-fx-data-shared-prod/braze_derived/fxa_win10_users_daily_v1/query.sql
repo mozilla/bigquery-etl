@@ -1,6 +1,12 @@
 WITH win10_users AS (
   SELECT DISTINCT
     TO_HEX(SHA256(metrics.string.client_association_uid)) AS fxa_id_sha256,
+    FIRST_VALUE(DATE(submission_timestamp)) OVER (
+      PARTITION BY
+        TO_HEX(SHA256(metrics.string.client_association_uid))
+      ORDER BY
+        submission_timestamp DESC
+    ) AS submission_date,
     FIRST_VALUE(client_info.os) OVER (
       PARTITION BY
         TO_HEX(SHA256(metrics.string.client_association_uid))
@@ -34,13 +40,11 @@ last_seen_14_days AS (
   WHERE
     submission_date = @submission_date
     -- bit pattern 100000000000000, last seen 14 days from submission date
-    AND days_seen_bits >= 16384
-    -- bit pattern 1000000000000000000000, last seen 21 days from submission date
-    -- Only useful for the initial pull of these users, they will already be in the table for subsquent runs
-    AND days_seen_bits < 2097152
+    AND days_seen_bits = 16384
 ),
 inactive_win10_users AS (
   SELECT
+    win10.submission_date,
     last_seen.user_id_sha256,
     win10.os,
     win10.os_version,
@@ -55,6 +59,7 @@ inactive_win10_users AS (
     win10.fxa_id_sha256 IS NOT NULL
 )
 SELECT
+  inactive.submission_date,
   braze_users.external_id AS external_id,
   -- if user is in our braze users table use their email, otherwise use the email associated with their fxa_id
   IFNULL(braze_users.email, fxa_emails.normalizedEmail) AS email,

@@ -1,0 +1,18 @@
+friendly_name: Fxa Win10 Users Historical
+description: |-
+  This query compiles the full list of Win10 users who have reached 14 days of inactivity.
+
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  owner: lmcfall
+scheduling:
+  dag_name: bqetl_braze
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null

@@ -18,7 +18,7 @@ scheduling:
   {%- for app in manual_refresh_apps %}
     - dag_name: bqetl_materialized_view_refresh
       task_id: {{ app }}_derived__event_monitoring_live__v1
-      execution_delta: -23h45m  # wait for the hourly run at 1:45
+      execution_delta: -22h45m  # wait for the hourly run at 1:45
   {%- endfor -%}
   {%- endif %}
 bigquery:

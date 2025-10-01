@@ -894,6 +894,14 @@ fields:
         being mapped from.
 
         '
+    - name: search_suggestions_ohttp_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Reflects the value of the user''s browser.search.suggest.ohttp.enabled
+
+        preference. This does not reflect the value of the featureGate preference.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE

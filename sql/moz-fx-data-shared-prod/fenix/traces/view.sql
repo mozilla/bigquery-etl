@@ -20,7 +20,7 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.object.gecko_trace_traces) AS `object`,
+    STRUCT(metrics.object.gecko_trace_traces, metrics.object.gecko_trace_traces_data) AS `object`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
@@ -56,7 +56,7 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.object.gecko_trace_traces) AS `object`,
+    STRUCT(metrics.object.gecko_trace_traces, metrics.object.gecko_trace_traces_data) AS `object`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
@@ -92,7 +92,7 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.object.gecko_trace_traces) AS `object`,
+    STRUCT(metrics.object.gecko_trace_traces, metrics.object.gecko_trace_traces_data) AS `object`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
@@ -128,7 +128,7 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.object.gecko_trace_traces) AS `object`,
+    STRUCT(metrics.object.gecko_trace_traces, metrics.object.gecko_trace_traces_data) AS `object`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,
@@ -164,7 +164,7 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_state,
       metrics.labeled_counter.glean_error_invalid_value
     ) AS `labeled_counter`,
-    STRUCT(metrics.object.gecko_trace_traces) AS `object`,
+    STRUCT(metrics.object.gecko_trace_traces, metrics.object.gecko_trace_traces_data) AS `object`,
     STRUCT(metrics.string.glean_client_annotation_experimentation_id) AS `string`,
     STRUCT(metrics.string_list.glean_ping_uploader_capabilities) AS `string_list`
   ) AS `metrics`,

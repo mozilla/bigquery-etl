@@ -1,0 +1,22 @@
+friendly_name: App-specific view for Glean ping "gecko-trace"
+description: |-
+  This a view that UNIONs the stable ping tables
+  across all channels of the Glean application "Firefox for Android"
+  (org_mozilla_firefox.gecko_trace, org_mozilla_firefox_beta.gecko_trace, org_mozilla_fenix.gecko_trace, org_mozilla_fenix_nightly.gecko_trace, org_mozilla_fennec_aurora.gecko_trace).
+
+  It is used by Looker.
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.gecko_trace
+  - moz-fx-data-shared-prod.org_mozilla_fenix_nightly.gecko_trace
+  - moz-fx-data-shared-prod.org_mozilla_fennec_aurora.gecko_trace
+  - moz-fx-data-shared-prod.org_mozilla_firefox.gecko_trace
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.gecko_trace
+require_column_descriptions: false

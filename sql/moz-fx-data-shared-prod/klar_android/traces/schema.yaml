@@ -363,6 +363,19 @@ fields:
         [1]: https://github.com/open-telemetry/opentelemetry-proto/blob/c0a98a1847d3124ac5f9ecd02d0e2d2732bbb590/opentelemetry/proto/trace/v1/trace.proto#L38
 
         '
+    - name: gecko_trace_traces_data
+      type: JSON
+      mode: NULLABLE
+      description: 'Represents the telemetry traces data collected during browser
+        operation. This data provides insights into errors that occur in Firefox during
+        runtime.
+
+        Based on the [TracesData OTLP](1) protobuf definition which provides a standardized
+        format for collecting and transmitting trace information.
+
+        [1]: https://github.com/open-telemetry/opentelemetry-proto/blob/c0a98a1847d3124ac5f9ecd02d0e2d2732bbb590/opentelemetry/proto/trace/v1/trace.proto#L38
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

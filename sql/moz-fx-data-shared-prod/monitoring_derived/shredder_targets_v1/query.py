@@ -112,7 +112,7 @@ def get_upstream_stable_tables(id_tables: List[str]) -> Dict[str, Set[str]]:
                 link_parts = upstream_link.source.fully_qualified_name.split(":")
                 source = link_parts[0]
                 parent_table = link_parts[-1]
-                if not source.startswith("bigquery"):
+                if not source.startswith("bigquery") or parent_table.startswith("moz-fx-data-shredder.shredder_tmp"):
                     break
                 upstream_stable_tables[base_table] = upstream_stable_tables[
                     base_table

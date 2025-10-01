@@ -26,6 +26,10 @@ SELECT
     _current.days_sent_metrics_ping_bits
   ) AS days_sent_metrics_ping_bits,
   _current.profile_group_id,
+  COALESCE(
+    _current.search_with_ads_count_all,
+    _previous.search_with_ads_count_all
+  ) AS search_with_ads_count_all
 FROM
   _previous
 FULL JOIN

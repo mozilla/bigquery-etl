@@ -16,6 +16,7 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_glean_usage
+  depends_on_past: true
   task_group: burnham
 bigquery:
   time_partitioning:

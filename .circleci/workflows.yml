@@ -1052,6 +1052,7 @@ jobs:
           steps:
             - *skip_forked_pr
             - checkout
+            - *restore_venv_cache
             - *build
             - *authenticate
             - run:

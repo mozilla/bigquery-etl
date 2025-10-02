@@ -1,0 +1,26 @@
+friendly_name: Blog Performance
+description: |-
+  Blog page engagement metrics by page title and date for blog.mozilla.org pages.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+  depends_on:
+  - task_id: wait_for_blogs_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - page_title
+references: {}
+require_column_descriptions: true

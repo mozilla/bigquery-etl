@@ -9,6 +9,11 @@ labels:
   table_type: aggregate
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+  depends_on:
+  - task_id: wait_for_wmo_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
   time_partitioning:
     type: day

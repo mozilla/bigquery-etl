@@ -36,6 +36,8 @@ WITH subscriptions_history AS (
     subscription.status IN ('active', 'past_due', 'trialing') AS subscription_is_active
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2`
+  WHERE
+    valid_to > valid_from
 ),
 active_subscriptions_history AS (
   -- Only include a subscription's history once it becomes active.
@@ -113,6 +115,7 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
+    AND refunds.created < history.valid_to
   GROUP BY
     subscriptions_history_id
 ),

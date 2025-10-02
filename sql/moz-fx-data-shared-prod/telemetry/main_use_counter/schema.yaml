@@ -11581,6 +11581,14 @@ fields:
       mode: NULLABLE
       description: Whether a page has instantiated a script containing "use asm" either
         in the top level or a nested function
+    - name: use_counter2_deprecated_fullscreen_attribute_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used FullscreenAttribute
+    - name: use_counter2_deprecated_fullscreen_attribute_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used FullscreenAttribute
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23018,6 +23026,14 @@ fields:
           mode: NULLABLE
           description: Whether a page has instantiated a script containing "use asm"
             either in the top level or a nested function
+        - name: use_counter2_deprecated_fullscreen_attribute_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used FullscreenAttribute
+        - name: use_counter2_deprecated_fullscreen_attribute_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used FullscreenAttribute
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

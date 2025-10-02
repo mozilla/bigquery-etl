@@ -8534,6 +8534,12 @@ fields:
     - name: use_counter2_js_use_asm_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_deprecated_fullscreen_attribute_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_deprecated_fullscreen_attribute_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16935,6 +16941,12 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_js_use_asm_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_fullscreen_attribute_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_deprecated_fullscreen_attribute_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

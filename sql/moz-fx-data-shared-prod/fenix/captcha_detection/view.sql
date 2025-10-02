@@ -112,10 +112,60 @@ SELECT
     client_info.app_build
   ).channel AS normalized_channel,
   additional_properties,
-  client_info,
+  STRUCT(
+    client_info.android_sdk_version,
+    client_info.app_build,
+    client_info.app_channel,
+    client_info.app_display_version,
+    client_info.architecture,
+    client_info.build_date,
+    client_info.client_id,
+    client_info.device_manufacturer,
+    client_info.device_model,
+    client_info.first_run_date,
+    client_info.locale,
+    client_info.os,
+    client_info.os_version,
+    client_info.session_count,
+    client_info.session_id,
+    client_info.telemetry_sdk_build,
+    client_info.windows_build_number,
+    STRUCT(
+      client_info.attribution.campaign,
+      client_info.attribution.content,
+      client_info.attribution.medium,
+      client_info.attribution.source,
+      client_info.attribution.term,
+      client_info.attribution.ext
+    ) AS `attribution`,
+    STRUCT(client_info.distribution.name, client_info.distribution.ext) AS `distribution`
+  ) AS `client_info`,
   document_id,
   events,
-  metadata,
+  STRUCT(
+    STRUCT(
+      metadata.geo.city,
+      metadata.geo.country,
+      metadata.geo.db_version,
+      metadata.geo.subdivision1,
+      metadata.geo.subdivision2
+    ) AS `geo`,
+    STRUCT(
+      metadata.header.date,
+      metadata.header.dnt,
+      metadata.header.x_debug_id,
+      metadata.header.x_foxsec_ip_reputation,
+      metadata.header.x_lb_tags,
+      metadata.header.x_pingsender_version,
+      metadata.header.x_source_tags,
+      metadata.header.x_telemetry_agent,
+      metadata.header.parsed_date,
+      metadata.header.parsed_x_source_tags,
+      metadata.header.parsed_x_lb_tags
+    ) AS `header`,
+    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`,
+    metadata.user_agent
+  ) AS `metadata`,
   STRUCT(
     STRUCT(
       metrics.boolean.captcha_detection_network_cookie_cookiebehavior_optinpartitioning,
@@ -177,10 +227,26 @@ SELECT
       metrics.counter.captcha_detection_hcaptcha_oc_pbm
     ) AS `counter`,
     STRUCT(
-      metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required,
-      metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm,
-      metrics.custom_distribution.captcha_detection_awswaf_solutions_required,
-      metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm
+      STRUCT(
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.count,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.sum,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required.values
+      ) AS `captcha_detection_arkoselabs_solutions_required`,
+      STRUCT(
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.count,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.sum,
+        metrics.custom_distribution.captcha_detection_arkoselabs_solutions_required_pbm.values
+      ) AS `captcha_detection_arkoselabs_solutions_required_pbm`,
+      STRUCT(
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.count,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.sum,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required.values
+      ) AS `captcha_detection_awswaf_solutions_required`,
+      STRUCT(
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.count,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.sum,
+        metrics.custom_distribution.captcha_detection_awswaf_solutions_required_pbm.values
+      ) AS `captcha_detection_awswaf_solutions_required_pbm`
     ) AS `custom_distribution`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

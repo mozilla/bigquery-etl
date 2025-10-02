@@ -1,0 +1,32 @@
+friendly_name: Blog Performance
+description: |-
+  Blog page engagement metrics by page title and date for blog.mozilla.org pages.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  dag: bqetl_google_analytics_derived_ga4
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - page_title
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:dataops-managed/external-fides
+  - workgroup:google-managed/external-ads-dataproc
+references: {}
+require_column_descriptions: true

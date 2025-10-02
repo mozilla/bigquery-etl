@@ -12657,7 +12657,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -17949,6 +17950,21 @@ fields:
         \ the case an\nexisting legacy profile was detected. The `xdg_default` accounts\
         \ for lack\nof `XDG_CONFIG_HOME` value defaulting to `$HOME/.config` when\n\
         `xdg_config` refers to existing `XDG_CONFIG_HOME`.\n"
+    - name: media_recorder_mime_type_query
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Count the amount of times where a mime type is queried via MediaRecorder.isTypeSupported()
+        or passed to the MediaRecorder constructor. The result is accumulated per
+        mime type.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

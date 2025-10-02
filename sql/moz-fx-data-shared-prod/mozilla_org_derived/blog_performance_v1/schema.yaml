@@ -1,0 +1,27 @@
+fields:
+- mode: NULLABLE
+  name: event_date
+  type: DATE
+  description: Event Date
+- name: page_title
+  type: STRING
+  mode: NULLABLE
+  description: Page Title
+- name: nbr_page_views
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of page views on the event_date for this page_title
+- name: nbr_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of unique sessions viewing this page title on this event date
+- name: nbr_engaged_sessions
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of unique engaged sessions viewing this page title on this event date
+- name: nbr_key_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of key events associated with sessions that viewed this page title on this event date.
+    To prevent double counting, if a single session viewed 2 or more page titles on the event date, each key event for that session
+    gets associated to the last page title viewed before the key event occurred

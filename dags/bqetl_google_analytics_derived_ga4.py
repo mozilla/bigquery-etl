@@ -174,6 +174,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    checks__fail_mozilla_org_derived__blog_performance__v1 = bigquery_dq_check(
+        task_id="checks__fail_mozilla_org_derived__blog_performance__v1",
+        source_table="blog_performance_v1",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=True,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
     checks__fail_mozilla_org_derived__ga_clients__v2 = bigquery_dq_check(
         task_id="checks__fail_mozilla_org_derived__ga_clients__v2",
         source_table="ga_clients_v2",
@@ -319,6 +332,17 @@ with DAG(
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
+    )
+
+    mozilla_org_derived__blog_performance__v1 = bigquery_etl_query(
+        task_id="mozilla_org_derived__blog_performance__v1",
+        destination_table="blog_performance_v1",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     mozilla_org_derived__blogs_daily_summary__v2 = bigquery_etl_query(
@@ -564,6 +588,10 @@ with DAG(
         date_partition_parameter=None,
         depends_on_past=False,
         task_concurrency=1,
+    )
+
+    checks__fail_mozilla_org_derived__blog_performance__v1.set_upstream(
+        mozilla_org_derived__blog_performance__v1
     )
 
     checks__fail_mozilla_org_derived__ga_clients__v2.set_upstream(

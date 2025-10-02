@@ -1,11 +1,11 @@
 fields:
 - name: normalized_app_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: App ID of the channel data was received from
 - name: normalized_channel
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Normalized channel name
 - name: additional_properties
   type: STRING
@@ -19862,6 +19862,20 @@ fields:
       mode: NULLABLE
       description: 'Whether a page used the CSS property math-shift. Compare against
         `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_doc_fullscreen_attribute
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used FullscreenAttribute. Compare against `use.counter.content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_deprecated_ops_page_fullscreen_attribute
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used FullscreenAttribute. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
 
         '
   - name: labeled_counter

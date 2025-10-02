@@ -36,7 +36,10 @@ SELECT
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size
     ) AS `memory_distribution`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`,
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error
@@ -98,7 +101,10 @@ SELECT
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size
     ) AS `memory_distribution`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`,
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error
@@ -160,7 +166,10 @@ SELECT
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size
     ) AS `memory_distribution`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`,
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error
@@ -222,7 +231,10 @@ SELECT
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size
     ) AS `memory_distribution`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`,
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error
@@ -284,7 +296,10 @@ SELECT
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
       metrics.memory_distribution.glean_upload_pending_pings_directory_size
     ) AS `memory_distribution`,
-    STRUCT(metrics.object.glean_health_data_directory_info) AS `object`,
+    STRUCT(
+      metrics.object.glean_health_data_directory_info,
+      metrics.object.glean_database_load_sizes
+    ) AS `object`,
     STRUCT(
       metrics.string.glean_client_annotation_experimentation_id,
       metrics.string.glean_database_rkv_load_error

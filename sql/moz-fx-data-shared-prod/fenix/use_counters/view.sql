@@ -2634,7 +2634,9 @@ SELECT
       metrics.counter.use_counter_doc_js_use_asm,
       metrics.counter.use_counter_page_js_use_asm,
       metrics.counter.use_counter_css_doc_css_math_shift,
-      metrics.counter.use_counter_css_page_css_math_shift
+      metrics.counter.use_counter_css_page_css_math_shift,
+      metrics.counter.use_counter_deprecated_ops_doc_fullscreen_attribute,
+      metrics.counter.use_counter_deprecated_ops_page_fullscreen_attribute
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -5292,7 +5294,9 @@ SELECT
       metrics.counter.use_counter_doc_js_use_asm,
       metrics.counter.use_counter_page_js_use_asm,
       metrics.counter.use_counter_css_doc_css_math_shift,
-      metrics.counter.use_counter_css_page_css_math_shift
+      metrics.counter.use_counter_css_page_css_math_shift,
+      metrics.counter.use_counter_deprecated_ops_doc_fullscreen_attribute,
+      metrics.counter.use_counter_deprecated_ops_page_fullscreen_attribute
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -7950,7 +7954,9 @@ SELECT
       metrics.counter.use_counter_doc_js_use_asm,
       metrics.counter.use_counter_page_js_use_asm,
       metrics.counter.use_counter_css_doc_css_math_shift,
-      metrics.counter.use_counter_css_page_css_math_shift
+      metrics.counter.use_counter_css_page_css_math_shift,
+      metrics.counter.use_counter_deprecated_ops_doc_fullscreen_attribute,
+      metrics.counter.use_counter_deprecated_ops_page_fullscreen_attribute
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -10608,7 +10614,9 @@ SELECT
       metrics.counter.use_counter_doc_js_use_asm,
       metrics.counter.use_counter_page_js_use_asm,
       metrics.counter.use_counter_css_doc_css_math_shift,
-      metrics.counter.use_counter_css_page_css_math_shift
+      metrics.counter.use_counter_css_page_css_math_shift,
+      metrics.counter.use_counter_deprecated_ops_doc_fullscreen_attribute,
+      metrics.counter.use_counter_deprecated_ops_page_fullscreen_attribute
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -13266,7 +13274,9 @@ SELECT
       metrics.counter.use_counter_doc_js_use_asm,
       metrics.counter.use_counter_page_js_use_asm,
       metrics.counter.use_counter_css_doc_css_math_shift,
-      metrics.counter.use_counter_css_page_css_math_shift
+      metrics.counter.use_counter_css_page_css_math_shift,
+      metrics.counter.use_counter_deprecated_ops_doc_fullscreen_attribute,
+      metrics.counter.use_counter_deprecated_ops_page_fullscreen_attribute
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

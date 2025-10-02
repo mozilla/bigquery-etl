@@ -60,6 +60,7 @@ mozilla_account_change_events AS (
   WHERE
     old_subscription IS NOT NULL
     AND subscription.mozilla_account_id_sha256 IS DISTINCT FROM old_subscription.mozilla_account_id_sha256
+    AND subscription.ended_at IS NULL
 ),
 plan_change_events AS (
   SELECT
@@ -91,6 +92,7 @@ plan_change_events AS (
     subscription_changes
   WHERE
     subscription.provider_plan_id != old_subscription.provider_plan_id
+    AND subscription.ended_at IS NULL
 ),
 trial_change_events AS (
   SELECT

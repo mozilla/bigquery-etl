@@ -1,0 +1,12 @@
+friendly_name: Fxa Win10 Users Daily
+description: |-
+  This query identifies Firefox Accounts users on Windows 10 who have been inactive for exactly 14 days and
+  prepares their records for Braze by assigning an external ID and email.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: false
+  schedule: daily
+  owner: lmcfall
+scheduling:
+  dag_name: bqetl_braze

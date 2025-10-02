@@ -626,6 +626,8 @@ with DAG(
         mozilla_org_derived__www_site_hits__v2
     )
 
+    mozilla_org_derived__blog_performance__v1.set_upstream(wait_for_blogs_events_table)
+
     mozilla_org_derived__blogs_daily_summary__v2.set_upstream(
         mozilla_org_derived__blogs_goals__v2
     )

@@ -10,6 +10,9 @@ labels:
   dag: bqetl_google_analytics_derived_ga4
 scheduling:
   dag_name: bqetl_google_analytics_derived_ga4
+  depends_on:
+  - task_id: wait_for_blogs_events_table
+    dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
   time_partitioning:
     type: day

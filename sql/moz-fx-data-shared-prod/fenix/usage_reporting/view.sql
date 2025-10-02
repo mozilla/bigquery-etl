@@ -178,30 +178,7 @@ SELECT
   additional_properties,
   document_id,
   events,
-  STRUCT(
-    STRUCT(
-      metadata.geo.city,
-      metadata.geo.country,
-      metadata.geo.db_version,
-      metadata.geo.subdivision1,
-      metadata.geo.subdivision2
-    ) AS `geo`,
-    STRUCT(
-      metadata.header.date,
-      metadata.header.dnt,
-      metadata.header.x_debug_id,
-      metadata.header.x_foxsec_ip_reputation,
-      metadata.header.x_lb_tags,
-      metadata.header.x_pingsender_version,
-      metadata.header.x_source_tags,
-      metadata.header.x_telemetry_agent,
-      metadata.header.parsed_date,
-      metadata.header.parsed_x_source_tags,
-      metadata.header.parsed_x_lb_tags
-    ) AS `header`,
-    STRUCT(metadata.isp.db_version, metadata.isp.name, metadata.isp.organization) AS `isp`,
-    metadata.user_agent
-  ) AS `metadata`,
+  metadata,
   STRUCT(
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

@@ -113,6 +113,7 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
+    AND refunds.created < history.valid_to
   GROUP BY
     subscriptions_history_id
 ),

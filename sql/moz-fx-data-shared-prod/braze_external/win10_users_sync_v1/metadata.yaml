@@ -5,7 +5,7 @@ description: |-
 owners:
 - lmcfall@mozilla.com
 labels:
-  incremental: false
+  incremental: true
   owner1: lmcfall
 scheduling:
   dag_name: bqetl_braze

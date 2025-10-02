@@ -1,3 +1,21 @@
+2025-10-02:
+  start_date: 2025-04-18
+  end_date: 2025-04-24
+  reason: Backfill as there is missing data for this date period (DENG-9755).
+  watchers:
+  - mhirose@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+
+2025-10-01:
+  start_date: 2024-08-24
+  end_date: 2024-10-14
+  reason: Backfill as there is missing data for this date period (DENG-9755).
+  watchers:
+  - mhirose@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+
 2025-01-22:
   start_date: 2024-03-05
   end_date: 2025-01-21

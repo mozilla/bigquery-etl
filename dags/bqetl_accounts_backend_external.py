@@ -79,6 +79,19 @@ with DAG(
         task_concurrency=1,
     )
 
+    with TaskGroup(
+        "accounts_backend_external__emails__v1_external",
+    ) as accounts_backend_external__emails__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze__wait_for_accounts_backend_external__emails__v1",
+            external_dag_id="bqetl_braze",
+            external_task_id="wait_for_accounts_backend_external__emails__v1",
+        )
+
+        accounts_backend_external__emails__v1_external.set_upstream(
+            accounts_backend_external__emails__v1
+        )
+
     accounts_backend_external__nonprod_accounts__v1 = bigquery_etl_query(
         task_id="accounts_backend_external__nonprod_accounts__v1",
         destination_table="nonprod_accounts_v1",

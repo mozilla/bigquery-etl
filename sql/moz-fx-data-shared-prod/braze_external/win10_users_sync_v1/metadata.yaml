@@ -1,0 +1,26 @@
+friendly_name: Win10 Users Sync
+description: |-
+  This table will sync inactive Windows 10 Firefox users to Braze to be contacted
+  in the Win10 Inactive User Campaign.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+  dag: bqetl_braze
+scheduling:
+  dag_name: bqetl_braze
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.fxa_win10_users_historical_v1
+require_column_descriptions: false

@@ -52,6 +52,7 @@ WITH subscriptions_history AS (
     `moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_history_v1`
   WHERE
     subscription.last_transaction.in_app_ownership_type = 'PURCHASED'
+    AND valid_to > valid_from
   WINDOW
     subscription_changes_asc AS (
       PARTITION BY

@@ -12,7 +12,7 @@ scheduling:
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
   depends_on:
-  - task_id: wait_for_wmo_events_table
+  - task_id: wait_for_blogs_events_table
     dag_name: bqetl_google_analytics_derived_ga4
 bigquery:
   time_partitioning:

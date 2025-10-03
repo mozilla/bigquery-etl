@@ -151,11 +151,27 @@ augmented_daily_subscriptions_5 AS (
   SELECT
     *,
     ROUND(
-      (monthly_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0))),
+      (
+        (monthly_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0)))
+        -- Subtract service fees charged by Apple App Store and Google Play Store (DENG-9773).
+        - IF(
+          subscription.provider IN ('Apple', 'Google'),
+          (monthly_recurring_gross_revenue * 0.15),
+          0
+        )
+      ),
       2
     ) AS monthly_recurring_revenue,
     ROUND(
-      (annual_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0))),
+      (
+        (annual_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0)))
+        -- Subtract service fees charged by Apple App Store and Google Play Store (DENG-9773).
+        - IF(
+          subscription.provider IN ('Apple', 'Google'),
+          (annual_recurring_gross_revenue * 0.15),
+          0
+        )
+      ),
       2
     ) AS annual_recurring_revenue
   FROM

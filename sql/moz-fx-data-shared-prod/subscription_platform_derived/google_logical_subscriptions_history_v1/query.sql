@@ -179,6 +179,18 @@ SELECT
       history.mozilla_account_id,
       TO_HEX(SHA256(history.mozilla_account_id)) AS mozilla_account_id_sha256,
       history.subscription.country_code,
+      CASE
+        WHEN history.subscription.cancel_reason IS NULL
+          THEN NULL
+        WHEN history.subscription.cancel_reason = 0
+          THEN 'User Initiated'
+        WHEN history.subscription.cancel_reason = 1
+          AND history.subscription.payment_state = 0
+          THEN 'Payment Failure'
+        WHEN history.subscription.cancel_reason = 3
+          THEN 'Admin Initiated'
+        ELSE 'Other'
+      END AS ended_reason,
       google_sku_services.services,
       history.subscription.metadata.package_name AS provider_product_id,
       google_sku_stripe_plans.product_name,

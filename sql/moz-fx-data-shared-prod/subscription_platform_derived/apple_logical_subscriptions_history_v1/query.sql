@@ -284,6 +284,26 @@ SELECT
       WHEN 5
         THEN 'Revoked'
     END AS provider_status,
+    -- API Docs enumerations :
+    -- https://developer.apple.com/documentation/appstoreserverapi/status
+    -- https://developer.apple.com/documentation/appstoreserverapi/expirationintent
+    CASE
+      WHEN NOT history.subscription_is_active
+        THEN NULL
+      WHEN (
+          history.subscription.status = 2
+          AND history.subscription.renewal_info.expiration_intent IN (1, 3)
+          OR history.subscription.status = 5
+        )
+        THEN 'User Initiated'
+      WHEN (
+          history.subscription.status = 2
+          AND history.subscription.renewal_info.expiration_intent = 2
+          OR history.subscription.status = 3
+        )
+        THEN 'Payment Failure'
+      ELSE 'Other'
+    END AS ended_reason,
     history_period.started_at,
     IF(
       history.subscription_is_active IS NOT TRUE,

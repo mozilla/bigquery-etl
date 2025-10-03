@@ -207,8 +207,7 @@ def create(
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
 
-    project, dataset, table = qualified_table_name_matching(qualified_table_name)
-    if (Path(sql_dir) / project / dataset / table / METADATA_FILE).exists():
+    if (backfill_file.parent / METADATA_FILE).exists():
         validate_depends_on_past_end_date(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)

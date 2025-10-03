@@ -19,11 +19,11 @@ scheduling:
 bigquery:
   time_partitioning:
     type: day
-    field: first_seen_date
+    field: event_first_seen_date
     require_partition_filter: false
-    clustering:
-      fields:
-        - event_category
-        - sample_id
-        - normalized_channel
-        - submission_date
+  clustering:
+    fields:
+      - event_category
+      - sample_id
+      - normalized_channel
+      - submission_date

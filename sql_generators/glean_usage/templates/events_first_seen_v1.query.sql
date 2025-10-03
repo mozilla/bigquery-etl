@@ -25,8 +25,13 @@ eventsstream as (
     `{{ project_id }}.{{ app_name }}_derived.{{ base_table }}`
     where
     -- initialize by looking over all of history
-    date(submission_timestamp) >= date_sub(@submission_date, interval 1 day)
+    date(submission_timestamp) >= '2023-01-01'
     and profile_group_id is not null
+    and event_category not in (
+      'media.playback',
+      'nimbus_events',
+      'uptake.remotecontent.result'
+    )
     group by
     client_id,
     profile_group_id,
@@ -46,7 +51,7 @@ with
 _current as (
     select
     @submission_date as submission_date,
-    @submission_date as first_seen_date,
+    @submission_date as event_first_seen_date,
     client_id,
     profile_group_id,
     sample_id,
@@ -67,9 +72,14 @@ _current as (
     where
     date(submission_timestamp) = @submission_date
     and profile_group_id is not null
+    and event_category not in (
+      'media.playback',
+      'nimbus_events',
+      'uptake.remotecontent.result'
+    )
     group by
     submission_date,
-    first_seen_date,
+    event_first_seen_date,
     client_id,
     profile_group_id,
     sample_id,
@@ -82,7 +92,7 @@ _current as (
 _previous as (
     select
     submission_date,
-    first_seen_date,
+    event_first_seen_date,
     client_id,
     profile_group_id,
     sample_id,
@@ -99,10 +109,10 @@ _previous as (
     normalized_os,
     normalized_os_version
     from
-    `{{ project_id }}.{{ app_name }}_derived.{{ events_first_seen_table }}` -- events_first_seen_table doesn't yet exist
+    `{{ project_id }}.{{ app_name }}_derived.{{ events_first_seen_table }}`
     where
-    first_seen_date > '2023-01-01'
-    and first_seen_date < @submission_date
+    event_first_seen_date > '2023-01-01'
+    and event_first_seen_date < @submission_date
 ),
 _joined as (
   --switch to using separate if statements instead of 1
@@ -110,7 +120,7 @@ _joined as (
   select
     if(
       _previous.client_id is null
-      or _previous.first_seen_date >= _current.first_seen_date,
+      or _previous.event_first_seen_date >= _current.event_first_seen_date,
       _current,
       _previous
     ).*

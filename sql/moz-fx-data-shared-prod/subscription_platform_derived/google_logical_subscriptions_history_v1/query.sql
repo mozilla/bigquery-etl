@@ -180,7 +180,7 @@ SELECT
       TO_HEX(SHA256(history.mozilla_account_id)) AS mozilla_account_id_sha256,
       history.subscription.country_code,
       CASE
-        WHEN history.subscription.cancel_reason IS NULL
+        WHEN history.subscription_is_active IS NOT TRUE
           THEN NULL
         WHEN history.subscription.cancel_reason = 0
           THEN 'User Initiated'

@@ -288,7 +288,7 @@ SELECT
     -- https://developer.apple.com/documentation/appstoreserverapi/status
     -- https://developer.apple.com/documentation/appstoreserverapi/expirationintent
     CASE
-      WHEN NOT history.subscription_is_active
+      WHEN history.subscription_is_active IS NOT TRUE
         THEN NULL
       WHEN (
           history.subscription.status = 2

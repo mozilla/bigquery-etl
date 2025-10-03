@@ -74,7 +74,8 @@ WITH base AS (
         client_info.telemetry_sdk_build AS telemetry_sdk_build,
         client_info.build_date AS build_date,
         client_info.session_id AS session_id,
-        client_info.session_count AS session_count
+        client_info.session_count AS session_count,
+        client_info.windows_build_number AS windows_build_number
       ) AS client_info,
       STRUCT(
         ping_info.seq,
@@ -152,6 +153,14 @@ CROSS JOIN
         event.category = 'nimbus_events'
         AND event.name = 'enrollment_status'
         AND app_version_major = 140
+      ) IS NOT TRUE
+      -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+      AND (
+        normalized_channel = 'release'
+        AND event.category = 'uptake.remotecontent.result'
+        AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
+        AND app_version_major >= 143
+        AND sample_id != 0
       ) IS NOT TRUE
   {% elif app_name == "firefox_desktop_background_update" %}
     WHERE

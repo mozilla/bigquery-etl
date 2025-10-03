@@ -31,6 +31,17 @@ IF
         LEFT JOIN
           -- Add * extra to every event to get total event count
           UNNEST(event.extra || [STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+        {% if dataset == "firefox_desktop" and events_table == "events_v1" %}
+          WHERE
+            -- See https://mozilla-hub.atlassian.net/browse/DENG-9732
+            (
+              normalized_channel = 'release'
+              AND event.category = 'uptake.remotecontent.result'
+              AND event.name IN ('uptake_remotesettings', 'uptake_normandy')
+              AND mozfun.norm.extract_version(client_info.app_display_version, 'major') >= 143
+              AND sample_id != 0
+            ) IS NOT TRUE
+        {% endif %}
       ){{ "," if not loop.last }}
     {% endfor -%},
     combined AS (
@@ -46,15 +57,8 @@ IF
     SELECT
       -- used for partitioning, only allows TIMESTAMP columns
       TIMESTAMP_TRUNC(submission_timestamp, DAY) AS submission_date,
-      TIMESTAMP_ADD(
-      TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-        -- Aggregates event counts over 60-minute intervals
-        INTERVAL(DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) * 60) MINUTE
-      ) AS window_start,
-      TIMESTAMP_ADD(
-        TIMESTAMP_TRUNC(submission_timestamp, HOUR),
-        INTERVAL((DIV(EXTRACT(MINUTE FROM submission_timestamp), 60) + 1) * 60) MINUTE
-      ) AS window_end,
+      TIMESTAMP_TRUNC(submission_timestamp, HOUR) AS window_start,
+      TIMESTAMP_ADD(TIMESTAMP_TRUNC(submission_timestamp, HOUR), INTERVAL 1 HOUR) AS window_end,
       * EXCEPT (submission_timestamp),
       COUNT(*) AS total_events,
     FROM

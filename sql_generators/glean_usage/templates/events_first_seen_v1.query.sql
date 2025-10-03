@@ -1,83 +1,29 @@
-{{ header }} -- the header doesn't seem to work properly
-
-{% raw %}
-{% if is_init() %}
-{% endraw %}
-with
-eventsstream as (
-    select
+WITH _current AS (
+  SELECT
+    @submission_date AS submission_date,
+    @submission_date AS event_first_seen_date,
     client_id,
     profile_group_id,
     sample_id,
     event_category,
     event_name,
     `event`,
-    cast(null as string) as criteria,
-    min(submission_timestamp) as first_submission_timestamp,
-    min(event_timestamp) as first_event_timestamp,
-    min_by(event_extra, submission_timestamp) as event_extra,
-    min_by(app_version_major, submission_timestamp) as app_version_major,
-    min_by(normalized_channel, submission_timestamp) as normalized_channel,
-    min_by(normalized_country_code, submission_timestamp) as normalized_country_code,
-    min_by(normalized_os, submission_timestamp) as normalized_os,
-    min_by(normalized_os_version, submission_timestamp) as normalized_os_version,
-    from
+    CAST(NULL AS string) AS criteria,
+    MIN(submission_timestamp) AS first_submission_timestamp,
+    MIN(event_timestamp) AS first_event_timestamp,
+    min_by(event_extra, submission_timestamp) AS event_extra,
+    min_by(app_version_major, submission_timestamp) AS app_version_major,
+    min_by(normalized_channel, submission_timestamp) AS normalized_channel,
+    min_by(normalized_country_code, submission_timestamp) AS normalized_country_code,
+    min_by(normalized_os, submission_timestamp) AS normalized_os,
+    min_by(normalized_os_version, submission_timestamp) AS normalized_os_version,
+  FROM
     `{{ project_id }}.{{ app_name }}_derived.{{ base_table }}`
-    where
-    -- initialize by looking over all of history
-    date(submission_timestamp) >= '2023-01-01'
-    and profile_group_id is not null
-    and event_category not in (
-      'media.playback',
-      'nimbus_events',
-      'uptake.remotecontent.result'
-    )
-    group by
-    client_id,
-    profile_group_id,
-    sample_id,
-    event_category,
-    event_name,
-    `event`,
-    criteria
-)
-select * from eventsstream
-
-{% raw %}
-{% else %}
-{% endraw %}
-
-with
-_current as (
-    select
-    @submission_date as submission_date,
-    @submission_date as event_first_seen_date,
-    client_id,
-    profile_group_id,
-    sample_id,
-    event_category,
-    event_name,
-    `event`,
-    cast(null as string) as criteria,
-    min(submission_timestamp) as first_submission_timestamp,
-    min(event_timestamp) as first_event_timestamp,
-    min_by(event_extra, submission_timestamp) as event_extra,
-    min_by(app_version_major, submission_timestamp) as app_version_major,
-    min_by(normalized_channel, submission_timestamp) as normalized_channel,
-    min_by(normalized_country_code, submission_timestamp) as normalized_country_code,
-    min_by(normalized_os, submission_timestamp) as normalized_os,
-    min_by(normalized_os_version, submission_timestamp) as normalized_os_version,
-    from
-    `{{ project_id }}.{{ app_name }}_derived.{{ base_table }}`
-    where
-    date(submission_timestamp) = @submission_date
-    and profile_group_id is not null
-    and event_category not in (
-      'media.playback',
-      'nimbus_events',
-      'uptake.remotecontent.result'
-    )
-    group by
+  WHERE
+    DATE(submission_timestamp) = @submission_date
+    AND profile_group_id IS NOT NULL
+    AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+  GROUP BY
     submission_date,
     event_first_seen_date,
     client_id,
@@ -89,8 +35,8 @@ _current as (
     criteria
 ),
 -- query over all of history to see whether the client_id has shown up before
-_previous as (
-    select
+_previous AS (
+  SELECT
     submission_date,
     event_first_seen_date,
     client_id,
@@ -99,7 +45,7 @@ _previous as (
     event_category,
     event_name,
     `event`,
-    cast(null as string) as criteria,
+    CAST(NULL AS string) AS criteria,
     first_submission_timestamp,
     first_event_timestamp,
     event_extra,
@@ -108,33 +54,29 @@ _previous as (
     normalized_country_code,
     normalized_os,
     normalized_os_version
-    from
+  FROM
     `{{ project_id }}.{{ app_name }}_derived.{{ events_first_seen_table }}`
-    where
+  WHERE
     event_first_seen_date > '2023-01-01'
-    and event_first_seen_date < @submission_date
+    AND event_first_seen_date < @submission_date
 ),
-_joined as (
+_joined AS (
   --switch to using separate if statements instead of 1
   --because dry run is struggling to validate the final struct
-  select
-    if(
-      _previous.client_id is null
-      or _previous.event_first_seen_date >= _current.event_first_seen_date,
+  SELECT
+    IF(
+      _previous.client_id IS NULL
+      OR _previous.event_first_seen_date >= _current.event_first_seen_date,
       _current,
       _previous
     ).*
-  from
+  FROM
     _current
-  full join
+  FULL JOIN
     _previous
-    using (client_id)
+    USING (client_id)
 )
-
-select
-*
-from _joined
-
-{% raw %}
-{% endif %}
-{% endraw %}
+SELECT
+  *
+FROM
+  _joined

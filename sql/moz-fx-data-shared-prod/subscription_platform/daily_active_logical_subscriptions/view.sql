@@ -87,6 +87,95 @@ augmented_daily_subscriptions_3 AS (
     END AS ongoing_discounted_annual_recurring_revenue_months
   FROM
     augmented_daily_subscriptions_2
+),
+augmented_daily_subscriptions_4 AS (
+  SELECT
+    *,
+    IF(
+      subscription.is_active IS NOT TRUE
+      OR subscription.is_trial IS TRUE,
+      0,
+      (
+        GREATEST(
+          (subscription.plan_amount - COALESCE(subscription.current_period_discount_amount, 0)),
+          0
+        ) / subscription.plan_interval_months
+      )
+    ) AS monthly_recurring_gross_revenue,
+    IF(
+      subscription.is_active IS NOT TRUE,
+      0,
+      (
+        -- Current period annual recurring gross revenue
+        IF(
+          subscription.is_trial IS TRUE,
+          0,
+          (
+            GREATEST(
+              (subscription.plan_amount - COALESCE(subscription.current_period_discount_amount, 0)),
+              0
+            ) / subscription.plan_interval_months * current_period_annual_recurring_revenue_months
+          )
+        )
+        -- Ongoing discounted annual recurring gross revenue
+        + IF(
+          subscription.auto_renew IS NOT TRUE
+          OR COALESCE(subscription.ongoing_discount_amount, 0) = 0,
+          0,
+          (
+            GREATEST(
+              (subscription.plan_amount - COALESCE(subscription.ongoing_discount_amount, 0)),
+              0
+            ) / subscription.plan_interval_months * ongoing_discounted_annual_recurring_revenue_months
+          )
+        )
+        -- Ongoing undiscounted annual recurring gross revenue
+        + IF(
+          subscription.auto_renew IS NOT TRUE,
+          0,
+          (
+            subscription.plan_amount / subscription.plan_interval_months * GREATEST(
+              (
+                12 - current_period_annual_recurring_revenue_months - ongoing_discounted_annual_recurring_revenue_months
+              ),
+              0
+            )
+          )
+        )
+      )
+    ) AS annual_recurring_gross_revenue
+  FROM
+    augmented_daily_subscriptions_3
+),
+augmented_daily_subscriptions_5 AS (
+  SELECT
+    *,
+    ROUND(
+      (
+        (monthly_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0)))
+        -- Subtract service fees charged by Apple App Store and Google Play Store (DENG-9773).
+        - IF(
+          subscription.provider IN ('Apple', 'Google'),
+          (monthly_recurring_gross_revenue * 0.15),
+          0
+        )
+      ),
+      2
+    ) AS monthly_recurring_revenue,
+    ROUND(
+      (
+        (annual_recurring_gross_revenue / (1 + COALESCE(country_vat_rate, 0)))
+        -- Subtract service fees charged by Apple App Store and Google Play Store (DENG-9773).
+        - IF(
+          subscription.provider IN ('Apple', 'Google'),
+          (annual_recurring_gross_revenue * 0.15),
+          0
+        )
+      ),
+      2
+    ) AS annual_recurring_revenue
+  FROM
+    augmented_daily_subscriptions_4
 )
 SELECT
   id,
@@ -113,90 +202,17 @@ SELECT
         ROUND((subscription.ongoing_discount_amount * plan_currency_usd_exchange_rate), 2)
       ) AS ongoing_discount_amount_usd,
       IF(
-        subscription.is_active IS NOT TRUE
-        OR subscription.is_trial IS TRUE,
-        0,
-        ROUND(
-          (
-            -- Start with monthly recurring gross revenue...
-            (
-              GREATEST(
-                (
-                  subscription.plan_amount - COALESCE(
-                    subscription.current_period_discount_amount,
-                    0
-                  )
-                ),
-                0
-              ) / subscription.plan_interval_months
-            )
-            -- Remove VAT to get monthly recurring net revenue.
-            / (1 + COALESCE(country_vat_rate, 0))
-            -- Apply exchange rate to get monthly recurring revenue in USD.
-            * IF(subscription.plan_currency = 'USD', 1, plan_currency_usd_exchange_rate)
-          ),
-          2
-        )
+        subscription.plan_currency = 'USD',
+        monthly_recurring_revenue,
+        ROUND((monthly_recurring_revenue * plan_currency_usd_exchange_rate), 2)
       ) AS monthly_recurring_revenue_usd,
       IF(
-        subscription.is_active IS NOT TRUE,
-        0,
-        ROUND(
-          (
-            -- Start with annual recurring gross revenue...
-            (
-              -- Current period annual recurring gross revenue
-              IF(
-                subscription.is_trial IS TRUE,
-                0,
-                (
-                  GREATEST(
-                    (
-                      subscription.plan_amount - COALESCE(
-                        subscription.current_period_discount_amount,
-                        0
-                      )
-                    ),
-                    0
-                  ) / subscription.plan_interval_months * current_period_annual_recurring_revenue_months
-                )
-              )
-              -- Ongoing discounted annual recurring gross revenue
-              + IF(
-                subscription.auto_renew IS NOT TRUE
-                OR COALESCE(subscription.ongoing_discount_amount, 0) = 0,
-                0,
-                (
-                  GREATEST(
-                    (subscription.plan_amount - COALESCE(subscription.ongoing_discount_amount, 0)),
-                    0
-                  ) / subscription.plan_interval_months * ongoing_discounted_annual_recurring_revenue_months
-                )
-              )
-              -- Ongoing undiscounted annual recurring gross revenue
-              + IF(
-                subscription.auto_renew IS NOT TRUE,
-                0,
-                (
-                  subscription.plan_amount / subscription.plan_interval_months * GREATEST(
-                    (
-                      12 - current_period_annual_recurring_revenue_months - ongoing_discounted_annual_recurring_revenue_months
-                    ),
-                    0
-                  )
-                )
-              )
-            )
-            -- Remove VAT to get annual recurring net revenue.
-            / (1 + COALESCE(country_vat_rate, 0))
-            -- Apply exchange rate to get annual recurring revenue in USD.
-            * IF(subscription.plan_currency = 'USD', 1, plan_currency_usd_exchange_rate)
-          ),
-          2
-        )
+        subscription.plan_currency = 'USD',
+        annual_recurring_revenue,
+        ROUND((annual_recurring_revenue * plan_currency_usd_exchange_rate), 2)
       ) AS annual_recurring_revenue_usd
   ) AS subscription,
   was_active_at_day_start,
   was_active_at_day_end
 FROM
-  augmented_daily_subscriptions_3
+  augmented_daily_subscriptions_5

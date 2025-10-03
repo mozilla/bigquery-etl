@@ -225,4 +225,4 @@ SELECT
   was_active_at_month_start,
   was_active_at_month_end
 FROM
-  augmented_monthly_subscriptions_4
+  augmented_monthly_subscriptions_6

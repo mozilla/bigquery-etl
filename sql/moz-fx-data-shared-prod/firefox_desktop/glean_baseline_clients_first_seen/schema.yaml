@@ -2,19 +2,15 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
-  description: The date when the telemetry ping is received on the server side.
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: client_id
   type: STRING
   mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
 - name: attribution
   type: RECORD
   mode: NULLABLE
@@ -22,23 +18,18 @@ fields:
   - name: campaign
     type: STRING
     mode: NULLABLE
-    description: The attribution campaign (e.g. 'mozilla-org').
   - name: content
     type: STRING
     mode: NULLABLE
-    description: The attribution content (e.g. 'firefoxview').
   - name: medium
     type: STRING
     mode: NULLABLE
-    description: The attribution medium (e.g. 'organic' for a search engine).
   - name: source
     type: STRING
     mode: NULLABLE
-    description: The attribution source (e.g. 'google-play').
   - name: term
     type: STRING
     mode: NULLABLE
-    description: The attribution term (e.g. 'browser with developer tools for android').
 - name: distribution
   type: RECORD
   mode: NULLABLE
@@ -46,11 +37,9 @@ fields:
   - name: name
     type: STRING
     mode: NULLABLE
-    description: The distribution name (e.g. 'MozillaOnline').
 - name: attribution_ext
   type: JSON
   mode: NULLABLE
-  description: Extended Attribution Information
 - name: attribution_dlsource
   type: STRING
   mode: NULLABLE
@@ -69,71 +58,45 @@ fields:
 - name: distribution_ext
   type: JSON
   mode: NULLABLE
-  description: Extended Distribution Information
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE
-  description: 'The client_id according to Telemetry.
-
-    Might not always have a value due to being too early for it to have loaded.
-
-    Value may be the canary client id `c0ffeec0-ffee-c0ff-eec0-ffeec0ffeec0` in pings
-    near when
-
-    the data upload pref is disabled (if Telemetry gets to go first), or between when
-    a client_id
-
-    has been removed and when it has been regenerated.
-
-    Does not need to be sent in the Glean "deletion-request" ping.'
 - name: legacy_telemetry_profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID identifying the profile's group on a single device and allowing
-    user-oriented correlation of data
 - name: country
   type: STRING
   mode: NULLABLE
-  description: First Seen Country
 - name: distribution_id
   type: STRING
   mode: NULLABLE
-  description: The distribution ID associated with the install of Firefox.
 - name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: The optional Windows build number, reported by Windows (e.g. 22000)
-    and not set for other platforms.
 - name: locale
   type: STRING
   mode: NULLABLE
-  description: The locale of the application during initialization (e.g. "es-ES").
-    If the locale can't be determined on the system, the value is "und", to indicate
-    "undetermined".
 - name: normalized_os
   type: STRING
   mode: NULLABLE
-  description: Set to "Other" if this message contained an unrecognized OS name
 - name: app_display_version
   type: STRING
   mode: NULLABLE
-  description: The user visible version string (e.g. "1.0.3"). If the value was not
-    provided through configuration, this metric gets set to Unknown.
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
-  description: The normalized operating system version.
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: Internet Service Provider
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
 - name: windows_version
+  type: STRING
+  mode: NULLABLE
+- name: normalized_app_name
   type: STRING
   mode: NULLABLE

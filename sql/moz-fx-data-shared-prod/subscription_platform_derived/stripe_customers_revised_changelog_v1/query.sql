@@ -57,7 +57,8 @@ WITH original_changelog AS (
       PARTITION BY
         customer.id
       ORDER BY
-        `timestamp`
+        `timestamp`,
+        id
     )
 ),
 pre_fivetran_changelog AS (

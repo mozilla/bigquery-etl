@@ -5,8 +5,15 @@ WITH subscription_changes AS (
   SELECT
     id AS service_subscriptions_history_id,
     valid_from AS `timestamp`,
+    valid_to AS next_subscription_change_at,
     subscription,
-    LAG(subscription) OVER (PARTITION BY subscription.id ORDER BY valid_from) AS old_subscription
+    LAG(subscription) OVER (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        valid_from,
+        valid_to
+    ) AS old_subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.service_subscriptions_history_v1`
 ),
@@ -28,7 +35,13 @@ subscription_start_events AS (
   FROM
     subscription_changes
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY `timestamp`)
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        `timestamp`,
+        next_subscription_change_at
+    )
 ),
 subscription_end_events AS (
   SELECT

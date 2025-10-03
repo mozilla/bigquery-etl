@@ -1546,6 +1546,7 @@ fields:
       description: 'Records the number of times a user taps to dismiss (does not include
         tapping accept or remind me later).
 
+
         **Developer Note**: This replaces the old `termsofuse.dismiss_count` metric.
 
         '
@@ -1553,6 +1554,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Records the number of times a user taps "remind me later".
+
 
         **Developer Note**: This replaces the old `termsofuse.remind_me_later_count`
         metric.
@@ -1562,6 +1564,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'Records the number of ToU impressions the user has had.
+
 
         **Developer Note**: This replaces the old `termsofuse.impression_count` metric.
 
@@ -2567,6 +2570,7 @@ fields:
       mode: NULLABLE
       description: 'The timestamp when the user accepted the Terms of Use.
 
+
         **Developer Note**: This replaces the old `termsofuse.date` metric.
 
         '
@@ -3415,6 +3419,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The version of the Terms of Use the user accepted.
+
 
         **Developer Note**: This replaces the old `termsofuse.version` metric.
 

@@ -16975,6 +16975,19 @@ fields:
         mime type.
 
         '
+    - name: pdfjs_comment_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user edits or deletes comments.
+
+        '
   - name: labeled_string
     type: RECORD
     mode: NULLABLE

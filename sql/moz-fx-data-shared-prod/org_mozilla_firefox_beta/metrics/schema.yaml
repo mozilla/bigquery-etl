@@ -12649,8 +12649,7 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream. (Migrated from
-        the geckoview metric of the same name).
+      description: 'Failure occurs when initializing the audio stream.
 
         '
     - name: glean_validation_pings_submitted
@@ -17955,6 +17954,19 @@ fields:
       description: 'Count the amount of times where a mime type is queried via MediaRecorder.isTypeSupported()
         or passed to the MediaRecorder constructor. The result is accumulated per
         mime type.
+
+        '
+    - name: pdfjs_comment_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user edits or deletes comments.
 
         '
   - name: quantity

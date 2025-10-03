@@ -645,7 +645,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_hit,
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
-      metrics.labeled_counter.media_recorder_mime_type_query
+      metrics.labeled_counter.media_recorder_mime_type_query,
+      metrics.labeled_counter.pdfjs_comment_edit
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -2432,7 +2433,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_hit,
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
-      metrics.labeled_counter.media_recorder_mime_type_query
+      metrics.labeled_counter.media_recorder_mime_type_query,
+      metrics.labeled_counter.pdfjs_comment_edit
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -4219,7 +4221,8 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_hit,
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
-      metrics.labeled_counter.media_recorder_mime_type_query
+      metrics.labeled_counter.media_recorder_mime_type_query,
+      metrics.labeled_counter.pdfjs_comment_edit
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,

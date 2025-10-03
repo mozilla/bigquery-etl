@@ -322,6 +322,7 @@ fields:
       mode: NULLABLE
       description: 'The timestamp when the user accepted the Terms of Use.
 
+
         **Developer Note**: This replaces the old `termsofuse.date` metric.
 
         '
@@ -420,6 +421,7 @@ fields:
       type: INTEGER
       mode: NULLABLE
       description: 'The version of the Terms of Use the user accepted.
+
 
         **Developer Note**: This replaces the old `termsofuse.version` metric.
 

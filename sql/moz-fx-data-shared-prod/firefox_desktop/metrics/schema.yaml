@@ -11798,6 +11798,19 @@ fields:
         mime type.
 
         '
+    - name: pdfjs_comment_edit
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times the user edits or deletes comments.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -49618,15 +49631,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine when not using OHTTP. Keys in this histogram are the search engine
-        identifier for configuration provided search engines and ''other'' for search
-        engines installed via other methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

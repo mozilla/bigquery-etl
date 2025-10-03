@@ -55,7 +55,8 @@ active_subscriptions_history AS (
       PARTITION BY
         subscription.id
       ORDER BY
-        valid_from
+        valid_from,
+        valid_to
       ROWS BETWEEN
         UNBOUNDED PRECEDING
         AND CURRENT ROW

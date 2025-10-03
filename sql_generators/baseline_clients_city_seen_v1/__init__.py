@@ -1,6 +1,5 @@
 """Generate baseline clients city seen per app."""
 
-import os
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List
@@ -34,7 +33,6 @@ def get_app_info_map() -> Dict[str, List[str]]:
     }
     """
     app_info = get_app_info()
-    # TODO: listing only a few app in config for testing
     app_info = [
         info
         for name, info in app_info.items()
@@ -87,16 +85,7 @@ def generate(target_project, output_dir, use_cloud_function):
 
     app_info_map = get_app_info_map()
 
-    # app_info_map = {
-    #     "firefox_desktop": ["firefox_desktop"],
-    #     "fenix": [
-    #             "org_mozilla_firefox",
-    #             "org_mozilla_fenix",
-    #     ],
-    # }
-
     for app_name, app_id_list in app_info_map.items():
-        print(f"{app_name} : {app_id_list}")
 
         query_sql = reformat(
             query_template.render(

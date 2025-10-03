@@ -29,10 +29,10 @@ WITH
     {% endraw %}
   WHERE
     client_info.client_id IS NOT NULL
-    AND sample_id = 0
     {% raw %}
     {% if is_init() %}
     {% endraw %}
+    AND sample_id = @sample_id
     AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% raw %}
     {% else %}

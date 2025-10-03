@@ -9,8 +9,7 @@ description: |-
   that do not yet exist in the table.
   This table should not be backfilled beyond 30 days which is the maximum retention of live tables.
 
-  Implementation Plan: https://docs.google.com/document/d/1S8yVEwJjtJy3Pd8cn_BHRhgxllVnoxKylGCpuMyqWNQ
-  Data Model Design:  https://docs.google.com/document/d/1i5SkUC5waiZGWEPu7elDIaY3IxD5jNZgJy1moAKn7g0
+  JIRA ticket: https://mozilla-hub.atlassian.net/browse/DENG-9468
 owners:
   - wichan@mozilla.com
 labels:

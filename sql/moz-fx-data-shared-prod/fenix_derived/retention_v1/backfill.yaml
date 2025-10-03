@@ -4,7 +4,7 @@
   reason: Backfill for missing data 2024-08-24 to 2024-10-14, query looks back 27 days - need future dates in params (DENG-9755).
   watchers:
   - mhirose@mozilla.com
-  status: initiate
+  status: Initiate
   shredder_mitigation: false
 
 2025-01-22:

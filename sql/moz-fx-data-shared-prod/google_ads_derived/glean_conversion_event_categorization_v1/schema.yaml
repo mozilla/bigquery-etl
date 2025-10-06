@@ -2,11 +2,11 @@ fields:
 - mode: NULLABLE
   name: client_id
   type: STRING
-  description: Client ID
+  description: A unique identifier (UUID) for the client.
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
-  description: First Seen Date
+  description: Date the server received the first baseline ping for this client_id.
 - mode: NULLABLE
   name: attribution_campaign
   type: STRING
@@ -30,15 +30,12 @@ fields:
 - mode: NULLABLE
   name: report_date
   type: DATE
-  description: Report Date
-- mode: NULLABLE
-  name: first_main_ping_date
-  type: DATE
-  description: First Main Ping Date
+  description: The date used to report the first 7 days of activity, 9 days after the client's first seen date.
 - mode: NULLABLE
   name: country
   type: STRING
-  description: Country
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
 - mode: NULLABLE
   name: dou
   type: INT64

@@ -276,6 +276,9 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_derived.desktop_retention_clients_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(
+        table="google_ads_derived.glean_conversion_event_categorization_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
         table="firefox_desktop_derived.desktop_engagement_clients_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(
@@ -313,7 +316,7 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="telemetry_stable.voice_v4"): DESKTOP_SRC,
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_active_clients_staging_v1",
-        field=(CLIENT_ID,) * 15,
+        field=(CLIENT_ID,) * 10,
     ): (
         DESKTOP_SRC,
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
@@ -323,11 +326,10 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
-        *LEGACY_MOBILE_SOURCES,
     ),
     DeleteTarget(
         table="glean_telemetry_derived.cohort_weekly_active_clients_staging_v1",
-        field=(CLIENT_ID,) * 15,
+        field=(CLIENT_ID,) * 10,
     ): (
         DESKTOP_GLEAN_SRC,
         DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
@@ -337,21 +339,6 @@ DELETE_TARGETS: DeleteIndex = {
         DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
         DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
         *FOCUS_ADDITIONAL_DELETIONS,
-        *LEGACY_MOBILE_SOURCES,
-    ),
-    DeleteTarget(
-        table="telemetry_derived.cohort_weekly_active_clients_v1",
-        field=(CLIENT_ID,) * 15,
-    ): (
-        DESKTOP_SRC,
-        DeleteSource(table="focus_android.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="firefox_ios.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="fenix.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="klar_ios.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="focus_ios.deletion_request", field=GLEAN_CLIENT_ID),
-        DeleteSource(table="klar_android.deletion_request", field=GLEAN_CLIENT_ID),
-        *FOCUS_ADDITIONAL_DELETIONS,
-        *LEGACY_MOBILE_SOURCES,
     ),
     DeleteTarget(
         table="telemetry_derived.cohort_weekly_cfs_staging_v1",

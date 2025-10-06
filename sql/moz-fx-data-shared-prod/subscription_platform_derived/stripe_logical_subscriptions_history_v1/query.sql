@@ -36,6 +36,8 @@ WITH subscriptions_history AS (
     subscription.status IN ('active', 'past_due', 'trialing') AS subscription_is_active
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2`
+  WHERE
+    valid_to > valid_from
 ),
 active_subscriptions_history AS (
   -- Only include a subscription's history once it becomes active.
@@ -53,7 +55,8 @@ active_subscriptions_history AS (
       PARTITION BY
         subscription.id
       ORDER BY
-        valid_from
+        valid_from,
+        valid_to
       ROWS BETWEEN
         UNBOUNDED PRECEDING
         AND CURRENT ROW
@@ -76,14 +79,6 @@ plan_services AS (
     ON plan_id IN UNNEST(tier.stripe_plan_ids)
   GROUP BY
     plan_id
-),
-paypal_subscriptions AS (
-  SELECT DISTINCT
-    subscription_id
-  FROM
-    `moz-fx-data-shared-prod.stripe_external.invoice_v1`
-  WHERE
-    JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
 ),
 subscriptions_history_charge_summaries AS (
   SELECT
@@ -121,6 +116,7 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
+    AND refunds.created < history.valid_to
   GROUP BY
     subscriptions_history_id
 ),
@@ -226,7 +222,11 @@ SELECT
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
     ) AS id,
     'Stripe' AS provider,
-    IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
+    IF(
+      history.subscription.collection_method = 'send_invoice',
+      'PayPal',
+      'Stripe'
+    ) AS payment_provider,
     history.subscription.id AS provider_subscription_id,
     subscription_item.id AS provider_subscription_item_id,
     history.subscription.created AS provider_subscription_created_at,
@@ -247,7 +247,7 @@ SELECT
             charge_summaries.latest_card_country
           )
       -- SubPlat copies the PayPal billing agreement country to the customer's address.
-      WHEN paypal_subscriptions.subscription_id IS NOT NULL
+      WHEN history.subscription.collection_method = 'send_invoice'
         THEN NULLIF(history.subscription.customer.address.country, '')
       ELSE charge_summaries.latest_card_country
     END AS country_code,
@@ -366,9 +366,6 @@ CROSS JOIN
 LEFT JOIN
   plan_services
   ON subscription_item.plan.id = plan_services.plan_id
-LEFT JOIN
-  paypal_subscriptions
-  ON history.subscription.id = paypal_subscriptions.subscription_id
 LEFT JOIN
   subscriptions_history_charge_summaries AS charge_summaries
   ON history.id = charge_summaries.subscriptions_history_id

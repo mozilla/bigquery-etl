@@ -669,3 +669,20 @@ fields:
   type: TIMESTAMP
   mode: NULLABLE
   description: If the subscription has a trial, the start time of that trial.
+- name: cancellation_details
+  type: RECORD
+  mode: NULLABLE
+  description: Details about why this subscription was cancelled.
+  fields:
+  - name: comment
+    type: STRING
+    mode: NULLABLE
+    description: Additional comments about why the user canceled the subscription, if the subscription was canceled explicitly by the user.
+  - name: feedback
+    type: STRING
+    mode: NULLABLE
+    description: The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
+  - name: reason
+    type: STRING
+    mode: NULLABLE
+    description: Details about the reason this subscription was cancelled.

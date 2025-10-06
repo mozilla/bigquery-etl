@@ -72,6 +72,7 @@ WITH subscriptions_history AS (
     `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_history_v1`
   WHERE
     subscription.purchase_type IS DISTINCT FROM 0  -- 0 = Test
+    AND valid_to > valid_from
 ),
 subscription_starts AS (
   SELECT

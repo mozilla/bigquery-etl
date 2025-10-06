@@ -5,8 +5,15 @@ WITH subscription_changes AS (
   SELECT
     id AS logical_subscriptions_history_id,
     valid_from AS `timestamp`,
+    valid_to AS next_subscription_change_at,
     subscription,
-    LAG(subscription) OVER (PARTITION BY subscription.id ORDER BY valid_from) AS old_subscription
+    LAG(subscription) OVER (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        valid_from,
+        valid_to
+    ) AS old_subscription
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1`
 ),
@@ -24,7 +31,13 @@ subscription_start_events AS (
   FROM
     subscription_changes
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY `timestamp`)
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        subscription.id
+      ORDER BY
+        `timestamp`,
+        next_subscription_change_at
+    )
 ),
 subscription_end_events AS (
   SELECT
@@ -60,6 +73,7 @@ mozilla_account_change_events AS (
   WHERE
     old_subscription IS NOT NULL
     AND subscription.mozilla_account_id_sha256 IS DISTINCT FROM old_subscription.mozilla_account_id_sha256
+    AND subscription.ended_at IS NULL
 ),
 plan_change_events AS (
   SELECT
@@ -91,6 +105,7 @@ plan_change_events AS (
     subscription_changes
   WHERE
     subscription.provider_plan_id != old_subscription.provider_plan_id
+    AND subscription.ended_at IS NULL
 ),
 trial_change_events AS (
   SELECT

@@ -9,7 +9,7 @@ labels:
   schedule: daily
   owner: lmcfall
 scheduling:
-  dag_name: bqetl_braze
+  dag_name: bqetl_braze_win10_sync
 bigquery:
   time_partitioning:
     type: day

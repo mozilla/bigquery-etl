@@ -80,7 +80,7 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
-DEFAULT_INIT_PARALLELISM = 10
+DEFAULT_INIT_PARALLELISM = 3
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
@@ -1467,7 +1467,7 @@ def _initialize_in_parallel(
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
-@billing_project_option()
+@billing_project_option(default="moz-fx-data-backfill-slots")
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -1599,7 +1599,7 @@ def initialize(
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
-                        parallelism=parallelism,
+                        parallelism=2,
                         sample_ids=sample_ids,
                         addl_templates={
                             "is_init": lambda: True,

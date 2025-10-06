@@ -13,6 +13,7 @@ WITH clients_first_seen_9_days_ago AS (
     `moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen` cfs
   WHERE
     first_seen_date = @report_date --this is 9 days before {{ds}}
+    AND submission_date = @report_date --this is 9 days before {{ds}}
 ),
 --Step 2: Get the first 7 days of these new clients' behavior from baseline_clients_last_seen
 clients_last_seen_info AS (

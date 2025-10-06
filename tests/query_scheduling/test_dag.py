@@ -194,10 +194,9 @@ class TestDag:
                 owner="test@example.com", start_date="2020-12-12", retry_delay="90"
             )
 
-        with pytest.raises(ValueError):
-            assert DagDefaultArgs(
-                owner="test@example.com", start_date="2020-12-12", retry_delay="1d1h1m"
-            )
+        assert DagDefaultArgs(
+            owner="test@example.com", start_date="2020-12-12", retry_delay="1d1h1m"
+        )
 
         assert DagDefaultArgs(
             owner="test@example.com", start_date="2020-12-12", retry_delay="3h15m1s"

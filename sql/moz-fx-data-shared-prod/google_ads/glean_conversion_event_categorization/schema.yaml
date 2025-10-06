@@ -1,0 +1,78 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: Date the server received the first baseline ping for this client_id.
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Campaign
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Content
+- name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Download Token
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Medium
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: Attribution Source
+- name: report_date
+  type: DATE
+  mode: NULLABLE
+  description: The date used to report the first 7 days of activity, 9 days after
+    the client's first seen date.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: dou
+  type: INTEGER
+  mode: NULLABLE
+  description: Days of Use
+- name: active_hours_sum
+  type: FLOAT
+  mode: NULLABLE
+  description: Active Hours Sum
+- name: search_with_ads_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Search With Ads Count All
+- name: event_1
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Event 1 Indicator - 5 or more days of use and 1 or more search with
+    ads (strictest event)
+- name: event_2
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Event 2 Indicator - 3 or more days of use and 1 or more search with
+    ads (medium event)
+- name: event_3
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Event 3 Indicator - 3 or more days of use and 0.4 or more active hours
+    (most lenient event)
+- name: is_dau_at_least_4_of_first_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client was a daily active user in at least 4 of first 7 days
+- name: is_dau_at_least_3_of_first_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client was a daily active user in at least 3 of first 7 days
+- name: is_dau_at_least_2_of_first_7_days
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Client was a daily active user in at least 2 of first 7 days

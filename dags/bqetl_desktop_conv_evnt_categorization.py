@@ -91,6 +91,58 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=36000),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     checks__warn_google_ads_derived__conversion_event_categorization__v1 = bigquery_dq_check(
         task_id="checks__warn_google_ads_derived__conversion_event_categorization__v1",
         source_table='conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -14), "%Y-%m-%d", "%Y%m%d") }}',
@@ -108,6 +160,20 @@ with DAG(
     checks__warn_google_ads_derived__conversion_event_categorization__v2 = bigquery_dq_check(
         task_id="checks__warn_google_ads_derived__conversion_event_categorization__v2",
         source_table='conversion_event_categorization_v2${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        is_dq_check_fail=False,
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+        retries=0,
+    )
+
+    checks__warn_google_ads_derived__glean_conversion_event_categorization__v1 = bigquery_dq_check(
+        task_id="checks__warn_google_ads_derived__glean_conversion_event_categorization__v1",
+        source_table='glean_conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
         dataset_id="google_ads_derived",
         project_id="moz-fx-data-shared-prod",
         is_dq_check_fail=False,
@@ -172,6 +238,19 @@ with DAG(
             google_ads_derived__conversion_event_categorization__v2
         )
 
+    google_ads_derived__glean_conversion_event_categorization__v1 = bigquery_etl_query(
+        task_id="google_ads_derived__glean_conversion_event_categorization__v1",
+        destination_table='glean_conversion_event_categorization_v1${{ macros.ds_format(macros.ds_add(ds, -9), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="google_ads_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["report_date:DATE:{{macros.ds_add(ds, -9)}}"]
+        + ["submission_date:DATE:{{ds}}"],
+    )
+
     checks__warn_google_ads_derived__conversion_event_categorization__v1.set_upstream(
         google_ads_derived__conversion_event_categorization__v1
     )
@@ -180,6 +259,10 @@ with DAG(
         google_ads_derived__conversion_event_categorization__v2
     )
 
+    checks__warn_google_ads_derived__glean_conversion_event_categorization__v1.set_upstream(
+        google_ads_derived__glean_conversion_event_categorization__v1
+    )
+
     google_ads_derived__conversion_event_categorization__v1.set_upstream(
         wait_for_checks__fail_telemetry_derived__clients_last_seen__v2
     )
@@ -202,4 +285,20 @@ with DAG(
 
     google_ads_derived__conversion_event_categorization__v2.set_upstream(
         wait_for_telemetry_derived__clients_first_seen__v1
+    )
+
+    google_ads_derived__glean_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    google_ads_derived__glean_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    google_ads_derived__glean_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    google_ads_derived__glean_conversion_event_categorization__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__metrics_clients_last_seen__v1
     )

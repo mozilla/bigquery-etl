@@ -33,8 +33,8 @@ clients_last_seen_info AS (
     ON cls.client_id = clients.client_id
   WHERE
     cls.submission_date
-    BETWEEN clients.first_seen_date
-    AND DATE_ADD(clients.first_seen_date, INTERVAL 6 DAY)
+    BETWEEN @report_date
+    AND DATE_ADD(@report_date, INTERVAL 6 DAY)
 ),
 --Step 3: Get the first 7 days of these new clients' behavior from metrics_clients_last_seen
 metrics_clients_last_seen AS (

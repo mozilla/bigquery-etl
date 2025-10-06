@@ -284,26 +284,6 @@ SELECT
       WHEN 5
         THEN 'Revoked'
     END AS provider_status,
-    -- API Docs enumerations :
-    -- https://developer.apple.com/documentation/appstoreserverapi/status
-    -- https://developer.apple.com/documentation/appstoreserverapi/expirationintent
-    CASE
-      WHEN history.subscription_is_active IS NOT TRUE
-        THEN NULL
-      WHEN (
-          history.subscription.status = 2
-          AND history.subscription.renewal_info.expiration_intent IN (1, 3)
-          OR history.subscription.status = 5
-        )
-        THEN 'User Initiated'
-      WHEN (
-          history.subscription.status = 2
-          AND history.subscription.renewal_info.expiration_intent = 2
-          OR history.subscription.status = 3
-        )
-        THEN 'Payment Failure'
-      ELSE 'Other'
-    END AS ended_reason,
     history_period.started_at,
     IF(
       history.subscription_is_active IS NOT TRUE,
@@ -320,6 +300,30 @@ SELECT
       ),
       NULL
     ) AS ended_at,
+    -- API Docs enumerations :
+    -- https://developer.apple.com/documentation/appstoreserverapi/status
+    -- https://developer.apple.com/documentation/appstoreserverapi/expirationintent
+    CASE
+      WHEN history.subscription_is_active
+        THEN NULL
+      WHEN (
+          history.subscription.status = 2 -- 2 = auto-renewable subscription is expired
+          AND history.subscription.renewal_info.expiration_intent IN (
+            1,
+            3
+          ) -- 1 = customer canceled their subscription -- 3 = customer didn’t consent to an auto-renewable subscription
+        )
+        -- admins are not revoking Apple subscriptions so we can assume such cases are from users
+        OR history.subscription.status = 5 -- 5 = auto-renewable subscription is revoked
+        THEN 'User Initiated'
+      WHEN (
+          history.subscription.status = 2 -- 2 = auto-renewable subscription is expired
+          AND history.subscription.renewal_info.expiration_intent = 2 -- 2 = Billing error
+        )
+        OR history.subscription.status = 3 -- 3 = auto-renewable subscription is in a billing retry period
+        THEN 'Payment Failure'
+      ELSE 'Other'
+    END AS ended_reason,
     IF(
       history.subscription_is_active,
       history.subscription.last_transaction.purchase_date,

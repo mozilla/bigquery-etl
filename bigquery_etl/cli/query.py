@@ -81,6 +81,7 @@ VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
 DEFAULT_INIT_PARALLELISM = 3
+INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
@@ -1599,7 +1600,7 @@ def initialize(
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
-                        parallelism=2,
+                        parallelism=INIT_SAMPLE_ID_PARALLELISM,
                         sample_ids=sample_ids,
                         addl_templates={
                             "is_init": lambda: True,

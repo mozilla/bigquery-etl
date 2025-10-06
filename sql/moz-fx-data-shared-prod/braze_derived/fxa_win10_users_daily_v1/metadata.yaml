@@ -7,10 +7,10 @@ owners:
 labels:
   schedule: daily
   owner: lmcfall
-  dag: bqetl_braze
+  dag: bqetl_braze_win10_sync
   owner1: lmcfall
 scheduling:
-  dag_name: bqetl_braze
+  dag_name: bqetl_braze_win10_sync
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

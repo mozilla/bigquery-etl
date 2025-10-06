@@ -83,9 +83,10 @@ with DAG(
         "accounts_backend_external__emails__v1_external",
     ) as accounts_backend_external__emails__v1_external:
         ExternalTaskMarker(
-            task_id="bqetl_braze__wait_for_accounts_backend_external__emails__v1",
-            external_dag_id="bqetl_braze",
+            task_id="bqetl_braze_win10_sync__wait_for_accounts_backend_external__emails__v1",
+            external_dag_id="bqetl_braze_win10_sync",
             external_task_id="wait_for_accounts_backend_external__emails__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=59400)).isoformat() }}",
         )
 
         accounts_backend_external__emails__v1_external.set_upstream(

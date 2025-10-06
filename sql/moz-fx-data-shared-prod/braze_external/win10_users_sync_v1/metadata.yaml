@@ -7,9 +7,9 @@ owners:
 labels:
   incremental: true
   owner1: lmcfall
-  dag: bqetl_braze
+  dag: bqetl_braze_win10_sync
 scheduling:
-  dag_name: bqetl_braze
+  dag_name: bqetl_braze_win10_sync
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

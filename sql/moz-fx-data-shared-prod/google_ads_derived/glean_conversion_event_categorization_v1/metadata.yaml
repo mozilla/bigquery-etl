@@ -1,6 +1,6 @@
 friendly_name: Glean Conversion Event Categorization
 description: |-
-  Classifies conversion events
+  Classifies behavior of new clients based on their behavior in first 7 days of activity
 owners:
 - kwindau@mozilla.com
 labels:

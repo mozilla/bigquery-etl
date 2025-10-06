@@ -1,0 +1,9 @@
+fields:
+- mode: NULLABLE
+  name: channel
+  type: STRING
+  description: The channel the application is being distributed on.
+- mode: NULLABLE
+  name: latest_version
+  type: NUMERIC
+  description: Latest Version

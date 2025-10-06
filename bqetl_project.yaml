@@ -51,6 +51,8 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_backend_external/accounts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_external/emails_v1/query.sql
   - sql/moz-fx-data-shared-prod/monitoring_derived/table_storage_v1/query.sql
+  - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_by_experiment/view.sql
+  - sql/moz-fx-data-shared-prod/activity_stream/impression_stats_flat/view.sql
   # uses time travel, will error on dates prior to the time travel window
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_counts_v1/query.sql
   - sql/moz-fx-data-shared-prod/accounts_backend_derived/monitoring_db_recovery_phones_counts_v1/query.sql
@@ -58,6 +60,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
+  - sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_funnel_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -522,7 +525,10 @@ generate:
       focus_ios:
         channels:
         - release
-
+  baseline_clients_city_seen:
+    apps:
+    - firefox_desktop
+    - fenix
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
@@ -605,3 +611,5 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
 - sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/baseline_clients_city_seen_v1

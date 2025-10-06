@@ -196,7 +196,17 @@ MERGE INTO
             KEY = 'variant'
           LIMIT
             1
-        ).string_value AS experiment_branch_from_event_params
+        ).string_value AS experiment_branch_from_event_params,
+        (
+          SELECT
+            `value`
+          FROM
+            UNNEST(event_params)
+          WHERE
+            KEY = 'gad_campaignid'
+          LIMIT
+            1
+        ).string_value AS gad_campaignid_from_event_params,
       FROM
         `moz-fx-data-marketing-prod.analytics_489412379.events_2*` all_events
       JOIN
@@ -214,6 +224,7 @@ MERGE INTO
         term_from_event_params,
         experiment_id_from_event_params,
         experiment_branch_from_event_params,
+        gad_campaignid_from_event_params,
         event_timestamp,
         country
       FROM
@@ -274,7 +285,13 @@ MERGE INTO
         ] AS first_experiment_branch_from_event_params,
         ARRAY_AGG(
           DISTINCT experiment_branch_from_event_params IGNORE NULLS
-        ) AS distinct_experiment_branches_from_event_params
+        ) AS distinct_experiment_branches_from_event_params,
+        ARRAY_AGG(gad_campaignid_from_event_params IGNORE NULLS ORDER BY event_timestamp ASC)[
+          SAFE_OFFSET(0)
+        ] AS first_gad_campaignid_from_event_params,
+        ARRAY_AGG(
+          DISTINCT gad_campaignid_from_event_params IGNORE NULLS
+        ) AS distinct_gad_campaignid_from_event_params
       FROM
         attr_info_from_event_params_in_session
       GROUP BY
@@ -565,7 +582,9 @@ MERGE INTO
       session_attrs.first_experiment_id_from_event_params,
       session_attrs.distinct_experiment_ids_from_event_params,
       session_attrs.first_experiment_branch_from_event_params,
-      session_attrs.distinct_experiment_branches_from_event_params
+      session_attrs.distinct_experiment_branches_from_event_params,
+      session_attrs.first_gad_campaignid_from_event_params,
+      session_attrs.distinct_gad_campaignid_from_event_params
     FROM
       all_ga_client_id_ga_session_ids_with_new_events_in_last_3_days sessions_to_update
     LEFT JOIN
@@ -662,7 +681,9 @@ THEN
       first_experiment_id_from_event_params,
       distinct_experiment_ids_from_event_params,
       first_experiment_branch_from_event_params,
-      distinct_experiment_branches_from_event_params
+      distinct_experiment_branches_from_event_params,
+      first_gad_campaignid_from_event_params,
+      distinct_gad_campaignid_from_event_params
     )
   VALUES
     (
@@ -725,7 +746,9 @@ THEN
       S.first_experiment_id_from_event_params,
       S.distinct_experiment_ids_from_event_params,
       S.first_experiment_branch_from_event_params,
-      S.distinct_experiment_branches_from_event_params
+      S.distinct_experiment_branches_from_event_params,
+      S.first_gad_campaignid_from_event_params,
+      S.distinct_gad_campaignid_from_event_params
     )
   WHEN MATCHED
 THEN
@@ -789,4 +812,6 @@ THEN
     T.first_experiment_id_from_event_params = S.first_experiment_id_from_event_params,
     T.distinct_experiment_ids_from_event_params = S.distinct_experiment_ids_from_event_params,
     T.first_experiment_branch_from_event_params = S.first_experiment_branch_from_event_params,
-    T.distinct_experiment_branches_from_event_params = S.distinct_experiment_branches_from_event_params
+    T.distinct_experiment_branches_from_event_params = S.distinct_experiment_branches_from_event_params,
+    T.first_gad_campaignid_from_event_params = S.first_gad_campaignid_from_event_params,
+    T.distinct_gad_campaignid_from_event_params = S.distinct_gad_campaignid_from_event_params

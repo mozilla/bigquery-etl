@@ -33,6 +33,7 @@ FROM
 JOIN
   `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2` AS history
   ON subscription_starts.stripe_subscriptions_history_id = history.id
+  AND history.valid_to > history.valid_from
 WHERE
   history.subscription.metadata.session_flow_id IS NOT NULL
   OR history.subscription.metadata.session_entrypoint IS NOT NULL

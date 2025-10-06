@@ -307,20 +307,20 @@ SELECT
       WHEN history.subscription_is_active
         THEN NULL
       WHEN (
-          history.subscription.status = 2 -- 2 = auto-renewable subscription is expired
+          history.subscription.status = 2  -- 2 = expired
           AND history.subscription.renewal_info.expiration_intent IN (
-            1,
-            3
-          ) -- 1 = customer canceled their subscription -- 3 = customer didn’t consent to an auto-renewable subscription
+            1,  -- 1 = customer canceled their subscription
+            3   -- 3 = customer didn’t consent to a price increase or conversion that requires their consent
+          )
         )
         -- admins are not revoking Apple subscriptions so we can assume such cases are from users
-        OR history.subscription.status = 5 -- 5 = auto-renewable subscription is revoked
+        OR history.subscription.status = 5  -- 5 = revoked
         THEN 'User Initiated'
       WHEN (
-          history.subscription.status = 2 -- 2 = auto-renewable subscription is expired
-          AND history.subscription.renewal_info.expiration_intent = 2 -- 2 = Billing error
+          history.subscription.status = 2  -- 2 = expired
+          AND history.subscription.renewal_info.expiration_intent = 2  -- 2 = Billing error
         )
-        OR history.subscription.status = 3 -- 3 = auto-renewable subscription is in a billing retry period
+        OR history.subscription.status = 3  -- 3 = in a billing retry period
         THEN 'Payment Failure'
       ELSE 'Other'
     END AS ended_reason,

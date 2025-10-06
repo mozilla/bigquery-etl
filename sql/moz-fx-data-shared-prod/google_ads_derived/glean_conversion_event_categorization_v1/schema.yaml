@@ -39,7 +39,7 @@ fields:
 - mode: NULLABLE
   name: dou
   type: INT64
-  description: DOU
+  description: Days of Use
 - mode: NULLABLE
   name: active_hours_sum
   type: FLOAT

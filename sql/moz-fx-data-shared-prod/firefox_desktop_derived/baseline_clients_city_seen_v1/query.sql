@@ -1,0 +1,233 @@
+ -- Query generated via sql_generators.baseline_clients_city_seen.
+ -- this mimics the logic used in baseline_clients_daily_v1.
+WITH base_firefox_desktop AS (
+  -- Live table dedup logic mimics copy_deduplicate
+  SELECT
+    submission_timestamp,
+    DATE(submission_timestamp) AS submission_date,
+    LOWER(client_info.client_id) AS client_id,
+    sample_id,
+    mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
+    `moz-fx-data-shared-prod.udf.glean_timespan_seconds`(
+      metrics.timespan.glean_baseline_duration
+    ) AS duration,
+    metadata.geo.city AS city,
+    metadata.geo.subdivision1 AS subdivision1,
+    metadata.geo.subdivision2 AS subdivision2,
+    metadata.geo.country AS country
+  FROM
+    {% if is_init() %}
+      `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
+    {% else %}
+      `moz-fx-data-shared-prod.firefox_desktop_live.baseline_v1`
+    {% endif %}
+  WHERE
+    client_info.client_id IS NOT NULL
+    {% if is_init() %}
+      AND sample_id = @sample_id
+      AND DATE(submission_timestamp) <= CURRENT_DATE()
+    {% else %}
+      AND DATE(submission_timestamp) = @submission_date
+      AND 'automation' NOT IN (
+        SELECT
+          TRIM(t)
+        FROM
+          UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
+      )
+      QUALIFY
+        ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) = 1
+    {% endif %}
+),
+overactive_firefox_desktop AS (
+  -- Find client_ids with over 150 000 pings in a day,
+  -- which could cause errors in the next step due to aggregation overflows.
+  SELECT
+    submission_date,
+    client_id
+  FROM
+    base_firefox_desktop
+  WHERE
+    {% if is_init() %}
+      submission_date >= '2018-01-01'
+    {% else %}
+      submission_date = @submission_date
+    {% endif %}
+  GROUP BY
+    submission_date,
+    client_id
+  HAVING
+    COUNT(*) > 150000
+),
+clients_daily_firefox_desktop AS (
+  SELECT
+    "firefox_desktop" AS app_id,
+    submission_date,
+    client_id,
+    sample_id,
+    `moz-fx-data-shared-prod.udf.mode_last`(
+      ARRAY_AGG(STRUCT(city, subdivision1, subdivision2, country) ORDER BY submission_timestamp)
+    ) AS geo
+  FROM
+    base_firefox_desktop
+  LEFT JOIN
+    overactive_firefox_desktop
+    USING (submission_date, client_id)
+  WHERE
+    overactive_firefox_desktop.client_id IS NULL
+    -- `mode_last` can result in struct with all null values if it’s most frequent (or latest among ties).
+    -- This exclude structs with all null values so there will always be one non-NULL field.
+    AND COALESCE(city, subdivision1, subdivision2, country) IS NOT NULL
+    {% if is_init() %}
+      AND submission_date >= '2018-01-01'
+    {% else %}
+      AND submission_date = @submission_date
+    {% endif %}
+  GROUP BY
+    submission_date,
+    client_id,
+    sample_id
+),
+{% if is_init() %}
+  clients_city_first_seen_firefox_desktop AS (
+    SELECT
+      app_id,
+      client_id,
+      sample_id,
+      submission_date AS first_seen_city_date,
+      geo.city AS first_seen_city,
+      geo.subdivision1 AS first_seen_subdivision1,
+      geo.subdivision2 AS first_seen_subdivision2,
+      geo.country AS first_seen_country
+    FROM
+      clients_daily_firefox_desktop
+    WHERE
+      geo.city IS NOT NULL
+    QUALIFY
+      ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date) = 1
+  ),
+  clients_city_last_seen_firefox_desktop AS (
+    SELECT
+      app_id,
+      client_id,
+      sample_id,
+      submission_date AS last_seen_city_date,
+      geo.city AS last_seen_city,
+      geo.subdivision1 AS last_seen_subdivision1,
+      geo.subdivision2 AS last_seen_subdivision2,
+      geo.country AS last_seen_country
+    FROM
+      clients_daily_firefox_desktop
+    WHERE
+      geo.city IS NOT NULL
+    QUALIFY
+      ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date DESC) = 1
+  )
+{% else %}
+  _previous_firefox_desktop AS (
+    SELECT
+      *
+    FROM
+      `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_city_seen_v1`
+    WHERE
+      app_id = "firefox_desktop"
+  ),
+  _current_firefox_desktop AS (
+    SELECT
+      app_id,
+      client_id,
+      sample_id,
+      submission_date AS first_seen_city_date,
+      geo.city AS first_seen_city,
+      geo.subdivision1 AS first_seen_subdivision1,
+      geo.subdivision2 AS first_seen_subdivision2,
+      geo.country AS first_seen_country,
+      submission_date AS last_seen_city_date,
+      geo.city AS last_seen_city,
+      geo.subdivision1 AS last_seen_subdivision1,
+      geo.subdivision2 AS last_seen_subdivision2,
+      geo.country AS last_seen_country
+    FROM
+      clients_daily_firefox_desktop
+    WHERE
+      geo.city IS NOT NULL
+  )
+{% endif %}
+{% if is_init() %}
+  SELECT
+    app_id,
+    client_id,
+    sample_id,
+    first_seen_city_date,
+    first_seen_city,
+    first_seen_subdivision1,
+    first_seen_subdivision2,
+    first_seen_country,
+    last_seen_city_date,
+    last_seen_city,
+    last_seen_subdivision1,
+    last_seen_subdivision2,
+    last_seen_country
+  FROM
+    clients_city_first_seen_firefox_desktop cfs
+  FULL OUTER JOIN
+    clients_city_last_seen_firefox_desktop cls
+    USING (client_id, sample_id, app_id)
+{% else %}
+  SELECT
+-- _p.* fields are NULL for clients that are not yet captured in the baseline_city_seen derived table.
+    IF(_p.app_id IS NULL, _c.app_id, _p.app_id) AS app_id,
+    IF(_p.client_id IS NULL, _c.client_id, _p.client_id) AS client_id,
+    IF(_p.sample_id IS NULL, _c.sample_id, _p.sample_id) AS sample_id,
+    IF(
+      _p.client_id IS NULL,
+      _c.first_seen_city_date,
+      _p.first_seen_city_date
+    ) AS first_seen_city_date,
+    IF(_p.client_id IS NULL, _c.first_seen_city, _p.first_seen_city) AS first_seen_city,
+    IF(
+      _p.client_id IS NULL,
+      _c.first_seen_subdivision1,
+      _p.first_seen_subdivision1
+    ) AS first_seen_subdivision1,
+    IF(
+      _p.client_id IS NULL,
+      _c.first_seen_subdivision2,
+      _p.first_seen_subdivision2
+    ) AS first_seen_subdivision2,
+    IF(_p.client_id IS NULL, _c.first_seen_country, _p.first_seen_country) AS first_seen_country,
+    IF(
+      _p.client_id IS NULL
+      OR _p.last_seen_city_date < _c.last_seen_city_date,
+      _c.last_seen_city_date,
+      _p.last_seen_city_date
+    ) AS last_seen_city_date,
+    IF(
+      _p.client_id IS NULL
+      OR _p.last_seen_city_date < _c.last_seen_city_date,
+      _c.last_seen_city,
+      _p.last_seen_city
+    ) AS last_seen_city,
+    IF(
+      _p.client_id IS NULL
+      OR _p.last_seen_city_date < _c.last_seen_city_date,
+      _c.last_seen_subdivision1,
+      _p.last_seen_subdivision1
+    ) AS last_seen_subdivision1,
+    IF(
+      _p.client_id IS NULL
+      OR _p.last_seen_city_date < _c.last_seen_city_date,
+      _c.last_seen_subdivision2,
+      _p.last_seen_subdivision2
+    ) AS last_seen_subdivision2,
+    IF(
+      _p.client_id IS NULL
+      OR _p.last_seen_city_date < _c.last_seen_city_date,
+      _c.last_seen_country,
+      _p.last_seen_country
+    ) AS last_seen_country
+  FROM
+    _current_firefox_desktop AS _c
+  FULL JOIN
+    _previous_firefox_desktop AS _p
+    USING (client_id, sample_id, app_id)
+{% endif %}

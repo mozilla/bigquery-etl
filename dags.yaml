@@ -2518,4 +2518,3 @@ bqetl_baseline_clients_city_seen:
   tags:
     - impact/tier_2
     - repo/bigquery-et
-    

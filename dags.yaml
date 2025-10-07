@@ -2517,4 +2517,4 @@ bqetl_baseline_clients_city_seen:
   description: Scheduled queries for client city seen tables
   tags:
     - impact/tier_2
-    - repo/bigquery-et
+    - repo/bigquery-etl

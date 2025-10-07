@@ -35,7 +35,22 @@
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_reload) kv),0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_unknown) kv),0) + 
       COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_handoff) kv),0) + 
-      COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_persisted) kv),0)) AS search_with_ads_count_all
+      COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_withads_urlbar_persisted) kv),0)) AS search_with_ads_count_all,
+      SUM(
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_about_home) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_about_newtab) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_contextmenu) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_reload) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_searchbar) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_system) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_tabhistory) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_unknown) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_urlbar) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_urlbar_handoff) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_urlbar_persisted) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_urlbar_searchmode) kv), 0) + 
+        COALESCE((SELECT SUM(kv.value) FROM unnest(metrics.labeled_counter.browser_search_content_webextension) kv), 0)
+      ) AS search_count_all
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

@@ -7,26 +7,50 @@ WITH services AS (
         STRUCT(
           'VPN' AS id,
           'Mozilla VPN' AS name,
-          ARRAY<STRUCT<name STRING, subplat_capabilities ARRAY<STRING>>>[] AS tiers,
+          ARRAY<
+            STRUCT<
+              name STRING,
+              subplat_capabilities ARRAY<STRING>,
+              stripe_product_ids ARRAY<STRING>
+            >
+          >[] AS tiers,
           ['guardian_vpn_1'] AS subplat_capabilities,
-          [STRUCT('e6eb0d1e856335fc' AS id, 'guardian-vpn' AS name)] AS subplat_oauth_clients
+          [STRUCT('e6eb0d1e856335fc' AS id, 'guardian-vpn' AS name)] AS subplat_oauth_clients,
+          ARRAY<STRING>[] AS stripe_product_ids
         ),
         STRUCT(
           'FPN' AS id,
           'Firefox Private Network' AS name,
-          ARRAY<STRUCT<name STRING, subplat_capabilities ARRAY<STRING>>>[] AS tiers,
+          ARRAY<
+            STRUCT<
+              name STRING,
+              subplat_capabilities ARRAY<STRING>,
+              stripe_product_ids ARRAY<STRING>
+            >
+          >[] AS tiers,
           ['fpn-browser'] AS subplat_capabilities,
-          [STRUCT('565585c1745a144d' AS id, 'fx-priv-network' AS name)] AS subplat_oauth_clients
+          [STRUCT('565585c1745a144d' AS id, 'fx-priv-network' AS name)] AS subplat_oauth_clients,
+          -- Workaround for capabilities metadata being removed from the FPN Stripe product (DENG-9774).
+          ['prod_HeWOjYtYcEjAzV'] AS stripe_product_ids
         ),
         STRUCT(
           'Relay' AS id,
           'Relay Premium' AS name,
           [
-            STRUCT('Email & Phone Masking' AS name, ['relay-phones'] AS subplat_capabilities),
-            STRUCT('Email Masking' AS name, ['premium-relay'] AS subplat_capabilities)
+            STRUCT(
+              'Email & Phone Masking' AS name,
+              ['relay-phones'] AS subplat_capabilities,
+              ARRAY<STRING>[] AS stripe_product_ids
+            ),
+            STRUCT(
+              'Email Masking' AS name,
+              ['premium-relay'] AS subplat_capabilities,
+              ARRAY<STRING>[] AS stripe_product_ids
+            )
           ] AS tiers,
           ['relay-phones', 'premium-relay'] AS subplat_capabilities,
-          [STRUCT('9ebfe2c2f9ea3c58' AS id, 'fx-private-relay' AS name)] AS subplat_oauth_clients
+          [STRUCT('9ebfe2c2f9ea3c58' AS id, 'fx-private-relay' AS name)] AS subplat_oauth_clients,
+          ARRAY<STRING>[] AS stripe_product_ids
         ),
         STRUCT(
           'MDN' AS id,
@@ -34,9 +58,14 @@ WITH services AS (
           [
             STRUCT(
               'Supporter 10' AS name,
-              ['mdn_plus_10m', 'mdn_plus_10y'] AS subplat_capabilities
+              ['mdn_plus_10m', 'mdn_plus_10y'] AS subplat_capabilities,
+              ARRAY<STRING>[] AS stripe_product_ids
             ),
-            STRUCT('Plus 5' AS name, ['mdn_plus_5m', 'mdn_plus_5y'] AS subplat_capabilities)
+            STRUCT(
+              'Plus 5' AS name,
+              ['mdn_plus_5m', 'mdn_plus_5y'] AS subplat_capabilities,
+              ARRAY<STRING>[] AS stripe_product_ids
+            )
           ] AS tiers,
           [
             'mdn_plus',
@@ -45,27 +74,52 @@ WITH services AS (
             'mdn_plus_5m',
             'mdn_plus_5y'
           ] AS subplat_capabilities,
-          [STRUCT('720bc80adfa6988d' AS id, 'mdn-plus' AS name)] AS subplat_oauth_clients
+          [STRUCT('720bc80adfa6988d' AS id, 'mdn-plus' AS name)] AS subplat_oauth_clients,
+          ARRAY<STRING>[] AS stripe_product_ids
         ),
         STRUCT(
           'Hubs' AS id,
           'Hubs' AS name,
           [
-            STRUCT('Professional' AS name, ['hubs-professional'] AS subplat_capabilities),
-            STRUCT('Personal' AS name, ['managed-hubs'] AS subplat_capabilities)
+            STRUCT(
+              'Business' AS name,
+              ['hubs-business'] AS subplat_capabilities,
+              -- Workaround for capabilities metadata being removed from the Hubs Stripe products (DENG-9774).
+              ['prod_PELUqOPlucjXFE'] AS stripe_product_ids
+            ),
+            STRUCT(
+              'Professional' AS name,
+              ['hubs-professional'] AS subplat_capabilities,
+              -- Workaround for capabilities metadata being removed from the Hubs Stripe products (DENG-9774).
+              ['prod_OGWdlewqBfGPy0'] AS stripe_product_ids
+            ),
+            STRUCT(
+              'Personal' AS name,
+              ['managed-hubs'] AS subplat_capabilities,
+              -- Workaround for capabilities metadata being removed from the Hubs Stripe products (DENG-9774).
+              ['prod_Mo4tS8uH9y3Mj5'] AS stripe_product_ids
+            )
           ] AS tiers,
-          ['hubs-professional', 'managed-hubs'] AS subplat_capabilities,
+          ['hubs-business', 'hubs-professional', 'managed-hubs'] AS subplat_capabilities,
           [
             STRUCT('8c3e3e6de4ee9731' AS id, 'mozilla-hubs' AS name),
             STRUCT('34bc0d0a6add7329' AS id, 'mozilla-hubs-dev' AS name)
-          ] AS subplat_oauth_clients
+          ] AS subplat_oauth_clients,
+          ARRAY<STRING>[] AS stripe_product_ids
         ),
         STRUCT(
           'Monitor' AS id,
           'Mozilla Monitor Plus' AS name,
-          ARRAY<STRUCT<name STRING, subplat_capabilities ARRAY<STRING>>>[] AS tiers,
+          ARRAY<
+            STRUCT<
+              name STRING,
+              subplat_capabilities ARRAY<STRING>,
+              stripe_product_ids ARRAY<STRING>
+            >
+          >[] AS tiers,
           ['monitor'] AS subplat_capabilities,
-          [STRUCT('802d56ef2a9af9fa' AS id, 'fx-monitor' AS name)] AS subplat_oauth_clients
+          [STRUCT('802d56ef2a9af9fa' AS id, 'fx-monitor' AS name)] AS subplat_oauth_clients,
+          ARRAY<STRING>[] AS stripe_product_ids
         )
       ]
     )
@@ -87,10 +141,28 @@ stripe_plans AS (
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_plans_v1`
 ),
-service_stripe_product_ids AS (
+service_stripe_products AS (
   SELECT
     services.id AS service_id,
-    ARRAY_AGG(DISTINCT stripe_products.id ORDER BY stripe_products.id) AS stripe_product_ids
+    stripe_product_id
+  FROM
+    services
+  CROSS JOIN
+    UNNEST(stripe_product_ids) AS stripe_product_id
+  UNION DISTINCT
+  SELECT
+    services.id AS service_id,
+    stripe_product_id
+  FROM
+    services
+  CROSS JOIN
+    UNNEST(tiers) AS tier
+  CROSS JOIN
+    UNNEST(tier.stripe_product_ids) AS stripe_product_id
+  UNION DISTINCT
+  SELECT DISTINCT
+    services.id AS service_id,
+    stripe_products.id AS stripe_product_id
   FROM
     services
   CROSS JOIN
@@ -100,16 +172,34 @@ service_stripe_product_ids AS (
   JOIN
     UNNEST(
       SPLIT(JSON_VALUE(stripe_products.metadata['capabilities:' || subplat_oauth_client.id]), ',')
-    ) AS capability
-    ON TRIM(capability) IN UNNEST(services.subplat_capabilities)
+    ) AS subplat_capability
+    ON TRIM(subplat_capability) IN UNNEST(services.subplat_capabilities)
+),
+service_stripe_product_ids AS (
+  SELECT
+    service_id,
+    ARRAY_AGG(DISTINCT stripe_product_id ORDER BY stripe_product_id) AS stripe_product_ids
+  FROM
+    service_stripe_products
   GROUP BY
     service_id
 ),
-service_stripe_plan_capabilities AS (
-  SELECT DISTINCT
+service_stripe_product_plans AS (
+  SELECT
+    service_stripe_products.service_id,
+    service_stripe_products.stripe_product_id,
+    stripe_plans.id AS stripe_plan_id
+  FROM
+    service_stripe_products
+  JOIN
+    stripe_plans
+    ON service_stripe_products.stripe_product_id = stripe_plans.product_id
+),
+service_stripe_plan_subplat_capabilities AS (
+  SELECT
     services.id AS service_id,
     stripe_plans.id AS stripe_plan_id,
-    TRIM(capability) AS capability
+    ARRAY_AGG(DISTINCT TRIM(subplat_capability)) AS subplat_capabilities
   FROM
     services
   CROSS JOIN
@@ -128,21 +218,41 @@ service_stripe_plan_capabilities AS (
         ),
         ','
       )
-    ) AS capability
-    ON TRIM(capability) IN UNNEST(services.subplat_capabilities)
+    ) AS subplat_capability
+    ON TRIM(subplat_capability) IN UNNEST(services.subplat_capabilities)
+  GROUP BY
+    service_id,
+    stripe_plan_id
+),
+service_stripe_plans AS (
+  SELECT
+    service_id,
+    stripe_plan_id,
+    stripe_plans.product_id AS stripe_product_id,
+    service_stripe_plan_subplat_capabilities.subplat_capabilities,
+    stripe_plans.apple_product_ids,
+    stripe_plans.google_sku_ids
+  FROM
+    service_stripe_product_plans
+  FULL JOIN
+    service_stripe_plan_subplat_capabilities
+    USING (service_id, stripe_plan_id)
+  JOIN
+    stripe_plans
+    ON stripe_plan_id = stripe_plans.id
 ),
 service_stripe_plan_ids AS (
   SELECT
     service_id,
     ARRAY_AGG(DISTINCT stripe_plan_id ORDER BY stripe_plan_id) AS stripe_plan_ids
   FROM
-    service_stripe_plan_capabilities
+    service_stripe_plans
   GROUP BY
     service_id
 ),
 service_iap_ids AS (
   SELECT
-    service_stripe_plan_ids.service_id,
+    service_id,
     ARRAY_AGG(
       DISTINCT apple_product_id IGNORE NULLS
       ORDER BY
@@ -150,34 +260,32 @@ service_iap_ids AS (
     ) AS apple_product_ids,
     ARRAY_AGG(DISTINCT google_sku_id IGNORE NULLS ORDER BY google_sku_id) AS google_sku_ids
   FROM
-    service_stripe_plan_ids
-  CROSS JOIN
-    UNNEST(service_stripe_plan_ids.stripe_plan_ids) AS stripe_plan_id
-  JOIN
-    stripe_plans
-    ON stripe_plan_id = stripe_plans.id
+    service_stripe_plans
   LEFT JOIN
-    UNNEST(stripe_plans.apple_product_ids) AS apple_product_id
+    UNNEST(apple_product_ids) AS apple_product_id
   LEFT JOIN
-    UNNEST(stripe_plans.google_sku_ids) AS google_sku_id
+    UNNEST(google_sku_ids) AS google_sku_id
   GROUP BY
-    service_stripe_plan_ids.service_id
+    service_id
 ),
 service_stripe_plan_tier_names AS (
   SELECT
-    service_stripe_plan_capabilities.service_id,
-    service_stripe_plan_capabilities.stripe_plan_id,
+    service_stripe_plans.service_id,
+    service_stripe_plans.stripe_plan_id,
     -- Pick the first tier that matches (tiers should be in order of precedence).
     ARRAY_AGG(tier.name ORDER BY tier_order LIMIT 1)[ORDINAL(1)] tier_name
   FROM
-    service_stripe_plan_capabilities
+    service_stripe_plans
+  LEFT JOIN
+    UNNEST(service_stripe_plans.subplat_capabilities) AS subplat_capability
   JOIN
     services
-    ON service_stripe_plan_capabilities.service_id = services.id
+    ON service_stripe_plans.service_id = services.id
   JOIN
     UNNEST(services.tiers) AS tier
     WITH OFFSET AS tier_order
-    ON service_stripe_plan_capabilities.capability IN UNNEST(tier.subplat_capabilities)
+    ON subplat_capability IN UNNEST(tier.subplat_capabilities)
+    OR service_stripe_plans.stripe_product_id IN UNNEST(tier.stripe_product_ids)
   GROUP BY
     service_id,
     stripe_plan_id
@@ -247,7 +355,11 @@ service_tiers AS (
     service_id
 )
 SELECT
-  services.* REPLACE (service_tiers.tiers AS tiers),
+  services.id,
+  services.name,
+  service_tiers.tiers,
+  services.subplat_capabilities,
+  services.subplat_oauth_clients,
   service_stripe_product_ids.stripe_product_ids,
   service_stripe_plan_ids.stripe_plan_ids,
   service_iap_ids.apple_product_ids,

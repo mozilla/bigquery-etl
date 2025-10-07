@@ -3,5 +3,18 @@ description: |-
   A view of the combined (Newtab + Newtab-Content) daily aggregation of newtab content actions on content/items,
   joined with the latest corpus item details from the corpus_items_current table so that the most current values for
   the corpus item are available.
+
+  Related documentation:
+  - Firefox New Tab Feed Engagement: https://mozilla.cloud.looker.com/dashboards/2205?Submission+Date=30+day&Newtab+Content+Surface+ID=%22NEW_TAB_EN_US%22
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9057?focusedCommentId=1106194
+  - Proposal Doc: https://docs.google.com/document/d/1dQfwddq1_3WoLctFqmT4L2aFiNgeFNsSd78PnV0GpmU/edit?usp=sharing
+  - Data Model README: ./README.md
+  - Newtab Content Ping: https://dictionary.telemetry.mozilla.org/apps/firefox_desktop/pings/newtab-content
+  - Newtab Content Ping Rollout Doc: https://mozilla-hub.atlassian.net/wiki/spaces/FPS/pages/1517617439/Rollout+of+NewTab+Content+Ping
 owners:
 - lmcfall@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers

@@ -82,6 +82,12 @@ WITH services AS (
           'Hubs' AS name,
           [
             STRUCT(
+              'Business' AS name,
+              ['hubs-business'] AS subplat_capabilities,
+              -- Workaround for capabilities metadata being removed from the Hubs Stripe products (DENG-9774).
+              ['prod_PELUqOPlucjXFE'] AS stripe_product_ids
+            ),
+            STRUCT(
               'Professional' AS name,
               ['hubs-professional'] AS subplat_capabilities,
               -- Workaround for capabilities metadata being removed from the Hubs Stripe products (DENG-9774).
@@ -94,7 +100,7 @@ WITH services AS (
               ['prod_Mo4tS8uH9y3Mj5'] AS stripe_product_ids
             )
           ] AS tiers,
-          ['hubs-professional', 'managed-hubs'] AS subplat_capabilities,
+          ['hubs-business', 'hubs-professional', 'managed-hubs'] AS subplat_capabilities,
           [
             STRUCT('8c3e3e6de4ee9731' AS id, 'mozilla-hubs' AS name),
             STRUCT('34bc0d0a6add7329' AS id, 'mozilla-hubs-dev' AS name)

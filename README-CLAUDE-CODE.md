@@ -6,16 +6,6 @@ This document describes our Claude Code configuration for the Mozilla bigquery-e
 
 We've configured Claude Code with custom instructions to help generate BigQuery ETL files (query.sql/query.py, metadata.yaml, schema.yaml) that follow our project conventions and standards.
 
-### Getting Started
-
-This project is currently under development. 
-
-In order to use this Claude Code integration, clone or fork the repo and locally check out this branch.
-
-```bash
-git checkout claude-bqetl-poc
-```
-
 ### Contributing
 
 To contribute the the PoC, create a feature branch from `claude-bqetl-poc`, commit your changes, and open a pull request to merge into `claude-bqetl-poc` (not `main`).
@@ -33,6 +23,33 @@ We may add MCP servers later for:
 - Real-time metadata access (DataHub MCP POC in progress)
 - Automated dependency detection (DataHub MCP)
 - Internal documentation integration
+
+### Getting Started
+
+This project is currently under development. 
+
+In order to use this Claude Code integration, clone or fork the repo and locally check out this branch.
+
+#### Starting a Session
+
+1. Navigate to the bigquery-etl repository:
+   ```bash
+   cd /path/to/bigquery-etl
+   ```
+
+2. Check out the PoC branch
+   ```bash
+   git checkout claude-bqetl-poc
+   ```
+   
+3. Start Claude Code:
+   ```bash
+   claude
+   ```
+
+4. Authenticate (Mozilla uses the API - option 2). Outside of Mozilla, check Claude [documentation](https://docs.claude.com/en/docs/claude-code/setup)
+
+5. Claude will automatically load the `CLAUDE.md` file from the project root
 
 ## What's Configured
 
@@ -67,24 +84,6 @@ This file (located in the project root) contains instructions for Claude loaded 
 - Glean SDK and metrics documentation
 
 Claude Code automatically references these instructions when generating files, ensuring consistency across the team.
-
-## How to Use
-
-### Starting a Session
-
-1. Navigate to the bigquery-etl repository:
-   ```bash
-   cd /path/to/bigquery-etl
-   ```
-
-2. Start Claude Code:
-   ```bash
-   claude
-   ```
-
-3. Authenticate (Mozilla uses the API - option 2)
-
-4. Claude will automatically load the `CLAUDE.md` file from the project root
 
 ### Basic Workflow
 

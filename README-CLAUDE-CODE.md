@@ -28,7 +28,7 @@ We may add MCP servers later for:
 
 This project is currently under development. 
 
-In order to use this Claude Code integration, clone or fork this repo and locally check out this branch. Do the same for the [glean dictionary](https://github.com/mozilla/glean-dictionary) & [data docs](https://github.com/mozilla/data-docs) (Claude will have access to both of these public repositories locally).
+In order to use this Claude Code integration, clone or fork this repo and locally check out this branch. Do the same for the [glean dictionary](https://github.com/mozilla/glean-dictionary) & [data docs](https://github.com/mozilla/data-docs) (Claude will have access to both of these public repositories locally). Ensure their root is located in the same directory as `bigquery-etl`
 
 #### Starting a Session
 

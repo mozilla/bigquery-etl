@@ -25,3 +25,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+- name: search_with_ads_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of searches with ads on client's last seen date in last 28 days.
+- name: search_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of searches on client's last seen date in last 28 days.

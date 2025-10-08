@@ -52,6 +52,7 @@ WITH subscriptions_history AS (
     `moz-fx-data-shared-prod.subscription_platform_derived.apple_subscriptions_history_v1`
   WHERE
     subscription.last_transaction.in_app_ownership_type = 'PURCHASED'
+    AND valid_to > valid_from
   WINDOW
     subscription_changes_asc AS (
       PARTITION BY
@@ -299,6 +300,30 @@ SELECT
       ),
       NULL
     ) AS ended_at,
+    -- API Docs enumerations :
+    -- https://developer.apple.com/documentation/appstoreserverapi/status
+    -- https://developer.apple.com/documentation/appstoreserverapi/expirationintent
+    CASE
+      WHEN history.subscription_is_active
+        THEN NULL
+      WHEN (
+          history.subscription.status = 2  -- 2 = expired
+          AND history.subscription.renewal_info.expiration_intent IN (
+            1,  -- 1 = customer canceled their subscription
+            3   -- 3 = customer didn’t consent to a price increase or conversion that requires their consent
+          )
+        )
+        -- admins are not revoking Apple subscriptions so we can assume such cases are from users
+        OR history.subscription.status = 5  -- 5 = revoked
+        THEN 'User Initiated'
+      WHEN (
+          history.subscription.status = 2  -- 2 = expired
+          AND history.subscription.renewal_info.expiration_intent = 2  -- 2 = Billing error
+        )
+        OR history.subscription.status = 3  -- 3 = in a billing retry period
+        THEN 'Payment Failure'
+      ELSE 'Other'
+    END AS ended_reason,
     IF(
       history.subscription_is_active,
       history.subscription.last_transaction.purchase_date,

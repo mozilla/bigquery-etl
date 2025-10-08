@@ -2487,3 +2487,34 @@ bqetl_firefox_enterprise:
     retry_delay: 30m
   tags:
     - impact/tier_3
+
+bqetl_braze_win10_sync:
+  schedule_interval: 0 9 * * *
+  description: |
+    Daily run to pull inactive Win10 users and sync them to Braze.
+  default_args:
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+    start_date: '2025-10-06'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
+bqetl_baseline_clients_city_seen:
+  schedule_interval: 0 4 * * *
+  default_args:
+    owner: wichan@mozilla.com
+    start_date: "2025-09-20"
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    retries: 2
+    retry_delay: 30m
+  description: Scheduled queries for client city seen tables
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

@@ -12,6 +12,7 @@ WITH subscription_starts AS (
     subscription.id AS logical_subscription_id,
     service.id AS service_id,
     valid_from AS started_at,
+    valid_to AS next_subscription_change_at,
     subscription.mozilla_account_id_sha256,
     subscription.provider_customer_id,
     subscription.provider_subscription_id,
@@ -44,7 +45,14 @@ subscriptions_history_periods AS (
     service_id,
     started_at,
     COALESCE(
-      LEAD(started_at) OVER (PARTITION BY logical_subscription_id, service_id ORDER BY started_at),
+      LEAD(started_at) OVER (
+        PARTITION BY
+          logical_subscription_id,
+          service_id
+        ORDER BY
+          started_at,
+          next_subscription_change_at
+      ),
       '9999-12-31 23:59:59.999999'
     ) AS ended_at,
     ROW_NUMBER() OVER (
@@ -55,6 +63,7 @@ subscriptions_history_periods AS (
         service_id
       ORDER BY
         started_at,
+        next_subscription_change_at,
         subscription_id
     ) AS customer_service_subscription_number,
     initial_discount_name,

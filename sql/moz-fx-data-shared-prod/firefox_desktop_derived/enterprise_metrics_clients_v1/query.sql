@@ -87,3 +87,6 @@ FROM
 LEFT JOIN
   most_recent_client_policy_metrics
   USING (client_id, normalized_channel)
+WHERE
+  -- enterprise is always only "esr" or "release" channels
+  normalized_channel IN ("release", "esr")

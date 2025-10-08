@@ -67,18 +67,36 @@ old_events_from_bcd AS (
   ON a.telemetry_client_id = b.client_id
   AND b.submission_date <= @submission_date
   GROUP BY
-    1
+    a.telemetry_client_id
 ),
 
 ---------GOOD ABOVE HERE ------------------
 --Step 6: 
 old_events_from_mcd AS (
-
-
+  SELECT a.telemetry_client_id,
+      MIN(
+      CASE
+        WHEN IFNULL(a.ad_clicks_count_all, 0) > 0
+          THEN a.submission_date
+        ELSE NULL
+      END
+    ) AS firefox_first_ad_click_date,
+  FROM dl_token_to_telemetry_id a 
+  LEFT JOIN 
+   `moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1` b 
+   ON a.telemetry_client_id = b.client_id
+   AND b.submission_date <= @submission_date
+  GROUP BY 
+  a.telemetry_client_id
 ),
 
 old_events_combined AS (
-
+  SELECT 
+  COALESCE(a.telemetry_client_id, b.telemetry_client_id)
+  FROM old_events_from_bcd a 
+  FULL OUTER JOIN 
+  ? b 
+  ON a.telemetry_client_id = b.telemetry_client_id
 
 )
 

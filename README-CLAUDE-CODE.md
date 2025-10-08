@@ -8,7 +8,7 @@ We've configured Claude Code with custom instructions to help generate BigQuery 
 
 ### Contributing
 
-To contribute the the PoC, create a feature branch from `claude-bqetl-poc`, commit your changes, and open a pull request to merge into `claude-bqetl-poc` (not `main`).
+To contribute this PoC, create a feature branch from `claude-bqetl-poc`, commit your changes, and open a pull request to merge into `claude-bqetl-poc` (not `main`).
 
 ### Why Custom Instructions?
 

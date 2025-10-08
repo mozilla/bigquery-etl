@@ -24,26 +24,26 @@ labels:
 scheduling:
   dag_name: bqetl_google_search_console
   date_partition_parameter: date
-  date_partition_offset: -1
+  date_partition_offset: -2
   depends_on_table_partitions_existing:
   - task_id: wait_for_google_search_console_addons_url_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_addons.searchdata_url_impression
-    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
   - task_id: wait_for_google_search_console_blog_url_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_blog.searchdata_url_impression
-    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
   - task_id: wait_for_google_search_console_getpocket_url_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_getpocket.searchdata_url_impression
-    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
   - task_id: wait_for_google_search_console_mdn_url_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_mdn.searchdata_url_impression
-    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
   - task_id: wait_for_google_search_console_support_url_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_support.searchdata_url_impression
-    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
   - task_id: wait_for_google_search_console_www_url_impressions
     table_id: moz-fx-data-marketing-prod.searchconsole_www.searchdata_url_impression
-    partition_id: '{{ data_interval_start.subtract(days=1) | ds_nodash }}'
+    partition_id: '{{ data_interval_start.subtract(days=2) | ds_nodash }}'
 bigquery:
   time_partitioning:
     type: day

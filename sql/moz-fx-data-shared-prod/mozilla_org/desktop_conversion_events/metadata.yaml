@@ -1,3 +1,7 @@
+friendly_name: Mozilla.org Desktop Conversion Events
+description: |-
+  Google Click IDs from mozilla.org seen in the last
+  28 days from the US with associated conversion events
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

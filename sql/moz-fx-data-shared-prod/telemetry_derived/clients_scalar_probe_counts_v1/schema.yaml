@@ -1,0 +1,66 @@
+fields:
+- mode: NULLABLE
+  name: os
+  type: STRING
+  description: The normalized name of the operating system running at the client.
+- name: app_version
+  type: INTEGER
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: app_build_id
+  type: STRING
+  mode: NULLABLE
+- name: channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: metric
+  type: STRING
+  mode: NULLABLE
+- name: metric_type
+  type: STRING
+  mode: NULLABLE
+- name: key
+  type: STRING
+  mode: NULLABLE
+- name: process
+  type: STRING
+  mode: NULLABLE
+- name: first_bucket
+  type: INTEGER
+  mode: NULLABLE
+- name: last_bucket
+  type: INTEGER
+  mode: NULLABLE
+- name: num_buckets
+  type: INTEGER
+  mode: NULLABLE
+- name: client_agg_type
+  type: STRING
+  mode: NULLABLE
+- name: agg_type
+  type: STRING
+  mode: NULLABLE
+- name: total_users
+  type: INTEGER
+  mode: NULLABLE
+- name: aggregates
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: FLOAT
+    mode: NULLABLE
+- name: non_norm_aggregates
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: FLOAT
+    mode: NULLABLE

@@ -18,6 +18,7 @@ fields:
 - name: first_run_date
   type: DATE
   mode: NULLABLE
+  description: The date of the first run of the application.
 - name: durations
   type: INTEGER
   mode: NULLABLE
@@ -101,6 +102,7 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date when the server first received a ping from this client.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
@@ -113,6 +115,8 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county
+    based on IP address.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE

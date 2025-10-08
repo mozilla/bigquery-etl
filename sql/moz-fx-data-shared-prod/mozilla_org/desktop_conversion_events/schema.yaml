@@ -2,9 +2,12 @@ fields:
 - name: gclid
   type: STRING
   mode: NULLABLE
+  description: Google Click ID
 - name: conversion_name
   type: STRING
   mode: NULLABLE
+  description: Conversion Name
 - name: activity_date_timestamp
   type: STRING
   mode: NULLABLE
+  description: Activity Date Timestamp

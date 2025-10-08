@@ -1,6 +1,6 @@
 friendly_name: Network Usage
 description: |-
-  Please provide a description for the query
+  Compares private vs non private network usage
 owners: []
 labels: {}
 bigquery: null

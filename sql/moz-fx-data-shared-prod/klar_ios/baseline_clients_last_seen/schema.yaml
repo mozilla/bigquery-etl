@@ -45,9 +45,12 @@ fields:
 - name: first_run_date
   type: DATE
   mode: NULLABLE
+  description: The date of the first run of the application.
 - name: durations
   type: INTEGER
   mode: NULLABLE
+  description: The sum of the duration of the last foreground session in seconds across
+    each unique baseline ping
 - name: days_seen_session_start_bits
   type: INTEGER
   mode: NULLABLE
@@ -61,6 +64,7 @@ fields:
 - name: normalized_os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
   mode: NULLABLE
@@ -118,9 +122,12 @@ fields:
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date when the server first received a ping from this client.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates if the submission date is the same as the client's first
+    seen date.
 - name: isp
   type: STRING
   mode: NULLABLE
@@ -133,6 +140,8 @@ fields:
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county
+    based on IP address.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
@@ -149,9 +158,14 @@ fields:
 - name: browser_engagement_uri_count
   type: INTEGER
   mode: NULLABLE
+  description: The number of total non-unique http(s) URIs visited, including page
+    reloads, after the session has been restored on the client's last seen date, if
+    in last 28 days.
 - name: browser_engagement_active_ticks
   type: INTEGER
   mode: NULLABLE
+  description: The number of five-second intervals ('ticks') the user was considered
+    'active' on the client's last seen date, if in last 28 days.
 - name: legacy_telemetry_client_id
   type: STRING
   mode: NULLABLE

@@ -6,6 +6,7 @@ fields:
 - mode: NULLABLE
   name: first_seen_date
   type: DATE
+  description: Date when the server first received a ping from this client.
 - mode: NULLABLE
   name: sample_id
   type: INTEGER

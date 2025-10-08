@@ -6,12 +6,12 @@ fields:
 - name: event_object
   type: STRING
   mode: NULLABLE
-  description: Submission Date
+  description: Event Object
 - name: nbr_events
   type: INTEGER
   mode: NULLABLE
-  description: Number of events
+  description: Number of Events
 - name: nbr_distinct_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of distinct users
+  description: Number of Distinct Users

@@ -1,6 +1,7 @@
 friendly_name: Latest Versions
 description: |-
-  Please provide a description for the query
+  Most recent major release versions per channel.
+  Parsed from https://product-details.mozilla.org/1.0/firefox_versions.json.
 owners: []
 labels: {}
 bigquery: null

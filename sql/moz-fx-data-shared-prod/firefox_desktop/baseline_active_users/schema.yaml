@@ -29,15 +29,20 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
 - name: first_run_date
   type: DATE
   mode: NULLABLE
+  description: The date of the first run of the application.
 - name: durations
   type: INTEGER
   mode: NULLABLE
@@ -50,51 +55,72 @@ fields:
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
+  description: The optional Android specific SDK version of the software running on
+    this hardware device.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: city
   type: STRING
   mode: NULLABLE
+  description: Name of the city in which the activity took place, as determined by
+    the IP geolocation.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: app_build
   type: STRING
   mode: NULLABLE
 - name: app_channel
   type: STRING
   mode: NULLABLE
+  description: The channel the application is being distributed on.
 - name: architecture
   type: STRING
   mode: NULLABLE
+  description: The architecture of the device, (e.g. "arm", "x86").
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
+  description: The manufacturer of the device the application is running on. Not set
+    if the device manufacturer can't be determined (e.g. on Desktop).
 - name: device_model
   type: STRING
   mode: NULLABLE
+  description: The model of the device the application is running on.
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
+  description: The version of the Glean SDK at the time the ping was collected (e.g.
+    25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
+  description: Date when the server first received a ping from this client.
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
 - name: isp
   type: STRING
   mode: NULLABLE
+  description: The name of the internet service provider associated with the client's
+    IP address.
 - name: days_active_bits
   type: INTEGER
   mode: NULLABLE
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
+  description: First major country subdivision, typically a state, province, or county
+    based on IP address.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
 - name: install_source
   type: STRING
   mode: NULLABLE
@@ -116,6 +142,8 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
@@ -167,15 +195,21 @@ fields:
 - name: app_name
   type: STRING
   mode: NULLABLE
+  description: The name of the application.
 - name: app_version
   type: STRING
   mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE
+  description: The major version of the user visible app version string for the browser,
+    e.g. "142.1.3", has major version 142
 - name: app_version_minor
   type: NUMERIC
   mode: NULLABLE
+  description: The minor version of the user visible app version string for the browser,
+    e.g. "142.1.3" has minor version 1
 - name: app_version_patch_revision
   type: NUMERIC
   mode: NULLABLE
@@ -185,9 +219,11 @@ fields:
 - name: channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: distribution_id_source
   type: STRING
   mode: NULLABLE
@@ -212,27 +248,42 @@ fields:
 - name: activity_segment
   type: STRING
   mode: NULLABLE
+  description: Classification of users based on their browsing activity. E.g., infrequent,
+    casual, regular.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
+  description: Year of the client's first seen date.
 - name: is_daily_user
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if client is considered a daily user on the submission
+    date.
 - name: is_weekly_user
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if client is considered a weekly user on the submission
+    date.
 - name: is_monthly_user
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if client is considered a monthly user on the submission
+    date.
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating the client is counted as a daily active user on this
+    submission date.
 - name: is_wau
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating the client is counted as a weekly active user on this
+    submission date.
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating the client is counted as a weekly active user on this
+    submission date.
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE
@@ -272,3 +323,4 @@ fields:
 - name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
+  description: Indicates if the client is included in the desktop KPI.

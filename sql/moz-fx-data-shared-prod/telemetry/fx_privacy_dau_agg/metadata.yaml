@@ -1,6 +1,6 @@
-friendly_name: Fx Privacy Dau Agg
+friendly_name: Firefox Health Indicator Privacy Daily Active Users Aggregates
 description: |-
-  Please provide a description for the query
+  Count of events and users for events in category security.ui.protectionspopup
 owners: []
 labels: {}
 bigquery: null

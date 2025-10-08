@@ -1,6 +1,6 @@
 friendly_name: Segmented Dau 28 Day Rolling
 description: |-
-  Please provide a description for the query
+  This table is used to create dynamic period over period comparisons in Looker for DAU for different populations
 owners: []
 labels: {}
 bigquery: null

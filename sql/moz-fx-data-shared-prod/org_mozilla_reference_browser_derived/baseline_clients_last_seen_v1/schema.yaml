@@ -18,8 +18,10 @@ fields:
     It is a pipeline-generated artifact that should match between pings.
 - name: first_run_date
   type: DATE
+  description: The date of the first run of the application.
 - name: durations
   type: INTEGER
+  description: The sum of the duration of the last foreground session in seconds across each unique baseline ping
 - name: days_seen_session_start_bits
   type: INTEGER
 - name: days_seen_session_end_bits
@@ -29,6 +31,7 @@ fields:
   description: The normalized channel the application is being distributed on.
 - name: normalized_os
   type: STRING
+  description: The normalized name of the operating system running at the client.
 - name: normalized_os_version
   type: STRING
 - name: android_sdk_version
@@ -71,8 +74,10 @@ fields:
   description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: first_seen_date
   type: DATE
+  description: Date when the server first received a ping from this client.
 - name: is_new_profile
   type: BOOLEAN
+  description: Indicates if the submission date is the same as the client's first seen date.
 - mode: NULLABLE
   name: isp
   type: STRING
@@ -84,6 +89,7 @@ fields:
 - mode: NULLABLE
   name: geo_subdivision
   type: STRING
+  description: First major country subdivision, typically a state, province, or county based on IP address.
 - mode: NULLABLE
   name: profile_group_id
   type: STRING
@@ -98,9 +104,13 @@ fields:
 - mode: NULLABLE
   name: browser_engagement_uri_count
   type: INTEGER
+  description: |-
+    The number of total non-unique http(s) URIs visited, including page reloads, after the session has been restored on the client's last seen date, if in last 28 days.
 - mode: NULLABLE
   name: browser_engagement_active_ticks
   type: INTEGER
+  description: |-
+    The number of five-second intervals ('ticks') the user was considered 'active' on the client's last seen date, if in last 28 days.
 - mode: NULLABLE
   name: legacy_telemetry_client_id
   type: STRING

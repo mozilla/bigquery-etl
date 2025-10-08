@@ -1,6 +1,6 @@
 friendly_name: Uninstalls By Default
 description: |-
-  Please provide a description for the query
+  Number of clients uninstalling by date, broken by those having Fx as default browser vs not
 owners: []
 labels: {}
 bigquery: null

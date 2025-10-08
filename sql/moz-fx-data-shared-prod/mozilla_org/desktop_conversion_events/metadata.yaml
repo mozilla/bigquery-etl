@@ -1,6 +1,7 @@
-friendly_name: Desktop Conversion Events
+friendly_name: Mozilla.org Desktop Conversion Events
 description: |-
-  Please provide a description for the query
+  Google Click IDs from mozilla.org seen in the last
+  28 days from the US with associated conversion events
 owners: []
 labels: {}
 bigquery: null

@@ -1,6 +1,6 @@
-friendly_name: Fx Health Ind Searches By Provider
+friendly_name: Firefox Health Indicator Searches by Provider
 description: |-
-  Please provide a description for the query
+  Count of searches & users by provider/day used in Firefox Health Indicator dashboard
 owners: []
 labels: {}
 bigquery: null

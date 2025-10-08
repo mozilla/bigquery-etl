@@ -181,6 +181,9 @@ fields:
 - name: submission_timestamp
   type: TIMESTAMP
   description: Timestamp when the ping is received on the server side.
+- name: telemetry_sdk_build
+  type: STRING
+  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: updated_at
   type: TIMESTAMP
   description: Most recent date and time when the row was updated.

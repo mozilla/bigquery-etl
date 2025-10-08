@@ -295,7 +295,7 @@ SELECT
       subscriptions_history.cancellation_details_comment AS comment,
       subscriptions_history.cancellation_details_feedback AS feedback,
       subscriptions_history.cancellation_details_reason AS reason
-    ) AS cancellation_details,
+    ) AS cancellation_details
   ) AS subscription
 FROM
   subscriptions_history_with_plan_ids AS subscriptions_history

@@ -1,6 +1,6 @@
 attrs==25.3.0
 authlib==1.6.4
-beautifulsoup4==4.14.0
+beautifulsoup4==4.14.2
 bigeye-sdk==0.6.5
 black==25.9.0
 cattrs==25.2.0
@@ -11,7 +11,7 @@ fredapi==0.5.2
 gcsfs==2025.3.2
 gitpython==3.1.45
 google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to universe/universe_domain returned 404" errors.
-google-cloud-bigquery==3.36.0
+google-cloud-bigquery==3.38.0
 google-cloud-bigquery-storage[fastavro]==2.33.1
 google-cloud-datacatalog-lineage==0.3.14
 google-cloud-storage==3.4.0

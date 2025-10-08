@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(xargs cat:*)",
+      "Bash(chmod:*)",
+      "Bash(mkdir:*)",
+      "Bash(./bqetl query create:*)",
+      "Bash(./bqetl query validate:*)",
+      "Bash(./bqetl query schema update:*)",
+      "Bash(./bqetl query render:*)",
+      "Bash(./bqetl dag info:*)",
+      "Bash(./bqetl dag create:*)",
+      "Write(//*/bigquery-etl/sql/**)",
+      "Edit(//*/bigquery-etl/sql/**)"
+    ],
+    "deny": [
+      "Write(//*/bigquery-etl/.git/**)",
+      "Edit(//*/bigquery-etl/.git/**)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(rm -rf:*)",
+      "Bash(./bqetl query schema deploy:*)",
+      "Bash(./bqetl backfill:*)",
+      "Bash(./bqetl query run:*)",
+      "Bash(./bqetl query initialize:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "WebSearch"
+    ],
+    "additionalDirectories": [
+      "../data-docs",
+      "../glean-dictionary"
+    ]
+  }
+}

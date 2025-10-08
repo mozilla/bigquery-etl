@@ -9,8 +9,6 @@ WITH
     DATE(submission_timestamp) AS submission_date,
     LOWER(client_info.client_id) AS client_id,
     sample_id,
-    mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
-    `moz-fx-data-shared-prod.udf.glean_timespan_seconds`( metrics.timespan.glean_baseline_duration ) AS duration,
     metadata.geo.city AS city,
     metadata.geo.subdivision1 AS subdivision1,
     metadata.geo.subdivision2 AS subdivision2,
@@ -32,8 +30,15 @@ WITH
     {% raw %}
     {% if is_init() %}
     {% endraw %}
-    AND sample_id = @sample_id
     AND DATE(submission_timestamp) <= CURRENT_DATE()
+    AND DATE(submission_timestamp) = (
+      SELECT
+        MIN(DATE(submission_timestamp))
+      FROM
+        `{{ project_id }}.{{ app_id }}_stable.baseline_v1`
+      WHERE
+        DATE(submission_timestamp) <= CURRENT_DATE()
+    )
     {% raw %}
     {% else %}
     {% endraw %}
@@ -47,23 +52,6 @@ WITH
     {% endif %}
     {% endraw %}
    ),
-  with_dates_{{ app_id }} AS (
-  SELECT
-    *,
-    -- For explanation of session start time calculation, see Glean docs:
-    -- https://mozilla.github.io/glean/book/user/pings/baseline.html#contents
-    DATE(SAFE.TIMESTAMP_SUB(parsed_end_time, INTERVAL duration SECOND)) AS session_start_date,
-    DATE(parsed_end_time) AS session_end_date
-  FROM
-    base_{{ app_id }}
-    ),
-  with_date_offsets_{{ app_id }} AS (
-  SELECT
-    *,
-    DATE_DIFF(submission_date, session_start_date, DAY) AS session_start_date_offset,
-    DATE_DIFF(submission_date, session_end_date, DAY) AS session_end_date_offset,
-  FROM
-    with_dates_{{ app_id }} ),
   overactive_{{ app_id }} AS (
   -- Find client_ids with over 150 000 pings in a day,
   -- which could cause errors in the next step due to aggregation overflows.
@@ -71,7 +59,7 @@ WITH
     submission_date,
     client_id
   FROM
-    with_date_offsets_{{ app_id }}
+    base_{{ app_id }}
   WHERE
     {% raw %}
     {% if is_init() %}
@@ -106,7 +94,7 @@ WITH
       )
     ) AS geo
   FROM
-    with_date_offsets_{{ app_id }}
+    base_{{ app_id }}
   LEFT JOIN
     overactive_{{ app_id }}
   USING

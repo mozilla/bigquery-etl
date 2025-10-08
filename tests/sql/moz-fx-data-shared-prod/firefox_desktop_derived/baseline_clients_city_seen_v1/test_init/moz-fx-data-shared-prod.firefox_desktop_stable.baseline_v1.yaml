@@ -10,7 +10,7 @@
       subdivision1: NULL
       subdivision2: NULL
       country: DE
-# capture earliest first and last seen attributes
+# capture earliest submission_timestamp
 - submission_timestamp: 2025-06-01T00:00:00
   sample_id: 0
   client_info:
@@ -21,16 +21,6 @@
       subdivision1: "13"
       subdivision2: NULL
       country: JP
-- submission_timestamp: 2025-05-01T00:00:00
-  sample_id: 0
-  client_info:
-    client_id: client-2
-  metadata:
-    geo:
-      city: Toronto
-      subdivision1: "ON"
-      subdivision2: NULL
-      country: CA
 - submission_timestamp: 2025-04-01T00:00:00
   sample_id: 0
   client_info:
@@ -104,7 +94,7 @@
       subdivision2: NULL
       country: US
 # do not capture last seen with null city
-- submission_timestamp: 2025-06-01T00:00:00
+- submission_timestamp: 2025-04-01T00:00:00
   sample_id: 0
   client_info:
     client_id: client-5

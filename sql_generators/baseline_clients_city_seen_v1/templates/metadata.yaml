@@ -1,7 +1,7 @@
 friendly_name: Baseline Clients City Seen
 description: |-
   This table stores the first-seen and last-seen geo attributes for each client_id.
-  The table was initialized from stable tables (with ~2 years of retention),
+  The table was initialized from stable tables (with finite retention) in Oct. 2025,
   so the initial dates reflect the earliest/latest observations within that window.
   After initialization, the city fields in the stable tables are nullified and
   the one-time initialization code is no longer relevant.  The table is updated daily using live tables,

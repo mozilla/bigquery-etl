@@ -1,4 +1,4 @@
-This project is currently under development. In order to integrate Claude Code using this integration, clone or fork the repo and locally check out this branch.
+This project is currently under development. In order to use this Claude Code integration, clone or fork the repo and locally check out this branch.
 
 ```bash
 git checkout claude-bqetl-poc

@@ -15,6 +15,9 @@ fields:
   - infrequent_user
   - regular_user
   - other
+- name: app_build_id
+  type: STRING
+  description: The build ID of the application.
 - name: app_version
   type: INTEGER
   description: User visible version string (e.g. "1.0.3") for the browser.
@@ -29,6 +32,30 @@ fields:
   type: INTEGER
   description: The minor version of the user visible app version string for the browser,
     e.g. "142.1.3" has minor version 1
+- name: app_name
+  type: STRING
+  description: The name of the application.
+- name: architecture
+  type: STRING
+  description: The architecture of the device, (e.g. "arm", "x86").
+- name: attribution_campaign
+  type: STRING
+  description: The attribution campaign; similar or the same as UTM campaign.
+- name: attribution_content
+  type: STRING
+  description: The attribution content; similar or the same as UTM content.
+- name: attribution_experiment
+  type: STRING
+  description: The attribution experiment key.
+- name: attribution_medium
+  type: STRING
+  description: The attribution medium; similar or the same as UTM medium.
+- name: attribution_source
+  type: STRING
+  description: The attribution source; similar or the same as UTM source.
+- name: attribution_variation
+  type: STRING
+  description: The attribution variation key.
 - name: client_id
   type: STRING
   description: A unique identifier (UUID) for the client.
@@ -55,6 +82,15 @@ fields:
   aliases:
   - created_timestamp
   - created_date
+- name: dau
+  type: INTEGER
+  description: The number of daily active users.
+- name: wau
+  type: INTEGER
+  description: The number of weekly active users.
+- name: mau
+  type: INTEGER
+  description: The number of monthly active users.
 - name: distribution_id
   type: STRING
   description: The distribution id associated with the install of Firefox.
@@ -64,6 +100,12 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   description: A flag indicating whether the browser is set as the default browser on the client side.
+- name: is_desktop
+  type: BOOLEAN
+  description: Indicates if the client is included in the desktop KPI.
+- name: is_mobile
+  type: BOOLEAN
+  description: Indicates if the client is included in the mobile KPI.
 - name: isp_name
   type: STRING
   description: The name of the internet service provider associated with the client's IP address.

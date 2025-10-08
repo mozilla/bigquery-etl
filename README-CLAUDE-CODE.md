@@ -1,3 +1,5 @@
+This project is currently under development. In order to integrate Claude Code using this integration, clone or fork the repo and locally check out this branch (`git checkout claude-bqetl-poc`)
+
 # Claude Code Setup for bigquery-etl
 
 This document describes our Claude Code configuration for the Mozilla bigquery-etl project.

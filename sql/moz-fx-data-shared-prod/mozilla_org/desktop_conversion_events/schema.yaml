@@ -1,0 +1,13 @@
+fields:
+- name: gclid
+  mode: NULLABLE
+  type: STRING
+  description: Google Click ID
+- name: conversion_name
+  mode: NULLABLE
+  type: STRING
+  description: Conversion Name
+- name: activity_date_timestamp
+  mode: NULLABLE
+  type: STRING
+  description: Activity Date Timestamp

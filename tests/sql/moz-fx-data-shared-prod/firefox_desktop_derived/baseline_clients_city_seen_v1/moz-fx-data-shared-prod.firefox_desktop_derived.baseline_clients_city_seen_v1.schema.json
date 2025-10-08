@@ -1,0 +1,58 @@
+[
+  {
+    "type": "STRING",
+    "name": "app_id"
+  },
+  {
+    "type": "STRING",
+    "name": "client_id"
+  },
+  {
+    "type": "INTEGER",
+    "name": "sample_id"
+  },
+  {
+    "type": "DATE",
+    "name": "first_seen_city_date"
+  },
+  {
+    "type": "STRING",
+    "name": "first_seen_city"
+  },
+  {
+    "type": "STRING",
+    "name": "first_seen_subdivision1"
+  },
+  {
+    "type": "STRING",
+    "name": "first_seen_subdivision2"
+  },
+  {
+    "type": "STRING",
+    "name": "first_seen_country"
+  },
+  {
+    "type": "STRING",
+    "name": "device_manufacturer"
+  },
+  {
+    "type": "DATE",
+    "name": "last_seen_city_date"
+  },
+  {
+    "type": "STRING",
+    "name": "last_seen_city"
+  },
+  {
+    "type": "STRING",
+    "name": "last_seen_subdivision1"
+  },
+  {
+    "type": "STRING",
+    "name": "last_seen_subdivision2"
+  },
+  {
+    "type": "STRING",
+    "name": "last_seen_country"
+  }
+]

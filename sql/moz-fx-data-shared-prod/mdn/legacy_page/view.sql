@@ -56,12 +56,12 @@ CREATE OR REPLACE VIEW
             >
         ) AS labeled_counter,
         STRUCT(
-          JSON_VALUE(event_extra.url) AS page_path,
-          JSON_VALUE(event_extra.referrer) AS page_referrer
+          IFNULL(JSON_VALUE(event_extra.url), '') AS page_path,
+          IFNULL(JSON_VALUE(event_extra.referrer), '') AS page_referrer
         ) AS url2,
         STRUCT(
           CAST(NULL AS STRING) AS navigator_geo,
-          CAST(NULL AS STRING) AS navigator_subscription_type,
+          'unknown' AS navigator_subscription_type,
           CAST(NULL AS STRING) AS navigator_user_agent,
           CAST(NULL AS STRING) AS navigator_viewport_breakpoint,
           CAST(NULL AS STRING) AS page_http_status,
@@ -84,8 +84,8 @@ CREATE OR REPLACE VIEW
         ) AS labeled_string,
         STRUCT(CAST(NULL AS ARRAY<STRING>) AS navigator_user_languages) AS string_list,
         STRUCT(
-          JSON_VALUE(event_extra.url) AS page_path,
-          JSON_VALUE(event_extra.referrer) AS page_referrer
+          IFNULL(JSON_VALUE(event_extra.url), '') AS page_path,
+          IFNULL(JSON_VALUE(event_extra.referrer), '') AS page_referrer
         ) AS url
       ) AS metrics,
       normalized_app_name,

@@ -9,8 +9,6 @@ WITH
     DATE(submission_timestamp) AS submission_date,
     LOWER(client_info.client_id) AS client_id,
     sample_id,
-    mozfun.glean.parse_datetime(ping_info.end_time) AS parsed_end_time,
-    `moz-fx-data-shared-prod.udf.glean_timespan_seconds`( metrics.timespan.glean_baseline_duration ) AS duration,
     metadata.geo.city AS city,
     metadata.geo.subdivision1 AS subdivision1,
     metadata.geo.subdivision2 AS subdivision2,
@@ -32,8 +30,15 @@ WITH
     {% raw %}
     {% if is_init() %}
     {% endraw %}
-    AND sample_id = @sample_id
     AND DATE(submission_timestamp) <= CURRENT_DATE()
+    AND DATE(submission_timestamp) = (
+      SELECT
+        MIN(DATE(submission_timestamp))
+      FROM
+        `{{ project_id }}.{{ app_id }}_stable.baseline_v1`
+      WHERE
+        DATE(submission_timestamp) <= CURRENT_DATE()
+    )
     {% raw %}
     {% else %}
     {% endraw %}

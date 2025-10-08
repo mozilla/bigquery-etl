@@ -15,10 +15,10 @@
   first_seen_city: Toronto
   first_seen_subdivision1: "ON"
   first_seen_country: CA
-  last_seen_city_date: 2025-06-01
-  last_seen_city: Tokyo
-  last_seen_subdivision1: "13"
-  last_seen_country: JP
+  last_seen_city_date: 2025-04-01
+  last_seen_city: Toronto
+  last_seen_subdivision1: "ON"
+  last_seen_country: CA
 - app_id: firefox_desktop
   client_id: client-3
   sample_id: 0

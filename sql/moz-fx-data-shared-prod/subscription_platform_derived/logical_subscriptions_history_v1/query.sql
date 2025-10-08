@@ -130,7 +130,8 @@ SELECT
     history.subscription.has_refunds,
     history.subscription.has_fraudulent_charges,
     subscription_attributions.first_touch_attribution,
-    subscription_attributions.last_touch_attribution
+    subscription_attributions.last_touch_attribution,
+    history.subscription.ended_reason
   ) AS subscription
 FROM
   history

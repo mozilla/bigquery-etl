@@ -1,9 +1,3 @@
-This project is currently under development. In order to use this Claude Code integration, clone or fork the repo and locally check out this branch.
-
-```bash
-git checkout claude-bqetl-poc
-```
-
 # Claude Code Setup for bigquery-etl
 
 This document describes our Claude Code configuration for the Mozilla bigquery-etl project.
@@ -11,6 +5,20 @@ This document describes our Claude Code configuration for the Mozilla bigquery-e
 ## Overview
 
 We've configured Claude Code with custom instructions to help generate BigQuery ETL files (query.sql/query.py, metadata.yaml, schema.yaml) that follow our project conventions and standards.
+
+### Getting Started
+
+This project is currently under development. 
+
+In order to use this Claude Code integration, clone or fork the repo and locally check out this branch.
+
+```bash
+git checkout claude-bqetl-poc
+```
+
+### Contributing
+
+To contribute the the PoC, create a feature branch from `claude-bqetl-poc`, commit your changes, and open a pull request to merge into `claude-bqetl-poc` (not `main`).
 
 ### Why Custom Instructions?
 

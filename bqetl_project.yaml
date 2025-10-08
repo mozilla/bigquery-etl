@@ -177,6 +177,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring_derived/shredder_per_job_stats_v1/query.sql
   - sql/moz-fx-data-shared-prod/jira_service_desk/**/*.sql
   - sql/moz-fx-data-shared-prod/zoom/**/*.sql
+  - sql/moz-fx-data-shared-prod/taskclusteretl/person_mozilla_com/view.sql
   # No matching signature for function IF
   - sql/moz-fx-data-shared-prod/static/fxa_amplitude_export_users_last_seen/query.sql
   # Duplicate UDF
@@ -392,6 +393,12 @@ generate:
     events_monitoring:
       skip_apps:
       - ads_backend  # restricted dataset, we don't want to include it aggregate view
+      - org_mozilla_fenix_nightly
+      - org_mozilla_fennec_aurora
+      # event pings for this app were removed but still high volume due to nimbus bugs in versions 138 to 140
+      # events are still sent in the background-update ping, but they are being skipped
+      # See: https://mozilla-hub.atlassian.net/browse/DENG-9715
+      - firefox_desktop_background_update
       skip_pings:
       - topsites-impression # access denied
       - serp-categorization # access denied
@@ -401,7 +408,6 @@ generate:
         - events_v1
       manual_refresh:  # apps to use manual materialized view refreshes for on-demand billing
       - firefox_desktop
-      - firefox_desktop_background_update
     event_flow_monitoring:
       include_apps:
       - accounts_backend
@@ -409,6 +415,32 @@ generate:
       - focus_android
       - fenix
       - firefox_desktop
+    metrics_clients_last_seen:
+      skip_apps:
+      - accounts_cirrus
+      - experimenter_cirrus
+      - firefox_desktop_background_defaultagent
+      - firefox_desktop_background_tasks
+      - firefox_crashreporter
+      - monitor_cirrus
+      - mozilla_vpn
+      - mozillavpn_backend_cirrus
+      - pine
+      - thunderbird_android
+      - thunderbird_desktop
+    clients_last_seen_joined:
+      skip_apps:
+      - accounts_cirrus
+      - experimenter_cirrus
+      - firefox_desktop_background_defaultagent
+      - firefox_desktop_background_tasks
+      - firefox_crashreporter
+      - monitor_cirrus
+      - mozilla_vpn
+      - mozillavpn_backend_cirrus
+      - pine
+      - thunderbird_android
+      - thunderbird_desktop
     bigconfig:
       skip_apps:
       - firefox_echo_show
@@ -490,7 +522,10 @@ generate:
       focus_ios:
         channels:
         - release
-
+  baseline_clients_city_seen:
+    apps:
+    - firefox_desktop
+    - fenix
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
@@ -573,3 +608,5 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_ios_derived/client_adclicks_history_v1
 - sql/moz-fx-data-shared-prod/acoustic_external/suppression_list_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/fenix_derived/baseline_clients_city_seen_v1

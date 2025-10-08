@@ -7,9 +7,6 @@ table_deployments:
     - email: 'phlee@mozilla.com, srose@mozilla.com'
   deployments:
   - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.subscription_platform_derived.stripe_customers_history_v1
-    table_metrics:
-    - saved_metric_id: freshness
-    - saved_metric_id: volume
     columns:
     - column_name: id
       metrics:

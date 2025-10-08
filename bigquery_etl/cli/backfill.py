@@ -177,7 +177,7 @@ def create(
     A backfill.yaml file will be created if it does not already exist.
     """
     if errors := validate_table_metadata(
-        sql_dir, qualified_table_name, ignore_missing_metadata=False
+        sql_dir, qualified_table_name, ignore_missing_metadata=True
     ):
         click.echo("\n".join(errors))
         sys.exit(1)
@@ -207,7 +207,8 @@ def create(
 
     validate_duplicate_entry_with_initiate_status(new_entry, existing_backfills)
 
-    validate_depends_on_past_end_date(new_entry, backfill_file)
+    if (backfill_file.parent / METADATA_FILE).exists():
+        validate_depends_on_past_end_date(new_entry, backfill_file)
 
     existing_backfills.insert(0, new_entry)
 

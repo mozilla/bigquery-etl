@@ -6,7 +6,23 @@ WITH staging AS (
     submission_date,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS new_years_day,
     IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 26, 1, 0) AS australia_day,
-    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 1, 1, 0) AS orthodox_christmas,
+    IF(calendar_month = 1 AND EXTRACT(day FROM submission_date) = 7, 1, 0) AS orthodox_christmas,
+    IF(
+      submission_date IN (
+        '2020-01-20',
+        '2021-01-18',
+        '2022-01-17',
+        '2023-01-16',
+        '2024-01-15',
+        '2025-01-20',
+        '2026-01-19',
+        '2027-01-18',
+        '2028-01-17',
+        '2029-01-15'
+      ),
+      1,
+      0
+    ) AS us_martin_luther_king_jr_day,
     IF(
       submission_date IN (
         '2020-01-25',
@@ -371,6 +387,22 @@ WITH staging AS (
     IF(calendar_month = 9 AND EXTRACT(day FROM submission_date) = 16, 1, 0) AS mx_independence_day,
     IF(
       submission_date IN (
+        '2020-10-01',
+        '2021-09-21',
+        '2022-09-10',
+        '2023-09-29',
+        '2024-09-17',
+        '2025-10-06',
+        '2026-09-25',
+        '2027-09-15',
+        '2028-10-03',
+        '2029-09-22'
+      ),
+      1,
+      0
+    ) AS mid_autumn_festival,
+    IF(
+      submission_date IN (
         '2020-11-26',
         '2021-11-25',
         '2022-11-24',
@@ -457,7 +489,9 @@ WITH staging AS (
         '2025-07-08',
         '2025-07-09',
         '2025-07-10',
-        '2025-07-11'
+        '2025-07-11',
+        '2025-10-07',
+        '2025-10-08'
       ),
       1,
       0
@@ -496,6 +530,12 @@ WITH staging AS (
       0
     ) AS dussehra,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 11, 1, 0) AS us_veterans_day,
+    IF(
+      calendar_month = 11
+      AND EXTRACT(day FROM submission_date) IN (1, 2),
+      1,
+      0
+    ) AS dia_de_los_muertos,
     IF(calendar_month = 11 AND EXTRACT(day FROM submission_date) = 20, 1, 0) AS mx_revolution_day,
     IF(calendar_month = 10 AND EXTRACT(day FROM submission_date) = 31, 1, 0) AS halloween,
     IF(calendar_month = 12 AND EXTRACT(day FROM submission_date) = 24, 1, 0) AS christmas_eve,
@@ -604,6 +644,7 @@ SELECT
   stg.new_years_day,
   stg.australia_day,
   stg.orthodox_christmas,
+  stg.us_martin_luther_king_jr_day,
   stg.lunar_new_year,
   stg.in_republic_day,
   stg.us_superbowl,
@@ -636,6 +677,7 @@ SELECT
   stg.prophets_birthday,
   stg.br_independence_day,
   stg.mx_independence_day,
+  stg.mid_autumn_festival,
   stg.us_thanksgiving,
   stg.us_blackfriday,
   stg.us_cybermonday,
@@ -645,6 +687,7 @@ SELECT
   stg.in_diwali,
   stg.dussehra,
   stg.us_veterans_day,
+  stg.dia_de_los_muertos,
   stg.mx_revolution_day,
   stg.halloween,
   stg.christmas_eve,
@@ -705,7 +748,10 @@ SELECT
     IF(stg.boxing_day = 1, ['BoxingDay'], []),
     IF(stg.hanukkah = 1, ['Hanukkah'], []),
     IF(stg.us_kwanzaa = 1, ['US_Kwanzaa'], []),
-    IF(stg.new_years_eve = 1, ['NewYearsEve'], [])
+    IF(stg.new_years_eve = 1, ['NewYearsEve'], []),
+    IF(stg.us_martin_luther_king_jr_day = 1, ['US_MLK_Jr_Day'], []),
+    IF(stg.dia_de_los_muertos = 1, ['DiaDeLosMuertos'], []),
+    IF(stg.mid_autumn_festival = 1, ['MidAutumnFestival'], [])
   ) AS holiday_array
 FROM
   staging stg

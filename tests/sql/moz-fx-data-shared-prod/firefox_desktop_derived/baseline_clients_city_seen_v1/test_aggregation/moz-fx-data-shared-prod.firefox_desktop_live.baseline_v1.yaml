@@ -1,0 +1,60 @@
+---
+# simple case last see city updated
+- submission_timestamp: 2025-06-02T00:00:00
+  sample_id: 0
+  document_id: 1
+  client_info:
+    client_id: client-1
+  metadata:
+    geo:
+      city: Chicago
+      subdivision1: IL
+      subdivision2: NULL
+      country: US
+# simple case null last seen city not captured
+- submission_timestamp: 2025-06-02T00:00:00
+  sample_id: 0
+  document_id: 2
+  client_info:
+    client_id: client-2
+  metadata:
+    geo:
+      city: NULL
+      subdivision1: IL
+      subdivision2: NULL
+      country: US
+# new clients added
+- submission_timestamp: 2025-06-02T00:00:00
+  sample_id: 0
+  document_id: 3
+  client_info:
+    client_id: client-3
+  metadata:
+    geo:
+      city: Osaka
+      subdivision1: NULL
+      subdivision2: NULL
+      country: JP
+# capture earliest timestamp per document_id
+- submission_timestamp: 2025-06-02T03:17:28
+  sample_id: 0
+  document_id: 4
+  client_info:
+    client_id: client-4
+  metadata:
+    geo:
+      city: Osaka
+      subdivision1: NULL
+      subdivision2: NULL
+      country: JP
+- submission_timestamp: 2025-06-02T00:00:00
+  sample_id: 0
+  document_id: 4
+  client_info:
+    client_id: client-4
+  metadata:
+    geo:
+      city: Shanghai
+      subdivision1: SH
+      subdivision2: NULL
+      country: CN

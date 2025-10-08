@@ -1,4 +1,8 @@
-This project is currently under development. In order to integrate Claude Code using this integration, clone or fork the repo and locally check out this branch (`git checkout claude-bqetl-poc`)
+This project is currently under development. In order to integrate Claude Code using this integration, clone or fork the repo and locally check out this branch.
+
+```bash
+git checkout claude-bqetl-poc
+```
 
 # Claude Code Setup for bigquery-etl
 

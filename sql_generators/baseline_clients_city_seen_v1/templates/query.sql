@@ -33,11 +33,12 @@ WITH
     AND DATE(submission_timestamp) <= CURRENT_DATE()
     AND DATE(submission_timestamp) = (
       SELECT
-        MIN(DATE(submission_timestamp))
+        MIN(SAFE.PARSE_DATE('%Y%m%d', partition_id))
       FROM
-        `{{ project_id }}.{{ app_id }}_stable.baseline_v1`
+        `{{ project_id }}.{{ app_id }}_stable.INFORMATION_SCHEMA.PARTITIONS`
       WHERE
-        DATE(submission_timestamp) <= CURRENT_DATE()
+        table_name = 'baseline_v1'
+        AND total_rows > 0
     )
     {% raw %}
     {% else %}

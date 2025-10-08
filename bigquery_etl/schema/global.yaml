@@ -15,6 +15,10 @@ fields:
   - infrequent_user
   - regular_user
   - other
+- name: adjust_network
+  type: STRING
+  mode: NULLABLE
+  description: The name of the Adjust Network that sourced the installation.
 - name: app_build_id
   type: STRING
   description: The build ID of the application.

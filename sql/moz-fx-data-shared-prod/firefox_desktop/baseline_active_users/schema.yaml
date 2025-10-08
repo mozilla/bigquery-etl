@@ -247,15 +247,19 @@ fields:
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
+  description: Year of the client's first seen date.
 - name: is_daily_user
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if client is considered a daily user on the submission date.
 - name: is_weekly_user
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if client is considered a weekly user on the submission date.
 - name: is_monthly_user
   type: BOOLEAN
   mode: NULLABLE
+  description: Flag indicating if client is considered a monthly user on the submission date.
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE

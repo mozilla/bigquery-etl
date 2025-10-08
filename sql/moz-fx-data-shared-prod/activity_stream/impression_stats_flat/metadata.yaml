@@ -13,5 +13,5 @@ workgroup_access:
 references:
   view.sql:
   - moz-fx-data-shared-prod.activity_stream_bi.impression_stats_flat_v1
-  - moz-fx-data-shared-prod.pocket.spoc_tile_ids
+  - moz-fx-data-shared-prod.pocket_derived.spoc_tile_ids_v1
 require_column_descriptions: false

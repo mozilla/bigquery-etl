@@ -179,7 +179,34 @@ SELECT
       ),
       0
     )
-  ) AS search_count_all
+  ) AS search_count_all,
+  SUM(
+    COALESCE(
+      (
+        SELECT
+          SUM(kv.value)
+        FROM
+          UNNEST(
+            ARRAY_CONCAT(
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_about_home, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_about_newtab, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_contextmenu, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_reload, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_searchbar, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_system, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_tabhistory, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_unknown, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_urlbar, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_urlbar_handoff, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_urlbar_persisted, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_urlbar_searchmode, []),
+              IFNULL(metrics.labeled_counter.browser_search_adclicks_webextension, [])
+            )
+          ) AS kv
+      ),
+      0
+    )
+  ) AS ad_clicks_count_all
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

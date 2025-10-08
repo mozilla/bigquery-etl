@@ -30,7 +30,8 @@ SELECT
     _current.search_with_ads_count_all,
     _previous.search_with_ads_count_all
   ) AS search_with_ads_count_all,
-  COALESCE(_current.search_count_all, _previous.search_count_all) AS search_count_all
+  COALESCE(_current.search_count_all, _previous.search_count_all) AS search_count_all,
+  COALESCE(_current.ad_clicks_count_all, _previous.ad_clicks_count_all) AS ad_clicks_count_all
 FROM
   _previous
 FULL JOIN

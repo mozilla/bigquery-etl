@@ -26,3 +26,6 @@ fields:
 - name: search_count_all
   type: INTEGER
   mode: NULLABLE
+- name: ad_clicks_count_all
+  type: INTEGER
+  mode: NULLABLE

@@ -12,7 +12,7 @@ from google.cloud import bigquery, storage
 QUERY_TEMPLATE = """\
 SELECT REGEXP_EXTRACT(JSON_VALUE(event_extra.url), r'^https://developer.mozilla.org(/.+?/docs/[^?#]+)') AS Page,
        COUNT(*) AS Pageviews
-FROM `moz-fx-data-shared-prod.mdn_fred.events_stream`
+FROM `moz-fx-data-shared-prod.mdn.events_stream`
 WHERE DATE(submission_timestamp) BETWEEN DATE_TRUNC(@submission_date, MONTH) AND LAST_DAY(@submission_date)
   AND client_info.app_channel = 'prod'
   AND event_name = 'page_load'

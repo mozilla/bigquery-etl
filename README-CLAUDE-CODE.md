@@ -4,11 +4,11 @@ This document describes our Claude Code configuration for the Mozilla bigquery-e
 
 ## Overview
 
-We've configured Claude Code with custom instructions to help generate BigQuery ETL files (query.sql, metadata.yaml, schema.yaml) that follow our project conventions and standards.
+We've configured Claude Code with custom instructions to help generate BigQuery ETL files (query.sql/query.py, metadata.yaml, schema.yaml) that follow our project conventions and standards.
 
 ### Why Custom Instructions?
 
-We chose to start with a custom instructions file (`.claude/instructions.md`) rather than building a full MCP (Model Context Protocol) server because:
+We chose to start with a custom instructions file [CLAUDE.md](https://github.com/mozilla/bigquery-etl/blob/claude-bqetl-poc/CLAUDE.md) rather than building a full MCP (Model Context Protocol) server because:
 
 1. **Simplicity**: Instructions are easier to set up and maintain than custom servers
 2. **Transparency**: All conventions are documented in plain markdown

@@ -110,6 +110,4 @@ WHERE
   AND daily.email IS NOT NULL
   -- FILTER OUT USERS ALREADY IN THE LIST
   AND historical.fxa_id_sha256 IS NULL
-  -- ONLY FOR EMAIL WARMING IN en-US LOCALE
-  -- REMOVE THIS FILTER BEFORE 10/14/2025 WHEN FULL CAMPAIGN STARTS
-  AND daily.locale = 'en-US'
+  AND daily.locale IN ('de', 'en-US', 'en-GB', 'es-ES', 'fr', 'it', 'pl', 'pt-BR')

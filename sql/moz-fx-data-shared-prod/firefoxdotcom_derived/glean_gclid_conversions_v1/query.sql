@@ -53,6 +53,62 @@ dl_token_to_telemetry_id AS (
     ON a.attribution_dltoken = b.dl_token
     AND a.submission_date <= @submission_date
 ),
+
+--Step 5: Get the telemetry client ID, firefox first run date, # days running firefox, and most recent Firefox run date
+old_events_from_bcd AS (
+  SELECT
+    a.telemetry_client_id,
+    MIN(b.submission_date) AS firefox_first_run_date,
+    COUNT(DISTINCT(b.submission_date)) AS nbr_days_running_firefox,
+    MAX(b.submission_date) AS most_recent_date_running_firefox
+  FROM dl_token_to_telemetry_id a 
+  LEFT JOIN 
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1` b 
+  ON a.telemetry_client_id = b.client_id
+  AND b.submission_date <= @submission_date
+  GROUP BY
+    1
+),
+
+---------GOOD ABOVE HERE ------------------
+--Step 6: 
+old_events_from_mcd AS (
+
+
+),
+
+old_events_combined AS (
+
+
+)
+
+
+--goal: 1 row per client ID, activity date (submission date), and 
+--flags for: 
+--firefox_first_run_date
+--firefox_first_ad_click_date
+--firefox_first_search_date
+--returned_second_day
+old_events AS (
+  SELECT 
+    a.telemetry_client_id,
+
+    MAX(IF(@submission_date = b.first_run_date, 1, 0)) AS firefox_first_run_date
+  FROM dl_token_to_telemetry_id a 
+  LEFT JOIN 
+  `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1` b 
+  ON a.telemetry_client_id = b.client_id
+  AND b.submission_date <= @submission_date
+
+  GROUP BY 
+  a.telemetry_client_id
+)
+
+
+
+
+
+
 --Step 5: Get, for each client, calculate their first run date, first ad click date,
 --        first search date, the # of days running Firefox, and their most recent run date
 old_events_staging AS (

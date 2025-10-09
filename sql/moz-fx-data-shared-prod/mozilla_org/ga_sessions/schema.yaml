@@ -274,3 +274,12 @@ fields:
   mode: REPEATED
   description: All non-null reported experiment branches from event_params for this
     session.
+- name: first_gad_campaignid_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null reported gad_campaignid from event_params for this
+    session.
+- name: distinct_gad_campaignid_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All non-null reported gad_campaignid from event_params for this session.

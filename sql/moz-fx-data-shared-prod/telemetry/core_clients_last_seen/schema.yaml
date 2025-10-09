@@ -11,6 +11,7 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
@@ -20,6 +21,7 @@ fields:
 - name: client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
 - name: profile_date
   type: DATE
   mode: NULLABLE
@@ -38,9 +40,12 @@ fields:
 - name: os
   type: STRING
   mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Code of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: city
   type: STRING
   mode: NULLABLE
@@ -50,9 +55,11 @@ fields:
 - name: normalized_channel
   type: STRING
   mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
 - name: locale
   type: STRING
   mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
 - name: osversion
   type: STRING
   mode: NULLABLE
@@ -68,6 +75,7 @@ fields:
 - name: distribution_id
   type: STRING
   mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
 - name: campaign
   type: STRING
   mode: NULLABLE
@@ -77,6 +85,8 @@ fields:
 - name: default_browser
   type: BOOLEAN
   mode: NULLABLE
+  description: A flag indicating whether the browser is set as the default browser
+    on the client side.
 - name: show_tracker_stats_share
   type: BOOLEAN
   mode: NULLABLE

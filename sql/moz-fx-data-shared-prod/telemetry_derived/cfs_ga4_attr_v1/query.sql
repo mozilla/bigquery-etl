@@ -110,6 +110,8 @@ SELECT
   ga4.distinct_experiment_ids_from_event_params AS ga4_distinct_experiment_ids_from_event_params,
   ga4.first_experiment_branch_from_event_params AS ga4_first_experiment_branch_from_event_params,
   ga4.distinct_experiment_branches_from_event_params AS ga4_distinct_experiment_branches_from_event_params,
+  ga4.first_gad_campaignid_from_event_params AS ga4_first_gad_campaignid_from_event_params,
+  ga4.distinct_gad_campaignid_from_event_params AS ga4_distinct_gad_campaignid_from_event_params,
   ga4.manual_campaign_id AS ga4_manual_campaign_id,
   ga4.manual_campaign_name AS ga4_manual_campaign_name,
   ga4.manual_source AS ga4_manual_source,

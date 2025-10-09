@@ -10,8 +10,15 @@ labels:
   dag: bqetl_braze_win10_sync
 scheduling:
   dag_name: bqetl_braze_win10_sync
-  date_partition_parameter: null
-bigquery: null
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

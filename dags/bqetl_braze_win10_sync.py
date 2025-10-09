@@ -106,18 +106,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    braze_derived__fxa_win10_users_daily__v1 = bigquery_etl_query(
-        task_id="braze_derived__fxa_win10_users_daily__v1",
-        destination_table="fxa_win10_users_daily_v1",
-        dataset_id="braze_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="lmcfall@mozilla.com",
-        email=["lmcfall@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-    )
-
     braze_derived__fxa_win10_users_historical__v1 = bigquery_etl_query(
         task_id="braze_derived__fxa_win10_users_historical__v1",
         destination_table="fxa_win10_users_historical_v1",
@@ -136,27 +124,24 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",
         email=["lmcfall@mozilla.com"],
-        date_partition_parameter=None,
+        date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_concurrency=1,
     )
 
-    braze_derived__fxa_win10_users_daily__v1.set_upstream(
+    braze_derived__fxa_win10_users_historical__v1.set_upstream(
         wait_for_accounts_backend_derived__users_services_last_seen__v1
     )
 
-    braze_derived__fxa_win10_users_daily__v1.set_upstream(
+    braze_derived__fxa_win10_users_historical__v1.set_upstream(
         wait_for_accounts_backend_external__emails__v1
     )
 
-    braze_derived__fxa_win10_users_daily__v1.set_upstream(
+    braze_derived__fxa_win10_users_historical__v1.set_upstream(
         wait_for_checks__fail_braze_derived__users__v1
     )
 
-    braze_derived__fxa_win10_users_daily__v1.set_upstream(wait_for_copy_deduplicate_all)
-
     braze_derived__fxa_win10_users_historical__v1.set_upstream(
-        braze_derived__fxa_win10_users_daily__v1
+        wait_for_copy_deduplicate_all
     )
 
     braze_external__win10_users_sync__v1.set_upstream(

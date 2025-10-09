@@ -159,6 +159,7 @@ augmented_subscriptions_5 AS (
 )
 SELECT
   * EXCEPT (
+    first_touch_attribution,  -- DENG-9858
     effective_date,
     current_period_annual_recurring_revenue_months,
     months_after_current_period_before_ongoing_discount_ends,

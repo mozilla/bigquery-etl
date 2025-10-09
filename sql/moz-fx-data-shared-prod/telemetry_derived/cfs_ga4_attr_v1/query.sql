@@ -216,7 +216,9 @@ LEFT JOIN
       first_experiment_id_from_event_params,
       distinct_experiment_ids_from_event_params,
       first_experiment_branch_from_event_params,
-      distinct_experiment_branches_from_event_params
+      distinct_experiment_branches_from_event_params,
+      first_gad_campaignid_from_event_params,
+      distinct_gad_campaignid_from_event_params
     FROM
       `moz-fx-data-shared-prod.telemetry.ga4_sessions_firefoxcom_mozillaorg_combined`
     LEFT JOIN

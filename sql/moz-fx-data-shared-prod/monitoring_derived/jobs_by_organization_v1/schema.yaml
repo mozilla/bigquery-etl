@@ -222,3 +222,27 @@ fields:
   name: query_dialect
   type: STRING
   description: The query dialect used for the job.
+
+- mode: NULLABLE
+  name: bi_engine_mode
+  type: STRING
+  description: High-level BI Engine status for the job (e.g., ENABLED, DISABLED, PARTIAL).
+
+- mode: NULLABLE
+  name: acceleration_mode
+  type: STRING
+  description: How BI Engine was used when acceleration occurred (e.g., FULL_QUERY, FULL_INPUT, PARTIAL_INPUT).
+
+- mode: REPEATED
+  name: bi_engine_reasons
+  type: RECORD
+  description: Reasons explaining why BI Engine was PARTIAL or DISABLED for this job.
+  fields:
+  - mode: NULLABLE
+    name: code
+    type: STRING
+    description: Machine-readable reason code.
+  - mode: NULLABLE
+    name: message
+    type: STRING
+    description: Human-readable explanation of the reason.

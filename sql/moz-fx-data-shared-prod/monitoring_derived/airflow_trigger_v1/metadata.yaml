@@ -16,6 +16,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   query.sql:
   - moz-fx-data-bq-fivetran.telemetry_airflow_metadata_public.trigger

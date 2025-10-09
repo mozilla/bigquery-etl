@@ -8,6 +8,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring_derived.outerbounds_cost_per_flow_run_v1

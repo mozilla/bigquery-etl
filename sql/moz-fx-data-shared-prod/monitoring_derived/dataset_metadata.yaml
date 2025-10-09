@@ -8,9 +8,11 @@ default_table_workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 default_table_expiration_ms: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 syndication: {}

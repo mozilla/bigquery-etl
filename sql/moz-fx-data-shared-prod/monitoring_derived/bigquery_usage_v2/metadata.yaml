@@ -28,6 +28,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   query.sql:
   - moz-fx-data-marketing-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT

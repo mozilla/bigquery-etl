@@ -23,6 +23,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   query.sql:
   - moz-fx-data-shared-prod.monitoring_derived.shredder_targets_joined_v1

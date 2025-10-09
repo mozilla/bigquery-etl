@@ -25,6 +25,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   query.sql:
   - moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1

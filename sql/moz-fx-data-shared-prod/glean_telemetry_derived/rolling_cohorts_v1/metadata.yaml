@@ -9,11 +9,16 @@ description: |-
   etc. are based on the values at the time the cohort is created.
   This might not be the same as when activity happens. For example
   if a client changes whether Firefox is the default browser.
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9512
+  - Data Model README: ./README.md
 owners:
-- kwindau@mozilla.com
+- mhirose@mozilla.com
 labels:
   incremental: true
-  owner1: kwindau
+  owner1: mhirose
   table_type: client_level
   dag: bqetl_cohort_retention
 scheduling:

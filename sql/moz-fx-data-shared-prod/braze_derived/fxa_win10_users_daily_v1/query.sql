@@ -33,14 +33,18 @@ WITH win10_users AS (
     AND client_info.os_version = '10.0'
 ),
 last_seen_14_days AS (
-  SELECT DISTINCT
-    user_id_sha256
+  SELECT
+    user_id_sha256,
+    MIN(days_seen_bits) AS last_seen_min
   FROM
     `moz-fx-data-shared-prod.accounts_backend_derived.users_services_last_seen_v1`
   WHERE
     submission_date = @submission_date
-    -- bit pattern 100000000000000, last seen 14 days from submission date
-    AND days_seen_bits = 16384
+  GROUP BY
+    1
+  -- bit pattern 100000000000000, last seen 14 days from submission date
+  HAVING
+    last_seen_min = 16384
 ),
 inactive_win10_users AS (
   SELECT

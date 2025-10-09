@@ -11,6 +11,7 @@ labels:
   owner1: lmcfall
 scheduling:
   dag_name: bqetl_braze_win10_sync
+  date_partition_parameter: null
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -113,8 +113,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",
         email=["lmcfall@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     braze_derived__fxa_win10_users_historical__v1 = bigquery_etl_query(
@@ -135,8 +136,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="lmcfall@mozilla.com",
         email=["lmcfall@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=False,
+        task_concurrency=1,
     )
 
     braze_derived__fxa_win10_users_daily__v1.set_upstream(

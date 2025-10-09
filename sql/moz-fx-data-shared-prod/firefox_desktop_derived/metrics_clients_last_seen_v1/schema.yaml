@@ -29,3 +29,11 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Number of searches with ads on client's last seen date in last 28 days.
+- name: search_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of searches on client's last seen date in last 28 days.
+- name: ad_clicks_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of ad clicks on client's last seen date in last 28 days.

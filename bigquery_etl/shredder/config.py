@@ -276,6 +276,9 @@ DELETE_TARGETS: DeleteIndex = {
         table="firefox_desktop_derived.desktop_retention_clients_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(
+        table="google_ads_derived.glean_conversion_event_categorization_v1"
+    ): DESKTOP_GLEAN_SRC,
+    client_id_target(
         table="firefox_desktop_derived.desktop_engagement_clients_v1"
     ): DESKTOP_GLEAN_SRC,
     client_id_target(

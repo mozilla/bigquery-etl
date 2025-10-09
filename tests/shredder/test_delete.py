@@ -113,6 +113,7 @@ def test_delete_from_partition_with_sampling(mock_delete_from_partition):
             id="20240101", condition="", is_special=False
         ),
         sampling_parallelism=10,
+        sampling_batch_size=1,
         task_id=base_task_id,
     )
 
@@ -128,10 +129,48 @@ def test_delete_from_partition_with_sampling(mock_delete_from_partition):
             partition=shredder_delete.Partition(
                 id="20240101", condition="", is_special=False
             ),
-            sample_id=i,
             clustering_fields=ANY,
             check_table_existence=True,
-            task_id=f"{base_task_id}__sample_{i}",
+            sample_id_range=(i, i),
+            task_id=f"{base_task_id}__sample_{i}_{i}",
+        )
+
+
+@patch("bigquery_etl.shredder.delete.delete_from_partition")
+def test_delete_from_partition_with_sampling_batch_size(mock_delete_from_partition):
+    """
+    delete_from_partition_with_sampling with a sample id batch size should run
+    delete_from_partition ceil(100 / batch_size) times.
+    """
+    base_task_id = "proj.dataset.table_v1"
+    batch_size = 4
+
+    wait_for_job = shredder_delete.delete_from_partition_with_sampling(
+        **COMMON_DELETE_ARGS,
+        partition=shredder_delete.Partition(
+            id="20240101", condition="", is_special=False
+        ),
+        sampling_parallelism=10,
+        sampling_batch_size=batch_size,
+        task_id=base_task_id,
+    )
+
+    mock_client = Mock()
+
+    job_function = wait_for_job.keywords["create_job"]
+    job_function(mock_client)
+
+    assert mock_delete_from_partition.call_count == 25
+    for i in range(0, 100, batch_size):
+        mock_delete_from_partition.assert_any_call(
+            **COMMON_DELETE_ARGS,
+            partition=shredder_delete.Partition(
+                id="20240101", condition="", is_special=False
+            ),
+            clustering_fields=ANY,
+            check_table_existence=True,
+            sample_id_range=(i, i + batch_size - 1),
+            task_id=f"{base_task_id}__sample_{i}_{i + batch_size - 1}",
         )
 
 
@@ -154,6 +193,7 @@ def test_delete_from_table_sampling(mock_list_partitions):
                 client=mock_client,
                 use_sampling=True,
                 sampling_parallelism=10,
+                sampling_batch_size=1,
                 max_single_dml_bytes=1,
                 partition_limit=None,
                 end_date="",
@@ -168,8 +208,7 @@ def test_delete_from_table_sampling(mock_list_partitions):
         )
 
 
-@patch("bigquery_etl.shredder.delete.sql_table_id", return_value="dataset.table_v1")
-def test_context_id_brace_normalization(mock_sql_table_id):
+def test_context_id_brace_normalization():
     """
     Ensure context_id fields are normalized in generated SQL to accept and
     delete braced and unbraced forms.
@@ -210,6 +249,7 @@ def test_context_id_brace_normalization(mock_sql_table_id):
             max_single_dml_bytes=1,
             partition_limit=None,
             sampling_parallelism=10,
+            sampling_batch_size=1,
             use_sampling=False,
             temp_dataset="project.tmp",
             priority="INTERACTIVE",

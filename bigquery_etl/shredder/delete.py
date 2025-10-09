@@ -141,6 +141,13 @@ parser.add_argument(
     help="Number of concurrent queries to run per partition when shredding per sample id",
 )
 parser.add_argument(
+    "--sampling-batch-size",
+    "--sampling_batch_size",
+    type=int,
+    default=1,
+    help="Number of sample ids per query in sample id shredding",
+)
+parser.add_argument(
     "--temp-dataset",
     "--temp_dataset",
     metavar="PROJECT.DATASET",
@@ -307,7 +314,7 @@ def delete_from_partition(
     sources: Iterable[DeleteSource],
     target: DeleteTarget,
     use_dml: bool,
-    sample_id: Optional[int] = None,
+    sample_id_range: Optional[Tuple[int, int]] = None,
     temp_dataset: Optional[str] = None,
     clustering_fields: Optional[Iterable[str]] = None,
     reservation_override: Optional[str] = None,
@@ -324,9 +331,12 @@ def delete_from_partition(
     # because they can't be set as a query destination.
     if partition.id is None or partition.is_special:
         use_dml = True
-    elif sample_id is not None:
+    elif sample_id_range is not None:
         use_dml = False
-        job_config.destination = f"{temp_dataset}.{target.dataset_id}__{target.table_id}_{partition.id}__sample_{sample_id}"
+        job_config.destination = (
+            f"{temp_dataset}.{target.dataset_id}__{target.table_id}_"
+            f"{partition.id}__sample_{sample_id_range[0]}_{sample_id_range[1]}"
+        )
         job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
         job_config.clustering_fields = clustering_fields
     elif not use_dml:
@@ -386,7 +396,11 @@ def delete_from_partition(
                     WHERE
                 """
                     + " AND ".join((source_condition, *source.conditions))
-                    + (f" AND sample_id = {sample_id}" if sample_id is not None else "")
+                    + (
+                        f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}"
+                        if sample_id_range is not None
+                        else ""
+                    )
                     + f"""
                   )
                   ON {normalized_expr(field)} = _source_{index}
@@ -422,7 +436,7 @@ def delete_from_partition(
                 WHERE
                   ({field_conditions})
                   AND ({partition_condition})
-                  {f" AND sample_id = {sample_id}" if sample_id is not None else ""}
+                  {f" AND sample_id BETWEEN {sample_id_range[0]} AND {sample_id_range[1]}" if sample_id_range is not None else ""}
                 """
             )
         run_tense = "Would run" if dry_run else "Running"
@@ -443,6 +457,7 @@ def delete_from_partition_with_sampling(
     target: DeleteTarget,
     use_dml: bool,
     sampling_parallelism: int,
+    sampling_batch_size: int,
     temp_dataset: str,
     reservation_override: str,
     **wait_for_job_kwargs,
@@ -469,17 +484,17 @@ def delete_from_partition_with_sampling(
                 target=target,
                 use_dml=use_dml,
                 temp_dataset=temp_dataset,
-                sample_id=s,
+                sample_id_range=(s, s + sampling_batch_size - 1),
                 clustering_fields=intermediate_clustering_fields,
                 check_table_existence=True,
                 reservation_override=reservation_override,
                 **{
                     **wait_for_job_kwargs,
                     # override task id with sample id suffix
-                    "task_id": f"{wait_for_job_kwargs['task_id']}__sample_{s}",
+                    "task_id": f"{wait_for_job_kwargs['task_id']}__sample_{s}_{s + sampling_batch_size - 1}",
                 },
             )
-            for s in range(100)
+            for s in range(0, 100, sampling_batch_size)
         ]
 
         # Run all 100 delete functions in parallel, exception is raised without retry if any fail
@@ -633,6 +648,7 @@ def delete_from_table(
     max_single_dml_bytes,
     partition_limit,
     sampling_parallelism,
+    sampling_batch_size,
     use_sampling,
     temp_dataset,
     reservation_override,
@@ -651,6 +667,7 @@ def delete_from_table(
         # no sampling for __NULL__ partition
         if use_sampling and not partition.is_special:
             kwargs["sampling_parallelism"] = sampling_parallelism
+            kwargs["sampling_batch_size"] = sampling_batch_size
             delete_func: Callable = delete_from_partition_with_sampling
         else:
             if use_sampling:
@@ -659,6 +676,7 @@ def delete_from_table(
                     f"{target.dataset_id}.{target.table_id} is too small to use sampling"
                 )
             kwargs.pop("sampling_parallelism", None)
+            kwargs.pop("sampling_batch_size", None)
             delete_func = delete_from_partition
 
         yield Task(
@@ -791,6 +809,7 @@ def main():
             state_table=args.state_table,
             states=states,
             sampling_parallelism=args.sampling_parallelism,
+            sampling_batch_size=args.sampling_batch_size,
             use_sampling=target.table in args.sampling_tables,
             temp_dataset=args.temp_dataset,
             reservation_override=args.reservation_override,

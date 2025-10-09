@@ -72,6 +72,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_bigeye__firefox_ios_derived__new_profiles__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_ios_derived__new_profiles__v1",
+        external_dag_id="bqetl_mobile_kpi_metrics",
+        external_task_id="firefox_ios.bigeye__firefox_ios_derived__new_profiles__v1",
+        execution_delta=datetime.timedelta(days=-1, seconds=57600),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -176,17 +189,15 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    checks__fail_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
-        task_id="checks__fail_firefox_ios_derived__app_store_funnel__v1",
-        source_table="app_store_funnel_v1",
-        dataset_id="firefox_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=True,
+    bigeye__firefox_ios_derived__app_store_funnel__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_ios_derived__app_store_funnel__v1",
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1",
+        warehouse_id="1939",
         owner="kik@mozilla.com",
         email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
     )
 
     checks__fail_firefox_ios_derived__baseline_clients_yearly__v1 = bigquery_dq_check(
@@ -304,19 +315,6 @@ with DAG(
             "telemetry-alerts@mozilla.com",
             "vsabino@mozilla.com",
         ],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-    )
-
-    checks__warn_firefox_ios_derived__app_store_funnel__v1 = bigquery_dq_check(
-        task_id="checks__warn_firefox_ios_derived__app_store_funnel__v1",
-        source_table="app_store_funnel_v1",
-        dataset_id="firefox_ios_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="kik@mozilla.com",
-        email=["frank@mozilla.com", "kik@mozilla.com", "telemetry-alerts@mozilla.com"],
         depends_on_past=False,
         parameters=["submission_date:DATE:{{ds}}"],
         retries=0,
@@ -498,16 +496,8 @@ with DAG(
         depends_on_past=True,
     )
 
-    checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
+    bigeye__firefox_ios_derived__app_store_funnel__v1.set_upstream(
         firefox_ios_derived__app_store_funnel__v1
-    )
-
-    checks__fail_firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        firefox_ios_derived__clients_activation__v1
     )
 
     checks__fail_firefox_ios_derived__baseline_clients_yearly__v1.set_upstream(
@@ -526,18 +516,6 @@ with DAG(
         firefox_ios_derived__new_profile_activation__v2
     )
 
-    checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        firefox_ios_derived__app_store_funnel__v1
-    )
-
-    checks__warn_firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        firefox_ios_derived__clients_activation__v1
-    )
-
     checks__warn_firefox_ios_derived__firefox_ios_clients__v1.set_upstream(
         firefox_ios_derived__firefox_ios_clients__v1
     )
@@ -547,11 +525,7 @@ with DAG(
     )
 
     firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        checks__fail_firefox_ios_derived__firefox_ios_clients__v1
-    )
-
-    firefox_ios_derived__app_store_funnel__v1.set_upstream(
-        firefox_ios_derived__clients_activation__v1
+        wait_for_bigeye__firefox_ios_derived__new_profiles__v1
     )
 
     firefox_ios_derived__attributable_clients__v1.set_upstream(

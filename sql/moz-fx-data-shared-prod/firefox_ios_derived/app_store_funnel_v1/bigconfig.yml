@@ -1,0 +1,38 @@
+type: BIGCONFIG_FILE
+tag_deployments:
+- collection:
+    name: Operational Checks
+    notification_channels:
+    - slack: '#de-bigeye-triage'
+  deployments:
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.session_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.first_seen_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.country
+    metrics:
+    - saved_metric_id: is_not_null
+      rct_overrides:
+      - date
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.submission_date
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.country
+    metrics:
+    - saved_metric_id: composite_key_uniqueness_2_column
+      parameters:
+      - key: col_1
+        column_name: submission_date
+      - key: col_1_string
+        string_value: submission_date
+      - key: col_2
+        column_name: country
+      - key: col_2_string
+        string_value: country
+      - key: table
+        string_value: moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1
+      rct_overrides:
+      - date
+  - column_selectors:
+    - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.firefox_ios_derived.app_store_funnel_v1.*
+    metrics:
+    - saved_metric_id: volume
+    - saved_metric_id: freshness

@@ -734,6 +734,21 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
+    with TaskGroup(
+        "bigeye__firefox_ios_derived__new_profiles__v1_external",
+        parent_group=task_group_firefox_ios,
+    ) as bigeye__firefox_ios_derived__new_profiles__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_firefox_ios__wait_for_bigeye__firefox_ios_derived__new_profiles__v1",
+            external_dag_id="bqetl_firefox_ios",
+            external_task_id="wait_for_bigeye__firefox_ios_derived__new_profiles__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=28800)).isoformat() }}",
+        )
+
+        bigeye__firefox_ios_derived__new_profiles__v1_external.set_upstream(
+            bigeye__firefox_ios_derived__new_profiles__v1
+        )
+
     bigeye__firefox_ios_derived__retention__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__retention__v1",
         table_id="moz-fx-data-shared-prod.firefox_ios_derived.retention_v1",

@@ -29,6 +29,3 @@ fields:
 - name: page_views_unique_device
   type: INTEGER
   mode: NULLABLE
-- name: date_pst
-  type: TIMESTAMP
-  mode: NULLABLE

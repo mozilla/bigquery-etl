@@ -646,7 +646,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
       metrics.labeled_counter.media_recorder_mime_type_query,
-      metrics.labeled_counter.pdfjs_comment_edit
+      metrics.labeled_counter.pdfjs_comment_edit,
+      metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process
     ) AS `labeled_counter`,
     STRUCT(
       metrics.memory_distribution.glean_database_size,
@@ -1728,7 +1730,11 @@ SELECT
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
       metrics.labeled_memory_distribution.networking_trr_response_size,
-      metrics.labeled_memory_distribution.network_page_load_size
+      metrics.labeled_memory_distribution.network_page_load_size,
+      metrics.labeled_memory_distribution.memory_js_gc_heap,
+      metrics.labeled_memory_distribution.memory_resident_fast,
+      metrics.labeled_memory_distribution.memory_resident_peak,
+      metrics.labeled_memory_distribution.memory_unique
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.string_list.intl_accept_languages,

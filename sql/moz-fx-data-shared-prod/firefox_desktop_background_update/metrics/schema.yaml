@@ -7647,6 +7647,34 @@ fields:
       description: 'Counts the number of times the user edits or deletes comments.
 
         '
+    - name: power_cpu_ms_per_thread_inference_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many miliseconds of CPU time were used. Broken down by thread
+        name for a given process type.
+
+        '
+    - name: power_wakeups_per_thread_inference_process
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'How many times threads woke up and could have woken up a CPU core.
+        Broken down by thread name for a given process type.
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE
@@ -8651,7 +8679,8 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Memory used by the garbage-collected JavaScript heap (KB)
+      description: 'Memory used by the garbage-collected JavaScript heap (KB) by process
+        type
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_JS_GC_HEAP.
@@ -8679,7 +8708,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Resident memory size (KB)
+      description: 'Resident memory size (KB) by process type
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_RESIDENT_FAST.
@@ -8707,7 +8736,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Peak resident memory size (KB)
+      description: 'Peak resident memory size (KB) by process type
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_RESIDENT_PEAK.
@@ -8792,7 +8821,7 @@ fields:
         - name: value
           type: INTEGER
           mode: NULLABLE
-      description: 'Unique Set Size (KB)
+      description: 'Unique Set Size (KB) by process type
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram MEMORY_UNIQUE.
@@ -42652,6 +42681,147 @@ fields:
             mode: NULLABLE
       description: 'The size of the HTTP response for a document load, keyed by the
         page itself or the sum of subresources.
+
+        '
+    - name: memory_js_gc_heap
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Memory used by the garbage-collected JavaScript heap (KB) by process
+        type
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram MEMORY_JS_GC_HEAP.
+
+        '
+    - name: memory_resident_fast
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Resident memory size (KB) by process type
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram MEMORY_RESIDENT_FAST.
+
+        '
+    - name: memory_resident_peak
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Peak resident memory size (KB) by process type
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram MEMORY_RESIDENT_PEAK.
+
+        '
+    - name: memory_unique
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: RECORD
+        mode: NULLABLE
+        fields:
+        - name: count
+          type: INTEGER
+          mode: NULLABLE
+          description: This was accidentally sent in the past and is now deprecated.
+            See https://bugzilla.mozilla.org/show_bug.cgi?id=1799509#c5
+        - name: sum
+          type: INTEGER
+          mode: NULLABLE
+        - name: values
+          type: RECORD
+          mode: REPEATED
+          fields:
+          - name: key
+            type: STRING
+            mode: NULLABLE
+          - name: value
+            type: INTEGER
+            mode: NULLABLE
+      description: 'Unique Set Size (KB) by process type
+
+        This metric was generated to correspond to the Legacy Telemetry exponential
+        histogram MEMORY_UNIQUE.
 
         '
   - name: string_list

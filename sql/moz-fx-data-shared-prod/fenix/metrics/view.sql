@@ -121,7 +121,8 @@ SELECT
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
       metrics.boolean.preferences_isolated_content_processes_enabled,
       metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
-      metrics.boolean.preferences_show_sponsor_suggestions_enabled
+      metrics.boolean.preferences_show_sponsor_suggestions_enabled,
+      metrics.boolean.preferences_global_privacy_control_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -1067,7 +1068,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
       metrics.labeled_counter.media_recorder_mime_type_query,
-      metrics.labeled_counter.pdfjs_comment_edit
+      metrics.labeled_counter.pdfjs_comment_edit,
+      metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -1213,7 +1216,9 @@ SELECT
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
-      metrics.string.preferences_toolbar_mode_setting
+      metrics.string.preferences_toolbar_mode_setting,
+      metrics.string.preferences_doh_protection_level,
+      metrics.string.preferences_https_only_mode
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -1973,7 +1978,11 @@ SELECT
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
       metrics.labeled_memory_distribution.networking_trr_response_size,
-      metrics.labeled_memory_distribution.network_page_load_size
+      metrics.labeled_memory_distribution.network_page_load_size,
+      metrics.labeled_memory_distribution.memory_js_gc_heap,
+      metrics.labeled_memory_distribution.memory_resident_fast,
+      metrics.labeled_memory_distribution.memory_resident_peak,
+      metrics.labeled_memory_distribution.memory_unique
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -2143,7 +2152,8 @@ SELECT
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
       metrics.boolean.preferences_isolated_content_processes_enabled,
       metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
-      metrics.boolean.preferences_show_sponsor_suggestions_enabled
+      metrics.boolean.preferences_show_sponsor_suggestions_enabled,
+      metrics.boolean.preferences_global_privacy_control_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -3089,7 +3099,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
       metrics.labeled_counter.media_recorder_mime_type_query,
-      metrics.labeled_counter.pdfjs_comment_edit
+      metrics.labeled_counter.pdfjs_comment_edit,
+      metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -3235,7 +3247,9 @@ SELECT
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
-      metrics.string.preferences_toolbar_mode_setting
+      metrics.string.preferences_toolbar_mode_setting,
+      metrics.string.preferences_doh_protection_level,
+      metrics.string.preferences_https_only_mode
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -3995,7 +4009,11 @@ SELECT
       metrics.labeled_memory_distribution.network_cache_size,
       metrics.labeled_memory_distribution.networking_trr_request_size,
       metrics.labeled_memory_distribution.networking_trr_response_size,
-      metrics.labeled_memory_distribution.network_page_load_size
+      metrics.labeled_memory_distribution.network_page_load_size,
+      metrics.labeled_memory_distribution.memory_js_gc_heap,
+      metrics.labeled_memory_distribution.memory_resident_fast,
+      metrics.labeled_memory_distribution.memory_resident_peak,
+      metrics.labeled_memory_distribution.memory_unique
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,
@@ -4215,7 +4233,8 @@ SELECT
       metrics.boolean.contentblocking_tp_allowlist_convenience_enabled,
       metrics.boolean.preferences_isolated_content_processes_enabled,
       metrics.boolean.preferences_show_non_sponsor_suggestions_enabled,
-      metrics.boolean.preferences_show_sponsor_suggestions_enabled
+      metrics.boolean.preferences_show_sponsor_suggestions_enabled,
+      metrics.boolean.preferences_global_privacy_control_enabled
     ) AS `boolean`,
     STRUCT(
       metrics.counter.events_total_uri_count,
@@ -6469,7 +6488,9 @@ SELECT
       metrics.labeled_counter.urlclassifier_lookup_miss,
       metrics.labeled_counter.profiles_creation_place,
       metrics.labeled_counter.media_recorder_mime_type_query,
-      metrics.labeled_counter.pdfjs_comment_edit
+      metrics.labeled_counter.pdfjs_comment_edit,
+      metrics.labeled_counter.power_cpu_ms_per_thread_inference_process,
+      metrics.labeled_counter.power_wakeups_per_thread_inference_process
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.gfx_adapter_primary_ram,
@@ -6615,7 +6636,9 @@ SELECT
       metrics.string.system_win_package_family_name,
       metrics.string.update_settings_channel,
       metrics.string.xpi_database_startup_error,
-      metrics.string.preferences_toolbar_mode_setting
+      metrics.string.preferences_toolbar_mode_setting,
+      metrics.string.preferences_doh_protection_level,
+      metrics.string.preferences_https_only_mode
     ) AS `string`,
     STRUCT(
       metrics.string_list.metrics_mozilla_products,
@@ -13873,7 +13896,59 @@ SELECT
           UNNEST(
             metrics.labeled_memory_distribution.network_page_load_size
           ) AS `network_page_load_size`
-      ) AS `network_page_load_size`
+      ) AS `network_page_load_size`,
+      ARRAY(
+        SELECT
+          STRUCT(
+            memory_js_gc_heap.key,
+            STRUCT(
+              memory_js_gc_heap.value.count,
+              memory_js_gc_heap.value.sum,
+              memory_js_gc_heap.value.values
+            ) AS `value`
+          )
+        FROM
+          UNNEST(metrics.labeled_memory_distribution.memory_js_gc_heap) AS `memory_js_gc_heap`
+      ) AS `memory_js_gc_heap`,
+      ARRAY(
+        SELECT
+          STRUCT(
+            memory_resident_fast.key,
+            STRUCT(
+              memory_resident_fast.value.count,
+              memory_resident_fast.value.sum,
+              memory_resident_fast.value.values
+            ) AS `value`
+          )
+        FROM
+          UNNEST(metrics.labeled_memory_distribution.memory_resident_fast) AS `memory_resident_fast`
+      ) AS `memory_resident_fast`,
+      ARRAY(
+        SELECT
+          STRUCT(
+            memory_resident_peak.key,
+            STRUCT(
+              memory_resident_peak.value.count,
+              memory_resident_peak.value.sum,
+              memory_resident_peak.value.values
+            ) AS `value`
+          )
+        FROM
+          UNNEST(metrics.labeled_memory_distribution.memory_resident_peak) AS `memory_resident_peak`
+      ) AS `memory_resident_peak`,
+      ARRAY(
+        SELECT
+          STRUCT(
+            memory_unique.key,
+            STRUCT(
+              memory_unique.value.count,
+              memory_unique.value.sum,
+              memory_unique.value.values
+            ) AS `value`
+          )
+        FROM
+          UNNEST(metrics.labeled_memory_distribution.memory_unique) AS `memory_unique`
+      ) AS `memory_unique`
     ) AS `labeled_memory_distribution`,
     STRUCT(
       metrics.dual_labeled_counter.application_reputation_server_verdict_2,

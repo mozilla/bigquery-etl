@@ -101,6 +101,12 @@ fields:
 - name: distinct_experiment_branches_from_event_params
   type: STRING
   mode: REPEATED
+- name: first_gad_campaignid_from_event_params
+  type: STRING
+  mode: NULLABLE
+- name: distinct_gad_campaignid_from_event_params
+  type: STRING
+  mode: REPEATED
 - name: manual_campaign_id
   type: STRING
   mode: NULLABLE

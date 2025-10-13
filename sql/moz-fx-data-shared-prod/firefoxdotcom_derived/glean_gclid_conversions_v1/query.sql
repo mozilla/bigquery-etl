@@ -202,7 +202,7 @@ telemetry_id_to_activity_staging AS (
   WHERE
     firefox_first_run IS TRUE
     OR firefox_first_ad_click IS TRUE
-    OR firefox_first_ad_click IS TRUE
+    OR firefox_first_search IS TRUE
     OR returned_second_day IS TRUE
 ),
 --Step 8 - Aggregate to 1 row per client ID/activity date

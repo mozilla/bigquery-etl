@@ -1,0 +1,34 @@
+friendly_name: Glean Google Analytics Desktop Conversions
+description: |-
+  Query that pulls conversion event data for marketing campaigns
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  dag: bqetl_census_feed
+scheduling:
+  dag_name: bqetl_census_feed
+  depends_on_past: true
+bigquery:
+  time_partitioning:
+    type: day
+    field: activity_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - conversion_name
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-census
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references: {}
+require_column_descriptions: false

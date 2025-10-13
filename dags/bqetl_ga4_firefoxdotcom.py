@@ -369,6 +369,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "firefoxdotcom_derived__glean_gclid_conversions__v1_external",
+    ) as firefoxdotcom_derived__glean_gclid_conversions__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_census_feed__wait_for_firefoxdotcom_derived__glean_gclid_conversions__v1",
+            external_dag_id="bqetl_census_feed",
+            external_task_id="wait_for_firefoxdotcom_derived__glean_gclid_conversions__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        firefoxdotcom_derived__glean_gclid_conversions__v1_external.set_upstream(
+            firefoxdotcom_derived__glean_gclid_conversions__v1
+        )
+
     firefoxdotcom_derived__www_site_downloads__v1 = bigquery_etl_query(
         task_id="firefoxdotcom_derived__www_site_downloads__v1",
         destination_table="www_site_downloads_v1",

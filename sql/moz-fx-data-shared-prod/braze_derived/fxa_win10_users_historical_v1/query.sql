@@ -19,6 +19,12 @@ WITH win10_users AS (
       ORDER BY
         submission_timestamp DESC
     ) AS os_version,
+    FIRST_VALUE(client_info.windows_build_number) OVER (
+      PARTITION BY
+        TO_HEX(SHA256(metrics.string.client_association_uid))
+      ORDER BY
+        submission_timestamp DESC
+    ) AS windows_build_number,
     FIRST_VALUE(client_info.locale) OVER (
       PARTITION BY
         TO_HEX(SHA256(metrics.string.client_association_uid))
@@ -29,8 +35,11 @@ WITH win10_users AS (
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.os = 'Windows'
-    AND client_info.os_version = '10.0'
+    AND `mozfun.norm.windows_version_info`(
+      client_info.os,
+      client_info.os_version,
+      client_info.windows_build_number
+    ) = 'Windows 10'
 ),
 last_seen_14_days AS (
   SELECT
@@ -50,8 +59,6 @@ inactive_win10_users AS (
   SELECT
     win10.submission_date,
     last_seen.user_id_sha256,
-    win10.os,
-    win10.os_version,
     win10.locale
   FROM
     last_seen_14_days AS last_seen

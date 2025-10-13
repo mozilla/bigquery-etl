@@ -1,19 +1,29 @@
 --Step 1: Get all combos of GCLID, GA Client ID, & Stub Session IDs Seen in Last 30 Days
-WITH gclids_to_ga_ids AS (
-  SELECT DISTINCT
-    unnested_gclid AS gclid,
+WITH base_sessions AS (
+  SELECT
     ga_client_id,
-    stub_session_id,
+    gclid_array,
+    all_reported_stub_session_ids
   FROM
-    `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2`,
-    UNNEST(gclid_array) AS unnested_gclid
-  CROSS JOIN
-    UNNEST(all_reported_stub_session_ids) AS stub_session_id
+    `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2`
   WHERE
-    session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    -- Next line is needed for backfilling purposes
-    AND session_date <= @submission_date
-    AND gclid IS NOT NULL
+    session_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
+),
+gclids_to_ga_ids AS (
+  SELECT DISTINCT
+    g AS gclid,
+    ga_client_id,
+    s AS stub_session_id
+  FROM
+    base_sessions
+  CROSS JOIN
+    UNNEST(gclid_array) AS g
+  CROSS JOIN
+    UNNEST(all_reported_stub_session_ids) AS s
+  WHERE
+    g IS NOT NULL
 ),
 --Step 2: Get all download tokens associated with above stub session / GA Client IDs
 --        from the stub attribution logs
@@ -93,6 +103,7 @@ old_events_from_mcd AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1` b
     ON a.telemetry_client_id = b.client_id
     AND b.submission_date <= @submission_date
+    AND (IFNULL(b.ad_clicks_count_all, 0) > 0 OR IFNULL(b.search_count_all, 0) > 0)
   GROUP BY
     a.telemetry_client_id
 ),

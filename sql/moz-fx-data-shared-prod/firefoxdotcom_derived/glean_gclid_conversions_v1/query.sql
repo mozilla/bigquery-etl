@@ -144,7 +144,6 @@ old_events AS (
   FROM
     old_events_combined
 ),
---good above here
 --Step 7: Get all clients who were active on the activity date, and the type of activity they had
 telemetry_id_to_activity_staging AS (
   SELECT

@@ -160,7 +160,7 @@ telemetry_id_to_activity_staging AS (
     is_dau_at_least_3_of_first_7_days,
     is_dau_at_least_2_of_first_7_days,
   FROM
-    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2`
+    `moz-fx-data-shared-prod.google_ads_derived.glean_conversion_event_categorization_v1`
   WHERE
     (
       event_1 IS TRUE

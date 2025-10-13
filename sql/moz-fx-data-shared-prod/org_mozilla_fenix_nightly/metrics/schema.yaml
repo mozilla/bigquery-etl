@@ -3102,6 +3102,14 @@ fields:
         is simply a count based on the sniffed MIME type.
 
         '
+    - name: update_state_write_failure
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: Count of the number of times we have shown a notification
+        to the user that they need to manually update because we cannot write to the
+        update status file.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -3474,7 +3482,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

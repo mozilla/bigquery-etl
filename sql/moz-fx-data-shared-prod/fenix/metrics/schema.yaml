@@ -3110,6 +3110,14 @@ fields:
         is simply a count based on the sniffed MIME type.
 
         '
+    - name: update_state_write_failure
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: Count of the number of times we have shown a notification
+        to the user that they need to manually update because we cannot write to the
+        update status file.
+
+        '
   - name: custom_distribution
     type: RECORD
     mode: NULLABLE

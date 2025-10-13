@@ -3165,6 +3165,14 @@ fields:
         is simply a count based on the sniffed MIME type.
 
         '
+    - name: update_state_write_failure
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Update: Count of the number of times we have shown a notification
+        to the user that they need to manually update because we cannot write to the
+        update status file.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE
@@ -35867,6 +35875,14 @@ fields:
       description: 'PLACES: Semantic History database wasted space in percentage (0-100)
 
         '
+    - name: web_app_installed_web_app_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Count of currently installed web apps. Note that Firefox does
+        not detect unpinning or deleting the shortcut outside of Firefox, so this
+        could include web apps that the user has no way to access; see bug 1990342.
+
+        '
   - name: labeled_boolean
     type: RECORD
     mode: NULLABLE
@@ -49660,15 +49676,11 @@ fields:
             type: INTEGER
             mode: NULLABLE
       description: 'Records the latencies (ms) of search suggestions fetches per search
-        engine when not using OHTTP. Keys in this histogram are the search engine
-        identifier for configuration provided search engines and ''other'' for search
-        engines installed via other methods.
+        engine. Keys in this histogram are search engine identifiers for built-in
+        search engines and ''other'' for non-built-in search engines.
 
         This metric was generated to correspond to the Legacy Telemetry exponential
         histogram SEARCH_SUGGESTIONS_LATENCY_MS.
-
-        This metric was renamed in Gecko 144 from `search.suggestions_latency` and
-        changed to report the search engine identifier rather than the telemetry identifier.
 
         '
     - name: dom_quota_info_load_time

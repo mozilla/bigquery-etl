@@ -316,6 +316,15 @@ fields:
 - name: ga4_distinct_experiment_branches_from_event_params
   type: STRING
   mode: REPEATED
+- name: ga4_first_gad_campaignid_from_event_params
+  type: STRING
+  mode: NULLABLE
+  description: The first non-null reported gad_campaignid from event_params for this
+    session.
+- name: ga4_distinct_gad_campaignid_from_event_params
+  type: STRING
+  mode: REPEATED
+  description: All non-null reported gad_campaignid from event_params for this session.
 - name: ga4_manual_campaign_id
   type: STRING
   mode: NULLABLE

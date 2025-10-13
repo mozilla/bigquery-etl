@@ -274,7 +274,8 @@ SELECT
       metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
       metrics.counter.idb_maintenance_metadata_restored,
       metrics.counter.idb_maintenance_unknown_metadata,
-      metrics.counter.media_mkv_content_count
+      metrics.counter.media_mkv_content_count,
+      metrics.counter.update_state_write_failure
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -2068,7 +2069,8 @@ SELECT
       metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
       metrics.counter.idb_maintenance_metadata_restored,
       metrics.counter.idb_maintenance_unknown_metadata,
-      metrics.counter.media_mkv_content_count
+      metrics.counter.media_mkv_content_count,
+      metrics.counter.update_state_write_failure
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,
@@ -3862,7 +3864,8 @@ SELECT
       metrics.counter.idb_maintenance_fallback_fullrestore_metadata,
       metrics.counter.idb_maintenance_metadata_restored,
       metrics.counter.idb_maintenance_unknown_metadata,
-      metrics.counter.media_mkv_content_count
+      metrics.counter.media_mkv_content_count,
+      metrics.counter.update_state_write_failure
     ) AS `counter`,
     STRUCT(
       metrics.datetime.blocklist_last_modified_rs_addons_mblf,

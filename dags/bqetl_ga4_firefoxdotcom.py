@@ -110,6 +110,71 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        external_dag_id="bqetl_analytics_tables",
+        external_task_id="bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__metrics_clients_daily__v1",
+        execution_delta=datetime.timedelta(seconds=43200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_google_ads_derived__glean_conversion_event_categorization__v1 = ExternalTaskSensor(
+        task_id="wait_for_google_ads_derived__glean_conversion_event_categorization__v1",
+        external_dag_id="bqetl_desktop_conv_evnt_categorization",
+        external_task_id="google_ads_derived__glean_conversion_event_categorization__v1",
+        execution_delta=datetime.timedelta(seconds=7200),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_firefoxdotcom_events_table = BigQueryTableExistenceSensor(
         task_id="wait_for_firefoxdotcom_events_table",
         project_id="moz-fx-data-marketing-prod",
@@ -293,6 +358,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefoxdotcom_derived__glean_gclid_conversions__v1 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__glean_gclid_conversions__v1",
+        destination_table="glean_gclid_conversions_v1",
+        dataset_id="firefoxdotcom_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefoxdotcom_derived__www_site_downloads__v1 = bigquery_etl_query(
         task_id="firefoxdotcom_derived__www_site_downloads__v1",
         destination_table="www_site_downloads_v1",
@@ -429,6 +505,34 @@ with DAG(
 
     firefoxdotcom_derived__gclid_conversions__v1.set_upstream(
         wait_for_telemetry_derived__clients_daily__v6
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_daily__v1
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__metrics_clients_daily__v1
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        wait_for_checks__fail_stub_attribution_service_derived__dl_token_ga_attribution_lookup__v1
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        firefoxdotcom_derived__ga_sessions__v2
+    )
+
+    firefoxdotcom_derived__glean_gclid_conversions__v1.set_upstream(
+        wait_for_google_ads_derived__glean_conversion_event_categorization__v1
     )
 
     firefoxdotcom_derived__www_site_downloads__v1.set_upstream(

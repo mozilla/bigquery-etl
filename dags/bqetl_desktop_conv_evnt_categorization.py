@@ -251,6 +251,20 @@ with DAG(
         + ["submission_date:DATE:{{ds}}"],
     )
 
+    with TaskGroup(
+        "google_ads_derived__glean_conversion_event_categorization__v1_external",
+    ) as google_ads_derived__glean_conversion_event_categorization__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_ga4_firefoxdotcom__wait_for_google_ads_derived__glean_conversion_event_categorization__v1",
+            external_dag_id="bqetl_ga4_firefoxdotcom",
+            external_task_id="wait_for_google_ads_derived__glean_conversion_event_categorization__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=79200)).isoformat() }}",
+        )
+
+        google_ads_derived__glean_conversion_event_categorization__v1_external.set_upstream(
+            google_ads_derived__glean_conversion_event_categorization__v1
+        )
+
     checks__warn_google_ads_derived__conversion_event_categorization__v1.set_upstream(
         google_ads_derived__conversion_event_categorization__v1
     )

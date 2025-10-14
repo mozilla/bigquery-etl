@@ -2476,7 +2476,7 @@ bqetl_firefox_enterprise:
     - impact/tier_3
 
 bqetl_braze_win10_sync:
-  schedule_interval: 0 6 * * *
+  schedule_interval: 0 5 * * *
   description: |
     Daily run to pull inactive Win10 users and sync them to Braze.
   default_args:

@@ -1,0 +1,9 @@
+2025-10-13:
+  start_date: 2024-01-01
+  end_date: 2025-10-10
+  reason: Backfill to recompute partitions with fixed upstream data source.
+  watchers:
+  - kik@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: false

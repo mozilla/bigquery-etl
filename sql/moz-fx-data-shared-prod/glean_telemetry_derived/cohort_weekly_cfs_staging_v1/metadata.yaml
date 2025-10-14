@@ -2,6 +2,11 @@ friendly_name: Cohort Weekly Clients First Seen Staging - Glean
 description: |-
   This is an intermediate physicalized table
   used in the build of cohort_weekly_statistics_v1
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9514
+  - Data Model README: ./README.md
 owners:
 - mhirose@mozilla.com
 labels:

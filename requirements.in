@@ -40,7 +40,7 @@ pytest-pydocstyle==2.4.0
 pytest-xdist==3.8.0
 pytest==8.4.2
 PyYAML==6.0.3
-rich-click==1.9.2
+rich-click==1.9.3
 smart_open==6.4.0
 sqlglot==25.28.0
 sqlparse==0.5.3
@@ -48,7 +48,7 @@ stripe==6.4.0
 symbolic==12.16.3
 siggen==2.2.20241029
 tomli==2.2.1 # for backwards compatibility with python < 3.11
-types-python-dateutil==2.9.0.20250822
+types-python-dateutil==2.9.0.20251008
 types-pytz==2025.2.0.20250809
 types-PyYAML==6.0.12.20250915
 types-requests==2.32.4.20250913

@@ -6,6 +6,11 @@ description: |-
   Note that the values for client attributes are based on the
   attributes at the time the cohort started (rather than the
   values at activity time)
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9516
+  - Data Model README: ./README.md
 owners:
 - mhirose@mozilla.com
 labels:

@@ -53,18 +53,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_ads_derived__kevel_metadata__v2 = ExternalTaskSensor(
-        task_id="wait_for_ads_derived__kevel_metadata__v2",
-        external_dag_id="private_bqetl_ads_hourly",
-        external_task_id="ads_derived__kevel_metadata__v2",
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_telemetry_derived__newtab_interactions_hourly__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__newtab_interactions_hourly__v1",
         external_dag_id="bqetl_newtab_interactions_hourly",
@@ -90,10 +78,6 @@ with DAG(
             "submission_date:DATE:{{ (execution_date - macros.timedelta(hours=1)).strftime('%Y-%m-%d') }}"
         ],
         sql_file_path="sql/moz-fx-data-shared-prod/ads_derived/native_desktop_ad_metrics_hourly_v1/query.sql",
-    )
-
-    ads_derived__test_ads_bqetl__v1.set_upstream(
-        wait_for_ads_derived__kevel_metadata__v2
     )
 
     ads_derived__test_ads_bqetl__v1.set_upstream(

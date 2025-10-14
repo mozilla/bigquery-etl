@@ -123,6 +123,28 @@ fields:
   mode: NULLABLE
   description: Whether or not the query is a materialized view refresh, based on the
     query string.
+- name: bi_engine_mode
+  type: STRING
+  mode: NULLABLE
+  description: High-level BI Engine status for the job (e.g., ENABLED, DISABLED, PARTIAL).
+- name: acceleration_mode
+  type: STRING
+  mode: NULLABLE
+  description: How BI Engine was used when acceleration occurred (e.g., FULL_QUERY,
+    FULL_INPUT, PARTIAL_INPUT).
+- name: bi_engine_reasons
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: code
+    type: STRING
+    mode: NULLABLE
+    description: Machine-readable reason code.
+  - name: message
+    type: STRING
+    mode: NULLABLE
+    description: Human-readable explanation of the reason.
+  description: Reasons explaining why BI Engine was PARTIAL or DISABLED for this job.
 - name: user_type
   type: STRING
   mode: NULLABLE

@@ -1,0 +1,59 @@
+---
+fields:
+  - name: trace_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Unique identifier for the trace. All spans within a trace share
+      the same trace_id, allowing reconstruction of the complete execution flow.
+  - name: span_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Unique identifier for this individual span within the trace.
+      Used to establish parent-child relationships between spans.
+  - name: parent_span_id
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Identifier of the parent span. NULL for root spans that have no parent.
+      Used to build the hierarchical structure of spans within a trace.
+  - name: span_name
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Human-readable name describing what this span represents,
+      such as function names, operation types, or processing phases.
+  - name: start_time_unix_nano
+    type: INT64
+    mode: NULLABLE
+    description: |-
+      Start time of the span as a Unix timestamp in nanoseconds.
+      Represents when the operation or process began execution.
+  - name: end_time_unix_nano
+    type: INT64
+    mode: NULLABLE
+    description: |-
+      End time of the span as a Unix timestamp in nanoseconds.
+      Represents when the operation or process completed execution.
+  - name: events
+    type: JSON
+    mode: REPEATED
+    description: |-
+      Array of events that occurred during the span's execution.
+      Each event contains timing information and attributes describing
+      significant points or milestones within the span's lifecycle.
+  - name: resource
+    type: JSON
+    mode: NULLABLE
+    description: |-
+      Resource information associated with the span, including attributes
+      that describe the environment, process, or system context where
+      the span was generated.
+  - name: scope
+    type: JSON
+    mode: NULLABLE
+    description: |-
+      Scope information for the span, typically containing the name
+      and version of the instrumentation library or component that
+      generated the span data.

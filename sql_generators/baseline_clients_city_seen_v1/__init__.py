@@ -82,6 +82,9 @@ def generate(target_project, output_dir, use_cloud_function):
     view_template = env.get_template("view.sql")
     schema_template = "schema.yaml"
     metadata_template = "metadata.yaml"
+    backfill_template = "backfill.yaml"
+    backfill_query_basename = "backfill_query_do2075.sql"
+    backfill_custom_query_template = env.get_template(backfill_query_basename)
 
     app_info_map = get_app_info_map()
 
@@ -147,5 +150,38 @@ def generate(target_project, output_dir, use_cloud_function):
             full_table_id=f"{target_project}.{app_name}.{BASE_NAME}",
             basename="view.sql",
             sql=view_sql,
+            skip_existing=False,
+        )
+
+        # Write backfill YAML files.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}_derived.{TABLE_NAME}",
+            basename="backfill.yaml",
+            sql=render(
+                backfill_template,
+                template_folder=THIS_PATH / "templates",
+                app_name=app_name,
+                table_name=TABLE_NAME,
+                format=False,
+            ),
+            skip_existing=False,
+        )
+
+        backfill_query_sql = reformat(
+            backfill_custom_query_template.render(
+                project_id=target_project,
+                app_id_list=app_id_list,
+                app_name=app_name,
+                table_name=TABLE_NAME,
+            )
+        )
+
+        # Write backfill query SQL files.
+        write_sql(
+            output_dir=output_dir,
+            full_table_id=f"{target_project}.{app_name}_derived.{TABLE_NAME}",
+            basename=backfill_query_basename,
+            sql=backfill_query_sql,
             skip_existing=False,
         )

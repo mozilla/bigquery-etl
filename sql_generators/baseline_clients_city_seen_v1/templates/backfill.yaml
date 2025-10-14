@@ -1,0 +1,14 @@
+2025-10-08:
+  start_date: 2023-08-31
+  end_date: 2023-10-14
+  reason: |-
+    https://mozilla-hub.atlassian.net/browse/DO-2075
+    Using a custom query because the regular query exceeds limit.
+  watchers:
+  - wichan@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: false
+  custom_query_path: sql/moz-fx-data-shared-prod/{{ app_name }}_derived/baseline_clients_city_seen_v1/backfill_query_do2075.sql

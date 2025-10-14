@@ -4,7 +4,7 @@
   reason: Backfill to populate dates missing data due to the delay between the backfill completion and enabling the DAG.
   watchers:
   - kik@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: false
 

@@ -30,13 +30,11 @@ fields:
   description: |
     bit field indicating how many days lapsed since profile creation.
 
-{% if app_name  == "focus_ios" %}
 - mode: NULLABLE
   name: app_channel
   type: STRING
   description: |
     The channel the application is being distributed on.
-{% endif %}
 
 - mode: NULLABLE
   name: first_run_date
@@ -103,11 +101,6 @@ fields:
     The optional reason the ping was submitted. The specific values for reason are specific to each ping,
     and are documented in the ping's pings.yaml file.
 
-- mode: NULLABLE
-  name: is_active
-  type: BOOLEAN
-  description: |
-    A flag field indicating whether the specific client was active.
 {% if app_name == "firefox_desktop" -%}
 - mode: NULLABLE
   name: windows_build_number

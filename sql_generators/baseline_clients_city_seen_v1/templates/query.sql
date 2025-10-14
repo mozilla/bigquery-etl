@@ -16,36 +16,15 @@ WITH
     metadata.geo.subdivision2 AS subdivision2,
     metadata.geo.country AS country
     FROM
-    {% raw %}
-    {% if is_init() %}
-    {% endraw %}
-    `{{ project_id }}.{{ app_id }}_stable.baseline_v1`
-    {% raw %}
-    {% else %}
-    {% endraw %}
    `{{ project_id }}.{{ app_id }}_live.baseline_v1`
-    {% raw %}
-    {% endif %}
-    {% endraw %}
   WHERE
     client_info.client_id IS NOT NULL
-    {% raw %}
-    {% if is_init() %}
-    {% endraw %}
-    AND sample_id = @sample_id
-    AND DATE(submission_timestamp) <= CURRENT_DATE()
-    {% raw %}
-    {% else %}
-    {% endraw %}
     AND DATE(submission_timestamp) = @submission_date
     AND 'automation' NOT IN (
       SELECT TRIM(t) FROM UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
     )
   QUALIFY
     ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp ) = 1
-    {% raw %}
-    {% endif %}
-    {% endraw %}
    ),
   overactive_{{ app_id }} AS (
   -- Find client_ids with over 150 000 pings in a day,
@@ -56,17 +35,7 @@ WITH
   FROM
     base_{{ app_id }}
   WHERE
-    {% raw %}
-    {% if is_init() %}
-    {% endraw %}
-    submission_date >= '2018-01-01'
-    {% raw %}
-    {% else %}
-    {% endraw %}
     submission_date = @submission_date
-    {% raw %}
-    {% endif %}
-    {% endraw %}
   GROUP BY
     submission_date,
     client_id
@@ -100,56 +69,10 @@ WITH
     -- `mode_last` can result in struct with all null values if it’s most frequent (or latest among ties).
     -- This exclude structs with all null values so there will always be one non-NULL field.
     AND COALESCE(city, subdivision1, subdivision2, country) IS NOT NULL
-    {% raw %}
-    {% if is_init() %}
-    {% endraw %}
-    AND submission_date >= '2018-01-01'
-    {% raw %}
-    {% else %}
-    {% endraw %}
     AND submission_date = @submission_date
-    {% raw %}
-    {% endif %}
-    {% endraw %}
    GROUP BY
     submission_date, client_id, sample_id
  ),
-{% raw %}
-{% if is_init() %}
-{% endraw %}
-  clients_city_first_seen_{{ app_id }} AS (
-  SELECT
-    app_id,
-    client_id,
-    sample_id,
-    submission_date AS first_seen_city_date,
-    geo.city AS first_seen_city,
-    geo.subdivision1 AS first_seen_subdivision1,
-    geo.subdivision2 AS first_seen_subdivision2,
-    geo.country AS first_seen_country
-  FROM
-    clients_daily_{{ app_id }}
-  WHERE geo.city IS NOT NULL
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date ) = 1),
-  clients_city_last_seen_{{ app_id }} AS (
-  SELECT
-    app_id,
-    client_id,
-    sample_id,
-    submission_date AS last_seen_city_date,
-    geo.city AS last_seen_city,
-    geo.subdivision1 AS last_seen_subdivision1,
-    geo.subdivision2 AS last_seen_subdivision2,
-    geo.country AS last_seen_country
-  FROM
-    clients_daily_{{ app_id }}
-   WHERE geo.city IS NOT NULL
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date DESC) = 1 ){{ "," if not loop.last }}
-  {% raw %}
-  {% else %}
-  {% endraw %}
   _previous_{{ app_id }} AS (
     SELECT
       *
@@ -176,38 +99,7 @@ WITH
     clients_daily_{{ app_id }}
     WHERE
       geo.city IS NOT NULL){{ "," if not loop.last }}
- {% raw %}
- {% endif %}
- {% endraw %}
   {% endfor -%}
- {% raw %}
- {% if is_init() %}
- {% endraw %}
- {% for app_id in app_id_list -%}
-SELECT
-  app_id,
-  client_id,
-  sample_id,
-  first_seen_city_date,
-  first_seen_city,
-  first_seen_subdivision1,
-  first_seen_subdivision2,
-  first_seen_country,
-  last_seen_city_date,
-  last_seen_city,
-  last_seen_subdivision1,
-  last_seen_subdivision2,
-  last_seen_country
-FROM
-  clients_city_first_seen_{{ app_id }} cfs
-FULL OUTER JOIN
-  clients_city_last_seen_{{ app_id }} cls
-  USING (client_id, sample_id, app_id)
-{{ "UNION ALL" if not loop.last }}
-{% endfor -%}
-{% raw %}
-{% else %}
-{% endraw %}
 {% for app_id in app_id_list -%}
 SELECT
 -- _p.* fields are NULL for clients that are not yet captured in the baseline_city_seen derived table.
@@ -284,6 +176,4 @@ USING
   (client_id, sample_id, app_id)
 {{ "UNION ALL" if not loop.last }}
 {% endfor -%}
-{% raw %}
-{% endif %}
-{% endraw %}
+

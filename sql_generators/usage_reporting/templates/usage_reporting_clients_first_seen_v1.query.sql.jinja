@@ -9,7 +9,7 @@ WITH
       @submission_date AS first_seen_date,
       {% endif %}
       {% endraw %}
-      * EXCEPT(submission_date),
+      * EXCEPT(submission_date, is_active),
     FROM
       `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
     WHERE

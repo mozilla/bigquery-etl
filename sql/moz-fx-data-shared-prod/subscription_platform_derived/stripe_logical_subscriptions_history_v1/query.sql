@@ -80,7 +80,7 @@ plan_services AS (
   GROUP BY
     plan_id
 ),
-subscriptions_history_charge_summaries AS (
+subscriptions_history_invoice_summaries AS (
   SELECT
     history.id AS subscriptions_history_id,
     ARRAY_AGG(
@@ -92,7 +92,10 @@ subscriptions_history_charge_summaries AS (
       LIMIT
         1
     )[SAFE_ORDINAL(1)] AS latest_card_country,
-    LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      OR JSON_VALUE(invoices.metadata, '$.paypalRefundTransactionId') IS NOT NULL
+    ) AS has_refunds,
     LOGICAL_OR(
       charges.fraud_details_user_report = 'fraudulent'
       OR (
@@ -102,13 +105,14 @@ subscriptions_history_charge_summaries AS (
       OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
     ) AS has_fraudulent_charges
   FROM
-    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
-  JOIN
     `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
-    ON charges.invoice_id = invoices.id
   JOIN
     active_subscriptions_history AS history
     ON invoices.subscription_id = history.subscription.id
+    AND invoices.created < history.valid_to
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
+    ON invoices.id = charges.invoice_id
     AND charges.created < history.valid_to
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
@@ -244,12 +248,12 @@ SELECT
         THEN COALESCE(
             NULLIF(history.subscription.customer.shipping.address.country, ''),
             NULLIF(history.subscription.customer.address.country, ''),
-            charge_summaries.latest_card_country
+            invoice_summaries.latest_card_country
           )
       -- SubPlat copies the PayPal billing agreement country to the customer's address.
       WHEN history.subscription.collection_method = 'send_invoice'
         THEN NULLIF(history.subscription.customer.address.country, '')
-      ELSE charge_summaries.latest_card_country
+      ELSE invoice_summaries.latest_card_country
     END AS country_code,
     plan_services.services,
     subscription_item.plan.product.id AS provider_product_id,
@@ -356,8 +360,8 @@ SELECT
       history.subscription.metadata.amount
     ) AS ongoing_discount_amount,
     ongoing_discounts.ends_at AS ongoing_discount_ends_at,
-    COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
-    COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+    COALESCE(invoice_summaries.has_refunds, FALSE) AS has_refunds,
+    COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
 FROM
   active_subscriptions_history AS history
@@ -367,8 +371,8 @@ LEFT JOIN
   plan_services
   ON subscription_item.plan.id = plan_services.plan_id
 LEFT JOIN
-  subscriptions_history_charge_summaries AS charge_summaries
-  ON history.id = charge_summaries.subscriptions_history_id
+  subscriptions_history_invoice_summaries AS invoice_summaries
+  ON history.id = invoice_summaries.subscriptions_history_id
 LEFT JOIN
   subscription_initial_discounts AS initial_discounts
   ON history.subscription.id = initial_discounts.subscription_id

@@ -60,6 +60,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/accounts_db_nonprod_external/**/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements/*.sql
   - sql/moz-fx-data-shared-prod/ads/ppa_measurements_limited/*.sql
+  - sql/moz-fx-data-shared-prod/firefox_ios_derived/app_store_funnel_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_content_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_bounce_events_v1/query.sql
   - sql/moz-fx-data-shared-prod/firefox_accounts_derived/fxa_auth_events_v1/query.sql
@@ -99,13 +100,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/stripe_external/**/*.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_live/view.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/refunds_v1/query.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/subscriptions_v1/query.sql
-  - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/flows_v1/query.sql
-  - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/refunds_v1/query.sql
-  - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/firestore_stripe_subscriptions_status_v1/query.sql

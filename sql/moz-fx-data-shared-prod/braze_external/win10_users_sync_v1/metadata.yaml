@@ -9,3 +9,10 @@ labels:
   owner1: lmcfall
 scheduling:
   dag_name: bqetl_braze_win10_sync
+  date_partition_parameter: submission_date
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null

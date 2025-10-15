@@ -249,49 +249,6 @@ fields:
     description: 'Whether the subscription has had fraudulent charges.
 
       This will be null for Google and Apple subscriptions.'
-  - name: first_touch_attribution
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: impression_at
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: When the first-touch attribution impression occurred.
-    - name: entrypoint
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution entrypoint.
-    - name: entrypoint_experiment
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution entrypoint experiment.
-    - name: entrypoint_variation
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution entrypoint experiment variation.
-    - name: utm_campaign
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution UTM campaign.
-    - name: utm_content
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution UTM content.
-    - name: utm_medium
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution UTM medium.
-    - name: utm_source
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution UTM source.
-    - name: utm_term
-      type: STRING
-      mode: NULLABLE
-      description: First-touch attribution UTM term.
-    description: 'Unbounded first-touch attribution for the subscription (if any).
-
-      This will be null for Google and Apple subscriptions.'
   - name: last_touch_attribution
     type: RECORD
     mode: NULLABLE

@@ -344,7 +344,7 @@ fields:
     mode: NULLABLE
     description: |-
       Unbounded first-touch attribution for the service subscription (if any).
-      This will be null for Google and Apple subscriptions.
+      This will be null for Google and Apple subscriptions, and for nearly all Stripe subscriptions which started after 2025-07-25 (DENG-8885).
     fields:
     - name: impression_at
       type: TIMESTAMP

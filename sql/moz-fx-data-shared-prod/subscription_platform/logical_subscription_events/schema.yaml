@@ -23,6 +23,7 @@ fields:
 - name: subscription
   type: RECORD
   mode: NULLABLE
+  description: The logical subscription as it ostensibly was after the event occurred.
   fields:
   - name: id
     type: STRING
@@ -110,6 +111,8 @@ fields:
   - name: services
     type: RECORD
     mode: REPEATED
+    description: Array of one or more services provided by the subscription, as defined
+      in the `services_v1` ETL.
     fields:
     - name: id
       type: STRING
@@ -123,8 +126,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Service tier.
-    description: Array of one or more services provided by the subscription, as defined
-      in the `services_v1` ETL.
   - name: provider_product_id
     type: STRING
     mode: NULLABLE
@@ -254,6 +255,9 @@ fields:
   - name: last_touch_attribution
     type: RECORD
     mode: NULLABLE
+    description: 'Unbounded last-touch attribution for the subscription (if any).
+
+      This will be null for Google and Apple subscriptions.'
     fields:
     - name: impression_at
       type: TIMESTAMP
@@ -291,9 +295,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Last-touch attribution UTM term.
-    description: 'Unbounded last-touch attribution for the subscription (if any).
-
-      This will be null for Google and Apple subscriptions.'
   - name: initial_discount_name
     type: STRING
     mode: NULLABLE
@@ -342,10 +343,21 @@ fields:
     description: 'When the ongoing discount ends (if any).
 
       This will be null for Apple subscriptions.'
-  description: The logical subscription as it ostensibly was after the event occurred.
+  - name: ended_reason
+    type: STRING
+    mode: NULLABLE
+    description: "Reason why the subscription ended.\nPossible values:\n  * `Admin\
+      \ Initiated` - An admin at Mozilla ended the subscription, either directly or\
+      \ by deleting the customer's Mozilla Account.\n  * `Customer Initiated` - The\
+      \ customer ended their subscription, either directly or by turning off auto-renewal\
+      \ or deleting their Mozilla Account.\n  * `Payment Failure` - The subscription\
+      \ was unable to auto-renew due to a payment failure.\n  * `Other` - The subscription\
+      \ ended for some other reason, such as unverified Mozilla Accounts being automatically\
+      \ deleted."
 - name: old_subscription
   type: RECORD
   mode: NULLABLE
+  description: The logical subscription as it ostensibly was before the event occurred.
   fields:
   - name: id
     type: STRING
@@ -433,6 +445,8 @@ fields:
   - name: services
     type: RECORD
     mode: REPEATED
+    description: Array of one or more services provided by the subscription, as defined
+      in the `services_v1` ETL.
     fields:
     - name: id
       type: STRING
@@ -446,8 +460,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Service tier.
-    description: Array of one or more services provided by the subscription, as defined
-      in the `services_v1` ETL.
   - name: provider_product_id
     type: STRING
     mode: NULLABLE
@@ -577,6 +589,9 @@ fields:
   - name: last_touch_attribution
     type: RECORD
     mode: NULLABLE
+    description: 'Unbounded last-touch attribution for the subscription (if any).
+
+      This will be null for Google and Apple subscriptions.'
     fields:
     - name: impression_at
       type: TIMESTAMP
@@ -614,9 +629,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Last-touch attribution UTM term.
-    description: 'Unbounded last-touch attribution for the subscription (if any).
-
-      This will be null for Google and Apple subscriptions.'
   - name: initial_discount_name
     type: STRING
     mode: NULLABLE
@@ -665,4 +677,14 @@ fields:
     description: 'When the ongoing discount ends (if any).
 
       This will be null for Apple subscriptions.'
-  description: The logical subscription as it ostensibly was before the event occurred.
+  - name: ended_reason
+    type: STRING
+    mode: NULLABLE
+    description: "Reason why the subscription ended.\nPossible values:\n  * `Admin\
+      \ Initiated` - An admin at Mozilla ended the subscription, either directly or\
+      \ by deleting the customer's Mozilla Account.\n  * `Customer Initiated` - The\
+      \ customer ended their subscription, either directly or by turning off auto-renewal\
+      \ or deleting their Mozilla Account.\n  * `Payment Failure` - The subscription\
+      \ was unable to auto-renew due to a payment failure.\n  * `Other` - The subscription\
+      \ ended for some other reason, such as unverified Mozilla Accounts being automatically\
+      \ deleted."

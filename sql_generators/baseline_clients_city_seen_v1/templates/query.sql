@@ -32,7 +32,8 @@ WITH
     {% raw %}
     {% if is_init() %}
     {% endraw %}
-    AND sample_id = @sample_id
+    AND sample_id >= @sample_id
+    AND sample_id < @sample_id + @sampling_batch_size
     AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% raw %}
     {% else %}

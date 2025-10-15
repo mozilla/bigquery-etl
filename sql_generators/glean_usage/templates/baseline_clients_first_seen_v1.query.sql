@@ -454,6 +454,7 @@ SELECT
   normalized_channel,
   normalized_os_version,
   isp,
+  attribution_dltoken,
   {% endif %}
 FROM _joined
 QUALIFY

@@ -1,5 +1,5 @@
 attrs==25.3.0
-authlib==1.6.4
+authlib==1.6.5
 beautifulsoup4==4.14.2
 bigeye-sdk==0.6.5
 black==25.9.0
@@ -14,7 +14,7 @@ google-auth>=2.30.0  # To try to fix "Compute Engine Metadata server call to uni
 google-cloud-bigquery==3.38.0
 google-cloud-bigquery-storage[fastavro]==2.33.1
 google-cloud-datacatalog-lineage==0.3.14
-google-cloud-storage==3.4.0
+google-cloud-storage==3.4.1
 Jinja2==3.1.6
 jsonschema==4.25.1
 PyJWT==2.10.1
@@ -26,7 +26,7 @@ mkdocs-material==9.6.21
 mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2025.8.1
 mozilla-schema-generator==0.5.1
-pandas==2.3.2
+pandas==2.3.3
 paramiko==4.0.0
 pathos==0.3.4
 pip-tools==7.5.1
@@ -40,15 +40,15 @@ pytest-pydocstyle==2.4.0
 pytest-xdist==3.8.0
 pytest==8.4.2
 PyYAML==6.0.3
-rich-click==1.9.2
+rich-click==1.9.3
 smart_open==6.4.0
 sqlglot==25.28.0
 sqlparse==0.5.3
 stripe==6.4.0
 symbolic==12.16.3
 siggen==2.2.20241029
-tomli==2.2.1 # for backwards compatibility with python < 3.11
-types-python-dateutil==2.9.0.20250822
+tomli==2.3.0 # for backwards compatibility with python < 3.11
+types-python-dateutil==2.9.0.20251008
 types-pytz==2025.2.0.20250809
 types-PyYAML==6.0.12.20250915
 types-requests==2.32.4.20250913

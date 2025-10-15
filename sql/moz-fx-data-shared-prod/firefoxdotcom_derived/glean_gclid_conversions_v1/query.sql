@@ -1,19 +1,29 @@
 --Step 1: Get all combos of GCLID, GA Client ID, & Stub Session IDs Seen in Last 30 Days
-WITH gclids_to_ga_ids AS (
-  SELECT DISTINCT
-    unnested_gclid AS gclid,
+WITH base_sessions AS (
+  SELECT
     ga_client_id,
-    stub_session_id,
+    gclid_array,
+    all_reported_stub_session_ids
   FROM
-    `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v1`,
-    UNNEST(gclid_array) AS unnested_gclid
-  CROSS JOIN
-    UNNEST(all_reported_stub_session_ids) AS stub_session_id
+    `moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2`
   WHERE
-    session_date >= DATE_SUB(@submission_date, INTERVAL 30 DAY)
-    -- Next line is needed for backfilling purposes
-    AND session_date <= @submission_date
-    AND gclid IS NOT NULL
+    session_date
+    BETWEEN DATE_SUB(@submission_date, INTERVAL 30 DAY)
+    AND @submission_date
+),
+gclids_to_ga_ids AS (
+  SELECT DISTINCT
+    g AS gclid,
+    ga_client_id,
+    s AS stub_session_id
+  FROM
+    base_sessions
+  CROSS JOIN
+    UNNEST(gclid_array) AS g
+  CROSS JOIN
+    UNNEST(all_reported_stub_session_ids) AS s
+  WHERE
+    g IS NOT NULL
 ),
 --Step 2: Get all download tokens associated with above stub session / GA Client IDs
 --        from the stub attribution logs
@@ -47,44 +57,72 @@ dl_token_to_telemetry_id AS (
     a.first_seen_date,
     a.attribution_dltoken AS dl_token,
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3` a
+    `moz-fx-data-shared-prod.firefox_desktop.glean_baseline_clients_first_seen` a
   JOIN
     dist_dl_tokens b
     ON a.attribution_dltoken = b.dl_token
+    AND a.submission_date <= @submission_date
 ),
---Step 5: Get, for each client, calculate their first run date, first ad click date,
---        first search date, the # of days running Firefox, and their most recent run date
-old_events_staging AS (
+--Step 5: Get the telemetry client ID, firefox first run date, # days running firefox, and most recent Firefox run date
+old_events_from_bcd AS (
   SELECT
-    a.client_id AS telemetry_client_id,
-    MIN(a.submission_date) AS firefox_first_run_date,
+    a.telemetry_client_id,
+    MIN(b.submission_date) AS firefox_first_run_date,
+    COUNT(DISTINCT(b.submission_date)) AS nbr_days_running_firefox,
+    MAX(b.submission_date) AS most_recent_date_running_firefox
+  FROM
+    dl_token_to_telemetry_id a
+  LEFT JOIN
+    `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_daily_v1` b
+    ON a.telemetry_client_id = b.client_id
+    AND b.submission_date <= @submission_date
+  GROUP BY
+    a.telemetry_client_id
+),
+--Step 6: get firefox_first_ad_click_date, firefox_first_search_date,
+old_events_from_mcd AS (
+  SELECT
+    a.telemetry_client_id,
     MIN(
       CASE
-        WHEN IFNULL(a.ad_clicks_count_all, 0) > 0
-          THEN a.submission_date
+        WHEN IFNULL(b.ad_clicks_count_all, 0) > 0
+          THEN b.submission_date
         ELSE NULL
       END
     ) AS firefox_first_ad_click_date,
     MIN(
       CASE
-        WHEN IFNULL(a.search_count_all, 0) > 0
-          THEN a.submission_date
+        WHEN IFNULL(b.search_count_all, 0) > 0
+          THEN b.submission_date
         ELSE NULL
       END
-    ) AS firefox_first_search_date,
-    COUNT(DISTINCT(a.submission_date)) AS nbr_days_running_firefox,
-    MAX(a.submission_date) AS most_recent_date_running_firefox
+    ) AS firefox_first_search_date
   FROM
-    `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` a
-  JOIN
-    dl_token_to_telemetry_id b
-    ON a.client_id = b.telemetry_client_id
-  WHERE
-    a.submission_date <= current_date
+    dl_token_to_telemetry_id a
+  LEFT JOIN
+    `moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1` b
+    ON a.telemetry_client_id = b.client_id
+    AND b.submission_date <= @submission_date
+    AND (IFNULL(b.ad_clicks_count_all, 0) > 0 OR IFNULL(b.search_count_all, 0) > 0)
   GROUP BY
-    1
+    a.telemetry_client_id
 ),
---Step 6: Summarize this into the old event types
+--Step 7: Bring the relevant data into 1 table
+old_events_combined AS (
+  SELECT
+    COALESCE(a.telemetry_client_id, b.telemetry_client_id) AS telemetry_client_id,
+    a.firefox_first_run_date,
+    a.nbr_days_running_firefox,
+    a.most_recent_date_running_firefox,
+    b.firefox_first_ad_click_date,
+    b.firefox_first_search_date
+  FROM
+    old_events_from_bcd a
+  FULL OUTER JOIN
+    old_events_from_mcd b
+    ON a.telemetry_client_id = b.telemetry_client_id
+),
+--Step 8: Summarize this into the old event types
 --        If first run date = submission date, then it's firefox first run
 --        If first ad click date = submission date, then it's first ad click date
 --        If first search date = submission date, then it's firefox first search date
@@ -115,7 +153,7 @@ old_events AS (
       ELSE FALSE
     END AS returned_second_day
   FROM
-    old_events_staging
+    old_events_combined
 ),
 --Step 7: Get all clients who were active on the activity date, and the type of activity they had
 telemetry_id_to_activity_staging AS (
@@ -133,7 +171,7 @@ telemetry_id_to_activity_staging AS (
     is_dau_at_least_3_of_first_7_days,
     is_dau_at_least_2_of_first_7_days,
   FROM
-    `moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v2`
+    `moz-fx-data-shared-prod.google_ads_derived.glean_conversion_event_categorization_v1`
   WHERE
     (
       event_1 IS TRUE

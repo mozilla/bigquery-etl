@@ -213,54 +213,6 @@ fields:
   description: 'When the subscription''s auto-renewal setting was disabled.
 
     This will be null for subscriptions set to auto-renew.'
-- name: initial_discount_name
-  type: STRING
-  mode: NULLABLE
-  description: 'Initial discount name (if any).
-
-    This will be null for Google and Apple subscriptions.'
-- name: initial_discount_promotion_code
-  type: STRING
-  mode: NULLABLE
-  description: Initial discount promotion code (if any).
-- name: current_period_discount_name
-  type: STRING
-  mode: NULLABLE
-  description: 'Current period discount name (if any).
-
-    This will be null for Google and Apple subscriptions.'
-- name: current_period_discount_promotion_code
-  type: STRING
-  mode: NULLABLE
-  description: Current period discount promotion code (if any).
-- name: current_period_discount_amount
-  type: NUMERIC
-  mode: NULLABLE
-  description: 'Current period discount amount (if any).
-
-    This may be null for Apple subscriptions.'
-- name: ongoing_discount_name
-  type: STRING
-  mode: NULLABLE
-  description: 'Ongoing discount name (if any).
-
-    This will be null for Google and Apple subscriptions.'
-- name: ongoing_discount_promotion_code
-  type: STRING
-  mode: NULLABLE
-  description: Ongoing discount promotion code (if any).
-- name: ongoing_discount_amount
-  type: NUMERIC
-  mode: NULLABLE
-  description: 'Ongoing discount amount (if any).
-
-    This may be null for Apple subscriptions.'
-- name: ongoing_discount_ends_at
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: 'When the ongoing discount ends (if any).
-
-    This will be null for Apple subscriptions.'
 - name: has_refunds
   type: BOOLEAN
   mode: NULLABLE
@@ -316,6 +268,54 @@ fields:
   description: 'Unbounded last-touch attribution for the subscription (if any).
 
     This will be null for Google and Apple subscriptions.'
+- name: initial_discount_name
+  type: STRING
+  mode: NULLABLE
+  description: 'Initial discount name (if any).
+
+    This will be null for Google and Apple subscriptions.'
+- name: initial_discount_promotion_code
+  type: STRING
+  mode: NULLABLE
+  description: Initial discount promotion code (if any).
+- name: current_period_discount_name
+  type: STRING
+  mode: NULLABLE
+  description: 'Current period discount name (if any).
+
+    This will be null for Google and Apple subscriptions.'
+- name: current_period_discount_promotion_code
+  type: STRING
+  mode: NULLABLE
+  description: Current period discount promotion code (if any).
+- name: current_period_discount_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'Current period discount amount (if any).
+
+    This may be null for Apple subscriptions.'
+- name: ongoing_discount_name
+  type: STRING
+  mode: NULLABLE
+  description: 'Ongoing discount name (if any).
+
+    This will be null for Google and Apple subscriptions.'
+- name: ongoing_discount_promotion_code
+  type: STRING
+  mode: NULLABLE
+  description: Ongoing discount promotion code (if any).
+- name: ongoing_discount_amount
+  type: NUMERIC
+  mode: NULLABLE
+  description: 'Ongoing discount amount (if any).
+
+    This may be null for Apple subscriptions.'
+- name: ongoing_discount_ends_at
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'When the ongoing discount ends (if any).
+
+    This will be null for Apple subscriptions.'
 - name: ended_reason
   type: STRING
   mode: NULLABLE

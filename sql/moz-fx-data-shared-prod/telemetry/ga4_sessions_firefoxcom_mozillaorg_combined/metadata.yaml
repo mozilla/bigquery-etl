@@ -11,6 +11,6 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2
-  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v3
+  - moz-fx-data-shared-prod.firefoxdotcom.ga_sessions
+  - moz-fx-data-shared-prod.mozilla_org.ga_sessions
 require_column_descriptions: false

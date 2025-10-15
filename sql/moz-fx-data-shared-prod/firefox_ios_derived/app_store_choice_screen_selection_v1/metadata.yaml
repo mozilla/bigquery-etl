@@ -1,3 +1,7 @@
+# Note: in the past this task had a history of failing due to not being able to find a report
+#       for the logical date. In this case feel free to ignore the failure
+#       (if a re-run did not resolve the problem) and observe the task over the next few days.
+#       If it continues failing please file a bug and contact the owner.
 friendly_name: Apple App Store Choice Screen Selection (post-iOS 18.2 only)
 description: |
   Apple App Store Choice Screen Engagement (post-iOS 18.2 only)

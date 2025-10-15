@@ -24,7 +24,8 @@ WITH base_firefox_desktop AS (
   WHERE
     client_info.client_id IS NOT NULL
     {% if is_init() %}
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
       AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% else %}
       AND DATE(submission_timestamp) = @submission_date

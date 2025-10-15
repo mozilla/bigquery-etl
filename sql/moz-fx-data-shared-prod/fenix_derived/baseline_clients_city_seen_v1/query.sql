@@ -24,7 +24,8 @@ WITH base_org_mozilla_firefox AS (
   WHERE
     client_info.client_id IS NOT NULL
     {% if is_init() %}
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
       AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% else %}
       AND DATE(submission_timestamp) = @submission_date
@@ -176,7 +177,8 @@ base_org_mozilla_firefox_beta AS (
   WHERE
     client_info.client_id IS NOT NULL
     {% if is_init() %}
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
       AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% else %}
       AND DATE(submission_timestamp) = @submission_date
@@ -328,7 +330,8 @@ base_org_mozilla_fenix AS (
   WHERE
     client_info.client_id IS NOT NULL
     {% if is_init() %}
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
       AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% else %}
       AND DATE(submission_timestamp) = @submission_date
@@ -480,7 +483,8 @@ base_org_mozilla_fenix_nightly AS (
   WHERE
     client_info.client_id IS NOT NULL
     {% if is_init() %}
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
       AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% else %}
       AND DATE(submission_timestamp) = @submission_date
@@ -632,7 +636,8 @@ base_org_mozilla_fennec_aurora AS (
   WHERE
     client_info.client_id IS NOT NULL
     {% if is_init() %}
-      AND sample_id = @sample_id
+      AND sample_id >= @sample_id
+      AND sample_id < @sample_id + @sampling_batch_size
       AND DATE(submission_timestamp) <= CURRENT_DATE()
     {% else %}
       AND DATE(submission_timestamp) = @submission_date

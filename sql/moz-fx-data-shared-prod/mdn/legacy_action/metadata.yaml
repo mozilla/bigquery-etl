@@ -23,4 +23,5 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.mdn_fred.events_stream
   - moz-fx-data-shared-prod.mdn_yari.action
+  - moz-fx-data-shared-prod.static.country_codes_v1
 require_column_descriptions: false

@@ -26,7 +26,7 @@ mkdocs-material==9.6.21
 mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2025.8.1
 mozilla-schema-generator==0.5.1
-pandas==2.3.2
+pandas==2.3.3
 paramiko==4.0.0
 pathos==0.3.4
 pip-tools==7.5.1
@@ -47,7 +47,7 @@ sqlparse==0.5.3
 stripe==6.4.0
 symbolic==12.16.3
 siggen==2.2.20241029
-tomli==2.2.1 # for backwards compatibility with python < 3.11
+tomli==2.3.0 # for backwards compatibility with python < 3.11
 types-python-dateutil==2.9.0.20251008
 types-pytz==2025.2.0.20250809
 types-PyYAML==6.0.12.20250915

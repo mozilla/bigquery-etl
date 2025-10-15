@@ -522,6 +522,11 @@ generate:
     apps:
     - firefox_desktop
     - fenix
+    - firefox_ios
+    - focus_ios
+    - focus_android
+    - klar_ios
+    - klar_android
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

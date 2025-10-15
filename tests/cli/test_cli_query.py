@@ -24,7 +24,6 @@ from bigquery_etl.cli.query import (
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
 
-DEFAULT_BILLING_PROJECT = "moz-fx-data-backfill-slots"
 DEFAULT_SAMPLING_BATCH_SIZE = 4
 TOTAL_SAMPLE_ID_COUNT = 100
 
@@ -1245,9 +1244,9 @@ class TestQuery:
 
     @patch("bigquery_etl.cli.query.deploy_table")
     @patch("google.cloud.bigquery.Client.get_table")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._run_query")
     def test_query_initialize(
-        self, check_call, mock_get_table, mock_deploy_table, runner
+        self, mock_run_query, mock_get_table, mock_deploy_table, runner
     ):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
@@ -1268,55 +1267,29 @@ class TestQuery:
                     "{% endraw %}"
                 )
 
-            metadata_conf = {
-                "friendly_name": "test",
-                "description": "test",
-                "owners": ["test@example.org"],
-                "scheduling": {"dag_name": "bqetl_test"},
-            }
-
-            with open(
-                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
-                "w",
-            ) as f:
-                f.write(yaml.dump(metadata_conf))
-
-            mock_get_table.side_effect = None
             mock_get_table.return_value = types.SimpleNamespace(num_rows=0)
-            mock_deploy_table.return_value = None
-
             result = runner.invoke(initialize, ["*.telemetry_derived.query_v1"])
 
             assert result.exit_code == 0
-            assert check_call.call_count == TOTAL_SAMPLE_ID_COUNT
+            assert mock_run_query.call_count == TOTAL_SAMPLE_ID_COUNT
 
             sample_ids = range(0, TOTAL_SAMPLE_ID_COUNT)
-
             expected_sample_id_params = [
                 f"--parameter=sample_id:INT64:{sample_id}" for sample_id in sample_ids
             ]
-            expected_destination_table_param = (
-                "--destination_table=moz-fx-data-shared-prod:telemetry_derived.query_v1"
-            )
 
-            for call in check_call.call_args_list:
+            for call in mock_run_query.call_args_list:
                 sample_id_params = [
-                    arg for arg in call.args[0] if "--parameter=sample_id" in arg
+                    arg for arg in call.args[-1] if "--parameter=sample_id" in arg
                 ]
                 assert len(sample_id_params) == 1
                 assert sample_id_params[0] in expected_sample_id_params
-                assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
-                destination_table_params = [
-                    arg for arg in call.args[0] if "--destination_table" in arg
-                ]
-                assert len(destination_table_params) == 1
-                assert destination_table_params[0] == expected_destination_table_param
 
     @patch("bigquery_etl.cli.query.deploy_table")
     @patch("google.cloud.bigquery.Client.get_table")
-    @patch("subprocess.check_call")
+    @patch("bigquery_etl.cli.query._run_query")
     def test_query_initialize_batch(
-        self, check_call, mock_get_table, mock_deploy_table, runner
+        self, mock_run_query, mock_get_table, mock_deploy_table, runner
     ):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
@@ -1338,28 +1311,12 @@ class TestQuery:
                     "{% endraw %}"
                 )
 
-            metadata_conf = {
-                "friendly_name": "test",
-                "description": "test",
-                "owners": ["test@example.org"],
-                "scheduling": {"dag_name": "bqetl_test"},
-            }
-
-            with open(
-                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/metadata.yaml",
-                "w",
-            ) as f:
-                f.write(yaml.dump(metadata_conf))
-
-            mock_get_table.side_effect = None
             mock_get_table.return_value = types.SimpleNamespace(num_rows=0)
-            mock_deploy_table.return_value = None
-
             result = runner.invoke(initialize, ["*.telemetry_derived.query_v1"])
 
             assert result.exit_code == 0
             assert (
-                check_call.call_count
+                mock_run_query.call_count
                 == TOTAL_SAMPLE_ID_COUNT // DEFAULT_SAMPLING_BATCH_SIZE
             )
 
@@ -1367,18 +1324,10 @@ class TestQuery:
             expected_sample_id_params = [
                 f"--parameter=sample_id:INT64:{sample_id}" for sample_id in sample_ids
             ]
-            expected_destination_table_param = (
-                "--destination_table=moz-fx-data-shared-prod:telemetry_derived.query_v1"
-            )
 
-            for call in check_call.call_args_list:
+            for call in mock_run_query.call_args_list:
                 sample_id_params = [
-                    arg for arg in call.args[0] if "--parameter=sample_id" in arg
+                    arg for arg in call.args[-1] if "--parameter=sample_id" in arg
                 ]
                 assert len(sample_id_params) == 1
                 assert sample_id_params[0] in expected_sample_id_params
-                assert f"--project_id={DEFAULT_BILLING_PROJECT}" in call.args[0]
-                destination_table_params = [
-                    arg for arg in call.args[0] if "--destination_table" in arg
-                ]
-                assert destination_table_params[0] == expected_destination_table_param

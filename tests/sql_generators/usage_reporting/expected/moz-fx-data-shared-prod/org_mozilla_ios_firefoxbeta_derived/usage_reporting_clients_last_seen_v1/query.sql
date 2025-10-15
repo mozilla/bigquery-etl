@@ -3,7 +3,6 @@
 -- 28 days for each usage criterion as a single 64-bit integer.
 WITH _current AS (
   SELECT
-    usage_profile_id,
     -- The rightmost bit in 'days_since_seen' represents whether the user sent a usage_reporting ping on the submission_date.
     CAST(TRUE AS INT64) AS days_seen_bits,
     -- The rightmost bit in days_active_bits represents whether the user counts as active on the submission_date.
@@ -11,6 +10,7 @@ WITH _current AS (
     udf.days_since_created_profile_as_28_bits(
       DATE_DIFF(submission_date, first_run_date, DAY)
     ) AS days_created_profile_bits,
+    * EXCEPT (submission_date, is_active),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.usage_reporting_clients_daily`
   WHERE
@@ -18,10 +18,10 @@ WITH _current AS (
 ),
 _previous AS (
   SELECT
-    usage_profile_id,
     days_seen_bits,
     days_active_bits,
     days_created_profile_bits,
+    * EXCEPT (submission_date, days_seen_bits, days_active_bits, days_created_profile_bits),
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta_derived.usage_reporting_clients_last_seen_v1`
   WHERE
@@ -44,7 +44,7 @@ SELECT
       _previous.days_created_profile_bits,
       _current.days_created_profile_bits
     ) AS days_created_profile_bits
-  )
+  ),
 FROM
   _current
 FULL JOIN

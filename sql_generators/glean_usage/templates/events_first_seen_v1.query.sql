@@ -130,8 +130,6 @@ SELECT
 FROM
   _joined
 
-from _joined
-
 {% raw %}
 {% endif %}
 {% endraw %}

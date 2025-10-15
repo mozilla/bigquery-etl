@@ -110,4 +110,8 @@ fields:
   name: isp
   type: STRING
   description: Internet Service Provider
+- mode: NULLABLE
+  name: attribution_dltoken
+  type: STRING
+  description: The most recent, non null download token from glean_attribution_ext.
 {% endif %}

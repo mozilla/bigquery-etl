@@ -85,6 +85,12 @@ WITH
         metadata.isp.name
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        JSON_VALUE(
+          metrics.object.glean_attribution_ext.dltoken
+        ) IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+      ] AS attribution_dltoken
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -196,6 +202,12 @@ _baseline AS (
         metadata.isp.name
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        JSON_VALUE(
+          metrics.object.glean_attribution_ext.dltoken
+        ) IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+      ] AS attribution_dltoken
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -228,6 +240,7 @@ _current AS (
     normalized_channel,
     normalized_os_version,
     isp,
+    attribution_dltoken,
     {% endif %}
   FROM
     _baseline
@@ -261,6 +274,7 @@ _previous AS (
     normalized_channel,
     normalized_os_version,
     isp,
+    attribution_dltoken
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -350,6 +364,12 @@ _current AS (
         metadata.isp.name
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        JSON_VALUE(
+          metrics.object.glean_attribution_ext.dltoken
+        ) IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+      ] AS attribution_dltoken
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -385,6 +405,7 @@ _previous AS (
     normalized_channel,
     normalized_os_version,
     isp,
+    attribution_dltoken
     {% endif %}
   FROM
     `{{ first_seen_table }}`

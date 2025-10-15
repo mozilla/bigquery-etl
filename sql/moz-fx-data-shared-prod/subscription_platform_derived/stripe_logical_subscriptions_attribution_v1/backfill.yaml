@@ -1,6 +1,6 @@
-2025-10-09:
+2025-10-15:
   start_date: 2019-10-10
-  end_date: 2025-10-08
+  end_date: 2025-10-14
   reason: Exclude some nonsensical subscription attribution values (DENG-9776).
   watchers:
   - srose@mozilla.com

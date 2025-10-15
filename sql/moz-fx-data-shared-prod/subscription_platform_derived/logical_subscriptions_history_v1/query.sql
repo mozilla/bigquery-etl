@@ -118,6 +118,10 @@ SELECT
     history.subscription.current_period_ends_at,
     history.subscription.auto_renew,
     history.subscription.auto_renew_disabled_at,
+    history.subscription.has_refunds,
+    history.subscription.has_fraudulent_charges,
+    subscription_attributions.first_touch_attribution,
+    subscription_attributions.last_touch_attribution,
     history.subscription.initial_discount_name,
     history.subscription.initial_discount_promotion_code,
     history.subscription.current_period_discount_name,
@@ -127,10 +131,6 @@ SELECT
     history.subscription.ongoing_discount_promotion_code,
     history.subscription.ongoing_discount_amount,
     history.subscription.ongoing_discount_ends_at,
-    history.subscription.has_refunds,
-    history.subscription.has_fraudulent_charges,
-    subscription_attributions.first_touch_attribution,
-    subscription_attributions.last_touch_attribution,
     history.subscription.ended_reason
   ) AS subscription
 FROM

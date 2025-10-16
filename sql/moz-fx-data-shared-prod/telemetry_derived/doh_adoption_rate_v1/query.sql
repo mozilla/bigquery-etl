@@ -4,24 +4,21 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'doh.evaluate_v2_heuristics' AS metric,
     "value" AS key,
-    COALESCE(extra.value, '') AS value,
+    COALESCE(STRING(event_extra.value), '') AS value,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
+    COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events` AS e,
-    UNNEST(e.events) AS event,
-    UNNEST(event.extra) AS extra
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND event.category = 'doh'
-    AND event.name = 'evaluate_v2_heuristics'
-    AND extra.key = 'value'
+    AND event_category = 'doh'
+    AND event_name = 'evaluate_v2_heuristics'
   GROUP BY
     submission_date,
     key,
@@ -35,20 +32,19 @@ WITH unioned AS (
     '' AS key,
     '' AS value,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
+    COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events` AS e,
-    UNNEST(e.events) AS event
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND event.category = 'doh'
-    AND event.name = 'state_disabled'
+    AND event_category = 'doh'
+    AND event_name = 'state_disabled'
   GROUP BY
     submission_date,
     key,
@@ -62,20 +58,19 @@ WITH unioned AS (
     '' AS key,
     '' AS value,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
+    COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events` AS e,
-    UNNEST(e.events) AS event
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND event.category = 'doh'
-    AND event.name = 'state_enabled'
+    AND event_category = 'doh'
+    AND event_name = 'state_enabled'
   GROUP BY
     submission_date,
     key,
@@ -89,20 +84,19 @@ WITH unioned AS (
     '' AS key,
     '' AS value,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
+    COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events` AS e,
-    UNNEST(e.events) AS event
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND event.category = 'doh'
-    AND event.name = 'state_manually_disabled'
+    AND event_category = 'doh'
+    AND event_name = 'state_manually_disabled'
   GROUP BY
     submission_date,
     key,
@@ -116,20 +110,19 @@ WITH unioned AS (
     '' AS key,
     '' AS value,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
+    COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events` AS e,
-    UNNEST(e.events) AS event
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND event.category = 'doh'
-    AND event.name = 'state_policy_disabled'
+    AND event_category = 'doh'
+    AND event_name = 'state_policy_disabled'
   GROUP BY
     submission_date,
     key,
@@ -216,24 +209,21 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'security.doh.settings.provider_choice_value' AS metric,
     "value" AS key,
-    COALESCE(extra.value, '') AS value,
+    COALESCE(STRING(event_extra.value), '') AS value,
     CASE
-      WHEN COUNT(DISTINCT client_info.client_id) >= 5000
+      WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
       ELSE 'OTHER'
     END AS country_code,
-    COUNT(DISTINCT client_info.client_id) AS client_count
+    COUNT(DISTINCT client_id) AS client_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events` AS e,
-    UNNEST(e.events) AS event,
-    UNNEST(event.extra) AS extra
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
-    AND client_info.client_id IS NOT NULL
+    AND client_id IS NOT NULL
     AND client_info.app_channel = 'release'
-    AND event.category = 'security.doh.settings'
-    AND event.name = 'provider_choice_value'
-    AND extra.key = 'value'
+    AND event_category = 'security.doh.settings'
+    AND event_name = 'provider_choice_value'
   GROUP BY
     submission_date,
     key,

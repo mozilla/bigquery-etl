@@ -135,10 +135,21 @@ def main():
             ),
             start=[],
         )
+
         json_rows = [
             job
             for job in pool.starmap(
-                add_job_metadata, ((client, job) for job in jobs), chunksize=1
+                add_job_metadata,
+                (
+                    (client, job)
+                    for job in jobs
+                    # ignore intermediate shredder tables because the rows deleted are irrelevant
+                    if not (
+                        job["project_id"] == "moz-fx-data-shredder"
+                        and job["dataset_id"] == "shredder_tmp"
+                    )
+                ),
+                chunksize=1,
             )
             if job is not None
         ]

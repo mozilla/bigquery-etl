@@ -15,6 +15,7 @@ from bigquery_etl.cli.query import (
     create,
     deploy,
     info,
+    initialize,
     materialized_view_has_changes,
     paths_matching_name_pattern,
     schedule,
@@ -22,6 +23,9 @@ from bigquery_etl.cli.query import (
 )
 from bigquery_etl.metadata.publish_metadata import attach_metadata
 from bigquery_etl.schema import Schema
+
+DEFAULT_SAMPLING_BATCH_SIZE = 4
+TOTAL_SAMPLE_ID_COUNT = 100
 
 
 class TestQuery:
@@ -1237,3 +1241,93 @@ class TestQuery:
             assert (
                 "[WARNING] The following column descriptions were overwritten using the base schemas:"
             ) in captured.out
+
+    @patch("bigquery_etl.cli.query.deploy_table")
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("bigquery_etl.cli.query._run_query")
+    def test_query_initialize(
+        self, mock_run_query, mock_get_table, mock_deploy_table, runner
+    ):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT column_1 FROM test_table"
+                    "{% raw %}"
+                    "{% if is_init() %}"
+                    "{% endraw %}"
+                    "WHERE sample_id=@sample_id"
+                    "{% raw %}"
+                    "{% else %}"
+                    "{% endraw %}"
+                    "{% raw %}"
+                    "{% endif %}"
+                    "{% endraw %}"
+                )
+
+            mock_get_table.return_value = types.SimpleNamespace(num_rows=0)
+            result = runner.invoke(initialize, ["*.telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            assert mock_run_query.call_count == TOTAL_SAMPLE_ID_COUNT
+
+            sample_ids = range(0, TOTAL_SAMPLE_ID_COUNT)
+            expected_sample_id_params = [
+                f"--parameter=sample_id:INT64:{sample_id}" for sample_id in sample_ids
+            ]
+
+            for call in mock_run_query.call_args_list:
+                sample_id_params = [
+                    arg for arg in call.args[-1] if "--parameter=sample_id" in arg
+                ]
+                assert len(sample_id_params) == 1
+                assert sample_id_params[0] in expected_sample_id_params
+
+    @patch("bigquery_etl.cli.query.deploy_table")
+    @patch("google.cloud.bigquery.Client.get_table")
+    @patch("bigquery_etl.cli.query._run_query")
+    def test_query_initialize_batch(
+        self, mock_run_query, mock_get_table, mock_deploy_table, runner
+    ):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod/telemetry_derived/query_v1")
+            with open(
+                "sql/moz-fx-data-shared-prod/telemetry_derived/query_v1/query.sql", "w"
+            ) as f:
+                f.write(
+                    "SELECT column_1 FROM test_table"
+                    "{% raw %}"
+                    "{% if is_init() %}"
+                    "{% endraw %}"
+                    "WHERE sample_id >= @sample_id "
+                    "AND sample_id < @sample_id + @sampling_batch_size"
+                    "{% raw %}"
+                    "{% else %}"
+                    "{% endraw %}"
+                    "{% raw %}"
+                    "{% endif %}"
+                    "{% endraw %}"
+                )
+
+            mock_get_table.return_value = types.SimpleNamespace(num_rows=0)
+            result = runner.invoke(initialize, ["*.telemetry_derived.query_v1"])
+
+            assert result.exit_code == 0
+            assert (
+                mock_run_query.call_count
+                == TOTAL_SAMPLE_ID_COUNT // DEFAULT_SAMPLING_BATCH_SIZE
+            )
+
+            sample_ids = range(0, TOTAL_SAMPLE_ID_COUNT, DEFAULT_SAMPLING_BATCH_SIZE)
+            expected_sample_id_params = [
+                f"--parameter=sample_id:INT64:{sample_id}" for sample_id in sample_ids
+            ]
+
+            for call in mock_run_query.call_args_list:
+                sample_id_params = [
+                    arg for arg in call.args[-1] if "--parameter=sample_id" in arg
+                ]
+                assert len(sample_id_params) == 1
+                assert sample_id_params[0] in expected_sample_id_params

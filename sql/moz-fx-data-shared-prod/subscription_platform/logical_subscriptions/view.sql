@@ -3,12 +3,10 @@ CREATE OR REPLACE VIEW
 AS
 WITH subscriptions AS (
   SELECT
-    subscription.*,
-    COALESCE(DATE(subscription.ended_at), CURRENT_DATE()) AS effective_date
+    *,
+    COALESCE(DATE(ended_at), CURRENT_DATE()) AS effective_date
   FROM
-    `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_history_v1`
-  WHERE
-    valid_to = '9999-12-31 23:59:59.999999'
+    `moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_v1`
 ),
 augmented_subscriptions AS (
   SELECT

@@ -5,16 +5,22 @@ description: |-
   Some caveats:
     * We only have partial data for Stripe subscriptions prior to March 2023 due to a data loss incident (DENG-754).
     * We only have partial data for Apple subscriptions prior to December 2022 when VPN's Apple subscriptions were migrated to SubPlat (VPN-3921).
-owners: []
-labels: {}
-bigquery: null
+owners:
+- srose@mozilla.com
+labels:
+  schedule: hourly
+  dag: bqetl_subplat_hourly
+  owner1: srose
+scheduling:
+  dag_name: bqetl_subplat_hourly
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references:
-  view.sql:
-  - moz-fx-data-shared-prod.subscription_platform.exchange_rates_history
-  - moz-fx-data-shared-prod.subscription_platform.vat_rates_history
-  - moz-fx-data-shared-prod.subscription_platform_derived.logical_subscriptions_v1
+references: {}
 require_column_descriptions: true

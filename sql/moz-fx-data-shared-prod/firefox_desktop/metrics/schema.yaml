@@ -1119,6 +1119,13 @@ fields:
         preference. This does not reflect the value of the featureGate preference.
 
         '
+    - name: link_handling_open_next_to_active_tab_settings_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Records if the user has the "Open links from apps next to your
+        active tab" feature enabled.
+
+        '
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -11845,6 +11852,19 @@ fields:
         mode: NULLABLE
       description: 'How many times threads woke up and could have woken up a CPU core.
         Broken down by thread name for a given process type.
+
+        '
+    - name: browser_ui_interaction_tab_movement
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Records information about user tab movements within the tab strip.
 
         '
   - name: memory_distribution

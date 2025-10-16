@@ -416,6 +416,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    mozilla_org_derived__firefox_whatsnew_summary__v3 = bigquery_etl_query(
+        task_id="mozilla_org_derived__firefox_whatsnew_summary__v3",
+        destination_table="firefox_whatsnew_summary_v3",
+        dataset_id="mozilla_org_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     mozilla_org_derived__ga_clients__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__ga_clients__v2",
         destination_table="ga_clients_v2",

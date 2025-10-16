@@ -107,7 +107,12 @@ whats_new_page_page_views AS (
 SELECT
   wnp.*,
   mozfun.norm.browser_version_info(wnp.page_level_2) AS page_level_2_version_info,
-  mozfun.norm.browser_version_info(wnp.oldversion) AS old_version_version_info,
+  --handling for weird edge cases that break version parsing
+  CASE
+    WHEN wnp.oldversion LIKE '999999999999999999999999%'
+      THEN mozfun.norm.browser_version_info(NULL)
+    ELSE mozfun.norm.browser_version_info(wnp.oldversion)
+  END AS old_version_version_info,
   mozfun.norm.browser_version_info(wnp.newversion) AS new_version_version_info
 FROM
   whats_new_page_page_views wnp

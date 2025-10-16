@@ -212,6 +212,7 @@ fields:
 - name: page_level_2_version_info
   type: RECORD
   mode: NULLABLE
+  description: Firefox version information parsed from Page Level 2 of URL
   fields:
   - name: version
     type: STRING

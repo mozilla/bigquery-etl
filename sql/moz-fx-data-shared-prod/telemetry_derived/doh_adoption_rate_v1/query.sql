@@ -232,7 +232,8 @@ WITH unioned AS (
 )
 SELECT
   submission_date,
-  metric key,
+  metric,
+  key,
   value,
   country_code,
   SUM(client_count) AS total_client_count

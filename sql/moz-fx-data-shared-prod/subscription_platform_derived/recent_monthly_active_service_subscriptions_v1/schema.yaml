@@ -399,7 +399,9 @@ fields:
     type: RECORD
     mode: NULLABLE
     description: |-
-      Unbounded last-touch attribution for the service subscription (if any).
+      Last-touch attribution for the service subscription (if any).
+      For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+      For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
       This will be null for Google and Apple subscriptions.
     fields:
     - name: impression_at

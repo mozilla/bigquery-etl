@@ -1,7 +1,7 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
 - name: addon_id
   type: STRING
@@ -11,16 +11,6 @@ fields:
   mode: NULLABLE
   description: The number of daily active users.
 - name: dau_by_addon_version
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: INTEGER
-    mode: NULLABLE
-- name: dau_by_app_os
   type: RECORD
   mode: REPEATED
   fields:
@@ -50,6 +40,16 @@ fields:
   - name: value
     type: INTEGER
     mode: NULLABLE
+- name: dau_by_locale
+  type: RECORD
+  mode: REPEATED
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+  - name: value
+    type: INTEGER
+    mode: NULLABLE
 - name: dau_by_country
   type: RECORD
   mode: REPEATED
@@ -60,7 +60,7 @@ fields:
   - name: value
     type: INTEGER
     mode: NULLABLE
-- name: dau_by_locale
+- name: dau_by_app_os
   type: RECORD
   mode: REPEATED
   fields:

@@ -15,6 +15,8 @@ fields:
 - name: legacy_client_id
   type: STRING
   mode: NULLABLE
+  description: A unique identifier (UUID) for the client, based on legacy telemetry
+    data.
 - name: client_id
   type: STRING
   mode: NULLABLE

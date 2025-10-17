@@ -5,12 +5,16 @@ fields:
 - name: submission_date
   type: DATE
   mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
 - name: device
   type: STRING
   mode: NULLABLE
+  description: Device Type - e.g. desktop or mobile.
 - name: eligible_share_country
   type: FLOAT
   mode: NULLABLE

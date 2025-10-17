@@ -33,6 +33,9 @@ fields:
 - name: adjust_creative
   type: STRING
   mode: NULLABLE
+- name: is_new_install
+  type: BOOLEAN
+  mode: NULLABLE
 - name: is_new_profile
   type: BOOLEAN
   mode: NULLABLE
@@ -44,9 +47,6 @@ fields:
   mode: NULLABLE
 - name: ad_clicks
   type: INTEGER
-  mode: NULLABLE
-- name: is_new_install
-  type: BOOLEAN
   mode: NULLABLE
 - name: activated
   type: BOOLEAN

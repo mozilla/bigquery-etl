@@ -1,7 +1,7 @@
 fields:
-- name: dau
+- mode: NULLABLE
+  name: dau
   type: INTEGER
-  mode: NULLABLE
   description: The number of unique installation IDs using the add-on on this date.
 - name: wau
   type: INTEGER

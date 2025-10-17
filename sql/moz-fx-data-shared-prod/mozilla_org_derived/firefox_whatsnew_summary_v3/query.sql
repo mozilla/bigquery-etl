@@ -1,5 +1,5 @@
---Step 1 - get all page view events on mozilla.org for the submission date
-WITH all_page_view_events AS (
+--Step 1 - get all events on mozilla.org for the submission date
+WITH all_events AS (
   SELECT
     *,
     CAST(
@@ -36,13 +36,13 @@ WITH all_page_view_events AS (
     `moz-fx-data-marketing-prod.analytics_313696158.events_*`
   WHERE
     _TABLE_SUFFIX = FORMAT_DATE('%Y%m%d', @submission_date)
-    AND event_name = 'page_view'
 ),
---Step 2: Get the subset of events that are page views of the Firefox "whats new" pages
---        Additionally parse out info from the whats new page path
-whats_new_page_page_views AS (
+--Step 2: Get the subset of events that have a page location of a "whats new" page
+all_events_with_page_location_on_WNP AS (
   SELECT
     PARSE_DATE('%Y%m%d', event_date) AS event_date,
+    event_name,
+    event_timestamp,
     user_pseudo_id AS ga_client_id,
     ga_session_id,
     platform,
@@ -97,7 +97,7 @@ whats_new_page_page_views AS (
     REGEXP_EXTRACT(page_location, r'[?&]newversion=([^&]+)') AS newversion,
     engagement_time_msec
   FROM
-    all_page_view_events
+    all_events
   WHERE
     LOWER(page_location) LIKE '%whatsnew%'
     AND LOWER(
@@ -107,7 +107,6 @@ whats_new_page_page_views AS (
 SELECT
   wnp.*,
   mozfun.norm.browser_version_info(wnp.page_level_2) AS page_level_2_version_info,
-  --handling for weird edge cases that break version parsing
   CASE
     WHEN wnp.oldversion LIKE '999999999999999999999999%'
       THEN mozfun.norm.browser_version_info(NULL)
@@ -115,4 +114,4 @@ SELECT
   END AS old_version_version_info,
   mozfun.norm.browser_version_info(wnp.newversion) AS new_version_version_info
 FROM
-  whats_new_page_page_views wnp
+  all_events_with_page_location_on_WNP wnp

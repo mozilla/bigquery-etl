@@ -8,6 +8,12 @@ fields:
 - name: event_date
   type: DATE
   mode: NULLABLE
+- name: event_name
+  type: STRING
+  mode: NULLABLE
+- name: event_timestamp
+  type: INTEGER
+  mode: NULLABLE
 - name: platform
   type: STRING
   mode: NULLABLE

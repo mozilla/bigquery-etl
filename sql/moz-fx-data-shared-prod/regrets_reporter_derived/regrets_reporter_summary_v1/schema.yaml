@@ -1,0 +1,33 @@
+fields:
+- mode: NULLABLE
+  name: dau
+  type: INTEGER
+  description: The number of unique installation IDs using the add-on on this date.
+- name: wau
+  type: INTEGER
+  mode: NULLABLE
+  description: The number of unique installation IDs using the add-on on this date.
+- name: new_users
+  type: INTEGER
+  mode: NULLABLE
+- name: date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the ping is received on the server side.
+- name: experiment_arm
+  type: STRING
+  mode: NULLABLE
+- name: ui_arm
+  type: STRING
+  mode: NULLABLE
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: browser
+  type: STRING
+  mode: NULLABLE
+- name: activities
+  type: INTEGER
+  mode: NULLABLE

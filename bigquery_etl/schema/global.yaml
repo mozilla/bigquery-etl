@@ -89,6 +89,14 @@ fields:
 - name: dau
   type: INTEGER
   description: The number of daily active users.
+- name: first_run_date
+  type: DATE
+  mode: NULLABLE
+  description: The date of the first run of the application.
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the server first received a ping from this client.
 - name: wau
   type: INTEGER
   description: The number of weekly active users.

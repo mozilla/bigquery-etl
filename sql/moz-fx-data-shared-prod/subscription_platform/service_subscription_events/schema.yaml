@@ -379,8 +379,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Last-touch attribution UTM term.
-    description: 'Unbounded last-touch attribution for the service subscription (if
-      any).
+    description: 'Last-touch attribution for the service subscription (if any).
+
+      For Stripe subscriptions created by SubPlat 2 or earlier this will be the most
+      recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+
+      For Stripe subscriptions created by SubPlat 3 (which launched in June 2025)
+      or later this will be the attribution values stored by SubPlat (DENG-8885).
 
       This will be null for Google and Apple subscriptions.'
   description: The service subscription as it ostensibly was after the event occurred.
@@ -738,8 +743,13 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Last-touch attribution UTM term.
-    description: 'Unbounded last-touch attribution for the service subscription (if
-      any).
+    description: 'Last-touch attribution for the service subscription (if any).
+
+      For Stripe subscriptions created by SubPlat 2 or earlier this will be the most
+      recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+
+      For Stripe subscriptions created by SubPlat 3 (which launched in June 2025)
+      or later this will be the attribution values stored by SubPlat (DENG-8885).
 
       This will be null for Google and Apple subscriptions.'
   description: The service subscription as it ostensibly was before the event occurred.

@@ -18,4 +18,3 @@ scheduling:
   - task_id: marketing_suppression_list_derived__main_suppression_list__v1
     dag_name: bqetl_marketing_suppression_list
 bigquery: null
-references: {}

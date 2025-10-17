@@ -24,5 +24,4 @@ bigquery:
     - app_name
     - channel
     - country
-references: {}
 require_column_descriptions: true

@@ -20,4 +20,3 @@ bigquery:
   clustering:
     fields:
     - profile_age_at_time_of_uninstall
-references: {}

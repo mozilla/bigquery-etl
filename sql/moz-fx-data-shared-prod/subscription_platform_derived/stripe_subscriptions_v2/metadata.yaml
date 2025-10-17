@@ -18,5 +18,4 @@ scheduling:
   # The whole table is overwritten every time, not a specific date partition.
   date_partition_parameter: null
 bigquery: null
-references: {}
 require_column_descriptions: true

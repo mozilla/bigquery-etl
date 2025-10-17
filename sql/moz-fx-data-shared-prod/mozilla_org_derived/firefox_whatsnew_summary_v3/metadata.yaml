@@ -18,5 +18,4 @@ bigquery:
   clustering:
     fields:
     - page_location_locale
-references: {}
 require_column_descriptions: true

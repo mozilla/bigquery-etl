@@ -3,12 +3,7 @@ fields:
   type: STRING
   mode: NULLABLE
   description: |-
-    Service subscription ID.
-- name: service_id
-  type: STRING
-  mode: NULLABLE
-  description: |-
-    ID of the service provided by the subscription, as defined in the `services_v1` ETL.
+    Logical subscription ID.
 - name: provider
   type: STRING
   mode: NULLABLE
@@ -22,11 +17,6 @@ fields:
     For Stripe subscriptions this will be "Stripe" or "PayPal".
     For Google subscriptions this will be "Google".
     For Apple subscriptions this will be "Apple".
-- name: logical_subscription_id
-  type: STRING
-  mode: NULLABLE
-  description: |-
-    ID of the associated logical subscription this service subscription was derived from.
 - name: provider_subscription_id
   type: STRING
   mode: NULLABLE
@@ -69,18 +59,12 @@ fields:
   description: |-
     SHA256 hash of the `mozilla_account_id` string value (if any) as a hexadecimal string.
     This may be missing for some subscriptions.
-- name: customer_logical_subscription_number
+- name: customer_subscription_number
   type: INTEGER
   mode: NULLABLE
   description: |-
-    Number of the associated logical subscription in the overall sequence of all of the customer's logical subscriptions.
+    Number of this subscription in the overall sequence of all of the customer's logical subscriptions.
     For example, this should be `1` for their first logical subscription, `2` for their second logical subscription, etc.
-- name: customer_service_subscription_number
-  type: INTEGER
-  mode: NULLABLE
-  description: |-
-    Number of this service subscription in the overall sequence of all of the customer's service subscriptions to this service.
-    For example, this should be `1` for their first service subscription to this service, `2` for their second service subscription to this service, etc.
 - name: country_code
   type: STRING
   mode: NULLABLE
@@ -93,11 +77,11 @@ fields:
   description: |-
     Name of the country the subscription is in.
     This may be "Unknown" for some subscriptions.
-- name: service
+- name: services
   type: RECORD
-  mode: NULLABLE
+  mode: REPEATED
   description: |-
-    The service provided by the subscription, as defined in the `services_v1` ETL.
+    Array of one or more services provided by the subscription, as defined in the `services_v1` ETL.
   fields:
   - name: id
     type: STRING
@@ -114,27 +98,6 @@ fields:
     mode: NULLABLE
     description: |-
       Service tier.
-- name: other_services
-  type: RECORD
-  mode: REPEATED
-  description: |-
-    Array of zero or more other services provided by the subscription, as defined in the `services_v1` ETL.
-  fields:
-  - name: id
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Other service ID.
-  - name: name
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Other service name.
-  - name: tier
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Other service tier.
 - name: provider_product_id
   type: STRING
   mode: NULLABLE
@@ -215,11 +178,6 @@ fields:
   mode: NULLABLE
   description: |-
     The provider's status indicator for the subscription.
-- name: logical_subscription_started_at
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: |-
-    When the associated logical subscription started.
 - name: started_at
   type: TIMESTAMP
   mode: NULLABLE
@@ -254,6 +212,126 @@ fields:
   description: |-
     When the subscription's auto-renewal setting was disabled.
     This will be null for subscriptions set to auto-renew.
+- name: has_refunds
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription has had refunds.
+    This will be null for Google subscriptions.
+- name: has_fraudulent_charges
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription has had fraudulent charges.
+    This will be null for Google and Apple subscriptions.
+- name: first_touch_attribution
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    First-touch attribution for the subscription (if any).
+    For Stripe subscriptions created by SubPlat 2 or earlier this will be the earliest (unbounded) attribution impression found in the SubPlat/FxA logs.
+    This will be null for Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later (DENG-8885).
+    This will be null for Google and Apple subscriptions.
+  fields:
+  - name: impression_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      When the first-touch attribution impression occurred.
+  - name: entrypoint
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution entrypoint.
+  - name: entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution entrypoint experiment.
+  - name: entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution entrypoint experiment variation.
+  - name: utm_campaign
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution UTM campaign.
+  - name: utm_content
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution UTM content.
+  - name: utm_medium
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution UTM medium.
+  - name: utm_source
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution UTM source.
+  - name: utm_term
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      First-touch attribution UTM term.
+- name: last_touch_attribution
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    Last-touch attribution for the subscription (if any).
+    For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+    For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
+    This will be null for Google and Apple subscriptions.
+  fields:
+  - name: impression_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      When the last-touch attribution impression occurred.
+  - name: entrypoint
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint.
+  - name: entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint experiment.
+  - name: entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint experiment variation.
+  - name: utm_campaign
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM campaign.
+  - name: utm_content
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM content.
+  - name: utm_medium
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM medium.
+  - name: utm_source
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM source.
+  - name: utm_term
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM term.
 - name: initial_discount_name
   type: STRING
   mode: NULLABLE
@@ -305,107 +383,13 @@ fields:
   description: |-
     When the ongoing discount ends (if any).
     This will be null for Apple subscriptions.
-- name: has_refunds
-  type: BOOLEAN
+- name: ended_reason
+  type: STRING
   mode: NULLABLE
   description: |-
-    Whether the subscription has had refunds.
-    This will be null for Google subscriptions.
-- name: has_fraudulent_charges
-  type: BOOLEAN
-  mode: NULLABLE
-  description: |-
-    Whether the subscription has had fraudulent charges.
-    This will be null for Google and Apple subscriptions.
-- name: last_touch_attribution
-  type: RECORD
-  mode: NULLABLE
-  description: |-
-    Last-touch attribution for the service subscription (if any).
-    For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
-    For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
-    This will be null for Google and Apple subscriptions.
-  fields:
-  - name: impression_at
-    type: TIMESTAMP
-    mode: NULLABLE
-    description: |-
-      When the last-touch attribution impression occurred.
-  - name: entrypoint
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution entrypoint.
-  - name: entrypoint_experiment
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution entrypoint experiment.
-  - name: entrypoint_variation
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution entrypoint experiment variation.
-  - name: utm_campaign
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM campaign.
-  - name: utm_content
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM content.
-  - name: utm_medium
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM medium.
-  - name: utm_source
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM source.
-  - name: utm_term
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM term.
-- name: country_vat_rate
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    VAT rate for the country the subscription is in (if any).
-- name: plan_currency_usd_exchange_rate
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    Exchange rate for converting the subscription plan's currency into US dollars (if any).
-- name: plan_amount_usd
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    Subscription plan's amount in US dollars.
-    For Apple subscriptions prior to 2024-10-30 this may have fallen back to assuming a USD amount due to a lack of source data (FXA-10549).
-- name: current_period_discount_amount_usd
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    Current period discount amount in US dollars (if any).
-    This may be null for Apple subscriptions.
-- name: ongoing_discount_amount_usd
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    Ongoing discount amount in US dollars (if any).
-    This may be null for Apple subscriptions.
-- name: monthly_recurring_revenue_usd
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    Projected monthly recurring revenue for the subscription in US dollars.
-- name: annual_recurring_revenue_usd
-  type: NUMERIC
-  mode: NULLABLE
-  description: |-
-    Projected annual recurring revenue for the subscription in US dollars.
+    Reason why the subscription ended.
+    Possible values:
+      * `Admin Initiated` - An admin at Mozilla ended the subscription, either directly or by deleting the customer's Mozilla Account.
+      * `Customer Initiated` - The customer ended their subscription, either directly or by turning off auto-renewal or deleting their Mozilla Account.
+      * `Payment Failure` - The subscription was unable to auto-renew due to a payment failure.
+      * `Other` - The subscription ended for some other reason, such as unverified Mozilla Accounts being automatically deleted.

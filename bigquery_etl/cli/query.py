@@ -1488,6 +1488,13 @@ def _initialize_in_parallel(
     help="Run the initialization even if the destination table contains data.",
     default=False,
 )
+@click.option(
+    "--sampling-batch-size",
+    "--sampling_batch_size",
+    help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
+    type=int,
+    default=4,
+)
 @click.pass_context
 def initialize(
     ctx,
@@ -1499,6 +1506,7 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1593,6 +1601,18 @@ def initialize(
 
                 if "@sample_id" in sql_content:
                     sample_ids = list(range(0, 100))
+
+                    # To support batch initialization, include the following clause in your query:
+                    # AND sample_id >= @sample_id
+                    # AND sample_id < @sample_id + @sampling_batch_size
+                    #
+                    # This limits each run to a range of sample IDs equal to the specified batch size
+                    # (e.g., if @sample_id=0 and @sampling_batch_size=4, the query processes sample IDs 0–3).
+                    if "@sampling_batch_size" in sql_content:
+                        sample_ids = [i for i in range(0, 100, sampling_batch_size)]
+                        arguments += [
+                            f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
+                        ]
 
                     _initialize_in_parallel(
                         project=project,

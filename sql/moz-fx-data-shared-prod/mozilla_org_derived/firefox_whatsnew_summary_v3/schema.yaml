@@ -1,0 +1,286 @@
+fields:
+- name: event_date
+  mode: NULLABLE
+  type: DATE
+  description: The date the page view event took place.
+- name: ga_client_id
+  type: STRING
+  mode: NULLABLE
+  description: The google analytics user_pseudo_id (a unique identifier for a user based on cookies).
+- name: ga_session_id
+  type: STRING
+  mode: NULLABLE
+  description: The google analytics session ID, parsed from event_params.
+- name: platform
+  type: STRING
+  mode: NULLABLE
+  description: Platform
+- name: device_category
+  type: STRING
+  mode: NULLABLE
+  description: Device Category
+- name: operating_system
+  type: STRING
+  mode: NULLABLE
+  description: Device Operating System
+- name: operating_system_version
+  type: STRING
+  mode: NULLABLE
+  description: Device Operating System Version
+- name: geo_country
+  type: STRING
+  mode: NULLABLE
+  description: Geo Country
+- name: geo_city
+  type: STRING
+  mode: NULLABLE
+  description: Geo City
+- name: geo_region
+  type: STRING
+  mode: NULLABLE
+  description: Geo Region
+- name: geo_sub_continent
+  type: STRING
+  mode: NULLABLE
+  description: Geo Sub Continent
+- name: geo_metro
+  type: STRING
+  mode: NULLABLE
+  description: Geo Metro
+- name: device_language
+  type: STRING
+  mode: NULLABLE
+  description: Device Language
+- name: device_browser
+  type: STRING
+  mode: NULLABLE
+  description: Device Browser
+- name: device_browser_version
+  type: STRING
+  mode: NULLABLE
+  description: Device Browser Version
+- name: event_params
+  type: RECORD
+  mode: REPEATED
+  description: Event Parameters
+  fields:
+  - name: key
+    type: STRING
+    mode: NULLABLE
+    description: Key
+  - name: value
+    type: RECORD
+    mode: NULLABLE
+    description: Value
+    fields:
+    - name: string_value
+      type: STRING
+      mode: NULLABLE
+      description: String Value
+    - name: int_value
+      type: INTEGER
+      mode: NULLABLE
+      description: Integer Value
+    - name: float_value
+      type: FLOAT
+      mode: NULLABLE
+      description: Float Value
+    - name: double_value
+      type: FLOAT
+      mode: NULLABLE
+      description: Double Value
+- name: traffic_source_name
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source Name
+- name: traffic_source_medium
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source Medium
+- name: traffic_source_source
+  type: STRING
+  mode: NULLABLE
+  description: Traffic Source Source
+- name: cts_manual_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Campaign ID
+- name: cts_manual_campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Campaign Name
+- name: cts_manual_source
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Source
+- name: cts_manual_medium
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Medium
+- name: cts_manual_term
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Term
+- name: cts_manual_content
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Content
+- name: cts_manual_source_platform
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Source Platform
+- name: cts_manual_creative_format
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Creative Format
+- name: cts_manual_marketing_tactic
+  type: STRING
+  mode: NULLABLE
+  description: Collected Traffic Source Manual Marketing Tactic
+- name: session_src_manual_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign ID from session_traffic_source_last_click
+- name: session_src_manual_campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign name from session_traffic_source_last_click
+- name: session_src_manual_campaign_source
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign source from session_traffic_source_last_click
+- name: sesssion_src_manual_campaign_medium
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign medium from session_traffic_source_last_click
+- name: session_src_manual_campaign_term
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign term from session_traffic_source_last_click
+- name: session_src_manual_campaign_content
+  type: STRING
+  mode: NULLABLE
+  description: Manual campaign content from session_traffic_source_last_click
+- name: session_src_customer_id
+  type: STRING
+  mode: NULLABLE
+  description: Customer ID from session_traffic_source_last_click google ads campaign
+- name: session_src_account_name
+  type: STRING
+  mode: NULLABLE
+  description: Account name from session_traffic_source_last_click google ads campaign
+- name: session_src_campaign_id
+  type: STRING
+  mode: NULLABLE
+  description: Campaign ID from session_traffic_source_last_click google ads campaign
+- name: session_src_campaign_name
+  type: STRING
+  mode: NULLABLE
+  description: Campaign name from session_traffic_source_last_click google ads campaign
+- name: session_src_ad_group_id
+  type: STRING
+  mode: NULLABLE
+  description: Ad Group ID from session_traffic_source_last_click google ads campaign
+- name: session_src_ad_group_name
+  type: STRING
+  mode: NULLABLE
+  description: Ad Group Name from session_traffic_source_last_click google ads campaign
+- name: page_location
+  type: STRING
+  mode: NULLABLE
+  description: Page Location - URL of page viewed
+- name: page_location_locale
+  type: STRING
+  mode: NULLABLE
+  description: Locale parsed from page_location (URL of page viewed)
+- name: page_level_2
+  type: STRING
+  mode: NULLABLE
+  description: Level 2 parsed from page_location (URL of page viewed)
+- name: oldversion
+  type: STRING
+  mode: NULLABLE
+  description: Old Firefox Version parsed from UTM parameter if found
+- name: newversion
+  type: STRING
+  mode: NULLABLE
+  description: New Firefox Version parsed from UTM parameter if found
+- name: engagement_time_msec
+  type: INTEGER
+  mode: NULLABLE
+  description: Engagement time in milliseconds on this page view event
+- name: page_level_2_version_info
+  type: RECORD
+  mode: NULLABLE
+  description: Firefox version information parsed from Page Level 2 of URL
+  fields:
+  - name: version
+    type: STRING
+    mode: NULLABLE
+    description: Version
+  - name: major_version
+    type: NUMERIC
+    mode: NULLABLE
+    description: Major version
+  - name: minor_version
+    type: NUMERIC
+    mode: NULLABLE
+    description: Minor Version
+  - name: patch_revision
+    type: NUMERIC
+    mode: NULLABLE
+    description: Patch Revision
+  - name: is_major_release
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Is Major Release
+- name: old_version_version_info
+  type: RECORD
+  mode: NULLABLE
+  description: Version info parsed from old Firefox version UTM parameter
+  fields:
+  - name: version
+    type: STRING
+    mode: NULLABLE
+    description: Version
+  - name: major_version
+    type: NUMERIC
+    mode: NULLABLE
+    description: Major Version
+  - name: minor_version
+    type: NUMERIC
+    mode: NULLABLE
+    description: Minor Version
+  - name: patch_revision
+    type: NUMERIC
+    mode: NULLABLE
+    description: Patch Revision
+  - name: is_major_release
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Is Major Release
+- name: new_version_version_info
+  type: RECORD
+  mode: NULLABLE
+  description: Version info parsed from new Firefox version UTM parameter
+  fields:
+  - name: version
+    type: STRING
+    mode: NULLABLE
+    description: Version
+  - name: major_version
+    type: NUMERIC
+    mode: NULLABLE
+    description: Major Version
+  - name: minor_version
+    type: NUMERIC
+    mode: NULLABLE
+    description: Minor Version
+  - name: patch_revision
+    type: NUMERIC
+    mode: NULLABLE
+    description: Patch Revision
+  - name: is_major_release
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Is Major Release

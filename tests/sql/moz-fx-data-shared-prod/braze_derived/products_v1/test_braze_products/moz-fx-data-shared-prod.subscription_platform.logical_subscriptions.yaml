@@ -106,16 +106,6 @@
   has_fraudulent_charges: false
   services:
     - name: service_1_name
-  first_touch_attribution:
-    impression_at: 2020-12-01 10:00:00+00:00
-    entrypoint: first_entrypoint
-    entrypoint_experiment: first_entrypoint_exp
-    entrypoint_variation: first_entrypoint_var
-    utm_campaign: first_campaign
-    utm_content: first_content
-    utm_medium: first_medium
-    utm_source: first_source
-    utm_term: first_term
   last_touch_attribution:
     impression_at: 2020-12-01 10:00:00+00:00
     entrypoint: last_entrypoint

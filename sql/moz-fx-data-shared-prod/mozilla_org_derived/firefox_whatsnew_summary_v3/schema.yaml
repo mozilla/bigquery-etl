@@ -2,7 +2,15 @@ fields:
 - name: event_date
   mode: NULLABLE
   type: DATE
-  description: The date the page view event took place.
+  description: The date of the event
+- name: event_name
+  mode: NULLABLE
+  type: STRING
+  description: The name of the event
+- name: event_timestamp
+  mode: NULLABLE
+  type: INTEGER
+  description: The timestamp of the event
 - name: ga_client_id
   type: STRING
   mode: NULLABLE

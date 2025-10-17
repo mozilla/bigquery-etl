@@ -1,5 +1,5 @@
-friendly_name: ctms_braze
-description: ctms_braze syndicate views
+friendly_name: shepherd
+description: shepherd syndicate views
 dataset_base_acl: syndicate
 user_facing: true
 labels: {}

@@ -34,30 +34,43 @@ WITH win10_users AS (
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.fx_accounts`
   WHERE
-    DATE(submission_timestamp) = @submission_date
+    DATE(submission_timestamp) = DATE_SUB(@submission_date, INTERVAL 14 day)
     AND `mozfun.norm.windows_version_info`(
       client_info.os,
       client_info.os_version,
       client_info.windows_build_number
     ) = 'Windows 10'
 ),
-last_seen_14_days AS (
-  SELECT
-    user_id_sha256,
-    MIN(days_seen_bits) AS last_seen_min
+seen_within_14_days AS (
+  SELECT DISTINCT
+    user_id_sha256
   FROM
     `moz-fx-data-shared-prod.accounts_backend_derived.users_services_last_seen_v1`
   WHERE
     submission_date = @submission_date
-  GROUP BY
-    1
-  -- bit pattern 100000000000000, last seen 14 days from submission date
-  HAVING
-    last_seen_min = 16384
+    AND mozfun.bits28.active_in_range(days_seen_bits, -13, 14)
+),
+last_seen_14_days AS (
+  SELECT DISTINCT
+    last_seen.user_id_sha256,
+    last_seen.submission_date
+  FROM
+    `moz-fx-data-shared-prod.accounts_backend_derived.users_services_last_seen_v1` AS last_seen
+  LEFT JOIN
+    seen_within_14_days AS seen_recently
+    ON last_seen.user_id_sha256 = seen_recently.user_id_sha256
+  WHERE
+    last_seen.submission_date = @submission_date
+    -- seen somewhere in days 14-21
+    AND mozfun.bits28.active_in_range(last_seen.days_seen_bits, -21, 8)
+    -- not seen in last 14 days
+    AND NOT mozfun.bits28.active_in_range(last_seen.days_seen_bits, -13, 14)
+    -- remove users who have been seen in last 14 days
+    AND seen_recently.user_id_sha256 IS NULL
 ),
 inactive_win10_users AS (
   SELECT
-    win10.submission_date,
+    last_seen.submission_date,
     last_seen.user_id_sha256,
     win10.locale
   FROM

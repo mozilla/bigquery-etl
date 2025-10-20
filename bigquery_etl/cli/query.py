@@ -325,6 +325,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
         "Custom name for the Airflow task. By default the task name is a "
         "combination of the dataset and table name."
     ),
+    default=None,
 )
 def schedule(name, sql_dir, project_id, dag, depends_on_past, task_name):
     """CLI command for scheduling a query."""

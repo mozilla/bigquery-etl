@@ -26,6 +26,7 @@ mkdocs-material==9.6.21
 mkdocs-awesome-pages-plugin==2.10.1
 mozilla-metric-config-parser==2025.8.1
 mozilla-schema-generator==0.5.1
+openai==2.5.0
 pandas==2.3.3
 paramiko==4.0.0
 pathos==0.3.4

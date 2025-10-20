@@ -95,7 +95,12 @@ def main():
     gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + upstream_dag_date_str + ".txt"
     gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + upstream_dag_date_str + ".txt"
 
+    print("Checking to see if fpath 1 exists: ")
+    print(gcs_fpath1)
     ensure_gcs_file_exists(gcs_fpath1)
+
+    print("Checking to see if fpath 2 exists: ")
+    print(gcs_fpath2)
     ensure_gcs_file_exists(gcs_fpath2)
 
     # Make the output fpaths for storing the summaries received from ChatGPT

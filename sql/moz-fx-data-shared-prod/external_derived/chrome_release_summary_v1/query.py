@@ -69,7 +69,7 @@ def read_gcs_file(gcs_path: str) -> str:
     _, _, bucket_name, *path_parts = gcs_path.split("/", 3)
     blob_path = path_parts[0] if path_parts else ""
 
-    client = storage.Client()
+    client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(blob_path)
 
@@ -97,6 +97,7 @@ def main():
 
     print("Checking to see if fpath 1 exists: ")
     print(gcs_fpath1)
+
     ensure_gcs_file_exists(gcs_fpath1)
 
     print("Checking to see if fpath 2 exists: ")
@@ -153,7 +154,7 @@ def main():
     )
 
     # Save both summaries to GCS
-    client = storage.Client()
+    client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.get_bucket(BUCKET_NO_GS)
     blob = bucket.blob(final_output_fpath1)
     blob.upload_from_string(final_output_1)

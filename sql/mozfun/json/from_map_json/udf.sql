@@ -1,22 +1,30 @@
 CREATE OR REPLACE FUNCTION json.from_map_json(input JSON)
-RETURNS JSON
-LANGUAGE js
-AS
-  """
-  if (input && input.length) {
-    return input.reduce((acc, {key, value}) => {
-      let parsed;
-      try {
-        parsed = JSON.parse(value);
-      } catch (err) {
-        parsed = value;
-      }
-      acc[key] = parsed;
-      return acc;
-    }, {});
-  }
-  return null;
-""";
+RETURNS JSON AS (
+  IF(
+    ARRAY_LENGTH(SAFE.JSON_QUERY_ARRAY(input)) > 0,
+    (
+      SELECT
+        JSON_OBJECT(
+          COALESCE(ARRAY_AGG(JSON_VALUE(key_value_pair.key) ORDER BY offset), []),
+          COALESCE(
+            ARRAY_AGG(
+              COALESCE(SAFE.PARSE_JSON(SAFE.STRING(key_value_pair.value)), key_value_pair.value)
+              ORDER BY
+                offset
+            ),
+            []
+          )
+        )
+      FROM
+        UNNEST(JSON_QUERY_ARRAY(input)) AS key_value_pair
+        WITH OFFSET
+      WHERE
+        key_value_pair.key IS NOT NULL
+        AND key_value_pair.value IS NOT NULL
+    ),
+    NULL
+  )
+);
 
 -- Tests
 SELECT

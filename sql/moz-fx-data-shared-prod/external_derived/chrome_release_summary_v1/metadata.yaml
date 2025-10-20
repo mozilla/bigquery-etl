@@ -1,0 +1,27 @@
+friendly_name: Chrome Release Summary
+description: |-
+  Runs monthly to summarize Chrome's recent updates.
+  Reads data scraped earlier from the "release_scraping" DAG,
+  then outputs a summary of the data to GCS.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  dag: bqetl_chrome_releases
+scheduling:
+  dag_name: bqetl_chrome_releases
+  arguments:
+  - --date
+  - '{{ds}}'
+  secrets:
+  - deploy_target: DATA_ENG_OPEN_AI_API_KEY
+    key: bqetl_chrome_releases__open_ai_api_key
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:dataops-managed/external-fides
+  - workgroup:mozilla-confidential
+references: {}
+require_column_descriptions: false

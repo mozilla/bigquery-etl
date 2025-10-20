@@ -242,7 +242,8 @@ SELECT
       metrics.string.adjust_network,
       metrics.string.preferences_opening_screen,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.glean_database_rkv_load_error
+      metrics.string.glean_database_rkv_load_error,
+      metrics.string.user_toolbar_middle_button_type
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -562,7 +563,8 @@ SELECT
       metrics.string.adjust_network,
       metrics.string.preferences_opening_screen,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.glean_database_rkv_load_error
+      metrics.string.glean_database_rkv_load_error,
+      metrics.string.user_toolbar_middle_button_type
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,
@@ -882,7 +884,8 @@ SELECT
       metrics.string.adjust_network,
       metrics.string.preferences_opening_screen,
       metrics.string.glean_client_annotation_experimentation_id,
-      metrics.string.glean_database_rkv_load_error
+      metrics.string.glean_database_rkv_load_error,
+      metrics.string.user_toolbar_middle_button_type
     ) AS `string`,
     STRUCT(
       metrics.memory_distribution.glean_upload_discarded_exceeding_pings_size,

@@ -2443,6 +2443,13 @@ fields:
       description: 'If there was an error loading the RKV database, record it.
 
         '
+    - name: user_toolbar_middle_button_type
+      type: STRING
+      mode: NULLABLE
+      description: 'Records the user''s preference for the middle button (newTab or
+        home).
+
+        '
   - name: memory_distribution
     type: RECORD
     mode: NULLABLE

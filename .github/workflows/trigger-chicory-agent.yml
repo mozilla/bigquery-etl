@@ -4,6 +4,10 @@ on:
   issues:
     types: [labeled]
 
+permissions:
+  issues: write
+  contents: read
+  
 jobs:
   trigger-agent:
     if: github.event.label.name == 'generate-descriptions'

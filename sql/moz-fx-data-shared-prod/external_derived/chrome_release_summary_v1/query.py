@@ -155,7 +155,7 @@ def main():
 
     # Save both summaries to GCS
     client = storage.Client(project="moz-fx-data-shared-prod")
-    bucket = client.get_bucket(BUCKET_NO_GS)
+    bucket = client.bucket(BUCKET_NO_GS)
     blob = bucket.blob(final_output_fpath1)
     blob.upload_from_string(final_output_1)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath1}")

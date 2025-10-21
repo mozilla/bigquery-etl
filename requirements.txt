@@ -685,9 +685,9 @@ google-cloud-core==2.4.2 \
     # via
     #   google-cloud-bigquery
     #   google-cloud-storage
-google-cloud-datacatalog-lineage==0.3.14 \
-    --hash=sha256:37820030a06682f7636bff187e2223eeaae1d5d0feb6431f50d75dc964553891 \
-    --hash=sha256:b274f4a68bd2f4a52561e7454ab8a65229da81e857efb4fa03740f50fb27ecd5
+google-cloud-datacatalog-lineage==0.4.0 \
+    --hash=sha256:126a44e77465cea3c7698aca2d955f48977d29e2f3a298baedb210825e29b2dc \
+    --hash=sha256:530836f6925dbeb830ddb131a10f8de09538981080304a5b4443e7f725ab7097
     # via -r requirements.in
 google-cloud-storage==3.4.1 \
     --hash=sha256:6f041a297e23a4b485fad8c305a7a6e6831855c208bcbe74d00332a909f82268 \
@@ -827,6 +827,7 @@ grpcio==1.54.3 \
     --hash=sha256:fd5779aab42c92fc0d31ac4f240c99f02007f0310704eb761abd7ad955edf411
     # via
     #   google-api-core
+    #   google-cloud-datacatalog-lineage
     #   grpcio-status
 grpcio-status==1.51.1 \
     --hash=sha256:a52cbdc4b18f325bfc13d319ae7c7ae7a0fee07f3d9a005504d6097896d7a495 \
@@ -1381,9 +1382,9 @@ oauthlib==3.2.2 \
     --hash=sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca \
     --hash=sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918
     # via requests-oauthlib
-openai==2.5.0 \
-    --hash=sha256:21380e5f52a71666dbadbf322dd518bdf2b9d11ed0bb3f96bea17310302d6280 \
-    --hash=sha256:f8fa7611f96886a0f31ac6b97e58bc0ada494b255ee2cfd51c8eb502cfcb4814
+openai==2.6.0 \
+    --hash=sha256:f119faf7fc07d7e558c1e7c32c873e241439b01bd7480418234291ee8c8f4b9d \
+    --hash=sha256:f33fa12070fe347b5787a7861c8dd397786a4a17e1c3186e239338dac7e2e743
     # via -r requirements.in
 packaging==24.2 \
     --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \

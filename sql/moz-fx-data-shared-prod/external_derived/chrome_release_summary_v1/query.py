@@ -69,7 +69,7 @@ def read_gcs_file(gcs_path: str) -> str:
     _, _, bucket_name, *path_parts = gcs_path.split("/", 3)
     blob_path = path_parts[0] if path_parts else ""
 
-    client = storage.Client()
+    client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(blob_path)
 
@@ -95,7 +95,13 @@ def main():
     gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + upstream_dag_date_str + ".txt"
     gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + upstream_dag_date_str + ".txt"
 
+    print("Checking to see if fpath 1 exists: ")
+    print(gcs_fpath1)
+
     ensure_gcs_file_exists(gcs_fpath1)
+
+    print("Checking to see if fpath 2 exists: ")
+    print(gcs_fpath2)
     ensure_gcs_file_exists(gcs_fpath2)
 
     # Make the output fpaths for storing the summaries received from ChatGPT
@@ -148,7 +154,7 @@ def main():
     )
 
     # Save both summaries to GCS
-    client = storage.Client()
+    client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.get_bucket(BUCKET_NO_GS)
     blob = bucket.blob(final_output_fpath1)
     blob.upload_from_string(final_output_1)

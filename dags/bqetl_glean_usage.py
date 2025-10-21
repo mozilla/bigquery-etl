@@ -3891,10 +3891,24 @@ with DAG(
         parent_group=task_group_firefox_desktop,
     ) as firefox_desktop_derived__events_stream__v1_external:
         ExternalTaskMarker(
+            task_id="bqetl_public_data_json__wait_for_firefox_desktop_derived__events_stream__v1",
+            external_dag_id="bqetl_public_data_json",
+            external_task_id="wait_for_firefox_desktop_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=75600)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_experiments_daily__wait_for_firefox_desktop_derived__events_stream__v1",
             external_dag_id="bqetl_experiments_daily",
             external_task_id="wait_for_firefox_desktop_derived__events_stream__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=82800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_ech_adoption_rate__wait_for_firefox_desktop_derived__events_stream__v1",
+            external_dag_id="bqetl_ech_adoption_rate",
+            external_task_id="wait_for_firefox_desktop_derived__events_stream__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
         firefox_desktop_derived__events_stream__v1_external.set_upstream(

@@ -1,6 +1,6 @@
  -- Query generated via sql_generators.baseline_clients_city_seen.
  -- this mimics the logic used in baseline_clients_daily_v1.
-WITH base_firefox_desktop AS (
+WITH base_org_mozilla_ios_klar AS (
   -- Live table dedup logic mimics copy_deduplicate
   SELECT
     submission_timestamp,
@@ -13,9 +13,9 @@ WITH base_firefox_desktop AS (
     metadata.geo.country AS country
   FROM
     {% if is_init() %}
-      `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_klar_stable.baseline_v1`
     {% else %}
-      `moz-fx-data-shared-prod.firefox_desktop_live.baseline_v1`
+      `moz-fx-data-shared-prod.org_mozilla_ios_klar_live.baseline_v1`
     {% endif %}
   WHERE
     client_info.client_id IS NOT NULL
@@ -35,14 +35,14 @@ WITH base_firefox_desktop AS (
         ROW_NUMBER() OVER (PARTITION BY document_id ORDER BY submission_timestamp) = 1
     {% endif %}
 ),
-overactive_firefox_desktop AS (
+overactive_org_mozilla_ios_klar AS (
   -- Find client_ids with over 150 000 pings in a day,
   -- which could cause errors in the next step due to aggregation overflows.
   SELECT
     submission_date,
     client_id
   FROM
-    base_firefox_desktop
+    base_org_mozilla_ios_klar
   WHERE
     {% if is_init() %}
       submission_date >= '2018-01-01'
@@ -55,9 +55,9 @@ overactive_firefox_desktop AS (
   HAVING
     COUNT(*) > 150000
 ),
-clients_daily_firefox_desktop AS (
+clients_daily_org_mozilla_ios_klar AS (
   SELECT
-    "firefox_desktop" AS app_id,
+    "org_mozilla_ios_klar" AS app_id,
     submission_date,
     client_id,
     sample_id,
@@ -65,12 +65,12 @@ clients_daily_firefox_desktop AS (
       ARRAY_AGG(STRUCT(city, subdivision1, subdivision2, country) ORDER BY submission_timestamp)
     ) AS geo
   FROM
-    base_firefox_desktop
+    base_org_mozilla_ios_klar
   LEFT JOIN
-    overactive_firefox_desktop
+    overactive_org_mozilla_ios_klar
     USING (submission_date, client_id)
   WHERE
-    overactive_firefox_desktop.client_id IS NULL
+    overactive_org_mozilla_ios_klar.client_id IS NULL
     -- `mode_last` can result in struct with all null values if it’s most frequent (or latest among ties).
     -- This exclude structs with all null values so there will always be one non-NULL field.
     AND COALESCE(city, subdivision1, subdivision2, country) IS NOT NULL
@@ -85,7 +85,7 @@ clients_daily_firefox_desktop AS (
     sample_id
 ),
 {% if is_init() %}
-  clients_city_first_seen_firefox_desktop AS (
+  clients_city_first_seen_org_mozilla_ios_klar AS (
     SELECT
       app_id,
       client_id,
@@ -96,13 +96,13 @@ clients_daily_firefox_desktop AS (
       geo.subdivision2 AS first_seen_subdivision2,
       geo.country AS first_seen_country
     FROM
-      clients_daily_firefox_desktop
+      clients_daily_org_mozilla_ios_klar
     WHERE
       geo.city IS NOT NULL
     QUALIFY
       ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date) = 1
   ),
-  clients_city_last_seen_firefox_desktop AS (
+  clients_city_last_seen_org_mozilla_ios_klar AS (
     SELECT
       app_id,
       client_id,
@@ -113,22 +113,22 @@ clients_daily_firefox_desktop AS (
       geo.subdivision2 AS last_seen_subdivision2,
       geo.country AS last_seen_country
     FROM
-      clients_daily_firefox_desktop
+      clients_daily_org_mozilla_ios_klar
     WHERE
       geo.city IS NOT NULL
     QUALIFY
       ROW_NUMBER() OVER (PARTITION BY client_id, sample_id ORDER BY submission_date DESC) = 1
   )
 {% else %}
-  _previous_firefox_desktop AS (
+  _previous_org_mozilla_ios_klar AS (
     SELECT
       *
     FROM
-      `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_city_seen_v1`
+      `moz-fx-data-shared-prod.klar_ios_derived.baseline_clients_city_seen_v1`
     WHERE
-      app_id = "firefox_desktop"
+      app_id = "org_mozilla_ios_klar"
   ),
-  _current_firefox_desktop AS (
+  _current_org_mozilla_ios_klar AS (
     SELECT
       app_id,
       client_id,
@@ -144,7 +144,7 @@ clients_daily_firefox_desktop AS (
       geo.subdivision2 AS last_seen_subdivision2,
       geo.country AS last_seen_country
     FROM
-      clients_daily_firefox_desktop
+      clients_daily_org_mozilla_ios_klar
     WHERE
       geo.city IS NOT NULL
   )
@@ -165,9 +165,9 @@ clients_daily_firefox_desktop AS (
     last_seen_subdivision2,
     last_seen_country
   FROM
-    clients_city_first_seen_firefox_desktop cfs
+    clients_city_first_seen_org_mozilla_ios_klar cfs
   FULL OUTER JOIN
-    clients_city_last_seen_firefox_desktop cls
+    clients_city_last_seen_org_mozilla_ios_klar cls
     USING (client_id, sample_id, app_id)
 {% else %}
   SELECT
@@ -223,8 +223,8 @@ clients_daily_firefox_desktop AS (
       _p.last_seen_country
     ) AS last_seen_country
   FROM
-    _current_firefox_desktop AS _c
+    _current_org_mozilla_ios_klar AS _c
   FULL JOIN
-    _previous_firefox_desktop AS _p
+    _previous_org_mozilla_ios_klar AS _p
     USING (client_id, sample_id, app_id)
 {% endif %}

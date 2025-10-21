@@ -75,3 +75,63 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    firefox_ios_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="firefox_ios_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    focus_android_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="focus_android_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="focus_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    focus_ios_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="focus_ios_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="focus_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    klar_android_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="klar_android_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="klar_android_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    klar_ios_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="klar_ios_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="klar_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )

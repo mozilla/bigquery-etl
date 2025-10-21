@@ -449,6 +449,11 @@ fields:
   mode: NULLABLE
   description: True if the installation failed because the user doesn't have permission
     to write to the path we're trying to install to.
+- name: launched_by
+  type: STRING
+  mode: NULLABLE
+  description: Program that launched the installer, according to the /LaunchedBy command-line
+    argument
 - name: funnel_derived
   type: STRING
   mode: NULLABLE

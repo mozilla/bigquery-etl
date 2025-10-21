@@ -676,6 +676,8 @@ clients_summary AS (
       payload.processes.parent.scalars.os_environment_is_taskbar_pinned_private,
       FALSE
     ) AS scalar_parent_os_environment_is_taskbar_pinned_private,
+    payload.processes.parent.scalars.browser_backup_enabled AS browser_backup_enabled,
+    payload.processes.parent.scalars.browser_backup_scheduler_enabled AS browser_backup_scheduler_enabled,
     -- Select out some individual userPrefs values; note that prefs are only available in
     -- the environment based on registration in DEFAULT_ENVIRONMENT_PREFS; see
     -- https://searchfox.org/mozilla-central/source/toolkit/components/telemetry/app/TelemetryEnvironment.jsm
@@ -1567,6 +1569,12 @@ aggregates AS (
     SUM(logins_migrations_quantity_all) AS logins_migrations_quantity_all,
     SUM(media_play_time_ms_audio) AS media_play_time_ms_audio_sum,
     SUM(media_play_time_ms_video) AS media_play_time_ms_video_sum,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(browser_backup_enabled ORDER BY submission_timestamp)
+    ) AS browser_backup_enabled,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(browser_backup_scheduler_enabled ORDER BY submission_timestamp)
+    ) AS browser_backup_scheduler_enabled,
   FROM
     clients_summary
   GROUP BY

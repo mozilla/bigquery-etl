@@ -1,0 +1,134 @@
+name: Trigger Agent to Generate Descriptions
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  trigger-agent:
+    if: github.event.label.name == 'generate-descriptions'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Extract table name from issue
+        id: extract_table
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueBody = context.payload.issue.body || '';
+            const issueTitle = context.payload.issue.title || '';
+            
+            // Try to extract table name from body first, then title
+            let tableName = issueBody.trim();
+            
+            // If body is empty or doesn't look like a table name, try title
+            if (!tableName || !tableName.includes('.')) {
+              // Check if title has the table name (e.g., "Auto-describe: database.dataset.table")
+              const titleMatch = issueTitle.match(/([a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+)/);
+              if (titleMatch) {
+                tableName = titleMatch[1];
+              }
+            }
+            
+            // Validate table name format (database.dataset.table)
+            const parts = tableName.split('.');
+            if (parts.length !== 3) {
+              core.setFailed(`Invalid table name format: "${tableName}". Expected: database.dataset.table`);
+              return;
+            }
+            
+            console.log(`Extracted table name: ${tableName}`);
+            core.setOutput('table_name', tableName);
+            core.setOutput('issue_number', context.payload.issue.number);
+      
+      - name: Add processing comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⏳ **Agent triggered!**\n\nThe AI agent has been notified to generate column descriptions for this table.\n\nThe agent will update this issue with the generated descriptions in JSON format when complete.'
+            });
+      
+      - name: Trigger Chicory Agent
+        env:
+          CHICORY_API_KEY: ${{ secrets.CHICORY_API_KEY }}
+          CHICORY_PROJECT_ID: ${{ secrets.CHICORY_PROJECT_ID }}
+          CHICORY_AGENT_ID: ${{ secrets.CHICORY_AGENT_ID }}
+          TABLE_NAME: ${{ steps.extract_table.outputs.table_name }}
+          ISSUE_NUMBER: ${{ steps.extract_table.outputs.issue_number }}
+        run: |
+          # Create the input for the agent with issue number and table name
+          INPUT_TEXT="#${ISSUE_NUMBER} ${TABLE_NAME}"
+          
+          echo "Triggering agent with input: ${INPUT_TEXT}"
+          
+          # Call Chicory API to create a run
+          RESPONSE=$(curl -X POST https://app.chicory.ai/api/v1/projects/${CHICORY_PROJECT_ID}/runs \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${CHICORY_API_KEY}" \
+            -d "{
+              \"agent_name\": \"${CHICORY_AGENT_ID}\",
+              \"input\": [
+                {
+                  \"parts\": [
+                    {
+                      \"content_type\": \"text/plain\",
+                      \"content\": \"${INPUT_TEXT}\"
+                    }
+                  ],
+                  \"created_at\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+                }
+              ]
+            }")
+          
+          # Extract run ID (note: API returns 'run_id' not 'id')
+          RUN_ID=$(echo $RESPONSE | jq -r '.run_id')
+          
+          if [ "$RUN_ID" != "null" ] && [ -n "$RUN_ID" ]; then
+            echo "✓ Agent triggered successfully with run ID: ${RUN_ID}"
+          else
+            echo "✗ Failed to trigger agent"
+            echo "Response: ${RESPONSE}"
+            exit 1
+          fi
+      
+      - name: Remove trigger label
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            // Remove generate-descriptions label
+            try {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                name: 'generate-descriptions'
+              });
+              console.log('Removed generate-descriptions label');
+            } catch (error) {
+              console.log('Label may have already been removed');
+            }
+      
+      - name: Add failure comment
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ **Failed to trigger agent**\n\nThere was an error triggering the AI agent. Please check:\n- Table name format is correct (database.dataset.table)\n- Chicory API credentials are configured\n\nYou can check the [Action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.'
+            });
+            
+            // Add failed label
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['failed']
+            });

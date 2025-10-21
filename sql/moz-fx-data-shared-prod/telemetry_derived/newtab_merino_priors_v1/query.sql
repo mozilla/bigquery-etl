@@ -54,7 +54,7 @@ per_region_ctr AS (
   FROM
     aggregated_events
   WHERE
-    impression_count > 2000
+    impression_count > 2000 -- 1/min_ctr protects against CTRs form low sample size
 ),
   -- Average impressions per item per region (rounded)
 per_region_impressions_per_item AS (

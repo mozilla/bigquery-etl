@@ -522,6 +522,11 @@ generate:
     apps:
     - firefox_desktop
     - fenix
+    - firefox_ios
+    - focus_ios
+    - focus_android
+    - klar_ios
+    - klar_android
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
@@ -606,3 +611,8 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/focus_ios_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/focus_android_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/klar_ios_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/klar_android_derived/baseline_clients_city_seen_v1

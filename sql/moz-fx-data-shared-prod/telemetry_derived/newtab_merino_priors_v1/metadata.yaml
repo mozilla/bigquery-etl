@@ -13,3 +13,9 @@ bigquery:
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   date_partition_parameter: null
+  # Adjust the execution delta for task dependencies in the bqetl_content_ml_hourly DAG
+  # to wait for the most recent bqetl_content_ml_hourly DAG tasks to complete.
+  depends_on:
+  - dag_name: bqetl_content_ml_hourly
+    task_id: snowflake_migration_derived__corpus_items_updated__v1
+    execution_delta: -22h30m

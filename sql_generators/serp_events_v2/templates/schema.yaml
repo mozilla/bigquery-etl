@@ -233,3 +233,6 @@ fields:
   - mode: NULLABLE
     name: first_run_date
     type: STRING
+  - mode: NULLABLE
+    name: submission_timestamp
+    type: TIMESTAMP

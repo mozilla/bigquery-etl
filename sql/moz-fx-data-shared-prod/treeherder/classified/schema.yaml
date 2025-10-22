@@ -362,6 +362,29 @@ fields:
         The labels are the `category.name` identifier of the metric.
 
         '
+    - name: glean_error_invalid_type
+      type: RECORD
+      mode: REPEATED
+      fields:
+      - name: key
+        type: STRING
+        mode: NULLABLE
+      - name: value
+        type: INTEGER
+        mode: NULLABLE
+      description: 'Counts the number of times a metric set a value which was not
+        of the
+
+        expected type.
+
+        The labels are the `category.name` identifier of the metric.
+
+
+        This error type is only recorded by the Glean JavaScript SDK.
+
+        This error may only happen in dynamically typed languages.
+
+        '
   - name: string
     type: RECORD
     mode: NULLABLE

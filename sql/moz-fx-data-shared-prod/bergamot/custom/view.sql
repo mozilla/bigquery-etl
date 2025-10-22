@@ -45,7 +45,8 @@ SELECT
       metrics.labeled_counter.glean_error_invalid_label,
       metrics.labeled_counter.glean_error_invalid_overflow,
       metrics.labeled_counter.glean_error_invalid_state,
-      metrics.labeled_counter.glean_error_invalid_value
+      metrics.labeled_counter.glean_error_invalid_value,
+      metrics.labeled_counter.glean_error_invalid_type
     ) AS `labeled_counter`,
     STRUCT(
       metrics.quantity.metadata_cpu_cores_count,

@@ -1065,6 +1065,10 @@ fields:
       mode: NULLABLE
       description: Measures user retention of the Global Privacy Control (GPC) setting
         at start-up.
+    - name: preferences_app_zygote_isolated_content_processes_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: True when app Zygote preloading with isolated processes is enabled.
   - name: counter
     type: RECORD
     mode: NULLABLE
@@ -12662,7 +12666,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted

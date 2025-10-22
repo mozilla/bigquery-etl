@@ -596,6 +596,14 @@ fields:
         overridden by a third-party add-on or OpenSearch engine.
 
         '
+    - name: newtab_highlights_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether "highlights" is enabled on the newtab. AKA the "Recent
+        Activity" section. Corresponds to the value of the `browser.newtabpage.activity-stream.feeds.section.highlights`
+        pref.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

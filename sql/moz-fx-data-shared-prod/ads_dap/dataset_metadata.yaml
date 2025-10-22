@@ -1,8 +1,8 @@
-friendly_name: ads-dap
+friendly_name: Ads DAP derived
 description: |-
   Data related to the work of Mozilla Ads
-dataset_base_acl: view_restricted
-user_facing: true
+dataset_base_acl: derived_restricted
+user_facing: false
 labels: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer

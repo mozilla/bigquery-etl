@@ -16,10 +16,12 @@ BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
 INPUT_FPATH_1 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeReleaseNotes/WebScraping_"
 INPUT_FPATH_2 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeAI/WebScraping_"
+INPUT_FPATH_3 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeDevTools/WebScraping_"
 
 # Filepaths to save ChatGPT Summaries to
 OUTPUT_FPATH_1 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeReleaseNotes/WebScraping_"
 OUTPUT_FPATH_2 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeAI/WebScraping_"
+OUTPUT_FPATH_3 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeDevTools/WebScraping_"
 
 # Pull in the API key from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
@@ -94,6 +96,7 @@ def main():
     # Check both input files exist, if not, error out
     gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + upstream_dag_date_str + ".txt"
     gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + upstream_dag_date_str + ".txt"
+    gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + upstream_dag_date_str + ".txt"
 
     print("Checking to see if fpath 1 exists: ")
     print(gcs_fpath1)
@@ -104,17 +107,24 @@ def main():
     print(gcs_fpath2)
     ensure_gcs_file_exists(gcs_fpath2)
 
+    print("Checking to see if fpath 3 exists: ")
+    print(gcs_fpath3)
+    ensure_gcs_file_exists(gcs_fpath3)
+
     # Make the output fpaths for storing the summaries received from ChatGPT
     final_output_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".txt"
     final_output_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".txt"
+    final_output_fpath3 = OUTPUT_FPATH_3 + logical_dag_date_str + ".txt"
 
     # Read in the scraped data from the 2 files
     file_contents1 = read_gcs_file(gcs_fpath1)
     file_contents2 = read_gcs_file(gcs_fpath2)
+    file_contents3 = read_gcs_file(gcs_fpath3)
 
     # Initialize the final output as an empty string
     final_output_1 = ""
     final_output_2 = ""
+    final_output_3 = ""
 
     # Open an Open AI Client
     client = OpenAI(api_key=OPENAI_API_TOKEN)
@@ -153,7 +163,24 @@ def main():
         f"{'-'*80}\n\n"
     )
 
-    # Save both summaries to GCS
+    # Ask ChatGPT to summarize recent Chrome Dev Tools News
+    prompt3 = "What new features are available in Chrome Dev Tools?"
+    resp3 = client.responses.create(
+        model="gpt-4o-mini",
+        input=[
+            {"role": "system", "content": "You are an expert summarizer."},
+            {"role": "user", "content": prompt3},
+            {"role": "user", "content": file_contents3},
+        ],
+    )
+
+    final_output_3 += (
+        f"**Question:**\n{prompt3}\n\n"
+        f"**Answer:**\n{resp3.output_text}\n\n"
+        f"{'-'*80}\n\n"
+    )
+
+    # Save all summaries to GCS
     client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(BUCKET_NO_GS)
     blob = bucket.blob(final_output_fpath1)
@@ -163,6 +190,10 @@ def main():
     blob2 = bucket.blob(final_output_fpath2)
     blob2.upload_from_string(final_output_2)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath2}")
+
+    blob3 = bucket.blob(final_output_fpath3)
+    blob3.upload_from_string(final_output_3)
+    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath3}")
 
 
 if __name__ == "__main__":

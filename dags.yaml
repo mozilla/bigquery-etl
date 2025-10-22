@@ -2506,7 +2506,7 @@ bqetl_baseline_clients_city_seen:
     - impact/tier_2
     - repo/bigquery-etl
 
-bqetl_chrome_releases:
+bqetl_market_intel_bot:
   default_args:
     depends_on_past: false
     email:

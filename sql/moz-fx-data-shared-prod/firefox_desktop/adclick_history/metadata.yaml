@@ -1,0 +1,7 @@
+friendly_name: Adclick History
+description: |-
+  Contains the number of ad-clicks per day for each Firefox Desktop client.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau

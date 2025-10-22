@@ -1,15 +1,15 @@
-friendly_name: Chrome Release Summary
+friendly_name: Market Intel Bot V1
 description: |-
-  Runs monthly to summarize Chrome's recent updates.
-  Reads data scraped earlier from the "release_scraping" DAG,
-  then outputs a summary of the data to GCS.
+  Runs monthly to summarize market research.
+  Reads data scraped earlier from the "web_scraping" DAG,
+  then uses ChatGPT to supplement and summarize the findings.
 owners:
 - kwindau@mozilla.com
 labels:
   incremental: true
   owner1: kwindau
 scheduling:
-  dag_name: bqetl_chrome_releases
+  dag_name: bqetl_market_intel_bot
   arguments: ["--date", "{{ds}}"]
   secrets:
   - deploy_target: DATA_ENG_OPEN_AI_API_KEY

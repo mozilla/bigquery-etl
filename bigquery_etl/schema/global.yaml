@@ -88,7 +88,8 @@ fields:
   - created_date
 - name: dau
   type: INTEGER
-  description: The number of daily active users, corresponding to the count of clients that reported at least one ping on the submission_date and qualify as active.
+  description: The number of daily active users, corresponding to the count of clients that reported
+    at least one ping on the submission_date and qualify as active.
 - name: first_run_date
   type: DATE
   mode: NULLABLE
@@ -99,10 +100,12 @@ fields:
   description: Date when the server first received a ping from this client.
 - name: wau
   type: INTEGER
-  description: The number of weekly active users, corresponding to the count of clients that reported at least one ping on the previous 7 days from the submission_date and qualify as active.
+  description: The number of weekly active users, corresponding to the count of clients that reported
+    at least one ping on the previous 7 days from the submission_date and qualify as active.
 - name: mau
   type: INTEGER
-  description: The number of monthly active users, corresponding to the count of clients that reported at least one ping on the previous 28 days from the submission_date and qualify as active.
+  description: The number of monthly active users, corresponding to the count of clients that reported
+    at least one ping on the previous 28 days from the submission_date and qualify as active.
 - name: distribution_id
   type: STRING
   description: The distribution id associated with the install of Firefox.

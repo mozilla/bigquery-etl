@@ -4,4 +4,4 @@
   reason: Backfill of urlbar events daily engagement by product result type data after fix \#8290
   watchers:
   - ascholtz@mozilla.com
-  status: Initiate
+  status: Complete

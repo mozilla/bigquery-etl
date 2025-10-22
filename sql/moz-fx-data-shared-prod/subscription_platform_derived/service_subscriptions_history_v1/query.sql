@@ -188,7 +188,8 @@ synthetic_subscription_ends_history AS (
           FALSE AS is_active,
           valid_to AS ended_at,
           CAST(NULL AS TIMESTAMP) AS current_period_started_at,
-          CAST(NULL AS TIMESTAMP) AS current_period_ends_at
+          CAST(NULL AS TIMESTAMP) AS current_period_ends_at,
+          'Downgrade' AS ended_reason
         )
     ) AS subscription
   FROM

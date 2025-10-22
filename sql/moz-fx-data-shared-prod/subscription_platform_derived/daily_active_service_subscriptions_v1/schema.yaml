@@ -455,8 +455,8 @@ fields:
         * `Admin Initiated` - An admin at Mozilla ended the subscription, either directly or by deleting the customer's Mozilla Account.
         * `Customer Initiated` - The customer ended their subscription, either directly or by turning off auto-renewal or deleting their Mozilla Account.
         * `Payment Failure` - The subscription was unable to auto-renew due to a payment failure.
-        * `Other` - The subscription ended for some other reason, such as unverified Mozilla Accounts being automatically deleted.
         * `Downgrade` - The subscription ended due to the customer moving to a lower tier subscription.
+        * `Other` - The subscription ended for some other reason, such as unverified Mozilla Accounts being automatically deleted.
 - name: was_active_at_day_start
   type: BOOLEAN
   mode: NULLABLE

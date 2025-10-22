@@ -263,9 +263,9 @@ cachetools==5.3.0 \
     --hash=sha256:13dfddc7b8df938c21a940dfa6557ce6e94a2f1cdfa58eb90c805721d58f2c14 \
     --hash=sha256:429e1a1e845c008ea6c85aa35d4b98b65d6a9763eeef3e37e92728a12d1de9d4
     # via google-auth
-cattrs==25.2.0 \
-    --hash=sha256:539d7eedee7d2f0706e4e109182ad096d608ba84633c32c75ef3458f1d11e8f1 \
-    --hash=sha256:f46c918e955db0177be6aa559068390f71988e877c603ae2e56c71827165cc06
+cattrs==25.3.0 \
+    --hash=sha256:1ac88d9e5eda10436c4517e390a4142d88638fe682c436c93db7ce4a277b884a \
+    --hash=sha256:9896e84e0a5bf723bc7b4b68f4481785367ce07a8a02e7e9ee6eb2819bc306ff
     # via
     #   -r requirements.in
     #   looker-sdk
@@ -2491,9 +2491,9 @@ types-ujson==5.10.0.20250822 \
     --hash=sha256:0a795558e1f78532373cf3f03f35b1f08bc60d52d924187b97995ee3597ba006 \
     --hash=sha256:3e9e73a6dc62ccc03449d9ac2c580cd1b7a8e4873220db498f7dd056754be080
     # via -r requirements.in
-typing-extensions==4.12.2 \
-    --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
-    --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
+typing-extensions==4.15.0 \
+    --hash=sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466 \
+    --hash=sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548
     # via
     #   anyio
     #   beautifulsoup4

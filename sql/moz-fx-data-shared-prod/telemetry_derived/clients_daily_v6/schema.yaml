@@ -2363,14 +2363,19 @@ fields:
 - name: browser_backup_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: |-
-    The value of payload.processes.parent.scalars.browser_backup_enabled most frequently seen on the submission date.
+  description: 'The value of payload.processes.parent.scalars.browser_backup_enabled
+    most frequently seen on the submission date.
+
     If there is a tie, the value last seen according to submission_timestamp.
-    True if the BackupService is enabled by default.
+
+    True if the BackupService is enabled by default.'
 - name: browser_backup_scheduler_enabled
   type: BOOLEAN
   mode: NULLABLE
-  description: |-
-    The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled most frequently seen on the submission date.
+  description: 'The value of payload.processes.parent.scalars.browser_backup_scheduler_enabled
+    most frequently seen on the submission date.
+
     If there is a tie, the value seen last according to submission_timestamp.
-    True if the BackupService is configured to automatically create backups in the background.
+
+    True if the BackupService is configured to automatically create backups in the
+    background.'

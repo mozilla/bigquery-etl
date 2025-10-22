@@ -13,6 +13,10 @@ labels:
 scheduling:
   dag_name: bqetl_merino_newtab_priors_to_gcs
   date_partition_parameter: null
+  depends_on:
+  - dag_name: bqetl_content_ml_hourly
+    task_id: snowflake_migration_derived__corpus_items_updated__v1
+    execution_delta: -22h30m
 bigquery:
   time_partitioning: null
   range_partitioning: null

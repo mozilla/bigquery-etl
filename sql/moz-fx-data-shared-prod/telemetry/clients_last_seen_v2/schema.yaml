@@ -2600,6 +2600,12 @@ fields:
   mode: NULLABLE
   description: A UUID identifying the profile's group on a single device and allowing
     user-oriented correlation of data
+- name: browser_backup_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: browser_backup_scheduler_enabled
+  type: BOOLEAN
+  mode: NULLABLE
 - name: _sample_id_string
   type: STRING
   mode: NULLABLE

@@ -72,7 +72,7 @@ with DAG(
         task_id="wait_for_snowflake_migration_derived__corpus_items_updated__v1",
         external_dag_id="bqetl_content_ml_hourly",
         external_task_id="snowflake_migration_derived__corpus_items_updated__v1",
-        execution_delta=datetime.timedelta(seconds=5400),
+        execution_delta=datetime.timedelta(days=-1, seconds=5400),
         check_existence=True,
         mode="reschedule",
         poke_interval=datetime.timedelta(minutes=5),

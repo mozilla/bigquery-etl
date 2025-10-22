@@ -1770,6 +1770,12 @@ fields:
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
+- name: browser_backup_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: browser_backup_scheduler_enabled
+  type: BOOLEAN
+  mode: NULLABLE
 - name: browser_version_info
   type: RECORD
   mode: NULLABLE

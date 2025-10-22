@@ -89,7 +89,7 @@ with DAG(
             task_id="bqetl_merino_newtab_priors_to_gcs__wait_for_snowflake_migration_derived__corpus_items_updated__v1",
             external_dag_id="bqetl_merino_newtab_priors_to_gcs",
             external_task_id="wait_for_snowflake_migration_derived__corpus_items_updated__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=81000)).isoformat() }}",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=81000)).isoformat() }}",
         )
 
         snowflake_migration_derived__corpus_items_updated__v1_external.set_upstream(

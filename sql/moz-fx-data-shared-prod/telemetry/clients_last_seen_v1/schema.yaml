@@ -2449,6 +2449,12 @@ fields:
   mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.
+- name: browser_backup_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+- name: browser_backup_scheduler_enabled
+  type: BOOLEAN
+  mode: NULLABLE
 - name: _sample_id_string
   type: STRING
   mode: NULLABLE

@@ -160,7 +160,7 @@ def main():
         f"**Question:**\n{prompt1}\n\n" f"**Answer:**\n{resp1.output_text}\n\n"
     )
 
-    final_report += f"\n\n{resp1.output_text}\n\n"
+    final_report += f"\n\n{resp1.output_text}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
 
     # Ask ChatGPT to summarize Chrome AI updates (fpath 2)
     prompt2 = "What AI features has Chrome been working on recently?"
@@ -178,7 +178,7 @@ def main():
         f"**Question:**\n{prompt2}\n\n" f"**Answer:**\n{resp2.output_text}\n\n"
     )
 
-    final_report += f"\n\n{resp2.output_text}\n\n"
+    final_report += f"\n\n{resp2.output_text}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
 
     # Ask ChatGPT to summarize recent Chrome Dev Tools News
     prompt3 = "What new features are available in Chrome Dev Tools?"
@@ -193,7 +193,8 @@ def main():
     )
 
     final_output_3 += (
-        f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
+        f"**Question:**\n{prompt3}\n\n"
+        f"**Answer:**\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
     )
 
     final_report += f"\n\n{resp3.output_text}\n\n"

@@ -54,19 +54,6 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    wait_for_firefox_desktop_derived__onboarding__v2 = ExternalTaskSensor(
-        task_id="wait_for_firefox_desktop_derived__onboarding__v2",
-        external_dag_id="bqetl_messaging_system",
-        external_task_id="firefox_desktop_derived__onboarding__v2",
-        execution_delta=datetime.timedelta(seconds=3600),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -78,41 +65,6 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    messaging_system_derived__event_types__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__event_types__v1",
-        destination_table="event_types_v1",
-        dataset_id="messaging_system_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        task_concurrency=1,
-        parameters=["submission_date:DATE:{{ds}}"],
-    )
-
-    messaging_system_derived__event_types_history__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__event_types_history__v1",
-        destination_table="event_types_history_v1",
-        dataset_id="messaging_system_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-    )
-
-    messaging_system_derived__events_daily__v1 = bigquery_etl_query(
-        task_id="messaging_system_derived__events_daily__v1",
-        destination_table="events_daily_v1",
-        dataset_id="messaging_system_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="akomar@mozilla.com",
-        email=["akomar@mozilla.com", "wlachance@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
     )
 
     mozilla_vpn_derived__event_types__v1 = bigquery_etl_query(
@@ -148,22 +100,6 @@ with DAG(
         email=["akomar@mozilla.com", "wlachance@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-    )
-
-    messaging_system_derived__event_types__v1.set_upstream(
-        messaging_system_derived__event_types_history__v1
-    )
-
-    messaging_system_derived__event_types_history__v1.set_upstream(
-        wait_for_firefox_desktop_derived__onboarding__v2
-    )
-
-    messaging_system_derived__events_daily__v1.set_upstream(
-        wait_for_firefox_desktop_derived__onboarding__v2
-    )
-
-    messaging_system_derived__events_daily__v1.set_upstream(
-        messaging_system_derived__event_types__v1
     )
 
     mozilla_vpn_derived__event_types__v1.set_upstream(

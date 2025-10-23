@@ -4,7 +4,7 @@
 import os
 import sys
 from argparse import ArgumentParser
-from datetime import datetime, timedelta
+from datetime import datetime, date
 
 from google.cloud import storage
 from openai import OpenAI
@@ -12,6 +12,9 @@ from openai import OpenAI
 # Set variables
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 BUCKET_NO_GS = "moz-fx-data-prod-external-data"
+
+# Filepath for the final, consolidated report
+FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
 INPUT_FPATH_1 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeReleaseNotes/WebScraping_"
@@ -89,6 +92,15 @@ def main():
     args = parser.parse_args()
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     logical_dag_date_str = logical_dag_date.strftime("%Y%m%d")
+
+    # Get today's date
+    report_generation_year = logical_dag_date.year + (logical_dag_date.month // 12)
+    report_generation_month = (logical_dag_date.month % 12) + 1
+    report_date = date(report_generation_year, report_generation_month, 1).strftime(
+        "%Y%m%d"
+    )
+    print("report_date: ")
+    print(report_date)
 
     # Check both input files exist, if not, error out
     gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + logical_dag_date_str + ".txt"
@@ -178,7 +190,7 @@ def main():
         f"{'-'*80}\n\n"
     )
 
-    # Save all summaries to GCS
+    # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(BUCKET_NO_GS)
     blob = bucket.blob(final_output_fpath1)
@@ -192,6 +204,20 @@ def main():
     blob3 = bucket.blob(final_output_fpath3)
     blob3.upload_from_string(final_output_3)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath3}")
+
+    # TO DO
+    # Initialize a string
+    # final_report = ""
+
+    # Read in each of the summaries, with a title, and add to the final report string
+
+    # Ask Chat GPT To make a final summary report
+    # final_report = #TO DO
+
+    # Write it to the final filepath
+    # final_report_path = FINAL_REPORT_FPATH + report_date
+
+    # Send slack API call to send the report to the channel
 
 
 if __name__ == "__main__":

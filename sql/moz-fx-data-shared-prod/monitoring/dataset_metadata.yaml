@@ -10,3 +10,4 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:dataops-managed/external-fides
+  - workgroup:platform-infra/chicory-poc

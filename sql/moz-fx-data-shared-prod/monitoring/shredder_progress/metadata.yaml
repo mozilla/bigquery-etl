@@ -9,6 +9,7 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   view.sql:
   - moz-fx-data-bq-batch-prod.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT

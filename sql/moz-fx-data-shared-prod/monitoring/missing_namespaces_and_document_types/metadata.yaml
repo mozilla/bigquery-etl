@@ -13,6 +13,7 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
 references:
   view.sql:
   - moz-fx-data-shared-prod.monitoring.payload_bytes_error_structured

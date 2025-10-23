@@ -88,15 +88,12 @@ def main():
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-    # The upstream DAG runs 3 days earlier
-    upstream_dag_date = logical_dag_date - timedelta(days=3)
     logical_dag_date_str = logical_dag_date.strftime("%Y%m%d")
-    upstream_dag_date_str = upstream_dag_date.strftime("%Y%m%d")
 
     # Check both input files exist, if not, error out
-    gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + upstream_dag_date_str + ".txt"
-    gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + upstream_dag_date_str + ".txt"
-    gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + upstream_dag_date_str + ".txt"
+    gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + logical_dag_date_str + ".txt"
+    gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + logical_dag_date_str + ".txt"
+    gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + logical_dag_date_str + ".txt"
 
     print("Checking to see if fpath 1 exists: ")
     print(gcs_fpath1)
@@ -130,7 +127,8 @@ def main():
     client = OpenAI(api_key=OPENAI_API_TOKEN)
 
     # Ask ChatGPT to summarize scraped chrome release notes (fpath 1)
-    prompt1 = "What new features has Chrome been working on recently?"
+    prompt1 = """What new features has Chrome been working on recently?
+    Please include the release number you found these features in and the date of that release."""
     resp1 = client.responses.create(
         model="gpt-4o-mini",
         input=[

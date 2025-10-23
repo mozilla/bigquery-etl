@@ -17,7 +17,7 @@ Built from bigquery-etl repo, [`dags/bqetl_market_intel_bot.py`](https://github.
 
 #### Description
 
-Runs on the 5th day of the month to summarize last months' Chrome updates
+Runs on the 2nd day of the month to summarize last months' Chrome updates
 #### Owner
 
 kwindau@mozilla.com
@@ -54,11 +54,23 @@ tags = ["impact/tier_3", "repo/bigquery-etl"]
 with DAG(
     "bqetl_market_intel_bot",
     default_args=default_args,
-    schedule_interval="0 15 5 * *",
+    schedule_interval="0 15 2 * *",
     doc_md=docs,
     tags=tags,
     catchup=False,
 ) as dag:
+
+    wait_for_read_release_data = ExternalTaskSensor(
+        task_id="wait_for_read_release_data",
+        external_dag_id="web_scraping",
+        external_task_id="read_release_data",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
 
     external_derived__market_intel_bot__v1 = GKEPodOperator(
         task_id="external_derived__market_intel_bot__v1",
@@ -74,3 +86,5 @@ with DAG(
             external_derived__market_intel_bot__v1_bqetl_chrome_releases__open_ai_api_key,
         ],
     )
+
+    external_derived__market_intel_bot__v1.set_upstream(wait_for_read_release_data)

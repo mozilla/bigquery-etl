@@ -5,7 +5,7 @@ import json
 import os
 import sys
 from argparse import ArgumentParser
-from datetime import datetime
+from datetime import datetime, date
 
 from google.cloud import storage
 from openai import OpenAI
@@ -13,6 +13,9 @@ from openai import OpenAI
 # Set variables
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 BUCKET_NO_GS = "moz-fx-data-prod-external-data"
+
+# Filepath for the final, consolidated report
+FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
 INPUT_FPATH_1 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeReleaseNotes/WebScraping_"
@@ -93,6 +96,15 @@ def main():
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     logical_dag_date_str = logical_dag_date.strftime("%Y%m%d")
 
+    # Get the first day of the next month after the logical DAG date
+    report_generation_year = logical_dag_date.year + (logical_dag_date.month // 12)
+    report_generation_month = (logical_dag_date.month % 12) + 1
+    report_date = date(report_generation_year, report_generation_month, 1).strftime(
+        "%Y%m%d"
+    )
+    print("report_date: ")
+    print(report_date)
+
     # Check both input files exist, if not, error out
     gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + logical_dag_date_str + ".txt"
     gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + logical_dag_date_str + ".txt"
@@ -112,10 +124,10 @@ def main():
     ensure_gcs_file_exists(gcs_fpath3)
 
     # Make the output fpaths for storing the summaries received from ChatGPT
-    final_output_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".txt"
-    final_output_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".txt"
-    final_output_fpath3 = OUTPUT_FPATH_3 + logical_dag_date_str + ".txt"
-    final_output_fpath4 = OUTPUT_FPATH_4 + logical_dag_date_str + ".txt"
+    final_output_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".md"
+    final_output_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".md"
+    final_output_fpath3 = OUTPUT_FPATH_3 + logical_dag_date_str + ".md"
+    final_output_fpath4 = OUTPUT_FPATH_4 + logical_dag_date_str + ".md"
 
     # Read in the scraped data from the 2 files
     file_contents1 = read_gcs_file(gcs_fpath1)
@@ -127,6 +139,7 @@ def main():
     final_output_2 = ""
     final_output_3 = ""
     final_output_4 = ""
+    final_report = "# Market Intel Bot Report"
 
     # Open an Open AI Client
     client = OpenAI(api_key=OPENAI_API_TOKEN)
@@ -136,7 +149,7 @@ def main():
     Please include the release number you found these features in and the date of that release."""
     resp1 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt1},
@@ -149,11 +162,13 @@ def main():
     )
     response_object_1 = json.dumps(resp1.to_dict(), indent=2)
 
+    final_report += f"\n\n{resp1.output_text}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
+
     # Ask ChatGPT to summarize Chrome AI updates (fpath 2)
     prompt2 = "What AI features has Chrome been working on recently?"
     resp2 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title.",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt2},
@@ -166,11 +181,13 @@ def main():
     )
     response_object_2 = json.dumps(resp2.to_dict(), indent=2)
 
+    final_report += f"\n\n{resp2.output_text}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
+
     # Ask ChatGPT to summarize recent Chrome Dev Tools News
     prompt3 = "What new features are available in Chrome Dev Tools?"
     resp3 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt3},
@@ -179,9 +196,12 @@ def main():
     )
 
     final_output_3 += (
-        f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
+        f"**Question:**\n{prompt3}\n\n"
+        f"**Answer:**\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
     )
     response_object_3 = json.dumps(resp3.to_dict(), indent=2)
+
+    final_report += f"\n\n{resp3.output_text}\n\n"
 
     # Ask ChatGPT to search the web for recent updates on browser development
     prompt4 = (
@@ -192,7 +212,7 @@ def main():
     resp4 = client.responses.create(
         model="gpt-4o-mini",
         tools=[{"type": "web_search_preview"}],
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=prompt4,
     )
 
@@ -207,7 +227,9 @@ def main():
     repsonse_fpath3 = OUTPUT_FPATH_3 + resp3.id + logical_dag_date_str + ".json"
     repsonse_fpath4 = OUTPUT_FPATH_4 + resp3.id + logical_dag_date_str + ".json"
 
-    # Save all summaries to GCS
+    final_report += f"\n{resp4.output_text}\n\n"
+
+    # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(BUCKET_NO_GS)
 
@@ -238,6 +260,11 @@ def main():
     blob4_metadata = bucket.blob(repsonse_fpath4)
     blob4_metadata.upload_from_string(response_object_4)
     print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{repsonse_fpath4}")
+
+    final_report_path = FINAL_REPORT_FPATH + report_date + ".md"
+    final_blob = bucket.blob(final_report_path)
+    final_blob.upload_from_string(final_report)
+    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_report_path}")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 """Summarize Chrome release updates from GCS files using OpenAI and write results back to GCS."""
 
 # Load libraries
+import json
 import os
 import sys
 from argparse import ArgumentParser
@@ -159,6 +160,7 @@ def main():
     final_output_1 += (
         f"**Question:**\n{prompt1}\n\n" f"**Answer:**\n{resp1.output_text}\n\n"
     )
+    response_object_1 = json.dumps(resp1.to_dict(), indent=2)
 
     final_report += f"\n\n{resp1.output_text}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
 
@@ -177,6 +179,7 @@ def main():
     final_output_2 += (
         f"**Question:**\n{prompt2}\n\n" f"**Answer:**\n{resp2.output_text}\n\n"
     )
+    response_object_2 = json.dumps(resp2.to_dict(), indent=2)
 
     final_report += f"\n\n{resp2.output_text}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
 
@@ -193,11 +196,11 @@ def main():
     )
 
     final_output_3 += (
-        f"**Question:**\n{prompt3}\n\n"
-        f"**Answer:**\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
+        f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
     )
+    response_object_3 = json.dumps(resp3.to_dict(), indent=2)
 
-    final_report += f"\n\n{resp3.output_text}\n\n"
+    final_report += f"\n\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
 
     # Ask ChatGPT to search the web for recent updates on browser development
     prompt4 = (
@@ -215,27 +218,47 @@ def main():
     final_output_4 += (
         f"**Question:**\n{prompt4}\n\n" f"**Answer:**\n{resp4.output_text}\n\n"
     )
+    response_object_4 = json.dumps(resp4.to_dict(), indent=2)
+
+    # Make the output fpaths for storing the full responses received from ChatGPT
+    repsonse_fpath1 = OUTPUT_FPATH_1 + resp1.id + logical_dag_date_str + ".json"
+    repsonse_fpath2 = OUTPUT_FPATH_2 + resp2.id + logical_dag_date_str + ".json"
+    repsonse_fpath3 = OUTPUT_FPATH_3 + resp3.id + logical_dag_date_str + ".json"
+    repsonse_fpath4 = OUTPUT_FPATH_4 + resp3.id + logical_dag_date_str + ".json"
 
     final_report += f"\n{resp4.output_text}\n\n"
 
     # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(BUCKET_NO_GS)
-    blob = bucket.blob(final_output_fpath1)
-    blob.upload_from_string(final_output_1)
+
+    blob1 = bucket.blob(final_output_fpath1)
+    blob1.upload_from_string(final_output_1)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath1}")
+    blob1_metadata = bucket.blob(repsonse_fpath1)
+    blob1_metadata.upload_from_string(response_object_1)
+    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{repsonse_fpath1}")
 
     blob2 = bucket.blob(final_output_fpath2)
     blob2.upload_from_string(final_output_2)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath2}")
+    blob2_metadata = bucket.blob(repsonse_fpath2)
+    blob2_metadata.upload_from_string(response_object_2)
+    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{repsonse_fpath2}")
 
     blob3 = bucket.blob(final_output_fpath3)
     blob3.upload_from_string(final_output_3)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath3}")
+    blob3_metadata = bucket.blob(repsonse_fpath3)
+    blob3_metadata.upload_from_string(response_object_3)
+    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{repsonse_fpath3}")
 
     blob4 = bucket.blob(final_output_fpath4)
     blob4.upload_from_string(final_output_4)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath4}")
+    blob4_metadata = bucket.blob(repsonse_fpath4)
+    blob4_metadata.upload_from_string(response_object_4)
+    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{repsonse_fpath4}")
 
     final_report_path = FINAL_REPORT_FPATH + report_date + ".md"
     final_blob = bucket.blob(final_report_path)

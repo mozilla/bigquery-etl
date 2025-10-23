@@ -2,10 +2,6 @@
 fenix:
   base_dataset: fenix_derived
   view_dataset: fenix
-# Firefox telemetry (non-Glean)
-telemetry:
-  base_dataset: telemetry_derived
-  view_dataset: telemetry
 mozilla_vpn:
   base_dataset: mozilla_vpn_derived
   view_dataset: mozilla_vpn

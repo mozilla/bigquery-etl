@@ -196,12 +196,11 @@ def main():
     )
 
     final_output_3 += (
-        f"**Question:**\n{prompt3}\n\n"
-        f"**Answer:**\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
+        f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
     )
     response_object_3 = json.dumps(resp3.to_dict(), indent=2)
 
-    final_report += f"\n\n{resp3.output_text}\n\n"
+    final_report += f"\n\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
 
     # Ask ChatGPT to search the web for recent updates on browser development
     prompt4 = (

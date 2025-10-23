@@ -95,7 +95,7 @@ def main():
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
     logical_dag_date_str = logical_dag_date.strftime("%Y%m%d")
 
-    # Get today's date
+    # Get the first day of the next month after the logical DAG date
     report_generation_year = logical_dag_date.year + (logical_dag_date.month // 12)
     report_generation_month = (logical_dag_date.month % 12) + 1
     report_date = date(report_generation_year, report_generation_month, 1).strftime(
@@ -138,7 +138,7 @@ def main():
     final_output_2 = ""
     final_output_3 = ""
     final_output_4 = ""
-    final_report = ""
+    final_report = "# Market Intel Bot Report"
 
     # Open an Open AI Client
     client = OpenAI(api_key=OPENAI_API_TOKEN)
@@ -148,7 +148,7 @@ def main():
     Please include the release number you found these features in and the date of that release."""
     resp1 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt1},
@@ -160,13 +160,13 @@ def main():
         f"**Question:**\n{prompt1}\n\n" f"**Answer:**\n{resp1.output_text}\n\n"
     )
 
-    final_report += f"**NEW FEATURES IN CHROME: **\n\n" f"\n{resp1.output_text}\n\n"
+    final_report += f"\n\n{resp1.output_text}\n\n"
 
     # Ask ChatGPT to summarize Chrome AI updates (fpath 2)
     prompt2 = "What AI features has Chrome been working on recently?"
     resp2 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title.",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt2},
@@ -178,13 +178,13 @@ def main():
         f"**Question:**\n{prompt2}\n\n" f"**Answer:**\n{resp2.output_text}\n\n"
     )
 
-    final_report += f"**NEW AI FEATURES IN CHROME: **\n\n" f"\n{resp2.output_text}\n\n"
+    final_report += f"\n\n{resp2.output_text}\n\n"
 
     # Ask ChatGPT to summarize recent Chrome Dev Tools News
     prompt3 = "What new features are available in Chrome Dev Tools?"
     resp3 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt3},
@@ -196,9 +196,7 @@ def main():
         f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
     )
 
-    final_report += (
-        f"**NEW FEATURES IN CHROME DEV TOOLS: **\n\n" f"\n{resp3.output_text}\n\n"
-    )
+    final_report += f"\n\n{resp3.output_text}\n\n"
 
     # Ask ChatGPT to search the web for recent updates on browser development
     prompt4 = (
@@ -209,7 +207,7 @@ def main():
     resp4 = client.responses.create(
         model="gpt-4o-mini",
         tools=[{"type": "web_search_preview"}],
-        instructions="Generate a markdown formatted response.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=prompt4,
     )
 
@@ -217,9 +215,7 @@ def main():
         f"**Question:**\n{prompt4}\n\n" f"**Answer:**\n{resp4.output_text}\n\n"
     )
 
-    final_report += (
-        f"**NEW FEATURES ACROSS POPULAR BROWSERS: **\n\n" f"\n{resp4.output_text}\n\n"
-    )
+    final_report += f"\n{resp4.output_text}\n\n"
 
     # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")

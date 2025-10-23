@@ -2518,8 +2518,8 @@ bqetl_market_intel_bot:
     retries: 1
     retry_delay: 45m
     start_date: '2025-09-01'
-  description: Runs on the 5th day of the month to summarize last months' Chrome updates
-  schedule_interval: 0 15 5 * *
+  description: Runs on the 2nd day of the month to summarize last months' Chrome updates
+  schedule_interval: 0 15 2 * *
   tags:
     - impact/tier_3
     - repo/bigquery-etl

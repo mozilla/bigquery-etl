@@ -11,6 +11,9 @@ labels:
 scheduling:
   dag_name: bqetl_market_intel_bot
   arguments: ["--date", "{{ds}}"]
+  depends_on:
+  - task_id: read_release_data
+    dag_name: web_scraping
   secrets:
   - deploy_target: DATA_ENG_OPEN_AI_API_KEY
     key: bqetl_chrome_releases__open_ai_api_key

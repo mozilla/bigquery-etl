@@ -38,7 +38,7 @@ fields:
     e.g. "142.1.3" has minor version 1
 - name: app_name
   type: STRING
-  description: The name of the application.
+  description: The name of the browser.
 - name: architecture
   type: STRING
   description: The architecture of the device, (e.g. "arm", "x86").
@@ -88,7 +88,8 @@ fields:
   - created_date
 - name: dau
   type: INTEGER
-  description: The number of daily active users.
+  description: The number of daily active users, corresponding to the count of clients that reported
+    at least one ping on the submission_date and qualify as active.
 - name: first_run_date
   type: DATE
   mode: NULLABLE
@@ -99,10 +100,12 @@ fields:
   description: Date when the server first received a ping from this client.
 - name: wau
   type: INTEGER
-  description: The number of weekly active users.
+  description: The number of weekly active users, corresponding to the count of clients that reported
+    at least one ping on the previous 7 days from the submission_date and qualify as active.
 - name: mau
   type: INTEGER
-  description: The number of monthly active users.
+  description: The number of monthly active users, corresponding to the count of clients that reported
+    at least one ping on the previous 28 days from the submission_date and qualify as active.
 - name: distribution_id
   type: STRING
   description: The distribution id associated with the install of Firefox.
@@ -147,6 +150,12 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The operating system code based on the Common Platform Enumeration CPE.
+- name: os_version
+  type: INTEGER
+  description: Version of the operating system version running at the
+    client. E.g. "100.9.11".
+  aliases:
+  - normalized_os_version
 - name: os_major
   type: INTEGER
   description: Major or first part of the operating system version running at the

@@ -4,7 +4,7 @@
 import os
 import sys
 from argparse import ArgumentParser
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from google.cloud import storage
 from openai import OpenAI
@@ -22,6 +22,8 @@ INPUT_FPATH_3 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeDevTools/WebScraping_"
 OUTPUT_FPATH_1 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeReleaseNotes/WebScraping_"
 OUTPUT_FPATH_2 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeAI/WebScraping_"
 OUTPUT_FPATH_3 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeDevTools/WebScraping_"
+OUTPUT_FPATH_4 = "MARKET_RESEARCH/SUMMARY_INFO/BrowserDevelopment/WebScraping_"
+
 
 # Pull in the API key from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
@@ -88,15 +90,12 @@ def main():
     parser.add_argument("--date", required=True)
     args = parser.parse_args()
     logical_dag_date = datetime.strptime(args.date, "%Y-%m-%d").date()
-    # The upstream DAG runs 3 days earlier
-    upstream_dag_date = logical_dag_date - timedelta(days=3)
     logical_dag_date_str = logical_dag_date.strftime("%Y%m%d")
-    upstream_dag_date_str = upstream_dag_date.strftime("%Y%m%d")
 
     # Check both input files exist, if not, error out
-    gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + upstream_dag_date_str + ".txt"
-    gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + upstream_dag_date_str + ".txt"
-    gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + upstream_dag_date_str + ".txt"
+    gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + logical_dag_date_str + ".txt"
+    gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + logical_dag_date_str + ".txt"
+    gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + logical_dag_date_str + ".txt"
 
     print("Checking to see if fpath 1 exists: ")
     print(gcs_fpath1)
@@ -115,6 +114,7 @@ def main():
     final_output_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".txt"
     final_output_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".txt"
     final_output_fpath3 = OUTPUT_FPATH_3 + logical_dag_date_str + ".txt"
+    final_output_fpath4 = OUTPUT_FPATH_4 + logical_dag_date_str + ".txt"
 
     # Read in the scraped data from the 2 files
     file_contents1 = read_gcs_file(gcs_fpath1)
@@ -125,14 +125,17 @@ def main():
     final_output_1 = ""
     final_output_2 = ""
     final_output_3 = ""
+    final_output_4 = ""
 
     # Open an Open AI Client
     client = OpenAI(api_key=OPENAI_API_TOKEN)
 
     # Ask ChatGPT to summarize scraped chrome release notes (fpath 1)
-    prompt1 = "What new features has Chrome been working on recently?"
+    prompt1 = """What new features has Chrome been working on recently?
+    Please include the release number you found these features in and the date of that release."""
     resp1 = client.responses.create(
         model="gpt-4o-mini",
+        instructions="Generate a markdown formatted response.",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt1},
@@ -141,15 +144,14 @@ def main():
     )
 
     final_output_1 += (
-        f"**Question:**\n{prompt1}\n\n"
-        f"**Answer:**\n{resp1.output_text}\n\n"
-        f"{'-'*80}\n\n"
+        f"**Question:**\n{prompt1}\n\n" f"**Answer:**\n{resp1.output_text}\n\n"
     )
 
     # Ask ChatGPT to summarize Chrome AI updates (fpath 2)
     prompt2 = "What AI features has Chrome been working on recently?"
     resp2 = client.responses.create(
         model="gpt-4o-mini",
+        instructions="Generate a markdown formatted response.",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt2},
@@ -158,15 +160,14 @@ def main():
     )
 
     final_output_2 += (
-        f"**Question:**\n{prompt2}\n\n"
-        f"**Answer:**\n{resp2.output_text}\n\n"
-        f"{'-'*80}\n\n"
+        f"**Question:**\n{prompt2}\n\n" f"**Answer:**\n{resp2.output_text}\n\n"
     )
 
     # Ask ChatGPT to summarize recent Chrome Dev Tools News
     prompt3 = "What new features are available in Chrome Dev Tools?"
     resp3 = client.responses.create(
         model="gpt-4o-mini",
+        instructions="Generate a markdown formatted response.",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt3},
@@ -175,9 +176,24 @@ def main():
     )
 
     final_output_3 += (
-        f"**Question:**\n{prompt3}\n\n"
-        f"**Answer:**\n{resp3.output_text}\n\n"
-        f"{'-'*80}\n\n"
+        f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
+    )
+
+    # Ask ChatGPT to search the web for recent updates on browser development
+    prompt4 = (
+        "Look for articles from the past month about what new features have been added to popular web browsers, "
+        "how they are incorporating AI, and how they are navigating challenges like the windows 10 transition. Then summarize these findings."
+        "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
+    )
+    resp4 = client.responses.create(
+        model="gpt-4o-mini",
+        tools=[{"type": "web_search_preview"}],
+        instructions="Generate a markdown formatted response.",
+        input=prompt4,
+    )
+
+    final_output_4 += (
+        f"**Question:**\n{prompt4}\n\n" f"**Answer:**\n{resp4.output_text}\n\n"
     )
 
     # Save all summaries to GCS
@@ -194,6 +210,10 @@ def main():
     blob3 = bucket.blob(final_output_fpath3)
     blob3.upload_from_string(final_output_3)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath3}")
+
+    blob4 = bucket.blob(final_output_fpath4)
+    blob4.upload_from_string(final_output_4)
+    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath4}")
 
 
 if __name__ == "__main__":

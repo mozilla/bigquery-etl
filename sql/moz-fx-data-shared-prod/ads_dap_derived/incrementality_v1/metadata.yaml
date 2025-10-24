@@ -1,6 +1,6 @@
 friendly_name: Incrementality experiment results
 description: |-
-  Incrementality experiment data collectd from DAP
+  Incrementality experiment data collected from DAP
 owners:
   - gleonard@mozilla.com
   - mlifshin@mozilla.com

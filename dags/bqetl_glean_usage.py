@@ -418,18 +418,6 @@ with DAG(
         task_group=task_group_experimenter_backend,
     )
 
-    bigeye__experimenter_backend_derived__metrics_clients_last_seen__v1 = bigquery_bigeye_check(
-        task_id="bigeye__experimenter_backend_derived__metrics_clients_last_seen__v1",
-        table_id="moz-fx-data-shared-prod.experimenter_backend_derived.metrics_clients_last_seen_v1",
-        warehouse_id="1939",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        execution_timeout=datetime.timedelta(hours=1),
-        retries=1,
-        task_group=task_group_experimenter_backend,
-    )
-
     bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1 = bigquery_bigeye_check(
         task_id="bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1",
         table_id="moz-fx-data-shared-prod.experimenter_cirrus_derived.baseline_clients_daily_v1",
@@ -3489,18 +3477,6 @@ with DAG(
         task_group=task_group_experimenter_backend,
     )
 
-    experimenter_backend_derived__clients_last_seen_joined__v1 = bigquery_etl_query(
-        task_id="experimenter_backend_derived__clients_last_seen_joined__v1",
-        destination_table="clients_last_seen_joined_v1",
-        dataset_id="experimenter_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_experimenter_backend,
-    )
-
     experimenter_backend_derived__events_stream__v1 = bigquery_etl_query(
         task_id="experimenter_backend_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -3528,18 +3504,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
-        task_group=task_group_experimenter_backend,
-    )
-
-    experimenter_backend_derived__metrics_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="experimenter_backend_derived__metrics_clients_last_seen__v1",
-        destination_table="metrics_clients_last_seen_v1",
-        dataset_id="experimenter_backend_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
         task_group=task_group_experimenter_backend,
     )
 
@@ -7392,10 +7356,6 @@ with DAG(
         experimenter_backend_derived__metrics_clients_daily__v1
     )
 
-    bigeye__experimenter_backend_derived__metrics_clients_last_seen__v1.set_upstream(
-        experimenter_backend_derived__metrics_clients_last_seen__v1
-    )
-
     bigeye__experimenter_cirrus_derived__baseline_clients_daily__v1.set_upstream(
         experimenter_cirrus_derived__baseline_clients_daily__v1
     )
@@ -7790,24 +7750,12 @@ with DAG(
         bigeye__experimenter_backend_derived__baseline_clients_daily__v1
     )
 
-    experimenter_backend_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__experimenter_backend_derived__baseline_clients_last_seen__v1
-    )
-
-    experimenter_backend_derived__clients_last_seen_joined__v1.set_upstream(
-        bigeye__experimenter_backend_derived__metrics_clients_last_seen__v1
-    )
-
     experimenter_backend_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     experimenter_backend_derived__metrics_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
-    )
-
-    experimenter_backend_derived__metrics_clients_last_seen__v1.set_upstream(
-        bigeye__experimenter_backend_derived__metrics_clients_daily__v1
     )
 
     experimenter_cirrus_derived__baseline_clients_daily__v1.set_upstream(

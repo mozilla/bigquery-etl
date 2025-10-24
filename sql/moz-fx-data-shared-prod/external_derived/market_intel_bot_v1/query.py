@@ -3,6 +3,7 @@
 # Load libraries
 import json
 import os
+import unicodedata
 
 # import requests #Only needed once Slack added
 import sys
@@ -15,20 +16,20 @@ from openai import OpenAI
 # Set variables
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 BUCKET_NO_GS = "moz-fx-data-prod-external-data"
-INSTRUCTIONS = "Generate a Slack mrkdwn formatted response, with a section header title"
+INSTRUCTIONS = "Generate a markdown formatted response, with a H2 header title"
 MODEL_TYPE = "gpt-4o-mini"
+SCRAPED_BASE = "MARKET_RESEARCH/SCRAPED_INFO/"
+OUTPUT_BASE = "MARKET_RESEARCH/SUMMARY_INFO/"
 
 # Filepath for the final, consolidated report
 FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
-SCRAPED_BASE = "MARKET_RESEARCH/SCRAPED_INFO/"
 INPUT_FPATH_2 = SCRAPED_BASE + "ChromeReleaseNotes/WebScraping_"
 INPUT_FPATH_3 = SCRAPED_BASE + "ChromeAI/WebScraping_"
 INPUT_FPATH_4 = SCRAPED_BASE + "ChromeDevTools/WebScraping_"
 
 # Filepaths to save ChatGPT Summaries to
-OUTPUT_BASE = "MARKET_RESEARCH/SUMMARY_INFO/"
 OUTPUT_FPATH_1 = OUTPUT_BASE + "BrowserDevelopment/WebScraping_"
 OUTPUT_FPATH_2 = OUTPUT_BASE + "ChromeReleaseNotes/WebScraping_"
 OUTPUT_FPATH_3 = OUTPUT_BASE + "ChromeAI/WebScraping_"
@@ -127,9 +128,9 @@ def summarize_with_open_ai(
             instructions=instructions,
             input=convo,
         )
-    return resp.output_text.decode("utf-8", errors="replace"), json.dumps(
-        resp.to_dict(), indent=2
-    )
+    response_output_text = resp.output_text
+    response_output_text = unicodedata.normalize("NFKC", response_output_text)
+    return response_output_text, json.dumps(resp.to_dict(), indent=2)
 
 
 def write_to_gcs(

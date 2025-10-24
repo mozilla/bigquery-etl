@@ -1,6 +1,8 @@
 friendly_name: Incrementality experiment results
 description: |-
-  Incrementality experiment data collected from DAP
+  Incrementality experiment data collected from DAP.  The table is created
+  and data added by the docker-etl/jobs/ads-incrementality-dap-collector job.
+  See https://github.com/mozilla/docker-etl/tree/main/jobs/ads-incrementality-dap-collector
 owners:
   - gleonard@mozilla.com
   - mlifshin@mozilla.com

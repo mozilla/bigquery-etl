@@ -100,28 +100,6 @@ def generate(
     elif exclude:
         table_filter = partial(table_matches_patterns, exclude, True)
 
-    @cache
-    def get_tables(table_name="baseline_v1"):
-        tables = list_tables(
-            project_id=target_project,
-            only_tables=[only] if only else None,
-            table_filter=table_filter,
-            table_name=table_name,
-        )
-
-        # filter out skipped apps
-        return [
-            table
-            for table in tables
-            if table.split(".")[1]
-            not in [
-                f"{skipped_app}_stable"
-                for skipped_app in ConfigLoader.get(
-                    "generate", "glean_usage", "skip_apps", fallback=[]
-                )
-            ]
-        ]
-
     output_dir = Path(output_dir) / target_project
 
     # per app specific datasets
@@ -135,6 +113,27 @@ def generate(
         if name
         not in ConfigLoader.get("generate", "glean_usage", "skip_apps", fallback=[])
     ]
+
+    app_channel_datasets = set(
+        app_channel["bq_dataset_family"] + "_stable"
+        for app_channels in app_info
+        for app_channel in app_channels
+    )
+
+    @cache
+    def get_tables(table_name="baseline_v1"):
+        tables = list_tables(
+            project_id=target_project,
+            only_tables=[only] if only else None,
+            table_filter=table_filter,
+            table_name=table_name,
+        )
+
+        return [
+            table
+            for table in tables
+            if table.split(".")[1] in app_channel_datasets
+        ]
 
     id_token = get_id_token()
 

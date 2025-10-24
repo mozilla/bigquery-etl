@@ -362,12 +362,8 @@ generate:
     - moso_mastodon_web
     - moso_mastodon_backend
     - regrets_reporter
-    - regrets_reporter_ucs
     - tiktokreporter_android
     - tiktokreporter_ios
-    - org_mozilla_ios_tiktok_reporter
-    - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
-    - org_mozilla_tiktokreporter
     events_stream:
       skip_apps:
       - bergamot

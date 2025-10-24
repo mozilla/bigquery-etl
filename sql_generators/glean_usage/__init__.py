@@ -130,9 +130,7 @@ def generate(
         )
 
         return [
-            table
-            for table in tables
-            if table.split(".")[1] in app_channel_datasets
+            table for table in tables if table.split(".")[1] in app_channel_datasets
         ]
 
     id_token = get_id_token()
@@ -164,18 +162,19 @@ def generate(
         base_tables[table_name] = get_tables(table_name=table_name)
 
     def all_base_tables_exist(app_info, table_name="baseline_v1"):
-        """Check if baseline tables exist for all app datasets."""     
+        """Check if baseline tables exist for all app datasets."""
         # Extract dataset names from table names (format: project.dataset.table)
         existing_datasets = {table.split(".")[1] for table in base_tables[table_name]}
-        
+
         # Check if all app datasets have corresponding tables
         if isinstance(app_info, dict):
             required_datasets = {f"{app_info['bq_dataset_family']}_stable"}
         else:
-            required_datasets = {f"{app['bq_dataset_family']}_stable" for app in app_info}
+            required_datasets = {
+                f"{app['bq_dataset_family']}_stable" for app in app_info
+            }
 
         return all(dataset in existing_datasets for dataset in required_datasets)
-    
 
     # Parameters to generate per-app datasets consist of the function to be called
     # and app_info
@@ -188,9 +187,12 @@ def generate(
                 use_cloud_function=use_cloud_function,
                 parallelism=parallelism,
                 id_token=id_token,
-                all_base_tables_exist=all_base_tables_exist(info, table_name=table.base_table_name) 
-                if hasattr(table, 'per_app_requires_all_base_tables') and table.per_app_requires_all_base_tables 
-                else None
+                all_base_tables_exist=(
+                    all_base_tables_exist(info, table_name=table.base_table_name)
+                    if hasattr(table, "per_app_requires_all_base_tables")
+                    and table.per_app_requires_all_base_tables
+                    else None
+                ),
             ),
             info,
         )

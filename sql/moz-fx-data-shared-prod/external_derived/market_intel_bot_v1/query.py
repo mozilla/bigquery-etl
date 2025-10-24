@@ -18,16 +18,15 @@ BUCKET_NO_GS = "moz-fx-data-prod-external-data"
 FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
-INPUT_FPATH_1 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeReleaseNotes/WebScraping_"
-INPUT_FPATH_2 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeAI/WebScraping_"
-INPUT_FPATH_3 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeDevTools/WebScraping_"
+INPUT_FPATH_2 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeReleaseNotes/WebScraping_"
+INPUT_FPATH_3 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeAI/WebScraping_"
+INPUT_FPATH_4 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeDevTools/WebScraping_"
 
 # Filepaths to save ChatGPT Summaries to
-OUTPUT_FPATH_1 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeReleaseNotes/WebScraping_"
-OUTPUT_FPATH_2 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeAI/WebScraping_"
-OUTPUT_FPATH_3 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeDevTools/WebScraping_"
-OUTPUT_FPATH_4 = "MARKET_RESEARCH/SUMMARY_INFO/BrowserDevelopment/WebScraping_"
-
+OUTPUT_FPATH_1 = "MARKET_RESEARCH/SUMMARY_INFO/BrowserDevelopment/WebScraping_"
+OUTPUT_FPATH_2 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeReleaseNotes/WebScraping_"
+OUTPUT_FPATH_3 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeAI/WebScraping_"
+OUTPUT_FPATH_4 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeDevTools/WebScraping_"
 
 # Pull in the API key from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
@@ -106,14 +105,9 @@ def main():
     print(report_date)
 
     # Check both input files exist, if not, error out
-    gcs_fpath1 = GCS_BUCKET + INPUT_FPATH_1 + logical_dag_date_str + ".txt"
     gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + logical_dag_date_str + ".txt"
     gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + logical_dag_date_str + ".txt"
-
-    print("Checking to see if fpath 1 exists: ")
-    print(gcs_fpath1)
-
-    ensure_gcs_file_exists(gcs_fpath1)
+    gcs_fpath4 = GCS_BUCKET + INPUT_FPATH_4 + logical_dag_date_str + ".txt"
 
     print("Checking to see if fpath 2 exists: ")
     print(gcs_fpath2)
@@ -123,6 +117,10 @@ def main():
     print(gcs_fpath3)
     ensure_gcs_file_exists(gcs_fpath3)
 
+    print("Checking to see if fpath 4 exists: ")
+    print(gcs_fpath4)
+    ensure_gcs_file_exists(gcs_fpath4)
+
     # Make the output fpaths for storing the summaries received from ChatGPT
     final_output_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".md"
     final_output_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".md"
@@ -130,31 +128,36 @@ def main():
     final_output_fpath4 = OUTPUT_FPATH_4 + logical_dag_date_str + ".md"
 
     # Read in the scraped data from the 2 files
-    file_contents1 = read_gcs_file(gcs_fpath1)
     file_contents2 = read_gcs_file(gcs_fpath2)
     file_contents3 = read_gcs_file(gcs_fpath3)
+    file_contents4 = read_gcs_file(gcs_fpath4)
 
     # Initialize the final output as an empty string
     final_output_1 = ""
     final_output_2 = ""
     final_output_3 = ""
     final_output_4 = ""
-    final_report = "# Market Intel Bot Report"
+    final_report = """# Market Intel Bot Report
+Table of Contents:
+* New Features in Popular Browsers
+* New Features in Chrome
+* New AI Features in Chrome
+* New Features in Chrome Dev Tools"""
 
     # Open an Open AI Client
     client = OpenAI(api_key=OPENAI_API_TOKEN)
 
-    # Ask ChatGPT to summarize scraped chrome release notes (fpath 1)
-    prompt1 = """What new features has Chrome been working on recently?
-    Please include the release number you found these features in and the date of that release."""
+    # Ask ChatGPT to search the web for recent updates on browser development
+    prompt1 = (
+        "Look for articles from the past month about what new features have been added to popular web browsers, "
+        "how they are incorporating AI, and how they are navigating challenges like the windows 10 transition. Then summarize these findings."
+        "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
+    )
     resp1 = client.responses.create(
         model="gpt-4o-mini",
+        tools=[{"type": "web_search_preview"}],
         instructions="Generate a markdown formatted response, with a H2 header title",
-        input=[
-            {"role": "system", "content": "You are an expert summarizer."},
-            {"role": "user", "content": prompt1},
-            {"role": "user", "content": file_contents1},
-        ],
+        input=prompt1,
     )
 
     final_output_1 += (
@@ -162,13 +165,14 @@ def main():
     )
     response_object_1 = json.dumps(resp1.to_dict(), indent=2)
 
-    final_report += f"\n\n{resp1.output_text}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
+    final_report += f"\n{resp1.output_text}\n\n"
 
-    # Ask ChatGPT to summarize Chrome AI updates (fpath 2)
-    prompt2 = "What AI features has Chrome been working on recently?"
+    # Ask ChatGPT to summarize scraped chrome release notes (fpath 1)
+    prompt2 = """What new features has Chrome been working on recently?
+    Please include the release number you found these features in and the date of that release."""
     resp2 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response, with a H2 header title.",
+        instructions="Generate a markdown formatted response, with a H2 header title",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt2},
@@ -181,13 +185,13 @@ def main():
     )
     response_object_2 = json.dumps(resp2.to_dict(), indent=2)
 
-    final_report += f"\n\n{resp2.output_text}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
+    final_report += f"\n\n{resp2.output_text}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
 
-    # Ask ChatGPT to summarize recent Chrome Dev Tools News
-    prompt3 = "What new features are available in Chrome Dev Tools?"
+    # Ask ChatGPT to summarize Chrome AI updates (fpath 2)
+    prompt3 = "What AI features has Chrome been working on recently?"
     resp3 = client.responses.create(
         model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response, with a H2 header title",
+        instructions="Generate a markdown formatted response, with a H2 header title.",
         input=[
             {"role": "system", "content": "You are an expert summarizer."},
             {"role": "user", "content": prompt3},
@@ -200,19 +204,18 @@ def main():
     )
     response_object_3 = json.dumps(resp3.to_dict(), indent=2)
 
-    final_report += f"\n\n{resp3.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
+    final_report += f"\n\n{resp3.output_text}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
 
-    # Ask ChatGPT to search the web for recent updates on browser development
-    prompt4 = (
-        "Look for articles from the past month about what new features have been added to popular web browsers, "
-        "how they are incorporating AI, and how they are navigating challenges like the windows 10 transition. Then summarize these findings."
-        "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
-    )
+    # Ask ChatGPT to summarize recent Chrome Dev Tools News
+    prompt4 = "What new features are available in Chrome Dev Tools?"
     resp4 = client.responses.create(
         model="gpt-4o-mini",
-        tools=[{"type": "web_search_preview"}],
         instructions="Generate a markdown formatted response, with a H2 header title",
-        input=prompt4,
+        input=[
+            {"role": "system", "content": "You are an expert summarizer."},
+            {"role": "user", "content": prompt4},
+            {"role": "user", "content": file_contents4},
+        ],
     )
 
     final_output_4 += (
@@ -220,13 +223,13 @@ def main():
     )
     response_object_4 = json.dumps(resp4.to_dict(), indent=2)
 
+    final_report += f"\n\n{resp4.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
+
     # Make the output fpaths for storing the full responses received from ChatGPT
     repsonse_fpath1 = OUTPUT_FPATH_1 + resp1.id + logical_dag_date_str + ".json"
     repsonse_fpath2 = OUTPUT_FPATH_2 + resp2.id + logical_dag_date_str + ".json"
     repsonse_fpath3 = OUTPUT_FPATH_3 + resp3.id + logical_dag_date_str + ".json"
     repsonse_fpath4 = OUTPUT_FPATH_4 + resp3.id + logical_dag_date_str + ".json"
-
-    final_report += f"\n{resp4.output_text}\n\n"
 
     # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")

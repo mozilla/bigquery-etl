@@ -21,6 +21,7 @@ references:
   - moz-fx-data-shared-prod.accounts_frontend_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.bedrock_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.debug_ping_view_derived.event_monitoring_live_v1
+  - moz-fx-data-shared-prod.experimenter_backend_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.experimenter_cirrus_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.firefox_crashreporter_derived.event_monitoring_live_v1
   - moz-fx-data-shared-prod.firefox_desktop_background_defaultagent_derived.event_monitoring_live_v1

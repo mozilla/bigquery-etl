@@ -1,0 +1,42 @@
+friendly_name: Metrics Clients Daily
+description: |-
+  Daily per-client aggregates on top of metrics pings
+owners:
+- ascholtz@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+  dag: bqetl_glean_usage
+  owner1: ascholtz
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: experimenter_backend
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775.0
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_channel
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.experimenter_backend.metrics
+monitoring:
+  enabled: true
+  collection: null
+  partition_column: null
+  partition_column_set: false
+  freshness:
+    blocking: false
+  volume:
+    blocking: true
+require_column_descriptions: false

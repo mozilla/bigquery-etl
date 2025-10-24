@@ -1,5 +1,5 @@
 ```
-Testing-schema doc agent with comment added 
+Testing-schema doc agent with comment added.
 ```
 CREATE TEMP FUNCTION get_fields(m ANY TYPE) AS (
   STRUCT(

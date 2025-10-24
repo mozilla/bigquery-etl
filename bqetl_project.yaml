@@ -415,6 +415,7 @@ generate:
       skip_apps:
       - accounts_cirrus
       - experimenter_cirrus
+      - experimenter_backend
       - firefox_desktop_background_defaultagent
       - firefox_desktop_background_tasks
       - firefox_crashreporter
@@ -428,6 +429,7 @@ generate:
       skip_apps:
       - accounts_cirrus
       - experimenter_cirrus
+      - experimenter_backend
       - firefox_desktop_background_defaultagent
       - firefox_desktop_background_tasks
       - firefox_crashreporter

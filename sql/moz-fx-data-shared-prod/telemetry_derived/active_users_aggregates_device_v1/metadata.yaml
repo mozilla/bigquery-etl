@@ -9,7 +9,7 @@ description: |-
   analysis per device, which is the biggest size column in the table,
   as most devices have a unique identifiers.
 owners:
-- lvargas@mozilla.com
+- alvargasa@gmail.com
 labels:
   incremental: true
   dag: bqetl_analytics_aggregations

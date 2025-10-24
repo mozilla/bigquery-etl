@@ -1,4 +1,4 @@
-"""Summarize Chrome release updates from GCS files using OpenAI and write results back to GCS."""
+"""Summarize market news using OpenAI and write results back to GCS."""
 
 # Load libraries
 import json
@@ -15,24 +15,28 @@ from openai import OpenAI
 # Set variables
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 BUCKET_NO_GS = "moz-fx-data-prod-external-data"
+INSTRUCTIONS = "Generate a Slack mrkdwn formatted response, with a section header title"
+MODEL_TYPE = "gpt-4o-mini"
 
 # Filepath for the final, consolidated report
 FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
-INPUT_FPATH_2 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeReleaseNotes/WebScraping_"
-INPUT_FPATH_3 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeAI/WebScraping_"
-INPUT_FPATH_4 = "MARKET_RESEARCH/SCRAPED_INFO/ChromeDevTools/WebScraping_"
+SCRAPED_BASE = "MARKET_RESEARCH/SCRAPED_INFO/"
+INPUT_FPATH_2 = SCRAPED_BASE + "ChromeReleaseNotes/WebScraping_"
+INPUT_FPATH_3 = SCRAPED_BASE + "ChromeAI/WebScraping_"
+INPUT_FPATH_4 = SCRAPED_BASE + "ChromeDevTools/WebScraping_"
 
 # Filepaths to save ChatGPT Summaries to
-OUTPUT_FPATH_1 = "MARKET_RESEARCH/SUMMARY_INFO/BrowserDevelopment/WebScraping_"
-OUTPUT_FPATH_2 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeReleaseNotes/WebScraping_"
-OUTPUT_FPATH_3 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeAI/WebScraping_"
-OUTPUT_FPATH_4 = "MARKET_RESEARCH/SUMMARY_INFO/ChromeDevTools/WebScraping_"
-OUTPUT_FPATH_5 = "MARKET_RESEARCH/SUMMARY_INFO/DeviceMarketResearch/WebScraping_"
-OUTPUT_FPATH_6 = "MARKET_RESEARCH/SUMMARY_INFO/OnlineAdvertising/WebScraping_"
-OUTPUT_FPATH_7 = "MARKET_RESEARCH/SUMMARY_INFO/AI_News/WebScraping_"
-OUTPUT_FPATH_8 = "MARKET_RESEARCH/SUMMARY_INFO/UpcomingHolidaysOrEventsImpactingBrowserUsage/WebScraping_"
+OUTPUT_BASE = "MARKET_RESEARCH/SUMMARY_INFO/"
+OUTPUT_FPATH_1 = OUTPUT_BASE + "BrowserDevelopment/WebScraping_"
+OUTPUT_FPATH_2 = OUTPUT_BASE + "ChromeReleaseNotes/WebScraping_"
+OUTPUT_FPATH_3 = OUTPUT_BASE + "ChromeAI/WebScraping_"
+OUTPUT_FPATH_4 = OUTPUT_BASE + "ChromeDevTools/WebScraping_"
+OUTPUT_FPATH_5 = OUTPUT_BASE + "DeviceMarketResearch/WebScraping_"
+OUTPUT_FPATH_6 = OUTPUT_BASE + "OnlineAdvertising/WebScraping_"
+OUTPUT_FPATH_7 = OUTPUT_BASE + "AI_News/WebScraping_"
+OUTPUT_FPATH_8 = OUTPUT_BASE + "UpcomingHolidays/WebScraping_"
 
 # Pull in the API key from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
@@ -100,6 +104,48 @@ def read_gcs_file(gcs_path: str) -> str:
     return content
 
 
+def summarize_with_open_ai(
+    client, model, instructions, prompt, input_text, use_web_tool
+):
+    """Summarize with open ai."""
+    if use_web_tool:
+        resp = client.responses.create(
+            model=model,
+            tools=[{"type": "web_search_preview"}],
+            instructions=instructions,
+            input=prompt,
+        )
+    else:
+        convo = [
+            {"role": "system", "content": "You are an expert summarizer."},
+            {"role": "user", "content": prompt},
+        ]
+        if input_text:
+            convo.append({"role": "user", "content": input_text})
+        resp = client.responses.create(
+            model=model,
+            instructions=instructions,
+            input=convo,
+        )
+    return resp.output_text, json.dumps(resp.to_dict(), indent=2)
+
+
+def write_to_gcs(
+    bucket, final_output_fpath, final_output, response_fpath, response_object
+):
+    blob = bucket.blob(final_output_fpath)
+    blob.upload_from_string(final_output)
+    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath}")
+    blob8_metadata = bucket.blob(response_fpath)
+    blob8_metadata.upload_from_string(response_object)
+    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath}")
+
+
+def create_intmd_fpath(output_fpath, logical_dag_date_str):
+    """Generate intermediate fpath string."""
+    return output_fpath + logical_dag_date_str + ".md"
+
+
 def main():
     """Pull scraped data from GCS, ask ChatGPT to summarize, save summary back to GCS."""
     parser = ArgumentParser(description=__doc__)
@@ -135,14 +181,24 @@ def main():
     ensure_gcs_file_exists(gcs_fpath4)
 
     # Make the output fpaths for storing the summaries received from ChatGPT
-    final_output_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".md"
-    final_output_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".md"
-    final_output_fpath3 = OUTPUT_FPATH_3 + logical_dag_date_str + ".md"
-    final_output_fpath4 = OUTPUT_FPATH_4 + logical_dag_date_str + ".md"
-    final_output_fpath5 = OUTPUT_FPATH_5 + logical_dag_date_str + ".md"
-    final_output_fpath6 = OUTPUT_FPATH_6 + logical_dag_date_str + ".md"
-    final_output_fpath7 = OUTPUT_FPATH_7 + logical_dag_date_str + ".md"
-    final_output_fpath8 = OUTPUT_FPATH_8 + logical_dag_date_str + ".md"
+    final_output_fpath1 = create_intmd_fpath(OUTPUT_FPATH_1, logical_dag_date_str)
+    final_output_fpath2 = create_intmd_fpath(OUTPUT_FPATH_2, logical_dag_date_str)
+    final_output_fpath3 = create_intmd_fpath(OUTPUT_FPATH_3, logical_dag_date_str)
+    final_output_fpath4 = create_intmd_fpath(OUTPUT_FPATH_4, logical_dag_date_str)
+    final_output_fpath5 = create_intmd_fpath(OUTPUT_FPATH_5, logical_dag_date_str)
+    final_output_fpath6 = create_intmd_fpath(OUTPUT_FPATH_6, logical_dag_date_str)
+    final_output_fpath7 = create_intmd_fpath(OUTPUT_FPATH_7, logical_dag_date_str)
+    final_output_fpath8 = create_intmd_fpath(OUTPUT_FPATH_8, logical_dag_date_str)
+
+    # Make the output fpaths for storing the full responses received from ChatGPT
+    response_fpath1 = OUTPUT_FPATH_1 + logical_dag_date_str + ".json"
+    response_fpath2 = OUTPUT_FPATH_2 + logical_dag_date_str + ".json"
+    response_fpath3 = OUTPUT_FPATH_3 + logical_dag_date_str + ".json"
+    response_fpath4 = OUTPUT_FPATH_4 + logical_dag_date_str + ".json"
+    response_fpath5 = OUTPUT_FPATH_5 + logical_dag_date_str + ".json"
+    response_fpath6 = OUTPUT_FPATH_6 + logical_dag_date_str + ".json"
+    response_fpath7 = OUTPUT_FPATH_7 + logical_dag_date_str + ".json"
+    response_fpath8 = OUTPUT_FPATH_8 + logical_dag_date_str + ".json"
 
     # Read in the scraped data from the 2 files
     file_contents2 = read_gcs_file(gcs_fpath2)
@@ -150,14 +206,6 @@ def main():
     file_contents4 = read_gcs_file(gcs_fpath4)
 
     # Initialize the final output as an empty string
-    final_output_1 = ""
-    final_output_2 = ""
-    final_output_3 = ""
-    final_output_4 = ""
-    final_output_5 = ""
-    final_output_6 = ""
-    final_output_7 = ""
-    final_output_8 = ""
     final_report = """# Market Intel Bot Report
 Table of Contents:
 * New Features in Popular Browsers
@@ -173,223 +221,117 @@ Table of Contents:
     # Open an Open AI Client
     client = OpenAI(api_key=OPENAI_API_TOKEN)
 
-    # Ask ChatGPT to search the web for recent updates on browser development
+    # Prompt #1 - New Features in Popular Browsers
     prompt1 = (
         "Look for articles from the past month about what new features have been added to popular web browsers, "
         "how they are incorporating AI, and how they are navigating challenges like the windows 10 transition. Then summarize these findings."
         "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
     )
-    resp1 = client.responses.create(
-        model="gpt-4o-mini",
-        tools=[{"type": "web_search_preview"}],
-        instructions="Generate a markdown formatted response, with a H2 header title",
-        input=prompt1,
+    final_output_1, response_object_1 = summarize_with_open_ai(
+        client, MODEL_TYPE, INSTRUCTIONS, prompt1, input_text=None, use_web_tool=True
     )
+    final_report += f"\n{final_output_1}\n\n"
 
-    final_output_1 += (
-        f"**Question:**\n{prompt1}\n\n" f"**Answer:**\n{resp1.output_text}\n\n"
-    )
-    response_object_1 = json.dumps(resp1.to_dict(), indent=2)
-
-    final_report += f"\n{resp1.output_text}\n\n"
-
-    # Ask ChatGPT to summarize scraped chrome release notes
+    # Prompt #2 - New Features in Chrome
     prompt2 = """What new features has Chrome been working on recently?
     Please include the release number you found these features in and the date of that release."""
-    resp2 = client.responses.create(
-        model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response, with a H2 header title",
-        input=[
-            {"role": "system", "content": "You are an expert summarizer."},
-            {"role": "user", "content": prompt2},
-            {"role": "user", "content": file_contents2},
-        ],
+    final_output_2, response_object_2 = summarize_with_open_ai(
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt2,
+        input_text=file_contents2,
+        use_web_tool=False,
     )
+    final_report += f"\n\n{final_output_2}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
 
-    final_output_2 += (
-        f"**Question:**\n{prompt2}\n\n" f"**Answer:**\n{resp2.output_text}\n\n"
-    )
-    response_object_2 = json.dumps(resp2.to_dict(), indent=2)
-
-    final_report += f"\n\n{resp2.output_text}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
-
-    # Ask ChatGPT to summarize AI features in Chrome
+    # Prompt #3 - New AI Features in Chrome
     prompt3 = "What AI features has Chrome been working on recently?"
-    resp3 = client.responses.create(
-        model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response, with a H2 header title.",
-        input=[
-            {"role": "system", "content": "You are an expert summarizer."},
-            {"role": "user", "content": prompt3},
-            {"role": "user", "content": file_contents3},
-        ],
+    final_output_3, response_object_3 = summarize_with_open_ai(
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt3,
+        input_text=file_contents3,
+        use_web_tool=False,
     )
+    final_report += f"\n\n{final_output_3}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
 
-    final_output_3 += (
-        f"**Question:**\n{prompt3}\n\n" f"**Answer:**\n{resp3.output_text}\n\n"
-    )
-    response_object_3 = json.dumps(resp3.to_dict(), indent=2)
-
-    final_report += f"\n\n{resp3.output_text}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
-
-    # Ask ChatGPT to summarize recent Chrome Dev Tools News
+    # Prompt #4 - New Features in Chrome Dev Tools
     prompt4 = "What new features are available in Chrome Dev Tools?"
-    resp4 = client.responses.create(
-        model="gpt-4o-mini",
-        instructions="Generate a markdown formatted response, with a H2 header title",
-        input=[
-            {"role": "system", "content": "You are an expert summarizer."},
-            {"role": "user", "content": prompt4},
-            {"role": "user", "content": file_contents4},
-        ],
+    final_output_4, response_object_4 = summarize_with_open_ai(
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt4,
+        input_text=file_contents4,
+        use_web_tool=False,
     )
+    final_report += f"\n\n{final_output_4}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
 
-    final_output_4 += (
-        f"**Question:**\n{prompt4}\n\n" f"**Answer:**\n{resp4.output_text}\n\n"
-    )
-    response_object_4 = json.dumps(resp4.to_dict(), indent=2)
-
-    final_report += f"\n\n{resp4.output_text}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
-
-    # Ask ChatGPT to find browser & device partnership news
+    # Prompt #5 - Browser & Device Partnership News
     prompt5 = """Please find articles related to browser & device partnerships.
 Firefox should be omitted from this search as we are focusing on Firefox's competitors.
 Please find all recent announcements of browser-device partnerships with browsers like Chrome, Edge, Safari, etc. and
 devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize these findings."""
-    resp5 = client.responses.create(
-        model="gpt-4o-mini",
-        tools=[{"type": "web_search_preview"}],
-        instructions="You are an expert summarizer.  Generate a markdown formatted response, with a H2 header title",
-        input=prompt5,
+    final_output_5, response_object_5 = summarize_with_open_ai(
+        client, MODEL_TYPE, INSTRUCTIONS, prompt5, input_text=None, use_web_tool=True
     )
+    final_report += f"\n{final_output_5}\n\n"
 
-    final_output_5 += (
-        f"**Question:**\n{prompt5}\n\n" f"**Answer:**\n{resp5.output_text}\n\n"
-    )
-    response_object_5 = json.dumps(resp5.to_dict(), indent=2)
-
-    final_report += f"\n{resp5.output_text}\n\n"
-
-    # Ask ChatGPT to find news in the online ads space
+    # Prompt #6 - Online Advertising News
     prompt6 = "Look for articles from the past month about news related to online advertising, and summarize the findings."
-    resp6 = client.responses.create(
-        model="gpt-4o-mini",
-        tools=[{"type": "web_search_preview"}],
-        instructions="Generate a markdown formatted response, with a H2 header title",
-        input=prompt6,
+    final_output_6, response_object_6 = summarize_with_open_ai(
+        client, MODEL_TYPE, INSTRUCTIONS, prompt6, input_text=None, use_web_tool=True
     )
+    final_report += f"\n{final_output_6}\n\n"
 
-    final_output_6 += (
-        f"**Question:**\n{prompt6}\n\n" f"**Answer:**\n{resp6.output_text}\n\n"
-    )
-    response_object_6 = json.dumps(resp6.to_dict(), indent=2)
-
-    final_report += f"\n{resp6.output_text}\n\n"
-
-    # Ask ChatGPT for news about the AI space in General
+    # Prompt #7 - AI News
     prompt7 = (
         "Look for articles from the past month about news related to AI in general."
     )
-    resp7 = client.responses.create(
-        model="gpt-4o-mini",
-        tools=[{"type": "web_search_preview"}],
-        instructions="Generate a markdown formatted response, with a H2 header title",
-        input=prompt7,
+    final_output_7, response_object_7 = summarize_with_open_ai(
+        client, MODEL_TYPE, INSTRUCTIONS, prompt7, input_text=None, use_web_tool=True
     )
+    final_report += f"\n{final_output_7}\n\n"
 
-    final_output_7 += (
-        f"**Question:**\n{prompt5}\n\n" f"**Answer:**\n{resp5.output_text}\n\n"
-    )
-    response_object_7 = json.dumps(resp5.to_dict(), indent=2)
-
-    final_report += f"\n{resp7.output_text}\n\n"
-
-    # Ask ChatGPT which upcoming holidays/events may impact DAU?
+    # Prompt #8 - Upcoming holidays/events that could impact browser usage
     prompt8 = "What holidays or events that could potentially impact browser usage are coming up in the next few months?"
-    resp8 = client.responses.create(
-        model="gpt-4o-mini",
-        tools=[{"type": "web_search_preview"}],
-        instructions="Generate a markdown formatted response, with a H2 header title",
-        input=prompt8,
+    final_output_8, response_object_8 = summarize_with_open_ai(
+        client, MODEL_TYPE, INSTRUCTIONS, prompt8, input_text=None, use_web_tool=True
     )
-
-    final_output_8 += (
-        f"**Question:**\n{prompt8}\n\n" f"**Answer:**\n{resp8.output_text}\n\n"
-    )
-    response_object_8 = json.dumps(resp8.to_dict(), indent=2)
-
-    final_report += f"\n{resp8.output_text}\n\n"
-
-    # Make the output fpaths for storing the full responses received from ChatGPT
-    response_fpath1 = OUTPUT_FPATH_1 + resp1.id + logical_dag_date_str + ".json"
-    response_fpath2 = OUTPUT_FPATH_2 + resp2.id + logical_dag_date_str + ".json"
-    response_fpath3 = OUTPUT_FPATH_3 + resp3.id + logical_dag_date_str + ".json"
-    response_fpath4 = OUTPUT_FPATH_4 + resp4.id + logical_dag_date_str + ".json"
-    response_fpath5 = OUTPUT_FPATH_5 + resp5.id + logical_dag_date_str + ".json"
-    response_fpath6 = OUTPUT_FPATH_6 + resp6.id + logical_dag_date_str + ".json"
-    response_fpath7 = OUTPUT_FPATH_7 + resp7.id + logical_dag_date_str + ".json"
-    response_fpath8 = OUTPUT_FPATH_8 + resp8.id + logical_dag_date_str + ".json"
+    final_report += f"\n{final_output_8}\n\n"
 
     # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")
     bucket = client.bucket(BUCKET_NO_GS)
 
-    blob1 = bucket.blob(final_output_fpath1)
-    blob1.upload_from_string(final_output_1)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath1}")
-    blob1_metadata = bucket.blob(response_fpath1)
-    blob1_metadata.upload_from_string(response_object_1)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath1}")
+    write_to_gcs(
+        bucket, final_output_fpath1, final_output_1, response_fpath1, response_object_1
+    )
+    write_to_gcs(
+        bucket, final_output_fpath2, final_output_2, response_fpath2, response_object_2
+    )
+    write_to_gcs(
+        bucket, final_output_fpath3, final_output_3, response_fpath3, response_object_3
+    )
+    write_to_gcs(
+        bucket, final_output_fpath4, final_output_4, response_fpath4, response_object_4
+    )
+    write_to_gcs(
+        bucket, final_output_fpath5, final_output_5, response_fpath5, response_object_5
+    )
+    write_to_gcs(
+        bucket, final_output_fpath6, final_output_6, response_fpath6, response_object_6
+    )
+    write_to_gcs(
+        bucket, final_output_fpath7, final_output_7, response_fpath7, response_object_7
+    )
+    write_to_gcs(
+        bucket, final_output_fpath8, final_output_8, response_fpath8, response_object_8
+    )
 
-    blob2 = bucket.blob(final_output_fpath2)
-    blob2.upload_from_string(final_output_2)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath2}")
-    blob2_metadata = bucket.blob(response_fpath2)
-    blob2_metadata.upload_from_string(response_object_2)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath2}")
-
-    blob3 = bucket.blob(final_output_fpath3)
-    blob3.upload_from_string(final_output_3)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath3}")
-    blob3_metadata = bucket.blob(response_fpath3)
-    blob3_metadata.upload_from_string(response_object_3)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath3}")
-
-    blob4 = bucket.blob(final_output_fpath4)
-    blob4.upload_from_string(final_output_4)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath4}")
-    blob4_metadata = bucket.blob(response_fpath4)
-    blob4_metadata.upload_from_string(response_object_4)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath4}")
-
-    blob5 = bucket.blob(final_output_fpath5)
-    blob5.upload_from_string(final_output_5)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath5}")
-    blob5_metadata = bucket.blob(response_fpath5)
-    blob5_metadata.upload_from_string(response_object_5)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath5}")
-
-    blob6 = bucket.blob(final_output_fpath6)
-    blob6.upload_from_string(final_output_6)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath6}")
-    blob6_metadata = bucket.blob(response_fpath6)
-    blob6_metadata.upload_from_string(response_object_6)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath6}")
-
-    blob7 = bucket.blob(final_output_fpath7)
-    blob7.upload_from_string(final_output_7)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath7}")
-    blob7_metadata = bucket.blob(response_fpath7)
-    blob7_metadata.upload_from_string(response_object_7)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath7}")
-
-    blob8 = bucket.blob(final_output_fpath8)
-    blob8.upload_from_string(final_output_8)
-    print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath8}")
-    blob8_metadata = bucket.blob(response_fpath8)
-    blob8_metadata.upload_from_string(response_object_8)
-    print(f"Full api response uploaded to gs://{BUCKET_NO_GS}/{response_fpath8}")
-
+    # Save the final consolidated report to GCS
     final_report_path = FINAL_REPORT_FPATH + report_date + ".md"
     final_blob = bucket.blob(final_report_path)
     final_blob.upload_from_string(final_report)

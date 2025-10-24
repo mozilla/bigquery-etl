@@ -1,7 +1,8 @@
-2025-10-15:
+2025-10-23:
   start_date: 2019-10-10
-  end_date: 2025-10-14
-  reason: Exclude some nonsensical subscription attribution values (DENG-9776).
+  end_date: 2025-10-22
+  reason: Exclude some nonsensical subscription attribution values (DENG-9776), and
+    correctly pass through FxA log-based logical subscriptions attribution (DENG-8885).
   watchers:
   - srose@mozilla.com
   status: Initiate

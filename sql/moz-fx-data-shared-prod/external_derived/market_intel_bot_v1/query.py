@@ -127,7 +127,9 @@ def summarize_with_open_ai(
             instructions=instructions,
             input=convo,
         )
-    return resp.output_text, json.dumps(resp.to_dict(), indent=2)
+    return resp.output_text.decode("utf-8", errors="replace"), json.dumps(
+        resp.to_dict(), indent=2
+    )
 
 
 def write_to_gcs(

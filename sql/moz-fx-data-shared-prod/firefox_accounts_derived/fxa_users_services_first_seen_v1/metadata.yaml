@@ -19,4 +19,3 @@ bigquery:
     fields:
     - service
     - user_id
-references: {}

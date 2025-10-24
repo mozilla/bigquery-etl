@@ -21,7 +21,6 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering: null
-references: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

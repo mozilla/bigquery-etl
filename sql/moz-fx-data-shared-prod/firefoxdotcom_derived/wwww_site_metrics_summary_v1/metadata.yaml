@@ -23,5 +23,4 @@ bigquery:
     fields:
     - country
     - browser
-references: {}
 require_column_descriptions: true

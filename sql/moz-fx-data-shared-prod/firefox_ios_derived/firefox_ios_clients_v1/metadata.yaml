@@ -45,4 +45,3 @@ bigquery:
     - sample_id
     - channel
     - first_reported_country
-references: {}

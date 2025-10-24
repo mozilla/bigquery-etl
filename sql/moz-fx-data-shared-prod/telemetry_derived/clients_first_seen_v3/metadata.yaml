@@ -53,5 +53,4 @@ bigquery:
     - sample_id
     - country
     - normalized_os
-references: {}
 require_column_descriptions: false

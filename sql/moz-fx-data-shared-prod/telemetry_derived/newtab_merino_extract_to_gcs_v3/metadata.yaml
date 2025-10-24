@@ -20,4 +20,3 @@ scheduling:
   referenced_tables:
   - ['moz-fx-data-shared-prod', 'telemetry_derived', 'newtab_merino_extract_v3']
 bigquery: null
-references: {}

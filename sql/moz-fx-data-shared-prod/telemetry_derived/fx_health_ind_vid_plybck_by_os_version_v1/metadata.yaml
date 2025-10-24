@@ -20,4 +20,3 @@ bigquery:
     fields:
     - normalized_os
     - normalized_os_version
-references: {}

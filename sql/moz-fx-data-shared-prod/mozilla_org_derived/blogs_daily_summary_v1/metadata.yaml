@@ -23,5 +23,4 @@ bigquery:
     - browser
     - blog
     - subblog
-references: {}
 deprecated: true

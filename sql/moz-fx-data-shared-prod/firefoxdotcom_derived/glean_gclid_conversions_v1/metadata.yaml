@@ -21,7 +21,6 @@ bigquery:
     field: activity_date
     require_partition_filter: false
     expiration_days: 775
-references: {}
 require_column_descriptions: true
 workgroup_access:
 - role: roles/bigquery.dataViewer

@@ -22,4 +22,3 @@ bigquery:
   clustering:
     fields:
     - browser
-references: {}

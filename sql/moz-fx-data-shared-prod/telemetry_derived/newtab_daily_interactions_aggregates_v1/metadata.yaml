@@ -22,4 +22,3 @@ bigquery:
     fields:
     - channel
     - country_code
-references: {}

@@ -21,4 +21,3 @@ bigquery:
     fields:
     - normalized_channel
     - country
-references: {}

@@ -17,4 +17,3 @@ bigquery:
     require_partition_filter: true
     expiration_days: null
   clustering: null
-references: {}

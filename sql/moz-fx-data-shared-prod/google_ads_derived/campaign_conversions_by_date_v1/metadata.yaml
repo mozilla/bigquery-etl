@@ -15,4 +15,3 @@ labels:
 bigquery:
   clustering:
     fields: ["date"]
-references: {}

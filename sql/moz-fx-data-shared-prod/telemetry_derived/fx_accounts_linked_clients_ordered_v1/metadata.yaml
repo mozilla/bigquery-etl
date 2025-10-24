@@ -13,5 +13,4 @@ scheduling:
   depends_on_past: true
   date_partition_parameter: null
   parameters: ["submission_date:DATE:{{ds}}"]
-references: {}
 require_column_descriptions: true

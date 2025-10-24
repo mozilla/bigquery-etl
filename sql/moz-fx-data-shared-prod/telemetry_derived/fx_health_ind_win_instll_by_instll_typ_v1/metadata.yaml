@@ -20,4 +20,3 @@ bigquery:
   clustering:
     fields:
     - installer_type
-references: {}

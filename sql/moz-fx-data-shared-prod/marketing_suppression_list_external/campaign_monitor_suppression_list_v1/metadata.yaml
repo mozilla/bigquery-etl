@@ -13,4 +13,3 @@ scheduling:
   - --api_key={{ var.value.campaign_monitor_api_key }}
   - --client_id={{ var.value.campaign_monitor_client_id }}
 bigquery: null
-references: {}

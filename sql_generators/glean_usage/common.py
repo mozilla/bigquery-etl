@@ -158,8 +158,8 @@ def _extract_dataset_from_glob(pattern):
     return pattern.split(".", 1)[0]
 
 
-def get_app_info():
-    """Return a list of applications from the probeinfo API."""
+def get_app_info() -> dict[str, list[dict]]:
+    """Return applications from the probeinfo app listings API grouped by app name."""
     resp = requests.get(APP_LISTINGS_URL)
     resp.raise_for_status()
     apps_json = resp.json()

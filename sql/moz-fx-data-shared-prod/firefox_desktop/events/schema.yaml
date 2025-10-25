@@ -465,6 +465,26 @@ fields:
       description: 'Whether Firefox is set as the default browser.
 
         '
+    - name: urlbar_pref_suggest_online_available
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether online Suggest is available to the user. Corresponds to
+        the Nimbus variable `quickSuggestOnlineAvailable` and its fallback pref `browser.urlbar.quicksuggest.online.available`.
+        NOTE: "Online Suggest" in this context means the new version of online Suggest
+        introduced in 146 with Terms of Use and OHTTP.
+
+        '
+    - name: urlbar_pref_suggest_online_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'This pref is true for all users by default! You probably want
+        to use this in conjunction with pref_suggest_online_available and/or restrict
+        your analysis to user populations where you know online Suggest is available.
+        Corresponds to `browser.urlbar.quicksuggest.online.enabled`. NOTE: "Online
+        Suggest" in this context means the new version of online Suggest introduced
+        in 146 with Terms of Use and OHTTP.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

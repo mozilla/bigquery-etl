@@ -281,7 +281,7 @@ fields:
     - name: quick_suggest_improve_suggest_experience
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether the "Improve Suggest Experience" checkbox is checked.
+      description: 'Whether online Suggest is available to the user and enabled.
 
         '
     - name: quick_suggest_is_clicked

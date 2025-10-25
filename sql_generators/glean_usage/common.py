@@ -12,7 +12,6 @@ import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.dryrun import DryRun
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
@@ -394,12 +393,12 @@ class GleanTable:
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
-        
+
         app_name = app_info[0]["app_name"]
 
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_name
-        
+
         if self.per_app_requires_all_base_tables and not all_base_tables_exist:
             logging.info(
                 f"Skipping per-app generation for {target_dataset}.{target_view_name} as not all baseline tables exist"
@@ -436,7 +435,7 @@ class GleanTable:
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_name,
             enable_monitoring=enable_monitoring,
-            deprecated_app = deprecated_app,
+            deprecated_app=deprecated_app,
         )
         render_kwargs.update(self.custom_render_kwargs)
 

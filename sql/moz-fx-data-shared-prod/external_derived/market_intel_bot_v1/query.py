@@ -1,15 +1,17 @@
 """Summarize market news using OpenAI and write results back to GCS."""
 
 # Load libraries
+import base64
 import json
 import os
-import unicodedata
 
 # import requests #Only needed once Slack added
 import sys
+import unicodedata
 from argparse import ArgumentParser
-from datetime import datetime, date
+from datetime import date, datetime
 
+import requests
 from google.cloud import storage
 from openai import OpenAI
 
@@ -39,19 +41,22 @@ OUTPUT_FPATH_6 = OUTPUT_BASE + "OnlineAdvertising/WebScraping_"
 OUTPUT_FPATH_7 = OUTPUT_BASE + "AI_News/WebScraping_"
 OUTPUT_FPATH_8 = OUTPUT_BASE + "UpcomingHolidays/WebScraping_"
 
-# Pull in the API key from GSM
+# Pull in the different keys from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
-
-# Pull in the Slack webhook URL from GSM
 # SLACK_WEBHOOK = os.getenv("SLACK_MARKET_INTEL_BOT_WEBHOOK_URL")
+GITHUB_ACCESS_TOKEN = os.getenv("MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN")
 
-# If the API token is not found, raise an error
+# If any aren't found, raise an error
 if not OPENAI_API_TOKEN:
     raise ValueError("Environment variable DATA_ENG_OPEN_AI_API_KEY is not set!")
-
-# If the slack webhook is not found, raise an error
 # if not SLACK_WEBHOOK:
-#     raise ValueError("Environment variable SLACK_MARKET_INTEL_BOT_WEBHOOK_URL is not set!")
+#     raise ValueError(
+#         "Environment variable SLACK_MARKET_INTEL_BOT_WEBHOOK_URL is not set!"
+#     )
+if not GITHUB_ACCESS_TOKEN:
+    raise ValueError(
+        "Environment variable MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN is not set!"
+    )
 
 
 def ensure_gcs_file_exists(gcs_path: str):
@@ -136,6 +141,7 @@ def summarize_with_open_ai(
 def write_to_gcs(
     bucket, final_output_fpath, final_output, response_fpath, response_object
 ):
+    """Write file to GCS."""
     blob = bucket.blob(final_output_fpath)
     blob.upload_from_string(final_output)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath}")
@@ -270,7 +276,8 @@ Table of Contents:
         input_text=file_contents4,
         use_web_tool=False,
     )
-    final_report += f"\n\n{final_output_4}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
+    final_report += f"""\n\n{final_output_4}
+More details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"""
 
     # Prompt #5 - Browser & Device Partnership News
     prompt5 = """Please find articles related to browser & device partnerships.
@@ -340,12 +347,56 @@ devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize t
     final_blob.upload_from_string(final_report)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_report_path}")
 
-    # TODO
+    # Write the markdown file to Github market-intel-bot repo
+    path = f"REPORTS/{final_report_path}"  # path in the repo
+    branch = "main"  # or "develop", etc.
+    commit_message = "Add file via API"
+
+    # Encode content
+    content_bytes = final_report.encode("utf-8")
+    encoded_content = base64.b64encode(content_bytes).decode("utf-8")
+
+    # Check if the file already exists or not
+    url = f"https://api.github.com/repos/mozilla/market_intel_bot/contents/REPORTS/{final_report_path}"
+    headers = {"Authorization": f"token {GITHUB_ACCESS_TOKEN}"}
+
+    r = requests.get(url, headers=headers, params={"ref": "main"}, timeout=20)
+    if r.status_code == 200:
+        # File exists — we’ll update it
+        sha = r.json()["sha"]
+        action = "Updating"
+    else:
+        sha = None
+        action = "Creating"
+
+    print(f"{action} file {path} in mozilla/market_intel_bot@main")
+
+    # === CREATE OR UPDATE FILE ===
+    data = {
+        "message": commit_message,
+        "content": encoded_content,
+        "branch": branch,
+    }
+    if sha:
+        data["sha"] = sha
+
+    res = requests.put(url, headers=headers, json=data, timeout=20)
+
+    if res.status_code in (200, 201):
+        print("File written successfully!")
+        print("View it at:", res.json()["content"]["html_url"])
+    else:
+        error_message = f"Error writing file: {res.status_code} - {res.text}"
+        raise Exception(error_message)
+
     # Build the message & include the link to the report
-    # message = {"text": "Hello, here is the link to the report!"}
+    # message = {
+    #    "text": """ :robot_face: Your latest market intelligence report is here:
+    #    https://github.com/mozilla/market_intel_bot/tree/main/REPORTS"""
+    # }
 
     # Send the message & report to Slack
-    # requests.post(SLACK_WEBHOOK, json=message)
+    # requests.post(SLACK_WEBHOOK, json=message, timeout=20)
 
 
 if __name__ == "__main__":

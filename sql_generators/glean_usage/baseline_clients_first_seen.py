@@ -50,6 +50,7 @@ class BaselineClientsFirstSeenTable(GleanTable):
             app_name,
             app_channel_info,
             output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
             parallelism=parallelism,
             id_token=id_token,
         )

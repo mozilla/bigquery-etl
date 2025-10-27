@@ -42,5 +42,12 @@ class EventsUnnestedTable(GleanTable):
                 )
             }
             super().generate_per_app(
-                project_id, app_name, app_channels_info, output_dir, id_token=id_token
+                project_id,
+                app_name,
+                app_channels_info,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
+                id_token=id_token,
+                all_base_tables_exist=all_base_tables_exist,
             )

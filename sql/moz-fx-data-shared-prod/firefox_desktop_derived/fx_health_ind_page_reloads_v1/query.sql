@@ -8,7 +8,7 @@ FROM
 CROSS JOIN
   UNNEST(metrics.labeled_counter.browser_ui_interaction_nav_bar) AS a
 WHERE
-  DATE(submission_timestamp) = '2025-10-01'
+  DATE(submission_timestamp) = @submission_date
   AND LOWER(a.key) LIKE '%reload%'
 GROUP BY
   DATE(submission_timestamp),

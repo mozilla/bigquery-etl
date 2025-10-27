@@ -20,6 +20,8 @@ scheduling:
   secrets:
   - deploy_target: DATA_ENG_OPEN_AI_API_KEY
     key: bqetl_chrome_releases__open_ai_api_key
+  - deploy_target: MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN
+    key: bqetl_market_intel_bot__github_token
 bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer

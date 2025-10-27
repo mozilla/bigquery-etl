@@ -34,6 +34,12 @@ external_derived__market_intel_bot__v1_bqetl_chrome_releases__open_ai_api_key = 
     secret="airflow-gke-secrets",
     key="bqetl_chrome_releases__open_ai_api_key",
 )
+external_derived__market_intel_bot__v1_bqetl_market_intel_bot__github_token = Secret(
+    deploy_type="env",
+    deploy_target="MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN",
+    secret="airflow-gke-secrets",
+    key="bqetl_market_intel_bot__github_token",
+)
 
 
 default_args = {
@@ -84,6 +90,7 @@ with DAG(
         email=["kwindau@mozilla.com"],
         secrets=[
             external_derived__market_intel_bot__v1_bqetl_chrome_releases__open_ai_api_key,
+            external_derived__market_intel_bot__v1_bqetl_market_intel_bot__github_token,
         ],
     )
 

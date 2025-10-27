@@ -23,6 +23,7 @@ class EventErrorMonitoring(GleanTable):
     """Represents the generated aggregated table for event error monitoring."""
 
     def __init__(self) -> None:
+        """Initialize."""
         self.per_app_id_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True

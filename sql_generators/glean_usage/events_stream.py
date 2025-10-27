@@ -35,6 +35,7 @@ class EventsStreamTable(GleanTable):
         parallelism=8,
         id_token=None,
     ):
+        """Generate the events_stream table query per app channel."""
         # Get the app ID from the baseline_table name.
         # This is what `common.py` also does.
         app_id = re.sub(r"_stable\..+", "", baseline_table)
@@ -86,8 +87,9 @@ class EventsStreamTable(GleanTable):
             baseline_table,
             app_name,
             app_channel_info,
-            output_dir,
-            use_cloud_function,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
             id_token=id_token,
         )
 
@@ -110,5 +112,12 @@ class EventsStreamTable(GleanTable):
             return
 
         super().generate_per_app(
-            project_id, app_name, app_channels_info, output_dir, id_token=id_token
+            project_id,
+            app_name,
+            app_channels_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
+            id_token=id_token,
+            all_base_tables_exist=all_base_tables_exist,
         )

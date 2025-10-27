@@ -183,7 +183,7 @@ class GleanTable:
         self.target_table_id = ""
         self.prefix = ""
         self.custom_render_kwargs = {}
-        self.per_app_id_enabled = True
+        self.per_app_channel_enabled = True
         self.per_app_enabled = True
         self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
@@ -204,18 +204,19 @@ class GleanTable:
             for file in glob.glob(skip_existing, recursive=True)
         ]
 
-    def generate_per_app_id(
+    def generate_per_app_channel(
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_channel_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
     ):
-        """Generate the baseline table query per app_id."""
-        if not self.per_app_id_enabled:
+        """Generate the baseline table query per app channel."""
+        if not self.per_app_channel_enabled:
             return
 
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
@@ -232,14 +233,6 @@ class GleanTable:
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
         derived_dataset = tables["daily_table"].split(".")[-2]
-        dataset = derived_dataset.replace("_derived", "")
-
-        app_name = dataset
-        for app in app_info:
-            for app_dataset in app:
-                if app_dataset["bq_dataset_family"] == dataset:
-                    app_name = app_dataset["app_name"]
-                    break
 
         # Some apps did briefly send a baseline ping,
         # but do not do so actively anymore. This is why they get excluded.
@@ -383,7 +376,8 @@ class GleanTable:
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_channels_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -393,8 +387,6 @@ class GleanTable:
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
-
-        app_name = app_info[0]["app_name"]
 
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_name
@@ -406,16 +398,17 @@ class GleanTable:
             return
 
         datasets = [
-            (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
+            (a["bq_dataset_family"], a.get("app_channel", "release"))
+            for a in app_channels_info
         ]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
             # This app only has a single channel, and the app_name
             # exactly matches the generated bq_dataset_family, so
-            # the existing per-app_id dataset also serves as the
+            # the existing per-app-channel dataset also serves as the
             # per-app dataset, thus we don't have to provision
             # union views.
-            if self.per_app_id_enabled:
+            if self.per_app_channel_enabled:
                 return
 
         enable_monitoring = app_name not in list(

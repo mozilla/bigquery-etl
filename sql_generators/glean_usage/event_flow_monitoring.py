@@ -22,7 +22,7 @@ class EventFlowMonitoring(GleanTable):
     """Represents the generated aggregated table for event flow monitoring."""
 
     def __init__(self) -> None:
-        self.per_app_id_enabled = False
+        self.per_app_channel_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
         self.prefix = PREFIX
@@ -42,7 +42,11 @@ class EventFlowMonitoring(GleanTable):
             "generate", "glean_usage", "event_flow_monitoring", "include_apps", fallback=[]
         )
 
-        apps = [app[0] for app in apps if app[0]["app_name"] in include_apps]
+        apps = [
+            app_channels_info[0]
+            for app_name, app_channels_info in apps.items()
+            if app_name in include_apps
+        ]
 
         render_kwargs = dict(
             project_id=project_id,

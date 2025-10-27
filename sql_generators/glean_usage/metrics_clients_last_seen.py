@@ -19,7 +19,7 @@ class MetricsClientsLastSeen(GleanTable):
         """Initialize metrics_clients_last_seen table."""
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
-        self.per_app_id_enabled = False
+        self.per_app_channel_enabled = False
         self.cross_channel_template = None
         self.per_app_requires_all_base_tables = True
 
@@ -33,7 +33,8 @@ class MetricsClientsLastSeen(GleanTable):
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_channels_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -48,14 +49,13 @@ class MetricsClientsLastSeen(GleanTable):
             "skip_apps",
             fallback=[],
         )
-        if app_info[0]["app_name"] in skip_apps:
-            print(
-                f"Skipping metrics_clients_last_seen generation for {app_info[0]['app_name']}"
-            )
+        if app_name in skip_apps:
+            print(f"Skipping metrics_clients_last_seen generation for {app_name}")
             return
         return super().generate_per_app(
             project_id,
-            app_info,
+            app_name,
+            app_channels_info,
             output_dir,
             use_cloud_function,
             parallelism,

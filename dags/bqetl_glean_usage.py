@@ -984,13 +984,6 @@ with DAG(
         parent_group=task_group_fenix,
     ) as bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1_external:
         ExternalTaskMarker(
-            task_id="private_bqetl_device_partnerships__wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
-            external_dag_id="private_bqetl_device_partnerships",
-            external_task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",
             external_task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
@@ -1171,13 +1164,6 @@ with DAG(
         "bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1_external",
         parent_group=task_group_fenix,
     ) as bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1_external:
-        ExternalTaskMarker(
-            task_id="private_bqetl_device_partnerships__wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-            external_dag_id="private_bqetl_device_partnerships",
-            external_task_id="wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
         ExternalTaskMarker(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",
@@ -1360,13 +1346,6 @@ with DAG(
         parent_group=task_group_fenix,
     ) as bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1_external:
         ExternalTaskMarker(
-            task_id="private_bqetl_device_partnerships__wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-            external_dag_id="private_bqetl_device_partnerships",
-            external_task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",
             external_task_id="wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_daily__v1",
@@ -1548,13 +1527,6 @@ with DAG(
         parent_group=task_group_fenix,
     ) as bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1_external:
         ExternalTaskMarker(
-            task_id="private_bqetl_device_partnerships__wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-            external_dag_id="private_bqetl_device_partnerships",
-            external_task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",
             external_task_id="wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_daily__v1",
@@ -1735,13 +1707,6 @@ with DAG(
         "bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1_external",
         parent_group=task_group_fenix,
     ) as bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1_external:
-        ExternalTaskMarker(
-            task_id="private_bqetl_device_partnerships__wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
-            external_dag_id="private_bqetl_device_partnerships",
-            external_task_id="wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=57600)).isoformat() }}",
-        )
-
         ExternalTaskMarker(
             task_id="bqetl_org_mozilla_firefox_derived__wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_daily__v1",
             external_dag_id="bqetl_org_mozilla_firefox_derived",

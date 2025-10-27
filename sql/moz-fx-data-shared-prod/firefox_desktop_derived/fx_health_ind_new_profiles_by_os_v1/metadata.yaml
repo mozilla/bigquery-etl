@@ -1,0 +1,23 @@
+friendly_name: Firefox Health Indicator - New Profiles By OS
+description: |-
+  Aggregate table used in Firefox Health dashboard, contains number of new profiles by OS
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: aggregate
+  shredder_mitigation: true
+scheduling:
+  dag_name: bqetl_fx_health_ind_dashboard
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - os_version_bucket
+references: {}

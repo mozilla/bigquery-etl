@@ -105,9 +105,8 @@ class EventsStreamTable(GleanTable):
         all_base_tables_exist=None,
     ):
         """Generate the events_stream table query per app_name."""
-        target_dataset = app_name
-        if target_dataset in ConfigLoader.get(
-            "generate", "glean_usage", "events_stream", "skip_datasets", fallback=[]
+        if app_name in ConfigLoader.get(
+            "generate", "glean_usage", "events_stream", "skip_apps", fallback=[]
         ):
             return
 

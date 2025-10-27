@@ -334,7 +334,8 @@ devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize t
     final_report += f"\n{final_output_7}\n\n"
 
     # Prompt #8 - Upcoming holidays/events that could impact browser usage
-    prompt8 = "What upcoming holidays or events in the world in the next month could potentially impact browser usage?"
+    prompt8 = """What upcoming holidays or events in the world in the next 1 - 2 months could potentially impact browser usage?
+Please list them in chronological order."""
     final_output_8, response_object_8 = summarize_with_open_ai(
         client,
         MODEL_TYPE,

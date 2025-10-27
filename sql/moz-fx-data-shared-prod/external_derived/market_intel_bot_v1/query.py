@@ -106,7 +106,7 @@ def read_gcs_file(gcs_path: str) -> str:
     if not blob.exists():
         raise FileNotFoundError(f"File not found: {gcs_path}")
 
-    content = blob.download_as_text()  # or .download_as_bytes() for binary files
+    content = blob.download_as_text()
     return content
 
 
@@ -248,8 +248,9 @@ Table of Contents:
     final_report += f"\n{final_output_1}\n\n"
 
     # Prompt #2 - New Features in Chrome
-    prompt2 = """What new features has Chrome been working on recently?
-    Please include the release number you found these features in and the date of that release."""
+    prompt2 = """What new features has Chrome released recently?
+    Please include the release number you found these features in and the date of that release.
+    Please do not include links."""
     final_output_2, response_object_2 = summarize_with_open_ai(
         client,
         MODEL_TYPE,
@@ -262,7 +263,7 @@ Table of Contents:
     final_report += f"\n\n{final_output_2}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
 
     # Prompt #3 - New AI Features in Chrome
-    prompt3 = "What AI features has Chrome been working on recently?"
+    prompt3 = "What AI features has Chrome been working on recently? Please do not include links."
     final_output_3, response_object_3 = summarize_with_open_ai(
         client,
         MODEL_TYPE,
@@ -275,7 +276,7 @@ Table of Contents:
     final_report += f"\n\n{final_output_3}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
 
     # Prompt #4 - New Features in Chrome Dev Tools
-    prompt4 = "What new features are available in Chrome Dev Tools?"
+    prompt4 = "What new features are available in Chrome Dev Tools? Please do not include links."
     final_output_4, response_object_4 = summarize_with_open_ai(
         client,
         MODEL_TYPE,

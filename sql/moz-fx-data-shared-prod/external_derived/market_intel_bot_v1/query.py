@@ -1,27 +1,29 @@
 """Summarize market news using OpenAI and write results back to GCS."""
 
 # Load libraries
+import base64
 import json
 import os
-import unicodedata
-
-# import requests #Only needed once Slack added
 import sys
+import unicodedata
 from argparse import ArgumentParser
-from datetime import datetime, date
+from datetime import date, datetime
 
+import requests
 from google.cloud import storage
 from openai import OpenAI
 
 # Set variables
 GCS_BUCKET = "gs://moz-fx-data-prod-external-data/"
 BUCKET_NO_GS = "moz-fx-data-prod-external-data"
-INSTRUCTIONS = "Generate a markdown formatted response, with a H2 header title"
+INSTRUCTIONS = (
+    "Generate a markdown formatted response, with a H2 header title that says "
+)
 MODEL_TYPE = "gpt-4o-mini"
 SCRAPED_BASE = "MARKET_RESEARCH/SCRAPED_INFO/"
 OUTPUT_BASE = "MARKET_RESEARCH/SUMMARY_INFO/"
 
-# Filepath for the final, consolidated report
+# Filepath for the final, consolidated report in GCS
 FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
@@ -39,19 +41,22 @@ OUTPUT_FPATH_6 = OUTPUT_BASE + "OnlineAdvertising/WebScraping_"
 OUTPUT_FPATH_7 = OUTPUT_BASE + "AI_News/WebScraping_"
 OUTPUT_FPATH_8 = OUTPUT_BASE + "UpcomingHolidays/WebScraping_"
 
-# Pull in the API key from GSM
+# Pull in the different keys from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
-
-# Pull in the Slack webhook URL from GSM
 # SLACK_WEBHOOK = os.getenv("SLACK_MARKET_INTEL_BOT_WEBHOOK_URL")
+GITHUB_ACCESS_TOKEN = os.getenv("MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN")
 
-# If the API token is not found, raise an error
+# If any aren't found, raise an error
 if not OPENAI_API_TOKEN:
     raise ValueError("Environment variable DATA_ENG_OPEN_AI_API_KEY is not set!")
-
-# If the slack webhook is not found, raise an error
 # if not SLACK_WEBHOOK:
-#     raise ValueError("Environment variable SLACK_MARKET_INTEL_BOT_WEBHOOK_URL is not set!")
+#     raise ValueError(
+#         "Environment variable SLACK_MARKET_INTEL_BOT_WEBHOOK_URL is not set!"
+#     )
+if not GITHUB_ACCESS_TOKEN:
+    raise ValueError(
+        "Environment variable MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN is not set!"
+    )
 
 
 def ensure_gcs_file_exists(gcs_path: str):
@@ -101,19 +106,19 @@ def read_gcs_file(gcs_path: str) -> str:
     if not blob.exists():
         raise FileNotFoundError(f"File not found: {gcs_path}")
 
-    content = blob.download_as_text()  # or .download_as_bytes() for binary files
+    content = blob.download_as_text()
     return content
 
 
 def summarize_with_open_ai(
-    client, model, instructions, prompt, input_text, use_web_tool
+    client, model, instructions, prompt, input_text, use_web_tool, title
 ):
     """Summarize with open ai."""
     if use_web_tool:
         resp = client.responses.create(
             model=model,
             tools=[{"type": "web_search_preview"}],
-            instructions=instructions,
+            instructions=instructions + title,
             input=prompt,
         )
     else:
@@ -125,7 +130,7 @@ def summarize_with_open_ai(
             convo.append({"role": "user", "content": input_text})
         resp = client.responses.create(
             model=model,
-            instructions=instructions,
+            instructions=instructions + title,
             input=convo,
         )
     response_output_text = resp.output_text
@@ -136,6 +141,7 @@ def summarize_with_open_ai(
 def write_to_gcs(
     bucket, final_output_fpath, final_output, response_fpath, response_object
 ):
+    """Write file to GCS."""
     blob = bucket.blob(final_output_fpath)
     blob.upload_from_string(final_output)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_output_fpath}")
@@ -211,11 +217,11 @@ def main():
     # Initialize the final output as an empty string
     final_report = """# Market Intel Bot Report
 Table of Contents:
-* New Features in Popular Browsers
-* New Features in Chrome
+* Recent Developments in Popular Browsers
+* New Features in Chrome's Latest Release
 * New AI Features in Chrome
 * New Features in Chrome Dev Tools
-* Device & Browser Partnership News
+* Browser & Device Partnership News
 * Online Advertising News
 * AI News
 * Upcoming Events Impacting Browser Usage
@@ -231,13 +237,20 @@ Table of Contents:
         "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
     )
     final_output_1, response_object_1 = summarize_with_open_ai(
-        client, MODEL_TYPE, INSTRUCTIONS, prompt1, input_text=None, use_web_tool=True
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt1,
+        input_text=None,
+        use_web_tool=True,
+        title="Recent Developments in Popular Browsers",
     )
     final_report += f"\n{final_output_1}\n\n"
 
     # Prompt #2 - New Features in Chrome
-    prompt2 = """What new features has Chrome been working on recently?
-    Please include the release number you found these features in and the date of that release."""
+    prompt2 = """What new features has Chrome released recently?
+    Please include the release number you found these features in and the date of that release.
+    Please do not include links."""
     final_output_2, response_object_2 = summarize_with_open_ai(
         client,
         MODEL_TYPE,
@@ -245,11 +258,12 @@ Table of Contents:
         prompt2,
         input_text=file_contents2,
         use_web_tool=False,
+        title="New Features in Chrome's Latest Release",
     )
     final_report += f"\n\n{final_output_2}\n\nMore details can be found here: [Chrome Release Notes](https://developer.chrome.com/release-notes)"
 
     # Prompt #3 - New AI Features in Chrome
-    prompt3 = "What AI features has Chrome been working on recently?"
+    prompt3 = "What AI features has Chrome been working on recently? Please do not include links."
     final_output_3, response_object_3 = summarize_with_open_ai(
         client,
         MODEL_TYPE,
@@ -257,11 +271,12 @@ Table of Contents:
         prompt3,
         input_text=file_contents3,
         use_web_tool=False,
+        title="New AI Features in Chrome",
     )
     final_report += f"\n\n{final_output_3}\n\nMore details can be found here: [AI with Chrome](https://developer.chrome.com/docs/ai)"
 
     # Prompt #4 - New Features in Chrome Dev Tools
-    prompt4 = "What new features are available in Chrome Dev Tools?"
+    prompt4 = "What new features are available in Chrome Dev Tools? Please do not include links."
     final_output_4, response_object_4 = summarize_with_open_ai(
         client,
         MODEL_TYPE,
@@ -269,8 +284,10 @@ Table of Contents:
         prompt4,
         input_text=file_contents4,
         use_web_tool=False,
+        title="New Features in Chrome Dev Tools",
     )
-    final_report += f"\n\n{final_output_4}\n\nMore details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"
+    final_report += f"""\n\n{final_output_4}
+More details can be found here: [Chrome Dev Tools](https://developer.chrome.com/docs/devtools/news?hl=en#whats-new)"""
 
     # Prompt #5 - Browser & Device Partnership News
     prompt5 = """Please find articles related to browser & device partnerships.
@@ -278,14 +295,26 @@ Firefox should be omitted from this search as we are focusing on Firefox's compe
 Please find all recent announcements of browser-device partnerships with browsers like Chrome, Edge, Safari, etc. and
 devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize these findings."""
     final_output_5, response_object_5 = summarize_with_open_ai(
-        client, MODEL_TYPE, INSTRUCTIONS, prompt5, input_text=None, use_web_tool=True
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt5,
+        input_text=None,
+        use_web_tool=True,
+        title="Browser & Device Partnership News",
     )
     final_report += f"\n{final_output_5}\n\n"
 
     # Prompt #6 - Online Advertising News
     prompt6 = "Look for articles from the past month about news related to online advertising, and summarize the findings."
     final_output_6, response_object_6 = summarize_with_open_ai(
-        client, MODEL_TYPE, INSTRUCTIONS, prompt6, input_text=None, use_web_tool=True
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt6,
+        input_text=None,
+        use_web_tool=True,
+        title="Online Advertising News",
     )
     final_report += f"\n{final_output_6}\n\n"
 
@@ -294,14 +323,27 @@ devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize t
         "Look for articles from the past month about news related to AI in general."
     )
     final_output_7, response_object_7 = summarize_with_open_ai(
-        client, MODEL_TYPE, INSTRUCTIONS, prompt7, input_text=None, use_web_tool=True
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt7,
+        input_text=None,
+        use_web_tool=True,
+        title="AI News",
     )
     final_report += f"\n{final_output_7}\n\n"
 
     # Prompt #8 - Upcoming holidays/events that could impact browser usage
-    prompt8 = "What holidays or events that could potentially impact browser usage are coming up in the next few months?"
+    prompt8 = """What upcoming holidays or events in the world in the next 1 - 2 months could potentially impact browser usage?
+Please list them in chronological order."""
     final_output_8, response_object_8 = summarize_with_open_ai(
-        client, MODEL_TYPE, INSTRUCTIONS, prompt8, input_text=None, use_web_tool=True
+        client,
+        MODEL_TYPE,
+        INSTRUCTIONS,
+        prompt8,
+        input_text=None,
+        use_web_tool=True,
+        title="Upcoming Events Impacting Browser Usage",
     )
     final_report += f"\n{final_output_8}\n\n"
 
@@ -340,12 +382,57 @@ devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize t
     final_blob.upload_from_string(final_report)
     print(f"Summary uploaded to gs://{BUCKET_NO_GS}/{final_report_path}")
 
-    # TODO
+    # Write the markdown file to Github market-intel-bot repo
+    path = f"REPORTS/{final_report_path}"  # path in the repo
+    branch = "main"  # or "develop", etc.
+    commit_message = "Add file via API"
+
+    # Encode content
+    content_bytes = final_report.encode("utf-8")
+    encoded_content = base64.b64encode(content_bytes).decode("utf-8")
+
+    # Check if the file already exists or not
+    final_git_path = "MarketIntelBotReport_" + report_date + ".md"
+    url = f"https://api.github.com/repos/mozilla/market_intel_bot/contents/REPORTS/{final_git_path}"
+    headers = {"Authorization": f"token {GITHUB_ACCESS_TOKEN}"}
+
+    r = requests.get(url, headers=headers, params={"ref": "main"}, timeout=20)
+    if r.status_code == 200:
+        # File exists — we’ll update it
+        sha = r.json()["sha"]
+        action = "Updating"
+    else:
+        sha = None
+        action = "Creating"
+
+    print(f"{action} file {path} in mozilla/market_intel_bot@main")
+
+    # === CREATE OR UPDATE FILE ===
+    data = {
+        "message": commit_message,
+        "content": encoded_content,
+        "branch": branch,
+    }
+    if sha:
+        data["sha"] = sha
+
+    res = requests.put(url, headers=headers, json=data, timeout=20)
+
+    if res.status_code in (200, 201):
+        print("File written successfully!")
+        print("View it at:", res.json()["content"]["html_url"])
+    else:
+        error_message = f"Error writing file: {res.status_code} - {res.text}"
+        raise Exception(error_message)
+
     # Build the message & include the link to the report
-    # message = {"text": "Hello, here is the link to the report!"}
+    # message = {
+    #    "text": """ :robot_face: Your latest market intelligence report is here:
+    #    https://github.com/mozilla/market_intel_bot/tree/main/REPORTS"""
+    # }
 
     # Send the message & report to Slack
-    # requests.post(SLACK_WEBHOOK, json=message)
+    # requests.post(SLACK_WEBHOOK, json=message, timeout=20)
 
 
 if __name__ == "__main__":

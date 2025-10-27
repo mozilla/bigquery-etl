@@ -77,7 +77,8 @@ CREATE OR REPLACE VIEW
               glean_error_invalid_label ARRAY<STRUCT<key STRING, value INT64>>,
               glean_error_invalid_overflow ARRAY<STRUCT<key STRING, value INT64>>,
               glean_error_invalid_state ARRAY<STRUCT<key STRING, value INT64>>,
-              glean_error_invalid_value ARRAY<STRUCT<key STRING, value INT64>>
+              glean_error_invalid_value ARRAY<STRUCT<key STRING, value INT64>>,
+              glean_error_invalid_type ARRAY<STRUCT<key STRING, value INT64>>
             >
         ) AS labeled_counter,
         STRUCT(
@@ -85,13 +86,13 @@ CREATE OR REPLACE VIEW
           IFNULL(JSON_VALUE(event_extra.referrer), '') AS page_referrer
         ) AS url2,
         STRUCT(
-          CAST(NULL AS STRING) AS navigator_geo,
+          IFNULL(country_codes_v1.name, 'Unknown') AS navigator_geo,
           'unknown' AS navigator_subscription_type,
           CAST(NULL AS STRING) AS navigator_user_agent,
           CAST(NULL AS STRING) AS navigator_viewport_breakpoint,
           CAST(NULL AS STRING) AS page_http_status,
           CAST(NULL AS STRING) AS page_is_baseline,
-          metadata.geo.country AS navigator_geo_iso,
+          IFNULL(metadata.geo.country, '??') AS navigator_geo_iso,
           CAST(NULL AS STRING) AS glean_client_annotation_experimentation_id
         ) AS `string`,
         STRUCT(
@@ -145,6 +146,9 @@ CREATE OR REPLACE VIEW
       is_bot_generated
     FROM
       `moz-fx-data-shared-prod.mdn_fred.events_stream`
+    LEFT JOIN
+      `moz-fx-data-shared-prod.static.country_codes_v1` country_codes_v1
+      ON country_codes_v1.code = metadata.geo.country
     WHERE
       event_category = 'glean'
       AND event_name = 'element_click'

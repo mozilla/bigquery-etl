@@ -1,0 +1,6 @@
+---
+friendly_name: JSON Extract String Map
+description: |-
+  Returns an array of key/value structs from a string representing a JSON map.
+
+  Non-string non-null values are encoded as JSON.

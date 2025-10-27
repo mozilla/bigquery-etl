@@ -348,63 +348,13 @@ fields:
     description: |-
       Whether the subscription has had fraudulent charges.
       This will be null for Google and Apple subscriptions.
-  - name: first_touch_attribution
-    type: RECORD
-    mode: NULLABLE
-    description: |-
-      Unbounded first-touch attribution for the service subscription (if any).
-      This will be null for Google and Apple subscriptions.
-    fields:
-    - name: impression_at
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: |-
-        When the first-touch attribution impression occurred.
-    - name: entrypoint
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution entrypoint.
-    - name: entrypoint_experiment
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution entrypoint experiment.
-    - name: entrypoint_variation
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution entrypoint experiment variation.
-    - name: utm_campaign
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM campaign.
-    - name: utm_content
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM content.
-    - name: utm_medium
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM medium.
-    - name: utm_source
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM source.
-    - name: utm_term
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM term.
   - name: last_touch_attribution
     type: RECORD
     mode: NULLABLE
     description: |-
-      Unbounded last-touch attribution for the service subscription (if any).
+      Last-touch attribution for the service subscription (if any).
+      For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+      For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
       This will be null for Google and Apple subscriptions.
     fields:
     - name: impression_at
@@ -771,63 +721,13 @@ fields:
     description: |-
       Whether the subscription has had fraudulent charges.
       This will be null for Google and Apple subscriptions.
-  - name: first_touch_attribution
-    type: RECORD
-    mode: NULLABLE
-    description: |-
-      Unbounded first-touch attribution for the service subscription (if any).
-      This will be null for Google and Apple subscriptions.
-    fields:
-    - name: impression_at
-      type: TIMESTAMP
-      mode: NULLABLE
-      description: |-
-        When the first-touch attribution impression occurred.
-    - name: entrypoint
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution entrypoint.
-    - name: entrypoint_experiment
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution entrypoint experiment.
-    - name: entrypoint_variation
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution entrypoint experiment variation.
-    - name: utm_campaign
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM campaign.
-    - name: utm_content
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM content.
-    - name: utm_medium
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM medium.
-    - name: utm_source
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM source.
-    - name: utm_term
-      type: STRING
-      mode: NULLABLE
-      description: |-
-        First-touch attribution UTM term.
   - name: last_touch_attribution
     type: RECORD
     mode: NULLABLE
     description: |-
-      Unbounded last-touch attribution for the service subscription (if any).
+      Last-touch attribution for the service subscription (if any).
+      For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+      For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
       This will be null for Google and Apple subscriptions.
     fields:
     - name: impression_at

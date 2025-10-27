@@ -127,5 +127,20 @@ JOIN
   ON subscription_starts.mozilla_account_id_sha256 = customer_attribution_impressions.mozilla_account_id_sha256
   AND service.id IN UNNEST(customer_attribution_impressions.service_ids)
   AND subscription_starts.started_at >= customer_attribution_impressions.impression_at
+WHERE
+  -- Require at least one of the core attribution values to be set, and exclude some nonsensical attribution values (DENG-9776).
+  (
+    customer_attribution_impressions.entrypoint_experiment IS NOT NULL
+    OR NULLIF(customer_attribution_impressions.utm_campaign, 'invalid') IS NOT NULL
+    OR NULLIF(customer_attribution_impressions.utm_source, 'invalid') IS NOT NULL
+  )
+  AND (
+    customer_attribution_impressions.utm_campaign IN (
+      'download-client',
+      'fx-forgot-password',
+      'subscription-download',
+      'FuckOff'
+    )
+  ) IS NOT TRUE
 GROUP BY
   subscription_id

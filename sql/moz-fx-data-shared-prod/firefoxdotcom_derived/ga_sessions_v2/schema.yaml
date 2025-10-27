@@ -255,3 +255,7 @@ fields:
   type: STRING
   mode: REPEATED
   description: All non-null reported gad_campaignid from event_params for this session.
+- name: engaged_session
+  type: INTEGER
+  mode: NULLABLE
+  description: A 1/0 flag indicating if the session was engaged

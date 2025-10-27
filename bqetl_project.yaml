@@ -100,13 +100,6 @@ dry_run:
   - sql/moz-fx-data-shared-prod/monitoring/shredder_progress/view.sql
   - sql/moz-fx-data-shared-prod/stripe_derived/**/*.sql
   - sql/moz-fx-data-shared-prod/stripe_external/**/*.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_live/view.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/flows_v1/query.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/refunds_v1/query.sql
-  - sql/moz-fx-cjms-nonprod-9a36/cjms_bigquery/subscriptions_v1/query.sql
-  - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/flows_v1/query.sql
-  - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/refunds_v1/query.sql
-  - sql/moz-fx-cjms-prod-f3c7/cjms_bigquery/subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/apple_subscriptions_changelog_v1/query.sql
   - sql/moz-fx-data-shared-prod/subscription_platform_derived/firestore_stripe_subscriptions_status_v1/query.sql
@@ -190,6 +183,7 @@ dry_run:
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v2/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/clients_last_seen_v2/query.sql
+  - sql/moz-fx-data-shared-prod/telemetry_derived/events_daily_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_nightly_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/main_1pct_v1/query.sql
   - sql/moz-fx-data-shared-prod/telemetry_derived/fog_decision_support_percentiles_v1/query.sql
@@ -422,6 +416,7 @@ generate:
       skip_apps:
       - accounts_cirrus
       - experimenter_cirrus
+      - experimenter_backend
       - firefox_desktop_background_defaultagent
       - firefox_desktop_background_tasks
       - firefox_crashreporter
@@ -435,6 +430,7 @@ generate:
       skip_apps:
       - accounts_cirrus
       - experimenter_cirrus
+      - experimenter_backend
       - firefox_desktop_background_defaultagent
       - firefox_desktop_background_tasks
       - firefox_crashreporter
@@ -529,6 +525,11 @@ generate:
     apps:
     - firefox_desktop
     - fenix
+    - firefox_ios
+    - focus_ios
+    - focus_android
+    - klar_ios
+    - klar_android
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
@@ -613,3 +614,8 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/telemetry_derived/fx_accounts_linked_clients_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_derived/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_ios_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/focus_ios_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/focus_android_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/klar_ios_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/klar_android_derived/baseline_clients_city_seen_v1

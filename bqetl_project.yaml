@@ -462,8 +462,6 @@ generate:
       - reference_browser
       - thunderbird_desktop
       - lockwise_ios
-      skip_app_metrics:
-      - thunderbird_desktop
     bqetl_checks:
       skip_apps:
       - mozilla_vpn

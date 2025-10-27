@@ -4,8 +4,6 @@
 import base64
 import json
 import os
-
-# import requests #Only needed once Slack added
 import sys
 import unicodedata
 from argparse import ArgumentParser

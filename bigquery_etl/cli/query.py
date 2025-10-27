@@ -2321,6 +2321,7 @@ def _update_query_schema(
         respect_skip=respect_dryrun_skip,
         credentials=credentials,
         id_token=id_token,
+        strip_dml=True,
     )
 
     changed = True

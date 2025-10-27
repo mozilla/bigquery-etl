@@ -40,6 +40,7 @@ def generate(target_project, output_dir, use_cloud_function):
             table=table,
             partitioned_by="submission_timestamp",
             use_cloud_function=use_cloud_function,
+            strip_dml=True,
         )
         for project, dataset, table in CRASH_TABLES
     }

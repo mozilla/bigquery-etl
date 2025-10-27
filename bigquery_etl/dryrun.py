@@ -25,13 +25,14 @@ from urllib.request import Request, urlopen
 
 import click
 import google.auth
+import sqlglot
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.cloud import bigquery
 from google.oauth2.id_token import fetch_id_token
 
 from .config import ConfigLoader
 from .metadata.parse_metadata import Metadata
-from .util.common import render
+from .util.common import random_str, render
 
 try:
     from functools import cached_property  # type: ignore
@@ -77,6 +78,42 @@ def get_id_token(dry_run_url=ConfigLoader.get("dry_run", "function"), credential
         # then ID token is acquired using this service account credentials.
         id_token = fetch_id_token(auth_req, dry_run_url)
     return id_token
+
+
+def wrap_in_view_for_dryrun(sql: str) -> str:
+    """
+    Wrap SELECT queries in CREATE VIEW statement for faster dry runs.
+
+    CREATE VIEW statements don't scan partition metadata which makes dry runs faster.
+    """
+    try:
+        statements = [
+            stmt for stmt in sqlglot.parse(sql, dialect="bigquery") if stmt is not None
+        ]
+
+        # Only wrap if the last statement is a SELECT statement
+        if not statements or not isinstance(statements[-1], sqlglot.exp.Select):
+            return sql
+
+        # Split original SQL by semicolons to preserve formatting;
+        # stripping formatting causes some query dry runs to fail
+        parts = [p for p in sql.split(";") if p.strip()]
+
+        if len(parts) != len(statements):
+            return sql
+
+        prefix_sql = ";\n".join(parts[:-1]) + ";" if len(parts) > 1 else ""
+        query_sql = parts[-1].strip()
+
+        # Wrap in view
+        view_name = f"_dryrun_view_{random_str(8)}"
+        wrapped_query = f"CREATE TEMP VIEW {view_name} AS\n{query_sql}"
+
+        return f"{prefix_sql}\n\n{wrapped_query}" if prefix_sql else wrapped_query
+
+    except Exception as e:
+        print(f"Warning: Failed to wrap SQL in view: {e}")
+        return sql
 
 
 class Errors(Enum):
@@ -230,6 +267,13 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
+
+        # Wrap the query in a CREATE VIEW for faster dry runs
+        # Skip wrapping when strip_dml=True as it's used for special analysis modes
+        if not self.strip_dml:
+            sql = wrap_in_view_for_dryrun(sql)
+
+        print(sql)
 
         query_parameters = []
         scheduling_metadata = self.metadata.scheduling if self.metadata else {}
@@ -387,6 +431,7 @@ class DryRun:
                         filtered_content,
                         client=self.client,
                         id_token=self.id_token,
+                        strip_dml=self.strip_dml,
                     ).get_error()
                     == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
                 ):
@@ -408,6 +453,7 @@ class DryRun:
                         content=filtered_content,
                         client=self.client,
                         id_token=self.id_token,
+                        strip_dml=self.strip_dml,
                     ).get_error()
                     == Errors.DATE_FILTER_NEEDED_AND_SYNTAX
                 ):
@@ -420,6 +466,7 @@ class DryRun:
                 content=filtered_content,
                 client=self.client,
                 id_token=self.id_token,
+                strip_dml=self.strip_dml,
             )
             if (
                 stripped_dml_result.get_error() is None
@@ -494,7 +541,7 @@ class DryRun:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile!s:59} OK but DDL/DML skipped")
+            print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or 0:.2f}s")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run
@@ -582,6 +629,7 @@ class DryRun:
             client=self.client,
             id_token=self.id_token,
             partitioned_by=partitioned_by,
+            strip_dml=self.strip_dml,
         )
 
         # This check relies on the new schema being deployed to prod

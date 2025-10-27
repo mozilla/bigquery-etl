@@ -2,111 +2,148 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: Date
 - name: visit_identifier
   type: STRING
   mode: NULLABLE
+  description: Visit Identifier - Concatenation of the visitor ID and visit ID, represents a session.
 - name: full_visitor_id
   type: STRING
   mode: NULLABLE
+  description: Visitor ID - a unique identifier for a visitor to the website.
 - name: visit_start_time
   type: INTEGER
   mode: NULLABLE
+  description: Visit Start Time
 - name: page_path
   type: STRING
   mode: NULLABLE
+  description: Page Path
 - name: page_path_level1
   type: STRING
   mode: NULLABLE
+  description: Page Path Level 1
 - name: hit_type
   type: STRING
   mode: NULLABLE
+  description: Hit Type
 - name: is_exit
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Exit Indicator
 - name: is_entrance
   type: BOOLEAN
   mode: NULLABLE
+  description: Is Entrance Indicator
 - name: hit_number
   type: INTEGER
   mode: NULLABLE
+  description: Hit Number - A number indicating the order of hits within a session.
 - name: event_category
   type: STRING
   mode: NULLABLE
+  description: Event Category
 - name: event_label
   type: STRING
   mode: NULLABLE
+  description: Event Label
 - name: event_action
   type: STRING
   mode: NULLABLE
+  description: Event Action
 - name: device_category
   type: STRING
   mode: NULLABLE
+  description: Device Category
 - name: operating_system
   type: STRING
   mode: NULLABLE
+  description: Operating System
 - name: language
   type: STRING
   mode: NULLABLE
+  description: Language
 - name: browser
   type: STRING
   mode: NULLABLE
+  description: Browser
 - name: browser_version
   type: STRING
   mode: NULLABLE
+  description: Browser Version
 - name: country
   type: STRING
   mode: NULLABLE
+  description: Country
 - name: source
   type: STRING
   mode: NULLABLE
+  description: Source
 - name: medium
   type: STRING
   mode: NULLABLE
+  description: Medium
 - name: campaign
   type: STRING
   mode: NULLABLE
+  description: Campaign
 - name: ad_content
   type: STRING
   mode: NULLABLE
+  description: Ad Content
 - name: visits
   type: INTEGER
   mode: NULLABLE
+  description: The number of visits.
 - name: bounces
   type: INTEGER
   mode: NULLABLE
+  description: The number of bounces.
 - name: hit_time
   type: FLOAT
   mode: NULLABLE
+  description: Hit Time
 - name: first_interaction
   type: INTEGER
   mode: NULLABLE
+  description: First Interaction
 - name: last_interaction
   type: FLOAT
   mode: NULLABLE
+  description: Last Interaction
 - name: entrances
   type: INTEGER
   mode: NULLABLE
+  description: Entrances
 - name: exits
   type: INTEGER
   mode: NULLABLE
+  description: Exits
 - name: event_id
   type: STRING
   mode: NULLABLE
+  description: Event ID
 - name: page_level_1
   type: STRING
   mode: NULLABLE
+  description: Page Level 1
 - name: page_level_2
   type: STRING
   mode: NULLABLE
+  description: Page Level 2
 - name: page_level_3
   type: STRING
   mode: NULLABLE
+  description: Page Level 3
 - name: page_level_4
   type: STRING
   mode: NULLABLE
+  description: Page Level 4
 - name: page_level_5
   type: STRING
   mode: NULLABLE
+  description: Page Level 5
 - name: page_name
   type: STRING
   mode: NULLABLE
+  description: Page Name

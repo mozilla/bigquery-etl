@@ -77,7 +77,8 @@ CREATE OR REPLACE VIEW
               glean_error_invalid_label ARRAY<STRUCT<key STRING, value INT64>>,
               glean_error_invalid_overflow ARRAY<STRUCT<key STRING, value INT64>>,
               glean_error_invalid_state ARRAY<STRUCT<key STRING, value INT64>>,
-              glean_error_invalid_value ARRAY<STRUCT<key STRING, value INT64>>
+              glean_error_invalid_value ARRAY<STRUCT<key STRING, value INT64>>,
+              glean_error_invalid_type ARRAY<STRUCT<key STRING, value INT64>>
             >
         ) AS labeled_counter,
         STRUCT(

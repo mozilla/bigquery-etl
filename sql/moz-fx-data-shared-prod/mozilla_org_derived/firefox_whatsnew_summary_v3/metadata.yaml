@@ -1,0 +1,22 @@
+friendly_name: Firefox Whats New Page Summary V3
+description: |-
+  Each row represents an event where the page_location is a what's new page.
+owners:
+- kwindau@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_google_analytics_derived_ga4
+bigquery:
+  time_partitioning:
+    type: day
+    field: event_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - page_location_locale
+references: {}
+require_column_descriptions: true

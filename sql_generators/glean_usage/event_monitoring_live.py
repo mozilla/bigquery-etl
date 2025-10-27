@@ -1,7 +1,6 @@
 """Generate Materialized Views and aggregate queries for event monitoring."""
 
 import os
-import re
 from collections import OrderedDict, namedtuple
 from datetime import datetime
 from pathlib import Path
@@ -94,11 +93,6 @@ class EventMonitoringLive(GleanTable):
         id_token=None,
     ):
         """Generate a query across all app channels."""
-        # Get the app ID from the baseline_table name.
-        # This is what `common.py` also does.
-        app_id = re.sub(r"_stable\..+", "", baseline_table)
-        app_id = ".".join(app_id.split(".")[1:])
-
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         init_filename = f"{self.target_table_id}.materialized_view.sql"
@@ -116,9 +110,17 @@ class EventMonitoringLive(GleanTable):
 
         # Skip any not-allowed or deprecated app
         if (
-            app_id
+            app_name
             in ConfigLoader.get(
                 "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+            )
+            or app_channel_info["app_id"]
+            in ConfigLoader.get(
+                "generate",
+                "glean_usage",
+                "events_monitoring",
+                "skip_app_channels",
+                fallback=[],
             )
             or deprecated
         ):
@@ -147,7 +149,7 @@ class EventMonitoringLive(GleanTable):
             "generate",
             "glean_usage",
             "events_monitoring",
-            "manual_refresh",
+            "manual_refresh_apps",
             fallback=[],
         )
 
@@ -229,12 +231,19 @@ class EventMonitoringLive(GleanTable):
         skip_apps = ConfigLoader.get(
             "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
+        skip_app_channels = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "skip_app_channels",
+            fallback=[],
+        )
 
         manual_refresh_apps = ConfigLoader.get(
             "generate",
             "glean_usage",
             "events_monitoring",
-            "manual_refresh",
+            "manual_refresh_apps",
             fallback=[],
         )
 
@@ -242,7 +251,7 @@ class EventMonitoringLive(GleanTable):
             for app_dataset in app_channels_info:
                 if (
                     app_name in skip_apps
-                    or app_dataset["bq_dataset_family"] in skip_apps
+                    or app_dataset["app_id"] in skip_app_channels
                     or app_dataset.get("deprecated", False) is True
                 ):
                     continue

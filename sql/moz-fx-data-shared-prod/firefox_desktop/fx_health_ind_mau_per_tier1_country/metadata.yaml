@@ -1,0 +1,14 @@
+friendly_name: Fx Health Ind Mau Per Tier1 Country
+description: |-
+  Please provide a description for the query
+owners: []
+labels: {}
+bigquery: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.fx_health_ind_mau_per_tier1_country_v1
+require_column_descriptions: false

@@ -170,17 +170,17 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
             external_dag_id="bqetl_fx_health_ind_dashboard",
             external_task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
         )
 
         ExternalTaskMarker(
@@ -217,17 +217,17 @@ with DAG(
         )
 
         ExternalTaskMarker(
-            task_id="bqetl_analytics_aggregations__wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
-            external_dag_id="bqetl_analytics_aggregations",
-            external_task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
             task_id="bqetl_fx_health_ind_dashboard__wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
             external_dag_id="bqetl_fx_health_ind_dashboard",
             external_task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=43200)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_aggregations__wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            external_dag_id="bqetl_analytics_aggregations",
+            external_task_id="wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=85500)).isoformat() }}",
         )
 
         ExternalTaskMarker(

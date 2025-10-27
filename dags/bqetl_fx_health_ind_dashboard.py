@@ -66,45 +66,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__main_remainder_1pct__v1",
-        execution_delta=datetime.timedelta(seconds=50400),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_telemetry_derived__events_1pct__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__events_1pct__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__events_1pct__v1",
-        execution_delta=datetime.timedelta(seconds=50400),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
-    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
-        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
-        external_dag_id="bqetl_main_summary",
-        external_task_id="telemetry_derived__clients_daily_joined__v1",
-        execution_delta=datetime.timedelta(seconds=50400),
-        check_existence=True,
-        mode="reschedule",
-        poke_interval=datetime.timedelta(minutes=5),
-        allowed_states=ALLOWED_STATES,
-        failed_states=FAILED_STATES,
-        pool="DATA_ENG_EXTERNALTASKSENSOR",
-    )
-
     wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1",
         external_dag_id="bqetl_usage_reporting",
@@ -211,6 +172,58 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2",
+        external_dag_id="bqetl_analytics_aggregations",
+        external_task_id="firefox_desktop_derived__baseline_active_users_aggregates__v2",
+        execution_delta=datetime.timedelta(seconds=42300),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__main_remainder_1pct__v1",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__events_1pct__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__events_1pct__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__events_1pct__v1",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
+        task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
+        external_dag_id="bqetl_main_summary",
+        external_task_id="telemetry_derived__clients_daily_joined__v1",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_firefox_desktop_active_users_aggregates_v4 = ExternalTaskSensor(
         task_id="wait_for_firefox_desktop_active_users_aggregates_v4",
         external_dag_id="bqetl_analytics_aggregations",
@@ -298,6 +311,30 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_mau_per_os__v1",
+        destination_table='fx_health_ind_mau_per_os_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1",
+        destination_table='fx_health_ind_mau_per_tier1_country_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     firefox_desktop_derived__fx_health_ind_page_reloads__v1 = bigquery_etl_query(
@@ -966,6 +1003,78 @@ with DAG(
 
     firefox_desktop_derived__fx_health_ind_antivirus__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_fenix_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
+        wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_checks__fail_fenix_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_mau_per_tier1_country__v1.set_upstream(
+        wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2
     )
 
     firefox_desktop_derived__fx_health_ind_page_reloads__v1.set_upstream(

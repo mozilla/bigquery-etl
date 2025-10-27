@@ -1019,6 +1019,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "firefox_desktop_derived__baseline_active_users_aggregates__v2_external",
+    ) as firefox_desktop_derived__baseline_active_users_aggregates__v2_external:
+        ExternalTaskMarker(
+            task_id="bqetl_fx_health_ind_dashboard__wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2",
+            external_dag_id="bqetl_fx_health_ind_dashboard",
+            external_task_id="wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=44100)).isoformat() }}",
+        )
+
+        firefox_desktop_derived__baseline_active_users_aggregates__v2_external.set_upstream(
+            firefox_desktop_derived__baseline_active_users_aggregates__v2
+        )
+
     firefox_desktop_derived__locale_aggregates__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__locale_aggregates__v1",
         destination_table='locale_aggregates_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',

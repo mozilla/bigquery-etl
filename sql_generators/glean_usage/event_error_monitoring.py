@@ -23,7 +23,7 @@ class EventErrorMonitoring(GleanTable):
     """Represents the generated aggregated table for event error monitoring."""
 
     def __init__(self) -> None:
-        self.per_app_channel_enabled = False
+        self.per_app_id_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
         self.prefix = PREFIX
@@ -59,13 +59,12 @@ class EventErrorMonitoring(GleanTable):
         )
 
         apps = [
-            app_channels_info
-            for app_name, app_channels_info in apps.items()
+            app_ids_info
+            for app_name, app_ids_info in apps.items()
             if app_name not in skip_apps
             # errors are from metrics in glean-core/js; nothing to monitor for server apps
-            and "glean-server" not in app_channels_info[0]["dependencies"]
-            and "glean-server-metrics-compat"
-            not in app_channels_info[0]["dependencies"]
+            and "glean-server" not in app_ids_info[0]["dependencies"]
+            and "glean-server-metrics-compat" not in app_ids_info[0]["dependencies"]
         ]
 
         render_kwargs = dict(

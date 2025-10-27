@@ -32,7 +32,7 @@ class EventMonitoringLive(GleanTable):
 
     def __init__(self) -> None:
         """Initialize materialized view generation."""
-        self.per_app_channel_enabled = True
+        self.per_app_id_enabled = True
         self.per_app_enabled = False
         self.across_apps_enabled = True
         self.prefix = PREFIX
@@ -81,18 +81,18 @@ class EventMonitoringLive(GleanTable):
 
         return pings
 
-    def generate_per_app_channel(
+    def generate_per_app_id(
         self,
         project_id,
         baseline_table,
         app_name,
-        app_channel_info,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
     ):
-        """Generate a query across all app channels."""
+        """Generate a query for the app_id."""
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         init_filename = f"{self.target_table_id}.materialized_view.sql"
@@ -106,7 +106,7 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
 
-        deprecated = app_channel_info.get("deprecated", False)
+        deprecated = app_id_info.get("deprecated", False)
 
         # Skip any not-allowed or deprecated app
         if (
@@ -114,12 +114,12 @@ class EventMonitoringLive(GleanTable):
             in ConfigLoader.get(
                 "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
             )
-            or app_channel_info["app_id"]
+            or app_id_info["app_id"]
             in ConfigLoader.get(
                 "generate",
                 "glean_usage",
                 "events_monitoring",
-                "skip_app_channels",
+                "skip_app_ids",
                 fallback=[],
             )
             or deprecated
@@ -129,7 +129,7 @@ class EventMonitoringLive(GleanTable):
         if app_name in events_table_overwrites:
             events_tables = events_table_overwrites[app_name]
         else:
-            v1_name = app_channel_info["v1_name"]
+            v1_name = app_id_info["v1_name"]
             events_tables = self._get_tables_with_events(
                 v1_name, dataset, skip_min_ping=True
             )
@@ -160,7 +160,7 @@ class EventMonitoringLive(GleanTable):
             derived_dataset=tables[self.prefix].split(".")[-2],
             dataset=dataset,
             current_date=datetime.today().strftime("%Y-%m-%d"),
-            app_name=app_channel_info["canonical_app_name"],
+            app_name=app_id_info["canonical_app_name"],
             events_tables=sorted(events_tables),
             manual_refresh=manual_refresh,
         )
@@ -231,11 +231,11 @@ class EventMonitoringLive(GleanTable):
         skip_apps = ConfigLoader.get(
             "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
-        skip_app_channels = ConfigLoader.get(
+        skip_app_ids = ConfigLoader.get(
             "generate",
             "glean_usage",
             "events_monitoring",
-            "skip_app_channels",
+            "skip_app_ids",
             fallback=[],
         )
 
@@ -247,11 +247,11 @@ class EventMonitoringLive(GleanTable):
             fallback=[],
         )
 
-        for app_name, app_channels_info in apps.items():
-            for app_dataset in app_channels_info:
+        for app_name, app_ids_info in apps.items():
+            for app_dataset in app_ids_info:
                 if (
                     app_name in skip_apps
-                    or app_dataset["app_id"] in skip_app_channels
+                    or app_dataset["app_id"] in skip_app_ids
                     or app_dataset.get("deprecated", False) is True
                 ):
                     continue

@@ -87,7 +87,7 @@ GLEAN_TABLES = [
 def generate(
     target_project, output_dir, parallelism, exclude, only, app_name, use_cloud_function
 ):
-    """Generate per-app-channel queries and views, and per-app dataset metadata and union views.
+    """Generate per-app_id queries and views, and per-app dataset metadata and union views.
 
     Note that a file won't be generated if a corresponding file is already present
     in the target directory, which allows manual overrides of generated files by
@@ -112,10 +112,10 @@ def generate(
         )
     }
 
-    app_channel_info_by_stable_dataset = {
-        app_channel_info["bq_dataset_family"] + "_stable": app_channel_info
-        for app_channels_info in app_info.values()
-        for app_channel_info in app_channels_info
+    app_id_info_by_stable_dataset = {
+        app_id_info["bq_dataset_family"] + "_stable": app_id_info
+        for app_ids_info in app_info.values()
+        for app_id_info in app_ids_info
     }
 
     @cache
@@ -130,20 +130,20 @@ def generate(
         return [
             table
             for table in tables
-            if table.split(".")[-2] in app_channel_info_by_stable_dataset
+            if table.split(".")[-2] in app_id_info_by_stable_dataset
         ]
 
     id_token = get_id_token()
 
     # Prepare parameters so that generation of all Glean datasets can be done in parallel
 
-    generate_per_app_channel = [
+    generate_per_app_id = [
         partial(
-            table.generate_per_app_channel,
+            table.generate_per_app_id,
             target_project,
             base_table,
-            app_channel_info["app_name"],
-            app_channel_info,
+            app_id_info["app_name"],
+            app_id_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,
@@ -151,9 +151,7 @@ def generate(
         )
         for table in GLEAN_TABLES
         for base_table in get_tables(table_name=table.base_table_name)
-        for app_channel_info in [
-            app_channel_info_by_stable_dataset[base_table.split(".")[-2]]
-        ]
+        for app_id_info in [app_id_info_by_stable_dataset[base_table.split(".")[-2]]]
     ]
 
     base_tables = {}
@@ -161,15 +159,14 @@ def generate(
     for table_name in unique_base_table_names:
         base_tables[table_name] = get_tables(table_name=table_name)
 
-    def all_base_tables_exist(app_channels_info, table_name="baseline_v1"):
-        """Check if baseline tables exist for all app channel datasets."""
+    def all_base_tables_exist(app_ids_info, table_name="baseline_v1"):
+        """Check if baseline tables exist for all app datasets."""
         # Extract dataset names from table names (format: project.dataset.table)
         existing_datasets = {table.split(".")[1] for table in base_tables[table_name]}
 
         # Check if all app datasets have corresponding tables
         required_datasets = {
-            f"{app_channel_info['bq_dataset_family']}_stable"
-            for app_channel_info in app_channels_info
+            f"{app_id_info['bq_dataset_family']}_stable" for app_id_info in app_ids_info
         }
 
         return all(dataset in existing_datasets for dataset in required_datasets)
@@ -179,21 +176,19 @@ def generate(
             table.generate_per_app,
             target_project,
             app_name,
-            app_channels_info,
+            app_ids_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,
             id_token=id_token,
             all_base_tables_exist=(
-                all_base_tables_exist(
-                    app_channels_info, table_name=table.base_table_name
-                )
+                all_base_tables_exist(app_ids_info, table_name=table.base_table_name)
                 if hasattr(table, "per_app_requires_all_base_tables")
                 and table.per_app_requires_all_base_tables
                 else None
             ),
         )
-        for app_name, app_channels_info in app_info.items()
+        for app_name, app_ids_info in app_info.items()
         for table in GLEAN_TABLES
     ]
 
@@ -213,5 +208,5 @@ def generate(
     with ProcessingPool(parallelism) as pool:
         pool.map(
             lambda f: f(),
-            generate_per_app_channel + generate_per_app + generate_across_apps,
+            generate_per_app_id + generate_per_app + generate_across_apps,
         )

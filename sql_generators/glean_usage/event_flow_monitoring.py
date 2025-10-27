@@ -23,7 +23,7 @@ class EventFlowMonitoring(GleanTable):
 
     def __init__(self) -> None:
         """Initialize."""
-        self.per_app_channel_enabled = False
+        self.per_app_id_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
         self.prefix = PREFIX
@@ -48,8 +48,8 @@ class EventFlowMonitoring(GleanTable):
         )
 
         apps = [
-            app_channels_info[0]
-            for app_name, app_channels_info in apps.items()
+            app_ids_info[0]
+            for app_name, app_ids_info in apps.items()
             if app_name in include_apps
         ]
 

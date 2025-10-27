@@ -18,24 +18,24 @@ class EventsStreamTable(GleanTable):
         self.target_table_id = TARGET_TABLE_ID
         self.prefix = PREFIX
         self.per_app_enabled = True
-        self.per_app_channel_enabled = True
+        self.per_app_id_enabled = True
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
         self.custom_render_kwargs = {}
 
-    def generate_per_app_channel(
+    def generate_per_app_id(
         self,
         project_id,
         baseline_table,
         app_name,
-        app_channel_info,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
     ):
-        """Generate the events_stream table query per app channel."""
+        """Generate the events_stream table query per app_id."""
         # Skip any not-allowed app.
         if app_name in ConfigLoader.get(
             "generate", "glean_usage", "events_stream", "skip_apps", fallback=[]
@@ -78,16 +78,16 @@ class EventsStreamTable(GleanTable):
             "has_legacy_telemetry_client_id": has_legacy_telemetry_client_id,
             "metrics_as_struct": metrics_as_struct,
             "has_metrics": ping_has_metrics(
-                app_channel_info["bq_dataset_family"], unversioned_table_name
+                app_id_info["bq_dataset_family"], unversioned_table_name
             ),
             "slice_by_sample_id": slice_by_sample_id,
         }
 
-        super().generate_per_app_channel(
+        super().generate_per_app_id(
             project_id,
             baseline_table,
             app_name,
-            app_channel_info,
+            app_id_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,
@@ -98,7 +98,7 @@ class EventsStreamTable(GleanTable):
         self,
         project_id,
         app_name,
-        app_channels_info,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -114,7 +114,7 @@ class EventsStreamTable(GleanTable):
         super().generate_per_app(
             project_id,
             app_name,
-            app_channels_info,
+            app_ids_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,

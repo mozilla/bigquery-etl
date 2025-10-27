@@ -386,7 +386,7 @@ generate:
       # events are still sent in the background-update ping, but they are being skipped
       # See: https://mozilla-hub.atlassian.net/browse/DENG-9715
       - firefox_desktop_background_update
-      skip_app_channels:
+      skip_app_ids:
       - org.mozilla.fenix.nightly
       - org.mozilla.fennec.aurora
       skip_pings:

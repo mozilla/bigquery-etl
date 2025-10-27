@@ -17,22 +17,22 @@ class BaselineClientsFirstSeenTable(GleanTable):
         self.custom_render_kwargs = {}
         self.per_app_requires_all_base_tables = True
 
-    def generate_per_app_channel(
+    def generate_per_app_id(
         self,
         project_id,
         baseline_table,
         app_name,
-        app_channel_info,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
     ):
-        """Generate per-app-channel datasets."""
+        """Generate per-app_id datasets."""
         self.custom_render_kwargs = dict(
             # do not match on org_mozilla_firefoxreality
             fennec_id=(
-                app_channel_info["bq_dataset_family"]
+                app_id_info["bq_dataset_family"]
                 in [
                     "org_mozilla_firefox",
                     "org_mozilla_fenix_nightly",
@@ -43,12 +43,12 @@ class BaselineClientsFirstSeenTable(GleanTable):
             )
         )
 
-        GleanTable.generate_per_app_channel(
+        GleanTable.generate_per_app_id(
             self,
             project_id,
             baseline_table,
             app_name,
-            app_channel_info,
+            app_id_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,

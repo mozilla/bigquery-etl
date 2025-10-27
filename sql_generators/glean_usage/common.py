@@ -180,7 +180,7 @@ class GleanTable:
         self.target_table_id = ""
         self.prefix = ""
         self.custom_render_kwargs = {}
-        self.per_app_channel_enabled = True
+        self.per_app_id_enabled = True
         self.per_app_enabled = True
         self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
@@ -201,19 +201,19 @@ class GleanTable:
             for file in glob.glob(skip_existing, recursive=True)
         ]
 
-    def generate_per_app_channel(
+    def generate_per_app_id(
         self,
         project_id,
         baseline_table,
         app_name,
-        app_channel_info,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
     ):
-        """Generate the baseline table query per app channel."""
-        if not self.per_app_channel_enabled:
+        """Generate the baseline table query per app_id."""
+        if not self.per_app_id_enabled:
             return
 
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
@@ -374,7 +374,7 @@ class GleanTable:
         self,
         project_id,
         app_name,
-        app_channels_info,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -396,16 +396,16 @@ class GleanTable:
 
         datasets = [
             (a["bq_dataset_family"], a.get("app_channel", "release"))
-            for a in app_channels_info
+            for a in app_ids_info
         ]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
             # This app only has a single channel, and the app_name
             # exactly matches the generated bq_dataset_family, so
-            # the existing per-app-channel dataset also serves as the
+            # the existing per-app_id dataset also serves as the
             # per-app dataset, thus we don't have to provision
             # union views.
-            if self.per_app_channel_enabled:
+            if self.per_app_id_enabled:
                 return
 
         enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))

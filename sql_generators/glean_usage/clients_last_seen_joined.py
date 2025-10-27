@@ -14,7 +14,7 @@ class ClientsLastSeenJoined(GleanTable):
         """Initialize clients_last_seen_joined table."""
         GleanTable.__init__(self)
         self.target_table_id = TARGET_TABLE_ID
-        self.per_app_channel_enabled = False
+        self.per_app_id_enabled = False
         self.cross_channel_template = None
         self.per_app_requires_all_base_tables = True
 
@@ -22,7 +22,7 @@ class ClientsLastSeenJoined(GleanTable):
         self,
         project_id,
         app_name,
-        app_channels_info,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -43,7 +43,7 @@ class ClientsLastSeenJoined(GleanTable):
         return super().generate_per_app(
             project_id,
             app_name,
-            app_channels_info,
+            app_ids_info,
             output_dir=output_dir,
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,

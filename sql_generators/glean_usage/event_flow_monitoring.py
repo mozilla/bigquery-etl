@@ -22,6 +22,7 @@ class EventFlowMonitoring(GleanTable):
     """Represents the generated aggregated table for event flow monitoring."""
 
     def __init__(self) -> None:
+        """Initialize."""
         self.per_app_channel_enabled = False
         self.per_app_enabled = False
         self.across_apps_enabled = True
@@ -36,10 +37,14 @@ class EventFlowMonitoring(GleanTable):
         """Generate a query across all apps."""
         if not self.across_apps_enabled:
             return
-        
+
         # Include only selected apps to avoid too complex query
         include_apps = ConfigLoader.get(
-            "generate", "glean_usage", "event_flow_monitoring", "include_apps", fallback=[]
+            "generate",
+            "glean_usage",
+            "event_flow_monitoring",
+            "include_apps",
+            fallback=[],
         )
 
         apps = [

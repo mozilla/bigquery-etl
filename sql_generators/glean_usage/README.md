@@ -36,7 +36,7 @@ Each query depends on a couple of templates that need to be added to the `templa
 * `<target_table_id>.view.sql`: Template for the user-facing view to expose the data written by the generated query
 * `dataset_metadata.yaml` and `derived_dataset_metadata.yaml`: Template for the `dataset_metadata.yaml`, reused across all queries
 
-Additional, query-specific templates or config files used during the generation process can also be added to the `templates/` directory. 
+Additional, query-specific templates or config files used during the generation process can also be added to the `templates/` directory.
 
 The `GleanTable` class calls two methods that can be overridden by the query-specific classes:
 * `generate_per_app_channel(self, project_id, baseline_table, app_name, app_channel_info)`: This method is for generating the per-app-channel queries

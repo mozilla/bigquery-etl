@@ -1,8 +1,7 @@
 """Generate and run clients_last_seen_joined queries for Glean apps."""
 
-from sql_generators.glean_usage.common import GleanTable
-
 from bigquery_etl.config import ConfigLoader
+from sql_generators.glean_usage.common import GleanTable
 
 TARGET_TABLE_ID = "clients_last_seen_joined_v1"
 PREFIX = "clients_last_seen_joined"
@@ -32,7 +31,11 @@ class ClientsLastSeenJoined(GleanTable):
     ):
         """Generate per-app datasets."""
         skip_apps = ConfigLoader.get(
-            "generate", "glean_usage", "clients_last_seen_joined", "skip_apps", fallback=[]
+            "generate",
+            "glean_usage",
+            "clients_last_seen_joined",
+            "skip_apps",
+            fallback=[],
         )
         if app_name in skip_apps:
             print(f"Skipping clients_last_seen_joined generation for {app_name}")

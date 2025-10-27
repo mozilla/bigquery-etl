@@ -10,7 +10,7 @@ USAGE_TYPES = (
     "created_profile",
     "seen_session_start",
     "seen_session_end",
-    "visited_1_uri"
+    "visited_1_uri",
 )
 
 

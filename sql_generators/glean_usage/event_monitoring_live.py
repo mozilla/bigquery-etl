@@ -2,8 +2,7 @@
 
 import os
 import re
-
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict, namedtuple
 from datetime import datetime
 from pathlib import Path
 from typing import List, Set
@@ -14,7 +13,6 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from sql_generators.glean_usage.common import (
     GleanTable,
-    get_app_info,
     get_table_dir,
     render,
     table_names_from_baseline,
@@ -95,6 +93,7 @@ class EventMonitoringLive(GleanTable):
         parallelism=8,
         id_token=None,
     ):
+        """Generate a query across all app channels."""
         # Get the app ID from the baseline_table name.
         # This is what `common.py` also does.
         app_id = re.sub(r"_stable\..+", "", baseline_table)

@@ -23,7 +23,7 @@ MODEL_TYPE = "gpt-4o-mini"
 SCRAPED_BASE = "MARKET_RESEARCH/SCRAPED_INFO/"
 OUTPUT_BASE = "MARKET_RESEARCH/SUMMARY_INFO/"
 
-# Filepath for the final, consolidated report
+# Filepath for the final, consolidated report in GCS
 FINAL_REPORT_FPATH = "MARKET_RESEARCH/FINAL_REPORTS/MarketIntelBotReport_"
 
 # Filepaths to read the data loaded to GCS by the "release_scraping DAG"
@@ -357,7 +357,8 @@ devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize t
     encoded_content = base64.b64encode(content_bytes).decode("utf-8")
 
     # Check if the file already exists or not
-    url = f"https://api.github.com/repos/mozilla/market_intel_bot/contents/REPORTS/{final_report_path}"
+    final_git_path = "MarketIntelBotReport_" + report_date + ".md"
+    url = f"https://api.github.com/repos/mozilla/market_intel_bot/contents/REPORTS/{final_git_path}"
     headers = {"Authorization": f"token {GITHUB_ACCESS_TOKEN}"}
 
     r = requests.get(url, headers=headers, params={"ref": "main"}, timeout=20)

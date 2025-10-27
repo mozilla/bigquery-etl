@@ -1,0 +1,18 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: Normalized Operating System
+- name: antivirus
+  type: STRING
+  mode: REPEATED
+  description: Antivirus Software Array - Array of Antivirus Software Installed on
+    Client
+- name: unique_clients
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of Unique Clients

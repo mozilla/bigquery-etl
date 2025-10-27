@@ -41,3 +41,6 @@ fields:
 - name: context
   type: JSON
   mode: NULLABLE
+- name: appVersion
+  type: STRING
+  mode: NULLABLE

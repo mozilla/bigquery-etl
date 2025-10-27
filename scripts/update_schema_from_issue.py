@@ -17,38 +17,79 @@ import requests
 from ruamel.yaml import YAML
 
 
+# def fetch_issue_body(repo, issue_number, token):
+#     """Fetch the most recent comment containing JSON."""
+#     # Get all comments on the issue
+#     url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+#     headers = {
+#         "Authorization": f"Bearer {token}",
+#         "Accept": "application/vnd.github.v3+json"
+#     }
+    
+#     response = requests.get(url, headers=headers)
+#     response.raise_for_status()
+    
+#     comments = response.json()
+    
+#     if not comments:
+#         print("Error: No comments found on this issue")
+#         sys.exit(1)
+    
+#     # Find the most recent comment that starts with JSON
+#     # Start from most recent and go backwards
+#     for comment in reversed(comments):
+#         author = comment["user"]["login"]
+#         body = comment["body"].strip()
+        
+#         # Check if this comment contains JSON (starts with '{')
+#         if body.startswith('{'):
+#             print(f"✓ Found JSON comment from: {author}")
+#             return body
+    
+#     # If no JSON comment found, show error
+#     print("Error: No comment with JSON data found")
+#     print(f"Found {len(comments)} comments total, but none contain JSON")
+#     sys.exit(1)
+
 def fetch_issue_body(repo, issue_number, token):
-    """Fetch the most recent comment containing JSON."""
-    # Get all comments on the issue
-    url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+    """Fetch JSON from issue body first, then comments as fallback."""
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github.v3+json"
     }
     
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()
+    # First, check issue body
+    issue_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+    issue_response = requests.get(issue_url, headers=headers)
+    issue_response.raise_for_status()
     
-    comments = response.json()
+    issue_data = issue_response.json()
+    issue_body = issue_data.get("body", "").strip()
+    
+    if issue_body and issue_body.startswith('{'):
+        print(f"✓ Found JSON in issue body")
+        return issue_body
+    
+    # Fallback to comments
+    print("No JSON in issue body, checking comments...")
+    comments_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+    comments_response = requests.get(comments_url, headers=headers)
+    comments_response.raise_for_status()
+    
+    comments = comments_response.json()
     
     if not comments:
-        print("Error: No comments found on this issue")
+        print("Error: No JSON found in issue body or comments")
         sys.exit(1)
     
-    # Find the most recent comment that starts with JSON
-    # Start from most recent and go backwards
     for comment in reversed(comments):
-        author = comment["user"]["login"]
         body = comment["body"].strip()
-        
-        # Check if this comment contains JSON (starts with '{')
         if body.startswith('{'):
+            author = comment["user"]["login"]
             print(f"✓ Found JSON comment from: {author}")
             return body
     
-    # If no JSON comment found, show error
-    print("Error: No comment with JSON data found")
-    print(f"Found {len(comments)} comments total, but none contain JSON")
+    print("Error: No JSON data found")
     sys.exit(1)
 
 

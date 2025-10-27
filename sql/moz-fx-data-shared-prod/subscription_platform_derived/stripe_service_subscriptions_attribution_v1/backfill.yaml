@@ -5,7 +5,7 @@
     correctly pass through FxA log-based logical subscriptions attribution (DENG-8885).
   watchers:
   - srose@mozilla.com
-  status: Initiate
+  status: Complete
   shredder_mitigation: false
   override_retention_limit: true
   override_depends_on_past_end_date: false

@@ -59,8 +59,6 @@ with DAG(
 
     task_group_bedrock = TaskGroup("bedrock")
 
-    task_group_bergamot = TaskGroup("bergamot")
-
     task_group_burnham = TaskGroup("burnham")
 
     task_group_debug_ping_view = TaskGroup("debug_ping_view")
@@ -136,8 +134,6 @@ with DAG(
     task_group_mozphab = TaskGroup("mozphab")
 
     task_group_mozregression = TaskGroup("mozregression")
-
-    task_group_org_mozilla_social_nightly = TaskGroup("org_mozilla_social_nightly")
 
     task_group_pine = TaskGroup("pine")
 
@@ -3380,20 +3376,6 @@ with DAG(
         task_group=task_group_reference_browser,
     )
 
-    checks__warn_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1 = bigquery_dq_check(
-        task_id="checks__warn_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1",
-        source_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_social_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        is_dq_check_fail=False,
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        depends_on_past=False,
-        parameters=["submission_date:DATE:{{ds}}"],
-        retries=0,
-        task_group=task_group_org_mozilla_social_nightly,
-    )
-
     debug_ping_view_derived__events_stream__v1 = bigquery_etl_query(
         task_id="debug_ping_view_derived__events_stream__v1",
         destination_table="events_stream_v1",
@@ -4799,24 +4781,6 @@ with DAG(
             mozilla_lockbox_derived__baseline_clients_last_seen__v1
         )
 
-    mozilla_lockbox_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="mozilla_lockbox_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="mozilla_lockbox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_lockwise_android,
-    )
-
     mozilla_mach_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="mozilla_mach_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -5308,24 +5272,6 @@ with DAG(
         task_group=task_group_thunderbird_android,
     )
 
-    org_mozilla_bergamot_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_bergamot_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_bergamot_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_bergamot,
-    )
-
     org_mozilla_connect_firefox_derived__baseline_clients_daily__v1 = (
         bigquery_etl_query(
             task_id="org_mozilla_connect_firefox_derived__baseline_clients_daily__v1",
@@ -5362,24 +5308,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        task_group=task_group_firefox_echo_show,
-    )
-
-    org_mozilla_connect_firefox_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_connect_firefox_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_connect_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_firefox_echo_show,
     )
 
@@ -5833,24 +5761,6 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozilla_vpn,
-    )
-
-    org_mozilla_firefoxreality_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefoxreality_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_firefoxreality_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_firefox_reality_pc,
     )
 
     org_mozilla_focus_beta_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -6672,24 +6582,6 @@ with DAG(
         )
     )
 
-    org_mozilla_ios_lockbox_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_lockbox_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_ios_lockbox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_lockwise_ios,
-    )
-
     org_mozilla_klar_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_klar_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -6909,97 +6801,6 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_reference_browser,
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_daily__v1 = bigquery_etl_query(
-        task_id="org_mozilla_social_nightly_derived__baseline_clients_daily__v1",
-        destination_table="baseline_clients_daily_v1",
-        dataset_id="org_mozilla_social_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        task_group=task_group_org_mozilla_social_nightly,
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1",
-        destination_table="baseline_clients_first_seen_v1",
-        dataset_id="org_mozilla_social_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=True,
-        parameters=["submission_date:DATE:{{ds}}"],
-        task_group=task_group_org_mozilla_social_nightly,
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1 = bigquery_etl_query(
-        task_id="org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1",
-        destination_table="baseline_clients_last_seen_v1",
-        dataset_id="org_mozilla_social_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="ascholtz@mozilla.com",
-        email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
-        depends_on_past=True,
-        task_group=task_group_org_mozilla_social_nightly,
-    )
-
-    org_mozilla_social_nightly_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_social_nightly_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_social_nightly_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_org_mozilla_social_nightly,
-    )
-
-    org_mozilla_tv_firefox_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_tv_firefox_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_tv_firefox_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_firefox_fire_tv,
-    )
-
-    org_mozilla_vrbrowser_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_vrbrowser_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_vrbrowser_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_firefox_reality,
     )
 
     pine_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -7701,10 +7502,6 @@ with DAG(
         org_mozilla_reference_browser_derived__baseline_clients_last_seen__v1
     )
 
-    checks__warn_org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1
-    )
-
     debug_ping_view_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8201,10 +7998,6 @@ with DAG(
         mozilla_lockbox_derived__baseline_clients_daily__v1
     )
 
-    mozilla_lockbox_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     mozilla_mach_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8407,10 +8200,6 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
-    org_mozilla_bergamot_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     org_mozilla_connect_firefox_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8429,10 +8218,6 @@ with DAG(
 
     org_mozilla_connect_firefox_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_connect_firefox_derived__baseline_clients_daily__v1
-    )
-
-    org_mozilla_connect_firefox_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_fenix_derived__baseline_clients_daily__v1.set_upstream(
@@ -8576,10 +8361,6 @@ with DAG(
     )
 
     org_mozilla_firefox_vpn_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_firefoxreality_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
@@ -8843,10 +8624,6 @@ with DAG(
         org_mozilla_ios_lockbox_derived__baseline_clients_daily__v1
     )
 
-    org_mozilla_ios_lockbox_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     org_mozilla_klar_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8916,38 +8693,6 @@ with DAG(
     )
 
     org_mozilla_reference_browser_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_daily__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_daily__v1.set_upstream(
-        org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_first_seen__v1.set_upstream(
-        wait_for_telemetry_derived__core_clients_first_seen__v1
-    )
-
-    org_mozilla_social_nightly_derived__baseline_clients_last_seen__v1.set_upstream(
-        org_mozilla_social_nightly_derived__baseline_clients_daily__v1
-    )
-
-    org_mozilla_social_nightly_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_tv_firefox_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
-    org_mozilla_vrbrowser_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

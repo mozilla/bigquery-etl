@@ -63,7 +63,6 @@ def prod_schemas_uri():
         content="SELECT 1",
         strip_dml=True,
     )
-    print(dryrun.get_dataset_labels())
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]
     mps_uri = ConfigLoader.get("schema", "mozilla_pipeline_schemas_uri")

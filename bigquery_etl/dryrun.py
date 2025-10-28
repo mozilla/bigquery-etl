@@ -107,7 +107,10 @@ def wrap_in_view_for_dryrun(sql: str) -> str:
 
         # Wrap in view
         view_name = f"_dryrun_view_{random_str(8)}"
-        wrapped_query = f"CREATE TEMP VIEW {view_name} AS\n{query_sql}"
+        test_project = ConfigLoader.get(
+            "default", "test_project", fallback="bigquery-etl-integration-test"
+        )
+        wrapped_query = f"CREATE VIEW `{test_project}.tmp.{view_name}` AS\n{query_sql}"
 
         return f"{prefix_sql}\n\n{wrapped_query}" if prefix_sql else wrapped_query
 
@@ -539,7 +542,7 @@ class DryRun:
             # We want the dryrun service to only have read permissions, so
             # we expect CREATE VIEW and CREATE TABLE to throw specific
             # exceptions.
-            print(f"{self.sqlfile!s:59} OK, took {self.dry_run_duration or 0:.2f}s")
+            print(f"{self.sqlfile!s:59} OK but DDL/DML skipped")
         elif self.get_error() == Errors.DATE_FILTER_NEEDED and self.strip_dml:
             # With strip_dml flag, some queries require a partition filter
             # (submission_date, submission_timestamp, etc.) to run

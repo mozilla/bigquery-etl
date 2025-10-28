@@ -40,6 +40,12 @@ external_derived__market_intel_bot__v1_bqetl_market_intel_bot__github_token = Se
     secret="airflow-gke-secrets",
     key="bqetl_market_intel_bot__github_token",
 )
+external_derived__market_intel_bot__v1_bqetl_market_intel_bot__webhook_url = Secret(
+    deploy_type="env",
+    deploy_target="SLACK_MARKET_INTEL_BOT_WEBHOOK_URL",
+    secret="airflow-gke-secrets",
+    key="bqetl_market_intel_bot__webhook_url",
+)
 
 
 default_args = {
@@ -91,6 +97,7 @@ with DAG(
         secrets=[
             external_derived__market_intel_bot__v1_bqetl_chrome_releases__open_ai_api_key,
             external_derived__market_intel_bot__v1_bqetl_market_intel_bot__github_token,
+            external_derived__market_intel_bot__v1_bqetl_market_intel_bot__webhook_url,
         ],
     )
 

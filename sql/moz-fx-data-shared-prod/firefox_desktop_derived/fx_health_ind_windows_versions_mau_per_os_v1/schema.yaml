@@ -1,0 +1,25 @@
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: Submission Date
+- mode: NULLABLE
+  name: windows_os_version
+  type: STRING
+  description: Windows Operating System Version
+- mode: NULLABLE
+  name: mau
+  type: INTEGER
+  description: MAU
+- mode: NULLABLE
+  name: dau
+  type: INTEGER
+  description: DAU
+- mode: NULLABLE
+  name: smoothed_dau
+  type: FLOAT
+  description: Smoothed DAU
+- mode: NULLABLE
+  name: ER
+  type: FLOAT
+  description: ER - Smoothed DAU Divided by MAU

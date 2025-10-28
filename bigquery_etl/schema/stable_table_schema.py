@@ -60,8 +60,7 @@ def prod_schemas_uri():
     """
     dryrun = DryRun(
         "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql",
-        content="SELECT 1",
-        strip_dml=True,
+        content="SELECT 1 AS field",
     )
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]

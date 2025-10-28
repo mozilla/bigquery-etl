@@ -95,15 +95,59 @@ def wrap_in_view_for_dryrun(sql: str) -> str:
         if not statements or not isinstance(statements[-1], sqlglot.exp.Select):
             return sql
 
-        # Split original SQL by semicolons to preserve formatting;
-        # stripping formatting causes some query dry runs to fail
-        parts = [p for p in sql.split(";") if p.strip()]
+        # Replace CREATE TEMP FUNCTION with CREATE FUNCTION using fully qualified names
+        # CREATE VIEW doesn't support temp functions
+        test_project = ConfigLoader.get(
+            "default", "test_project", fallback="bigquery-etl-integration-test"
+        )
 
-        if len(parts) != len(statements):
-            return sql
+        def replace_temp_function(match):
+            func_name = match.group(1)
+            # If function name is already qualified, keep it; otherwise add project.dataset prefix
+            if "." not in func_name and "`" not in func_name:
+                return f"CREATE FUNCTION `{test_project}.tmp.{func_name}`"
+            else:
+                return f"CREATE FUNCTION {func_name}"
 
-        prefix_sql = ";\n".join(parts[:-1]) + ";" if len(parts) > 1 else ""
-        query_sql = parts[-1].strip()
+        sql = re.sub(
+            r"\bCREATE\s+TEMP(?:ORARY)?\s+FUNCTION\s+([^\s(]+)",
+            replace_temp_function,
+            sql,
+            flags=re.IGNORECASE,
+        )
+
+        # Single statement - just wrap it
+        if len(statements) == 1:
+            view_name = f"_dryrun_view_{random_str(8)}"
+            test_project = ConfigLoader.get(
+                "default", "test_project", fallback="bigquery-etl-integration-test"
+            )
+            query_sql = sql.strip().rstrip(";")
+            return f"CREATE VIEW `{test_project}.tmp.{view_name}` AS\n{query_sql}"
+
+        # Multiple statements: use sqlglot tokenizer to find statement boundaries
+        # This handles semicolons in strings and comments
+        tokens = list(sqlglot.tokens.Tokenizer(dialect="bigquery").tokenize(sql))
+
+        # Find semicolon tokens that separate statements (not in strings/comments)
+        semicolon_positions = []
+        for token in tokens:
+            if token.token_type == sqlglot.tokens.TokenType.SEMICOLON:
+                semicolon_positions.append(token.end)
+
+        # We need (len(statements) - 1) semicolons to separate statements
+        if len(semicolon_positions) >= len(statements) - 1:
+            # The (n-1)th semicolon separates the prefix from the last statement
+            split_pos = semicolon_positions[len(statements) - 2]
+            prefix_sql = sql[:split_pos].strip()
+            query_sql = sql[split_pos:].strip().lstrip(";").strip()
+        else:
+            # Fallback: regenerate prefix statements, use regenerated query
+            prefix_statements = statements[:-1]
+            prefix_sql = ";\n".join(
+                stmt.sql(dialect="bigquery") for stmt in prefix_statements
+            )
+            query_sql = statements[-1].sql(dialect="bigquery")
 
         # Wrap in view
         view_name = f"_dryrun_view_{random_str(8)}"
@@ -112,7 +156,7 @@ def wrap_in_view_for_dryrun(sql: str) -> str:
         )
         wrapped_query = f"CREATE VIEW `{test_project}.tmp.{view_name}` AS\n{query_sql}"
 
-        return f"{prefix_sql}\n\n{wrapped_query}" if prefix_sql else wrapped_query
+        return f"{prefix_sql};\n\n{wrapped_query}"
 
     except Exception as e:
         print(f"Warning: Failed to wrap SQL in view: {e}")
@@ -271,11 +315,6 @@ class DryRun:
         else:
             sql = self.get_sql()
 
-        # Wrap the query in a CREATE VIEW for faster dry runs
-        # Skip wrapping when strip_dml=True as it's used for special analysis modes
-        if not self.strip_dml:
-            sql = wrap_in_view_for_dryrun(sql)
-
         query_parameters = []
         scheduling_metadata = self.metadata.scheduling if self.metadata else {}
         if date_partition_parameter := scheduling_metadata.get(
@@ -298,6 +337,30 @@ class DryRun:
                     QUERY_PARAMETER_TYPE_VALUES.get(parameter_type),
                 )
             )
+
+        # Wrap the query in a CREATE VIEW for faster dry runs
+        # Skip wrapping when strip_dml=True as it's used for special analysis modes
+        if not self.strip_dml:
+            # If query has parameters, replace them with literal values in the wrapped version
+            # since CREATE VIEW cannot use parameterized queries
+            sql_for_wrapping = sql
+            if query_parameters:
+                for param in query_parameters:
+                    param_name = f"@{param.name}"
+                    # Convert parameter value to SQL literal
+                    if param.type_ == "DATE":
+                        param_value = f"DATE '{param.value}'"
+                    elif param.type_ in ("STRING", "DATETIME", "TIMESTAMP"):
+                        param_value = f"'{param.value}'"
+                    elif param.type_ == "BOOL":
+                        param_value = str(param.value).upper()
+                    else:
+                        param_value = str(param.value)
+                    sql_for_wrapping = sql_for_wrapping.replace(param_name, param_value)
+
+            sql = wrap_in_view_for_dryrun(sql_for_wrapping)
+
+        # print(sql)
 
         project = basename(dirname(dirname(dirname(self.sqlfile))))
         dataset = basename(dirname(dirname(self.sqlfile)))
@@ -632,6 +695,8 @@ class DryRun:
             partitioned_by=partitioned_by,
             strip_dml=self.strip_dml,
         )
+
+        # print(table_schema)
 
         # This check relies on the new schema being deployed to prod
         if not query_schema.compatible(table_schema):

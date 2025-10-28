@@ -15,10 +15,12 @@ def tmp_query_path(tmp_path):
 class TestDryRun:
     def test_dry_run_sql_file(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
+        query_file.write_text("SELECT 123 AS field")
 
         dryrun = DryRun(str(query_file))
-        assert dryrun.is_valid()
+        print(dryrun.dry_run_result)
+        response = dryrun.dry_run_result
+        assert response["valid"]
 
     def test_dry_run_invalid_sql_file(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
@@ -30,7 +32,7 @@ class TestDryRun:
 
     def test_sql_file_valid(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
+        query_file.write_text("SELECT 123 AS field")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.is_valid()
@@ -60,7 +62,7 @@ class TestDryRun:
 
     def test_get_referenced_tables_empty(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
+        query_file.write_text("SELECT 123 AS field")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.get_referenced_tables() == []
@@ -69,7 +71,7 @@ class TestDryRun:
         os.makedirs(tmp_path / "telmetry_derived")
         query_file = tmp_path / "telmetry_derived" / "query.sql"
 
-        sql_content = "SELECT 123 "
+        sql_content = "SELECT 123 AS field"
         query_file.write_text(sql_content)
 
         assert DryRun(sqlfile=str(query_file)).get_sql() == sql_content

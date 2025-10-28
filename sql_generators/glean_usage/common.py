@@ -12,7 +12,6 @@ import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.config import ConfigLoader
-from bigquery_etl.dryrun import DryRun
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
@@ -28,9 +27,6 @@ BQETL_CHECKS_SKIP_APPS = ConfigLoader.get(
 )
 BIGCONFIG_SKIP_APPS = ConfigLoader.get(
     "generate", "glean_usage", "bigconfig", "skip_apps", fallback=[]
-)
-BIGCONFIG_SKIP_APPS_METRICS = ConfigLoader.get(
-    "generate", "glean_usage", "bigconfig", "skip_app_metrics", fallback=[]
 )
 
 DEPRECATED_APP_LIST = ConfigLoader.get(
@@ -158,8 +154,8 @@ def _extract_dataset_from_glob(pattern):
     return pattern.split(".", 1)[0]
 
 
-def get_app_info():
-    """Return a list of applications from the probeinfo API."""
+def get_app_info() -> dict[str, list[dict]]:
+    """Return applications from the probeinfo app listings API grouped by app name."""
     resp = requests.get(APP_LISTINGS_URL)
     resp.raise_for_status()
     apps_json = resp.json()
@@ -183,14 +179,13 @@ class GleanTable:
         """Init Glean table."""
         self.target_table_id = ""
         self.prefix = ""
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.per_app_id_enabled = True
         self.per_app_enabled = True
         self.per_app_requires_all_base_tables = False
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
-        self.python_query = False
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -209,11 +204,14 @@ class GleanTable:
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
+        custom_render_kwargs=None,
+        use_python_query=False,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -233,14 +231,6 @@ class GleanTable:
         table = tables[f"{self.prefix}_table"]
         view = tables[f"{self.prefix}_view"]
         derived_dataset = tables["daily_table"].split(".")[-2]
-        dataset = derived_dataset.replace("_derived", "")
-
-        app_name = dataset
-        for app in app_info:
-            for app_dataset in app:
-                if app_dataset["bq_dataset_family"] == dataset:
-                    app_name = app_dataset["app_name"]
-                    break
 
         # Some apps did briefly send a baseline ping,
         # but do not do so actively anymore. This is why they get excluded.
@@ -261,17 +251,19 @@ class GleanTable:
             deprecated_app=deprecated_app,
         )
 
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
         render_kwargs.update(tables)
+        if custom_render_kwargs:
+            render_kwargs.update(custom_render_kwargs)
 
         # query.sql is optional for python queries
         query_sql = None
         query_python = None
-        if (PATH / "templates" / query_filename).exists() or not self.python_query:
+        if (PATH / "templates" / query_filename).exists() or not use_python_query:
             query_sql = render(
                 query_filename, template_folder=PATH / "templates", **render_kwargs
             )
-        if self.python_query:
+        if use_python_query:
             query_python = render(
                 python_query_filename,
                 template_folder=PATH / "templates",
@@ -384,22 +376,22 @@ class GleanTable:
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
         all_base_tables_exist=None,
+        custom_render_kwargs=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
             return
-        
-        app_name = app_info[0]["app_name"]
 
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
         target_dataset = app_name
-        
+
         if self.per_app_requires_all_base_tables and not all_base_tables_exist:
             logging.info(
                 f"Skipping per-app generation for {target_dataset}.{target_view_name} as not all baseline tables exist"
@@ -407,7 +399,8 @@ class GleanTable:
             return
 
         datasets = [
-            (a["bq_dataset_family"], a.get("app_channel", "release")) for a in app_info
+            (a["bq_dataset_family"], a.get("app_channel", "release"))
+            for a in app_ids_info
         ]
 
         if len(datasets) == 1 and target_dataset == datasets[0][0]:
@@ -419,9 +412,7 @@ class GleanTable:
             if self.per_app_id_enabled:
                 return
 
-        enable_monitoring = app_name not in list(
-            set(BIGCONFIG_SKIP_APPS + BIGCONFIG_SKIP_APPS_METRICS)
-        )
+        enable_monitoring = app_name not in list(set(BIGCONFIG_SKIP_APPS))
 
         # Some apps' tables have been deprecated
         deprecated_app = app_name in list(set(DEPRECATED_APP_LIST))
@@ -436,9 +427,11 @@ class GleanTable:
             target_table=f"{target_dataset}_derived.{self.target_table_id}",
             app_name=app_name,
             enable_monitoring=enable_monitoring,
-            deprecated_app = deprecated_app,
+            deprecated_app=deprecated_app,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
+        if custom_render_kwargs:
+            render_kwargs.update(custom_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

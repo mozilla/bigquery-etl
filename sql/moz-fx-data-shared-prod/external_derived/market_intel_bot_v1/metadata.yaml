@@ -19,5 +19,5 @@ scheduling:
     key: bqetl_chrome_releases__open_ai_api_key
   - deploy_target: MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN
     key: bqetl_market_intel_bot__github_token
-  # - deploy_target: SLACK_MARKET_INTEL_BOT_WEBHOOK_URL
-  #   key: bqetl_market_intel_bot__webhook_url
+  - deploy_target: SLACK_MARKET_INTEL_BOT_WEBHOOK_URL
+    key: bqetl_market_intel_bot__webhook_url

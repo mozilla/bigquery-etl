@@ -1,0 +1,11 @@
+friendly_name: AMO Glean
+description: |-
+  Views for accessing AMO data based on Glean telemetry.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:amo/prod

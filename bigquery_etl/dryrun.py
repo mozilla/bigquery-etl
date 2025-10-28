@@ -273,8 +273,6 @@ class DryRun:
         if not self.strip_dml:
             sql = wrap_in_view_for_dryrun(sql)
 
-        print(sql)
-
         query_parameters = []
         scheduling_metadata = self.metadata.scheduling if self.metadata else {}
         if date_partition_parameter := scheduling_metadata.get(

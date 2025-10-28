@@ -2242,6 +2242,7 @@ def _update_query_schema(
             sql_dir=sql_dir,
             credentials=credentials,
             id_token=id_token,
+            strip_dml=True
         )
     except Exception:
         if not existing_schema_path.exists():

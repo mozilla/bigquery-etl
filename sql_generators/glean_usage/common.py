@@ -186,7 +186,6 @@ class GleanTable:
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
-        self.python_query = False
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -211,6 +210,8 @@ class GleanTable:
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
+        custom_render_kwargs=None,
+        use_python_query=False,
     ):
         """Generate the baseline table query per app_id."""
         if not self.per_app_id_enabled:
@@ -252,15 +253,17 @@ class GleanTable:
 
         render_kwargs.update(self.custom_render_kwargs)
         render_kwargs.update(tables)
+        if custom_render_kwargs:
+            render_kwargs.update(custom_render_kwargs)
 
         # query.sql is optional for python queries
         query_sql = None
         query_python = None
-        if (PATH / "templates" / query_filename).exists() or not self.python_query:
+        if (PATH / "templates" / query_filename).exists() or not use_python_query:
             query_sql = render(
                 query_filename, template_folder=PATH / "templates", **render_kwargs
             )
-        if self.python_query:
+        if use_python_query:
             query_python = render(
                 python_query_filename,
                 template_folder=PATH / "templates",
@@ -380,6 +383,7 @@ class GleanTable:
         parallelism=8,
         id_token=None,
         all_base_tables_exist=None,
+        custom_render_kwargs=None,
     ):
         """Generate the baseline table query per app_name."""
         if not self.per_app_enabled:
@@ -426,6 +430,8 @@ class GleanTable:
             deprecated_app=deprecated_app,
         )
         render_kwargs.update(self.custom_render_kwargs)
+        if custom_render_kwargs:
+            render_kwargs.update(custom_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

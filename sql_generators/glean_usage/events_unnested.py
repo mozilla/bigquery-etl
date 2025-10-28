@@ -36,7 +36,7 @@ class EventsUnnestedTable(GleanTable):
         """Generate the events_unnested table query per app_name."""
         target_dataset = app_name
         if target_dataset not in DATASET_SKIP:
-            self.custom_render_kwargs = {
+            custom_render_kwargs = {
                 "has_metrics": ping_has_metrics(
                     app_ids_info[0]["bq_dataset_family"], "events"
                 )
@@ -50,4 +50,5 @@ class EventsUnnestedTable(GleanTable):
                 parallelism=parallelism,
                 id_token=id_token,
                 all_base_tables_exist=all_base_tables_exist,
+                custom_render_kwargs=custom_render_kwargs,
             )

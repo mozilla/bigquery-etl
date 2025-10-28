@@ -29,7 +29,7 @@ class BaselineClientsFirstSeenTable(GleanTable):
         id_token=None,
     ):
         """Generate per-app_id datasets."""
-        self.custom_render_kwargs = dict(
+        custom_render_kwargs = dict(
             # do not match on org_mozilla_firefoxreality
             fennec_id=(
                 app_id_info["bq_dataset_family"]
@@ -53,4 +53,5 @@ class BaselineClientsFirstSeenTable(GleanTable):
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,
             id_token=id_token,
+            custom_render_kwargs=custom_render_kwargs,
         )

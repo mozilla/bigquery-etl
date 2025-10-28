@@ -57,7 +57,6 @@ class EventsStreamTable(GleanTable):
             "slice_by_sample_id_apps",
             fallback=[],
         )
-        self.python_query = slice_by_sample_id
 
         # Separate apps with legacy telemetry client ID vs those that don't have it
         if app_name == "firefox_desktop":
@@ -73,7 +72,7 @@ class EventsStreamTable(GleanTable):
 
         unversioned_table_name = re.sub(r"_v[0-9]+$", "", baseline_table.split(".")[-1])
 
-        self.custom_render_kwargs = {
+        custom_render_kwargs = {
             "has_profile_group_id": has_profile_group_id,
             "has_legacy_telemetry_client_id": has_legacy_telemetry_client_id,
             "metrics_as_struct": metrics_as_struct,
@@ -92,6 +91,8 @@ class EventsStreamTable(GleanTable):
             use_cloud_function=use_cloud_function,
             parallelism=parallelism,
             id_token=id_token,
+            custom_render_kwargs=custom_render_kwargs,
+            use_python_query=slice_by_sample_id,
         )
 
     def generate_per_app(

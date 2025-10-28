@@ -352,6 +352,17 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__fx_health_ind_desktop_dau_by_device_type__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_desktop_dau_by_device_type__v1",
+        destination_table="fx_health_ind_desktop_dau_by_device_type_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__fx_health_ind_mau_per_os__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__fx_health_ind_mau_per_os__v1",
         destination_table='fx_health_ind_mau_per_os_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
@@ -407,6 +418,18 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1",
+        destination_table='fx_health_ind_windows_versions_mau_per_os_v1${{ macros.ds_format(macros.ds_add(ds, -1), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["submission_date:DATE:{{macros.ds_add(ds, -1)}}"],
     )
 
     telemetry_derived__fx_health_ind_antivirus__v1 = bigquery_etl_query(
@@ -1066,6 +1089,10 @@ with DAG(
         wait_for_copy_deduplicate_all
     )
 
+    firefox_desktop_derived__fx_health_ind_desktop_dau_by_device_type__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
     firefox_desktop_derived__fx_health_ind_mau_per_os__v1.set_upstream(
         wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
     )
@@ -1152,6 +1179,42 @@ with DAG(
 
     firefox_desktop_derived__fx_health_ind_webcompat__v1.set_upstream(
         wait_for_firefox_desktop_derived__events_stream__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_android_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_bigeye__focus_ios_derived__usage_reporting_active_users_aggregates__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_fenix_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_firefox_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_focus_android_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_focus_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_klar_android_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_checks__fail_klar_ios_derived__active_users_aggregates__v3
+    )
+
+    firefox_desktop_derived__fx_health_ind_windows_versions_mau_per_os__v1.set_upstream(
+        wait_for_firefox_desktop_derived__baseline_active_users_aggregates__v2
     )
 
     telemetry_derived__fx_health_ind_antivirus__v1.set_upstream(

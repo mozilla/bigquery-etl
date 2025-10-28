@@ -17,8 +17,8 @@ bigquery:
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:data-sumo/automation
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:sumo/bq-automation
 references: {}
 require_column_descriptions: false

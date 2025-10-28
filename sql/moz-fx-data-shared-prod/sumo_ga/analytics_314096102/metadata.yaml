@@ -10,9 +10,9 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:data-sumo/automation
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:sumo/bq-automation
 references:
   view.sql:
   - moz-fx-data-marketing-prod.analytics_314096102.events_*

@@ -7,9 +7,9 @@ bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
-  - workgroup:data-sumo/automation
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:sumo/bq-automation
 references:
   view.sql:
   - moz-fx-data-shared-prod.sumo_ga_derived.ga4_events_v1

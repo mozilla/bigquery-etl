@@ -43,16 +43,16 @@ OUTPUT_FPATH_8 = OUTPUT_BASE + "UpcomingHolidays/WebScraping_"
 
 # Pull in the different keys from GSM
 OPENAI_API_TOKEN = os.getenv("DATA_ENG_OPEN_AI_API_KEY")
-# SLACK_WEBHOOK = os.getenv("SLACK_MARKET_INTEL_BOT_WEBHOOK_URL")
+SLACK_WEBHOOK = os.getenv("SLACK_MARKET_INTEL_BOT_WEBHOOK_URL")
 GITHUB_ACCESS_TOKEN = os.getenv("MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN")
 
 # If any aren't found, raise an error
 if not OPENAI_API_TOKEN:
     raise ValueError("Environment variable DATA_ENG_OPEN_AI_API_KEY is not set!")
-# if not SLACK_WEBHOOK:
-#     raise ValueError(
-#         "Environment variable SLACK_MARKET_INTEL_BOT_WEBHOOK_URL is not set!"
-#     )
+if not SLACK_WEBHOOK:
+    raise ValueError(
+        "Environment variable SLACK_MARKET_INTEL_BOT_WEBHOOK_URL is not set!"
+    )
 if not GITHUB_ACCESS_TOKEN:
     raise ValueError(
         "Environment variable MARKET_INTEL_BOT_GITHUB_ACCESS_TOKEN is not set!"
@@ -426,13 +426,9 @@ Please list them in chronological order."""
         raise Exception(error_message)
 
     # Build the message & include the link to the report
-    # message = {
-    #    "text": """ :robot_face: Your latest market intelligence report is here:
-    #    https://github.com/mozilla/market_intel_bot/tree/main/REPORTS"""
-    # }
-
-    # Send the message & report to Slack
-    # requests.post(SLACK_WEBHOOK, json=message, timeout=20)
+    response = requests.post(SLACK_WEBHOOK)
+    response.raise_for_status()
+    print("Slack message sent successfully!")
 
 
 if __name__ == "__main__":

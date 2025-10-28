@@ -352,6 +352,41 @@ with DAG(
         depends_on_past=False,
     )
 
+    firefox_desktop_derived__fx_health_ind_bookmarks_by_country__v1 = (
+        bigquery_etl_query(
+            task_id="firefox_desktop_derived__fx_health_ind_bookmarks_by_country__v1",
+            destination_table="fx_health_ind_bookmarks_by_country_v1",
+            dataset_id="firefox_desktop_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="kwindau@mozilla.com",
+            email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+            date_partition_parameter="submission_date",
+            depends_on_past=False,
+        )
+    )
+
+    firefox_desktop_derived__fx_health_ind_bookmarks_by_os__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_bookmarks_by_os__v1",
+        destination_table="fx_health_ind_bookmarks_by_os_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
+    firefox_desktop_derived__fx_health_ind_bookmarks_by_os_version__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_bookmarks_by_os_version__v1",
+        destination_table="fx_health_ind_bookmarks_by_os_version_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__fx_health_ind_desktop_dau_by_device_type__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__fx_health_ind_desktop_dau_by_device_type__v1",
         destination_table="fx_health_ind_desktop_dau_by_device_type_v1",
@@ -1086,6 +1121,18 @@ with DAG(
     )
 
     firefox_desktop_derived__fx_health_ind_antivirus__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__fx_health_ind_bookmarks_by_country__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__fx_health_ind_bookmarks_by_os__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    firefox_desktop_derived__fx_health_ind_bookmarks_by_os_version__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

@@ -179,7 +179,7 @@ class GleanTable:
         """Init Glean table."""
         self.target_table_id = ""
         self.prefix = ""
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.per_app_id_enabled = True
         self.per_app_enabled = True
         self.per_app_requires_all_base_tables = False
@@ -251,7 +251,7 @@ class GleanTable:
             deprecated_app=deprecated_app,
         )
 
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
         render_kwargs.update(tables)
         if custom_render_kwargs:
             render_kwargs.update(custom_render_kwargs)
@@ -429,7 +429,7 @@ class GleanTable:
             enable_monitoring=enable_monitoring,
             deprecated_app=deprecated_app,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
         if custom_render_kwargs:
             render_kwargs.update(custom_render_kwargs)
 

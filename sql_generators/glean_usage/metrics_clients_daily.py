@@ -27,4 +27,4 @@ class MetricsClientsDaily(GleanTable):
             "r",
         ) as f:
             metrics_config = yaml.safe_load(f) or {}
-            self.custom_render_kwargs = {"metrics": metrics_config}
+            self.common_render_kwargs = {"metrics": metrics_config}

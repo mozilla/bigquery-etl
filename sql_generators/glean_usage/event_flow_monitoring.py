@@ -28,7 +28,7 @@ class EventFlowMonitoring(GleanTable):
         self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = AGGREGATE_TABLE_NAME
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.base_table_name = "events_unnested"
 
     def generate_across_apps(
@@ -58,7 +58,7 @@ class EventFlowMonitoring(GleanTable):
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{AGGREGATE_TABLE_NAME}",
             apps=apps,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

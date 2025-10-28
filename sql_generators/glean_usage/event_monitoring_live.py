@@ -37,7 +37,7 @@ class EventMonitoringLive(GleanTable):
         self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = TARGET_TABLE_ID
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.base_table_name = "events_v1"
 
     def _get_prod_datasets_with_event(self) -> List[str]:
@@ -165,7 +165,7 @@ class EventMonitoringLive(GleanTable):
             manual_refresh=manual_refresh,
         )
 
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
         render_kwargs.update(tables)
 
         # generated files to update
@@ -292,7 +292,7 @@ class EventMonitoringLive(GleanTable):
             event_tables_per_dataset=event_tables_per_dataset,
             manual_refresh_apps=manual_refresh_apps,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

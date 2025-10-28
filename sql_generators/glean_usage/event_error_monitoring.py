@@ -29,7 +29,7 @@ class EventErrorMonitoring(GleanTable):
         self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = AGGREGATE_TABLE_NAME
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.base_table_name = "events_v1"
 
     def generate_across_apps(
@@ -75,7 +75,7 @@ class EventErrorMonitoring(GleanTable):
             prod_datasets=prod_datasets_with_event,
             default_events_table=default_event_table,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

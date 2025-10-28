@@ -47,8 +47,7 @@ subscription_end_events AS (
   SELECT
     subscription.ended_at AS `timestamp`,
     'Subscription End' AS type,
-    -- TODO: rather than "Unknown", determine if the user cancelled intentionally or their payment failed
-    IF(NOT subscription.auto_renew, 'Auto-Renew Disabled', 'Unknown') AS reason,
+    subscription.ended_reason AS reason,
     service_subscriptions_history_id,
     subscription,
     old_subscription
@@ -139,7 +138,7 @@ auto_renew_change_events AS (
   SELECT
     `timestamp`,
     'Auto-Renew Change' AS type,
-    IF(subscription.auto_renew, 'Auto-Renew Enabled', 'Auto-Renew Disabled') AS reason,
+    subscription.ended_reason AS reason,
     service_subscriptions_history_id,
     subscription,
     old_subscription

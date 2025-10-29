@@ -192,7 +192,7 @@ class Metadata:
     bigquery: Optional[BigQueryMetadata] = attr.ib(None)
     schema: Optional[SchemaMetadata] = attr.ib(None)
     workgroup_access: Optional[List[WorkgroupAccessMetadata]] = attr.ib(None)
-    references: Dict = attr.ib({})
+    references: Optional[Dict] = attr.ib(None)
     external_data: Optional[ExternalDataMetadata] = attr.ib(None)
     deprecated: bool = attr.ib(False)
     deletion_date: Optional[date] = attr.ib(None)
@@ -270,7 +270,7 @@ class Metadata:
         bigquery = None
         schema = None
         workgroup_access = None
-        references = {}
+        references = None
         external_data = None
         deprecated = False
         deletion_date = None
@@ -412,6 +412,9 @@ class Metadata:
 
         if metadata_dict["workgroup_access"] is None:
             del metadata_dict["workgroup_access"]
+
+        if metadata_dict["references"] is None:
+            del metadata_dict["references"]
 
         if metadata_dict["external_data"] is None:
             del metadata_dict["external_data"]

@@ -27,4 +27,3 @@ bigquery:
   clustering:
     fields:
     - sample_id
-references: {}

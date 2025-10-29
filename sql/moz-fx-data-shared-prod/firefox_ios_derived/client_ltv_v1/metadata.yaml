@@ -22,5 +22,4 @@ bigquery:
     fields:
     - sample_id
     - first_reported_country
-references: {}
 require_column_descriptions: true

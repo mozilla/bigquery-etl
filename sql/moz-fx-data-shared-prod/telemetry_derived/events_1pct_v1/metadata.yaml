@@ -26,4 +26,3 @@ bigquery:
     fields:
     - event_category
     - sample_id
-references: {}

@@ -1382,9 +1382,9 @@ oauthlib==3.2.2 \
     --hash=sha256:8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca \
     --hash=sha256:9859c40929662bec5d64f34d01c99e093149682a3f38915dc0655d5a633dd918
     # via requests-oauthlib
-openai==2.6.0 \
-    --hash=sha256:f119faf7fc07d7e558c1e7c32c873e241439b01bd7480418234291ee8c8f4b9d \
-    --hash=sha256:f33fa12070fe347b5787a7861c8dd397786a4a17e1c3186e239338dac7e2e743
+openai==2.6.1 \
+    --hash=sha256:27ae704d190615fca0c0fc2b796a38f8b5879645a3a52c9c453b23f97141bb49 \
+    --hash=sha256:904e4b5254a8416746a2f05649594fa41b19d799843cd134dac86167e094edef
     # via -r requirements.in
 packaging==24.2 \
     --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \
@@ -2174,9 +2174,9 @@ rich==12.6.0 \
     # via
     #   rich-click
     #   typer
-rich-click==1.9.3 \
-    --hash=sha256:60839150a935604df1378b159da340d3fff91f912903e935da7cb615b5738c1b \
-    --hash=sha256:8ef51bc340db4d048a846c15c035d27b88acf720cbbb9b6fecf6c8b1a297b909
+rich-click==1.9.4 \
+    --hash=sha256:af73dc68e85f3bebb80ce302a642b9fe3b65f3df0ceb42eb9a27c467c1b678c8 \
+    --hash=sha256:d70f39938bcecaf5543e8750828cbea94ef51853f7d0e174cda1e10543767389
     # via -r requirements.in
 rpds-py==0.8.10 \
     --hash=sha256:08166467258fd0240a1256fce272f689f2360227ee41c72aeea103e9e4f63d2b \

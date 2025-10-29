@@ -19,7 +19,7 @@ from pathos.multiprocessing import ThreadingPool
 
 from bigquery_etl import ConfigLoader
 from bigquery_etl.format_sql.formatter import reformat
-from bigquery_etl.schema import Schema, SCHEMA_FILE
+from bigquery_etl.schema import SCHEMA_FILE, Schema
 from bigquery_etl.util.common import get_table_dir, write_sql
 from sql_generators.glean_usage.common import GleanTable
 
@@ -58,7 +58,8 @@ class GleanAppPingViews(GleanTable):
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
@@ -71,8 +72,8 @@ class GleanAppPingViews(GleanTable):
         If schemas are incompatible, then use release channel only.
         """
         # get release channel info
-        release_app = app_info[0]
-        target_dataset = release_app["app_name"]
+        release_app = app_ids_info[0]
+        target_dataset = app_name
 
         # channels are all in the same repo, sending the same pings
         repo = next(
@@ -111,7 +112,7 @@ class GleanAppPingViews(GleanTable):
             # iterate through app_info to get all channels
             included_channel_apps = []
             included_channel_views = []
-            for channel_app in app_info:
+            for channel_app in app_ids_info:
                 channel_dataset = channel_app["bq_dataset_family"]
                 channel_dataset_view = f"{channel_dataset}.{view_name}"
 

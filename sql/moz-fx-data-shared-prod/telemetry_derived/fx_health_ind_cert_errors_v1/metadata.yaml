@@ -18,4 +18,3 @@ bigquery:
   clustering:
     fields:
     - cert_load_error
-references: {}

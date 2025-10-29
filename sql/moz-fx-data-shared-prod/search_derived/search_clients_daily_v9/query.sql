@@ -1,9 +1,19 @@
--- Improved timestamp parsing function with better performance
-CREATE TEMP FUNCTION safe_parse_timestamp(ts STRING) AS (
+CREATE TEMP FUNCTION safe_parse_timestamp(ts string) AS (
   COALESCE(
-    SAFE.PARSE_TIMESTAMP("%FT%T%Ez", ts),
+        -- full datetime with offset
+    SAFE.PARSE_TIMESTAMP("%F%T%Ez", ts),
+        -- date + offset (no time)
     SAFE.PARSE_TIMESTAMP("%F%Ez", ts),
-    SAFE.PARSE_TIMESTAMP("%FT%T*E%Ez", ts)
+        -- datetime with space before offset
+    SAFE.PARSE_TIMESTAMP("%F%T%Ez", REGEXP_REPLACE(ts, r"(\+|\-)(\d{2}):(\d{2})", "\\1\\2\\3"))
+  )
+);
+
+CREATE TEMP FUNCTION to_utc_string(ts STRING) AS (
+  FORMAT_TIMESTAMP(
+    '%F %T UTC',  -- desired output format
+    SAFE.PARSE_TIMESTAMP('%FT%H:%M:%E*S%Ez', ts),
+    'UTC'
   )
 );
 
@@ -28,14 +38,14 @@ clients_with_adblocker_addons_cte AS (
     `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`,
     UNNEST(JSON_QUERY_ARRAY(metrics.object.addons_active_addons)) AS addons
   INNER JOIN
-    adblocker_addons_cte -- it's an inner join in https://github.com/mozilla/bigquery-etl/blob/main/sql/moz-fx-data-shared-prod/search_derived/search_clients_daily_v8/query.sql
-    -- left join adblocker_addons_cte
+    adblocker_addons_cte
     ON adblocker_addons_cte.addon_id = JSON_VALUE(addons, '$.id')
   WHERE
+    DATE(submission_timestamp)
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
-    -- this is for test runs
-    DATE(submission_timestamp) = '2025-06-07'
-    -- and sample_id = 0
     AND NOT BOOL(JSON_QUERY(addons, '$.userDisabled'))
     AND NOT BOOL(JSON_QUERY(addons, '$.appDisabled'))
     AND NOT BOOL(JSON_QUERY(addons, '$.blocklisted'))
@@ -43,32 +53,35 @@ clients_with_adblocker_addons_cte AS (
     client_id,
     DATE(submission_timestamp)
 ),
--- we still need this because of document_id is not null
-is_enterprise_cte AS (
+sap_is_enterprise_cte AS (
+    -- we still need this because of document_id is not null
   SELECT
-    client_info.client_id,
+    client_id,
     DATE(submission_timestamp) AS submission_date,
-    mozfun.stats.mode_last(
-      ARRAY_AGG(metrics.boolean.policies_is_enterprise ORDER BY submission_timestamp)
+    CAST(
+      JSON_VALUE(
+        array_last(ARRAY_AGG(metrics.boolean.policies_is_enterprise ORDER BY event_timestamp DESC)),
+        '$'
+      ) AS boolean
     ) AS policies_is_enterprise
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
+    DATE(submission_timestamp)
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
-    -- this is for test runs
-    DATE(submission_timestamp) = '2025-06-07'
-    -- and sample_id = 0
+    AND event = 'sap.counts'
     AND document_id IS NOT NULL
   GROUP BY
     client_id,
     DATE(submission_timestamp)
 ),
--- this cte gets client_info and sap counts from the sap.counts events ping and aggregates at client_id, day
-sap_clients_events_cte AS (
+sap_events_with_client_info_cte AS (
   SELECT
-    -- distinct
-    DATE(submission_timestamp) AS submission_date,
     client_id AS client_id,
+    DATE(submission_timestamp) AS submission_date,
     CASE
       WHEN JSON_VALUE(event_extra.provider_id) = 'other'
         THEN `moz-fx-data-shared-prod.udf.normalize_search_engine`(
@@ -79,20 +92,79 @@ sap_clients_events_cte AS (
         )
     END AS normalized_engine, -- this is "engine" in v8
     CASE
+      WHEN JSON_VALUE(event_extra.partner_code) = ''
+        THEN NULL
+      ELSE JSON_VALUE(event_extra.partner_code)
+    END AS partner_code,
+    CASE
       WHEN JSON_VALUE(event_extra.source) = 'urlbar-handoff'
         THEN 'urlbar_handoff'
       ELSE JSON_VALUE(event_extra.source)
     END AS source,
     -- end as search_access_point, -- rename
+    sample_id,
+    profile_group_id,
+    legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
     normalized_country_code AS country,
     normalized_app_name AS app_version,
     client_info.app_channel AS channel,
-    ping_info.parsed_start_time AS subsession_start_date,
+    normalized_channel,
     client_info.locale,
     client_info.os,
+    normalized_os,
     client_info.os_version,
     normalized_os_version,
+    client_info.windows_build_number,
+    client_info.distribution.name AS distribution_id,
     UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date))) AS profile_creation_date,
+    CAST(JSON_VALUE(metrics.string.region_home_region, '$') AS string) AS region_home_region,
+    CAST(
+      JSON_VALUE(metrics.boolean.usage_is_default_browser, '$') AS boolean
+    ) AS usage_is_default_browser,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_default_display_name, '$') AS string
+    ) AS search_engine_default_display_name,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_default_load_path, '$') AS string
+    ) AS search_engine_default_load_path,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_default_partner_code, '$') AS string
+    ) AS search_engine_default_partner_code,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_default_provider_id, '$') AS string
+    ) AS search_engine_default_provider_id,
+    CAST(
+      JSON_VALUE(metrics.url.search_engine_default_submission_url, '$') AS string
+    ) AS search_engine_default_submission_url,
+    CAST(
+      JSON_VALUE(metrics.boolean.search_engine_default_overridden_by_third_party, '$') AS boolean
+    ) AS search_engine_default_overridden_by_third_party,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_private_display_name, '$') AS string
+    ) AS search_engine_private_display_name,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_private_load_path, '$') AS string
+    ) AS search_engine_private_load_path,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_private_partner_code, '$') AS string
+    ) AS search_engine_private_partner_code,
+    CAST(
+      JSON_VALUE(metrics.string.search_engine_private_provider_id, '$') AS string
+    ) AS search_engine_private_provider_id,
+    CAST(
+      JSON_VALUE(metrics.url.search_engine_private_submission_url, '$') AS string
+    ) AS search_engine_private_submission_url,
+    CAST(
+      JSON_VALUE(metrics.boolean.search_engine_private_overridden_by_third_party, '$') AS boolean
+    ) AS search_engine_private_overridden_by_third_party,
+    JSON_VALUE(event_extra.provider_name) AS provider_name,
+    JSON_VALUE(event_extra.provider_id) AS provider_id,
+    CAST(
+      JSON_VALUE(event_extra.overridden_by_third_party, '$') AS boolean
+    ) AS overridden_by_third_party,
+    ping_info.start_time AS subsession_start_time,
+    ping_info.end_time AS subsession_end_time,
+    ping_info.seq AS subsession_counter,
     [
       STRUCT(
         json_keys(experiments)[OFFSET(0)] AS key,
@@ -116,66 +188,88 @@ sap_clients_events_cte AS (
           ) AS extra
         ) AS value
       )
-    ] AS experiments,
-    normalized_channel,
-    normalized_os,
-    sample_id,
-    profile_group_id,
-    legacy_telemetry_client_id, -- adding this for now so people can join to it if needed
-    JSON_VALUE(event_extra.provider_name) AS provider_name,
-    JSON_VALUE(event_extra.provider_id) AS provider_id,
-    JSON_VALUE(event_extra.partner_code) AS partner_code,
-    JSON_VALUE(event_extra.overridden_by_third_party) AS overridden_by_third_party
+    ] AS experiments
   FROM
-    `mozdata.firefox_desktop.events_stream`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
+    DATE(submission_timestamp)
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
-    -- this is for test runs
-    DATE(submission_timestamp) = '2025-06-07'
-    -- and sample_id = 0
     AND event = 'sap.counts'
+    -- this is to get the last instance
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_id,
+        submission_date,
+        normalized_engine,
+        partner_code,
+        source
+      ORDER BY
+        event_timestamp DESC
+    ) = 1
 ),
-sap_clients_events_adblocker_is_enterprise_cte AS (
+sap_events_clients_ad_enterprise_cte AS (
   SELECT
-    sap_clients_events_cte.subsession_start_date,
-    sap_clients_events_cte.submission_date,
-    sap_clients_events_cte.client_id,
-    sap_clients_events_cte.normalized_engine,
-    sap_clients_events_cte.source,
-    -- sap_clients_events_cte.source as search_access_point, -- rename
-    sap_clients_events_cte.country,
-    sap_clients_events_cte.app_version,
-    sap_clients_events_cte.channel,
-    sap_clients_events_cte.normalized_channel,
-    sap_clients_events_cte.locale,
-    sap_clients_events_cte.os,
-    sap_clients_events_cte.normalized_os,
-    sap_clients_events_cte.os_version,
-    sap_clients_events_cte.normalized_os_version,
-    sap_clients_events_cte.profile_creation_date,
-    sap_clients_events_cte.sample_id,
-    sap_clients_events_cte.profile_group_id,
-    sap_clients_events_cte.legacy_telemetry_client_id,
-    sap_clients_events_cte.experiments,
-    sap_clients_events_cte.provider_name,
-    sap_clients_events_cte.provider_id,
-    sap_clients_events_cte.partner_code,
-    sap_clients_events_cte.overridden_by_third_party,
+    sap_events_with_client_info_cte.client_id,
+    sap_events_with_client_info_cte.submission_date,
+    sap_events_with_client_info_cte.normalized_engine,
+    sap_events_with_client_info_cte.partner_code,
+    sap_events_with_client_info_cte.source,
+    -- sap_events_with_client_info_cte.source as search_access_point, -- rename
+    sap_events_with_client_info_cte.sample_id,
+    sap_events_with_client_info_cte.profile_group_id,
+    sap_events_with_client_info_cte.legacy_telemetry_client_id,
+    sap_events_with_client_info_cte.country,
+    sap_events_with_client_info_cte.app_version,
+    sap_events_with_client_info_cte.channel,
+    sap_events_with_client_info_cte.normalized_channel,
+    sap_events_with_client_info_cte.locale,
+    sap_events_with_client_info_cte.os,
+    sap_events_with_client_info_cte.normalized_os,
+    sap_events_with_client_info_cte.os_version,
+    sap_events_with_client_info_cte.normalized_os_version,
+    sap_events_with_client_info_cte.windows_build_number,
+    sap_events_with_client_info_cte.distribution_id,
+    sap_events_with_client_info_cte.profile_creation_date,
+    sap_events_with_client_info_cte.region_home_region,
+    sap_events_with_client_info_cte.usage_is_default_browser,
+    sap_events_with_client_info_cte.search_engine_default_display_name,
+    sap_events_with_client_info_cte.search_engine_default_load_path,
+    sap_events_with_client_info_cte.search_engine_default_partner_code,
+    sap_events_with_client_info_cte.search_engine_default_provider_id,
+    sap_events_with_client_info_cte.search_engine_default_submission_url,
+    sap_events_with_client_info_cte.search_engine_default_overridden_by_third_party,
+    sap_events_with_client_info_cte.search_engine_private_display_name,
+    sap_events_with_client_info_cte.search_engine_private_load_path,
+    sap_events_with_client_info_cte.search_engine_private_partner_code,
+    sap_events_with_client_info_cte.search_engine_private_provider_id,
+    sap_events_with_client_info_cte.search_engine_private_submission_url,
+    sap_events_with_client_info_cte.search_engine_private_overridden_by_third_party,
+    sap_events_with_client_info_cte.provider_name,
+    sap_events_with_client_info_cte.provider_id,
+    sap_events_with_client_info_cte.overridden_by_third_party,
+    sap_events_with_client_info_cte.subsession_start_time,
+    sap_events_with_client_info_cte.subsession_end_time,
+    sap_events_with_client_info_cte.subsession_counter,
+    sap_events_with_client_info_cte.experiments,
     clients_with_adblocker_addons_cte.has_adblocker_addon,
-    is_enterprise_cte.policies_is_enterprise
+    sap_is_enterprise_cte.policies_is_enterprise
   FROM
-    sap_clients_events_cte
+    sap_events_with_client_info_cte
   LEFT JOIN
     clients_with_adblocker_addons_cte
     USING (client_id, submission_date)
   LEFT JOIN
-    is_enterprise_cte
+    sap_is_enterprise_cte
     USING (client_id, submission_date)
 ),
 sap_aggregates_cte AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
     client_id,
+    DATE(submission_timestamp) AS submission_date,
     CASE
       WHEN JSON_VALUE(event_extra.provider_id) = 'other'
         THEN `moz-fx-data-shared-prod.udf.normalize_search_engine`(
@@ -185,105 +279,315 @@ sap_aggregates_cte AS (
           JSON_VALUE(event_extra.provider_id)
         )
     END AS normalized_engine,
+    JSON_VALUE(event_extra.partner_code) AS partner_code,
     CASE
       WHEN JSON_VALUE(event_extra.source) = 'urlbar-handoff'
         THEN 'urlbar_handoff'
       ELSE JSON_VALUE(event_extra.source)
     END AS source,
-  -- end as search_access_point, -- rename
+    -- end as search_access_point, -- rename
     MAX(UNIX_DATE(DATE((ping_info.parsed_start_time)))) - MAX(
       UNIX_DATE(DATE(safe_parse_timestamp(client_info.first_run_date)))
     ) AS profile_age_in_days,
     COUNT(*) AS sap,
-    COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day
+    COUNTIF(ping_info.seq = 1) AS sessions_started_on_this_day,
+    SUM(
+      CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_active_ticks') AS float64) / (
+        3600 / 5
+      )
+    ) AS active_hours_sum,
+    SUM(
+      CAST(
+        JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_tab_open_event_count') AS float64
+      )
+    ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
+    SUM(
+      CAST(JSON_EXTRACT_SCALAR(metrics.counter, '$.browser_engagement_uri_count') AS float64)
+    ) AS scalar_parent_browser_engagement_total_uri_count_sum,
+    MAX(
+      CAST(
+        JSON_EXTRACT_SCALAR(
+          metrics.quantity,
+          '$.browser_engagement_max_concurrent_tab_count'
+        ) AS float64
+      )
+    ) AS concurrent_tab_count_max
   FROM
-    `mozdata.firefox_desktop.events_stream`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
-  -- date(submission_timestamp) = @submission_date
-  -- this is for test runs
-    DATE(submission_timestamp) = '2025-06-07'
-  -- and sample_id = 0
+    DATE(submission_timestamp)
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
+    -- date(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
   GROUP BY
-    submission_date,
     client_id,
+    submission_date,
     normalized_engine,
+    partner_code,
     source
-  -- search_access_point
+    -- search_access_point
 ),
-final_sap_cte AS (
+sap_final_cte AS (
   SELECT
-    sap_clients_events_adblocker_is_enterprise_cte.subsession_start_date,
-    sap_clients_events_adblocker_is_enterprise_cte.submission_date,
-    sap_clients_events_adblocker_is_enterprise_cte.client_id,
-    sap_clients_events_adblocker_is_enterprise_cte.normalized_engine,
-    sap_clients_events_adblocker_is_enterprise_cte.source,
-  -- sap_clients_events_adblocker_is_enterprise_cte.search_access_point, -- rename
-    sap_clients_events_adblocker_is_enterprise_cte.country,
-    sap_clients_events_adblocker_is_enterprise_cte.app_version,
-    sap_clients_events_adblocker_is_enterprise_cte.locale,
-    sap_clients_events_adblocker_is_enterprise_cte.os,
-    sap_clients_events_adblocker_is_enterprise_cte.os_version,
-    sap_clients_events_adblocker_is_enterprise_cte.profile_creation_date,
-    sap_clients_events_adblocker_is_enterprise_cte.channel,
-    sap_clients_events_adblocker_is_enterprise_cte.normalized_channel,
-    sap_clients_events_adblocker_is_enterprise_cte.normalized_os,
-    sap_clients_events_adblocker_is_enterprise_cte.normalized_os_version,
-    sap_clients_events_adblocker_is_enterprise_cte.sample_id,
-    sap_clients_events_adblocker_is_enterprise_cte.profile_group_id,
-    sap_clients_events_adblocker_is_enterprise_cte.legacy_telemetry_client_id,
-    sap_clients_events_adblocker_is_enterprise_cte.experiments,
-    sap_clients_events_adblocker_is_enterprise_cte.provider_name,
-    sap_clients_events_adblocker_is_enterprise_cte.provider_id,
-    sap_clients_events_adblocker_is_enterprise_cte.partner_code,
-    sap_clients_events_adblocker_is_enterprise_cte.overridden_by_third_party,
-    sap_clients_events_adblocker_is_enterprise_cte.has_adblocker_addon,
-    sap_clients_events_adblocker_is_enterprise_cte.policies_is_enterprise,
+    sap_events_clients_ad_enterprise_cte.client_id,
+    sap_events_clients_ad_enterprise_cte.submission_date,
+    sap_events_clients_ad_enterprise_cte.normalized_engine,
+    sap_events_clients_ad_enterprise_cte.partner_code,
+    sap_events_clients_ad_enterprise_cte.source,
+    -- sap_events_clients_ad_enterprise_cte.source as search_access_point, -- rename
+    sap_events_clients_ad_enterprise_cte.sample_id,
+    sap_events_clients_ad_enterprise_cte.profile_group_id,
+    sap_events_clients_ad_enterprise_cte.legacy_telemetry_client_id,
+    sap_events_clients_ad_enterprise_cte.country,
+    sap_events_clients_ad_enterprise_cte.app_version,
+    sap_events_clients_ad_enterprise_cte.channel,
+    sap_events_clients_ad_enterprise_cte.normalized_channel,
+    sap_events_clients_ad_enterprise_cte.locale,
+    sap_events_clients_ad_enterprise_cte.os,
+    sap_events_clients_ad_enterprise_cte.normalized_os,
+    sap_events_clients_ad_enterprise_cte.os_version,
+    sap_events_clients_ad_enterprise_cte.normalized_os_version,
+    sap_events_clients_ad_enterprise_cte.windows_build_number,
+    sap_events_clients_ad_enterprise_cte.distribution_id,
+    sap_events_clients_ad_enterprise_cte.profile_creation_date,
+    sap_events_clients_ad_enterprise_cte.region_home_region,
+    sap_events_clients_ad_enterprise_cte.usage_is_default_browser,
+    sap_events_clients_ad_enterprise_cte.search_engine_default_display_name,
+    sap_events_clients_ad_enterprise_cte.search_engine_default_load_path,
+    sap_events_clients_ad_enterprise_cte.search_engine_default_partner_code,
+    sap_events_clients_ad_enterprise_cte.search_engine_default_provider_id,
+    sap_events_clients_ad_enterprise_cte.search_engine_default_submission_url,
+    sap_events_clients_ad_enterprise_cte.search_engine_default_overridden_by_third_party,
+    sap_events_clients_ad_enterprise_cte.search_engine_private_display_name,
+    sap_events_clients_ad_enterprise_cte.search_engine_private_load_path,
+    sap_events_clients_ad_enterprise_cte.search_engine_private_partner_code,
+    sap_events_clients_ad_enterprise_cte.search_engine_private_provider_id,
+    sap_events_clients_ad_enterprise_cte.search_engine_private_submission_url,
+    sap_events_clients_ad_enterprise_cte.search_engine_private_overridden_by_third_party,
+    sap_events_clients_ad_enterprise_cte.provider_name,
+    sap_events_clients_ad_enterprise_cte.provider_id,
+    sap_events_clients_ad_enterprise_cte.overridden_by_third_party,
+    sap_events_clients_ad_enterprise_cte.subsession_start_time,
+    sap_events_clients_ad_enterprise_cte.subsession_end_time,
+    sap_events_clients_ad_enterprise_cte.subsession_counter,
+    sap_events_clients_ad_enterprise_cte.experiments,
+    sap_events_clients_ad_enterprise_cte.has_adblocker_addon,
+    sap_events_clients_ad_enterprise_cte.policies_is_enterprise,
     sap_aggregates_cte.profile_age_in_days,
     sap_aggregates_cte.sap,
-    sap_aggregates_cte.sessions_started_on_this_day
+    sap_aggregates_cte.sessions_started_on_this_day,
+    sap_aggregates_cte.active_hours_sum,
+    sap_aggregates_cte.scalar_parent_browser_engagement_tab_open_event_count_sum,
+    sap_aggregates_cte.scalar_parent_browser_engagement_total_uri_count_sum,
+    sap_aggregates_cte.concurrent_tab_count_max
   FROM
-    sap_clients_events_adblocker_is_enterprise_cte
+    sap_events_clients_ad_enterprise_cte
   LEFT JOIN
     sap_aggregates_cte
-    USING (client_id, submission_date, normalized_engine, source)
-    -- using(client_id, submission_date, normalized_engine, search_access_point) -- rename
+    USING (client_id, submission_date, normalized_engine, partner_code, source)
+    -- using(client_id, submission_date, normalized_engine, partner_code, search_access_point) -- rename
 ),
-serp_array_aggs_cte AS (
+serp_is_enterprise_cte AS (
+    -- we still need this because of document_id is not null
   SELECT
-    submission_date,
     glean_client_id AS client_id,
+    submission_date,
+    array_last(
+      ARRAY_AGG(policies_is_enterprise ORDER BY event_timestamp DESC)
+    ) AS policies_is_enterprise
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
+  WHERE
+    submission_date
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
+    -- submission_date = @submission_date
+    AND document_id IS NOT NULL
+  GROUP BY
+    client_id,
+    submission_date
+),
+serp_events_with_client_info_cte AS (
+  SELECT
+    glean_client_id AS client_id,
+    submission_date,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+      search_engine
+    ) AS serp_provider_id, -- this is engine
+    CASE
+      WHEN partner_code = ''
+        THEN NULL
+      ELSE partner_code
+    END AS partner_code,
     sap_source AS serp_search_access_point,
-    `moz-fx-data-shared-prod.udf.normalize_search_engine`(search_engine) AS serp_provider_id,
-    ARRAY_AGG(partner_code IGNORE NULLS) AS serp_partner_code,
-    ARRAY_AGG(ad_blocker_inferred) AS serp_ad_blocker_inferred
+    sample_id,
+    profile_group_id,
+    legacy_telemetry_client_id,
+    normalized_country_code AS country,
+    normalized_app_name AS app_version,
+    channel,
+    normalized_channel,
+    locale,
+    os,
+    normalized_os,
+    os_version,
+    normalized_os_version,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "major") AS STRING)
+    END AS os_version_major,
+    CASE
+      WHEN mozfun.norm.os(os) = "Windows"
+        THEN mozfun.norm.windows_version_info(os, os_version, windows_build_number)
+      ELSE CAST(mozfun.norm.truncate_version(os_version, "minor") AS string)
+    END AS os_version_minor,
+    windows_build_number,
+    distribution_id,
+    UNIX_DATE(DATE(safe_parse_timestamp(first_run_date))) AS profile_creation_date,
+    region_home_region,
+    usage_is_default_browser,
+    search_engine_default_display_name,
+    search_engine_default_load_path,
+    search_engine_default_partner_code,
+    search_engine_default_provider_id,
+    search_engine_default_submission_url,
+    search_engine_default_overridden_by_third_party,
+    search_engine_private_display_name,
+    search_engine_private_load_path,
+    search_engine_private_partner_code,
+    search_engine_private_provider_id,
+    search_engine_private_submission_url,
+    search_engine_private_overridden_by_third_party,
+    CAST(overridden_by_third_party AS boolean) AS overridden_by_third_party,
+    subsession_start_time,
+    subsession_end_time,
+    subsession_counter,
+    experiments
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
+  WHERE
+    submission_date
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
+    -- submission_date = @submission_date
+  QUALIFY
+    ROW_NUMBER() OVER (
+      PARTITION BY
+        client_id,
+        submission_date,
+        serp_provider_id,
+        partner_code,
+        serp_search_access_point
+      ORDER BY
+        event_timestamp DESC
+    ) = 1
+),
+serp_events_clients_ad_enterprise_cte AS (
+    -- serp_events_clients_ad_enterprise_cte
+  SELECT
+    serp_events_with_client_info_cte.client_id,
+    serp_events_with_client_info_cte.submission_date,
+    serp_events_with_client_info_cte.serp_provider_id,
+    serp_events_with_client_info_cte.partner_code,
+    serp_events_with_client_info_cte.serp_search_access_point,
+    serp_events_with_client_info_cte.sample_id,
+    serp_events_with_client_info_cte.profile_group_id,
+    serp_events_with_client_info_cte.legacy_telemetry_client_id,
+    serp_events_with_client_info_cte.country,
+    serp_events_with_client_info_cte.app_version,
+    serp_events_with_client_info_cte.channel,
+    serp_events_with_client_info_cte.normalized_channel,
+    serp_events_with_client_info_cte.locale,
+    serp_events_with_client_info_cte.os,
+    serp_events_with_client_info_cte.normalized_os,
+    serp_events_with_client_info_cte.os_version,
+    serp_events_with_client_info_cte.normalized_os_version,
+    serp_events_with_client_info_cte.os_version_major,
+    serp_events_with_client_info_cte.os_version_minor,
+    serp_events_with_client_info_cte.windows_build_number,
+    serp_events_with_client_info_cte.distribution_id,
+    serp_events_with_client_info_cte.profile_creation_date,
+    serp_events_with_client_info_cte.region_home_region,
+    serp_events_with_client_info_cte.usage_is_default_browser,
+    serp_events_with_client_info_cte.search_engine_default_display_name,
+    serp_events_with_client_info_cte.search_engine_default_load_path,
+    serp_events_with_client_info_cte.search_engine_default_partner_code,
+    serp_events_with_client_info_cte.search_engine_default_provider_id,
+    serp_events_with_client_info_cte.search_engine_default_submission_url,
+    serp_events_with_client_info_cte.search_engine_default_overridden_by_third_party,
+    serp_events_with_client_info_cte.search_engine_private_display_name,
+    serp_events_with_client_info_cte.search_engine_private_load_path,
+    serp_events_with_client_info_cte.search_engine_private_partner_code,
+    serp_events_with_client_info_cte.search_engine_private_provider_id,
+    serp_events_with_client_info_cte.search_engine_private_submission_url,
+    serp_events_with_client_info_cte.search_engine_private_overridden_by_third_party,
+    serp_events_with_client_info_cte.overridden_by_third_party,
+    serp_events_with_client_info_cte.subsession_start_time,
+    serp_events_with_client_info_cte.subsession_end_time,
+    serp_events_with_client_info_cte.subsession_counter,
+    serp_events_with_client_info_cte.experiments,
+    clients_with_adblocker_addons_cte.has_adblocker_addon,
+    serp_is_enterprise_cte.policies_is_enterprise
+  FROM
+    serp_events_with_client_info_cte
+  LEFT JOIN
+    clients_with_adblocker_addons_cte
+    USING (client_id, submission_date)
+  LEFT JOIN
+    serp_is_enterprise_cte
+    USING (client_id, submission_date)
+),
+serp_ad_click_target_cte AS (
+  SELECT
+    glean_client_id AS client_id,
+    submission_date,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+      search_engine
+    ) AS serp_provider_id, -- this is engine
+    partner_code,
+    sap_source AS serp_search_access_point,
+    STRING_AGG(DISTINCT ad_components.component, ', ') AS ad_click_target
   FROM
     `mozdata.firefox_desktop.serp_events`
+  CROSS JOIN
+    UNNEST(ad_components) AS ad_components
   WHERE
-    -- date(submission_timestamp) = @submission_date
-    -- this is for test runs
-    submission_date = '2025-06-07'
-    -- and sample_id = 0
+    submission_date
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
+    -- submission_date = @submission_date
   GROUP BY
-    submission_date,
     client_id,
+    submission_date,
     serp_provider_id,
+    partner_code,
     serp_search_access_point
 ),
 serp_aggregates_cte AS (
   SELECT
-    submission_date,
     glean_client_id AS client_id,
+    submission_date,
+    `moz-fx-data-shared-prod.udf.normalize_search_engine`(
+      search_engine
+    ) AS serp_provider_id, -- this is engine
+    partner_code,
     sap_source AS serp_search_access_point,
-    `moz-fx-data-shared-prod.udf.normalize_search_engine`(search_engine) AS serp_provider_id,
+    LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
     COUNTIF(
       (is_tagged IS TRUE)
       AND (
         sap_source = 'follow_on_from_refine_on_incontent_search'
-        OR sap_source = 'follow_on_from_refine_on_SERP'
+        OR sap_source = 'follow_on_from_refine_on_serp'
       )
     ) AS serp_follow_on_searches_tagged_count,
     COUNTIF(is_tagged IS TRUE) AS serp_searches_tagged_count,
+    COUNTIF(is_tagged IS TRUE AND num_ads_visible > 0) AS serp_with_ads_tagged_count,
     COUNTIF(is_tagged IS FALSE) AS serp_searches_organic_count,
     COUNTIF(is_tagged IS FALSE AND num_ads_visible > 0) AS serp_with_ads_organic_count,
     SUM(CASE WHEN is_tagged IS TRUE THEN num_ad_clicks ELSE 0 END) AS serp_ad_clicks_tagged_count,
@@ -294,51 +598,85 @@ serp_aggregates_cte AS (
     SUM(num_ads_loaded) AS num_ads_loaded,
     SUM(num_ads_visible) AS num_ads_visible,
     SUM(num_ads_blocked) AS num_ads_blocked,
-    SUM(num_ads_notshowing) AS num_ads_notshowing
+    SUM(num_ads_notshowing) AS num_ads_notshowing,
+    MAX(UNIX_DATE(DATE(to_utc_string(subsession_start_time)))) - MAX(
+      UNIX_DATE(DATE(safe_parse_timestamp(first_run_date)))
+    ) AS profile_age_in_days,
+    COUNT(*) AS serp_counts,
+    COUNTIF(subsession_counter = 1) AS sessions_started_on_this_day,
+    SUM(browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
+    SUM(
+      browser_engagement_tab_open_event_count
+    ) AS serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
+    SUM(browser_engagement_uri_count) AS serp_scalar_parent_browser_engagement_total_uri_count_sum,
+    MAX(browser_engagement_max_concurrent_tab_count) AS max_concurrent_tab_count_max
   FROM
-    `mozdata.firefox_desktop.serp_events`
+    `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`
   WHERE
-  -- date(submission_timestamp) = @submission_date
-  -- this is for test runs
-    submission_date = '2025-06-07'
-  -- and sample_id = 0
+    submission_date
+    BETWEEN '2025-06-25'
+    AND '2025-09-25'
+    AND sample_id = 0
+    -- submission_date = @submission_date
   GROUP BY
-    submission_date,
     client_id,
+    submission_date,
     serp_provider_id,
+    partner_code,
     serp_search_access_point
 ),
-serp_ad_click_target_cte AS (
+serp_final_cte AS (
   SELECT
-    submission_date,
-    glean_client_id AS client_id,
-    sap_source AS serp_search_access_point,
-    `moz-fx-data-shared-prod.udf.normalize_search_engine`(search_engine) AS serp_provider_id,
-    ARRAY_AGG(DISTINCT ad_components.component) AS ad_click_target
-  FROM
-    `mozdata.firefox_desktop.serp_events`
-  CROSS JOIN
-    UNNEST(ad_components) AS ad_components
-  WHERE
-    submission_date = '2025-06-07'
-  -- and sample_id = 0
-  GROUP BY
-    submission_date,
-    client_id,
-    serp_provider_id,
-    serp_search_access_point
-),
-final_serp_cte AS (
-  SELECT
-    serp_array_aggs_cte.submission_date,
-    serp_array_aggs_cte.client_id,
-    serp_array_aggs_cte.serp_provider_id,
-    serp_array_aggs_cte.serp_search_access_point,
-    serp_array_aggs_cte.serp_partner_code,
-    serp_array_aggs_cte.serp_ad_blocker_inferred,
+    serp_events_clients_ad_enterprise_cte.client_id,
+    serp_events_clients_ad_enterprise_cte.submission_date,
+    serp_events_clients_ad_enterprise_cte.serp_provider_id,
+    serp_events_clients_ad_enterprise_cte.partner_code,
+    serp_events_clients_ad_enterprise_cte.serp_search_access_point,
+    serp_events_clients_ad_enterprise_cte.sample_id,
+    serp_events_clients_ad_enterprise_cte.profile_group_id,
+    serp_events_clients_ad_enterprise_cte.legacy_telemetry_client_id,
+    serp_events_clients_ad_enterprise_cte.country,
+    serp_events_clients_ad_enterprise_cte.app_version,
+    serp_events_clients_ad_enterprise_cte.channel,
+    serp_events_clients_ad_enterprise_cte.normalized_channel,
+    serp_events_clients_ad_enterprise_cte.locale,
+    serp_events_clients_ad_enterprise_cte.os,
+    serp_events_clients_ad_enterprise_cte.normalized_os,
+    serp_events_clients_ad_enterprise_cte.os_version,
+    serp_events_clients_ad_enterprise_cte.normalized_os_version,
+    serp_events_clients_ad_enterprise_cte.os_version_major,
+    serp_events_clients_ad_enterprise_cte.os_version_minor,
+    serp_events_clients_ad_enterprise_cte.windows_build_number,
+    serp_events_clients_ad_enterprise_cte.distribution_id,
+    serp_events_clients_ad_enterprise_cte.profile_creation_date,
+    serp_events_clients_ad_enterprise_cte.region_home_region,
+    serp_events_clients_ad_enterprise_cte.usage_is_default_browser,
+    serp_events_clients_ad_enterprise_cte.search_engine_default_display_name,
+    serp_events_clients_ad_enterprise_cte.search_engine_default_load_path,
+    serp_events_clients_ad_enterprise_cte.search_engine_default_partner_code,
+    serp_events_clients_ad_enterprise_cte.search_engine_default_provider_id,
+    serp_events_clients_ad_enterprise_cte.search_engine_default_submission_url,
+    serp_events_clients_ad_enterprise_cte.search_engine_default_overridden_by_third_party,
+    serp_events_clients_ad_enterprise_cte.search_engine_private_display_name,
+    serp_events_clients_ad_enterprise_cte.search_engine_private_load_path,
+    serp_events_clients_ad_enterprise_cte.search_engine_private_partner_code,
+    serp_events_clients_ad_enterprise_cte.search_engine_private_provider_id,
+    serp_events_clients_ad_enterprise_cte.search_engine_private_submission_url,
+    serp_events_clients_ad_enterprise_cte.search_engine_private_overridden_by_third_party,
+    serp_events_clients_ad_enterprise_cte.overridden_by_third_party,
+    serp_events_clients_ad_enterprise_cte.subsession_start_time,
+    serp_events_clients_ad_enterprise_cte.subsession_end_time,
+    serp_events_clients_ad_enterprise_cte.subsession_counter,
+    serp_events_clients_ad_enterprise_cte.experiments,
+    serp_events_clients_ad_enterprise_cte.has_adblocker_addon,
+    serp_events_clients_ad_enterprise_cte.policies_is_enterprise,
+    serp_ad_click_target_cte.ad_click_target,
+    serp_aggregates_cte.serp_ad_blocker_inferred,
+    serp_aggregates_cte.serp_follow_on_searches_tagged_count,
     serp_aggregates_cte.serp_searches_tagged_count,
     serp_aggregates_cte.serp_searches_organic_count,
     serp_aggregates_cte.serp_with_ads_organic_count,
+    serp_aggregates_cte.serp_with_ads_tagged_count,
     serp_aggregates_cte.serp_ad_clicks_tagged_count,
     serp_aggregates_cte.serp_ad_clicks_organic_count,
     serp_aggregates_cte.num_ad_clicks,
@@ -348,224 +686,264 @@ final_serp_cte AS (
     serp_aggregates_cte.num_ads_visible,
     serp_aggregates_cte.num_ads_blocked,
     serp_aggregates_cte.num_ads_notshowing,
-    serp_ad_click_target_cte.ad_click_target
+    serp_aggregates_cte.profile_age_in_days,
+    serp_aggregates_cte.serp_counts,
+    serp_aggregates_cte.sessions_started_on_this_day,
+    serp_aggregates_cte.active_hours_sum,
+    serp_aggregates_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
+    serp_aggregates_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum,
+    serp_aggregates_cte.max_concurrent_tab_count_max
   FROM
-    serp_array_aggs_cte
-  LEFT JOIN
-    serp_aggregates_cte
-    USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
+    serp_events_clients_ad_enterprise_cte
   LEFT JOIN
     serp_ad_click_target_cte
-    USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
+    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
+  LEFT JOIN
+    serp_aggregates_cte
+    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
 ),
-glean_metrics_cte AS (
+join_sap_serp_cte AS (
   SELECT
-    client_info.client_id,
-    DATE(submission_timestamp) AS submission_date,
-    sap.normalized_engine,
-    sap.source,
-  -- sap.search_access_point, -- rename
-    client_info.distribution.name AS distribution_id,
-    client_info.windows_build_number AS windows_build_number,
-    metrics.string.region_home_region AS user_pref_browser_search_region,
-    metrics.labeled_counter.browser_is_user_default AS is_default_browser,
-  -- metrics.labeled_counter.browser_is_user_default as browser_is_user_default -- rename
-    metrics.string.search_engine_default_display_name AS default_search_engine,
-  -- metrics.string.search_engine_default_display_name as default_search_engine_display_name, -- rename
-    metrics.string.search_engine_default_load_path AS default_search_engine_data_load_path,
-  -- metrics.string.search_engine_default_load_path as default_search_engine_load_path, -- rename
-    metrics.url2.search_engine_default_submission_url AS default_search_engine_data_submission_url,
-  -- metrics.url2.search_engine_default_submission_url as default_search_engine_submission_url, -- rename
-    metrics.string.search_engine_private_display_name AS default_private_search_engine,
-  -- metrics.string.search_engine_private_display_name as default_private_search_engine_display_name, -- rename
-    metrics.string.search_engine_private_load_path AS default_private_search_engine_data_load_path,
-  -- metrics.string.search_engine_private_load_path as default_private_search_engine_load_path, -- rename
-    metrics.url2.search_engine_private_submission_url AS default_private_search_engine_data_submission_url,
-  -- metrics.url2.search_engine_private_submission_url as default_private_search_engine_submission_url, -- rename
-    metrics.string.search_engine_default_provider_id AS default_search_engine_provider_id,
-    metrics.string.search_engine_default_partner_code AS default_search_engine_partner_code,
-    metrics.boolean.search_engine_default_overridden_by_third_party AS default_search_engine_overridden
+    sap_final_cte.client_id AS sap_client_id,
+    serp_final_cte.client_id AS serp_client_id,
+    sap_final_cte.submission_date AS sap_submission_date,
+    serp_final_cte.submission_date AS serp_submission_date,
+    sap_final_cte.normalized_engine AS sap_normalized_engine,
+    serp_final_cte.serp_provider_id,
+    sap_final_cte.partner_code AS sap_partner_code,
+    serp_final_cte.partner_code AS serp_partner_code,
+    sap_final_cte.source AS sap_search_access_point,
+    serp_final_cte.serp_search_access_point,
+    sap_final_cte.sample_id AS sap_sample_id,
+    serp_final_cte.sample_id AS serp_sample_id,
+    sap_final_cte.profile_group_id AS sap_profile_group_id,
+    sap_final_cte.legacy_telemetry_client_id AS sap_legacy_telemetry_client_id,
+    serp_final_cte.legacy_telemetry_client_id AS serp_legacy_telemetry_client_id,
+    sap_final_cte.country AS sap_country,
+    sap_final_cte.app_version AS sap_app_version,
+    sap_final_cte.channel AS sap_channel,
+    sap_final_cte.normalized_channel AS sap_normalized_channel,
+    sap_final_cte.locale AS sap_locale,
+    sap_final_cte.os AS sap_os,
+    sap_final_cte.normalized_os AS sap_normalized_os,
+    sap_final_cte.os_version AS sap_os_version,
+    sap_final_cte.normalized_os_version AS sap_normalized_os_version,
+    sap_final_cte.windows_build_number AS sap_windows_build_number,
+    sap_final_cte.distribution_id AS sap_distribution_id,
+    sap_final_cte.profile_creation_date AS sap_profile_creation_date,
+    sap_final_cte.region_home_region AS sap_region_home_region,
+    sap_final_cte.usage_is_default_browser AS sap_usage_is_default_browser,
+    sap_final_cte.search_engine_default_display_name AS sap_default_search_engine_display_name,
+    sap_final_cte.search_engine_default_load_path AS sap_default_search_engine_load_path,
+    sap_final_cte.search_engine_default_partner_code AS sap_default_search_engine_partner_code,
+    sap_final_cte.search_engine_default_provider_id AS sap_default_search_engine_provider_id,
+    sap_final_cte.search_engine_default_submission_url AS sap_default_search_engine_submission_url,
+    sap_final_cte.search_engine_default_overridden_by_third_party AS sap_default_search_engine_overridden,
+    sap_final_cte.search_engine_private_display_name AS sap_default_private_search_engine_display_name,
+    sap_final_cte.search_engine_private_load_path AS sap_default_private_search_engine_load_path,
+    sap_final_cte.search_engine_private_partner_code AS sap_default_private_search_engine_partner_code,
+    sap_final_cte.search_engine_private_provider_id AS sap_default_private_search_engine_provider_id,
+    sap_final_cte.search_engine_private_submission_url AS sap_default_private_search_engine_submission_url,
+    sap_final_cte.search_engine_private_overridden_by_third_party AS sap_default_private_search_engine_overridden,
+    sap_final_cte.provider_name AS sap_provider_name,
+    sap_final_cte.provider_id AS sap_provider_id,
+    sap_final_cte.overridden_by_third_party AS sap_overridden_by_third_party,
+    sap_final_cte.subsession_start_time AS sap_subsession_start_time,
+    sap_final_cte.subsession_end_time AS sap_subsession_end_time,
+    sap_final_cte.subsession_counter AS sap_subsession_counter,
+    sap_final_cte.experiments AS sap_experiments,
+    sap_final_cte.has_adblocker_addon AS sap_has_adblocker_addon,
+    sap_final_cte.policies_is_enterprise AS sap_policies_is_enterprise,
+    sap_final_cte.profile_age_in_days AS sap_profile_age_in_days,
+    sap_final_cte.sap AS sap,
+    sap_final_cte.sessions_started_on_this_day AS sap_sessions_started_on_this_day,
+    sap_final_cte.active_hours_sum AS sap_active_hours_sum,
+    sap_final_cte.scalar_parent_browser_engagement_tab_open_event_count_sum AS sap_scalar_parent_browser_engagement_tab_open_event_count_sum,
+    sap_final_cte.scalar_parent_browser_engagement_total_uri_count_sum AS sap_scalar_parent_browser_engagement_total_uri_count_sum,
+    sap_final_cte.concurrent_tab_count_max AS sap_concurrent_tab_count_max,
+    serp_final_cte.profile_group_id AS serp_profile_group_id,
+    serp_final_cte.country AS serp_country,
+    serp_final_cte.app_version AS serp_app_version,
+    serp_final_cte.channel AS serp_channel,
+    serp_final_cte.normalized_channel AS serp_normalized_channel,
+    serp_final_cte.locale AS serp_locale,
+    serp_final_cte.os AS serp_os,
+    serp_final_cte.normalized_os AS serp_normalized_os,
+    serp_final_cte.os_version AS serp_os_version,
+    serp_final_cte.normalized_os_version AS serp_normalized_os_version,
+    serp_final_cte.os_version_major AS serp_os_version_major,
+    serp_final_cte.os_version_minor AS serp_os_version_minor,
+    serp_final_cte.windows_build_number AS serp_windows_build_number,
+    serp_final_cte.distribution_id AS serp_distribution_id,
+    serp_final_cte.profile_creation_date AS serp_profile_creation_date,
+    serp_final_cte.region_home_region AS serp_region_home_region,
+    serp_final_cte.usage_is_default_browser AS serp_usage_is_default_browser,
+    serp_final_cte.search_engine_default_display_name AS serp_default_search_engine_display_name,
+    serp_final_cte.search_engine_default_load_path AS serp_default_search_engine_load_path,
+    serp_final_cte.search_engine_default_partner_code AS serp_default_search_engine_partner_code,
+    serp_final_cte.search_engine_default_provider_id AS serp_default_search_engine_provider_id,
+    serp_final_cte.search_engine_default_submission_url AS serp_default_search_engine_submission_url,
+    serp_final_cte.search_engine_default_overridden_by_third_party AS serp_default_search_engine_overridden,
+    serp_final_cte.search_engine_private_display_name AS serp_default_private_search_engine_display_name,
+    serp_final_cte.search_engine_private_load_path AS serp_default_private_search_engine_load_path,
+    serp_final_cte.search_engine_private_partner_code AS serp_default_private_search_engine_partner_code,
+    serp_final_cte.search_engine_private_provider_id AS serp_default_private_search_engine_provider_id,
+    serp_final_cte.search_engine_private_submission_url AS serp_default_private_search_engine_submission_url,
+    serp_final_cte.search_engine_private_overridden_by_third_party AS serp_default_private_search_engine_overridden,
+    serp_final_cte.overridden_by_third_party AS serp_overridden_by_third_party,
+    serp_final_cte.subsession_start_time AS serp_subsession_start_time,
+    serp_final_cte.subsession_end_time AS serp_subsession_end_time,
+    serp_final_cte.subsession_counter AS serp_subsession_counter,
+    serp_final_cte.experiments AS serp_experiments,
+    serp_final_cte.has_adblocker_addon AS serp_has_adblocker_addon,
+    serp_final_cte.policies_is_enterprise AS serp_policies_is_enterprise,
+    serp_final_cte.ad_click_target AS serp_ad_click_target,
+    serp_final_cte.serp_ad_blocker_inferred AS serp_ad_blocker_inferred,
+    serp_final_cte.serp_follow_on_searches_tagged_count AS serp_follow_on_searches_tagged_count,
+    serp_final_cte.serp_searches_tagged_count AS serp_searches_tagged_count,
+    serp_final_cte.serp_searches_organic_count AS serp_searches_organic_count,
+    serp_final_cte.serp_with_ads_organic_count AS serp_with_ads_organic_count,
+    serp_final_cte.serp_with_ads_tagged_count AS serp_with_ads_tagged_count,
+    serp_final_cte.serp_ad_clicks_tagged_count AS serp_ad_clicks_tagged_count,
+    serp_final_cte.serp_ad_clicks_organic_count AS serp_ad_clicks_organic_count,
+    serp_final_cte.num_ad_clicks AS serp_num_ad_clicks,
+    serp_final_cte.num_non_ad_link_clicks AS serp_num_non_ad_link_clicks,
+    serp_final_cte.num_other_engagements AS serp_num_other_engagements,
+    serp_final_cte.num_ads_loaded AS serp_num_ads_loaded,
+    serp_final_cte.num_ads_visible AS serp_num_ads_visible,
+    serp_final_cte.num_ads_blocked AS serp_num_ads_blocked,
+    serp_final_cte.num_ads_notshowing AS serp_num_ads_notshowing,
+    serp_final_cte.profile_age_in_days AS serp_profile_age_in_days,
+    serp_final_cte.serp_counts,
+    serp_final_cte.sessions_started_on_this_day AS serp_sessions_started_on_this_day,
+    serp_final_cte.active_hours_sum AS serp_active_hours_sum,
+    serp_final_cte.serp_scalar_parent_browser_engagement_tab_open_event_count_sum AS serp_scalar_parent_browser_engagement_tab_open_event_count_sum,
+    serp_final_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum AS serp_scalar_parent_browser_engagement_total_uri_count_sum,
+    serp_final_cte.max_concurrent_tab_count_max AS serp_max_concurrent_tab_count_max
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1` AS metrics_v1
-  LEFT JOIN
-    sap_clients_events_cte AS sap
-    ON metrics_v1.client_info.client_id = sap.client_id
-    AND DATE(metrics_v1.submission_timestamp) = sap.submission_date
-  WHERE
-  -- date(submission_timestamp) = @submission_date
-  -- this is for test runs
-    DATE(metrics_v1.submission_timestamp) = '2025-06-07'
-  -- and metrics_v1.sample_id = 0
-  QUALIFY
-    ROW_NUMBER() OVER (
-      PARTITION BY
-        client_info.client_id
-      ORDER BY
-        submission_timestamp DESC
-    ) = 1 -- this is to get the last instance
+    sap_final_cte
+  FULL OUTER JOIN
+    serp_final_cte
+    ON (
+      sap_final_cte.client_id = serp_final_cte.client_id
+      OR (sap_final_cte.client_id IS NULL AND serp_final_cte.client_id IS NULL)
+    )
+    AND (
+      sap_final_cte.submission_date = serp_final_cte.submission_date
+      OR (sap_final_cte.submission_date IS NULL AND serp_final_cte.submission_date IS NULL)
+    )
+    AND (
+      sap_final_cte.normalized_engine = serp_final_cte.serp_provider_id
+      OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.serp_provider_id IS NULL)
+    )
+    AND (
+      sap_final_cte.partner_code = serp_final_cte.partner_code
+      OR (sap_final_cte.partner_code IS NULL AND serp_final_cte.partner_code IS NULL)
+    )
+    AND (
+      sap_final_cte.source = serp_final_cte.serp_search_access_point
+      OR (sap_final_cte.source IS NULL AND serp_final_cte.serp_search_access_point IS NULL)
+    )
 ),
-glean_aggregates_cte AS (
+consolidated AS (
   SELECT
-    client_info.client_id AS client_id,
-    DATE(submission_timestamp) AS submission_date,
-    sap.normalized_engine,
-    sap.source,
-  -- sap.search_access_point, -- rename
-    SUM(metrics.counter.browser_engagement_active_ticks / (3600 / 5)) AS active_hours_sum,
-    SUM(
-      metrics.counter.browser_engagement_tab_open_event_count
-    ) AS scalar_parent_browser_engagement_tab_open_event_count_sum,
-    SUM(
-      metrics.counter.browser_engagement_uri_count
-    ) AS scalar_parent_browser_engagement_total_uri_count_sum,
-    MAX(
-      metrics.quantity.browser_engagement_max_concurrent_tab_count
-    ) AS max_concurrent_tab_count_max
+    serp_submission_date AS submission_date,
+    serp_client_id AS client_id,
+    serp_legacy_telemetry_client_id AS legacy_telemetry_client_id, -- NEW
+    serp_provider_id AS engine, -- this is normalized in serp_events_with_client_info
+    serp_search_access_point AS source,
+    serp_partner_code AS partner_code, -- NEW
+    serp_country AS country,
+    NULL AS addon_version,
+    serp_app_version AS app_version,
+    serp_windows_build_number AS windows_build_number, -- NEW
+    serp_distribution_id AS distribution_id,
+    serp_locale AS locale,
+    serp_region_home_region AS user_pref_browser_search_region,
+    NULL AS search_cohort,
+    serp_os AS os,
+    serp_normalized_os AS normalized_os, -- NEW
+    serp_os_version AS os_version,
+    serp_normalized_os_version AS normalized_os_version, -- NEW
+    serp_channel AS channel,
+    serp_normalized_channel AS normalized_channel, -- NEW
+    serp_usage_is_default_browser AS is_default_browser,
+    serp_profile_creation_date AS profile_creation_date,
+    serp_default_search_engine_display_name AS default_search_engine,
+    serp_default_search_engine_load_path AS default_search_engine_data_load_path,
+    serp_default_search_engine_submission_url AS default_search_engine_data_submission_url,
+    serp_default_search_engine_partner_code AS default_search_engine_partner_code, -- NEW
+    serp_default_search_engine_provider_id AS default_search_engine_provider_id, -- NEW
+    serp_default_search_engine_overridden AS default_search_engine_overridden, -- NEW
+    serp_default_private_search_engine_display_name AS default_private_search_engine,
+    serp_default_private_search_engine_load_path AS default_private_search_engine_data_load_path,
+    serp_default_private_search_engine_submission_url AS default_private_search_engine_data_submission_url,
+    serp_default_private_search_engine_partner_code AS default_private_search_engine_partner_code, -- NEW
+    serp_default_private_search_engine_provider_id AS default_private_search_engine_provider_id, -- NEW
+    serp_default_private_search_engine_overridden AS default_private_search_engine_overridden, -- NEW
+    serp_sample_id AS sample_id,
+    serp_subsession_start_time AS subsession_start_time, -- NEW
+    serp_subsession_end_time AS subsession_end_time, -- NEW
+    serp_subsession_counter AS subsession_counter, -- NEW
+    NULL AS subsessions_hours_sum,
+    serp_sessions_started_on_this_day AS sessions_started_on_this_day,
+    serp_overridden_by_third_party AS overridden_by_third_party, -- NEW
+    NULL AS active_addons_count_mean,
+    serp_max_concurrent_tab_count_max AS max_concurrent_tab_count_max,
+    serp_scalar_parent_browser_engagement_tab_open_event_count_sum AS tab_open_event_count_sum,
+    serp_active_hours_sum AS active_hours_sum,
+    serp_scalar_parent_browser_engagement_total_uri_count_sum AS total_uri_count,
+    serp_experiments AS experiments,
+    NULL AS scalar_parent_urlbar_searchmode_bookmarkmenu_sum,
+    NULL AS scalar_parent_urlbar_searchmode_handoff_sum,
+    NULL AS scalar_parent_urlbar_searchmode_keywordoffer_sum,
+    NULL AS scalar_parent_urlbar_searchmode_oneoff_sum,
+    NULL AS scalar_parent_urlbar_searchmode_other_sum,
+    NULL AS scalar_parent_urlbar_searchmode_shortcut_sum,
+    NULL AS scalar_parent_urlbar_searchmode_tabmenu_sum,
+    NULL AS scalar_parent_urlbar_searchmode_tabtosearch_sum,
+    NULL AS scalar_parent_urlbar_searchmode_tabtosearch_onboard_sum,
+    NULL AS scalar_parent_urlbar_searchmode_topsites_newtab_sum,
+    NULL AS scalar_parent_urlbar_searchmode_topsites_urlbar_sum,
+    NULL AS scalar_parent_urlbar_searchmode_touchbar_sum,
+    NULL AS scalar_parent_urlbar_searchmode_typed_sum,
+    serp_profile_age_in_days AS profile_age_in_days,
+    serp_searches_organic_count AS organic,
+    serp_searches_tagged_count AS tagged_sap,
+    serp_follow_on_searches_tagged_count AS tagged_follow_on,
+    sap,
+    serp_counts,
+    serp_ad_click_target AS ad_click,
+    serp_ad_clicks_organic_count AS ad_click_organic,
+    serp_with_ads_tagged_count AS search_with_ads,
+    serp_with_ads_organic_count AS search_with_ads_organic,
+    serp_ad_clicks_tagged_count AS ad_clicks_tagged,
+    serp_ad_blocker_inferred AS ad_blocker_inferred,
+    serp_num_ad_clicks AS num_ad_clicks, -- NEW
+    serp_num_non_ad_link_clicks AS num_non_ad_link_clicks, -- NEW
+    serp_num_other_engagements AS num_other_engagements, -- NEW
+    serp_num_ads_loaded AS num_ads_loaded, -- NEW
+    serp_num_ads_visible AS num_ads_visible, -- NEW
+    serp_num_ads_blocked AS num_ads_blocked, -- NEW
+    serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
+    NULL AS unknown,
+    sap_normalized_engine AS normalized_engine,
+    NULL AS is_sap_monetizable, -- REVISIT
+    serp_has_adblocker_addon AS has_adblocker_addon,
+    serp_policies_is_enterprise AS policies_is_enterprise,
+    serp_os_version_major AS os_version_major,
+    serp_os_version_minor AS os_version_minor,
+    serp_profile_group_id AS profile_group_id
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1` AS metrics_v1
-  LEFT JOIN
-    sap_clients_events_cte AS sap
-    ON metrics_v1.client_info.client_id = sap.client_id
-    AND DATE(metrics_v1.submission_timestamp) = sap.submission_date
-  WHERE
-  -- date(submission_timestamp) = @submission_date
-  -- this is for test runs
-    DATE(submission_timestamp) = '2025-06-07'
-  -- and metrics_v1.sample_id = 0
-  GROUP BY
-    client_id,
-    submission_date,
-    sap.normalized_engine,
-    sap.source
-  -- sap.search_access_point -- rename
+    join_sap_serp_cte
 ),
-final_glean_cte AS (
+final_cte AS (
   SELECT
-    glean_metrics_cte.client_id,
-    glean_metrics_cte.submission_date,
-    glean_metrics_cte.normalized_engine,
-    glean_metrics_cte.source,
-  -- glean_metrics_cte.search_access_point, -- rename
-    glean_metrics_cte.windows_build_number,
-    glean_metrics_cte.distribution_id,
-    glean_metrics_cte.user_pref_browser_search_region,
-    glean_metrics_cte.is_default_browser,
-  -- glean_metrics_cte.browser_is_user_default, -- rename
-    glean_metrics_cte.default_search_engine,
-  -- glean_metrics_cte.default_search_engine_display_name, -- rename
-    glean_metrics_cte.default_search_engine_data_load_path,
-  -- glean_metrics_cte.default_search_engine_load_path, -- rename
-    glean_metrics_cte.default_search_engine_data_submission_url,
-  -- glean_metrics_cte.default_search_engine_submission_url, -- rename
-    glean_metrics_cte.default_private_search_engine,
-  -- glean_metrics_cte.default_private_search_engine_display_name, -- rename
-    glean_metrics_cte.default_private_search_engine_data_load_path,
-  -- glean_metrics_cte.default_private_search_engine_load_path, -- rename
-    glean_metrics_cte.default_private_search_engine_data_submission_url,
-  -- glean_metrics_cte.default_private_search_engine_submission_url, -- rename
-    glean_metrics_cte.default_search_engine_provider_id,
-    glean_metrics_cte.default_search_engine_partner_code,
-    glean_metrics_cte.default_search_engine_overridden,
-    glean_aggregates_cte.active_hours_sum,
-    glean_aggregates_cte.scalar_parent_browser_engagement_tab_open_event_count_sum,
-    glean_aggregates_cte.scalar_parent_browser_engagement_total_uri_count_sum,
-    glean_aggregates_cte.max_concurrent_tab_count_max
+    *
   FROM
-    glean_metrics_cte
-  LEFT JOIN
-    glean_aggregates_cte
-    USING (client_id, submission_date, normalized_engine, source)
-    -- using(client_id, submission_date, normalized_engine, search_access_point) -- rename
-),
-final_joined_cte AS (
-  SELECT
-    final_sap_cte.sample_id,
-    final_sap_cte.submission_date,
-    final_sap_cte.client_id,
-    final_sap_cte.legacy_telemetry_client_id,
-    final_sap_cte.normalized_engine,
-    final_sap_cte.source,
-  -- final_sap_cte.search_access_point, -- rename
-    final_serp_cte.serp_search_access_point,
-    final_sap_cte.provider_name,
-    final_sap_cte.provider_id,
-    final_serp_cte.serp_provider_id,
-    final_sap_cte.partner_code,
-    final_serp_cte.serp_partner_code,
-    final_sap_cte.country,
-    final_sap_cte.app_version,
-    final_glean_cte.windows_build_number,
-    final_glean_cte.distribution_id,
-    final_sap_cte.locale,
-    final_glean_cte.user_pref_browser_search_region,
-    final_sap_cte.os,
-    final_sap_cte.normalized_os,
-    final_sap_cte.os_version,
-    final_sap_cte.normalized_os_version,
-    final_sap_cte.channel,
-    final_sap_cte.normalized_channel,
-    final_glean_cte.is_default_browser,
-  -- final_glean_cte.browser_is_user_default, -- rename
-    final_sap_cte.profile_creation_date,
-    final_sap_cte.profile_age_in_days,
-    final_sap_cte.profile_group_id,
-    final_glean_cte.default_search_engine,
-  -- final_glean_cte.default_search_engine_display_name, -- rename
-    final_glean_cte.default_search_engine_data_load_path,
-  -- final_glean_cte.default_search_engine_load_path, -- rename
-    final_glean_cte.default_search_engine_data_submission_url,
-  -- final_glean_cte.default_search_engine_submission_url, -- rename
-    final_glean_cte.default_private_search_engine,
-  -- final_glean_cte.default_private_search_engine_display_name, -- rename
-    final_glean_cte.default_private_search_engine_data_load_path,
-  -- final_glean_cte.default_private_search_engine_load_path, -- rename
-    final_glean_cte.default_private_search_engine_data_submission_url,
-  -- final_glean_cte.default_private_search_engine_submission_url, -- rename
-    final_sap_cte.sessions_started_on_this_day,
-    final_glean_cte.max_concurrent_tab_count_max,
-    final_glean_cte.scalar_parent_browser_engagement_tab_open_event_count_sum,
-    final_glean_cte.active_hours_sum,
-    final_glean_cte.scalar_parent_browser_engagement_total_uri_count_sum,
-    final_sap_cte.experiments,
-    final_sap_cte.policies_is_enterprise,
-    final_glean_cte.default_search_engine_provider_id,
-    final_glean_cte.default_search_engine_partner_code,
-    final_glean_cte.default_search_engine_overridden,
-    final_sap_cte.overridden_by_third_party,
-    final_sap_cte.has_adblocker_addon,
-    final_sap_cte.sap,
-    final_serp_cte.serp_ad_blocker_inferred,
-    final_serp_cte.serp_searches_tagged_count,
-    final_serp_cte.serp_searches_organic_count,
-    final_serp_cte.serp_with_ads_organic_count,
-    final_serp_cte.serp_ad_clicks_tagged_count,
-    final_serp_cte.serp_ad_clicks_organic_count,
-    final_serp_cte.num_ad_clicks,
-    final_serp_cte.num_non_ad_link_clicks,
-    final_serp_cte.num_other_engagements,
-    final_serp_cte.num_ads_loaded,
-    final_serp_cte.num_ads_visible,
-    final_serp_cte.num_ads_blocked,
-    final_serp_cte.num_ads_notshowing,
-    final_serp_cte.ad_click_target
-  FROM
-    final_sap_cte
-  LEFT JOIN
-    final_serp_cte
-    ON final_sap_cte.client_id = final_serp_cte.client_id
-    AND final_sap_cte.submission_date = final_serp_cte.submission_date
-    AND final_sap_cte.normalized_engine = final_serp_cte.serp_provider_id
-    AND final_sap_cte.source = final_serp_cte.serp_search_access_point
-    -- and final_sap_cte.search_access_point = final_serp_cte.serp_search_access_point -- rename
-  LEFT JOIN
-    final_glean_cte
-    ON final_sap_cte.client_id = final_glean_cte.client_id
-    AND final_sap_cte.submission_date = final_glean_cte.submission_date
-    AND final_sap_cte.normalized_engine = final_glean_cte.normalized_engine
-    AND final_sap_cte.source = final_glean_cte.source
-    -- and final_sap_cte.search_access_point = final_glean_cte.search_access_point -- rename
+    consolidated
 )
 SELECT
   *
 FROM
-  final_joined_cte
+  final_cte

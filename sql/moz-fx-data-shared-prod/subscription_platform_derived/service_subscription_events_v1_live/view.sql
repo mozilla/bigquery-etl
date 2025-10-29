@@ -138,7 +138,7 @@ auto_renew_change_events AS (
   SELECT
     `timestamp`,
     'Auto-Renew Change' AS type,
-    subscription.ended_reason AS reason,
+    IF(subscription.auto_renew, 'Auto-Renew Enabled', 'Auto-Renew Disabled') AS reason,
     service_subscriptions_history_id,
     subscription,
     old_subscription

@@ -4,6 +4,7 @@ WITH client_baseline AS (
       submission_date,
       client_id,
       sample_id,
+      legacy_telemetry_client_id,
       channel,
       distribution_id,
       is_daily_user,
@@ -32,6 +33,7 @@ WITH client_baseline AS (
     SELECT
       client_id,
       sample_id,
+      legacy_telemetry_client_id,
       channel,
       is_dau,
     FROM
@@ -43,6 +45,7 @@ WITH client_baseline AS (
   SELECT
     client_id,
     sample_id,
+    legacy_telemetry_client_id,
     channel AS normalized_channel,
     distribution_id,
     is_dau,
@@ -82,6 +85,7 @@ SELECT
   is_dau,
   policies_count,
   policies_is_enterprise,
+  legacy_telemetry_client_id,
 FROM
   client_baseline
 LEFT JOIN

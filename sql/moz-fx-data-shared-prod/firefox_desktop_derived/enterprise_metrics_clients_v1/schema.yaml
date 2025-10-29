@@ -49,3 +49,9 @@ fields:
   description: |
     Attempt to determine if the user is an enterprise user based on various signals.
     This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise
+
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description: |
+    A unique identifier (UUID) for the client in legacy telemetry.

@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
-from typing import Sequence, List
+from typing import List, Sequence
 
 import click
 from google.api_core.exceptions import BadRequest
@@ -24,7 +24,7 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
-from sql_generators.glean_usage import get_app_info
+from sql_generators.glean_usage.common import get_app_info
 
 from .cli.utils import parallelism_option, project_id_option
 

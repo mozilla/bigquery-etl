@@ -21,8 +21,9 @@ SELECT
   total_slot_ms / 1000 / 60 / 60 AS slot_hours,
   shredder_rows_deleted.deleted_row_count,
   shredder_rows_deleted.partition_id,
-  REGEXP_REPLACE(task_id, r"__sample_([0-9]+)$", "") AS parent_task_id,
-  SAFE_CAST(REGEXP_EXTRACT(task_id, r"__sample_([0-9]+)$") AS INT) AS shredded_sample_id,
+  -- sampling task ids end with [0-9]+_[0-9]+ as of 2025-10-15
+  REGEXP_REPLACE(task_id, r"__sample_([0-9_]+)?$", "") AS parent_task_id,
+  SAFE_CAST(REGEXP_EXTRACT(task_id, r"__sample_([0-9]+)(?:_[0-9]+)?") AS INT) AS shredded_sample_id,
   shredder_jobs.error_result.reason AS error_reason,
   shredder_jobs.error_result.message AS error_message,
 FROM

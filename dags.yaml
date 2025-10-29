@@ -774,19 +774,6 @@ bqetl_regrets_reporter_summary:
   tags:
     - impact/tier_1
 
-bqetl_cjms_nonprod:
-  schedule_interval: 0 * * * *
-  description: |
-    Hourly ETL for cjms nonprod.
-  default_args:
-    owner: srose@mozilla.com
-    start_date: "2022-03-24"
-    email: ["telemetry-alerts@mozilla.com", "srose@mozilla.com"]
-    retries: 2
-    retry_delay: 5m
-  tags:
-    - impact/tier_3
-
 bqetl_analytics_aggregations:
   default_args:
     depends_on_past: false
@@ -2487,3 +2474,52 @@ bqetl_firefox_enterprise:
     retry_delay: 30m
   tags:
     - impact/tier_3
+
+bqetl_braze_win10_sync:
+  schedule_interval: 0 5 * * *
+  description: |
+    Daily run to pull inactive Win10 users and sync them to Braze.
+  default_args:
+    owner: lmcfall@mozilla.com
+    email:
+      - lmcfall@mozilla.com
+    start_date: '2025-10-06'
+    retries: 1
+    retry_delay: 30m
+  tags:
+    - impact/tier_3
+
+bqetl_baseline_clients_city_seen:
+  schedule_interval: 0 4 * * *
+  default_args:
+    owner: wichan@mozilla.com
+    start_date: "2025-09-20"
+    email:
+      - telemetry-alerts@mozilla.com
+      - wichan@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    retries: 2
+    retry_delay: 30m
+  description: Scheduled queries for client city seen tables
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl
+
+bqetl_market_intel_bot:
+  default_args:
+    depends_on_past: false
+    email:
+      - kwindau@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kwindau@mozilla.com
+    retries: 1
+    retry_delay: 45m
+    start_date: '2025-09-01'
+  description: Runs on the 2nd day of the month to summarize last months' Chrome updates
+  schedule_interval: 0 15 2 * *
+  tags:
+    - impact/tier_3
+    - repo/bigquery-etl

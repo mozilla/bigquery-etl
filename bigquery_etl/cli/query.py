@@ -80,7 +80,8 @@ QUERY_NAME_RE = re.compile(r"(?P<dataset>[a-zA-z0-9_]+)\.(?P<name>[a-zA-z0-9_]+)
 VERSION_RE = re.compile(r"_v[0-9]+")
 DESTINATION_TABLE_RE = re.compile(r"^[a-zA-Z0-9_$]{0,1024}$")
 DEFAULT_DAG_NAME = "bqetl_default"
-DEFAULT_INIT_PARALLELISM = 10
+DEFAULT_INIT_PARALLELISM = 3
+INIT_SAMPLE_ID_PARALLELISM = 2
 DEFAULT_CHECKS_FILE_NAME = "checks.sql"
 VIEW_FILE = "view.sql"
 MATERIALIZED_VIEW = "materialized_view.sql"
@@ -1467,7 +1468,7 @@ def _initialize_in_parallel(
 @click.argument("name")
 @sql_dir_option
 @project_id_option()
-@billing_project_option()
+@billing_project_option(default="moz-fx-data-backfill-slots")
 @click.option(
     "--dry_run/--no_dry_run",
     "--dry-run/--no-dry-run",
@@ -1487,6 +1488,13 @@ def _initialize_in_parallel(
     help="Run the initialization even if the destination table contains data.",
     default=False,
 )
+@click.option(
+    "--sampling-batch-size",
+    "--sampling_batch_size",
+    help="Number of sample IDs per initialization batch (e.g. 0–3, 4–7, etc.).",
+    type=int,
+    default=4,
+)
 @click.pass_context
 def initialize(
     ctx,
@@ -1498,6 +1506,7 @@ def initialize(
     parallelism,
     skip_existing,
     force,
+    sampling_batch_size,
 ):
     """Create the destination table for the provided query."""
     if not is_authenticated():
@@ -1593,13 +1602,25 @@ def initialize(
                 if "@sample_id" in sql_content:
                     sample_ids = list(range(0, 100))
 
+                    # To support batch initialization, include the following clause in your query:
+                    # AND sample_id >= @sample_id
+                    # AND sample_id < @sample_id + @sampling_batch_size
+                    #
+                    # This limits each run to a range of sample IDs equal to the specified batch size
+                    # (e.g., if @sample_id=0 and @sampling_batch_size=4, the query processes sample IDs 0–3).
+                    if "@sampling_batch_size" in sql_content:
+                        sample_ids = [i for i in range(0, 100, sampling_batch_size)]
+                        arguments += [
+                            f"--parameter=sampling_batch_size:INT64:{sampling_batch_size}"
+                        ]
+
                     _initialize_in_parallel(
                         project=project,
                         table=full_table_id,
                         dataset=dataset,
                         query_file=query_file,
                         arguments=arguments,
-                        parallelism=parallelism,
+                        parallelism=INIT_SAMPLE_ID_PARALLELISM,
                         sample_ids=sample_ids,
                         addl_templates={
                             "is_init": lambda: True,

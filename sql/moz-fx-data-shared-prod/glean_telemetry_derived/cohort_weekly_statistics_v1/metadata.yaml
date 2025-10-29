@@ -1,0 +1,26 @@
+friendly_name: Cohort Weekly Statistics - Glean
+description: |-
+  Contains weekly retention by multiple different attributes as of first seen date
+
+  Related Documentation:
+  - Parent Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9509
+  - Jira ticket: https://mozilla-hub.atlassian.net/browse/DENG-9513
+  - Data Model README: ./README.md
+owners:
+- mhirose@mozilla.com
+labels:
+  incremental: false
+  owner1: mhirose
+scheduling:
+  dag_name: bqetl_cohort_retention
+  date_partition_parameter: null
+  parameters: ["submission_date:DATE:{{ds}}"]
+bigquery:
+  range_partitioning: null
+  clustering:
+    fields:
+    - normalized_app_name
+    - normalized_channel
+    - app_version
+references: {}
+require_column_descriptions: true

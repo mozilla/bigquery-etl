@@ -72,6 +72,7 @@ WITH subscriptions_history AS (
     `moz-fx-data-shared-prod.subscription_platform_derived.google_subscriptions_history_v1`
   WHERE
     subscription.purchase_type IS DISTINCT FROM 0  -- 0 = Test
+    AND valid_to > valid_from
 ),
 subscription_starts AS (
   SELECT
@@ -237,6 +238,19 @@ SELECT
         history.subscription.expiry_time,
         NULL
       ) AS ended_at,
+      -- API Docs enumerations
+      -- https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptions#SubscriptionPurchase.FIELDS.cancel_reason
+      CASE
+        WHEN history.subscription_is_active
+          THEN NULL
+        WHEN history.subscription.cancel_reason = 0  -- 0 = User canceled the subscription
+          THEN 'Customer Initiated'
+        WHEN history.subscription.cancel_reason = 1  -- 1 = Subscription was canceled by the system, for example because of a billing problem
+          THEN 'Payment Failure'
+        WHEN history.subscription.cancel_reason = 3  -- 3 = Subscription was canceled by the developer
+          THEN 'Admin Initiated'
+        ELSE 'Other'
+      END AS ended_reason,
       CAST(NULL AS TIMESTAMP) AS current_period_started_at,
       IF(
         history.subscription_is_active,

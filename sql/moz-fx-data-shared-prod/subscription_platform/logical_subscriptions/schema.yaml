@@ -212,6 +212,72 @@ fields:
   description: |-
     When the subscription's auto-renewal setting was disabled.
     This will be null for subscriptions set to auto-renew.
+- name: has_refunds
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription has had refunds.
+    This will be null for Google subscriptions.
+- name: has_fraudulent_charges
+  type: BOOLEAN
+  mode: NULLABLE
+  description: |-
+    Whether the subscription has had fraudulent charges.
+    This will be null for Google and Apple subscriptions.
+- name: last_touch_attribution
+  type: RECORD
+  mode: NULLABLE
+  description: |-
+    Last-touch attribution for the subscription (if any).
+    For Stripe subscriptions created by SubPlat 2 or earlier this will be the most recent (unbounded) attribution impression found in the SubPlat/FxA logs.
+    For Stripe subscriptions created by SubPlat 3 (which launched in June 2025) or later this will be the attribution values stored by SubPlat (DENG-8885).
+    This will be null for Google and Apple subscriptions.
+  fields:
+  - name: impression_at
+    type: TIMESTAMP
+    mode: NULLABLE
+    description: |-
+      When the last-touch attribution impression occurred.
+  - name: entrypoint
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint.
+  - name: entrypoint_experiment
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint experiment.
+  - name: entrypoint_variation
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution entrypoint experiment variation.
+  - name: utm_campaign
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM campaign.
+  - name: utm_content
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM content.
+  - name: utm_medium
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM medium.
+  - name: utm_source
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM source.
+  - name: utm_term
+    type: STRING
+    mode: NULLABLE
+    description: |-
+      Last-touch attribution UTM term.
 - name: initial_discount_name
   type: STRING
   mode: NULLABLE
@@ -263,122 +329,16 @@ fields:
   description: |-
     When the ongoing discount ends (if any).
     This will be null for Apple subscriptions.
-- name: has_refunds
-  type: BOOLEAN
+- name: ended_reason
+  type: STRING
   mode: NULLABLE
   description: |-
-    Whether the subscription has had refunds.
-    This will be null for Google subscriptions.
-- name: has_fraudulent_charges
-  type: BOOLEAN
-  mode: NULLABLE
-  description: |-
-    Whether the subscription has had fraudulent charges.
-    This will be null for Google and Apple subscriptions.
-- name: first_touch_attribution
-  type: RECORD
-  mode: NULLABLE
-  description: |-
-    Unbounded first-touch attribution for the subscription (if any).
-    This will be null for Google and Apple subscriptions.
-  fields:
-  - name: impression_at
-    type: TIMESTAMP
-    mode: NULLABLE
-    description: |-
-      When the first-touch attribution impression occurred.
-  - name: entrypoint
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution entrypoint.
-  - name: entrypoint_experiment
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution entrypoint experiment.
-  - name: entrypoint_variation
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution entrypoint experiment variation.
-  - name: utm_campaign
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution UTM campaign.
-  - name: utm_content
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution UTM content.
-  - name: utm_medium
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution UTM medium.
-  - name: utm_source
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution UTM source.
-  - name: utm_term
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      First-touch attribution UTM term.
-- name: last_touch_attribution
-  type: RECORD
-  mode: NULLABLE
-  description: |-
-    Unbounded last-touch attribution for the subscription (if any).
-    This will be null for Google and Apple subscriptions.
-  fields:
-  - name: impression_at
-    type: TIMESTAMP
-    mode: NULLABLE
-    description: |-
-      When the last-touch attribution impression occurred.
-  - name: entrypoint
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution entrypoint.
-  - name: entrypoint_experiment
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution entrypoint experiment.
-  - name: entrypoint_variation
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution entrypoint experiment variation.
-  - name: utm_campaign
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM campaign.
-  - name: utm_content
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM content.
-  - name: utm_medium
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM medium.
-  - name: utm_source
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM source.
-  - name: utm_term
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Last-touch attribution UTM term.
+    Reason why the subscription ended.
+    Possible values:
+      * `Admin Initiated` - An admin at Mozilla ended the subscription, either directly or by deleting the customer's Mozilla Account.
+      * `Customer Initiated` - The customer ended their subscription, either directly or by turning off auto-renewal or deleting their Mozilla Account.
+      * `Payment Failure` - The subscription was unable to auto-renew due to a payment failure.
+      * `Other` - The subscription ended for some other reason, such as unverified Mozilla Accounts being automatically deleted.
 - name: country_vat_rate
   type: NUMERIC
   mode: NULLABLE

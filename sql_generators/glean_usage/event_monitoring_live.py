@@ -1,9 +1,7 @@
 """Generate Materialized Views and aggregate queries for event monitoring."""
 
 import os
-import re
-
-from collections import namedtuple, OrderedDict
+from collections import OrderedDict, namedtuple
 from datetime import datetime
 from pathlib import Path
 from typing import List, Set
@@ -14,7 +12,6 @@ from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from sql_generators.glean_usage.common import (
     GleanTable,
-    get_app_info,
     get_table_dir,
     render,
     table_names_from_baseline,
@@ -40,7 +37,7 @@ class EventMonitoringLive(GleanTable):
         self.across_apps_enabled = True
         self.prefix = PREFIX
         self.target_table_id = TARGET_TABLE_ID
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
         self.base_table_name = "events_v1"
 
     def _get_prod_datasets_with_event(self) -> List[str]:
@@ -88,26 +85,14 @@ class EventMonitoringLive(GleanTable):
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
     ):
-        # Cache app_info to avoid repeated calls
-        cached_app_info = get_app_info()
-        
-        # Get the app ID from the baseline_table name.
-        # This is what `common.py` also does.
-        app_id = re.sub(r"_stable\..+", "", baseline_table)
-        app_id = ".".join(app_id.split(".")[1:])
-
-        # Skip any not-allowed app.
-        if app_id in ConfigLoader.get(
-            "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
-        ):
-            return
-
+        """Generate a query for the app_id."""
         tables = table_names_from_baseline(baseline_table, include_project_id=False)
 
         init_filename = f"{self.target_table_id}.materialized_view.sql"
@@ -121,22 +106,30 @@ class EventMonitoringLive(GleanTable):
             "generate", "glean_usage", "events_monitoring", "events_tables", fallback={}
         )
 
-        app_name = [
-            app_dataset["app_name"]
-            for _, app in cached_app_info.items()
-            for app_dataset in app
-            if dataset == app_dataset["bq_dataset_family"]
-        ][0]
+        deprecated = app_id_info.get("deprecated", False)
+
+        # Skip any not-allowed or deprecated app
+        if (
+            app_name
+            in ConfigLoader.get(
+                "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
+            )
+            or app_id_info["app_id"]
+            in ConfigLoader.get(
+                "generate",
+                "glean_usage",
+                "events_monitoring",
+                "skip_app_ids",
+                fallback=[],
+            )
+            or deprecated
+        ):
+            return
 
         if app_name in events_table_overwrites:
             events_tables = events_table_overwrites[app_name]
         else:
-            v1_name = [
-                app_dataset["v1_name"]
-                for _, app in cached_app_info.items()
-                for app_dataset in app
-                if dataset == app_dataset["bq_dataset_family"]
-            ][0]
+            v1_name = app_id_info["v1_name"]
             events_tables = self._get_tables_with_events(
                 v1_name, dataset, skip_min_ping=True
             )
@@ -156,7 +149,7 @@ class EventMonitoringLive(GleanTable):
             "generate",
             "glean_usage",
             "events_monitoring",
-            "manual_refresh",
+            "manual_refresh_apps",
             fallback=[],
         )
 
@@ -167,17 +160,12 @@ class EventMonitoringLive(GleanTable):
             derived_dataset=tables[self.prefix].split(".")[-2],
             dataset=dataset,
             current_date=datetime.today().strftime("%Y-%m-%d"),
-            app_name=[
-                app_dataset["canonical_app_name"]
-                for _, app in cached_app_info.items()
-                for app_dataset in app
-                if dataset == app_dataset["bq_dataset_family"]
-            ][0],
+            app_name=app_id_info["canonical_app_name"],
             events_tables=sorted(events_tables),
             manual_refresh=manual_refresh,
         )
 
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
         render_kwargs.update(tables)
 
         # generated files to update
@@ -230,9 +218,6 @@ class EventMonitoringLive(GleanTable):
         if not self.across_apps_enabled:
             return
 
-        # Cache app_info to avoid repeated calls
-        cached_app_info = get_app_info()
-
         aggregate_table = "event_monitoring_aggregates_v1"
         target_view_name = "_".join(self.target_table_id.split("_")[:-1])
 
@@ -246,31 +231,39 @@ class EventMonitoringLive(GleanTable):
         skip_apps = ConfigLoader.get(
             "generate", "glean_usage", "events_monitoring", "skip_apps", fallback=[]
         )
+        skip_app_ids = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "skip_app_ids",
+            fallback=[],
+        )
 
-        for app in apps:
-            for app_dataset in app:
-                if app_dataset["app_name"] in skip_apps:
+        manual_refresh_apps = ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_monitoring",
+            "manual_refresh_apps",
+            fallback=[],
+        )
+
+        for app_name, app_ids_info in apps.items():
+            for app_dataset in app_ids_info:
+                if (
+                    app_name in skip_apps
+                    or app_dataset["app_id"] in skip_app_ids
+                    or app_dataset.get("deprecated", False) is True
+                ):
                     continue
 
                 dataset = app_dataset["bq_dataset_family"]
-                app_name = [
-                    app_dataset["app_name"]
-                    for _, app in cached_app_info.items()
-                    for app_dataset in app
-                    if dataset == app_dataset["bq_dataset_family"]
-                ][0]
 
                 if app_name in events_table_overwrites:
                     event_tables_per_dataset[dataset] = events_table_overwrites[
                         app_name
                     ]
                 else:
-                    v1_name = [
-                        app_dataset["v1_name"]
-                        for _, app in cached_app_info.items()
-                        for app_dataset in app
-                        if dataset == app_dataset["bq_dataset_family"]
-                    ][0]
+                    v1_name = app_dataset["v1_name"]
                     event_tables = [
                         f"{ping.replace('-', '_')}_v1"
                         for ping in self._get_tables_with_events(
@@ -294,11 +287,12 @@ class EventMonitoringLive(GleanTable):
             target_view=f"{TARGET_DATASET_CROSS_APP}.{target_view_name}",
             table=target_view_name,
             target_table=f"{TARGET_DATASET_CROSS_APP}_derived.{aggregate_table}",
-            apps=apps,
+            apps=list(apps.values()),
             prod_datasets=self._get_prod_datasets_with_event(),
             event_tables_per_dataset=event_tables_per_dataset,
+            manual_refresh_apps=manual_refresh_apps,
         )
-        render_kwargs.update(self.custom_render_kwargs)
+        render_kwargs.update(self.common_render_kwargs)
 
         skip_existing_artifacts = self.skip_existing(output_dir, project_id)
 

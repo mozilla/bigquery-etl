@@ -36,6 +36,8 @@ WITH subscriptions_history AS (
     subscription.status IN ('active', 'past_due', 'trialing') AS subscription_is_active
   FROM
     `moz-fx-data-shared-prod.subscription_platform_derived.stripe_subscriptions_history_v2`
+  WHERE
+    valid_to > valid_from
 ),
 active_subscriptions_history AS (
   -- Only include a subscription's history once it becomes active.
@@ -53,7 +55,8 @@ active_subscriptions_history AS (
       PARTITION BY
         subscription.id
       ORDER BY
-        valid_from
+        valid_from,
+        valid_to
       ROWS BETWEEN
         UNBOUNDED PRECEDING
         AND CURRENT ROW
@@ -77,15 +80,7 @@ plan_services AS (
   GROUP BY
     plan_id
 ),
-paypal_subscriptions AS (
-  SELECT DISTINCT
-    subscription_id
-  FROM
-    `moz-fx-data-shared-prod.stripe_external.invoice_v1`
-  WHERE
-    JSON_VALUE(metadata, '$.paypalTransactionId') IS NOT NULL
-),
-subscriptions_history_charge_summaries AS (
+subscriptions_history_invoice_summaries AS (
   SELECT
     history.id AS subscriptions_history_id,
     ARRAY_AGG(
@@ -97,7 +92,10 @@ subscriptions_history_charge_summaries AS (
       LIMIT
         1
     )[SAFE_ORDINAL(1)] AS latest_card_country,
-    LOGICAL_OR(refunds.status = 'succeeded') AS has_refunds,
+    LOGICAL_OR(
+      refunds.status = 'succeeded'
+      OR JSON_VALUE(invoices.metadata, '$.paypalRefundTransactionId') IS NOT NULL
+    ) AS has_refunds,
     LOGICAL_OR(
       charges.fraud_details_user_report = 'fraudulent'
       OR (
@@ -107,13 +105,14 @@ subscriptions_history_charge_summaries AS (
       OR (refunds.reason = 'fraudulent' AND refunds.status = 'succeeded')
     ) AS has_fraudulent_charges
   FROM
-    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
-  JOIN
     `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS invoices
-    ON charges.invoice_id = invoices.id
   JOIN
     active_subscriptions_history AS history
     ON invoices.subscription_id = history.subscription.id
+    AND invoices.created < history.valid_to
+  LEFT JOIN
+    `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
+    ON invoices.id = charges.invoice_id
     AND charges.created < history.valid_to
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.card_v1` AS cards
@@ -121,6 +120,7 @@ subscriptions_history_charge_summaries AS (
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.refund_v1` AS refunds
     ON charges.id = refunds.charge_id
+    AND refunds.created < history.valid_to
   GROUP BY
     subscriptions_history_id
 ),
@@ -226,7 +226,11 @@ SELECT
       FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.subscription_first_active_at)
     ) AS id,
     'Stripe' AS provider,
-    IF(paypal_subscriptions.subscription_id IS NOT NULL, 'PayPal', 'Stripe') AS payment_provider,
+    IF(
+      history.subscription.collection_method = 'send_invoice',
+      'PayPal',
+      'Stripe'
+    ) AS payment_provider,
     history.subscription.id AS provider_subscription_id,
     subscription_item.id AS provider_subscription_item_id,
     history.subscription.created AS provider_subscription_created_at,
@@ -244,12 +248,12 @@ SELECT
         THEN COALESCE(
             NULLIF(history.subscription.customer.shipping.address.country, ''),
             NULLIF(history.subscription.customer.address.country, ''),
-            charge_summaries.latest_card_country
+            invoice_summaries.latest_card_country
           )
       -- SubPlat copies the PayPal billing agreement country to the customer's address.
-      WHEN paypal_subscriptions.subscription_id IS NOT NULL
+      WHEN history.subscription.collection_method = 'send_invoice'
         THEN NULLIF(history.subscription.customer.address.country, '')
-      ELSE charge_summaries.latest_card_country
+      ELSE invoice_summaries.latest_card_country
     END AS country_code,
     plan_services.services,
     subscription_item.plan.product.id AS provider_product_id,
@@ -294,7 +298,29 @@ SELECT
     history.subscription.status AS provider_status,
     history.subscription_first_active_at AS started_at,
     history.subscription.ended_at,
-    -- TODO: ended_reason
+    CASE
+      WHEN history.subscription.ended_at IS NULL
+        THEN NULL
+      WHEN history.subscription.metadata.cancellation_reason = 'fxa_admin_requested_account_delete'
+        THEN 'Admin Initiated'
+      WHEN (
+          history.subscription.cancellation_details.reason IS NULL
+          AND history.valid_from < '2024-05-17'
+          AND history.subscription.cancel_at_period_end IS TRUE
+        )
+        OR (
+          history.subscription.cancellation_details.reason = 'cancellation_requested'
+          AND history.subscription.metadata.cancellation_reason IS NULL
+        )
+        OR history.subscription.cancellation_details.reason = 'payment_disputed'
+        OR history.subscription.metadata.cancellation_reason = 'fxa_user_requested_account_delete'
+        THEN 'Customer Initiated'
+      WHEN history.subscription.cancellation_details.reason = 'payment_failed'
+        OR latest_invoices.status = 'uncollectible'
+        OR latest_invoice_charges.status = 'failed'
+        THEN 'Payment Failure'
+      ELSE 'Other'
+    END AS ended_reason,
     IF(
       history.subscription.ended_at IS NULL,
       history.subscription.current_period_start,
@@ -334,8 +360,8 @@ SELECT
       history.subscription.metadata.amount
     ) AS ongoing_discount_amount,
     ongoing_discounts.ends_at AS ongoing_discount_ends_at,
-    COALESCE(charge_summaries.has_refunds, FALSE) AS has_refunds,
-    COALESCE(charge_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
+    COALESCE(invoice_summaries.has_refunds, FALSE) AS has_refunds,
+    COALESCE(invoice_summaries.has_fraudulent_charges, FALSE) AS has_fraudulent_charges
   ) AS subscription
 FROM
   active_subscriptions_history AS history
@@ -345,11 +371,8 @@ LEFT JOIN
   plan_services
   ON subscription_item.plan.id = plan_services.plan_id
 LEFT JOIN
-  paypal_subscriptions
-  ON history.subscription.id = paypal_subscriptions.subscription_id
-LEFT JOIN
-  subscriptions_history_charge_summaries AS charge_summaries
-  ON history.id = charge_summaries.subscriptions_history_id
+  subscriptions_history_invoice_summaries AS invoice_summaries
+  ON history.id = invoice_summaries.subscriptions_history_id
 LEFT JOIN
   subscription_initial_discounts AS initial_discounts
   ON history.subscription.id = initial_discounts.subscription_id
@@ -361,3 +384,10 @@ LEFT JOIN
 LEFT JOIN
   subscriptions_history_ongoing_discounts AS ongoing_discounts
   ON history.id = ongoing_discounts.subscriptions_history_id
+LEFT JOIN
+  `moz-fx-data-shared-prod.stripe_external.invoice_v1` AS latest_invoices
+  ON history.subscription.latest_invoice_id = latest_invoices.id
+LEFT JOIN
+  `moz-fx-data-shared-prod.stripe_external.charge_v1` AS latest_invoice_charges
+  ON latest_invoices.charge_id = latest_invoice_charges.id
+  AND latest_invoice_charges.created < history.valid_to

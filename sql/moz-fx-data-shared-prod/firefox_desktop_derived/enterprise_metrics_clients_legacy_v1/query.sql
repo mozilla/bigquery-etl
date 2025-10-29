@@ -93,5 +93,3 @@ LEFT JOIN
 WHERE
   policies_count IS NOT NULL
   AND policies_is_enterprise IS NOT NULL
-LIMIT
-  100

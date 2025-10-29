@@ -32,6 +32,11 @@ class EventsStreamTable(GleanTable):
         self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
         self.common_render_kwargs = {}
+        self.possible_query_parameters = {
+            "submission_date": "DATE",
+            "min_sample_id": "INTEGER",
+            "max_sample_id": "INTEGER",
+        }
 
     def generate_per_app_id(
         self,

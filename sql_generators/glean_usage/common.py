@@ -12,6 +12,8 @@ import requests
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.dryrun import DryRun
+from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
@@ -186,6 +188,7 @@ class GleanTable:
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "baseline_v1"
+        self.possible_query_parameters = {"submission_date": "DATE"}
 
     def skip_existing(self, output_dir="sql/", project_id="moz-fx-data-shared-prod"):
         """Existing files configured not to be overridden during generation."""
@@ -295,7 +298,7 @@ class GleanTable:
         except TemplateNotFound:
             checks_sql = None
 
-        # Schema files are optional
+        # Schema files are optional, except for Python queries without a SQL query to dry run
         try:
             schema = render(
                 schema_filename,
@@ -305,6 +308,19 @@ class GleanTable:
             )
         except TemplateNotFound:
             schema = None
+            if query_python:
+                if query_sql:
+                    schema = Schema(
+                        DryRun(
+                            os.path.join(*table.split("."), "query.sql"),
+                            content=query_sql,
+                            query_parameters=self.possible_query_parameters,
+                            use_cloud_function=use_cloud_function,
+                            id_token=id_token,
+                        ).get_schema()
+                    ).to_yaml()
+                else:
+                    raise
 
         if enable_monitoring:
             try:

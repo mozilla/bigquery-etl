@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
-from typing import List, Sequence
+from typing import List
 
 import click
 from google.api_core.exceptions import BadRequest
@@ -84,7 +84,7 @@ WHERE
 """
 
 
-def _has_field_path(schema: Sequence[bigquery.SchemaField], path: List[str]) -> bool:
+def _has_field_path(schema: List[bigquery.SchemaField], path: List[str]) -> bool:
     """Return True if nested field path (e.g., ['metadata','geo','city']) exists."""
     for name in path:
         f = next((field for field in schema if field.name == name), None)

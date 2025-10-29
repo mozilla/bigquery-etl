@@ -527,6 +527,9 @@ generate:
     - focus_android
     - klar_ios
     - klar_android
+  null_geo:
+    apps:
+    - klar_android
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

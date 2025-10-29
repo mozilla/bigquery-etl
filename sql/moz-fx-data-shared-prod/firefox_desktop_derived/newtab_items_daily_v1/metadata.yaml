@@ -30,5 +30,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:mozsoc-ml/developers
   - workgroup:mozsoc-ml/service
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.corpus_items_updated_v1
 require_column_descriptions: false

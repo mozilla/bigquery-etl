@@ -23,6 +23,9 @@ bigquery:
     - locale
     - medium
 workgroup_access: []
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.www_site_downloads_v1
+  - moz-fx-data-shared-prod.mozilla_org_derived.www_site_hits_v1
 deprecated: true
 require_column_descriptions: false

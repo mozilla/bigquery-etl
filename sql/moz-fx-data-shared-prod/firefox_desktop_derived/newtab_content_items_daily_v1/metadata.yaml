@@ -37,5 +37,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
   - workgroup:mozsoc-ml/developers
   - workgroup:mozsoc-ml/service
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.newtab_content
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_v1
 require_column_descriptions: false

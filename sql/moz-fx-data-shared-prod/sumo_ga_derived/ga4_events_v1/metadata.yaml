@@ -30,5 +30,7 @@ workgroup_access:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
   - workgroup:sumo/bq-automation
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.analytics_314096102.events_*
 require_column_descriptions: false

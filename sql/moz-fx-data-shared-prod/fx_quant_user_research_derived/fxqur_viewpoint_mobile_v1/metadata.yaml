@@ -40,5 +40,4 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:fx-quant-user-research/data-developers
-references: {}
 require_column_descriptions: false

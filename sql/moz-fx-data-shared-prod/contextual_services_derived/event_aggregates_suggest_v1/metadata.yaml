@@ -22,5 +22,12 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:contextual-services
-references: {}
+references:
+  query.sql:
+  - moz-fx-ads-prod.adm.blocks
+  - moz-fx-data-shared-prod.contextual_services.quicksuggest_click
+  - moz-fx-data-shared-prod.contextual_services.quicksuggest_impression
+  - moz-fx-data-shared-prod.fenix.fx_suggest
+  - moz-fx-data-shared-prod.firefox_desktop.quick_suggest
+  - moz-fx-data-shared-prod.firefox_ios.fx_suggest
 require_column_descriptions: false

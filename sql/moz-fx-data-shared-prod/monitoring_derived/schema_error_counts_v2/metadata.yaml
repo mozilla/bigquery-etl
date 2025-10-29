@@ -28,5 +28,8 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:platform-infra/chicory-poc
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.monitoring.payload_bytes_error_all
+  - moz-fx-data-shared-prod.monitoring_derived.stable_and_derived_table_sizes_v1
 require_column_descriptions: false

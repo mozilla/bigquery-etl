@@ -28,6 +28,9 @@ bigquery:
   range_partitioning: null
   clustering: null
 workgroup_access: []
-references: {}
+references:
+  query.sql:
+  - mozdata.activity_stream.sessions
+  - mozdata.firefox_desktop.newtab
 deprecated: true
 require_column_descriptions: false

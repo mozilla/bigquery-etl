@@ -14,5 +14,11 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fivetran_costs_derived.destinations_v1
+  - moz-fx-data-shared-prod.fivetran_costs_derived.incremental_mar_v1
+  - moz-fx-data-shared-prod.fivetran_costs_derived.monthly_costs_v1
 require_column_descriptions: false

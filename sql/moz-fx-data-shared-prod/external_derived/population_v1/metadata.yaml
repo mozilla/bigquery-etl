@@ -38,5 +38,7 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
 require_column_descriptions: true

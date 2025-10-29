@@ -28,5 +28,13 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.new_profile_activation_clients
+  - moz-fx-data-shared-prod.google_ads_derived.campaigns_v2
+  - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
+  - mozdata.ltv.fenix_new_profile_ltv
+  - mozdata.telemetry.mobile_new_profile_clients
 require_column_descriptions: true

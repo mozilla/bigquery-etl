@@ -10,5 +10,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.org_mozilla_fenix.client_deduplication
+  - moz-fx-data-shared-prod.org_mozilla_firefox.client_deduplication
+  - moz-fx-data-shared-prod.org_mozilla_firefox_beta.client_deduplication
 require_column_descriptions: false

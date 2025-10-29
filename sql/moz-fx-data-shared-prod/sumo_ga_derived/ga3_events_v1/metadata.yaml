@@ -20,5 +20,7 @@ workgroup_access:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
   - workgroup:sumo/bq-automation
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.65912487.ga_sessions_*
 require_column_descriptions: false

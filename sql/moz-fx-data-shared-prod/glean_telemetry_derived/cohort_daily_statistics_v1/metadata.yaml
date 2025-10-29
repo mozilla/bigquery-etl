@@ -34,5 +34,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.glean_telemetry.active_users
+  - moz-fx-data-shared-prod.glean_telemetry_derived.rolling_cohorts_v1
 require_column_descriptions: false

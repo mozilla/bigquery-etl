@@ -16,5 +16,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-bq-fivetran.fivetran_log.incremental_mar
 require_column_descriptions: false

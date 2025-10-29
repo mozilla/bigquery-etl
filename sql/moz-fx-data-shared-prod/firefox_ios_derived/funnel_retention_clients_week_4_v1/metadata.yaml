@@ -24,6 +24,5 @@ bigquery:
     - sample_id
     - first_seen_date
 workgroup_access: []
-references: {}
 deprecated: true
 require_column_descriptions: false

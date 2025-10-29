@@ -25,5 +25,4 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/data-developers
-references: {}
 require_column_descriptions: false

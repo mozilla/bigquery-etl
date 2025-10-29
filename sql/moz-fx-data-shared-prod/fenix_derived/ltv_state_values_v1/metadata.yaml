@@ -16,6 +16,11 @@ bigquery:
     fields:
     - country
 workgroup_access: []
-references: {}
+references:
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v1
+  query.sql:
+  - mozdata.analysis.android_state_ltvs_v1
 deprecated: true
 require_column_descriptions: false

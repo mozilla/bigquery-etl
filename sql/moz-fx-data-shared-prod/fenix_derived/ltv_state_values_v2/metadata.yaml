@@ -21,5 +21,10 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  - moz-fx-data-shared-prod.fenix_derived.ltv_state_values_v2
+  query.sql:
+  - moz-fx-data-shared-prod.ltv_state_values_derived.android_state_ltvs_v2
 require_column_descriptions: false

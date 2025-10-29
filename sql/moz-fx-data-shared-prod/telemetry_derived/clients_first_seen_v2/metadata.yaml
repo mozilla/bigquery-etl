@@ -52,5 +52,14 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  - ..clients_daily_v6
+  - .telemetry.new_profile
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.first_shutdown
+  - moz-fx-data-shared-prod.telemetry.new_profile
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v2
 require_column_descriptions: false

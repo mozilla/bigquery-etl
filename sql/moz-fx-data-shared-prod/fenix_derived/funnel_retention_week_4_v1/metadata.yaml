@@ -24,6 +24,5 @@ bigquery:
     - first_reported_country
     - adjust_network
 workgroup_access: []
-references: {}
 deprecated: true
 require_column_descriptions: false

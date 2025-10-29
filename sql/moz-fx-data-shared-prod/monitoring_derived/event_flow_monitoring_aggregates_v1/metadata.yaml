@@ -34,5 +34,4 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:platform-infra/chicory-poc
-references: {}
 require_column_descriptions: false

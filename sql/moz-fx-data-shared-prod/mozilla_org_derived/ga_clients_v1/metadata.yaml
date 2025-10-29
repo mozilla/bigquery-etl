@@ -19,6 +19,11 @@ bigquery:
     fields:
     - first_seen_date
 workgroup_access: []
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_clients_v1
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v1
 deprecated: true
 require_column_descriptions: false

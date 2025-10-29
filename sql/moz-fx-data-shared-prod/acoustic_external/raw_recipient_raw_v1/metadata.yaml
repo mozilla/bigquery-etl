@@ -20,6 +20,5 @@ bigquery:
     - recipient_type
     - body_type
 workgroup_access: []
-references: {}
 deprecated: true
 require_column_descriptions: false

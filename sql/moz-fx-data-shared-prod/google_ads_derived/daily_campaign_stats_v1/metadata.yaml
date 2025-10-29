@@ -24,5 +24,9 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-bq-fivetran.ads_google_mmc_google_ads.google_ads__campaign_report
 require_column_descriptions: false

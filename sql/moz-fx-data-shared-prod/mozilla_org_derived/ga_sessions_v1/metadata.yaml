@@ -26,5 +26,10 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-dataproc
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-marketing-prod.65789850.ga_sessions_*
+  - moz-fx-data-marketing-prod.65789850.ga_sessions_intraday_*
 require_column_descriptions: false

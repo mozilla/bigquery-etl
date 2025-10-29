@@ -24,5 +24,12 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:platform-infra/chicory-poc
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.region-US.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+  - moz-fx-data-shared-prod.region-US.INFORMATION_SCHEMA.TABLES
+  - moz-fx-data-shared-prod.region-US.INFORMATION_SCHEMA.TABLE_OPTIONS
+  - mozdata.region-US.INFORMATION_SCHEMA.COLUMN_FIELD_PATHS
+  - mozdata.region-US.INFORMATION_SCHEMA.TABLES
+  - mozdata.region-US.INFORMATION_SCHEMA.TABLE_OPTIONS
 require_column_descriptions: false

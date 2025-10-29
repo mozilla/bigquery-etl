@@ -30,5 +30,8 @@ workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:google-managed/external-ads-dataproc
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.glean_ga_desktop_conversions_v1
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.glean_gclid_conversions_v1
 require_column_descriptions: false

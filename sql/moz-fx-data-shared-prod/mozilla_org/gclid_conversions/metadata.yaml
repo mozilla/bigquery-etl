@@ -16,5 +16,7 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-dataproc
-references: {}
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.mozilla_org_derived.gclid_conversions_v3
 require_column_descriptions: false

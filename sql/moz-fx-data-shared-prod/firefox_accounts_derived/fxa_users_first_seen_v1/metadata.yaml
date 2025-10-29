@@ -33,5 +33,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_accounts.fxa_all_events
+  - moz-fx-data-shared-prod.firefox_accounts_derived.fxa_users_first_seen_v1
 require_column_descriptions: false

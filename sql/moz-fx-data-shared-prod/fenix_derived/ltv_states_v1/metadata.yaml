@@ -24,5 +24,11 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.client_adclicks_history
+  - moz-fx-data-shared-prod.fenix.clients_yearly
+  - moz-fx-data-shared-prod.fenix.firefox_android_clients
 require_column_descriptions: false

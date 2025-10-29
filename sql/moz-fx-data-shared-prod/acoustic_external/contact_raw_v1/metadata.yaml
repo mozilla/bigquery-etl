@@ -21,6 +21,5 @@ bigquery:
     - email_lang
     - mailing_country
 workgroup_access: []
-references: {}
 deprecated: true
 require_column_descriptions: false

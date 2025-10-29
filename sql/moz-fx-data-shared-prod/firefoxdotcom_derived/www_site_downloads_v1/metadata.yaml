@@ -35,5 +35,7 @@ workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:
   - workgroup:google-managed/external-ads-dataproc
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.analytics_489412379.events_*
 require_column_descriptions: true

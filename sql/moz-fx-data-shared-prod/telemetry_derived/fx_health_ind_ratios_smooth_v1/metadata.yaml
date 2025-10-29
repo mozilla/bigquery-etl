@@ -21,5 +21,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.telemetry.clients_last_seen
 require_column_descriptions: false

@@ -30,7 +30,11 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.stripe_external.customers_changelog_v1
+  - moz-fx-data-shared-prod.stripe_external.pre_fivetran_customers_v2
+  - moz-fx-data-shared-prod.stripe_external.subscriptions_changelog_v1
 monitoring:
   enabled: true
   collection: null

@@ -15,7 +15,6 @@ workgroup_access:
   members:
   - workgroup:mozilla-confidential
   - workgroup:platform-infra/chicory-poc
-references: {}
 external_data:
   format: google_sheets
   source_uris:

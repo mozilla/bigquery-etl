@@ -36,5 +36,13 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-dataproc
-references: {}
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.google_ads_derived.conversion_event_categorization_v1
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2
+  - moz-fx-data-shared-prod.stub_attribution_service_derived.dl_token_ga_attribution_lookup_v1
+  - moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6
+  - moz-fx-data-shared-prod.telemetry_derived.clients_first_seen_v3
 require_column_descriptions: false

@@ -24,5 +24,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - mozdata.telemetry.active_users_aggregates
 require_column_descriptions: false

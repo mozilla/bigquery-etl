@@ -21,7 +21,6 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:braze/data-developers
-references: {}
 external_data:
   format: google_sheets
   source_uris:

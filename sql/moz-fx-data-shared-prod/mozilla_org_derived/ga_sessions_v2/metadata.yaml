@@ -37,5 +37,11 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:google-managed/external-ads-dataproc
-references: {}
+references:
+  checks.sql:
+  - ..
+  script.sql:
+  - moz-fx-data-marketing-prod.analytics_313696158.events_*
+  - moz-fx-data-marketing-prod.analytics_313696158.events_2*
+  - moz-fx-data-shared-prod.mozilla_org_derived.ga_sessions_v2
 require_column_descriptions: false

@@ -37,6 +37,9 @@ bigquery:
     - app_name
     - attribution_medium
 workgroup_access: []
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.fenix.firefox_android_clients
+  - moz-fx-data-shared-prod.telemetry.unified_metrics
 deprecated: true
 require_column_descriptions: false

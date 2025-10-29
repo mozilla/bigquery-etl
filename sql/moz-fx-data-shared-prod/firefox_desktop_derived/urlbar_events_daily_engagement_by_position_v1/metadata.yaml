@@ -26,5 +26,7 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
-references: {}
+references:
+  query.sql:
+  - mozdata.firefox_desktop.urlbar_events
 require_column_descriptions: true

@@ -17,6 +17,8 @@ bigquery:
   range_partitioning: null
   clustering: null
 workgroup_access: []
-references: {}
+references:
+  query.sql:
+  - moz-fx-data-marketing-prod.66602784.ga_sessions_*
 deprecated: true
 require_column_descriptions: false

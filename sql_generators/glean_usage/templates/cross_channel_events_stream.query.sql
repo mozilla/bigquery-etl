@@ -6,7 +6,7 @@ AS
 WITH events_stream_union AS (
   {% for (dataset, channel) in datasets %}
     {% if not loop.first -%}
-      UNION ALL
+      UNION ALL BY NAME
     {% endif -%}
     SELECT
       "{{ dataset }}" AS normalized_app_id,

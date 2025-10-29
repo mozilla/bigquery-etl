@@ -485,6 +485,13 @@ fields:
         in 146 with Terms of Use and OHTTP.
 
         '
+    - name: urlbar_pref_suggest_all
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'Whether Suggest results are shown in the urlbar. Corresponds to
+        the value of the `browser.urlbar.suggest.quicksuggest.all` pref.
+
+        '
   - name: quantity
     type: RECORD
     mode: NULLABLE

@@ -21,5 +21,4 @@ bigquery:
   clustering:
     fields:
     - TDP
-references: {}
 require_column_descriptions: true

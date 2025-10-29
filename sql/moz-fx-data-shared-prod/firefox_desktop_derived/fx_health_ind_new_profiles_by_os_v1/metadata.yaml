@@ -20,4 +20,3 @@ bigquery:
   clustering:
     fields:
     - os_version_bucket
-references: {}

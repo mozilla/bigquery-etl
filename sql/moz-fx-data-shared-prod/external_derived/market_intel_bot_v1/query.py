@@ -345,7 +345,8 @@ Please list them in chronological order."""
         use_web_tool=True,
         title="Upcoming Events Impacting Browser Usage",
     )
-    final_report += f"\n{final_output_8}\n\n"
+    final_report += f"""\n{final_output_8}
+A CustomGPT for researching events that might impact browser usage can be found here: [Impactful Event Search](https://chatgpt.com/g/g-68b06f0d14988191ab318e64037aa463-impactful-event-search)"""
 
     # Save all summaries to GCS as an intermediate step
     client = storage.Client(project="moz-fx-data-shared-prod")

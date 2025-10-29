@@ -8,5 +8,4 @@ labels:
 bigquery:
   time_partitioning: null
   clustering: null
-references: {}
 require_column_descriptions: true

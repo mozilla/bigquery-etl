@@ -1,3 +1,16 @@
+2025-10-29:
+  start_date: 2019-10-01
+  end_date: 2025-09-01
+  reason: Fix some known issues (DENG-9565) and populate the new `ended_reason` field (DENG-4043).
+  watchers:
+  - srose@mozilla.com
+  - phlee@mozilla.com
+  status: Initiate
+  shredder_mitigation: false
+  override_retention_limit: true
+  override_depends_on_past_end_date: false
+  ignore_date_partition_offset: true
+
 2025-06-25:
   start_date: 2021-12-01
   end_date: 2025-05-01

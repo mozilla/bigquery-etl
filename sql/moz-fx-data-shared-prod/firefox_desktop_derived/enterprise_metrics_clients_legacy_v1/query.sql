@@ -1,4 +1,19 @@
-WITH most_recent_client_policy_metrics AS (
+WITH daily_users AS (
+  SELECT
+    submission_date,
+    client_id,
+    sample_id,
+    normalized_channel,
+    is_dau,
+  FROM
+    `moz-fx-data-shared-prod.telemetry.desktop_active_users`
+  WHERE
+    submission_date = @submission_date
+      -- enterprise is always only "esr" or "release" channels
+    AND normalized_channel IN ("release", "esr")
+    AND is_daily_user
+),
+most_recent_client_distribution_and_policy_metrics AS (
   SELECT
     client_id,
     normalized_channel,
@@ -12,69 +27,19 @@ WITH most_recent_client_policy_metrics AS (
       ORDER BY
         submission_timestamp DESC
     )[SAFE_OFFSET(0)] AS policies_is_enterprise,
+    ARRAY_AGG(environment.partner.distribution_id IGNORE NULLS ORDER BY submission_timestamp DESC)[
+      SAFE_OFFSET(0)
+    ] AS distribution_id,
   FROM
     `moz-fx-data-shared-prod.telemetry.main`
   WHERE
     DATE(submission_timestamp)
     BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
     AND @submission_date
+    -- enterprise is always only "esr" or "release" channels
     AND normalized_channel IN ("release", "esr")
   GROUP BY
     ALL
-),
-baseline_clients AS (
-  WITH baseline_active_users AS (
-    SELECT
-      submission_date,
-      client_id,
-      sample_id,
-      normalized_channel,
-      distribution_id,
-      is_dau,
-      is_daily_user,
-    FROM
-      `moz-fx-data-shared-prod.telemetry.desktop_active_users`
-    WHERE
-      submission_date
-      BETWEEN DATE_SUB(@submission_date, INTERVAL 27 DAY)
-      AND @submission_date
-      AND normalized_channel IN ("release", "esr")
-  ),
-  last_observed_distribution_id_within_27_days AS (
-    SELECT
-      client_id,
-      normalized_channel,
-      ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_date DESC)[
-        SAFE_OFFSET(0)
-      ] AS distribution_id,
-    FROM
-      baseline_active_users
-    GROUP BY
-      ALL
-  ),
-  daily_users AS (
-    SELECT
-      client_id,
-      sample_id,
-      normalized_channel,
-      is_dau,
-    FROM
-      baseline_active_users
-    WHERE
-      submission_date = @submission_date
-      AND is_daily_user
-  )
-  SELECT
-    client_id,
-    sample_id,
-    normalized_channel,
-    is_dau,
-    distribution_id,
-  FROM
-    daily_users
-  INNER JOIN
-    last_observed_distribution_id_within_27_days
-    USING (client_id, normalized_channel)
 )
 SELECT
   @submission_date AS submission_date,
@@ -86,10 +51,7 @@ SELECT
   policies_count,
   policies_is_enterprise,
 FROM
-  baseline_clients
-LEFT JOIN
-  most_recent_client_policy_metrics
+  daily_users
+INNER JOIN
+  most_recent_client_distribution_and_policy_metrics
   USING (client_id, normalized_channel)
-WHERE
-  policies_count IS NOT NULL
-  AND policies_is_enterprise IS NOT NULL

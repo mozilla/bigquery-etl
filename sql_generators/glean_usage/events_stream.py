@@ -22,88 +22,103 @@ class EventsStreamTable(GleanTable):
         self.across_apps_enabled = True
         self.cross_channel_template = "cross_channel_events_stream.query.sql"
         self.base_table_name = "events_v1"
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
 
     def generate_per_app_id(
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
     ):
-        # Get the app ID from the baseline_table name.
-        # This is what `common.py` also does.
-        app_id = re.sub(r"_stable\..+", "", baseline_table)
-        app_id = ".".join(app_id.split(".")[1:])
-
+        """Generate the events_stream table query per app_id."""
         # Skip any not-allowed app.
-        if app_id in ConfigLoader.get(
+        if app_name in ConfigLoader.get(
             "generate", "glean_usage", "events_stream", "skip_apps", fallback=[]
         ):
             return
 
-        metrics_as_struct = app_id in ConfigLoader.get(
-            "generate", "glean_usage", "events_stream", "metrics_as_struct", fallback=[]
-        )
-
-        slice_by_sample_id = app_id in ConfigLoader.get(
+        metrics_as_struct = app_name in ConfigLoader.get(
             "generate",
             "glean_usage",
             "events_stream",
-            "slice_by_sample_id",
+            "metrics_as_struct_apps",
             fallback=[],
         )
-        self.python_query = slice_by_sample_id
+
+        slice_by_sample_id = app_name in ConfigLoader.get(
+            "generate",
+            "glean_usage",
+            "events_stream",
+            "slice_by_sample_id_apps",
+            fallback=[],
+        )
 
         # Separate apps with legacy telemetry client ID vs those that don't have it
-        if app_id == "firefox_desktop":
+        if app_name == "firefox_desktop":
             has_legacy_telemetry_client_id = True
         else:
             has_legacy_telemetry_client_id = False
 
         # Separate apps with profile group ID vs those that don't have it
-        if app_id == "firefox_desktop":
+        if app_name == "firefox_desktop":
             has_profile_group_id = True
         else:
             has_profile_group_id = False
 
         unversioned_table_name = re.sub(r"_v[0-9]+$", "", baseline_table.split(".")[-1])
 
-        self.custom_render_kwargs = {
+        custom_render_kwargs = {
             "has_profile_group_id": has_profile_group_id,
             "has_legacy_telemetry_client_id": has_legacy_telemetry_client_id,
             "metrics_as_struct": metrics_as_struct,
-            "has_metrics": ping_has_metrics(app_id, unversioned_table_name),
+            "has_metrics": ping_has_metrics(
+                app_id_info["bq_dataset_family"], unversioned_table_name
+            ),
             "slice_by_sample_id": slice_by_sample_id,
         }
 
         super().generate_per_app_id(
             project_id,
             baseline_table,
-            output_dir,
-            use_cloud_function,
-            app_info,
+            app_name,
+            app_id_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
             id_token=id_token,
+            custom_render_kwargs=custom_render_kwargs,
+            use_python_query=slice_by_sample_id,
         )
 
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
-        all_base_tables_exist=None
+        all_base_tables_exist=None,
     ):
         """Generate the events_stream table query per app_name."""
-        target_dataset = app_info[0]["app_name"]
-        if target_dataset in ConfigLoader.get(
-            "generate", "glean_usage", "events_stream", "skip_datasets", fallback=[]
+        if app_name in ConfigLoader.get(
+            "generate", "glean_usage", "events_stream", "skip_apps", fallback=[]
         ):
             return
 
-        super().generate_per_app(project_id, app_info, output_dir, id_token=id_token)
+        super().generate_per_app(
+            project_id,
+            app_name,
+            app_ids_info,
+            output_dir=output_dir,
+            use_cloud_function=use_cloud_function,
+            parallelism=parallelism,
+            id_token=id_token,
+            all_base_tables_exist=all_base_tables_exist,
+        )

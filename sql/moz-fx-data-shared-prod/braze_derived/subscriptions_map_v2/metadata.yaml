@@ -13,7 +13,6 @@ labels:
   owner: cbeck
   owner1: cbeck
   owner2: lmcfall
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

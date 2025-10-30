@@ -3,7 +3,6 @@ description: |-
   Subscription service attribution impressions from SubPlat logs.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

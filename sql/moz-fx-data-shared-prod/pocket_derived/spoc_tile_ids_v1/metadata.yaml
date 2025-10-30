@@ -6,7 +6,6 @@ owners:
 labels:
   table_type: tile_id
   owner1: kik
-bigquery: null
 workgroup_access: []
 references:
   query.sql:

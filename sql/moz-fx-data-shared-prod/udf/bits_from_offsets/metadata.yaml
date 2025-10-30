@@ -12,7 +12,6 @@ description: |
   ```sql CAST(CONCAT('0x', TO_HEX(RIGHT(bits >> i, 4))) AS INT64) << 36 >> 36 ```
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

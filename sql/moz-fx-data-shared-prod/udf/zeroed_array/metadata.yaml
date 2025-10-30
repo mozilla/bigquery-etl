@@ -3,7 +3,6 @@ description: |-
   Generates an array if all zeroes, of arbitrary length
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

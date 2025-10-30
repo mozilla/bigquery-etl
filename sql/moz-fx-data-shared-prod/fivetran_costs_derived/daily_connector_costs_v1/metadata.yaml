@@ -9,7 +9,6 @@ labels:
 scheduling:
   dag_name: bqetl_fivetran_costs
   date_partition_parameter: null
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

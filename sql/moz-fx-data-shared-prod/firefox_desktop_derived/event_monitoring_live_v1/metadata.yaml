@@ -16,7 +16,6 @@ scheduling:
   arguments:
   - --use_legacy_sql=false
   - --billing-project=moz-fx-data-backfill-3
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

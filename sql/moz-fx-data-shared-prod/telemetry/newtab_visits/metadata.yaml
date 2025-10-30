@@ -6,7 +6,6 @@ owners:
 - mbowerman@mozilla.com
 labels:
   owner1: mbowerman
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

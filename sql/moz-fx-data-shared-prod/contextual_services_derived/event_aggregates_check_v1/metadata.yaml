@@ -21,7 +21,6 @@ scheduling:
     dag_name: bqetl_ctxsvc_derived
   - task_id: contextual_services_derived__event_aggregates_suggest__v1
     dag_name: bqetl_ctxsvc_derived
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

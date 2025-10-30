@@ -20,7 +20,6 @@ scheduling:
     task_group: extracts
     dag_name: glam
     execution_delta: 6h
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

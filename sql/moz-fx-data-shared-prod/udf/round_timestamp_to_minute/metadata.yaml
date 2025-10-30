@@ -3,7 +3,6 @@ description: |-
   Floor a timestamp object to the given minute interval.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

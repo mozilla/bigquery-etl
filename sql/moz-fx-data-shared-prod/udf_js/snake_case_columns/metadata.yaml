@@ -3,7 +3,6 @@ description: |-
   This UDF takes a list of column names to snake case and transform them to be compatible with the BigQuery column naming format. Based on the existing ingestion logic https://github.com/mozilla/gcp-ingestion/blob/dad29698271e543018eddbb3b771ad7942bf4ce5/ ingestion-core/src/main/java/com/mozilla/telemetry/ingestion/core/transform/PubsubMessageToObjectNode.java#L824
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

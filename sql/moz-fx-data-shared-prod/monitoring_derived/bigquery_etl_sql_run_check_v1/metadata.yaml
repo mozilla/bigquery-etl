@@ -14,7 +14,6 @@ scheduling:
   parameters:
   - task_instance:STRING:{{task_instance_key_str}}
   - run_id:STRING:{{run_id}}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

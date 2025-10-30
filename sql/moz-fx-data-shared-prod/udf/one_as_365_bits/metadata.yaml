@@ -3,7 +3,6 @@ description: |-
   One represented as a byte array of 365 bits
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -17,7 +17,6 @@ scheduling:
   - - moz-fx-data-shared-prod
     - monitoring_derived
     - shredder_targets_new_mismatched_v1
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

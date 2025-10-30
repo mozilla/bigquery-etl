@@ -3,7 +3,6 @@ description: |-
   Related to https://mozilla-hub.atlassian.net/browse/RS-682. The function parses the sponsored interaction column from payload_error_bytes.contextual_services table.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

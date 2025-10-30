@@ -3,7 +3,6 @@ description: |-
   This UDF is used to compute percentiles on Looker performance data, which can have duplicates
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

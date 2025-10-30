@@ -5,7 +5,6 @@ owners:
 - wclouser@mozilla.com
 labels:
   owner1: wclouser
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -10,7 +10,6 @@ labels:
   dag: bqetl_imf_exchange_rates
 scheduling:
   dag_name: bqetl_imf_exchange_rates
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -3,7 +3,6 @@ description: |-
   Calculate a confidence interval using a jackknife resampling technique for a given percentile of a histogram.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

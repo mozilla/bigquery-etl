@@ -20,7 +20,6 @@ labels:
   application: firefox
   owner1: lvargas
   owner2: rzhao
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

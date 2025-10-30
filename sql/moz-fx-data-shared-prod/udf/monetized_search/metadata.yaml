@@ -3,7 +3,6 @@ description: |-
   Stub monetized_search UDF for tests
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

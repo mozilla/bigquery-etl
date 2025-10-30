@@ -4,7 +4,6 @@ description: |
   This table is intended to be used to normalize country values from third-party data sources.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

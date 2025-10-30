@@ -15,7 +15,6 @@ owners:
 - kik@mozilla.com
 labels:
   owner1: kik
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

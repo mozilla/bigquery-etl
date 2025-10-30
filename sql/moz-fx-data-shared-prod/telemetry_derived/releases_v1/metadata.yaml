@@ -12,7 +12,6 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_releases
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

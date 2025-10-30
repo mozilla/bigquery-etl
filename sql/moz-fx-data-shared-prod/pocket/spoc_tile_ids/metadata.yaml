@@ -5,7 +5,6 @@ owners:
 - jklukas@mozilla.com
 labels:
   owner1: jklukas
-bigquery: null
 workgroup_access: []
 deprecated: true
 require_column_descriptions: false

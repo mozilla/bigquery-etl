@@ -5,7 +5,6 @@ description: |-
   Rows are at a client ID, submission date grain.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

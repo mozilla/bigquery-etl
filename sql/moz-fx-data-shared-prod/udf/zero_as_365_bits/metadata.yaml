@@ -3,7 +3,6 @@ description: |-
   Zero represented as a 365-bit byte array
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

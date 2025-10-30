@@ -12,7 +12,6 @@ labels:
   owner2: cmorales
   owner3: cbeck
   owner4: lvargas
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

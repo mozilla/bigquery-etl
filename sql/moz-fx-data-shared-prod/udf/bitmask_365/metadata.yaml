@@ -3,7 +3,6 @@ description: |-
   A bitmask for 365 bits
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

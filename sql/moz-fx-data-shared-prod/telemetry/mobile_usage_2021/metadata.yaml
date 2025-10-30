@@ -29,7 +29,6 @@ owners:
 - jklukas@mozilla.com
 labels:
   owner1: jklukas
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

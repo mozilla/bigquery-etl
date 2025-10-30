@@ -6,7 +6,6 @@ description: |
   All records have alpha-3 codes, but not all records have alpha-2 codes.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

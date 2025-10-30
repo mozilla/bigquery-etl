@@ -3,7 +3,6 @@ description: |-
   Extract the document version from a table name e.g. _TABLE_SUFFIX.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -3,7 +3,6 @@ description: |-
   Jira projects for Service Desk synced via Fivetran.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

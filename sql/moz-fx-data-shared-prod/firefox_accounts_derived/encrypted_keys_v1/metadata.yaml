@@ -3,7 +3,6 @@ description: |-
   Encrypted keys
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

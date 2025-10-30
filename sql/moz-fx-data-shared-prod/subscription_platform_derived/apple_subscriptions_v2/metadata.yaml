@@ -17,7 +17,6 @@ labels:
 scheduling:
   dag_name: bqetl_subplat_hourly
   date_partition_parameter: null
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

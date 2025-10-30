@@ -6,7 +6,6 @@ owners:
 labels:
   application: firefox
   owner1: frank
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

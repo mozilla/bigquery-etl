@@ -15,7 +15,6 @@ labels:
   owner1: chutten
 scheduling:
   dag_name: bqetl_ssl_ratios
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

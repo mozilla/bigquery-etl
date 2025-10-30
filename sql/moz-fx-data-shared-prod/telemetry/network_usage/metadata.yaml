@@ -3,7 +3,6 @@ description: |-
   Compares private vs non private network usage
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -9,7 +9,6 @@ labels:
   owner1: ascholtz
 scheduling:
   dag_name: bqetl_experiments_daily
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

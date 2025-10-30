@@ -27,7 +27,6 @@ description: |
   by build date.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -3,7 +3,6 @@ description: |
   Mapping of OS name from telemetry to normalized OS name
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

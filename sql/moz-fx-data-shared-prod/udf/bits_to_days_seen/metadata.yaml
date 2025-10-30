@@ -3,7 +3,6 @@ description: |-
   Given a BYTE, get the number of days the user was seen. NULL input returns NULL output.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

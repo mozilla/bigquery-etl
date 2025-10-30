@@ -7,7 +7,6 @@ owners:
 labels:
   table_type: aggregate
   owner1: ascholtz
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

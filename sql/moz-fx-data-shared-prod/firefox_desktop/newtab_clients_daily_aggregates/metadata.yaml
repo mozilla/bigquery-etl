@@ -6,7 +6,6 @@ owners:
 - gkatre@mozilla.com
 labels:
   owner1: gkatre
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

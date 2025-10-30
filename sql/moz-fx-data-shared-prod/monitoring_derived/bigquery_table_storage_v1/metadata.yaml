@@ -10,7 +10,6 @@ labels:
   owner1: wichan
 scheduling:
   dag_name: bqetl_monitoring
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

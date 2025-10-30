@@ -9,7 +9,6 @@ labels:
   schedule: daily
   owner1: wlachance
   owner2: akomar
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

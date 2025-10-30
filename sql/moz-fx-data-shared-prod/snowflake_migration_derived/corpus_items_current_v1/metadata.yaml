@@ -8,7 +8,6 @@ owners:
 - lmcfall@mozilla.com
 labels:
   owner1: lmcfall
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

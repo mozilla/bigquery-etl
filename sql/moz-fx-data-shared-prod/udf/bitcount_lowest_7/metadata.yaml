@@ -3,7 +3,6 @@ description: |-
   This function counts the 1s in lowest 7 bits of an INT64
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

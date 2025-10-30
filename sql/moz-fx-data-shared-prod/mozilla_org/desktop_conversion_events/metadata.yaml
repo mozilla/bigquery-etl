@@ -4,7 +4,6 @@ description: |-
   28 days from the US with associated conversion events
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

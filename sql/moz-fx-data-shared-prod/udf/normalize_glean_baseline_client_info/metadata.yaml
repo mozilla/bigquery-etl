@@ -2,7 +2,6 @@ friendly_name: Normalize Glean Baseline Client Info
 description: ""
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

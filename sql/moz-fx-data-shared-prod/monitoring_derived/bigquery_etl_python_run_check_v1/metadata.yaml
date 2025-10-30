@@ -15,7 +15,6 @@ scheduling:
   arguments:
   - --task_instance={{ task_instance_key_str }}
   - --run_id={{ run_id }}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

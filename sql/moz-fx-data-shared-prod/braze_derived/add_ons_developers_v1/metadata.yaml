@@ -15,7 +15,6 @@ scheduling:
   - --source-bucket=moz-fx-data-prod-external-pocket-data
   - --source-prefix=braze_data_syncs
   - --source-file=add_ons_devs
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

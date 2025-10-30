@@ -4,7 +4,6 @@ description: |-
 owners: []
 labels:
   authorized: true
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

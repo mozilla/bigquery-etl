@@ -6,7 +6,6 @@ description: |
   See https://bugzilla.mozilla.org/show_bug.cgi?id=1740392 for details.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

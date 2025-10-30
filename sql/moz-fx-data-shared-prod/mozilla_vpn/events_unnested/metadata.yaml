@@ -6,7 +6,6 @@ description: |-
   sent in an "events" ping.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

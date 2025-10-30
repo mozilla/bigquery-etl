@@ -9,7 +9,6 @@ owners:
 labels:
   owner1: cmorales
   owner2: akommasani
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

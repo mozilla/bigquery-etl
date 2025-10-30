@@ -3,7 +3,6 @@ description: |-
   Returns an aggregated map with all the keys and the first corresponding value from the given maps
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

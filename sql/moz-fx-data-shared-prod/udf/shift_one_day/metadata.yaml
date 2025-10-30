@@ -3,7 +3,6 @@ description: |-
   Returns the bitfield shifted by one day, 0 for NULL
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

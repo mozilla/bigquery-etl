@@ -3,7 +3,6 @@ description: |-
   This is a UDF to help distinguish if acquired desktop clients are attributable to marketing efforts or not
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -24,7 +24,6 @@ scheduling:
     key: bqetl_market_intel_bot__github_token
   - deploy_target: SLACK_MARKET_INTEL_BOT_WEBHOOK_URL
     key: bqetl_market_intel_bot__webhook_url
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

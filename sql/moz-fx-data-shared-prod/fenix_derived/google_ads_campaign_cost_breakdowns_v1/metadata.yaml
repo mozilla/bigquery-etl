@@ -12,7 +12,6 @@ scheduling:
   dag_name: bqetl_campaign_cost_breakdowns
   date_partition_parameter: null
   depends_on_past: false
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

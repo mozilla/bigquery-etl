@@ -6,7 +6,6 @@ owners:
 labels:
   authorized: true
   owner1: kwindau
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

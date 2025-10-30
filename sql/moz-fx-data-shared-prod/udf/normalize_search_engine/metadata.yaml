@@ -3,7 +3,6 @@ description: |
   Return normalized engine name for recognized engines This is a stub implementation for use with tests; real implementation is in private-bigquery-etl
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

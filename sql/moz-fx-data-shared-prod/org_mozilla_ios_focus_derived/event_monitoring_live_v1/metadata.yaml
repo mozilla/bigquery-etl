@@ -8,7 +8,6 @@ labels:
   materialized_view: true
   owner1: ascholtz
   owner2: akomar
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

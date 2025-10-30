@@ -3,7 +3,6 @@ description: |-
   This struct represents the past year's worth of searches. Each month has its own entry, hence 12.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

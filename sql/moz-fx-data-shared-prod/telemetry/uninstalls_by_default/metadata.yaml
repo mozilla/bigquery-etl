@@ -3,7 +3,6 @@ description: |-
   Number of clients uninstalling by date, broken by those having Fx as default browser vs not
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

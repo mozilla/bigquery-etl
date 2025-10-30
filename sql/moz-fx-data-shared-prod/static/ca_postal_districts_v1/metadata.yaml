@@ -5,7 +5,6 @@ description: |
   Data source: https://en.wikipedia.org/wiki/Postal_codes_in_Canada#Components_of_a_postal_code
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

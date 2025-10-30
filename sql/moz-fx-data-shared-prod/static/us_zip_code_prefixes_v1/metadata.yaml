@@ -5,7 +5,6 @@ description: |
   Data source: https://simple.wikipedia.org/wiki/List_of_ZIP_Code_prefixes
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

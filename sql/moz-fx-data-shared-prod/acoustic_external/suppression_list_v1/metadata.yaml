@@ -5,7 +5,6 @@ owners:
 - cbeck@mozilla.com
 labels:
   owner1: cbeck
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

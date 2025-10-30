@@ -11,7 +11,6 @@ labels:
   owner1: telemetry-alerts
 scheduling:
   dag_name: bqetl_default
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

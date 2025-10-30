@@ -3,7 +3,6 @@ description: |-
   This table is used to create dynamic period over period comparisons in Looker for DAU for different populations
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

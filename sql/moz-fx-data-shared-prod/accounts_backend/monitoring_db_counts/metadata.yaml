@@ -5,7 +5,6 @@ description: |-
   inactive accounts are there?"
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

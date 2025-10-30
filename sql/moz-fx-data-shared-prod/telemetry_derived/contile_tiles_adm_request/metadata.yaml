@@ -5,7 +5,6 @@ owners:
 - rburwei@mozilla.com
 labels:
   owner1: rburwei
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -15,7 +15,6 @@ scheduling:
   date_partition_parameter: null
   parameters:
   - submission_date:DATE:{{ds}}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

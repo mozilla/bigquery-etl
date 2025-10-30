@@ -6,7 +6,6 @@ owners:
 - ksiegler@mozilla.com
 labels:
   owner1: ksiegler
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

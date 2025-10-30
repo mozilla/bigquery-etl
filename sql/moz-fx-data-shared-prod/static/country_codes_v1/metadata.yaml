@@ -6,7 +6,6 @@ description: |
   by some governing bodies and is present in MaxMind's GeoIP2 database.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

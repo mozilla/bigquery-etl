@@ -13,7 +13,6 @@ owners:
 labels:
   application: amo
   owner1: kik
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -9,7 +9,6 @@ labels:
   owner1: ctroy
   owner2: aplacitelli
   owner3: aaggarwal
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

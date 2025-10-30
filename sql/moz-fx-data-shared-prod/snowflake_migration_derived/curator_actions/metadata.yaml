@@ -7,7 +7,6 @@ owners:
 labels:
   owner1: jpetto
   owner2: rrando
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

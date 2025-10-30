@@ -8,7 +8,6 @@ owners:
 - kwindau@mozilla.com
 labels:
   owner1: kwindau
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

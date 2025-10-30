@@ -3,7 +3,6 @@ description: |-
   Count of searches & users by provider/day used in Firefox Health Indicator dashboard
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

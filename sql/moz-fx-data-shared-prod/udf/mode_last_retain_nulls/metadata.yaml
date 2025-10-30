@@ -2,7 +2,6 @@ friendly_name: Mode Last Retain Nulls
 description: ""
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

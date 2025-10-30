@@ -5,7 +5,6 @@ owners:
 - jsnyder@mozilla.com
 labels:
   owner1: jsnyder
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

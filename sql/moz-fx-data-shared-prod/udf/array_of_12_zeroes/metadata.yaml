@@ -3,7 +3,6 @@ description: |-
   An array of 12 zeroes
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

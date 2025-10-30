@@ -5,7 +5,6 @@ owners:
 - data-platform-infra-wg@mozilla.com
 labels:
   owner1: data-platform-infra-wg
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.metadataViewer
   members:

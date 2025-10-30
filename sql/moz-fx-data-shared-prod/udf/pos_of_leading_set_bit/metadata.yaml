@@ -3,7 +3,6 @@ description: |-
   Returns the 0-based index of the first set bit. No set bits returns NULL.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

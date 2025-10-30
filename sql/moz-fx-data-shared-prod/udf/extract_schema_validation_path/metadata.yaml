@@ -3,7 +3,6 @@ description: |-
   Return a path derived from an error message in `payload_bytes_error`
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

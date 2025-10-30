@@ -3,7 +3,6 @@ description: |
   View for live experiment crash rates.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

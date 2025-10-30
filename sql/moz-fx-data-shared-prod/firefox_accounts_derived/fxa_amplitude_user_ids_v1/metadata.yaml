@@ -9,7 +9,6 @@ labels:
   schedule: daily
   table_type: client_level
   owner1: kik
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

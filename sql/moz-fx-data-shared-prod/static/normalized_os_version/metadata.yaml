@@ -3,7 +3,6 @@ description: |
   Lookup table of telemetry OS name and version to normalized name and version.  OS versions are regex strings and should be matched with REGEXP_CONTAINS.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

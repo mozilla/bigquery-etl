@@ -10,7 +10,6 @@ owners:
 labels:
   owner1: jrediger
   owner2: wstuckey
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

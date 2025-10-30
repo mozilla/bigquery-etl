@@ -3,7 +3,6 @@ description: |-
   This is a UDF to help distinguish mobile client attribution as being organic or paid
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -23,7 +23,6 @@ scheduling:
   - - moz-fx-data-shared-prod
     - telemetry_derived
     - newtab_merino_priors_v1
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

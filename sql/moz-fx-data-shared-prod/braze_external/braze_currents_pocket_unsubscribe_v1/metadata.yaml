@@ -17,7 +17,6 @@ scheduling:
   - --source-bucket=moz-fx-data-marketing-prod-braze-firefox
   - --source-prefix=currents/dataexport.prod-05.GCS.integration.68474240af2dde006612d02a
   - --event-type=users.messages.email.Unsubscribe
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

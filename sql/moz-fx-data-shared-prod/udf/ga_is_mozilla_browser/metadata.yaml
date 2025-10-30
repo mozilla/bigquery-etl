@@ -3,7 +3,6 @@ description: |
   Determine if a browser in a Google Analytics data is produced by Mozilla
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

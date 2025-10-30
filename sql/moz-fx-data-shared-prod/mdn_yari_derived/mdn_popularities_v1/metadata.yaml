@@ -15,7 +15,6 @@ scheduling:
   - '{{ ds }}'
   date_partition_parameter: null
   referenced_tables: []
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

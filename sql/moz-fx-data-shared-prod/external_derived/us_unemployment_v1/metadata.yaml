@@ -15,7 +15,6 @@ scheduling:
   secrets:
   - deploy_target: BLS_US_UNEMPLOYMENT_API_KEY
     key: bqetl_us_bls_unemployment_data__bls_us_api_key
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

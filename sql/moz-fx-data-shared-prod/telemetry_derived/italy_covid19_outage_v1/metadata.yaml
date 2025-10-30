@@ -42,7 +42,6 @@ labels:
   review_bugs:
   - '1633681'
   owner1: aplacitelli
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

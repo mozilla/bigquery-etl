@@ -16,7 +16,6 @@ owners:
 labels:
   incremental: true
   owner1: ctroy
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

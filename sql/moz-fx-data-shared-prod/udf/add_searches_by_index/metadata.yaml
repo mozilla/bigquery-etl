@@ -3,7 +3,6 @@ description: |-
   Return sums of each search type grouped by the index. Results are ordered by index.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

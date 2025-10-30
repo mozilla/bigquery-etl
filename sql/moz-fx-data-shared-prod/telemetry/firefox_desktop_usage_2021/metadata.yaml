@@ -36,7 +36,6 @@ owners:
 labels:
   application: desktop
   owner1: jklukas
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

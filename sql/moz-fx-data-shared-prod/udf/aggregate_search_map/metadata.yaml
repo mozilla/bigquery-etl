@@ -3,7 +3,6 @@ description: |-
   Aggregates the total counts of the given search counters
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

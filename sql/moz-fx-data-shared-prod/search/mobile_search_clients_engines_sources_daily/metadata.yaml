@@ -7,7 +7,6 @@ owners:
 - akomar@mozilla.com
 labels:
   owner1: akomar
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

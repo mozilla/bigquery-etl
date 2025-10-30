@@ -15,7 +15,6 @@ labels:
   owner2: lmcfall
 scheduling:
   dag_name: bqetl_braze_add_ons_sync
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -3,7 +3,6 @@ description: |-
   Shift input bits one day left and drop any bits beyond 365 days.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

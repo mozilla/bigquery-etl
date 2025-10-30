@@ -3,7 +3,6 @@ description: |-
   Return an array containing only distinct values of the given array
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

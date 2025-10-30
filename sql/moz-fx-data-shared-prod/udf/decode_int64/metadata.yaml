@@ -2,7 +2,6 @@ friendly_name: Decode Int64
 description: ""
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -5,7 +5,6 @@ owners:
 - srose@mozilla.com
 labels:
   owner1: srose
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

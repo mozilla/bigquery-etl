@@ -22,7 +22,6 @@ owners:
 - mozilla/kpi_table_reviewers
 labels:
   owner1: lvargas
-bigquery: null
 workgroup_access: []
 deprecated: true
 require_column_descriptions: false

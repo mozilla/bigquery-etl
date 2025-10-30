@@ -3,7 +3,6 @@ description: |-
   Rename struct fields in anonymous event tuples to meaningful names.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

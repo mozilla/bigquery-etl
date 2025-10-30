@@ -14,7 +14,6 @@ scheduling:
   secrets:
   - deploy_target: BIGEYE_API_KEY
     key: bqetl_bigeye_api_key
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

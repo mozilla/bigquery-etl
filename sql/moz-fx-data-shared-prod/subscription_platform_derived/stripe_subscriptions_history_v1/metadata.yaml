@@ -47,7 +47,6 @@ scheduling:
   - dag_name: bqetl_subplat_hourly
     task_id: stripe_external__subscription_item__v1
     execution_delta: -23h
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

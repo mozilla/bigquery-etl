@@ -3,7 +3,6 @@ description: |-
   Joined clients_daily view
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

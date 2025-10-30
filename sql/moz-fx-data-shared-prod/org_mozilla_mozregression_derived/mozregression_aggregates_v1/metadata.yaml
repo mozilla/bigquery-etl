@@ -16,7 +16,6 @@ labels:
 scheduling:
   dag_name: bqetl_internal_tooling
   task_name: mozregression_aggregates__v1
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -6,7 +6,6 @@ owners:
 - benwu@mozilla.com
 labels:
   owner1: benwu
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

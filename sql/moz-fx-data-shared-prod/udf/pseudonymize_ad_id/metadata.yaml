@@ -3,7 +3,6 @@ description: |-
   Pseudonymize Ad IDs, handling opt-outs.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

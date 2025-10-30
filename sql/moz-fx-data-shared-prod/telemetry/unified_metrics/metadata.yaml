@@ -15,7 +15,6 @@ owners:
 - loines@mozilla.com
 labels:
   owner1: loines
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

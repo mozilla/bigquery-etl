@@ -6,7 +6,6 @@ owners:
 labels:
   authorized: true
   owner1: mhirose
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

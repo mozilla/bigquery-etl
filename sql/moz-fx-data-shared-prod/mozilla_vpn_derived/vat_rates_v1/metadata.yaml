@@ -6,7 +6,6 @@ owners:
 labels:
   schedule: daily
   owner1: srose
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -4,7 +4,6 @@ description: |-
   Parsed from https://product-details.mozilla.org/1.0/firefox_versions.json.
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

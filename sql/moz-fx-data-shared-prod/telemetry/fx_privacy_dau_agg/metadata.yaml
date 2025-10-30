@@ -3,7 +3,6 @@ description: |-
   Count of events and users for events in category security.ui.protectionspopup
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -3,7 +3,6 @@ description: |-
   Please provide a description for the query
 owners: []
 labels: {}
-bigquery: null
 workgroup_access: []
 deprecated: true
 deletion_date: 2024-05-03

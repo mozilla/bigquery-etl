@@ -2,7 +2,6 @@ friendly_name: Glean Timespan Seconds
 description: ""
 owners: []
 labels: {}
-bigquery: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

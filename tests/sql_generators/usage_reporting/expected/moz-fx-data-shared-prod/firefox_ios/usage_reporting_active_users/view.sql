@@ -2,6 +2,13 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_active_users`
 AS
+WITH first_seen AS (
+  SELECT
+    usage_profile_id,
+    first_seen_date,
+  FROM
+    `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_first_seen`
+)
 SELECT
   * EXCEPT (submission_date, app_channel, normalized_country_code, app_display_version),
   submission_date,
@@ -49,7 +56,7 @@ SELECT
 FROM
   `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_last_seen`
 LEFT JOIN
-  `moz-fx-data-shared-prod.firefox_ios.usage_reporting_clients_first_seen` AS first_seen
+  first_seen
   USING (usage_profile_id)
 WHERE
   submission_date >= '2025-03-01'

@@ -43,12 +43,6 @@ fields:
     The date of the first run of the application.
 
 - mode: NULLABLE
-  name: app_channel
-  type: STRING
-  description: |
-    The channel the application is being distributed on.
-
-- mode: NULLABLE
   name: normalized_country_code
   type: STRING
   description: |

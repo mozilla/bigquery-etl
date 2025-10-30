@@ -8,7 +8,7 @@ WITH _current AS (
     {% endif %}
     * EXCEPT (submission_date, is_active),
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.usage_reporting_clients_daily`
+    `moz-fx-data-shared-prod.firefox_desktop_derived.usage_reporting_clients_daily_v1`
   WHERE
     usage_profile_id IS NOT NULL
     {% if is_init() %}

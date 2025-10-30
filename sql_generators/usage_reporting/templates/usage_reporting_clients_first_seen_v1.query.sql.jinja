@@ -11,7 +11,7 @@ WITH
       {% endraw %}
       * EXCEPT(submission_date, is_active),
     FROM
-      `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
+      `{{ project_id }}.{{ channel_dataset }}_derived.usage_reporting_clients_daily_v1`
     WHERE
       usage_profile_id IS NOT NULL
       {% raw %}

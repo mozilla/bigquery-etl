@@ -16,4 +16,3 @@ bigquery:
     field: 'date_from'
     require_partition_filter: false
     expiration_days: null
-references: {}

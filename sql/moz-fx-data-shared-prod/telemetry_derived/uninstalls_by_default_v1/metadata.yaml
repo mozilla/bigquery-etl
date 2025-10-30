@@ -19,5 +19,4 @@ bigquery:
   clustering:
     fields:
     - is_default_browser
-references: {}
 require_column_descriptions: true

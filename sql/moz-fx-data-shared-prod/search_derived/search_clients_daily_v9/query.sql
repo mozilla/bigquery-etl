@@ -922,13 +922,13 @@ consolidated AS (
     serp_follow_on_searches_tagged_count AS tagged_follow_on,
     sap,
     serp_counts,
-    serp_ad_click_target AS ad_click,
+    serp_ad_click_target AS ad_click_target,
+    serp_num_ad_clicks AS ad_click,
     serp_ad_clicks_organic_count AS ad_click_organic,
     serp_with_ads_tagged_count AS search_with_ads,
     serp_with_ads_organic_count AS search_with_ads_organic,
     serp_ad_clicks_tagged_count AS ad_clicks_tagged,
     serp_ad_blocker_inferred AS ad_blocker_inferred,
-    serp_num_ad_clicks AS num_ad_clicks, -- NEW
     serp_num_non_ad_link_clicks AS num_non_ad_link_clicks, -- NEW
     serp_num_other_engagements AS num_other_engagements, -- NEW
     serp_num_ads_loaded AS num_ads_loaded, -- NEW

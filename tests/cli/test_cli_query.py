@@ -151,9 +151,9 @@ class TestQuery:
                 "dataset_metadata.yaml",
                 "test_query",
             ]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
-                "view.sql"
-            ]
+            assert sorted(
+                os.listdir("sql/moz-fx-data-shared-prod/test/test_query")
+            ) == ["metadata.yaml", "view.sql"]
 
     def test_create_derived_query_with_existing_view(self, runner):
         with runner.isolated_filesystem():
@@ -205,9 +205,9 @@ class TestQuery:
                 "dataset_metadata.yaml",
                 "test_query",
             ]
-            assert os.listdir("sql/moz-fx-data-shared-prod/test/test_query") == [
-                "view.sql"
-            ]
+            assert sorted(
+                os.listdir("sql/moz-fx-data-shared-prod/test/test_query")
+            ) == ["metadata.yaml", "view.sql"]
 
     def test_schedule_invalid_path(self, runner):
         with runner.isolated_filesystem():

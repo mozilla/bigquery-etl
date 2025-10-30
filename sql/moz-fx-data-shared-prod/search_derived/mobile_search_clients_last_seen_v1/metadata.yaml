@@ -27,4 +27,3 @@ bigquery:
     fields:
     - sample_id
     - client_id
-references: {}

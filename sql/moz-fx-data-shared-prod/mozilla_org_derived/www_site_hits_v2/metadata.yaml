@@ -23,4 +23,3 @@ bigquery:
     - country
     - language
     - event_name
-references: {}

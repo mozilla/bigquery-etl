@@ -22,5 +22,4 @@ bigquery:
   clustering:
     fields:
     - page_title
-references: {}
 require_column_descriptions: true

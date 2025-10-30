@@ -26,4 +26,3 @@ bigquery:
   clustering:
     fields:
     - flow_id
-references: {}

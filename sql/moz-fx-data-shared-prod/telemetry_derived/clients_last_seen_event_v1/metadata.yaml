@@ -27,5 +27,4 @@ bigquery:
   clustering:
     fields:
     - sample_id
-references: {}
 require_column_descriptions: false

@@ -9,6 +9,11 @@ WITH client_baseline AS (
       distribution_id,
       is_daily_user,
       is_dau,
+      is_desktop,
+      app_version,
+      app_version_major,
+      app_version_minor,
+      app_version_patch_revision,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop.baseline_active_users`
     WHERE
@@ -36,6 +41,11 @@ WITH client_baseline AS (
       legacy_telemetry_client_id,
       channel,
       is_dau,
+      is_desktop,
+      app_version,
+      app_version_major,
+      app_version_minor,
+      app_version_patch_revision,
     FROM
       active_users_base
     WHERE
@@ -49,6 +59,11 @@ WITH client_baseline AS (
     channel AS normalized_channel,
     distribution_id,
     is_dau,
+    is_desktop,
+    app_version,
+    app_version_major,
+    app_version_minor,
+    app_version_patch_revision,
   FROM
     daily_users
   LEFT JOIN
@@ -82,7 +97,12 @@ SELECT
   sample_id,
   normalized_channel,
   distribution_id,
+  app_version,
+  app_version_major,
+  app_version_minor,
+  app_version_patch_revision,
   is_dau,
+  is_desktop,
   policies_count,
   policies_is_enterprise,
   legacy_telemetry_client_id,

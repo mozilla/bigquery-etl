@@ -1,0 +1,11 @@
+friendly_name: AMO Glean Derived
+description: |-
+  Derived data used to power the AMO stats dashboards
+dataset_base_acl: derived
+user_facing: true
+labels: {}
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:amo/prod

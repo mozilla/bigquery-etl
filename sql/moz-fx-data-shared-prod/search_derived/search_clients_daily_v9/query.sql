@@ -1,3 +1,6 @@
+-- Query for search_derived.search_clients_daily_v9
+            -- For more information on writing queries see:
+            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 CREATE TEMP FUNCTION safe_parse_timestamp(ts string) AS (
   COALESCE(
         -- full datetime with offset
@@ -851,14 +854,12 @@ consolidated AS (
     serp_client_id AS client_id,
     serp_legacy_telemetry_client_id AS legacy_telemetry_client_id, -- NEW
     serp_provider_id AS engine, -- this is normalized in serp_events_with_client_info
-    case
-        when
-            serp_provider_id is null
-            and
-            sap_normalized_engine is not null
-                then sap_normalized_engine
-        else serp_provider_id
-    end as normalized_engine,
+    CASE
+      WHEN serp_provider_id IS NULL
+        AND sap_normalized_engine IS NOT NULL
+        THEN sap_normalized_engine
+      ELSE serp_provider_id
+    END AS normalized_engine,
     serp_search_access_point AS source,
     serp_partner_code AS partner_code, -- NEW
     serp_country AS country,

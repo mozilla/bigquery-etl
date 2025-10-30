@@ -1,0 +1,16 @@
+friendly_name: Firefox Privacy Dashboard - DAU interracting with the privacy panel
+description: |-
+  DAU interacting with the privacy panel
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_derived.fx_privacy_dau_agg_v1
+require_column_descriptions: false

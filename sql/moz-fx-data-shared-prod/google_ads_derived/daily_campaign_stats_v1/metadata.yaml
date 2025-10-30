@@ -16,4 +16,3 @@ scheduling:
 bigquery:
   clustering:
     fields: ["date"]
-references: {}

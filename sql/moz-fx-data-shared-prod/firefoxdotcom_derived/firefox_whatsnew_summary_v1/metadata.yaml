@@ -18,4 +18,3 @@ bigquery:
     fields:
     - country
     - version
-references: {}

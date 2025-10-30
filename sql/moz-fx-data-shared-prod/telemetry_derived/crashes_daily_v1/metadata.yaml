@@ -24,4 +24,3 @@ bigquery:
     fields:
     - channel
     - os
-references: {}

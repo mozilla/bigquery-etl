@@ -1,0 +1,8 @@
+friendly_name: Desktop Installs
+description: |-
+  This view contains information about Firefox desktop installs, to help track the acquisition funnel.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false

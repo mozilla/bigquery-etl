@@ -4,6 +4,11 @@ AS
 SELECT
   *,
   CASE
+    WHEN `mozfun.norm.browser_version_info`(app_version).major_version >= 144
+      AND normalized_channel = "esr"
+      AND policies_count > 1
+      AND distribution_id IS NULL
+      THEN "enterprise_esr"
     WHEN normalized_channel = "release"
       AND ((policies_count > 1) OR (policies_is_enterprise = TRUE))
       THEN "enterprise_release"

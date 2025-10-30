@@ -22,52 +22,57 @@ class EventsFirstSeenTable(GleanTable):
         self.across_apps_enabled = False
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "events_v1"
-        self.custom_render_kwargs = {}
+        self.common_render_kwargs = {}
 
     def generate_per_app_id(
         self,
         project_id,
         baseline_table,
+        app_name,
+        app_id_info,
         output_dir=None,
         use_cloud_function=True,
-        app_info=[],
         parallelism=8,
         id_token=None,
     ):
-        # Get the app ID from the baseline_table name.
-        # This is what `common.py` also does.
-        app_id = re.sub(r"_stable\..+", "", baseline_table)
-        app_id = ".".join(app_id.split(".")[1:])
-
+        """Generate the events_first_seen table query per app_id."""
         # Include only selected apps
-        if app_id in ConfigLoader.get(
+        if app_name in ConfigLoader.get(
             "generate", "glean_usage", "events_first_seen", "include_apps", fallback=[]
         ):
             super().generate_per_app_id(
                 project_id,
                 baseline_table,
-                output_dir,
-                use_cloud_function,
-                app_info,
+                app_name,
+                app_id_info,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
                 id_token=id_token,
             )
 
     def generate_per_app(
         self,
         project_id,
-        app_info,
+        app_name,
+        app_ids_info,
         output_dir=None,
         use_cloud_function=True,
         parallelism=8,
         id_token=None,
         all_base_tables_exist=None,
     ):
-        """Generate the events_stream table query per app_name."""
-        target_dataset = app_info[0]["app_name"]
-        if target_dataset in ConfigLoader.get(
+        """Generate the events_first_seen table query per app_name."""
+        if app_name in ConfigLoader.get(
             "generate", "glean_usage", "events_first_seen", "include_apps", fallback=[]
         ):
-
             super().generate_per_app(
-                project_id, app_info, output_dir, id_token=id_token
+                project_id,
+                app_name
+                app_ids_info,
+                output_dir=output_dir,
+                use_cloud_function=use_cloud_function,
+                parallelism=parallelism,
+                id_token=id_token,
+                all_base_tables_exist=all_base_tables_exist,
             )

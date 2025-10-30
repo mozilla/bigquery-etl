@@ -30,3 +30,22 @@ _core_clients_first_seen AS (
     _fennec_id_lookup.client_id
 )
 {% endmacro %}
+
+
+{% macro event_extras_by_type_struct(extras_by_type) %}
+  STRUCT(
+    {% for extra_type in extras_by_type | sort %}
+      STRUCT(
+        {% for extra in extras_by_type[extra_type] | sort %}
+          {% if extra_type == 'boolean' %}
+            LAX_BOOL(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+          {% elif extra_type == 'quantity' %}
+            LAX_INT64(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+          {% else %}
+            JSON_VALUE(event_extra.{{ extra }}) AS `{{ extra }}`{{ ',' if not loop.last else '' }}
+          {% endif %}
+        {% endfor %}
+      ) AS `{{ extra_type }}`{{ ',' if not loop.last else '' }}
+    {% endfor %}
+  )
+{% endmacro %}

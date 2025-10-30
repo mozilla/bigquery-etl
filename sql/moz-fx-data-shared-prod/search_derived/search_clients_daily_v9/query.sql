@@ -851,6 +851,14 @@ consolidated AS (
     serp_client_id AS client_id,
     serp_legacy_telemetry_client_id AS legacy_telemetry_client_id, -- NEW
     serp_provider_id AS engine, -- this is normalized in serp_events_with_client_info
+    case
+        when
+            serp_provider_id is null
+            and
+            sap_normalized_engine is not null
+                then sap_normalized_engine
+        else serp_provider_id
+    end as normalized_engine,
     serp_search_access_point AS source,
     serp_partner_code AS partner_code, -- NEW
     serp_country AS country,
@@ -927,7 +935,6 @@ consolidated AS (
     serp_num_ads_blocked AS num_ads_blocked, -- NEW
     serp_num_ads_notshowing AS num_ads_notshowing, -- NEW
     NULL AS unknown,
-    sap_normalized_engine AS normalized_engine,
     NULL AS is_sap_monetizable, -- REVISIT
     serp_has_adblocker_addon AS has_adblocker_addon,
     serp_policies_is_enterprise AS policies_is_enterprise,

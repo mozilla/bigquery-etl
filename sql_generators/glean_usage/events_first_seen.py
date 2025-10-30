@@ -1,7 +1,5 @@
 """Generate events first seen queries for Glean apps."""
 
-import re
-
 from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import GleanTable
 
@@ -68,7 +66,7 @@ class EventsFirstSeenTable(GleanTable):
         ):
             super().generate_per_app(
                 project_id,
-                app_name
+                app_name,
                 app_ids_info,
                 output_dir=output_dir,
                 use_cloud_function=use_cloud_function,

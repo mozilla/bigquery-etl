@@ -64,6 +64,44 @@ with DAG(
         parameters=["submission_date:DATE:{{ds}}"],
     )
 
+    firefox_desktop_background_defaultagent_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="firefox_desktop_background_defaultagent_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="firefox_desktop_background_defaultagent_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    firefox_desktop_background_tasks_baseline_clients_city_seen_v1 = bigquery_etl_query(
+        task_id="firefox_desktop_background_tasks_baseline_clients_city_seen_v1",
+        destination_table="baseline_clients_city_seen_v1",
+        dataset_id="firefox_desktop_background_tasks_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="wichan@mozilla.com",
+        email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
+    )
+
+    firefox_desktop_background_update_baseline_clients_city_seen_v1 = (
+        bigquery_etl_query(
+            task_id="firefox_desktop_background_update_baseline_clients_city_seen_v1",
+            destination_table="baseline_clients_city_seen_v1",
+            dataset_id="firefox_desktop_background_update_derived",
+            project_id="moz-fx-data-shared-prod",
+            owner="wichan@mozilla.com",
+            email=["telemetry-alerts@mozilla.com", "wichan@mozilla.com"],
+            date_partition_parameter=None,
+            depends_on_past=True,
+            parameters=["submission_date:DATE:{{ds}}"],
+        )
+    )
+
     firefox_desktop_baseline_clients_city_seen_v1 = bigquery_etl_query(
         task_id="firefox_desktop_baseline_clients_city_seen_v1",
         destination_table="baseline_clients_city_seen_v1",

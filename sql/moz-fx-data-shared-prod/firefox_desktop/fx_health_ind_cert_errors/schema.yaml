@@ -1,0 +1,17 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: Submission Date
+- name: cert_load_error
+  type: STRING
+  mode: NULLABLE
+  description: Certificate Load Error Description
+- name: error_dau
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of unique clients experiencing this certificate load error
+- name: error_events
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of events for this certificate load error

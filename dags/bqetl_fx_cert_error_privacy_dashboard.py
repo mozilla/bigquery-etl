@@ -53,6 +53,19 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    wait_for_firefox_desktop_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_firefox_desktop_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.firefox_desktop_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=52800),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_telemetry_derived__clients_daily_joined__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__clients_daily_joined__v1",
         external_dag_id="bqetl_main_summary",
@@ -90,6 +103,21 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    firefox_desktop_derived__fx_cert_error_unique_users_os__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_cert_error_unique_users_os__v1",
+        destination_table="fx_cert_error_unique_users_os_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
     )
 
     telemetry_derived__fx_cert_error_ssl_handshake_failure_rate_by_country_os__v1 = bigquery_etl_query(
@@ -156,6 +184,10 @@ with DAG(
         email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__fx_cert_error_unique_users_os__v1.set_upstream(
+        wait_for_firefox_desktop_derived__events_stream__v1
     )
 
     telemetry_derived__fx_cert_error_ssl_handshake_failure_rate_by_country_os__v1.set_upstream(

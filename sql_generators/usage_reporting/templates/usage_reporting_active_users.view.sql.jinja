@@ -2,6 +2,12 @@
 CREATE OR REPLACE VIEW
   `{{ project_id }}.{{ app_name }}.{{ view_name }}`
 AS
+WITH first_seen AS (
+  SELECT
+    usage_profile_id,
+    first_seen_date,
+  FROM `{{ project_id }}.{{ app_name }}.usage_reporting_clients_first_seen`
+)
 SELECT
   * EXCEPT(submission_date, app_channel, normalized_country_code, app_display_version),
   submission_date,
@@ -62,7 +68,7 @@ SELECT
 FROM
   `{{ project_id }}.{{ app_name }}.usage_reporting_clients_last_seen`
 LEFT JOIN
-  `{{ project_id }}.{{ app_name }}.usage_reporting_clients_first_seen` AS first_seen
+  first_seen
   USING (usage_profile_id)
 WHERE
   submission_date >= '2025-03-01'

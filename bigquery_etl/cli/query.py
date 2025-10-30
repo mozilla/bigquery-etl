@@ -2223,9 +2223,9 @@ def _update_query_schema(
                     f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                 )
                 existing_schema.deploy(tmp_identifier)
-                tmp_tables[
-                    f"{project_name}.{dataset_name}.{table_name}"
-                ] = tmp_identifier
+                tmp_tables[f"{project_name}.{dataset_name}.{table_name}"] = (
+                    tmp_identifier
+                )
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references

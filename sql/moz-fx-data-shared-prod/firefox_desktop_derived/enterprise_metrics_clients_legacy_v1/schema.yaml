@@ -25,34 +25,16 @@ fields:
     Normalized channel the application is being distributed on. For example, release, beta, etc.
 
 - mode: NULLABLE
-  name: distribution_id
-  type: STRING
-  description: |
-    The distribution id associated with the install of Firefox.
-
-- mode: NULLABLE
   name: app_version
   type: STRING
   description: |
     User visible version string (e.g. "1.0.3") for the browser.
 
 - mode: NULLABLE
-  name: app_version_major
-  type: NUMERIC
+  name: distribution_id
+  type: STRING
   description: |
-    Major version of the application (Firefox).
-
-- mode: NULLABLE
-  name: app_version_minor
-  type: NUMERIC
-  description: |
-    Minor version of the application (Firefox).
-
-- mode: NULLABLE
-  name: app_version_patch_revision
-  type: NUMERIC
-  description: |
-    Patch version of the application (Firefox).
+    The distribution id associated with the install of Firefox.
 
 - mode: NULLABLE
   name: is_dau
@@ -79,9 +61,3 @@ fields:
   description: |
     Attempt to determine if the user is an enterprise user based on various signals.
     This metric was generated to correspond to the Legacy Telemetry scalar policies.is_enterprise
-
-- mode: NULLABLE
-  name: legacy_telemetry_client_id
-  type: STRING
-  description: |
-    A unique identifier (UUID) for the client in legacy telemetry.

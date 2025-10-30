@@ -1,6 +1,6 @@
-friendly_name: Enterprise Metrics (clients) - Glean
+friendly_name: Enterprise Metrics (clients) - Legacy
 description: |-
-  Enterprise Metrics (clients) based on Glean telemetry.
+  Enterprise Metrics (clients) based on our legacy telemetry.
 owners:
 - pissac@mozilla.com
 - kik@mozilla.com

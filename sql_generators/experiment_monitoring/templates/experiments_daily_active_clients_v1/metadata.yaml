@@ -19,3 +19,4 @@ bigquery:
     fields:
     - experiment_id
     - branch
+    - normalized_channel

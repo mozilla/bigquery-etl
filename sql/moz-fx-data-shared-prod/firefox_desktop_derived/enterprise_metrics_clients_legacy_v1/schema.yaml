@@ -25,6 +25,12 @@ fields:
     Normalized channel the application is being distributed on. For example, release, beta, etc.
 
 - mode: NULLABLE
+  name: app_version
+  type: STRING
+  description: |
+    User visible version string (e.g. "1.0.3") for the browser.
+
+- mode: NULLABLE
   name: distribution_id
   type: STRING
   description: |
@@ -35,6 +41,12 @@ fields:
   type: BOOLEAN
   description: |
     Indicates whether the client met our definition of dau on the day.
+
+- mode: NULLABLE
+  name: is_desktop
+  type: BOOLEAN
+  description: |
+    Indicates whether the client met conditions to be counted as Desktop DAU on the day.
 
 - mode: NULLABLE
   name: policies_count

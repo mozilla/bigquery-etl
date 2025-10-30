@@ -4,6 +4,8 @@ WITH daily_users AS (
     client_id,
     sample_id,
     normalized_channel,
+    app_version,
+    is_desktop,
     is_dau,
   FROM
     `moz-fx-data-shared-prod.telemetry.desktop_active_users`
@@ -46,8 +48,10 @@ SELECT
   client_id,
   sample_id,
   normalized_channel,
-  is_dau,
+  app_version,
   distribution_id,
+  is_dau,
+  is_desktop,
   policies_count,
   policies_is_enterprise,
 FROM

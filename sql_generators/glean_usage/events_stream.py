@@ -211,9 +211,9 @@ def get_glean_app_event_extras_by_type(
             dependency_v1_name, ping, cutoff_date
         )
         for (
-            depencency_extra_type,
-            depencency_extras,
+            dependency_extra_type,
+            dependency_extras,
         ) in dependency_extras_by_type.items():
-            extras_by_type[depencency_extra_type].update(depencency_extras)
+            extras_by_type[dependency_extra_type].update(dependency_extras)
 
     return extras_by_type

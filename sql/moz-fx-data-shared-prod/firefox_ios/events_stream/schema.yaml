@@ -270,3 +270,337 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: agreed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: changed_to
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: did_confirm
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: etp_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: granted
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_share_message
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_enrolled_in_sent_from_firefox
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_homepage
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_opted_in_sent_from_firefox
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_private
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_private_mode
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_toolbar
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: outcome
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: average_tabs_in_all_groups
+      type: INTEGER
+      mode: NULLABLE
+    - name: consecutive_crash
+      type: INTEGER
+      mode: NULLABLE
+    - name: groups_two_tabs_only
+      type: INTEGER
+      mode: NULLABLE
+    - name: groups_with_more_than_two_tab
+      type: INTEGER
+      mode: NULLABLE
+    - name: index
+      type: INTEGER
+      mode: NULLABLE
+    - name: length_chars
+      type: INTEGER
+      mode: NULLABLE
+    - name: length_words
+      type: INTEGER
+      mode: NULLABLE
+    - name: level
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_chars
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_results
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_words
+      type: INTEGER
+      mode: NULLABLE
+    - name: position
+      type: INTEGER
+      mode: NULLABLE
+    - name: selected_tab_index
+      type: INTEGER
+      mode: NULLABLE
+    - name: size
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_num_of_groups
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_tabs_in_all_groups
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: action
+      type: STRING
+      mode: NULLABLE
+    - name: action_uuid
+      type: STRING
+      mode: NULLABLE
+    - name: activity_identifier
+      type: STRING
+      mode: NULLABLE
+    - name: alert_setting
+      type: STRING
+      mode: NULLABLE
+    - name: bookmark_count
+      type: STRING
+      mode: NULLABLE
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: button_action
+      type: STRING
+      mode: NULLABLE
+    - name: card_type
+      type: STRING
+      mode: NULLABLE
+    - name: changed_from
+      type: STRING
+      mode: NULLABLE
+    - name: changed_to
+      type: STRING
+      mode: NULLABLE
+    - name: conflict_slug
+      type: STRING
+      mode: NULLABLE
+    - name: connection_type
+      type: STRING
+      mode: NULLABLE
+    - name: disabled_engines
+      type: STRING
+      mode: NULLABLE
+    - name: enabled_engines
+      type: STRING
+      mode: NULLABLE
+    - name: engagement_type
+      type: STRING
+      mode: NULLABLE
+    - name: enrollment_id
+      type: STRING
+      mode: NULLABLE
+    - name: error_code
+      type: STRING
+      mode: NULLABLE
+    - name: error_string
+      type: STRING
+      mode: NULLABLE
+    - name: error_type
+      type: STRING
+      mode: NULLABLE
+    - name: etp_setting
+      type: STRING
+      mode: NULLABLE
+    - name: experiment
+      type: STRING
+      mode: NULLABLE
+    - name: experiment_type
+      type: STRING
+      mode: NULLABLE
+    - name: feature_id
+      type: STRING
+      mode: NULLABLE
+    - name: flow_type
+      type: STRING
+      mode: NULLABLE
+    - name: groups
+      type: STRING
+      mode: NULLABLE
+    - name: hint_type
+      type: STRING
+      mode: NULLABLE
+    - name: interaction
+      type: STRING
+      mode: NULLABLE
+    - name: is_accessibility_size_enabled
+      type: STRING
+      mode: NULLABLE
+    - name: is_enabled
+      type: STRING
+      mode: NULLABLE
+    - name: is_private
+      type: STRING
+      mode: NULLABLE
+    - name: is_running
+      type: STRING
+      mode: NULLABLE
+    - name: location
+      type: STRING
+      mode: NULLABLE
+    - name: media_type
+      type: STRING
+      mode: NULLABLE
+    - name: message_key
+      type: STRING
+      mode: NULLABLE
+    - name: message_surface
+      type: STRING
+      mode: NULLABLE
+    - name: mode
+      type: STRING
+      mode: NULLABLE
+    - name: model
+      type: STRING
+      mode: NULLABLE
+    - name: new_name
+      type: STRING
+      mode: NULLABLE
+    - name: old_name
+      type: STRING
+      mode: NULLABLE
+    - name: option
+      type: STRING
+      mode: NULLABLE
+    - name: origin
+      type: STRING
+      mode: NULLABLE
+    - name: part_id
+      type: STRING
+      mode: NULLABLE
+    - name: period
+      type: STRING
+      mode: NULLABLE
+    - name: position
+      type: STRING
+      mode: NULLABLE
+    - name: preference
+      type: STRING
+      mode: NULLABLE
+    - name: preferred_size
+      type: STRING
+      mode: NULLABLE
+    - name: provider
+      type: STRING
+      mode: NULLABLE
+    - name: reading_list_count
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: received_url
+      type: STRING
+      mode: NULLABLE
+    - name: results
+      type: STRING
+      mode: NULLABLE
+    - name: sap
+      type: STRING
+      mode: NULLABLE
+    - name: search_mode
+      type: STRING
+      mode: NULLABLE
+    - name: section
+      type: STRING
+      mode: NULLABLE
+    - name: selected_result
+      type: STRING
+      mode: NULLABLE
+    - name: selected_result_subtype
+      type: STRING
+      mode: NULLABLE
+    - name: sequence_id
+      type: STRING
+      mode: NULLABLE
+    - name: sequence_position
+      type: STRING
+      mode: NULLABLE
+    - name: setting
+      type: STRING
+      mode: NULLABLE
+    - name: share_type
+      type: STRING
+      mode: NULLABLE
+    - name: size
+      type: STRING
+      mode: NULLABLE
+    - name: slug
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: status
+      type: STRING
+      mode: NULLABLE
+    - name: surface
+      type: STRING
+      mode: NULLABLE
+    - name: survey_id
+      type: STRING
+      mode: NULLABLE
+    - name: tile_type
+      type: STRING
+      mode: NULLABLE
+    - name: timeframe
+      type: STRING
+      mode: NULLABLE
+    - name: toggle_type
+      type: STRING
+      mode: NULLABLE
+    - name: tou_version
+      type: STRING
+      mode: NULLABLE
+    - name: trigger
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: user_selection
+      type: STRING
+      mode: NULLABLE
+    - name: wallpaper_name
+      type: STRING
+      mode: NULLABLE
+    - name: wallpaper_type
+      type: STRING
+      mode: NULLABLE

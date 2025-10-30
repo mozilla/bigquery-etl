@@ -267,3 +267,29 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: label
+      type: STRING
+      mode: NULLABLE
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+    - name: title
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: url
+      type: STRING
+      mode: NULLABLE

@@ -270,3 +270,1354 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: after_reset
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: alt_text_modal
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: auto_show
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: auto_translate
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: blocked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: breached
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: cache
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: cancelled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: confident
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: cookies_and_storage
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: description_changed
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: did_edit_pw
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: did_edit_un
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: did_select_pw
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: did_select_un
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: filled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: first_interaction
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: form_data
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: had_errors
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_been_saved
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_click_rule
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_cookie_rule
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_description
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_edited_title
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_rtcp_mux
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_sts
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: hidden
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: history_and_downloads
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: history_form_data_downloads
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: hit
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: hls_decoder
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: hyphen_compat
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_default
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_frame
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_hardware_accelerated
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_hardware_decoding
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_hdr
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_lang_attribute_valid
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_remote_ice_lite
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_search
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_valid_section
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: isBlock
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: isDecryptSuccess
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: issued_by_cca
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: lang_tags_match
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: no_rule
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: open_successful
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: package_name
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: poisoned
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: reset_disabled
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: save_successful
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: saved
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: site_settings
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: smartblockEmbedTogglesShown
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: smartblockToggleClicked
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: status
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: submit_report
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: success
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: sync
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: toggle_state
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: toggled_on
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: triggered_externally
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: vulnerable
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: attemptCount
+      type: INTEGER
+      mode: NULLABLE
+    - name: average_words_per_request
+      type: INTEGER
+      mode: NULLABLE
+    - name: average_words_per_second
+      type: INTEGER
+      mode: NULLABLE
+    - name: bounce_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: buffering_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: cc_number_multi_parts
+      type: INTEGER
+      mode: NULLABLE
+    - name: channel_status
+      type: INTEGER
+      mode: NULLABLE
+    - name: columnnumber
+      type: INTEGER
+      mode: NULLABLE
+    - name: comments_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: cores
+      type: INTEGER
+      mode: NULLABLE
+    - name: cpu_milliseconds
+      type: INTEGER
+      mode: NULLABLE
+    - name: cpu_utilization
+      type: INTEGER
+      mode: NULLABLE
+    - name: current_engines_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: current_item
+      type: INTEGER
+      mode: NULLABLE
+    - name: deleted
+      type: INTEGER
+      mode: NULLABLE
+    - name: download_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: duration
+      type: INTEGER
+      mode: NULLABLE
+    - name: duration_ms
+      type: INTEGER
+      mode: NULLABLE
+    - name: edited
+      type: INTEGER
+      mode: NULLABLE
+    - name: engine_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: error_code
+      type: INTEGER
+      mode: NULLABLE
+    - name: extracted_code_units
+      type: INTEGER
+      mode: NULLABLE
+    - name: extraction_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: first_frame_loaded_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: has_alt_text
+      type: INTEGER
+      mode: NULLABLE
+    - name: has_no_alt_text
+      type: INTEGER
+      mode: NULLABLE
+    - name: identification_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: iframe_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: items_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: items_over_quota
+      type: INTEGER
+      mode: NULLABLE
+    - name: last_install
+      type: INTEGER
+      mode: NULLABLE
+    - name: last_line_len
+      type: INTEGER
+      mode: NULLABLE
+    - name: last_used
+      type: INTEGER
+      mode: NULLABLE
+    - name: length
+      type: INTEGER
+      mode: NULLABLE
+    - name: linenumber
+      type: INTEGER
+      mode: NULLABLE
+    - name: list_size
+      type: INTEGER
+      mode: NULLABLE
+    - name: memory_bytes
+      type: INTEGER
+      mode: NULLABLE
+    - name: metadata_loaded_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: mode
+      type: INTEGER
+      mode: NULLABLE
+    - name: models
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_tab_deselect
+      type: INTEGER
+      mode: NULLABLE
+    - name: negotiation_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_audio_recvonly
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_audio_sendonly
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_audio_sendrecv
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_data
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_video_recvonly
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_video_sendonly
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_msections_video_sendrecv
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_send_simulcast_layers
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_strings
+      type: INTEGER
+      mode: NULLABLE
+    - name: num_transports
+      type: INTEGER
+      mode: NULLABLE
+    - name: number_of_logins_migrated
+      type: INTEGER
+      mode: NULLABLE
+    - name: number_of_logins_to_migrate
+      type: INTEGER
+      mode: NULLABLE
+    - name: opened_tabs
+      type: INTEGER
+      mode: NULLABLE
+    - name: pc_negotiation_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: played_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: saved_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: seq
+      type: INTEGER
+      mode: NULLABLE
+    - name: size
+      type: INTEGER
+      mode: NULLABLE
+    - name: source_line
+      type: INTEGER
+      mode: NULLABLE
+    - name: source_text_code_units
+      type: INTEGER
+      mode: NULLABLE
+    - name: source_text_word_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: time
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_completed_requests
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_inference_seconds
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_size_bytes
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_translated_words
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_waiting_data_time
+      type: INTEGER
+      mode: NULLABLE
+    - name: total_words
+      type: INTEGER
+      mode: NULLABLE
+    - name: value
+      type: INTEGER
+      mode: NULLABLE
+    - name: wait_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: wall_milliseconds
+      type: INTEGER
+      mode: NULLABLE
+    - name: when
+      type: INTEGER
+      mode: NULLABLE
+    - name: words_added
+      type: INTEGER
+      mode: NULLABLE
+    - name: words_removed
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: acFieldName
+      type: STRING
+      mode: NULLABLE
+    - name: action
+      type: STRING
+      mode: NULLABLE
+    - name: action_performed
+      type: STRING
+      mode: NULLABLE
+    - name: action_uuid
+      type: STRING
+      mode: NULLABLE
+    - name: active
+      type: STRING
+      mode: NULLABLE
+    - name: additional_name
+      type: STRING
+      mode: NULLABLE
+    - name: addon_id
+      type: STRING
+      mode: NULLABLE
+    - name: addon_type
+      type: STRING
+      mode: NULLABLE
+    - name: addon_version
+      type: STRING
+      mode: NULLABLE
+    - name: addonId
+      type: STRING
+      mode: NULLABLE
+    - name: addonVersion
+      type: STRING
+      mode: NULLABLE
+    - name: address_level1
+      type: STRING
+      mode: NULLABLE
+    - name: address_level2
+      type: STRING
+      mode: NULLABLE
+    - name: address_line1
+      type: STRING
+      mode: NULLABLE
+    - name: address_line2
+      type: STRING
+      mode: NULLABLE
+    - name: address_line3
+      type: STRING
+      mode: NULLABLE
+    - name: age
+      type: STRING
+      mode: NULLABLE
+    - name: alt_text_type
+      type: STRING
+      mode: NULLABLE
+    - name: auto_admin
+      type: STRING
+      mode: NULLABLE
+    - name: backend
+      type: STRING
+      mode: NULLABLE
+    - name: blockeduridetails
+      type: STRING
+      mode: NULLABLE
+    - name: blockeduritype
+      type: STRING
+      mode: NULLABLE
+    - name: blocklist_state
+      type: STRING
+      mode: NULLABLE
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: branches
+      type: STRING
+      mode: NULLABLE
+    - name: bundle_policy
+      type: STRING
+      mode: NULLABLE
+    - name: caller
+      type: STRING
+      mode: NULLABLE
+    - name: canaries
+      type: STRING
+      mode: NULLABLE
+    - name: cancel_reason
+      type: STRING
+      mode: NULLABLE
+    - name: captivePortal
+      type: STRING
+      mode: NULLABLE
+    - name: captiveState
+      type: STRING
+      mode: NULLABLE
+    - name: category
+      type: STRING
+      mode: NULLABLE
+    - name: caught_exceptio
+      type: STRING
+      mode: NULLABLE
+    - name: cc_exp
+      type: STRING
+      mode: NULLABLE
+    - name: cc_exp_month
+      type: STRING
+      mode: NULLABLE
+    - name: cc_exp_year
+      type: STRING
+      mode: NULLABLE
+    - name: cc_name
+      type: STRING
+      mode: NULLABLE
+    - name: cc_number
+      type: STRING
+      mode: NULLABLE
+    - name: cc_type
+      type: STRING
+      mode: NULLABLE
+    - name: changedPref
+      type: STRING
+      mode: NULLABLE
+    - name: choice
+      type: STRING
+      mode: NULLABLE
+    - name: codecs
+      type: STRING
+      mode: NULLABLE
+    - name: cold
+      type: STRING
+      mode: NULLABLE
+    - name: conflict_slug
+      type: STRING
+      mode: NULLABLE
+    - name: conflictingSlug
+      type: STRING
+      mode: NULLABLE
+    - name: connection_id
+      type: STRING
+      mode: NULLABLE
+    - name: connection_type
+      type: STRING
+      mode: NULLABLE
+    - name: contenttype
+      type: STRING
+      mode: NULLABLE
+    - name: context
+      type: STRING
+      mode: NULLABLE
+    - name: contextReason
+      type: STRING
+      mode: NULLABLE
+    - name: cookie_banner_setting
+      type: STRING
+      mode: NULLABLE
+    - name: country
+      type: STRING
+      mode: NULLABLE
+    - name: cross_origin
+      type: STRING
+      mode: NULLABLE
+    - name: data_migrated
+      type: STRING
+      mode: NULLABLE
+    - name: decoder_name
+      type: STRING
+      mode: NULLABLE
+    - name: deletedBy
+      type: STRING
+      mode: NULLABLE
+    - name: destroyed
+      type: STRING
+      mode: NULLABLE
+    - name: detail
+      type: STRING
+      mode: NULLABLE
+    - name: detected_language
+      type: STRING
+      mode: NULLABLE
+    - name: device_name
+      type: STRING
+      mode: NULLABLE
+    - name: didResetValue
+      type: STRING
+      mode: NULLABLE
+    - name: direction
+      type: STRING
+      mode: NULLABLE
+    - name: directive
+      type: STRING
+      mode: NULLABLE
+    - name: document_language
+      type: STRING
+      mode: NULLABLE
+    - name: domain
+      type: STRING
+      mode: NULLABLE
+    - name: download_time
+      type: STRING
+      mode: NULLABLE
+    - name: duration
+      type: STRING
+      mode: NULLABLE
+    - name: email
+      type: STRING
+      mode: NULLABLE
+    - name: end_reason
+      type: STRING
+      mode: NULLABLE
+    - name: engine_id
+      type: STRING
+      mode: NULLABLE
+    - name: engine_name
+      type: STRING
+      mode: NULLABLE
+    - name: engine_type
+      type: STRING
+      mode: NULLABLE
+    - name: engineId
+      type: STRING
+      mode: NULLABLE
+    - name: enrollment_id
+      type: STRING
+      mode: NULLABLE
+    - name: enrollmentId
+      type: STRING
+      mode: NULLABLE
+    - name: enterprise
+      type: STRING
+      mode: NULLABLE
+    - name: entry_point
+      type: STRING
+      mode: NULLABLE
+    - name: entrypoint
+      type: STRING
+      mode: NULLABLE
+    - name: error
+      type: STRING
+      mode: NULLABLE
+    - name: error_code
+      type: STRING
+      mode: NULLABLE
+    - name: error_message
+      type: STRING
+      mode: NULLABLE
+    - name: error_name
+      type: STRING
+      mode: NULLABLE
+    - name: error_string
+      type: STRING
+      mode: NULLABLE
+    - name: error_type
+      type: STRING
+      mode: NULLABLE
+    - name: errorName
+      type: STRING
+      mode: NULLABLE
+    - name: errorResult
+      type: STRING
+      mode: NULLABLE
+    - name: evaluateReason
+      type: STRING
+      mode: NULLABLE
+    - name: exceptions
+      type: STRING
+      mode: NULLABLE
+    - name: experiment
+      type: STRING
+      mode: NULLABLE
+    - name: experiment_type
+      type: STRING
+      mode: NULLABLE
+    - name: experimentType
+      type: STRING
+      mode: NULLABLE
+    - name: extension_ids
+      type: STRING
+      mode: NULLABLE
+    - name: failedLookups
+      type: STRING
+      mode: NULLABLE
+    - name: family_name
+      type: STRING
+      mode: NULLABLE
+    - name: fathom_infer_label
+      type: STRING
+      mode: NULLABLE
+    - name: fathom_infer_score
+      type: STRING
+      mode: NULLABLE
+    - name: feature
+      type: STRING
+      mode: NULLABLE
+    - name: feature_id
+      type: STRING
+      mode: NULLABLE
+    - name: feature_ids
+      type: STRING
+      mode: NULLABLE
+    - name: featureId
+      type: STRING
+      mode: NULLABLE
+    - name: field_name
+      type: STRING
+      mode: NULLABLE
+    - name: fieldType
+      type: STRING
+      mode: NULLABLE
+    - name: file_extension
+      type: STRING
+      mode: NULLABLE
+    - name: file_name
+      type: STRING
+      mode: NULLABLE
+    - name: filedetails
+      type: STRING
+      mode: NULLABLE
+    - name: fileinfo
+      type: STRING
+      mode: NULLABLE
+    - name: filename
+      type: STRING
+      mode: NULLABLE
+    - name: filter
+      type: STRING
+      mode: NULLABLE
+    - name: filtering
+      type: STRING
+      mode: NULLABLE
+    - name: first_panel
+      type: STRING
+      mode: NULLABLE
+    - name: flow
+      type: STRING
+      mode: NULLABLE
+    - name: flow_id
+      type: STRING
+      mode: NULLABLE
+    - name: frame_id
+      type: STRING
+      mode: NULLABLE
+    - name: from_language
+      type: STRING
+      mode: NULLABLE
+    - name: function
+      type: STRING
+      mode: NULLABLE
+    - name: functionality
+      type: STRING
+      mode: NULLABLE
+    - name: fxa_avatar
+      type: STRING
+      mode: NULLABLE
+    - name: fxa_status
+      type: STRING
+      mode: NULLABLE
+    - name: fxa_sync_on
+      type: STRING
+      mode: NULLABLE
+    - name: generatedPasswo
+      type: STRING
+      mode: NULLABLE
+    - name: given_name
+      type: STRING
+      mode: NULLABLE
+    - name: hadPrevious
+      type: STRING
+      mode: NULLABLE
+    - name: hang_duration
+      type: STRING
+      mode: NULLABLE
+    - name: has_jsonfile
+      type: STRING
+      mode: NULLABLE
+    - name: has_olddata
+      type: STRING
+      mode: NULLABLE
+    - name: hashed_addon_id
+      type: STRING
+      mode: NULLABLE
+    - name: host
+      type: STRING
+      mode: NULLABLE
+    - name: hours_since
+      type: STRING
+      mode: NULLABLE
+    - name: html_lang_attribute
+      type: STRING
+      mode: NULLABLE
+    - name: ice_transport_policy
+      type: STRING
+      mode: NULLABLE
+    - name: identified_language
+      type: STRING
+      mode: NULLABLE
+    - name: iframe
+      type: STRING
+      mode: NULLABLE
+    - name: image_type
+      type: STRING
+      mode: NULLABLE
+    - name: importableLogin
+      type: STRING
+      mode: NULLABLE
+    - name: inactive
+      type: STRING
+      mode: NULLABLE
+    - name: infer_field_name
+      type: STRING
+      mode: NULLABLE
+    - name: infer_reason
+      type: STRING
+      mode: NULLABLE
+    - name: input
+      type: STRING
+      mode: NULLABLE
+    - name: input_type
+      type: STRING
+      mode: NULLABLE
+    - name: insecureWarning
+      type: STRING
+      mode: NULLABLE
+    - name: install_id
+      type: STRING
+      mode: NULLABLE
+    - name: install_origins
+      type: STRING
+      mode: NULLABLE
+    - name: is_enabled
+      type: STRING
+      mode: NULLABLE
+    - name: issue
+      type: STRING
+      mode: NULLABLE
+    - name: item
+      type: STRING
+      mode: NULLABLE
+    - name: item_name
+      type: STRING
+      mode: NULLABLE
+    - name: key_system
+      type: STRING
+      mode: NULLABLE
+    - name: l10n_ids
+      type: STRING
+      mode: NULLABLE
+    - name: label
+      type: STRING
+      mode: NULLABLE
+    - name: language
+      type: STRING
+      mode: NULLABLE
+    - name: last_line
+      type: STRING
+      mode: NULLABLE
+    - name: lib_stacks
+      type: STRING
+      mode: NULLABLE
+    - name: lines
+      type: STRING
+      mode: NULLABLE
+    - name: locale
+      type: STRING
+      mode: NULLABLE
+    - name: location
+      type: STRING
+      mode: NULLABLE
+    - name: login
+      type: STRING
+      mode: NULLABLE
+    - name: loginsFooter
+      type: STRING
+      mode: NULLABLE
+    - name: made_changes
+      type: STRING
+      mode: NULLABLE
+    - name: main_frame
+      type: STRING
+      mode: NULLABLE
+    - name: media_extension
+      type: STRING
+      mode: NULLABLE
+    - name: message
+      type: STRING
+      mode: NULLABLE
+    - name: message_count
+      type: STRING
+      mode: NULLABLE
+    - name: message_key
+      type: STRING
+      mode: NULLABLE
+    - name: method
+      type: STRING
+      mode: NULLABLE
+    - name: mime_type
+      type: STRING
+      mode: NULLABLE
+    - name: ml_infer_label
+      type: STRING
+      mode: NULLABLE
+    - name: ml_infer_score
+      type: STRING
+      mode: NULLABLE
+    - name: ml_revision
+      type: STRING
+      mode: NULLABLE
+    - name: mlbf_generation
+      type: STRING
+      mode: NULLABLE
+    - name: mlbf_last_time
+      type: STRING
+      mode: NULLABLE
+    - name: mlbf_softblocks_generation
+      type: STRING
+      mode: NULLABLE
+    - name: mlbf_softblocks_source
+      type: STRING
+      mode: NULLABLE
+    - name: mlbf_source
+      type: STRING
+      mode: NULLABLE
+    - name: mode
+      type: STRING
+      mode: NULLABLE
+    - name: model
+      type: STRING
+      mode: NULLABLE
+    - name: model_id
+      type: STRING
+      mode: NULLABLE
+    - name: modelDownloadId
+      type: STRING
+      mode: NULLABLE
+    - name: modelId
+      type: STRING
+      mode: NULLABLE
+    - name: modelRevision
+      type: STRING
+      mode: NULLABLE
+    - name: name
+      type: STRING
+      mode: NULLABLE
+    - name: networkID
+      type: STRING
+      mode: NULLABLE
+    - name: networkUnstable
+      type: STRING
+      mode: NULLABLE
+    - name: newpanel
+      type: STRING
+      mode: NULLABLE
+    - name: next_panel
+      type: STRING
+      mode: NULLABLE
+    - name: num_strings
+      type: STRING
+      mode: NULLABLE
+    - name: object
+      type: STRING
+      mode: NULLABLE
+    - name: oldpanel
+      type: STRING
+      mode: NULLABLE
+    - name: open_type
+      type: STRING
+      mode: NULLABLE
+    - name: opened_from
+      type: STRING
+      mode: NULLABLE
+    - name: openingReason
+      type: STRING
+      mode: NULLABLE
+    - name: operation
+      type: STRING
+      mode: NULLABLE
+    - name: option_clicked
+      type: STRING
+      mode: NULLABLE
+    - name: organization
+      type: STRING
+      mode: NULLABLE
+    - name: originalReason
+      type: STRING
+      mode: NULLABLE
+    - name: os
+      type: STRING
+      mode: NULLABLE
+    - name: page_type
+      type: STRING
+      mode: NULLABLE
+    - name: panel_name
+      type: STRING
+      mode: NULLABLE
+    - name: part_id
+      type: STRING
+      mode: NULLABLE
+    - name: pc_id
+      type: STRING
+      mode: NULLABLE
+    - name: platform
+      type: STRING
+      mode: NULLABLE
+    - name: playback_type
+      type: STRING
+      mode: NULLABLE
+    - name: postal_code
+      type: STRING
+      mode: NULLABLE
+    - name: prefBranch
+      type: STRING
+      mode: NULLABLE
+    - name: preference
+      type: STRING
+      mode: NULLABLE
+    - name: preferenceName
+      type: STRING
+      mode: NULLABLE
+    - name: preferred_recv_codec
+      type: STRING
+      mode: NULLABLE
+    - name: preferred_send_codec
+      type: STRING
+      mode: NULLABLE
+    - name: prefName
+      type: STRING
+      mode: NULLABLE
+    - name: prefType
+      type: STRING
+      mode: NULLABLE
+    - name: previous_language
+      type: STRING
+      mode: NULLABLE
+    - name: previousState
+      type: STRING
+      mode: NULLABLE
+    - name: principal_type
+      type: STRING
+      mode: NULLABLE
+    - name: principalType
+      type: STRING
+      mode: NULLABLE
+    - name: process_id
+      type: STRING
+      mode: NULLABLE
+    - name: profile_state
+      type: STRING
+      mode: NULLABLE
+    - name: prompt_enabled
+      type: STRING
+      mode: NULLABLE
+    - name: provider_key
+      type: STRING
+      mode: NULLABLE
+    - name: reader_time
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: redirects
+      type: STRING
+      mode: NULLABLE
+    - name: region
+      type: STRING
+      mode: NULLABLE
+    - name: remotetype
+      type: STRING
+      mode: NULLABLE
+    - name: request_target
+      type: STRING
+      mode: NULLABLE
+    - name: require_signon
+      type: STRING
+      mode: NULLABLE
+    - name: reset_error_name
+      type: STRING
+      mode: NULLABLE
+    - name: resolution
+      type: STRING
+      mode: NULLABLE
+    - name: result
+      type: STRING
+      mode: NULLABLE
+    - name: results
+      type: STRING
+      mode: NULLABLE
+    - name: retryCount
+      type: STRING
+      mode: NULLABLE
+    - name: run_id
+      type: STRING
+      mode: NULLABLE
+    - name: runtime_id
+      type: STRING
+      mode: NULLABLE
+    - name: runtime_name
+      type: STRING
+      mode: NULLABLE
+    - name: runtime_os
+      type: STRING
+      mode: NULLABLE
+    - name: runtime_type
+      type: STRING
+      mode: NULLABLE
+    - name: runtime_version
+      type: STRING
+      mode: NULLABLE
+    - name: sample
+      type: STRING
+      mode: NULLABLE
+    - name: sandboxed
+      type: STRING
+      mode: NULLABLE
+    - name: scenario
+      type: STRING
+      mode: NULLABLE
+    - name: scheme
+      type: STRING
+      mode: NULLABLE
+    - name: scroll_position
+      type: STRING
+      mode: NULLABLE
+    - name: search_domain
+      type: STRING
+      mode: NULLABLE
+    - name: selfdetails
+      type: STRING
+      mode: NULLABLE
+    - name: selftype
+      type: STRING
+      mode: NULLABLE
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+    - name: setting
+      type: STRING
+      mode: NULLABLE
+    - name: severity
+      type: STRING
+      mode: NULLABLE
+    - name: shortcut
+      type: STRING
+      mode: NULLABLE
+    - name: signature
+      type: STRING
+      mode: NULLABLE
+    - name: signed_date
+      type: STRING
+      mode: NULLABLE
+    - name: site_host
+      type: STRING
+      mode: NULLABLE
+    - name: skip_reason
+      type: STRING
+      mode: NULLABLE
+    - name: slug
+      type: STRING
+      mode: NULLABLE
+    - name: sort_key
+      type: STRING
+      mode: NULLABLE
+    - name: source
+      type: STRING
+      mode: NULLABLE
+    - name: source_file
+      type: STRING
+      mode: NULLABLE
+    - name: source_method
+      type: STRING
+      mode: NULLABLE
+    - name: source_of_change
+      type: STRING
+      mode: NULLABLE
+    - name: sourcedetails
+      type: STRING
+      mode: NULLABLE
+    - name: sourcetype
+      type: STRING
+      mode: NULLABLE
+    - name: splitconsole
+      type: STRING
+      mode: NULLABLE
+    - name: stack_id
+      type: STRING
+      mode: NULLABLE
+    - name: start_state
+      type: STRING
+      mode: NULLABLE
+    - name: status
+      type: STRING
+      mode: NULLABLE
+    - name: steeredProvider
+      type: STRING
+      mode: NULLABLE
+    - name: step
+      type: STRING
+      mode: NULLABLE
+    - name: street_address
+      type: STRING
+      mode: NULLABLE
+    - name: stringLength
+      type: STRING
+      mode: NULLABLE
+    - name: subcategory
+      type: STRING
+      mode: NULLABLE
+    - name: survey_id
+      type: STRING
+      mode: NULLABLE
+    - name: suspicious_site
+      type: STRING
+      mode: NULLABLE
+    - name: taar_based
+      type: STRING
+      mode: NULLABLE
+    - name: tab_pos
+      type: STRING
+      mode: NULLABLE
+    - name: table_name
+      type: STRING
+      mode: NULLABLE
+    - name: target_type
+      type: STRING
+      mode: NULLABLE
+    - name: taskName
+      type: STRING
+      mode: NULLABLE
+    - name: tel
+      type: STRING
+      mode: NULLABLE
+    - name: text_source
+      type: STRING
+      mode: NULLABLE
+    - name: time
+      type: STRING
+      mode: NULLABLE
+    - name: time_open
+      type: STRING
+      mode: NULLABLE
+    - name: time_span
+      type: STRING
+      mode: NULLABLE
+    - name: timestamp
+      type: STRING
+      mode: NULLABLE
+    - name: tip_id
+      type: STRING
+      mode: NULLABLE
+    - name: to_language
+      type: STRING
+      mode: NULLABLE
+    - name: top_preferred_language
+      type: STRING
+      mode: NULLABLE
+    - name: topic
+      type: STRING
+      mode: NULLABLE
+    - name: tracker_changed
+      type: STRING
+      mode: NULLABLE
+    - name: trigger
+      type: STRING
+      mode: NULLABLE
+    - name: trr
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: typeWasPassword
+      type: STRING
+      mode: NULLABLE
+    - name: updated_from
+      type: STRING
+      mode: NULLABLE
+    - name: uptime
+      type: STRING
+      mode: NULLABLE
+    - name: uri_type
+      type: STRING
+      mode: NULLABLE
+    - name: user_selection
+      type: STRING
+      mode: NULLABLE
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+    - name: value
+      type: STRING
+      mode: NULLABLE
+    - name: variant_shown
+      type: STRING
+      mode: NULLABLE
+    - name: version
+      type: STRING
+      mode: NULLABLE
+    - name: video_codec
+      type: STRING
+      mode: NULLABLE
+    - name: view_name
+      type: STRING
+      mode: NULLABLE
+    - name: width
+      type: STRING
+      mode: NULLABLE

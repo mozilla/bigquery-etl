@@ -267,3 +267,130 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: legacy_user
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: breach_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: broker_count
+      type: INTEGER
+      mode: NULLABLE
+    - name: legacy_breach_count
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: automated_removal_period
+      type: STRING
+      mode: NULLABLE
+    - name: banner_id
+      type: STRING
+      mode: NULLABLE
+    - name: button_id
+      type: STRING
+      mode: NULLABLE
+    - name: dashboard_tab
+      type: STRING
+      mode: NULLABLE
+    - name: experiment_branch
+      type: STRING
+      mode: NULLABLE
+    - name: field_id
+      type: STRING
+      mode: NULLABLE
+    - name: flow_id
+      type: STRING
+      mode: NULLABLE
+    - name: id
+      type: STRING
+      mode: NULLABLE
+    - name: label
+      type: STRING
+      mode: NULLABLE
+    - name: last_scan_date
+      type: STRING
+      mode: NULLABLE
+    - name: link_id
+      type: STRING
+      mode: NULLABLE
+    - name: nimbus_app_id
+      type: STRING
+      mode: NULLABLE
+    - name: nimbus_branch
+      type: STRING
+      mode: NULLABLE
+    - name: nimbus_experiment
+      type: STRING
+      mode: NULLABLE
+    - name: nimbus_experiment_type
+      type: STRING
+      mode: NULLABLE
+    - name: nimbus_is_preview
+      type: STRING
+      mode: NULLABLE
+    - name: nimbus_user_id
+      type: STRING
+      mode: NULLABLE
+    - name: path
+      type: STRING
+      mode: NULLABLE
+    - name: plan_tier
+      type: STRING
+      mode: NULLABLE
+    - name: popup_id
+      type: STRING
+      mode: NULLABLE
+    - name: referrer
+      type: STRING
+      mode: NULLABLE
+    - name: response_id
+      type: STRING
+      mode: NULLABLE
+    - name: session_id
+      type: STRING
+      mode: NULLABLE
+    - name: survey_id
+      type: STRING
+      mode: NULLABLE
+    - name: title
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE
+    - name: url
+      type: STRING
+      mode: NULLABLE
+    - name: user_id
+      type: STRING
+      mode: NULLABLE
+    - name: utm_campaign
+      type: STRING
+      mode: NULLABLE
+    - name: utm_content
+      type: STRING
+      mode: NULLABLE
+    - name: utm_medium
+      type: STRING
+      mode: NULLABLE
+    - name: utm_source
+      type: STRING
+      mode: NULLABLE
+    - name: utm_term
+      type: STRING
+      mode: NULLABLE

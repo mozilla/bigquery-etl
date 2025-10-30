@@ -9,8 +9,8 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.mozillavpn.events_stream
-  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn.events_stream
-  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn.events_stream
-  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension.events_stream
+  - moz-fx-data-shared-prod.mozillavpn_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_firefox_vpn_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_ios_firefoxvpn_network_extension_derived.events_stream_v1
 require_column_descriptions: false

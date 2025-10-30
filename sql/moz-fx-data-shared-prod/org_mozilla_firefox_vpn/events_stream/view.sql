@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.org_mozilla_firefox_vpn.events_stream`
 AS
 SELECT
-  *
+  *,
 FROM
   `moz-fx-data-shared-prod.org_mozilla_firefox_vpn_derived.events_stream_v1`

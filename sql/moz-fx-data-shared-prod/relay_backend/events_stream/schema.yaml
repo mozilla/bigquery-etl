@@ -267,3 +267,73 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: created_by_api
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_extension
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: has_website
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_random_mask
+      type: BOOLEAN
+      mode: NULLABLE
+    - name: is_reply
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: date_got_extension
+      type: INTEGER
+      mode: NULLABLE
+    - name: date_joined_premium
+      type: INTEGER
+      mode: NULLABLE
+    - name: date_joined_relay
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_deleted_domain_masks
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_deleted_random_masks
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_domain_masks
+      type: INTEGER
+      mode: NULLABLE
+    - name: n_random_masks
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: endpoint
+      type: STRING
+      mode: NULLABLE
+    - name: fxa_id
+      type: STRING
+      mode: NULLABLE
+    - name: method
+      type: STRING
+      mode: NULLABLE
+    - name: platform
+      type: STRING
+      mode: NULLABLE
+    - name: premium_status
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE

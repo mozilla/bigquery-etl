@@ -361,3 +361,30 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: linking
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: error_code
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: scopes
+      type: STRING
+      mode: NULLABLE
+    - name: type
+      type: STRING
+      mode: NULLABLE

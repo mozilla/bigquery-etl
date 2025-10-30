@@ -267,3 +267,14 @@ fields:
 - name: event_extra
   type: JSON
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: nimbus_user_id
+      type: STRING
+      mode: NULLABLE

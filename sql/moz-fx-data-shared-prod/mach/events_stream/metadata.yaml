@@ -9,5 +9,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.mozilla_mach.events_stream
+  - moz-fx-data-shared-prod.mozilla_mach_derived.events_stream_v1
 require_column_descriptions: false

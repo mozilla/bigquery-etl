@@ -2,8 +2,14 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mach.events_stream`
 AS
+WITH events_stream_union AS (
+  SELECT
+    "mozilla_mach" AS normalized_app_id,
+    e.*
+  FROM
+    `moz-fx-data-shared-prod.mozilla_mach_derived.events_stream_v1` AS e
+)
 SELECT
-  "mozilla_mach" AS normalized_app_id,
-  e.*
+  *,
 FROM
-  `moz-fx-data-shared-prod.mozilla_mach.events_stream` AS e
+  events_stream_union

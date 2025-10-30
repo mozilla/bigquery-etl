@@ -3,6 +3,6 @@ CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.mozilla_mach.events_stream`
 AS
 SELECT
-  *
+  *,
 FROM
   `moz-fx-data-shared-prod.mozilla_mach_derived.events_stream_v1`

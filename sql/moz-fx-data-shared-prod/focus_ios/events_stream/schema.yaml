@@ -270,3 +270,70 @@ fields:
 - name: is_bot_generated
   type: BOOLEAN
   mode: NULLABLE
+- name: extras
+  type: RECORD
+  mode: NULLABLE
+  fields:
+  - name: boolean
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: is_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+  - name: quantity
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: current_item
+      type: INTEGER
+      mode: NULLABLE
+  - name: string
+    type: RECORD
+    mode: NULLABLE
+    fields:
+    - name: branch
+      type: STRING
+      mode: NULLABLE
+    - name: card_type
+      type: STRING
+      mode: NULLABLE
+    - name: conflict_slug
+      type: STRING
+      mode: NULLABLE
+    - name: engine_name
+      type: STRING
+      mode: NULLABLE
+    - name: error_string
+      type: STRING
+      mode: NULLABLE
+    - name: experiment
+      type: STRING
+      mode: NULLABLE
+    - name: experiment_type
+      type: STRING
+      mode: NULLABLE
+    - name: feature_id
+      type: STRING
+      mode: NULLABLE
+    - name: item
+      type: STRING
+      mode: NULLABLE
+    - name: part_id
+      type: STRING
+      mode: NULLABLE
+    - name: reason
+      type: STRING
+      mode: NULLABLE
+    - name: slug
+      type: STRING
+      mode: NULLABLE
+    - name: source_of_change
+      type: STRING
+      mode: NULLABLE
+    - name: status
+      type: STRING
+      mode: NULLABLE
+    - name: tracker_changed
+      type: STRING
+      mode: NULLABLE

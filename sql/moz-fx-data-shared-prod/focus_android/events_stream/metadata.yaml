@@ -9,7 +9,7 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.org_mozilla_focus.events_stream
-  - moz-fx-data-shared-prod.org_mozilla_focus_beta.events_stream
-  - moz-fx-data-shared-prod.org_mozilla_focus_nightly.events_stream
+  - moz-fx-data-shared-prod.org_mozilla_focus_beta_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_derived.events_stream_v1
+  - moz-fx-data-shared-prod.org_mozilla_focus_nightly_derived.events_stream_v1
 require_column_descriptions: false

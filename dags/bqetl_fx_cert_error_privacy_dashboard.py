@@ -105,6 +105,21 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    firefox_desktop_derived__fx_cert_error_unique_users_normalized_channel__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_cert_error_unique_users_normalized_channel__v1",
+        destination_table="fx_cert_error_unique_users_normalized_channel_v1",
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=[
+            "akommasani@mozilla.com",
+            "kwindau@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+    )
+
     firefox_desktop_derived__fx_cert_error_unique_users_os__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__fx_cert_error_unique_users_os__v1",
         destination_table="fx_cert_error_unique_users_os_v1",
@@ -184,6 +199,10 @@ with DAG(
         email=["akommasani@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__fx_cert_error_unique_users_normalized_channel__v1.set_upstream(
+        wait_for_firefox_desktop_derived__events_stream__v1
     )
 
     firefox_desktop_derived__fx_cert_error_unique_users_os__v1.set_upstream(

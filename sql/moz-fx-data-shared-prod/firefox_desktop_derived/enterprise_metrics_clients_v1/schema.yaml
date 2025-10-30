@@ -38,19 +38,19 @@ fields:
 
 - mode: NULLABLE
   name: app_version_major
-  type: INTEGER
+  type: NUMERIC
   description: |
     Major version of the application (Firefox).
 
 - mode: NULLABLE
   name: app_version_minor
-  type: INTEGER
+  type: NUMERIC
   description: |
     Minor version of the application (Firefox).
 
 - mode: NULLABLE
   name: app_version_patch_revision
-  type: INTEGER
+  type: NUMERIC
   description: |
     Patch version of the application (Firefox).
 

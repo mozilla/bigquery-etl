@@ -217,6 +217,18 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
             + "\n"
         )
 
+        safe_owner = owner.lower().split("@")[0]
+
+        view_metadata_file = view_path / "metadata.yaml"
+        view_metadata = Metadata(
+            friendly_name=string.capwords(name.replace("_", " ")),
+            description="Please provide a description for the query",
+            owners=[owner],
+            labels={"owner": safe_owner},
+        )
+
+        view_metadata.write(view_metadata_file)
+
     # create query.sql file
     query_file = derived_path / "query.sql"
     query_file.write_text(
@@ -2211,9 +2223,9 @@ def _update_query_schema(
                     f"{project_name}.{tmp_dataset}.{table_name}_{random_str(12)}"
                 )
                 existing_schema.deploy(tmp_identifier)
-                tmp_tables[f"{project_name}.{dataset_name}.{table_name}"] = (
-                    tmp_identifier
-                )
+                tmp_tables[
+                    f"{project_name}.{dataset_name}.{table_name}"
+                ] = tmp_identifier
                 existing_schema.to_yaml_file(existing_schema_path)
 
     # replace temporary table references

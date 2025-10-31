@@ -9,4 +9,5 @@ FROM
 GROUP BY
   1,
   2,
-  3
+  3,
+  4

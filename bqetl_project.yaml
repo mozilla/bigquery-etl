@@ -525,6 +525,12 @@ generate:
     - firefox_desktop_background_defaultagent
     - firefox_desktop_background_tasks
 
+geo_deprecation:
+  app_id:
+  - org_mozilla_ios_klar
+  table_id:
+  - baseline_v1
+
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3

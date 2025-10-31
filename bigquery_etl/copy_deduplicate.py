@@ -13,12 +13,14 @@ from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
 from multiprocessing.pool import ThreadPool
+from typing import List
 
 import click
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import table_matches_patterns
+from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
@@ -73,12 +75,56 @@ WITH
   --
   -- Retain only one document for each ID.
 SELECT
-  * EXCEPT(_n)
+  * EXCEPT(_n){replace_geo}
 FROM
   numbered_duplicates
 WHERE
   _n = 1
 """
+
+
+def _has_field_path(schema: List[bigquery.SchemaField], path: List[str]) -> bool:
+    """Return True if nested field path (e.g., ['metadata','geo','city']) exists."""
+    for name in path:
+        f = next((field for field in schema if field.name == name), None)
+        if not f:
+            return False
+        schema = getattr(f, "fields", []) or []
+    return True
+
+
+def _select_geo(live_table: str, client: bigquery.Client) -> str:
+    """Build a SELECT REPLACE clause that NULLs metadata.geo.* if applicable."""
+    _, dataset_id, table_id = live_table.split(".")
+    app_id = dataset_id.removesuffix("_live")
+    included_apps = set(ConfigLoader.get("geo_deprecation", "app_id", fallback=[]))
+    included_tables = set(ConfigLoader.get("geo_deprecation", "table_id", fallback=[]))
+
+    if (app_id not in included_apps) or (table_id not in included_tables):
+        return ""
+
+    # Check schema to ensure geo fields exists
+    schema = client.get_table(live_table).schema
+    required_fields = ("city", "subdivision1", "subdivision2")
+    if not all(
+        _has_field_path(schema, ["metadata", "geo", field]) for field in required_fields
+    ):
+        return ""
+
+    return (
+        " REPLACE ("
+        " (SELECT AS STRUCT"
+        "    metadata.* REPLACE ("
+        "      (SELECT AS STRUCT"
+        "         metadata.geo.* REPLACE ("
+        "           CAST(NULL AS STRING) AS city,"
+        "           CAST(NULL AS STRING) AS subdivision1,"
+        "           CAST(NULL AS STRING) AS subdivision2"
+        "         )"
+        "      ) AS geo"
+        "    )"
+        " ) AS metadata)"
+    )
 
 
 def _get_query_job_configs(
@@ -92,7 +138,8 @@ def _get_query_job_configs(
     num_retries,
     temp_dataset,
 ):
-    sql = QUERY_TEMPLATE.format(live_table=live_table)
+    replace_geo = _select_geo(live_table, client)
+    sql = QUERY_TEMPLATE.format(live_table=live_table, replace_geo=replace_geo)
     stable_table = f"{live_table.replace('_live.', '_stable.', 1)}${date:%Y%m%d}"
     kwargs = dict(use_legacy_sql=False, dry_run=dry_run, priority=priority)
     start_time = datetime(*date.timetuple()[:6])

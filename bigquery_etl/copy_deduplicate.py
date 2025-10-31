@@ -26,8 +26,6 @@ from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
 
 from .cli.utils import parallelism_option, project_id_option
-from .shredder.config import get_glean_channel_to_app_name_mapping
-
 
 QUERY_TEMPLATE = """
 WITH
@@ -95,28 +93,16 @@ def _has_field_path(schema: List[bigquery.SchemaField], path: List[str]) -> bool
     return True
 
 
-def _select_included_apps(live_table: str) -> bool:
-    """Return True if the app_id (from dataset name) is configured for geo nulling."""
-    _, dataset, _ = live_table.split(".", 2)
-    app_id = dataset.removesuffix("_live")
-
-    app_map = get_glean_channel_to_app_name_mapping()
-    included_apps = [
-        app_id
-        for app_id, app_name in app_map.items()
-        if app_name in ConfigLoader.get("generate", "null_geo", "apps", fallback=[])
-    ]
-
-    if app_id in included_apps:
-        return True
-
-    return False
-
-
 def _select_geo(live_table: str, client: bigquery.Client) -> str:
     """Build a SELECT REPLACE clause that NULLs metadata.geo.* if applicable."""
-    if not _select_included_apps(live_table):
+    _, dataset_id, table_id = live_table.split(".")
+    app_id = dataset_id.removesuffix("_live")
+    included_apps = set(ConfigLoader.get("geo_deprecation", "app_id", fallback=[]))
+    included_tables = set(ConfigLoader.get("geo_deprecation", "table_id", fallback=[]))
+
+    if (app_id not in included_apps) or (table_id not in included_tables):
         return ""
+
     # Check schema to ensure geo fields exists
     schema = client.get_table(live_table).schema
     required_fields = ("city", "subdivision1", "subdivision2")

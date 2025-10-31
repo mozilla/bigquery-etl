@@ -263,6 +263,10 @@ fields:
   mode: NULLABLE
   description: Sum of the client's active hours on the most recent date the client
     was last seen in the last 28 days
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
+  description: How the profile was selected during startup
 - name: app_name
   type: STRING
   mode: NULLABLE

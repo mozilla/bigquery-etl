@@ -192,6 +192,9 @@ fields:
 - name: days_interacted_bits
   type: INTEGER
   mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

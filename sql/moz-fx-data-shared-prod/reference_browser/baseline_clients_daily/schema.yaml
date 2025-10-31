@@ -254,3 +254,7 @@ fields:
     (the # of 5 second intervals a user was active)
 
     and converting this to active hours'
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
+  description: How the profile was selected during startup

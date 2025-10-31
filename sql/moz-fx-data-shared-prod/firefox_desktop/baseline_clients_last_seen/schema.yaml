@@ -276,3 +276,7 @@ fields:
   type: INTEGER
   mode: NULLABLE
   description: Days Interacted Bits
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
+  description: How the profile was selected during startup

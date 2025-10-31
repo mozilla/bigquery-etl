@@ -196,6 +196,9 @@ fields:
 - name: active_hours_sum
   type: FLOAT
   mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE
 - name: app_name
   type: STRING
   mode: NULLABLE

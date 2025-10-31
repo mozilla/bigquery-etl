@@ -110,4 +110,8 @@ fields:
   name: isp
   type: STRING
   description: Internet Service Provider
+- mode: NULLABLE
+  name: startup_profile_selection_reason_first
+  type: STRING
+  description: How the profile was selected during startup
 

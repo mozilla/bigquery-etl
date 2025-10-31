@@ -55,6 +55,13 @@
         OFFSET(0)
       ] AS normalized_os_version,
       ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp ASC LIMIT 1)[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        metrics.string.startup_profile_selection_reason
+        ORDER BY
+          submission_timestamp ASC
+        LIMIT
+          1
+      )[OFFSET(0)] AS startup_profile_selection_reason_first,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -122,6 +129,13 @@
         OFFSET(0)
       ] AS normalized_os_version,
       ARRAY_AGG(metadata.isp.name ORDER BY submission_timestamp ASC LIMIT 1)[OFFSET(0)] AS isp,
+      ARRAY_AGG(
+        metrics.string.startup_profile_selection_reason
+        ORDER BY
+          submission_timestamp ASC
+        LIMIT
+          1
+      )[OFFSET(0)] AS startup_profile_selection_reason_first,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -155,6 +169,7 @@
       normalized_channel,
       normalized_os_version,
       isp,
+      startup_profile_selection_reason_first,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -198,6 +213,7 @@
     normalized_channel,
     normalized_os_version,
     isp,
+    startup_profile_selection_reason_first
   FROM
     _joined
   QUALIFY

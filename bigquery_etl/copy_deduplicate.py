@@ -28,7 +28,6 @@ from bigquery_etl.util.common import TempDatasetReference
 from .cli.utils import parallelism_option, project_id_option
 from .shredder.config import get_glean_channel_to_app_name_mapping
 
-GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 QUERY_TEMPLATE = """
 WITH

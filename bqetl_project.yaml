@@ -486,6 +486,11 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    - regrets_reporter
+    - org_mozilla_ios_tiktokreporter
+    - org_mozilla_tiktokreporter
+    - regrets_reporter_ucs
+    - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     skip_tables:
       telemetry:
       - modules

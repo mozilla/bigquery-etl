@@ -1,0 +1,8 @@
+friendly_name: Desktop Engagement Aggregates
+description: |-
+  Contains aggregated DAU, WAU, and MAU by different attributes for engagement ratio calculation.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false

@@ -1,6 +1,7 @@
 friendly_name: Adclick History
 description: |-
   Contains the number of ad-clicks per day for each Firefox Desktop client.
+  Primary key: client_id.
 owners:
 - kwindau@mozilla.com
 labels:

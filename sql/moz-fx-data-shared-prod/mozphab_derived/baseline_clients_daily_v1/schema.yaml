@@ -226,3 +226,7 @@ fields:
   description: |-
     Sum of Active Hours - calculated by taking the total active ticks (the # of 5 second intervals a user was active)
     and converting this to active hours
+- mode: NULLABLE
+  name: startup_profile_selection_reason_first
+  type: STRING
+  description: How the profile was selected during startup

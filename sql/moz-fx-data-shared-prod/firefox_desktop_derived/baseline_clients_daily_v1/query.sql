@@ -41,6 +41,7 @@ WITH base AS (
     JSON_VALUE(metrics.object.glean_attribution_ext.experiment) AS attribution_experiment,
     JSON_VALUE(metrics.object.glean_attribution_ext.variation) AS attribution_variation,
     JSON_VALUE(metrics.object.glean_attribution_ext.ua) AS attribution_ua,
+    metrics.string.startup_profile_selection_reason AS startup_profile_selection_reason,
     ping_info.experiments AS experiments
   FROM
     `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
@@ -175,7 +176,8 @@ windowed AS (
       ARRAY_AGG(attribution_variation) OVER w1
     ) AS attribution_variation,
     `moz-fx-data-shared-prod.udf.mode_last`(ARRAY_AGG(attribution_ua) OVER w1) AS attribution_ua,
-    LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments
+    LAST_VALUE(experiments IGNORE NULLS) OVER w1 AS experiments,
+    FIRST_VALUE(startup_profile_selection_reason) OVER w1 AS startup_profile_selection_reason_first
   FROM
     with_date_offsets
   LEFT JOIN

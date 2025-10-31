@@ -676,10 +676,6 @@ DELETE_TARGETS: DeleteIndex = {
         field=LEGACY_MOBILE_IDS,
     ): LEGACY_MOBILE_SOURCES,
     DeleteTarget(
-        table=REGRETS_SRC.table,
-        field="event_metadata.extension_installation_uuid",
-    ): REGRETS_SRC,
-    DeleteTarget(
         table="firefox_desktop_stable.user_characteristics_v1",
         field=USER_CHARACTERISTICS_ID,
     ): USER_CHARACTERISTICS_SRC,

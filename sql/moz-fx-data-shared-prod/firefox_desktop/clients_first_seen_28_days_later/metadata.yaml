@@ -1,0 +1,9 @@
+friendly_name: Clients First Seen 28 Days Later
+description: |-
+  Measures retention of client cohorts 28 days after their first seen date, broken
+  out by different information, like attribution information, OS, country, ISP, etc.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false

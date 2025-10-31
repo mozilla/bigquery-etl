@@ -4,7 +4,8 @@ WITH org_mozilla_firefox_beta AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox_beta.baseline`
   CROSS JOIN
@@ -15,7 +16,8 @@ org_mozilla_fenix AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_fenix.baseline`
   CROSS JOIN
@@ -26,7 +28,8 @@ org_mozilla_firefox AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_firefox.baseline`
   CROSS JOIN
@@ -37,7 +40,8 @@ org_mozilla_ios_firefox AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefox.baseline`
   CROSS JOIN
@@ -48,7 +52,8 @@ org_mozilla_ios_firefoxbeta AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_firefoxbeta.baseline`
   CROSS JOIN
@@ -59,7 +64,8 @@ org_mozilla_ios_fennec AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_fennec.baseline`
   CROSS JOIN
@@ -70,7 +76,8 @@ telemetry AS (
     submission_date,
     e.key AS experiment_id,
     e.value AS branch,
-    client_id
+    client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.telemetry.clients_daily`
   CROSS JOIN
@@ -81,7 +88,8 @@ org_mozilla_klar AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_klar.baseline`
   CROSS JOIN
@@ -92,7 +100,8 @@ org_mozilla_focus AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus.baseline`
   CROSS JOIN
@@ -103,7 +112,8 @@ org_mozilla_focus_nightly AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_nightly.baseline`
   CROSS JOIN
@@ -114,7 +124,8 @@ org_mozilla_focus_beta AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_focus_beta.baseline`
   CROSS JOIN
@@ -125,7 +136,8 @@ org_mozilla_ios_klar AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_klar.baseline`
   CROSS JOIN
@@ -136,7 +148,8 @@ org_mozilla_ios_focus AS (
     DATE(submission_timestamp) AS submission_date,
     e.key AS experiment_id,
     e.value.branch AS branch,
-    client_info.client_id
+    client_info.client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.org_mozilla_ios_focus.baseline`
   CROSS JOIN
@@ -147,7 +160,8 @@ monitor_cirrus AS (
     DATE(submission_timestamp) AS submission_date,
     mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
     mozfun.map.get_key(e.extra, "branch") AS branch,
-    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id
+    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.monitor_cirrus.enrollment` AS enrollment
   CROSS JOIN
@@ -158,7 +172,8 @@ accounts_cirrus AS (
     DATE(submission_timestamp) AS submission_date,
     mozfun.map.get_key(e.extra, "experiment") AS experiment_id,
     mozfun.map.get_key(e.extra, "branch") AS branch,
-    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id
+    mozfun.map.get_key(e.extra, "nimbus_user_id") AS client_id,
+    normalized_channel
   FROM
     `moz-fx-data-shared-prod.accounts_cirrus.enrollment` AS enrollment
   CROSS JOIN
@@ -168,6 +183,7 @@ SELECT
   submission_date,
   experiment_id,
   branch,
+  normalized_channel,
   COUNT(*) AS active_clients
 FROM
   (
@@ -251,4 +267,5 @@ WHERE
 GROUP BY
   submission_date,
   experiment_id,
-  branch
+  branch,
+  normalized_channel

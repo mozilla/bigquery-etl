@@ -17,6 +17,7 @@ bigquery:
   clustering:
     fields:
     - experiment
+    - normalized_channel
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

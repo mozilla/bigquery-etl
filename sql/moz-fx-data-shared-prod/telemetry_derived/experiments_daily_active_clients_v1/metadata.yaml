@@ -22,6 +22,7 @@ bigquery:
     fields:
     - experiment_id
     - branch
+    - normalized_channel
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

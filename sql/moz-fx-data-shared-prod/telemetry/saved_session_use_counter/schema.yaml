@@ -11589,6 +11589,22 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used FullscreenAttribute
+    - name: use_counter2_webgpurenderoutput_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document displays WebGPU rendering output
+    - name: use_counter2_webgpurenderoutput_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page displays WebGPU rendering output
+    - name: use_counter2_webgpurequestadapter_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document requests a WebGPU adapter
+    - name: use_counter2_webgpurequestadapter_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page requests a WebGPU adapter
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23034,6 +23050,22 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used FullscreenAttribute
+        - name: use_counter2_webgpurenderoutput_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document displays WebGPU rendering output
+        - name: use_counter2_webgpurenderoutput_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page displays WebGPU rendering output
+        - name: use_counter2_webgpurequestadapter_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document requests a WebGPU adapter
+        - name: use_counter2_webgpurequestadapter_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page requests a WebGPU adapter
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

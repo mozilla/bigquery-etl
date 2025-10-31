@@ -350,6 +350,9 @@ fields:
     - name: enabled
       type: BOOLEAN
       mode: NULLABLE
+    - name: encrypted
+      type: BOOLEAN
+      mode: NULLABLE
     - name: enter
       type: BOOLEAN
       mode: NULLABLE

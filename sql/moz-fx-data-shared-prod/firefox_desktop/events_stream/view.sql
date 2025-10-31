@@ -31,6 +31,7 @@ SELECT
       LAX_BOOL(event_extra.did_select_un) AS `did_select_un`,
       LAX_BOOL(event_extra.disableDialog) AS `disableDialog`,
       LAX_BOOL(event_extra.enabled) AS `enabled`,
+      LAX_BOOL(event_extra.encrypted) AS `encrypted`,
       LAX_BOOL(event_extra.enter) AS `enter`,
       LAX_BOOL(event_extra.expand) AS `expand`,
       LAX_BOOL(event_extra.experiments_empty) AS `experiments_empty`,

@@ -19878,6 +19878,71 @@ fields:
         to calculate the rate.
 
         '
+    - name: use_counter_css_doc_css_text_decoration_inset
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document used the CSS property text-decoration-inset.
+        Compare against `use.counter.content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_css_page_css_text_decoration_inset
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page used the CSS property text-decoration-inset. Compare
+        against `use.counter.top_level_content_documents_destroyed` to calculate the
+        rate.
+
+        '
+    - name: use_counter_doc_webgpu_render_output
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document displays WebGPU rendering output. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_doc_webgpu_request_adapter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a document requests a WebGPU adapter. Compare against
+        `use.counter.content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_webgpu_render_output
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page displays WebGPU rendering output. Compare against
+        `use.counter.top_level_content_documents_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_page_webgpu_request_adapter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a page requests a WebGPU adapter. Compare against `use.counter.top_level_content_documents_destroyed`
+        to calculate the rate.
+
+        '
+    - name: use_counter_worker_dedicated_webgpu_request_adapter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a dedicated worker requests a WebGPU adapter. Compare
+        against `use.counter.dedicated_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_service_webgpu_request_adapter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a service worker requests a WebGPU adapter. Compare against
+        `use.counter.service_workers_destroyed` to calculate the rate.
+
+        '
+    - name: use_counter_worker_shared_webgpu_request_adapter
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Whether a shared worker requests a WebGPU adapter. Compare against
+        `use.counter.shared_workers_destroyed` to calculate the rate.
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

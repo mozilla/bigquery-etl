@@ -8540,6 +8540,18 @@ fields:
     - name: use_counter2_deprecated_fullscreen_attribute_page
       type: STRING
       mode: NULLABLE
+    - name: use_counter2_webgpurenderoutput_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_webgpurenderoutput_page
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_webgpurequestadapter_document
+      type: STRING
+      mode: NULLABLE
+    - name: use_counter2_webgpurequestadapter_page
+      type: STRING
+      mode: NULLABLE
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -16947,6 +16959,18 @@ fields:
           type: STRING
           mode: NULLABLE
         - name: use_counter2_deprecated_fullscreen_attribute_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_webgpurenderoutput_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_webgpurenderoutput_page
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_webgpurequestadapter_document
+          type: STRING
+          mode: NULLABLE
+        - name: use_counter2_webgpurequestadapter_page
           type: STRING
           mode: NULLABLE
 - name: sample_id

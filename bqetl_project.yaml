@@ -521,6 +521,9 @@ generate:
     - focus_android
     - klar_ios
     - klar_android
+    - firefox_desktop_background_update
+    - firefox_desktop_background_defaultagent
+    - firefox_desktop_background_tasks
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
@@ -610,3 +613,6 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/focus_android_derived/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/klar_ios_derived/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/klar_android_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_background_update/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1

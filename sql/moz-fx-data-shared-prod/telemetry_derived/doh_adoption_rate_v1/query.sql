@@ -4,7 +4,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'doh.evaluate_v2_heuristics' AS metric,
     "value" AS key,
-    COALESCE(STRING(event_extra.value), '') AS value,
     CASE
       WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
@@ -22,7 +21,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     normalized_country_code
   UNION ALL
   /* ---------- doh.state_disabled ---------- */
@@ -30,7 +28,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'doh.state_disabled' AS metric,
     '' AS key,
-    '' AS value,
     CASE
       WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
@@ -48,7 +45,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     normalized_country_code
   UNION ALL
   /* ---------- doh.state_enabled ---------- */
@@ -56,7 +52,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'doh.state_enabled' AS metric,
     '' AS key,
-    '' AS value,
     CASE
       WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
@@ -74,7 +69,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     normalized_country_code
   UNION ALL
   /* ---------- doh.state_manually_disabled ---------- */
@@ -82,7 +76,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'doh.state_manually_disabled' AS metric,
     '' AS key,
-    '' AS value,
     CASE
       WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
@@ -100,7 +93,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     normalized_country_code
   UNION ALL
   /* ---------- doh.state_policy_disabled ---------- */
@@ -108,7 +100,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'doh.state_policy_disabled' AS metric,
     '' AS key,
-    '' AS value,
     CASE
       WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
@@ -126,7 +117,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     normalized_country_code
   UNION ALL
   /* ---------- networking.doh_heuristics_attempts ---------- */
@@ -134,7 +124,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'networking.doh_heuristics_attempts' AS metric,
     'networking.doh_heuristics_attempts' AS key,
-    CAST(metrics.counter.networking_doh_heuristics_attempts AS STRING) AS value,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
@@ -151,7 +140,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     metadata.geo.country
   UNION ALL
   /* ---------- networking.doh_heuristics_pass_count ---------- */
@@ -159,7 +147,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'networking.doh_heuristics_pass_count' AS metric,
     'networking.doh_heuristics_attempts' AS key,
-    CAST(metrics.counter.networking_doh_heuristics_pass_count AS STRING) AS value,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
@@ -176,7 +163,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     metadata.geo.country
   UNION ALL
   /* ---------- networking.doh_heuristics_result ---------- */
@@ -184,7 +170,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'networking.doh_heuristics_result' AS metric,
     'networking.doh_heuristics_result' AS key,
-    CAST(metrics.quantity.networking_doh_heuristics_result AS STRING) AS value,
     CASE
       WHEN COUNT(DISTINCT client_info.client_id) >= 5000
         THEN metadata.geo.country
@@ -201,7 +186,6 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     metadata.geo.country
   UNION ALL
   /* ---------- security.doh.settings.provider_choice_value ---------- */
@@ -209,7 +193,6 @@ WITH unioned AS (
     DATE(submission_timestamp) AS submission_date,
     'security.doh.settings.provider_choice_value' AS metric,
     "value" AS key,
-    COALESCE(STRING(event_extra.value), '') AS value,
     CASE
       WHEN COUNT(DISTINCT client_id) >= 5000
         THEN normalized_country_code
@@ -227,14 +210,12 @@ WITH unioned AS (
   GROUP BY
     submission_date,
     key,
-    value,
     normalized_country_code
 )
 SELECT
   submission_date,
   metric,
   key,
-  value,
   country_code,
   SUM(client_count) AS total_client_count
 FROM
@@ -243,11 +224,9 @@ GROUP BY
   submission_date,
   metric,
   key,
-  value,
   country_code
 ORDER BY
   submission_date DESC,
   metric,
   country_code,
-  key,
-  value
+  key

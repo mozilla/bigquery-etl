@@ -335,7 +335,7 @@ class GleanTable:
                 if query_sql:
                     schema = Schema(
                         DryRun(
-                            os.path.join(*table.split("."), "query.sql"),
+                            os.path.join(project_id, *table.split("."), "query.sql"),
                             content=query_sql,
                             query_parameters=self.possible_query_parameters,
                             use_cloud_function=use_cloud_function,

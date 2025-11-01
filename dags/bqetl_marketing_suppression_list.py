@@ -164,21 +164,6 @@ with DAG(
         task_concurrency=1,
     )
 
-    marketing_suppression_list_external__campaign_monitor_suppression_list__v1 = GKEPodOperator(
-        task_id="marketing_suppression_list_external__campaign_monitor_suppression_list__v1",
-        arguments=[
-            "python",
-            "sql/moz-fx-data-shared-prod/marketing_suppression_list_external/campaign_monitor_suppression_list_v1/query.py",
-        ]
-        + [
-            "--api_key={{ var.value.campaign_monitor_api_key }}",
-            "--client_id={{ var.value.campaign_monitor_client_id }}",
-        ],
-        image="gcr.io/moz-fx-data-airflow-prod-88e0/bigquery-etl:latest",
-        owner="cbeck@mozilla.com",
-        email=["cbeck@mozilla.com"],
-    )
-
     checks__fail_marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
         marketing_suppression_list_derived__main_suppression_list__v1
     )
@@ -205,8 +190,4 @@ with DAG(
 
     marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
         wait_for_braze_external__braze_currents_pocket_unsubscribe__v1
-    )
-
-    marketing_suppression_list_derived__main_suppression_list__v1.set_upstream(
-        marketing_suppression_list_external__campaign_monitor_suppression_list__v1
     )

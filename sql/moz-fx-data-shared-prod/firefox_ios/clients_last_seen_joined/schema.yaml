@@ -178,3 +178,6 @@ fields:
 - name: days_since_visited_1_uri
   type: INTEGER
   mode: NULLABLE
+- name: startup_profile_selection_reason_first
+  type: STRING
+  mode: NULLABLE

@@ -6,12 +6,6 @@ owners:
 - cbeck@mozilla.com
 labels:
   owner1: cbeck
-  dag: bqetl_marketing_suppression_list
-scheduling:
-  dag_name: bqetl_marketing_suppression_list
-  arguments:
-  - --api_key={{ var.value.campaign_monitor_api_key }}
-  - --client_id={{ var.value.campaign_monitor_client_id }}
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

@@ -28,5 +28,4 @@ references:
   - moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_hard_bounces_v1
   - moz-fx-data-shared-prod.braze_external.braze_currents_pocket_hard_bounces_v1
   - moz-fx-data-shared-prod.braze_external.braze_currents_pocket_unsubscribe_v1
-  - moz-fx-data-shared-prod.marketing_suppression_list_external.campaign_monitor_suppression_list_v1
 require_column_descriptions: false

@@ -32,28 +32,36 @@ WITH usage_reporting_base AS (
 SELECT
   submission_date,
   usage_profile_id,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(first_run_date IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS first_run_date,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(app_channel IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS app_channel,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(normalized_country_code IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS normalized_country_code,
-  udf.mode_last(ARRAY_AGG(os IGNORE NULLS ORDER BY submission_timestamp ASC)) AS os,
-  udf.mode_last(ARRAY_AGG(os_version IGNORE NULLS ORDER BY submission_timestamp ASC)) AS os_version,
-  udf.mode_last(ARRAY_AGG(app_build IGNORE NULLS ORDER BY submission_timestamp ASC)) AS app_build,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
+    ARRAY_AGG(os IGNORE NULLS ORDER BY submission_timestamp ASC)
+  ) AS os,
+  `moz-fx-data-shared-prod`.udf.mode_last(
+    ARRAY_AGG(os_version IGNORE NULLS ORDER BY submission_timestamp ASC)
+  ) AS os_version,
+  `moz-fx-data-shared-prod`.udf.mode_last(
+    ARRAY_AGG(app_build IGNORE NULLS ORDER BY submission_timestamp ASC)
+  ) AS app_build,
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(app_display_version IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS app_display_version,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(distribution_id IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS distribution_id,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(is_default_browser IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS is_default_browser,
-  udf.mode_last(ARRAY_AGG(reason IGNORE NULLS ORDER BY submission_timestamp ASC)) AS reason,
+  `moz-fx-data-shared-prod`.udf.mode_last(
+    ARRAY_AGG(reason IGNORE NULLS ORDER BY submission_timestamp ASC)
+  ) AS reason,
   -- is_active definition is different between desktop and mobile products.
   COALESCE(
     LOGICAL_OR(is_active),
@@ -61,7 +69,7 @@ SELECT
     AND SUM(browser_engagement_active_ticks) > 0,
     FALSE
   ) AS is_active,
-  udf.mode_last(
+  `moz-fx-data-shared-prod`.udf.mode_last(
     ARRAY_AGG(windows_build_number IGNORE NULLS ORDER BY submission_timestamp ASC)
   ) AS windows_build_number,
 FROM

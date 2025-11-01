@@ -1,0 +1,114 @@
+---
+# get minimums
+- client_id: client-1
+  profile_group_id: pg-27
+  sample_id: 0
+  event_category: "27"
+  submission_timestamp: 2025-10-27T00:00:00
+  event_timestamp: 2025-10-27T00:00:00
+  event_extra: {date: 2025-10-27}
+  app_version_major: "27"
+  normalized_channel: "27"
+  normalized_country_code: "27"
+  normalized_os: "27"
+  normalized_os_version: "27"
+- client_id: client-1
+  profile_group_id: pg-28
+  sample_id: 0
+  event_category: "28"
+  submission_timestamp: 2025-10-28T00:00:00
+  event_timestamp: 2025-10-28T00:00:00
+  event_extra: {date: 2025-10-28}
+  app_version_major: "28"
+  normalized_channel: "28"
+  normalized_country_code: "28"
+  normalized_os: "28"
+  normalized_os_version: "28"
+- client_id: client-1
+  profile_group_id: pg-29
+  sample_id: 0
+  event_category: "29"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"
+
+# profile_group_id is not null
+- client_id: client-2
+  profile_group_id: pg-29
+  sample_id: 0
+  event_category: "29"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"
+- client_id: client-2
+  profile_group_id: NULL
+  sample_id: 0
+  event_category: "29"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"
+
+# event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+- client_id: client-3
+  profile_group_id: pg-29
+  sample_id: 0
+  event_category: "29"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"
+- client_id: client-3
+  profile_group_id: pg-29
+  sample_id: 0
+  event_category: "media.playback"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"
+- client_id: client-3
+  profile_group_id: pg-29
+  sample_id: 0
+  event_category: "nimbus_events"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"
+- client_id: client-3
+  profile_group_id: pg-29
+  sample_id: 0
+  event_category: "uptake.remotecontent.result"
+  submission_timestamp: 2025-10-29T00:00:00
+  event_timestamp: 2025-10-29T00:00:00
+  event_extra: {date: 2025-10-29}
+  app_version_major: "29"
+  normalized_channel: "29"
+  normalized_country_code: "29"
+  normalized_os: "29"
+  normalized_os_version: "29"

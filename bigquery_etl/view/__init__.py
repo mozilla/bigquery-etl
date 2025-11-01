@@ -221,7 +221,10 @@ class View:
                 """
             )
             return Schema.from_query_file(
-                Path(self.path), content=schema_query, id_token=self.id_token
+                Path(self.path),
+                content=schema_query,
+                id_token=self.id_token,
+                strip_dml=True,
             )
         except Exception as e:
             print(f"Error dry-running view {self.view_identifier} to get schema: {e}")

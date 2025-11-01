@@ -2,6 +2,6 @@
 SELECT
   *
 FROM
-  (SELECT 1)
+  (SELECT 1 AS field)
 WHERE
   FALSE

@@ -154,6 +154,7 @@ def _sql_file_valid(
         respect_skip=respect_skip,
         id_token=id_token,
         billing_project=billing_project,
+        strip_dml=True if validate_schemas else False,
     )
     if validate_schemas:
         try:

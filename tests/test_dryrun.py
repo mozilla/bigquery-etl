@@ -15,9 +15,10 @@ def tmp_query_path(tmp_path):
 class TestDryRun:
     def test_dry_run_sql_file(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
+        query_file.write_text("SELECT 123 AS field")
 
         dryrun = DryRun(str(query_file))
+        print(dryrun.dry_run_result)
         response = dryrun.dry_run_result
         assert response["valid"]
 
@@ -31,7 +32,7 @@ class TestDryRun:
 
     def test_sql_file_valid(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
+        query_file.write_text("SELECT 123 AS field")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.is_valid()
@@ -61,7 +62,7 @@ class TestDryRun:
 
     def test_get_referenced_tables_empty(self, tmp_query_path):
         query_file = tmp_query_path / "query.sql"
-        query_file.write_text("SELECT 123")
+        query_file.write_text("SELECT 123 AS field")
 
         dryrun = DryRun(str(query_file))
         assert dryrun.get_referenced_tables() == []
@@ -70,7 +71,7 @@ class TestDryRun:
         os.makedirs(tmp_path / "telmetry_derived")
         query_file = tmp_path / "telmetry_derived" / "query.sql"
 
-        sql_content = "SELECT 123 "
+        sql_content = "SELECT 123 AS field"
         query_file.write_text(sql_content)
 
         assert DryRun(sqlfile=str(query_file)).get_sql() == sql_content
@@ -83,7 +84,7 @@ class TestDryRun:
             "SELECT * FROM `moz-fx-data-shared-prod.telemetry_derived.clients_daily_v6` "
             "WHERE submission_date = '2020-01-01'"
         )
-        query_dryrun = DryRun(str(query_file)).get_referenced_tables()
+        query_dryrun = DryRun(str(query_file), strip_dml=True).get_referenced_tables()
 
         assert len(query_dryrun) == 1
         assert query_dryrun[0]["datasetId"] == "telemetry_derived"

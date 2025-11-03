@@ -148,11 +148,6 @@ FXA_UNHASHED_SRC = DeleteSource(
 FXA_FRONTEND_GLEAN_SRC = DeleteSource(
     table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
 )
-REGRETS_SRC = DeleteSource(
-    table="regrets_reporter_stable.regrets_reporter_update_v1",
-    field="data_deletion_request.extension_installation_uuid",
-    conditions=("data_deletion_request IS NOT NULL",),
-)
 # these must be in the same order as SYNC_IDS
 SYNC_SOURCES = (
     DeleteSource(
@@ -680,10 +675,6 @@ DELETE_TARGETS: DeleteIndex = {
         table="telemetry_stable.mobile_event_v1",
         field=LEGACY_MOBILE_IDS,
     ): LEGACY_MOBILE_SOURCES,
-    DeleteTarget(
-        table=REGRETS_SRC.table,
-        field="event_metadata.extension_installation_uuid",
-    ): REGRETS_SRC,
     DeleteTarget(
         table="firefox_desktop_stable.user_characteristics_v1",
         field=USER_CHARACTERISTICS_ID,

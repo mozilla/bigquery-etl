@@ -24,7 +24,7 @@ WITH install_stats AS (
     `moz-fx-data-shared-prod.firefox_desktop.events`,
     UNNEST(events) AS `event`
   WHERE
-    TIMESTAMP_TRUNC(submission_timestamp, DAY) = @submission_date
+    DATE(submission_timestamp) = @submission_date
     AND event.category = "addons_manager"
     AND event.name = "install_stats"
   GROUP BY

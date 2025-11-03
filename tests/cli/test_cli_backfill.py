@@ -28,6 +28,7 @@ from bigquery_etl.backfill.utils import (
     validate_metadata_workgroups,
 )
 from bigquery_etl.cli.backfill import (
+    _copy_backfill_staging_to_prod,
     _initialize_previous_partition,
     _initiate_backfill,
     complete,
@@ -1500,6 +1501,83 @@ class TestBackfill:
             )
         assert delete_table.call_count == 1
 
+    @patch("google.cloud.bigquery.Client.delete_table")
+    @patch("google.cloud.bigquery.Client.copy_table")
+    @patch("google.cloud.bigquery.Client.get_table")
+    def test_complete_partitioned_backfill_public_dataset(
+        self, get_table, copy_table, delete_table, runner
+    ):
+        """Test that completing a backfill for a public dataset copies to the public project."""
+        get_table.side_effect = [
+            None,  # Check that staging data exists
+            NotFound(  # Check that clone does not exist
+                "moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_backup_2021_05_03"
+                "not found"
+            ),
+        ]
+        copy_table.side_effect = None
+        delete_table.side_effect = None
+
+        # Metadata with public_bigquery label
+        public_table_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
+            "workgroup_access": VALID_WORKGROUP_ACCESS,
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_date",
+                    "require_partition_filter": True,
+                }
+            },
+        }
+
+        with open(
+            "sql/moz-fx-data-shared-prod/test/test_query_v1/metadata.yaml",
+            "w",
+        ) as f:
+            f.write(yaml.dump(public_table_metadata))
+
+        with open("sql/moz-fx-data-shared-prod/test/dataset_metadata.yaml", "w") as f:
+            f.write(yaml.dump(DATASET_METADATA_CONF_EMPTY_WORKGROUP))
+
+        backfill_file = Path(QUERY_DIR) / BACKFILL_FILE
+        backfill_file.write_text(
+            """
+2021-05-03:
+  start_date: 2021-01-03
+  end_date: 2021-01-13
+  reason: test_reason
+  watchers:
+  - test@example.org
+  status: Complete"""
+        )
+
+        result = runner.invoke(
+            complete,
+            [
+                "moz-fx-data-shared-prod.test.test_query_v1",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert copy_table.call_count == 12  # one for backup, 11 for partitions
+
+        # First call is the backup (clone), which uses the internal project
+        backup_call = copy_table.call_args_list[0]
+        assert backup_call.args[0] == "moz-fx-data-shared-prod.test.test_query_v1"
+
+        # Subsequent calls should copy to the PUBLIC project
+        for i, call in enumerate(copy_table.call_args_list[1:]):
+            d = date(2021, 1, 3) + timedelta(days=i)
+            assert call.args == (
+                f'moz-fx-data-shared-prod.backfills_staging_derived.test__test_query_v1_2021_05_03${d.strftime("%Y%m%d")}',
+                f'mozilla-public-data.test.test_query_v1${d.strftime("%Y%m%d")}',  # Public project!
+            )
+        assert delete_table.call_count == 1
+
     @patch("google.cloud.bigquery.Client")
     @patch("subprocess.check_call")
     @patch("bigquery_etl.cli.backfill.deploy_table")
@@ -2295,3 +2373,102 @@ class TestBackfill:
             destination_table="project.staging.table$20201226",
             client=None,
         )
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_public_dataset(self, mock_copy_table):
+        """Test that public datasets are copied to the public project."""
+        # Create metadata for a public dataset
+        public_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(public_metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # Verify that the table was copied to the PUBLIC project
+        assert mock_copy_table.call_count == 3  # 3 partitions
+        for i, call in enumerate(mock_copy_table.call_args_list):
+            d = date(2021, 1, 3) + timedelta(days=i)
+            expected_staging = (
+                f'moz-fx-data-shared-prod.staging.table${d.strftime("%Y%m%d")}'
+            )
+            expected_prod = f'mozilla-public-data.dataset.table${d.strftime("%Y%m%d")}'
+            assert call.args == (expected_staging, expected_prod, None)
+
+    @patch("bigquery_etl.cli.backfill._copy_table")
+    def test_copy_backfill_staging_to_prod_non_public_dataset(self, mock_copy_table):
+        """Test that non-public datasets are copied to the original project."""
+        # Create metadata for a non-public dataset
+        regular_metadata = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "bigquery": {
+                "time_partitioning": {
+                    "type": "day",
+                    "field": "submission_date",
+                }
+            },
+        }
+        with open(METADATA_FILE, "w") as f:
+            f.write(yaml.dump(regular_metadata))
+
+        metadata = Metadata.from_file(METADATA_FILE)
+
+        backfill_entry = Backfill(
+            entry_date=date(2021, 5, 3),
+            start_date=date(2021, 1, 3),
+            end_date=date(2021, 1, 5),  # 3 days
+            excluded_dates=[],
+            reason=VALID_REASON,
+            watchers=[VALID_WATCHER],
+            status=BackfillStatus.COMPLETE,
+        )
+
+        _copy_backfill_staging_to_prod(
+            backfill_staging_table="moz-fx-data-shared-prod.staging.table",
+            qualified_table_name="moz-fx-data-shared-prod.dataset.table",
+            client=None,
+            entry=backfill_entry,
+            table_metadata=metadata,
+        )
+
+        # Verify that the table was copied to the SAME project (not public)
+        assert mock_copy_table.call_count == 3  # 3 partitions
+        for i, call in enumerate(mock_copy_table.call_args_list):
+            d = date(2021, 1, 3) + timedelta(days=i)
+            expected_staging = (
+                f'moz-fx-data-shared-prod.staging.table${d.strftime("%Y%m%d")}'
+            )
+            expected_prod = (
+                f'moz-fx-data-shared-prod.dataset.table${d.strftime("%Y%m%d")}'
+            )
+            assert call.args == (expected_staging, expected_prod, None)

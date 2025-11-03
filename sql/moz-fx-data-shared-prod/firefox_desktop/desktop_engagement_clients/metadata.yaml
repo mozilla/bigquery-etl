@@ -1,6 +1,7 @@
 friendly_name: Desktop Engagement - Client Level
 description: |-
   Desktop engagement data at the client level, including attribution information
+  Primary Key: Submission Date + Client ID
 owners:
 - kwindau@mozilla.com
 labels:

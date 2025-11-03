@@ -24,6 +24,6 @@ bigquery:
   clustering:
     fields:
       - event_category
-      - sample_id
       - normalized_channel
+      - sample_id
       - submission_date

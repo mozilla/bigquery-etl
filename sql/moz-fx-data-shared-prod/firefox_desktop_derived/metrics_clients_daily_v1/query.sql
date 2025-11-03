@@ -206,7 +206,8 @@ SELECT
       ),
       0
     )
-  ) AS ad_clicks_count_all
+  ) AS ad_clicks_count_all,
+  ANY_VALUE(metrics.string.system_apple_model_id) AS apple_model_id
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

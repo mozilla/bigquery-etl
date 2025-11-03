@@ -12,7 +12,6 @@ WITH first_seen AS (
 SELECT
   * EXCEPT (submission_date, app_channel, normalized_country_code, app_display_version),
   submission_date,
-  submission_date AS `date`,
   normalized_channel AS channel,
   IFNULL(normalized_country_code, "??") AS country,
   EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,

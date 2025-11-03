@@ -4,11 +4,11 @@ WITH first_install_type AS (
     REGEXP_REPLACE(`event`, 'installation.first_seen_', "") AS installer_type,
     ROW_NUMBER() OVER (PARTITION BY client_id ORDER BY submission_timestamp ASC) AS rnk
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.events_stream`--`moz-fx-data-shared-prod.telemetry.events`
+    `moz-fx-data-shared-prod.firefox_desktop.events_stream`
   WHERE
     event_category = 'installation'
     AND sample_id = 0
-    AND DATE(submission_timestamp) <= @submission_date
+    AND DATE(submission_timestamp) < @submission_date
   QUALIFY
     rnk = 1
 ),

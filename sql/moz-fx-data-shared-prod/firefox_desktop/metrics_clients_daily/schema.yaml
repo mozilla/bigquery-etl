@@ -29,3 +29,6 @@ fields:
 - name: ad_clicks_count_all
   type: INTEGER
   mode: NULLABLE
+- name: apple_model_id
+  type: STRING
+  mode: NULLABLE

@@ -1,36 +1,9 @@
+-- Generated via ./bqetl generate stable_views
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.regrets_reporter.regrets_reporter_update`
 AS
 SELECT
-  * REPLACE (
-    (
-      SELECT AS STRUCT
-        metadata.* REPLACE (
-          (
-            SELECT AS STRUCT
-              metadata.header.*,
-              SAFE.PARSE_TIMESTAMP(
-                '%a, %d %b %Y %T %Z',
-              -- Even though it's not part of the spec, many clients append
-              -- '+00:00' to their Date headers, so we strip that suffix.
-                REPLACE(metadata.header.`date`, 'GMT+00:00', 'GMT')
-              ) AS parsed_date,
-              ARRAY(
-                SELECT
-                  TRIM(t)
-                FROM
-                  UNNEST(SPLIT(metadata.header.x_source_tags, ',')) t
-              ) AS parsed_x_source_tags,
-              STRUCT(
-                TRIM(SPLIT(metadata.header.x_lb_tags, ',')[SAFE_OFFSET(0)]) AS tls_version,
-                TRIM(SPLIT(metadata.header.x_lb_tags, ',')[SAFE_OFFSET(1)]) AS tls_cipher_hex
-              ) AS parsed_x_lb_tags
-          ) AS header,
-          -- Limit the geo info we present to the country level;
-          -- https://bugzilla.mozilla.org/show_bug.cgi?id=1654078#c45
-          (SELECT AS STRUCT metadata.geo.country) AS geo
-        )
-    ) AS metadata
-  )
+  * REPLACE (mozfun.norm.metadata(metadata) AS metadata),
+  LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated,
 FROM
   `moz-fx-data-shared-prod.regrets_reporter_stable.regrets_reporter_update_v1`

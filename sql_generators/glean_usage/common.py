@@ -17,7 +17,8 @@ from bigquery_etl.schema import Schema
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from bigquery_etl.util.common import get_table_dir, render, write_sql
 
-APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
+PROBEINFO_URL = "https://probeinfo.telemetry.mozilla.org"
+APP_LISTINGS_URL = f"{PROBEINFO_URL}/v2/glean/app-listings"
 PATH = Path(os.path.dirname(__file__))
 
 # added as the result of baseline checks being added to the template,
@@ -176,6 +177,28 @@ def get_app_info() -> dict[str, list[dict]]:
     return app_info
 
 
+@cache
+def get_glean_repositories() -> list[dict]:
+    """Return a list of the Glean repositories."""
+    resp = requests.get(f"{PROBEINFO_URL}/glean/repositories")
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_glean_app_pings(v1_name: str) -> dict[str, dict]:
+    """Return a dictionary of the Glean app's pings."""
+    resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/pings")
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_glean_app_metrics(v1_name: str) -> dict[str, dict]:
+    """Return a dictionary of the Glean app's metrics."""
+    resp = requests.get(f"{PROBEINFO_URL}/glean/{v1_name}/metrics")
+    resp.raise_for_status()
+    return resp.json()
+
+
 class GleanTable:
     """Represents a generated Glean table."""
 
@@ -314,7 +337,7 @@ class GleanTable:
                 if query_sql:
                     schema = Schema(
                         DryRun(
-                            os.path.join(*table.split("."), "query.sql"),
+                            os.path.join(project_id, *table.split("."), "query.sql"),
                             content=query_sql,
                             query_parameters=self.possible_query_parameters,
                             use_cloud_function=use_cloud_function,

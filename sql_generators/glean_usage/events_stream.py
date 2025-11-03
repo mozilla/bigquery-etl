@@ -1,9 +1,18 @@
 """Generate events stream queries for Glean apps."""
 
 import re
+from collections import defaultdict
+from datetime import date, datetime, timedelta
+from functools import cache
+from typing import Optional
 
 from bigquery_etl.config import ConfigLoader
-from sql_generators.glean_usage.common import GleanTable, ping_has_metrics
+from sql_generators.glean_usage.common import (
+    GleanTable,
+    get_glean_app_metrics,
+    get_glean_repositories,
+    ping_has_metrics,
+)
 
 TARGET_TABLE_ID = "events_stream_v1"
 PREFIX = "events_stream"
@@ -85,6 +94,9 @@ class EventsStreamTable(GleanTable):
                 app_id_info["bq_dataset_family"], unversioned_table_name
             ),
             "slice_by_sample_id": slice_by_sample_id,
+            "extras_by_type": get_glean_app_event_extras_by_type(
+                app_id_info["v1_name"]
+            ),
         }
 
         super().generate_per_app_id(
@@ -117,6 +129,16 @@ class EventsStreamTable(GleanTable):
         ):
             return
 
+        extras_by_type = defaultdict(set)
+        for app_id_info in app_ids_info:
+            app_id_extras_by_type = get_glean_app_event_extras_by_type(
+                app_id_info["v1_name"]
+            )
+            for app_id_extra_type, app_id_extras in app_id_extras_by_type.items():
+                extras_by_type[app_id_extra_type].update(app_id_extras)
+
+        custom_render_kwargs = {"extras_by_type": extras_by_type}
+
         super().generate_per_app(
             project_id,
             app_name,
@@ -126,4 +148,72 @@ class EventsStreamTable(GleanTable):
             parallelism=parallelism,
             id_token=id_token,
             all_base_tables_exist=all_base_tables_exist,
+            custom_render_kwargs=custom_render_kwargs,
         )
+
+
+@cache
+def get_glean_app_repository(v1_name: str) -> dict:
+    """Return the Glean app's repository."""
+    for repository in get_glean_repositories():
+        if repository["name"] == v1_name:
+            return repository
+    raise Exception(f"No Glean repository found for app `{v1_name}`.")
+
+
+@cache
+def get_glean_dependency_v1_name(dependency: str) -> str:
+    """Return the v1 name of the Glean dependency, which may be a library."""
+    for repository in get_glean_repositories():
+        if "library_names" in repository and dependency in repository["library_names"]:
+            return repository["name"]
+    return dependency
+
+
+@cache
+def get_glean_app_event_extras_by_type(
+    v1_name: str, ping: str = "events", cutoff_date: Optional[date] = None
+) -> dict[str, set[str]]:
+    """Return the Glean app's event extra keys for the specified ping, grouped by type."""
+    extras_by_type = defaultdict(set)
+    repository = get_glean_app_repository(v1_name)
+
+    if not cutoff_date:
+        ping_delete_after_days = (
+            (
+                repository.get("moz_pipeline_metadata", {})
+                .get(ping, {})
+                .get("expiration_policy", {})
+                .get("delete_after_days")
+            )
+            or (
+                repository.get("moz_pipeline_metadata_defaults", {})
+                .get("expiration_policy", {})
+                .get("delete_after_days")
+            )
+            or 775
+        )
+        cutoff_date = date.today() - timedelta(days=(ping_delete_after_days - 1))
+
+    metrics = list(get_glean_app_metrics(v1_name).values())
+    for metric in metrics:
+        if metric["type"] == "event":
+            for history in metric["history"]:
+                last_date = datetime.fromisoformat(history["dates"]["last"]).date()
+                if ping in history["send_in_pings"] and last_date >= cutoff_date:
+                    for extra_key, extra_key_info in history["extra_keys"].items():
+                        extra_type = extra_key_info.get("type", "string")
+                        extras_by_type[extra_type].add(extra_key)
+
+    for dependency in repository["dependencies"]:
+        dependency_v1_name = get_glean_dependency_v1_name(dependency)
+        dependency_extras_by_type = get_glean_app_event_extras_by_type(
+            dependency_v1_name, ping, cutoff_date
+        )
+        for (
+            dependency_extra_type,
+            dependency_extras,
+        ) in dependency_extras_by_type.items():
+            extras_by_type[dependency_extra_type].update(dependency_extras)
+
+    return extras_by_type

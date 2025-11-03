@@ -9,7 +9,8 @@ fields:
 - mode: NULLABLE
   name: usage_profile_id
   type: STRING
-  description:
+  description: |
+    A UUID of the usage_profile.
 
 - mode: NULLABLE
   name: first_run_date

@@ -148,6 +148,7 @@ class GleanAppPingViews(GleanTable):
                                 view_name,
                                 partitioned_by="submission_timestamp",
                                 use_cloud_function=use_cloud_function,
+                                use_table_schema=True,
                                 id_token=id_token,
                             )
                             if schema.schema["fields"] != []:

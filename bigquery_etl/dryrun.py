@@ -594,6 +594,7 @@ class DryRun:
             table_name,
             client=self.client,
             id_token=self.id_token,
+            use_table_schema=True,
             partitioned_by=partitioned_by,
         )
 

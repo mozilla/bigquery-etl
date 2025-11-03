@@ -1,7 +1,7 @@
-2025-10-27:
-  start_date: 2025-04-01
-  end_date: 2025-10-26
-  reason: Inital backfill of DOH adoption rate data after table creation
+2025-11-03:
+  start_date: 2025-01-01
+  end_date: 2025-11-02
+  reason: Inital backfill of DOH adoption rate data after table changes
   watchers:
   - ascholtz@mozilla.com
   status: Initiate

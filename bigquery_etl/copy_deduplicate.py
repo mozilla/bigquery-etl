@@ -96,19 +96,33 @@ def _has_field_path(schema: List[bigquery.SchemaField], path: List[str]) -> bool
 def _select_geo(live_table: str, client: bigquery.Client) -> str:
     """Build a SELECT REPLACE clause that NULLs metadata.geo.* if applicable."""
     _, dataset_id, table_id = live_table.split(".")
-    app_id = dataset_id.removesuffix("_live")
-    included_apps = set(ConfigLoader.get("geo_deprecation", "app_id", fallback=[]))
-    included_tables = set(ConfigLoader.get("geo_deprecation", "table_id", fallback=[]))
 
-    if (app_id not in included_apps) or (table_id not in included_tables):
+    excluded_tables = set(
+        ConfigLoader.get("geo_deprecation", "skip_tables", fallback=[])
+    )
+    if any(excluded in table_id for excluded in excluded_tables):
+        return ""
+
+    app_id = dataset_id.removesuffix("_live")
+    included_apps = set(
+        ConfigLoader.get("geo_deprecation", "included_app_ids", fallback=[])
+    )
+    if app_id not in included_apps:
+        return ""
+
+    table = client.get_table(live_table)
+
+    include_client_id = table.labels.get("include_client_id") == "true"
+    if not include_client_id:
         return ""
 
     # Check schema to ensure geo fields exists
-    schema = client.get_table(live_table).schema
+    schema = table.schema
     required_fields = ("city", "subdivision1", "subdivision2")
-    if not all(
+    has_required_fields = all(
         _has_field_path(schema, ["metadata", "geo", field]) for field in required_fields
-    ):
+    )
+    if not has_required_fields:
         return ""
 
     return (

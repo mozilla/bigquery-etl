@@ -1,4 +1,4 @@
---Step 1 - get all events on mozilla.org for the submission date
+--Step 1 - get all events on firefox.com for the submission date
 WITH all_events AS (
   SELECT
     *,

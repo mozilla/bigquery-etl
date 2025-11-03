@@ -1,21 +1,20 @@
 fields:
 - name: event_date
-  type: DATE
   mode: NULLABLE
+  type: DATE
   description: The date of the event
 - name: event_name
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: The name of the event
 - name: event_timestamp
-  type: INTEGER
   mode: NULLABLE
+  type: INTEGER
   description: The timestamp of the event
 - name: ga_client_id
   type: STRING
   mode: NULLABLE
-  description: The google analytics user_pseudo_id (a unique identifier for a user
-    based on cookies).
+  description: The google analytics user_pseudo_id (a unique identifier for a user based on cookies).
 - name: ga_session_id
   type: STRING
   mode: NULLABLE
@@ -71,6 +70,7 @@ fields:
 - name: event_params
   type: RECORD
   mode: REPEATED
+  description: Event Parameters
   fields:
   - name: key
     type: STRING
@@ -79,6 +79,7 @@ fields:
   - name: value
     type: RECORD
     mode: NULLABLE
+    description: Value
     fields:
     - name: string_value
       type: STRING
@@ -96,8 +97,6 @@ fields:
       type: FLOAT
       mode: NULLABLE
       description: Double Value
-    description: Value
-  description: Event Parameters
 - name: traffic_source_name
   type: STRING
   mode: NULLABLE
@@ -221,6 +220,7 @@ fields:
 - name: page_level_2_version_info
   type: RECORD
   mode: NULLABLE
+  description: Firefox version information parsed from Page Level 2 of URL
   fields:
   - name: version
     type: STRING
@@ -242,10 +242,10 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Is Major Release
-  description: Firefox version information parsed from Page Level 2 of URL
 - name: old_version_version_info
   type: RECORD
   mode: NULLABLE
+  description: Version info parsed from old Firefox version UTM parameter
   fields:
   - name: version
     type: STRING
@@ -267,10 +267,10 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Is Major Release
-  description: Version info parsed from old Firefox version UTM parameter
 - name: new_version_version_info
   type: RECORD
   mode: NULLABLE
+  description: Version info parsed from new Firefox version UTM parameter
   fields:
   - name: version
     type: STRING
@@ -292,4 +292,3 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Is Major Release
-  description: Version info parsed from new Firefox version UTM parameter

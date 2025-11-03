@@ -272,15 +272,15 @@ with DAG(
         retries=0,
     )
 
-    firefoxdotcom_derived__firefox_whatsnew_summary__v1 = bigquery_etl_query(
-        task_id="firefoxdotcom_derived__firefox_whatsnew_summary__v1",
-        destination_table="firefox_whatsnew_summary_v1",
+    firefoxdotcom_derived__firefox_whatsnew_summary__v2 = bigquery_etl_query(
+        task_id="firefoxdotcom_derived__firefox_whatsnew_summary__v2",
+        destination_table="firefox_whatsnew_summary_v2",
         dataset_id="firefoxdotcom_derived",
         project_id="moz-fx-data-shared-prod",
-        owner="mhirose@mozilla.com",
+        owner="kwindau@mozilla.com",
         email=[
             "kwindau@mozilla.com",
-            "mhirose@mozilla.com",
+            "sherrera@mozilla.com",
             "telemetry-alerts@mozilla.com",
         ],
         date_partition_parameter="submission_date",
@@ -483,10 +483,6 @@ with DAG(
 
     checks__warn_firefoxdotcom_derived__ga_sessions__v2.set_upstream(
         firefoxdotcom_derived__ga_sessions__v2
-    )
-
-    firefoxdotcom_derived__firefox_whatsnew_summary__v1.set_upstream(
-        bigeye__firefoxdotcom_derived__www_site_hits__v1
     )
 
     firefoxdotcom_derived__ga_clients__v1.set_upstream(

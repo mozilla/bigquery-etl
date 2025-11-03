@@ -428,6 +428,9 @@ class Metadata:
         if not metadata_dict["monitoring"]:
             del metadata_dict["monitoring"]
 
+        if metadata_dict["bigquery"] is None:
+            del metadata_dict["bigquery"]
+
         file.write_text(
             yaml.dump(
                 converter.unstructure(metadata_dict),

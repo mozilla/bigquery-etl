@@ -2642,7 +2642,13 @@ SELECT
       metrics.counter.use_counter_page_webgpu_request_adapter,
       metrics.counter.use_counter_worker_dedicated_webgpu_request_adapter,
       metrics.counter.use_counter_worker_service_webgpu_request_adapter,
-      metrics.counter.use_counter_worker_shared_webgpu_request_adapter
+      metrics.counter.use_counter_worker_shared_webgpu_request_adapter,
+      metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_mo_explicit_accent,
+      metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_mover_non_explicit_accent,
+      metrics.counter.use_counter_deprecated_ops_doc_math_ml_deprecated_munder_non_explicit_accentunder,
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_mo_explicit_accent,
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_mover_non_explicit_accent,
+      metrics.counter.use_counter_deprecated_ops_page_math_ml_deprecated_munder_non_explicit_accentunder
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

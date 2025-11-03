@@ -8,9 +8,9 @@ fields:
 - name: branch
   type: STRING
   mode: NULLABLE
-- name: value
-  type: INTEGER
-  mode: NULLABLE
 - name: normalized_channel
   type: STRING
+  mode: NULLABLE
+- name: value
+  type: INTEGER
   mode: NULLABLE

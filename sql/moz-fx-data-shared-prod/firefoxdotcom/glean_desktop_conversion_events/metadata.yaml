@@ -1,0 +1,25 @@
+friendly_name: Glean Desktop Conversion Events
+description: |-
+  Get all conversion events and associated clicks in the last 28 days
+  where the click ID originated in the US
+  and the click's first seen session date is more recent than 28 days ago.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+  owner1: kwindau
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:google-managed/external-ads-datafusion
+  - workgroup:google-managed/external-ads-dataproc
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.glean_ga_desktop_conversions_v1
+  - moz-fx-data-shared-prod.static.country_codes_v1
+require_column_descriptions: false

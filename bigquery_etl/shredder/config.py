@@ -111,6 +111,9 @@ SEARCH_WITH_CONTEXT_ID = "metrics.uuid.search_with_context_id"
 USER_CHARACTERISTICS_ID = "metrics.uuid.characteristics_client_identifier"
 MOZ_ACCOUNT_ID = "metrics.string.client_association_uid"
 MOZ_ACCOUNT_ID_IOS = "metrics.string.user_client_association_uid"
+NIMBUS_USER_ID = "metrics.string.nimbus_nimbus_user_id"
+# Cirrus events only contain one unique nimbus user id per ping
+CIRRUS_EVENTS_NIMBUS_USER_ID = '(SELECT value FROM UNNEST(events), UNNEST(extra) WHERE key = "nimbus_user_id" LIMIT 1)'
 
 DESKTOP_SRC = DeleteSource(
     table="telemetry_stable.deletion_request_v4", field=CLIENT_ID
@@ -147,6 +150,10 @@ FXA_UNHASHED_SRC = DeleteSource(
 )
 FXA_FRONTEND_GLEAN_SRC = DeleteSource(
     table="accounts_frontend_stable.deletion_request_v1", field=GLEAN_CLIENT_ID
+)
+EXPERIMENTER_BACKEND_SRC = DeleteSource(
+    table="experimenter_backend_stable.data_collection_opt_out_v1",
+    field=NIMBUS_USER_ID,
 )
 # these must be in the same order as SYNC_IDS
 SYNC_SOURCES = (
@@ -683,6 +690,19 @@ DELETE_TARGETS: DeleteIndex = {
     client_id_target(table="firefox_desktop_derived.adclick_history_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.client_ltv_v1"): DESKTOP_SRC,
     client_id_target(table="firefox_desktop_derived.ltv_states_v1"): DESKTOP_SRC,
+    DeleteTarget(
+        table="experimenter_backend_stable.page_view_v1",
+        field=NIMBUS_USER_ID,
+    ): EXPERIMENTER_BACKEND_SRC,
+    # Cirrus tables use sources from the upstream glean app
+    DeleteTarget(
+        table="experimenter_cirrus_stable.enrollment_v1",
+        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    ): EXPERIMENTER_BACKEND_SRC,
+    DeleteTarget(
+        table="experimenter_cirrus_stable.enrollment_status_v1",
+        field=CIRRUS_EVENTS_NIMBUS_USER_ID,
+    ): EXPERIMENTER_BACKEND_SRC,
 }
 
 SEARCH_IGNORE_TABLES = {source.table for source in SOURCES}

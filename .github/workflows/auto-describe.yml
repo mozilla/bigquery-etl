@@ -65,12 +65,19 @@ jobs:
             const prNumber = ${{ steps.create_pr.outputs.pull-request-number }};
             const owner = context.repo.owner;
             
-            await github.rest.pulls.requestReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-              reviewers: [owner]
-            });
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                reviewers: [owner]
+              });
+              console.log('✓ Added reviewer');
+            } catch (error) {
+              console.log('⚠️ Could not add reviewer (may not be a collaborator)');
+              console.log(`Error: ${error.message}`);
+              // Don't fail the workflow
+            }
       
       - name: Comment on issue
         uses: actions/github-script@v6

@@ -1,3 +1,13 @@
+friendly_name: Glean Desktop Conversion Events
+description: |-
+  Get all conversion events and associated clicks in the last 28 days
+  where the click ID originated in the US
+  and the click's first seen session date is more recent than 28 days ago.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

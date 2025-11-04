@@ -1636,58 +1636,6 @@ first_non_empty_partition_org_mozilla_ios_lockbox_stable AS (
   GROUP BY
     table_name
 ),
-first_partition_org_mozilla_ios_tiktok_reporter_stable AS (
-  SELECT
-    table_catalog,
-    table_schema,
-    table_name,
-    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
-    total_rows AS first_partition_row_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
-),
-first_non_empty_partition_org_mozilla_ios_tiktok_reporter_stable AS (
-  SELECT
-    table_name,
-    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-    AND total_rows > 0
-  GROUP BY
-    table_name
-),
-first_partition_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable AS (
-  SELECT
-    table_catalog,
-    table_schema,
-    table_name,
-    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
-    total_rows AS first_partition_row_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
-),
-first_non_empty_partition_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable AS (
-  SELECT
-    table_name,
-    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-    AND total_rows > 0
-  GROUP BY
-    table_name
-),
 first_partition_org_mozilla_klar_stable AS (
   SELECT
     table_catalog,
@@ -1792,32 +1740,6 @@ first_non_empty_partition_org_mozilla_social_nightly_stable AS (
   GROUP BY
     table_name
 ),
-first_partition_org_mozilla_tiktokreporter_stable AS (
-  SELECT
-    table_catalog,
-    table_schema,
-    table_name,
-    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
-    total_rows AS first_partition_row_count,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_tiktokreporter_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
-),
-first_non_empty_partition_org_mozilla_tiktokreporter_stable AS (
-  SELECT
-    table_name,
-    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
-  FROM
-    `moz-fx-data-shared-prod.org_mozilla_tiktokreporter_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-    AND total_rows > 0
-  GROUP BY
-    table_name
-),
 first_partition_org_mozilla_tv_firefox_stable AS (
   SELECT
     table_catalog,
@@ -1916,58 +1838,6 @@ first_non_empty_partition_pocket_stable AS (
     PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
   FROM
     `moz-fx-data-shared-prod.pocket_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-    AND total_rows > 0
-  GROUP BY
-    table_name
-),
-first_partition_regrets_reporter_stable AS (
-  SELECT
-    table_catalog,
-    table_schema,
-    table_name,
-    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
-    total_rows AS first_partition_row_count,
-  FROM
-    `moz-fx-data-shared-prod.regrets_reporter_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
-),
-first_non_empty_partition_regrets_reporter_stable AS (
-  SELECT
-    table_name,
-    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
-  FROM
-    `moz-fx-data-shared-prod.regrets_reporter_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-    AND total_rows > 0
-  GROUP BY
-    table_name
-),
-first_partition_regrets_reporter_ucs_stable AS (
-  SELECT
-    table_catalog,
-    table_schema,
-    table_name,
-    PARSE_DATE("%Y%m%d", partition_id) AS first_partition_current,
-    total_rows AS first_partition_row_count,
-  FROM
-    `moz-fx-data-shared-prod.regrets_reporter_ucs_stable.INFORMATION_SCHEMA.PARTITIONS`
-  WHERE
-    partition_id != "__NULL__"
-  QUALIFY
-    ROW_NUMBER() OVER (PARTITION BY table_name ORDER BY partition_id) = 1
-),
-first_non_empty_partition_regrets_reporter_ucs_stable AS (
-  SELECT
-    table_name,
-    PARSE_DATE("%Y%m%d", MIN(partition_id)) AS first_non_empty_partition_current,
-  FROM
-    `moz-fx-data-shared-prod.regrets_reporter_ucs_stable.INFORMATION_SCHEMA.PARTITIONS`
   WHERE
     partition_id != "__NULL__"
     AND total_rows > 0
@@ -3330,42 +3200,6 @@ current_partitions AS (
     first_non_empty_partition_current,
     first_partition_row_count,
   FROM
-    first_partition_org_mozilla_ios_tiktok_reporter_stable
-  LEFT JOIN
-    first_non_empty_partition_org_mozilla_ios_tiktok_reporter_stable
-    USING (table_name)
-  UNION ALL
-  SELECT
-    {% if is_init() %}
-      CURRENT_DATE() - 1
-    {% else %}
-      DATE(@submission_date)
-    {% endif %} AS run_date,
-    table_catalog AS project_id,
-    table_schema AS dataset_id,
-    table_name AS table_id,
-    first_partition_current,
-    first_non_empty_partition_current,
-    first_partition_row_count,
-  FROM
-    first_partition_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable
-  LEFT JOIN
-    first_non_empty_partition_org_mozilla_ios_tiktok_reporter_tiktok_reportershare_stable
-    USING (table_name)
-  UNION ALL
-  SELECT
-    {% if is_init() %}
-      CURRENT_DATE() - 1
-    {% else %}
-      DATE(@submission_date)
-    {% endif %} AS run_date,
-    table_catalog AS project_id,
-    table_schema AS dataset_id,
-    table_name AS table_id,
-    first_partition_current,
-    first_non_empty_partition_current,
-    first_partition_row_count,
-  FROM
     first_partition_org_mozilla_klar_stable
   LEFT JOIN
     first_non_empty_partition_org_mozilla_klar_stable
@@ -3438,24 +3272,6 @@ current_partitions AS (
     first_non_empty_partition_current,
     first_partition_row_count,
   FROM
-    first_partition_org_mozilla_tiktokreporter_stable
-  LEFT JOIN
-    first_non_empty_partition_org_mozilla_tiktokreporter_stable
-    USING (table_name)
-  UNION ALL
-  SELECT
-    {% if is_init() %}
-      CURRENT_DATE() - 1
-    {% else %}
-      DATE(@submission_date)
-    {% endif %} AS run_date,
-    table_catalog AS project_id,
-    table_schema AS dataset_id,
-    table_name AS table_id,
-    first_partition_current,
-    first_non_empty_partition_current,
-    first_partition_row_count,
-  FROM
     first_partition_org_mozilla_tv_firefox_stable
   LEFT JOIN
     first_non_empty_partition_org_mozilla_tv_firefox_stable
@@ -3513,42 +3329,6 @@ current_partitions AS (
     first_partition_pocket_stable
   LEFT JOIN
     first_non_empty_partition_pocket_stable
-    USING (table_name)
-  UNION ALL
-  SELECT
-    {% if is_init() %}
-      CURRENT_DATE() - 1
-    {% else %}
-      DATE(@submission_date)
-    {% endif %} AS run_date,
-    table_catalog AS project_id,
-    table_schema AS dataset_id,
-    table_name AS table_id,
-    first_partition_current,
-    first_non_empty_partition_current,
-    first_partition_row_count,
-  FROM
-    first_partition_regrets_reporter_stable
-  LEFT JOIN
-    first_non_empty_partition_regrets_reporter_stable
-    USING (table_name)
-  UNION ALL
-  SELECT
-    {% if is_init() %}
-      CURRENT_DATE() - 1
-    {% else %}
-      DATE(@submission_date)
-    {% endif %} AS run_date,
-    table_catalog AS project_id,
-    table_schema AS dataset_id,
-    table_name AS table_id,
-    first_partition_current,
-    first_non_empty_partition_current,
-    first_partition_row_count,
-  FROM
-    first_partition_regrets_reporter_ucs_stable
-  LEFT JOIN
-    first_non_empty_partition_regrets_reporter_ucs_stable
     USING (table_name)
   UNION ALL
   SELECT

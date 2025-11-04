@@ -1,42 +1,42 @@
 ---
 # get minimums
-- client_id: client-1
-  profile_group_id: pg-27
+- client_id: client1-mins
+  profile_group_id: "client1-mins-profile"
   sample_id: 0
-  event_category: "27"
+  event_category: "client1-mins-event-category"
+  event_name: "client1-mins-event-name"
+  event: "client1-mins-event"
   first_submission_timestamp: 2025-10-27T00:00:00+00:00
   first_event_timestamp: 2025-10-27T00:00:00+00:00
   event_extra: {date: 2025-10-27}
-  app_version_major: "27"
-  normalized_channel: "27"
-  normalized_country_code: "27"
-  normalized_os: "27"
-  normalized_os_version: "27"
+- client_id: client2-mins
+  profile_group_id: "client2-mins-profile"
+  sample_id: 0
+  event_category: "client2-mins-event-category"
+  event_name: "client2-mins-event-name"
+  event: "client2-mins-event"
+  first_submission_timestamp: 2025-10-29T00:00:00+00:00
+  first_event_timestamp: 2025-10-29T00:00:00+00:00
+  event_extra: {date: 2025-10-29}
 
 # profile_group_id is not null
-- client_id: client-2
-  profile_group_id: pg-29
+- client_id: client1-pg
+  profile_group_id: "client1-pg-profile"
   sample_id: 0
-  event_category: "29"
+  event_category: "client1-pg-event-category"
+  event_name: "client1-pg-event-name"
+  event: "client1-pg-event"
   first_submission_timestamp: 2025-10-29T00:00:00+00:00
   first_event_timestamp: 2025-10-29T00:00:00+00:00
   event_extra: {date: 2025-10-29}
-  app_version_major: "29"
-  normalized_channel: "29"
-  normalized_country_code: "29"
-  normalized_os: "29"
-  normalized_os_version: "29"
 
 # event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-- client_id: client-3
-  profile_group_id: pg-29
+- client_id: client1-ec
+  profile_group_id: "client1-ec-profile"
   sample_id: 0
-  event_category: "29"
+  event_category: "client1-ec-event-category"
+  event_name: "client1-ec-event-name"
+  event: "client1-ec-event"
   first_submission_timestamp: 2025-10-29T00:00:00+00:00
   first_event_timestamp: 2025-10-29T00:00:00+00:00
   event_extra: {date: 2025-10-29}
-  app_version_major: "29"
-  normalized_channel: "29"
-  normalized_country_code: "29"
-  normalized_os: "29"
-  normalized_os_version: "29"

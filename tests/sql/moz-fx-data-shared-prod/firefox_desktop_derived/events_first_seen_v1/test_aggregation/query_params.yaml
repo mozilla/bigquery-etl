@@ -1,0 +1,10 @@
+---
+- name: submission_date
+  type: DATE
+  value: 2025-10-29
+- name: sample_id
+  type: INTEGER
+  value: 0
+- name: sampling_batch_size
+  type: INTEGER
+  value: 1

@@ -1,0 +1,22 @@
+# {{ header }}
+friendly_name: Terms of Use - Events
+description: |-
+  This dataset contains events related to Terms of Use.
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: {{ dag_name }}
+  task_group: {{ app_name }}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_timestamp
+    require_partition_filter: false
+    expiration_days: null
+monitoring:
+  enabled: true

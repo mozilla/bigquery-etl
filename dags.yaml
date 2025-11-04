@@ -430,7 +430,7 @@ bqetl_org_mozilla_firefox_derived:
 bqetl_org_mozilla_focus_derived:
   schedule_interval: 0 2 * * *
   default_args:
-    depends_on_past: false
+    r: false
     email:
       - akomar@mozilla.com
       - telemetry-alerts@mozilla.com
@@ -2550,3 +2550,21 @@ bqetl_braze_monitor_plus_users_sync:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_terms_of_use:
+  default_args:
+    depends_on_past: false
+    email:
+      - kik@mozilla.com
+      - telemetry-alerts@mozilla.com
+    email_on_failure: true
+    email_on_retry: false
+    end_date: null
+    owner: kik@mozilla.com
+    retries: 1
+    retry_delay: 30m
+    start_date: '2025-11-03'
+  description: DAG for updating terms_of_use related datasets.
+  schedule_interval: 0 6 * * *
+  tags:
+    - impact/tier_2

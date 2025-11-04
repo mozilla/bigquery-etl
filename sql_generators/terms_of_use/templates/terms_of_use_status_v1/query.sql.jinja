@@ -1,0 +1,31 @@
+-- {{ header }}
+SELECT
+    submission_timestamp,
+    client_info.client_id,
+    app_version_major, -- noticed a few entries with version 9000, should those be excluded?
+    app_version_minor,
+    app_version_patch,
+    normalized_channel,
+    normalized_country_code,
+    normalized_os,
+    normalized_os_version,
+    is_bot_generated,
+    metadata.isp.name AS isp_name,
+    -- update entry if either of these change:
+    {% if app_name == "firefox_ios" %}
+    metrics.metrics.quantity.user_terms_of_use_version_accepted AS terms_of_use_version_accepted,
+    metrics.metrics.datetime.user_terms_of_use_date_accepted AS terms_of_use_date_accepted,
+    {% elif app_name == "fenix" %}
+    metrics.metrics.quantity.terms_of_use_version AS terms_of_use_version_accepted,
+    metrics.metrics.datetime.terms_of_use_date AS terms_of_use_date_accepted,
+    {% elif app_name == "firefox_desktop" %}
+    metrics.quantity.termsofuse_version AS terms_of_use_version_accepted,
+    metrics.datetime.termsofuse_date AS terms_of_use_date_accepted,
+    metrics.metrics.uuid.legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
+    {% endif %}
+FROM
+  `{{ project_id }}.{{ app_name }}.metrics`
+WHERE
+  DATE(submission_timestamp) >= {% if app_name == "firefox_desktop" %}"2025-06-24"{% else %}"2025-09-15"{% endif %}
+  AND app_version_major >= 142
+  AND metrics.metrics.datetime.user_terms_of_use_date_accepted IS NOT NULL

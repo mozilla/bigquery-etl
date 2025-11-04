@@ -1,0 +1,27 @@
+# {{ header }}
+friendly_name: Terms of Use - Status
+description: |-
+  This dataset contains the most recent status
+
+  Cluster by: ??
+
+owners:
+  - kik@mozilla.com
+labels:
+  incremental: false -- TODO: do we want to keep history for each client and then have a layer on top getting the most recent state?
+  schedule: daily
+  table_type: client_level
+scheduling:
+  dag_name: bqetl_usage_reporting
+  task_group: {{ app_name }}
+{# bigquery:
+  time_partitioning:
+    type: day
+    field: ??
+    require_partition_filter: false -- TODO: this table will never expire because we keep overwriting it.
+    expiration_days: null
+  clustering:
+    fields:
+    - ?? #}
+monitoring:
+  enabled: true

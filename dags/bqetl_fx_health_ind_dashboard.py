@@ -224,6 +224,19 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_desktop.bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+        execution_delta=datetime.timedelta(seconds=50400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_telemetry_derived__main_remainder_1pct__v1 = ExternalTaskSensor(
         task_id="wait_for_telemetry_derived__main_remainder_1pct__v1",
         external_dag_id="bqetl_main_summary",
@@ -442,6 +455,19 @@ with DAG(
         email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=False,
+    )
+
+    firefox_desktop_derived__fx_health_ind_np_by_install_type__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__fx_health_ind_np_by_install_type__v1",
+        destination_table='fx_health_ind_np_by_install_type_v1${{ macros.ds_format(macros.ds_add(ds, -7), "%Y-%m-%d", "%Y%m%d") }}',
+        dataset_id="firefox_desktop_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kwindau@mozilla.com",
+        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter=None,
+        depends_on_past=False,
+        parameters=["fsd:DATE:{{macros.ds_add(ds, -7)}}"]
+        + ["submission_date:DATE:{{ds}}"],
     )
 
     firefox_desktop_derived__fx_health_ind_page_reloads__v1 = bigquery_etl_query(
@@ -1233,6 +1259,14 @@ with DAG(
 
     firefox_desktop_derived__fx_health_ind_new_profiles_by_os__v1.set_upstream(
         wait_for_bigeye__firefox_desktop_derived__desktop_dau_distribution_id_history__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_np_by_install_type__v1.set_upstream(
+        wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1
+    )
+
+    firefox_desktop_derived__fx_health_ind_np_by_install_type__v1.set_upstream(
+        wait_for_firefox_desktop_derived__events_stream__v1
     )
 
     firefox_desktop_derived__fx_health_ind_page_reloads__v1.set_upstream(

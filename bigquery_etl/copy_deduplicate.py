@@ -125,20 +125,20 @@ def _select_geo(live_table: str, client: bigquery.Client) -> str:
     if not has_required_fields:
         return ""
 
-    return (
-        " REPLACE ("
-        " (SELECT AS STRUCT"
-        "    metadata.* REPLACE ("
-        "      (SELECT AS STRUCT"
-        "         metadata.geo.* REPLACE ("
-        "           CAST(NULL AS STRING) AS city,"
-        "           CAST(NULL AS STRING) AS subdivision1,"
-        "           CAST(NULL AS STRING) AS subdivision2"
-        "         )"
-        "      ) AS geo"
-        "    )"
-        " ) AS metadata)"
-    )
+    return """
+        REPLACE (
+        (SELECT AS STRUCT
+           metadata.* REPLACE (
+             (SELECT AS STRUCT
+                metadata.geo.* REPLACE (
+                  CAST(NULL AS STRING) AS city,
+                  CAST(NULL AS STRING) AS subdivision1,
+                  CAST(NULL AS STRING) AS subdivision2
+                )
+             ) AS geo
+           )
+        ) AS metadata)
+    """
 
 
 def _get_query_job_configs(

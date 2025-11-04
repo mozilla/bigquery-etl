@@ -9,6 +9,7 @@ or to process only a specific list of tables.
 
 import json
 import logging
+import re
 from datetime import datetime, timedelta
 from functools import partial
 from itertools import groupby
@@ -100,12 +101,12 @@ def _select_geo(live_table: str, client: bigquery.Client) -> str:
     excluded_tables = set(
         ConfigLoader.get("geo_deprecation", "skip_tables", fallback=[])
     )
-    if any(excluded in table_id for excluded in excluded_tables):
+    if re.sub(r"_v\d+$", "", table_id) in excluded_tables:
         return ""
 
     app_id = dataset_id.removesuffix("_live")
     included_apps = set(
-        ConfigLoader.get("geo_deprecation", "included_app_ids", fallback=[])
+        ConfigLoader.get("geo_deprecation", "include_app_ids", fallback=[])
     )
     if app_id not in included_apps:
         return ""

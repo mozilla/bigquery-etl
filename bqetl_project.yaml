@@ -526,7 +526,7 @@ generate:
     - firefox_desktop_background_tasks
 
 geo_deprecation:
-  included_app_ids:
+  include_app_ids:
   - org_mozilla_ios_klar
   skip_tables:
   - newtab

@@ -19,11 +19,13 @@ import yaml
 from pathos.multiprocessing import ProcessingPool
 
 from bigquery_etl.cli.utils import use_cloud_function_option
-from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
-from bigquery_etl.dryrun import get_id_token
 from bigquery_etl.config import ConfigLoader
+from bigquery_etl.dryrun import get_id_token
+from bigquery_etl.schema.stable_table_schema import SchemaFile, get_stable_table_schemas
 
-BOT_GENERATED = 'LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated'
+BOT_GENERATED = (
+    'LOWER(IFNULL(metadata.isp.name, "")) = "browserstack" AS is_bot_generated'
+)
 
 VIEW_QUERY_TEMPLATE = """\
 -- Generated via ./bqetl generate stable_views
@@ -63,10 +65,10 @@ SELECT
   * REPLACE(
     {replacements}),
   `moz-fx-data-shared-prod`.udf.funnel_derived_installs(
-        silent, 
-        submission_timestamp, 
-        build_id, 
-        attribution, 
+        silent,
+        submission_timestamp,
+        build_id,
+        attribution,
         distribution_id
     ) AS funnel_derived,
   `moz-fx-data-shared-prod`.udf.distribution_model_installs(distribution_id) AS distribution_model,
@@ -145,7 +147,7 @@ def write_dataset_metadata_if_not_exists(
 
 
 def write_view_if_not_exists(
-    target_project: str, sql_dir: Path, id_token=None, schema: SchemaFile = None
+    target_project: str, sql_dir: Path, schema: SchemaFile, id_token=None
 ):
     """If a view.sql does not already exist, write one to the target directory."""
     # add imports here to run in multiple processes via pathos
@@ -224,7 +226,7 @@ def write_view_if_not_exists(
                 for metrics_datetime_field in metrics_field["fields"]
             ]:
                 datetime_replacements_clause = (
-                    f"REPLACE (STRUCT("
+                    "REPLACE (STRUCT("
                     + ", ".join(
                         field_select
                         for field in metrics_datetime_fields
@@ -287,7 +289,7 @@ def write_view_if_not_exists(
             )
 
             replacements += [
-                f"(SELECT AS STRUCT "
+                "(SELECT AS STRUCT "
                 + ", ".join([metrics_select] + metrics_2_aliases)
                 + ") AS metrics"
             ]
@@ -461,14 +463,14 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
         "generate", "stable_views", "skip_datasets", fallback=[]
     )
     schemas = [
-        schema for schema in
-        get_stable_table_schemas()
-        if schema.bq_table_unversioned not in skipped_tables_config.get(schema.bq_dataset_family, [])
+        schema
+        for schema in get_stable_table_schemas()
+        if schema.bq_table_unversioned
+        not in skipped_tables_config.get(schema.bq_dataset_family, [])
         and schema.bq_dataset_family not in skipped_datasets_config
     ]
     one_schema_per_dataset = [
-        last
-        for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
+        last for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
     ]
 
     id_token = get_id_token()
@@ -476,7 +478,10 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
     with ProcessingPool(parallelism) as pool:
         pool.map(
             partial(
-                write_view_if_not_exists, target_project, Path(output_dir), id_token
+                write_view_if_not_exists,
+                target_project,
+                Path(output_dir),
+                id_token=id_token,
             ),
             schemas,
         )

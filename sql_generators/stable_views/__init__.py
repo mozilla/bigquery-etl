@@ -457,18 +457,18 @@ def generate(target_project, output_dir, log_level, parallelism, use_cloud_funct
     skipped_tables_config = ConfigLoader.get(
         "generate", "stable_views", "skip_tables", fallback={}
     )
+    skipped_datasets_config = ConfigLoader.get(
+        "generate", "stable_views", "skip_datasets", fallback=[]
+    )
     schemas = [
         schema for schema in
         get_stable_table_schemas()
         if schema.bq_table_unversioned not in skipped_tables_config.get(schema.bq_dataset_family, [])
+        and schema.bq_dataset_family not in skipped_datasets_config
     ]
     one_schema_per_dataset = [
         last
         for k, (*_, last) in groupby(schemas, lambda t: t.bq_dataset_family)
-        if k
-        not in ConfigLoader.get(
-            "generate", "stable_views", "skip_datasets", fallback=[]
-        )
     ]
 
     id_token = get_id_token()

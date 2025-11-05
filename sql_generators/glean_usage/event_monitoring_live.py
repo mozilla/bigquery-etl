@@ -6,12 +6,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Set
 
-import requests
-
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.schema.stable_table_schema import get_stable_table_schemas
 from sql_generators.glean_usage.common import (
     GleanTable,
+    get_glean_app_metrics,
+    get_glean_app_pings,
     get_table_dir,
     render,
     table_names_from_baseline,
@@ -22,9 +22,6 @@ TARGET_TABLE_ID = "event_monitoring_live_v1"
 TARGET_DATASET_CROSS_APP = "monitoring"
 PREFIX = "event_monitoring"
 PATH = Path(os.path.dirname(__file__))
-GLEAN_APP_BASE_URL = "https://probeinfo.telemetry.mozilla.org/glean/{app_name}"
-METRICS_INFO_URL = f"{GLEAN_APP_BASE_URL}/metrics"
-PING_INFO_URL = f"{GLEAN_APP_BASE_URL}/pings"
 
 
 class EventMonitoringLive(GleanTable):
@@ -54,15 +51,11 @@ class EventMonitoringLive(GleanTable):
     ) -> Set[str]:
         """Get tables for the given app that receive event type metrics."""
         pings = set()
-        metrics_resp = requests.get(METRICS_INFO_URL.format(app_name=v1_name))
-        metrics_resp.raise_for_status()
-        metrics_json = metrics_resp.json()
+        metrics_json = get_glean_app_metrics(v1_name)
 
         min_pings = set()
         if skip_min_ping:
-            ping_resp = requests.get(PING_INFO_URL.format(app_name=v1_name))
-            ping_resp.raise_for_status()
-            ping_json = ping_resp.json()
+            ping_json = get_glean_app_pings(v1_name)
             min_pings = {
                 name
                 for name, info in ping_json.items()

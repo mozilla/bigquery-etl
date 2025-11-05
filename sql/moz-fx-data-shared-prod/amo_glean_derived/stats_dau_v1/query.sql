@@ -13,7 +13,7 @@ WITH unioned AS (
     *,
     'Desktop' AS app
   FROM
-    `moz-fx-data-shared-prod.amo_glean.desktop_addons_by_client`
+    `moz-fx-data-shared-prod.amo_glean.firefox_desktop_addons_by_client`
   UNION ALL
   SELECT
     *,

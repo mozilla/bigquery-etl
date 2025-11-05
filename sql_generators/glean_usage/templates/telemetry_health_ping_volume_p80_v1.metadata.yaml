@@ -1,0 +1,19 @@
+friendly_name: Telemetry Health Ping Volume
+description: |
+  Calculates the 80th percentile of ping volume per client per day.
+owners:
+  - tlong@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+{%- if not deprecated_app %}
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+{%- endif %}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

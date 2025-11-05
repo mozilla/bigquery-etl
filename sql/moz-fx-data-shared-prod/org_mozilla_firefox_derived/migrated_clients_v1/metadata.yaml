@@ -21,4 +21,3 @@ bigquery:
   clustering:
     fields:
     - fenix_client_id
-references: {}

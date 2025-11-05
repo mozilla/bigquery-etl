@@ -21,5 +21,4 @@ bigquery:
     require_partition_filter: false
     expiration_days: null
   range_partitioning: null
-references: {}
 require_column_descriptions: true

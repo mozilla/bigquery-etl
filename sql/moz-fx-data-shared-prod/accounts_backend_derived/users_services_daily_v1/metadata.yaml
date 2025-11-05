@@ -16,4 +16,3 @@ bigquery:
     expiration_days: null
   clustering:
     fields: [service, country]
-references: {}

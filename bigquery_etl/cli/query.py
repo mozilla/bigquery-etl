@@ -217,6 +217,18 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
             + "\n"
         )
 
+        safe_owner = owner.lower().split("@")[0]
+
+        view_metadata_file = view_path / "metadata.yaml"
+        view_metadata = Metadata(
+            friendly_name=string.capwords(name.replace("_", " ")),
+            description="Please provide a description for the query",
+            owners=[owner],
+            labels={"owner": safe_owner},
+        )
+
+        view_metadata.write(view_metadata_file)
+
     # create query.sql file
     query_file = derived_path / "query.sql"
     query_file.write_text(
@@ -540,6 +552,7 @@ def _backfill_query(
         ),
         query_arguments=arguments,
         billing_project=billing_project,
+        ignore_public_dataset=True,
     )
 
     # Run checks on the query
@@ -945,6 +958,7 @@ def _run_query(
     query_arguments,
     addl_templates: Optional[dict] = None,
     billing_project: Optional[str] = None,
+    ignore_public_dataset: bool = False,
 ):
     """Run a query.
 
@@ -952,6 +966,9 @@ def _run_query(
     do not have a project id qualifier.
     billing_project is the project to run the query in for the purposes of billing and
     slot reservation selection.  This is project_id if billing_project is not set
+    ignore_public_dataset is a flag to ignore public dataset metadata checks and
+    destination table overrides. This is useful when running backfills where you want to
+    write to the standard (non-public) destination table.
     """
     if billing_project is not None:
         query_arguments.append(f"--project_id={billing_project}")
@@ -967,7 +984,7 @@ def _run_query(
         query_file = Path(query_file)
         try:
             metadata = Metadata.of_query_file(query_file)
-            if metadata.is_public_bigquery():
+            if not ignore_public_dataset and metadata.is_public_bigquery():
                 if not validate_metadata.validate_public_data(metadata, query_file):
                     sys.exit(1)
 

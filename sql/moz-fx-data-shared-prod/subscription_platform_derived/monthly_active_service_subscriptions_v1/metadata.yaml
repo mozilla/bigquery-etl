@@ -35,5 +35,4 @@ bigquery:
   clustering:
     fields:
     - service_id
-references: {}
 require_column_descriptions: true

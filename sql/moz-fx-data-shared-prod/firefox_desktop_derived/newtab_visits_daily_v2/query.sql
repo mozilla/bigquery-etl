@@ -630,12 +630,80 @@ topsites_component_summary AS (
     submission_date,
     client_id,
     newtab_visit_id
+),
+content_components AS (
+  SELECT
+    submission_date,
+    client_id,
+    mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
+    SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS position,
+    SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
+    SAFE_CAST(mozfun.map.get_key(event_details, 'section_position') AS INT) AS section_position,
+    mozfun.map.get_key(event_details, 'format') AS format,
+    SAFE_CAST(
+      mozfun.map.get_key(event_details, 'is_section_followed') AS BOOLEAN
+    ) AS is_section_followed,
+    COUNTIF(event_name = 'impression') AS impression_count,
+    COUNTIF(event_name = 'click') AS click_count,
+    COUNTIF(event_name = 'dismiss') AS dismissal_count,
+    COUNTIF(
+      event_name = 'thumb_voting_interaction'
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_up') AS BOOLEAN)
+    ) AS thumbs_up_count,
+    COUNTIF(
+      event_name = 'thumb_voting_interaction'
+      AND SAFE_CAST(mozfun.map.get_key(event_details, 'thumbs_down') AS BOOLEAN)
+    ) AS thumbs_down_count,
+  FROM
+    events_unnested
+  WHERE
+    event_category = 'pocket'
+    AND event_name IN ('dismiss', 'click', 'impression', 'thumb_voting_interaction')
+  GROUP BY
+    submission_date,
+    client_id,
+    newtab_visit_id,
+    position,
+    is_sponsored,
+    section_position,
+    format,
+    is_section_followed
+),
+content_component_summary AS (
+  SELECT
+    submission_date,
+    client_id,
+    newtab_visit_id,
+    ARRAY_AGG(
+      STRUCT(
+        position,
+        is_sponsored,
+        section_position,
+        format,
+        is_section_followed,
+        impression_count,
+        click_count,
+        dismissal_count,
+        thumbs_up_count,
+        thumbs_down_count
+      )
+    ) AS content_position_components,
+  FROM
+    content_components
+  GROUP BY
+    submission_date,
+    client_id,
+    newtab_visit_id
 )
 SELECT
   core_visit_metrics.*,
-  topsites_component_summary.topsite_tile_components
+  topsites_component_summary.topsite_tile_components,
+  content_component_summary.content_position_components
 FROM
   core_visit_metrics
 LEFT JOIN
   topsites_component_summary
+  USING (submission_date, client_id, newtab_visit_id)
+LEFT JOIN
+  content_component_summary
   USING (submission_date, client_id, newtab_visit_id)

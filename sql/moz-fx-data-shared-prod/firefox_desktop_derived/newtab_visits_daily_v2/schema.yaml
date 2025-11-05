@@ -301,3 +301,85 @@ fields:
 - name: newtab_window_inner_width
   type: INTEGER
   description: The width of the browser window in pixels
+- name: topsite_tile_components
+  type: RECORD
+  mode: REPEATED
+  description: Detailed metrics for individual topsite tiles during this visit
+  fields:
+  - name: tile_id
+    type: STRING
+    mode: NULLABLE
+    description: Unique identifier for the topsite tile
+  - name: position
+    type: INTEGER
+    mode: NULLABLE
+    description: Position of the tile on the new tab page
+  - name: is_sponsored
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the tile is a sponsored topsite
+  - name: impression_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of impressions for this tile
+  - name: click_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of clicks on this tile
+  - name: dismissal_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of dismissals for this tile
+  - name: pin_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of times this tile was pinned
+  - name: unpin_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of times this tile was unpinned
+- name: content_position_components
+  type: RECORD
+  mode: REPEATED
+  description: Detailed metrics for Pocket content at specific positions during this visit
+  fields:
+  - name: position
+    type: INTEGER
+    mode: NULLABLE
+    description: Position of the content item on the new tab page
+  - name: is_sponsored
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the content is sponsored
+  - name: section_position
+    type: INTEGER
+    mode: NULLABLE
+    description: Position of the section containing this content
+  - name: format
+    type: STRING
+    mode: NULLABLE
+    description: Format of the content item
+  - name: is_section_followed
+    type: BOOLEAN
+    mode: NULLABLE
+    description: Whether the section is followed by the user
+  - name: impression_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of impressions for this content item
+  - name: click_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of clicks on this content item
+  - name: dismissal_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of dismissals for this content item
+  - name: thumbs_up_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of thumbs up votes for this content
+  - name: thumbs_down_count
+    type: INTEGER
+    mode: NULLABLE
+    description: Number of thumbs down votes for this content

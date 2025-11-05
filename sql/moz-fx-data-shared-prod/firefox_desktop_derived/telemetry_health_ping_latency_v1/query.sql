@@ -1,6 +1,6 @@
 WITH sample AS (
   SELECT
-    normalized_channel AS channel,
+    normalized_channel,
     metadata.header.parsed_date,
     ping_info.parsed_end_time,
     submission_timestamp,
@@ -12,7 +12,7 @@ WITH sample AS (
 ),
 latency_quantiles AS (
   SELECT
-    channel,
+    normalized_channel,
     DATE(submission_timestamp) AS submission_date,
     APPROX_QUANTILES(
       TIMESTAMP_DIFF(parsed_date, parsed_end_time, SECOND),
@@ -32,7 +32,7 @@ latency_quantiles AS (
     ALL
 )
 SELECT
-  channel,
+  normalized_channel,
   submission_date,
   collection_to_submission_latency[OFFSET(95)] AS collection_to_submission_latency_p95,
   collection_to_submission_latency[OFFSET(50)] AS collection_to_submission_latency_median,

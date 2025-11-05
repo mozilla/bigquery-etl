@@ -1,8 +1,5 @@
 fields:
-  - name: application
-    type: STRING
-    mode: REQUIRED
-  - name: channel
+  - name: normalized_channel
     type: STRING
     mode: REQUIRED
   - name: submission_date

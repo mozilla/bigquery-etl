@@ -1,0 +1,8 @@
+friendly_name: Telemetry Health Ping Latency
+description: |-
+    Reports latency percentiles (p95, median) for collection-to-submission, submission-to-ingestion, and collection-to-ingestion for telemetry pings per day.
+owners:
+- tlong@mozilla.com
+labels:
+  owner: tlong
+require_column_descriptions: false

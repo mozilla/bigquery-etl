@@ -1,11 +1,11 @@
 -- Query for telemetry health ping volume p80
 WITH sample AS (
   SELECT
-    normalized_channel,
+    normalized_channel AS channel,
     DATE(submission_timestamp) AS submission_date,
     COUNT(1) AS ping_count
   FROM
-    `moz-fx-data-shared-prod.firefox_desktop.baseline`
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     sample_id = 0
     AND DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)

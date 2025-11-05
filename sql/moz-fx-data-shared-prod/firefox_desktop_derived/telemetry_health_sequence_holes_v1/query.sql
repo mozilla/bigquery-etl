@@ -1,7 +1,7 @@
 -- Query for telemetry health sequence holes
 WITH sample AS (
   SELECT
-    normalized_channel AS channel,
+    normalized_channel,
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     ping_info.seq AS sequence_number
@@ -13,7 +13,7 @@ WITH sample AS (
 ),
 lagged AS (
   SELECT
-    channel,
+    normalized_channel,
     submission_date,
     client_id,
     sequence_number,
@@ -29,7 +29,7 @@ lagged AS (
 ),
 per_client_day AS (
   SELECT
-    channel,
+    normalized_channel,
     submission_date,
     client_id,
     -- A client has a gap on that date if any step isn't prev+1.
@@ -40,7 +40,7 @@ per_client_day AS (
     ALL
 )
 SELECT
-  channel,
+  normalized_channel,
   submission_date,
   COUNTIF(has_gap) AS clients_with_sequence_gaps_1pct,
   COUNT(DISTINCT client_id) AS total_unique_clients_1pct,

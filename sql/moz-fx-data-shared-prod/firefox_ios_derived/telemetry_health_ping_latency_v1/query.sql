@@ -5,7 +5,7 @@ WITH sample AS (
     ping_info.parsed_end_time,
     submission_timestamp,
   FROM
-    `moz-fx-data-shared-prod.fenix.baseline`
+    `moz-fx-data-shared-prod.firefox_ios.baseline`
   WHERE
     sample_id = 0
     AND DATE(submission_timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)

@@ -117,25 +117,27 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
 
     # `View.schema` prioritizes the configured schema over the dryrun schema, but here
     # we prioritize the dryrun schema because the `schema.yaml` file might be out of date.
-    schema = view.dryrun_schema or view.configured_schema
-    if view.dryrun_schema and view.configured_schema:
-        try:
-            schema.merge(
-                view.configured_schema,
-                attributes=["description"],
-                add_missing_fields=False,
-                ignore_missing_fields=True,
-            )
-        except Exception as e:
+    schema = None
+    if view.configured_schema:
+        schema = view.dryrun_schema or view.configured_schema
+        if view.dryrun_schema and view.configured_schema:
+            try:
+                schema.merge(
+                    view.configured_schema,
+                    attributes=["description"],
+                    add_missing_fields=False,
+                    ignore_missing_fields=True,
+                )
+            except Exception as e:
+                logging.warning(
+                    f"Error enriching {view.view_identifier} view schema from {view.schema_path}: {e}"
+                )
+        if not schema:
             logging.warning(
-                f"Error enriching {view.view_identifier} view schema from {view.schema_path}: {e}"
+                f"Couldn't get schema for {view.view_identifier} potentially "
+                f"due to dry-run error. Won't write yaml."
             )
-    if not schema:
-        logging.warning(
-            f"Couldn't get schema for {view.view_identifier} potentially "
-            f"due to dry-run error. Won't write yaml."
-        )
-        return
+            return
 
     # Optionally enrich the view schema if we have a valid table reference
     if reference_path:
@@ -143,6 +145,7 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
         if reference_schema_file.exists():
             try:
                 reference_schema = Schema.from_schema_file(reference_schema_file)
+                schema = schema or view.dryrun_schema or view.configured_schema
                 schema.merge(
                     reference_schema,
                     attributes=["description"],
@@ -153,8 +156,8 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
                 logging.warning(
                     f"Error enriching {view.view_identifier} view schema from {reference_schema_file}: {e}"
                 )
-
-    schema.to_yaml_file(view_directory / SCHEMA_FILE)
+    if schema:
+        schema.to_yaml_file(view_directory / SCHEMA_FILE)
 
 
 @click.command("generate")

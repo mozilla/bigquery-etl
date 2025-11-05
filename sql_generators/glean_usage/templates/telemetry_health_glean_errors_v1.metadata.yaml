@@ -1,0 +1,19 @@
+friendly_name: Telemetry Health Glean Errors
+description: |
+  Counts the number of Glean metrics with recording errors that exceed 1% of clients per day.
+owners:
+  - tlong@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+{%- if not deprecated_app %}
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+{%- endif %}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

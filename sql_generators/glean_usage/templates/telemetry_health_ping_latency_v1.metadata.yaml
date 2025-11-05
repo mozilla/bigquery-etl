@@ -1,0 +1,19 @@
+friendly_name: Telemetry Health Ping Latency
+description: |
+  Reports latency percentiles (p95, median) for collection-to-submission, submission-to-ingestion, and collection-to-ingestion for telemetry pings per day.
+owners:
+  - tlong@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+{%- if not deprecated_app %}
+scheduling:
+  dag_name: bqetl_glean_usage
+  task_group: {{ app_name }}
+{%- endif %}
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

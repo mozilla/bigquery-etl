@@ -26,6 +26,10 @@ from sql_generators.glean_usage import (
     glean_app_ping_views,
     metrics_clients_daily,
     metrics_clients_last_seen,
+    telemetry_health_glean_errors,
+    telemetry_health_ping_latency,
+    telemetry_health_ping_volume,
+    telemetry_health_sequence_holes,
 )
 from sql_generators.glean_usage.common import get_app_info, list_tables
 
@@ -43,6 +47,10 @@ GLEAN_TABLES = [
     event_error_monitoring.EventErrorMonitoring(),
     event_flow_monitoring.EventFlowMonitoring(),
     events_stream.EventsStreamTable(),
+    telemetry_health_glean_errors.TelemetryHealthGleanErrorsTable(),
+    telemetry_health_ping_latency.TelemetryHealthPingLatencyTable(),
+    telemetry_health_ping_volume.TelemetryHealthPingVolumeTable(),
+    telemetry_health_sequence_holes.TelemetryHealthSequenceHolesTable(),
 ]
 
 

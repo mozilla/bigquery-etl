@@ -1,0 +1,54 @@
+-- sap_events_clients_ad_enterprise_cte
+SELECT
+  sap_events_with_client_info_cte.client_id,
+  sap_events_with_client_info_cte.submission_date,
+  sap_events_with_client_info_cte.normalized_engine,
+  sap_events_with_client_info_cte.partner_code,
+  sap_events_with_client_info_cte.source,
+-- sap_events_with_client_info_cte.source as search_access_point, -- rename
+  sap_events_with_client_info_cte.sample_id,
+  sap_events_with_client_info_cte.profile_group_id,
+  sap_events_with_client_info_cte.legacy_telemetry_client_id,
+  sap_events_with_client_info_cte.country,
+  sap_events_with_client_info_cte.app_version,
+  sap_events_with_client_info_cte.channel,
+  sap_events_with_client_info_cte.normalized_channel,
+  sap_events_with_client_info_cte.locale,
+  sap_events_with_client_info_cte.os,
+  sap_events_with_client_info_cte.normalized_os,
+  sap_events_with_client_info_cte.os_version,
+  sap_events_with_client_info_cte.normalized_os_version,
+  sap_events_with_client_info_cte.windows_build_number,
+  sap_events_with_client_info_cte.distribution_id,
+  sap_events_with_client_info_cte.profile_creation_date,
+  sap_events_with_client_info_cte.region_home_region,
+  sap_events_with_client_info_cte.usage_is_default_browser,
+  sap_events_with_client_info_cte.search_engine_default_display_name,
+  sap_events_with_client_info_cte.search_engine_default_load_path,
+  sap_events_with_client_info_cte.search_engine_default_partner_code,
+  sap_events_with_client_info_cte.search_engine_default_provider_id,
+  sap_events_with_client_info_cte.search_engine_default_submission_url,
+  sap_events_with_client_info_cte.search_engine_default_overridden_by_third_party,
+  sap_events_with_client_info_cte.search_engine_private_display_name,
+  sap_events_with_client_info_cte.search_engine_private_load_path,
+  sap_events_with_client_info_cte.search_engine_private_partner_code,
+  sap_events_with_client_info_cte.search_engine_private_provider_id,
+  sap_events_with_client_info_cte.search_engine_private_submission_url,
+  sap_events_with_client_info_cte.search_engine_private_overridden_by_third_party,
+  sap_events_with_client_info_cte.provider_name,
+  sap_events_with_client_info_cte.provider_id,
+  sap_events_with_client_info_cte.overridden_by_third_party,
+  sap_events_with_client_info_cte.subsession_start_time,
+  sap_events_with_client_info_cte.subsession_end_time,
+  sap_events_with_client_info_cte.subsession_counter,
+  sap_events_with_client_info_cte.experiments,
+  clients_with_adblocker_addons_cte.has_adblocker_addon,
+  sap_is_enterprise_cte.policies_is_enterprise
+FROM
+  sap_events_with_client_info_cte
+LEFT JOIN
+  clients_with_adblocker_addons_cte
+  USING (client_id, submission_date)
+LEFT JOIN
+  sap_is_enterprise_cte
+  USING (client_id, submission_date)

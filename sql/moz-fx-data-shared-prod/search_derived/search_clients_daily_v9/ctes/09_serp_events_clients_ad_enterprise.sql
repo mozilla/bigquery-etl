@@ -1,0 +1,53 @@
+-- serp_events_clients_ad_enterprise_cte
+SELECT
+  serp_events_with_client_info_cte.client_id,
+  serp_events_with_client_info_cte.submission_date,
+  serp_events_with_client_info_cte.serp_provider_id,
+  serp_events_with_client_info_cte.partner_code,
+  serp_events_with_client_info_cte.serp_search_access_point,
+  serp_events_with_client_info_cte.sample_id,
+  serp_events_with_client_info_cte.profile_group_id,
+  serp_events_with_client_info_cte.legacy_telemetry_client_id,
+  serp_events_with_client_info_cte.country,
+  serp_events_with_client_info_cte.app_version,
+  serp_events_with_client_info_cte.channel,
+  serp_events_with_client_info_cte.normalized_channel,
+  serp_events_with_client_info_cte.locale,
+  serp_events_with_client_info_cte.os,
+  serp_events_with_client_info_cte.normalized_os,
+  serp_events_with_client_info_cte.os_version,
+  serp_events_with_client_info_cte.normalized_os_version,
+  serp_events_with_client_info_cte.os_version_major,
+  serp_events_with_client_info_cte.os_version_minor,
+  serp_events_with_client_info_cte.windows_build_number,
+  serp_events_with_client_info_cte.distribution_id,
+  serp_events_with_client_info_cte.profile_creation_date,
+  serp_events_with_client_info_cte.region_home_region,
+  serp_events_with_client_info_cte.usage_is_default_browser,
+  serp_events_with_client_info_cte.search_engine_default_display_name,
+  serp_events_with_client_info_cte.search_engine_default_load_path,
+  serp_events_with_client_info_cte.search_engine_default_partner_code,
+  serp_events_with_client_info_cte.search_engine_default_provider_id,
+  serp_events_with_client_info_cte.search_engine_default_submission_url,
+  serp_events_with_client_info_cte.search_engine_default_overridden_by_third_party,
+  serp_events_with_client_info_cte.search_engine_private_display_name,
+  serp_events_with_client_info_cte.search_engine_private_load_path,
+  serp_events_with_client_info_cte.search_engine_private_partner_code,
+  serp_events_with_client_info_cte.search_engine_private_provider_id,
+  serp_events_with_client_info_cte.search_engine_private_submission_url,
+  serp_events_with_client_info_cte.search_engine_private_overridden_by_third_party,
+  serp_events_with_client_info_cte.overridden_by_third_party,
+  serp_events_with_client_info_cte.subsession_start_time,
+  serp_events_with_client_info_cte.subsession_end_time,
+  serp_events_with_client_info_cte.subsession_counter,
+  serp_events_with_client_info_cte.experiments,
+  clients_with_adblocker_addons_cte.has_adblocker_addon,
+  serp_is_enterprise_cte.policies_is_enterprise
+FROM
+  serp_events_with_client_info_cte
+LEFT JOIN
+  clients_with_adblocker_addons_cte
+  USING (client_id, submission_date)
+LEFT JOIN
+  serp_is_enterprise_cte
+  USING (client_id, submission_date)

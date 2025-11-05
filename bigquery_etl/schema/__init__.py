@@ -59,48 +59,28 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None, use_table_schema=False, *args, **kwargs):
+    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
         """Get the schema for a BigQuery table."""
+        query = f"SELECT * FROM `{project}.{dataset}.{table}`"
 
-        if not use_table_schema:
-            query = f"SELECT * FROM `{project}.{dataset}.{table}`"
+        if partitioned_by:
+            query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
 
-            if partitioned_by:
-                query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
-
-            try:
-                return cls(
-                    dryrun.DryRun(
-                        os.path.join(project, dataset, table, "query.sql"),
-                        query,
-                        project=project,
-                        dataset=dataset,
-                        table=table,
-                        *args,
-                        **kwargs,
-                    ).get_schema()
-                )
-            except Exception as e:
-                print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
-                return cls({"fields": []})
-        else:
-            query = "SELECT 1" # placeholder query
-
-            try:
-                return cls(
-                    dryrun.DryRun(
-                        os.path.join(project, dataset, table, "query.sql"),
-                        query,
-                        project=project,
-                        dataset=dataset,
-                        table=table,
-                        *args,
-                        **kwargs,
-                    ).get_table_schema()
-                )
-            except Exception as e:
-                print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
-                return cls({"fields": []})
+        try:
+            return cls(
+                dryrun.DryRun(
+                    os.path.join(project, dataset, table, "query.sql"),
+                    query,
+                    project=project,
+                    dataset=dataset,
+                    table=table,
+                    *args,
+                    **kwargs,
+                ).get_schema()
+            )
+        except Exception as e:
+            print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")
+            return cls({"fields": []})
 
     def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""

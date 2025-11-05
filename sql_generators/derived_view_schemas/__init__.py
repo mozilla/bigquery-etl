@@ -106,6 +106,30 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
         if reference_dataset.endswith("_stable"):
             return
 
+    # If view is just "SELECT * FROM reference_table",
+    # copy the reference schema directly without dry-running
+    if reference_path:
+        reference_schema_file = reference_path / SCHEMA_FILE
+        if reference_schema_file.exists():
+            import re
+            view_content = view_file.read_text()
+
+            # Strip comments before matching
+            cleaned = re.sub(r'--[^\n]*', '', view_content)
+            # Remove block comments (/* ... */)
+            cleaned = re.sub(r'/\*.*?\*/', '', cleaned, flags=re.DOTALL)
+
+            # Match pattern: CREATE OR REPLACE VIEW `...` AS SELECT * FROM `...`
+            pattern = r'^\s*CREATE\s+OR\s+REPLACE\s+VIEW\s+`[^`]+`\s+AS\s+SELECT\s+\*\s+FROM\s+`[^`]+`\s*$'
+            if re.match(pattern, cleaned, re.IGNORECASE | re.DOTALL):
+                logging.info(f"Simple SELECT * view detected for {view_file}, copying reference schema directly")
+                try:
+                    reference_schema = Schema.from_schema_file(reference_schema_file)
+                    reference_schema.to_yaml_file(view_directory / SCHEMA_FILE)
+                    return
+                except Exception as e:
+                    logging.warning(f"Failed to copy reference schema: {e}, falling back to dry-run")
+
     # Optionally get the upstream partition column
     reference_partition_column = _get_reference_partition_column(reference_path)
     if reference_partition_column is None:
@@ -119,6 +143,8 @@ def _generate_view_schema(sql_dir, view_directory, id_token=None):
     # we prioritize the dryrun schema because the `schema.yaml` file might be out of date.
     schema = None
     if view.configured_schema:
+        # Only dryrun if there is a local schema, otherwise the dryrun schema won't have
+        # any descriptions anyway. The view schemas are generated to update descriptions.
         schema = view.dryrun_schema or view.configured_schema
         if view.dryrun_schema and view.configured_schema:
             try:

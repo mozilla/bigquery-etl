@@ -1,97 +1,97 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: 'Processing date.
 
     '
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: 'Normalized channel name of the Firefox app (for example: releaes,
     beta, nightly).
 
     '
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: 'An ISO 3166-1 alpha-2 country code.
 
     '
-- name: app_name
+- mode: NULLABLE
+  name: app_name
   type: STRING
-  mode: NULLABLE
   description: 'Name of the Firefox app.
 
     '
-- name: app_version
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
   description: 'Version of the Firefox app.
 
     '
-- name: os_name
+- mode: NULLABLE
+  name: os_name
   type: STRING
-  mode: NULLABLE
   description: 'Name of the operating system used by the client.
 
     '
-- name: os_version
+- mode: NULLABLE
+  name: os_version
   type: STRING
-  mode: NULLABLE
   description: 'Version of the operating system used by the client.
 
     '
-- name: addon_id
+- mode: NULLABLE
+  name: addon_id
   type: STRING
-  mode: NULLABLE
   description: The id of the addon, if available.
-- name: addon_version
+- mode: NULLABLE
+  name: addon_version
   type: STRING
-  mode: NULLABLE
   description: 'The version of the addon.
 
     '
-- name: method
+- mode: NULLABLE
+  name: method
   type: STRING
-  mode: NULLABLE
   description: 'This describes the type of event that occurred.
 
     '
-- name: object
+- mode: NULLABLE
+  name: object
   type: STRING
-  mode: NULLABLE
   description: 'The object the event occurred.
 
     '
-- name: value
+- mode: NULLABLE
+  name: value
   type: STRING
-  mode: NULLABLE
   description: 'This is a user defined value, providing context for the event (Optional).
 
     '
-- name: from_etld
+- mode: NULLABLE
+  name: from_etld
   type: STRING
-  mode: NULLABLE
   description: 'The original domain (eTLD+1) of the request that matched a search
     endpoint.
 
     '
-- name: to_etld
+- mode: NULLABLE
+  name: to_etld
   type: STRING
-  mode: NULLABLE
   description: 'The domain (eTLD+1) of the final redirect target.
 
     '
-- name: event_count
+- mode: NULLABLE
+  name: event_count
   type: INTEGER
-  mode: NULLABLE
   description: 'Number of events in this grouping.
 
     '
-- name: unique_clients_cnt
+- mode: NULLABLE
+  name: unique_clients_cnt
   type: INTEGER
-  mode: NULLABLE
   description: 'Number of unique clients in this grouping.
 
     '

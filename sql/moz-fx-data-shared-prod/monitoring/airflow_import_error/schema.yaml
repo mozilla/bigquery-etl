@@ -1,17 +1,17 @@
 fields:
-- name: timestamp
+- description: null
+  mode: NULLABLE
+  name: timestamp
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: id
+  name: id
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: filename
+  name: filename
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: stacktrace
+  name: stacktrace
   type: STRING
-  mode: NULLABLE
-  description: null

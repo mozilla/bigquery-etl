@@ -1,22 +1,22 @@
 fields:
-- name: client_id
+- description: Unique ID for the client installation.
+  mode: NULLABLE
+  name: client_id
   type: STRING
+- description: Sample ID to limit query results during an analysis.
   mode: NULLABLE
-  description: Unique ID for the client installation.
-- name: sample_id
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
-  description: Sample ID to limit query results during an analysis.
-- name: ad_click_history
-  type: RECORD
-  mode: REPEATED
+- description: History of ad_clicks for a user, by submission_date
   fields:
-  - name: key
+  - description: The date associated with the ad_click value
+    mode: NULLABLE
+    name: key
     type: DATE
+  - description: The total number of ad_clicks for the submission_date
     mode: NULLABLE
-    description: The date associated with the ad_click value
-  - name: value
+    name: value
     type: INTEGER
-    mode: NULLABLE
-    description: The total number of ad_clicks for the submission_date
-  description: History of ad_clicks for a user, by submission_date
+  mode: REPEATED
+  name: ad_click_history
+  type: RECORD

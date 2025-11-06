@@ -1,54 +1,54 @@
 fields:
-- name: recipient_id
+- mode: NULLABLE
+  name: recipient_id
   type: INTEGER
-  mode: NULLABLE
   description: The ID of the contact associated with the event.
-- name: report_id
+- mode: NULLABLE
+  name: report_id
   type: INTEGER
-  mode: NULLABLE
   description: null
-- name: mailing_id
+- mode: NULLABLE
+  name: mailing_id
   type: INTEGER
-  mode: NULLABLE
   description: The ID of the Sent email associated with the event.
-- name: campaign_id
+- mode: NULLABLE
+  name: campaign_id
   type: INTEGER
-  mode: NULLABLE
   description: The ID of the campaign associated with the event.
-- name: content_id
+- mode: NULLABLE
+  name: content_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the content associated with the event.
-- name: event_timestamp
+- mode: NULLABLE
+  name: event_timestamp
   type: DATETIME
-  mode: NULLABLE
   description: "The date and time of the event in the API user\u2019s time zone."
-- name: event_type
+- mode: NULLABLE
+  name: event_type
   type: STRING
-  mode: NULLABLE
   description: The type of contact event.
-- name: recipient_type
+- mode: NULLABLE
+  name: recipient_type
   type: STRING
-  mode: NULLABLE
   description: The type of contact to whom the Acoustic Campaign sent the email.
-- name: body_type
+- mode: NULLABLE
+  name: body_type
   type: STRING
-  mode: NULLABLE
   description: The body type the contact received.
-- name: click_name
+- mode: NULLABLE
+  name: click_name
   type: STRING
-  mode: NULLABLE
   description: The user-specified name of the link or Clickstream.
-- name: url
+- mode: NULLABLE
+  name: url
   type: STRING
-  mode: NULLABLE
   description: The hyperlink of a Clickthrough or Clickstream.
-- name: suppression_reason
+- mode: NULLABLE
+  name: suppression_reason
   type: STRING
-  mode: NULLABLE
   description: The reason a contact was suppressed.
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Airflow's execution date should \ overlap with date inside event_timestamp
     field

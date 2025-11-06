@@ -1,53 +1,53 @@
 fields:
-- name: creation_date
+- mode: NULLABLE
+  name: creation_date
   type: DATE
-  mode: NULLABLE
   description: The table's creation date
-- name: project_id
+- mode: NULLABLE
+  name: project_id
   type: STRING
-  mode: NULLABLE
   description: The ID of the project that contains the dataset
-- name: dataset_id
+- mode: NULLABLE
+  name: dataset_id
   type: STRING
-  mode: NULLABLE
   description: The name of the dataset that contains the table
-- name: table_id
+- mode: NULLABLE
+  name: table_id
   type: STRING
-  mode: NULLABLE
   description: The name of the table
-- name: total_rows
+- mode: NULLABLE
+  name: total_rows
   type: INTEGER
-  mode: NULLABLE
   description: The total number of rows in the table
-- name: total_partitions
+- mode: NULLABLE
+  name: total_partitions
   type: INTEGER
-  mode: NULLABLE
   description: The total number of partitions present in the table
-- name: total_logical_bytes
+- mode: NULLABLE
+  name: total_logical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Total number of uncompressed bytes in the table
-- name: active_logical_bytes
+- mode: NULLABLE
+  name: active_logical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Number of uncompressed bytes less than 90 days old
-- name: long_term_logical_bytes
+- mode: NULLABLE
+  name: long_term_logical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Number of uncompressed bytes more than 90 days old
-- name: total_physical_bytes
+- mode: NULLABLE
+  name: total_physical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Total number of compressed bytes used for storage
-- name: active_physical_bytes
+- mode: NULLABLE
+  name: active_physical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Number of compressed bytes less than 90 days old
-- name: long_term_physical_bytes
+- mode: NULLABLE
+  name: long_term_physical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Number of compressed bytes more than 90 days old
-- name: time_travel_physical_bytes
+- mode: NULLABLE
+  name: time_travel_physical_bytes
   type: INTEGER
-  mode: NULLABLE
   description: Number of compressed bytes for deleted or changed data

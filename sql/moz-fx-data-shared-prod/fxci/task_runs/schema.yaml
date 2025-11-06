@@ -1,7 +1,10 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
+- name: task_id
+  type: STRING
+  mode: REQUIRED
+- name: run_id
+  type: INTEGER
+  mode: REQUIRED
 - name: reason_created
   type: STRING
   mode: NULLABLE
@@ -10,22 +13,19 @@ fields:
   mode: NULLABLE
 - name: resolved
   type: TIMESTAMP
-  mode: NULLABLE
-- name: run_id
-  type: INTEGER
-  mode: NULLABLE
+  mode: REQUIRED
 - name: scheduled
   type: TIMESTAMP
-  mode: NULLABLE
+  mode: REQUIRED
 - name: started
   type: TIMESTAMP
   mode: NULLABLE
 - name: state
   type: STRING
-  mode: NULLABLE
-- name: task_id
-  type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
+- name: submission_date
+  type: DATE
+  mode: REQUIRED
 - name: worker_group
   type: STRING
   mode: NULLABLE

@@ -1,241 +1,248 @@
 fields:
-- name: legacy_telemetry_client_id
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
   type: STRING
-  mode: NULLABLE
-- name: newtab_visit_id
+- mode: NULLABLE
+  name: newtab_visit_id
   type: STRING
-  mode: NULLABLE
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: normalized_os
+- mode: NULLABLE
+  name: normalized_os
   type: STRING
-  mode: NULLABLE
   description: The normalized name of the operating system running at the client.
-- name: normalized_os_version
+- mode: NULLABLE
+  name: normalized_os_version
   type: STRING
-  mode: NULLABLE
-- name: country_code
+- mode: NULLABLE
+  name: country_code
   type: STRING
-  mode: NULLABLE
   description: Code of the country in which the activity took place, as determined
     by the IP geolocation. Unknown or NULL values are normally stored as '??'.
-- name: channel
+- mode: NULLABLE
+  name: channel
   type: STRING
-  mode: NULLABLE
   description: The normalized channel the application is being distributed on.
-- name: browser_version
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
-- name: browser_name
+  description: Set of language- and/or country-based preferences for a user interface.
+- mode: NULLABLE
+  name: browser_version
   type: STRING
-  mode: NULLABLE
-- name: default_search_engine
+- mode: NULLABLE
+  name: browser_name
   type: STRING
-  mode: NULLABLE
-- name: default_private_search_engine
+- mode: NULLABLE
+  name: default_search_engine
   type: STRING
-  mode: NULLABLE
-- name: pocket_is_signed_in
+- mode: NULLABLE
+  name: default_private_search_engine
+  type: STRING
+- mode: NULLABLE
+  name: pocket_is_signed_in
   type: BOOLEAN
-  mode: NULLABLE
-- name: pocket_enabled
+- mode: NULLABLE
+  name: pocket_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: pocket_sponsored_stories_enabled
+- mode: NULLABLE
+  name: pocket_sponsored_stories_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: topsites_enabled
+- mode: NULLABLE
+  name: topsites_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: newtab_homepage_category
+- mode: NULLABLE
+  name: topsites_sponsored_enabled
+  type: BOOLEAN
+- mode: NULLABLE
+  name: newtab_homepage_category
   type: STRING
-  mode: NULLABLE
-- name: newtab_newtab_category
+- mode: NULLABLE
+  name: newtab_newtab_category
   type: STRING
-  mode: NULLABLE
-- name: newtab_search_enabled
+- mode: NULLABLE
+  name: newtab_search_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: topsites_rows
+- mode: NULLABLE
+  name: topsites_rows
   type: INTEGER
-  mode: NULLABLE
-- name: newtab_blocked_sponsors
+- mode: REPEATED
+  name: newtab_blocked_sponsors
   type: STRING
-  mode: REPEATED
-- name: experiments
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
+- fields:
+  - mode: NULLABLE
+    name: key
     type: STRING
-    mode: NULLABLE
-  - name: value
-    type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: branch
+  - fields:
+    - mode: NULLABLE
+      name: branch
       type: STRING
+    - fields:
+      - mode: NULLABLE
+        name: type
+        type: STRING
+      - mode: NULLABLE
+        name: enrollment_id
+        type: STRING
       mode: NULLABLE
-    - name: extra
+      name: extra
       type: RECORD
-      mode: NULLABLE
-      fields:
-      - name: type
-        type: STRING
-        mode: NULLABLE
-      - name: enrollment_id
-        type: STRING
-        mode: NULLABLE
-- name: newtab_visit_started_at
+    mode: NULLABLE
+    name: value
+    type: RECORD
+  mode: REPEATED
+  name: experiments
+  type: RECORD
+- mode: NULLABLE
+  name: newtab_visit_started_at
   type: INTEGER
-  mode: NULLABLE
-- name: newtab_visit_ended_at
+- mode: NULLABLE
+  name: newtab_visit_ended_at
   type: INTEGER
-  mode: NULLABLE
-- name: newtab_open_source
+- mode: NULLABLE
+  name: newtab_open_source
   type: STRING
-  mode: NULLABLE
-- name: had_non_impression_engagement
+- mode: NULLABLE
+  name: had_non_impression_engagement
   type: BOOLEAN
-  mode: NULLABLE
-- name: search_interactions
-  type: RECORD
+- mode: NULLABLE
+  name: had_non_search_engagement
+  type: BOOLEAN
+- fields:
+  - mode: NULLABLE
+    name: search_engine
+    type: STRING
+  - mode: NULLABLE
+    name: search_access_point
+    type: STRING
+  - mode: NULLABLE
+    name: searches
+    type: INTEGER
+  - mode: NULLABLE
+    name: tagged_search_ad_clicks
+    type: INTEGER
+  - mode: NULLABLE
+    name: tagged_search_ad_impressions
+    type: INTEGER
+  - mode: NULLABLE
+    name: follow_on_search_ad_clicks
+    type: INTEGER
+  - mode: NULLABLE
+    name: follow_on_search_ad_impressions
+    type: INTEGER
+  - mode: NULLABLE
+    name: tagged_follow_on_search_ad_clicks
+    type: INTEGER
+  - mode: NULLABLE
+    name: tagged_follow_on_search_ad_impressions
+    type: INTEGER
   mode: REPEATED
-  fields:
-  - name: search_engine
-    type: STRING
-    mode: NULLABLE
-  - name: search_access_point
-    type: STRING
-    mode: NULLABLE
-  - name: searches
-    type: INTEGER
-    mode: NULLABLE
-  - name: tagged_search_ad_clicks
-    type: INTEGER
-    mode: NULLABLE
-  - name: tagged_search_ad_impressions
-    type: INTEGER
-    mode: NULLABLE
-  - name: follow_on_search_ad_clicks
-    type: INTEGER
-    mode: NULLABLE
-  - name: follow_on_search_ad_impressions
-    type: INTEGER
-    mode: NULLABLE
-  - name: tagged_follow_on_search_ad_clicks
-    type: INTEGER
-    mode: NULLABLE
-  - name: tagged_follow_on_search_ad_impressions
-    type: INTEGER
-    mode: NULLABLE
-- name: topsite_tile_interactions
+  name: search_interactions
   type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: topsite_tile_advertiser_name
+    type: STRING
+  - mode: NULLABLE
+    name: topsite_tile_position
+    type: INTEGER
+  - mode: NULLABLE
+    name: topsite_tile_id
+    type: STRING
+  - mode: NULLABLE
+    name: topsite_tile_assigned_sov_branch
+    type: STRING
+  - mode: NULLABLE
+    name: topsite_tile_displayed_sov_branch
+    type: STRING
+  - mode: NULLABLE
+    name: topsite_tile_clicks
+    type: INTEGER
+  - mode: NULLABLE
+    name: sponsored_topsite_tile_clicks
+    type: INTEGER
+  - mode: NULLABLE
+    name: organic_topsite_tile_clicks
+    type: INTEGER
+  - mode: NULLABLE
+    name: topsite_tile_impressions
+    type: INTEGER
+  - mode: NULLABLE
+    name: sponsored_topsite_tile_impressions
+    type: INTEGER
+  - mode: NULLABLE
+    name: organic_topsite_tile_impressions
+    type: INTEGER
+  - mode: NULLABLE
+    name: topsite_tile_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: sponsored_topsite_tile_dismissals
+    type: INTEGER
+  - mode: NULLABLE
+    name: organic_topsite_tile_dismissals
+    type: INTEGER
   mode: REPEATED
-  fields:
-  - name: topsite_tile_advertiser_name
-    type: STRING
-    mode: NULLABLE
-  - name: topsite_tile_position
-    type: INTEGER
-    mode: NULLABLE
-  - name: topsite_tile_id
-    type: STRING
-    mode: NULLABLE
-  - name: topsite_tile_clicks
-    type: INTEGER
-    mode: NULLABLE
-  - name: sponsored_topsite_tile_clicks
-    type: INTEGER
-    mode: NULLABLE
-  - name: organic_topsite_tile_clicks
-    type: INTEGER
-    mode: NULLABLE
-  - name: topsite_tile_impressions
-    type: INTEGER
-    mode: NULLABLE
-  - name: sponsored_topsite_tile_impressions
-    type: INTEGER
-    mode: NULLABLE
-  - name: organic_topsite_tile_impressions
-    type: INTEGER
-    mode: NULLABLE
-  - name: topsite_tile_assigned_sov_branch
-    type: STRING
-    mode: NULLABLE
-  - name: topsite_tile_displayed_sov_branch
-    type: STRING
-    mode: NULLABLE
-  - name: topsite_tile_dismissals
-    type: INTEGER
-    mode: NULLABLE
-  - name: sponsored_topsite_tile_dismissals
-    type: INTEGER
-    mode: NULLABLE
-  - name: organic_topsite_tile_dismissals
-    type: INTEGER
-    mode: NULLABLE
-- name: pocket_interactions
+  name: topsite_tile_interactions
   type: RECORD
-  mode: REPEATED
-  fields:
-  - name: pocket_story_position
+- fields:
+  - mode: NULLABLE
+    name: pocket_story_position
     type: INTEGER
-    mode: NULLABLE
-  - name: pocket_impressions
+  - mode: NULLABLE
+    name: pocket_impressions
     type: INTEGER
-    mode: NULLABLE
-  - name: sponsored_pocket_impressions
+  - mode: NULLABLE
+    name: sponsored_pocket_impressions
     type: INTEGER
-    mode: NULLABLE
-  - name: organic_pocket_impressions
+  - mode: NULLABLE
+    name: organic_pocket_impressions
     type: INTEGER
-    mode: NULLABLE
-  - name: pocket_clicks
+  - mode: NULLABLE
+    name: pocket_clicks
     type: INTEGER
-    mode: NULLABLE
-  - name: sponsored_pocket_clicks
+  - mode: NULLABLE
+    name: sponsored_pocket_clicks
     type: INTEGER
-    mode: NULLABLE
-  - name: organic_pocket_clicks
+  - mode: NULLABLE
+    name: organic_pocket_clicks
     type: INTEGER
-    mode: NULLABLE
-  - name: pocket_saves
+  - mode: NULLABLE
+    name: pocket_saves
     type: INTEGER
-    mode: NULLABLE
-  - name: sponsored_pocket_saves
+  - mode: NULLABLE
+    name: sponsored_pocket_saves
     type: INTEGER
-    mode: NULLABLE
-  - name: organic_pocket_saves
+  - mode: NULLABLE
+    name: organic_pocket_saves
     type: INTEGER
-    mode: NULLABLE
   - name: pocket_tile_id
     type: STRING
     mode: NULLABLE
   - name: pocket_recommendation_id
     type: STRING
     mode: NULLABLE
-  - name: sponsored_pocket_dismissals
+  - mode: NULLABLE
+    name: sponsored_pocket_dismissals
     type: INTEGER
-    mode: NULLABLE
-  - name: organic_pocket_dismissals
+  - mode: NULLABLE
+    name: organic_pocket_dismissals
     type: INTEGER
-    mode: NULLABLE
-  - name: pocket_thumbs_up
+  - mode: NULLABLE
+    name: pocket_thumbs_up
     type: INTEGER
-    mode: NULLABLE
-  - name: pocket_thumbs_down
+  - mode: NULLABLE
+    name: pocket_thumbs_down
     type: INTEGER
-    mode: NULLABLE
-  - name: pocket_received_rank
+  - mode: NULLABLE
+    name: pocket_received_rank
     type: INTEGER
-    mode: NULLABLE
   - name: pocket_scheduled_corpus_item_id
     type: STRING
     mode: NULLABLE
@@ -281,27 +288,20 @@ fields:
   - name: sponsored_list_card_dismissals
     type: INTEGER
     mode: NULLABLE
-- name: is_new_profile
+  mode: REPEATED
+  name: pocket_interactions
+  type: RECORD
+- mode: NULLABLE
+  name: is_new_profile
   type: BOOLEAN
-  mode: NULLABLE
-- name: activity_segment
+- mode: NULLABLE
+  name: activity_segment
   type: STRING
-  mode: NULLABLE
   description: Classification of users based on their browsing activity. E.g., infrequent,
     casual, regular.
-- name: locale
+- mode: NULLABLE
+  name: newtab_default_ui
   type: STRING
-  mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
-- name: had_non_search_engagement
-  type: BOOLEAN
-  mode: NULLABLE
-- name: topsites_sponsored_enabled
-  type: BOOLEAN
-  mode: NULLABLE
-- name: newtab_default_ui
-  type: STRING
-  mode: NULLABLE
 - name: newtab_weather_widget_enabled
   type: BOOLEAN
   mode: NULLABLE
@@ -337,6 +337,9 @@ fields:
   - name: weather_widget_impressions
     type: INTEGER
     mode: NULLABLE
+  - name: weather_widget_location_selected
+    type: INTEGER
+    mode: NULLABLE
   - name: weather_widget_clicks
     type: INTEGER
     mode: NULLABLE
@@ -347,9 +350,6 @@ fields:
     type: INTEGER
     mode: NULLABLE
   - name: weather_widget_change_display_to_simple
-    type: INTEGER
-    mode: NULLABLE
-  - name: weather_widget_location_selected
     type: INTEGER
     mode: NULLABLE
 - name: newtab_selected_topics
@@ -377,9 +377,9 @@ fields:
   - name: topic_selection_topics_updated
     type: INTEGER
     mode: NULLABLE
-- name: profile_group_id
+- mode: NULLABLE
+  name: profile_group_id
   type: STRING
-  mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.
 - name: newtab_window_inner_height
@@ -388,9 +388,9 @@ fields:
 - name: newtab_window_inner_width
   type: INTEGER
   mode: NULLABLE
-- name: topsites_sponsored_tiles_configured
+- mode: NULLABLE
+  name: topsites_sponsored_tiles_configured
   type: INTEGER
-  mode: NULLABLE
   description: An integer from client configuration that determines how many tiles
     the client can see. This telemetry released in Fx123 (2024/02/20), so it should
     only be considered for clients with Fx123+.

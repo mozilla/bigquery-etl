@@ -1,11 +1,11 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Submission Date
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: Normalized Channel
 - name: nbr_unique_users
   type: INTEGER

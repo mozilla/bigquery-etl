@@ -6,9 +6,9 @@ fields:
   type: STRING
   mode: NULLABLE
 - name: event_name
+  description: Full event name with suffix from `extra`.
   type: STRING
   mode: NULLABLE
-  description: Full event name with suffix from `extra`.
 - name: count
   type: INTEGER
   mode: NULLABLE

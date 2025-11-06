@@ -1,74 +1,74 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: sample_id
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
   description: A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: profile_group_id
+- mode: NULLABLE
+  name: profile_group_id
   type: STRING
-  mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.
-- name: os
+- mode: NULLABLE
+  name: os
   type: STRING
-  mode: NULLABLE
-- name: app_version
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
   description: User visible version string (e.g. "1.0.3") for the browser.
-- name: app_build_id
+- mode: NULLABLE
+  name: app_build_id
   type: STRING
-  mode: NULLABLE
-- name: channel
+- mode: NULLABLE
+  name: channel
   type: STRING
-  mode: NULLABLE
-- name: histogram_aggregates
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: metric
+- fields:
+  - mode: NULLABLE
+    name: metric
     type: STRING
-    mode: NULLABLE
-  - name: metric_type
+  - mode: NULLABLE
+    name: metric_type
     type: STRING
-    mode: NULLABLE
-  - name: key
+  - mode: NULLABLE
+    name: key
     type: STRING
-    mode: NULLABLE
-  - name: process
+  - mode: NULLABLE
+    name: process
     type: STRING
-    mode: NULLABLE
-  - name: agg_type
+  - mode: NULLABLE
+    name: agg_type
     type: STRING
+  - fields:
+    - mode: NULLABLE
+      name: first_bucket
+      type: INTEGER
+    - mode: NULLABLE
+      name: last_bucket
+      type: INTEGER
+    - mode: NULLABLE
+      name: num_buckets
+      type: INTEGER
     mode: NULLABLE
-  - name: bucket_range
+    name: bucket_range
     type: RECORD
-    mode: NULLABLE
-    fields:
-    - name: first_bucket
-      type: INTEGER
-      mode: NULLABLE
-    - name: last_bucket
-      type: INTEGER
-      mode: NULLABLE
-    - name: num_buckets
-      type: INTEGER
-      mode: NULLABLE
-  - name: value
-    type: RECORD
-    mode: REPEATED
-    fields:
-    - name: key
+  - fields:
+    - mode: NULLABLE
+      name: key
       type: STRING
-      mode: NULLABLE
-    - name: value
+    - mode: NULLABLE
+      name: value
       type: INTEGER
-      mode: NULLABLE
+    mode: REPEATED
+    name: value
+    type: RECORD
+  mode: REPEATED
+  name: histogram_aggregates
+  type: RECORD

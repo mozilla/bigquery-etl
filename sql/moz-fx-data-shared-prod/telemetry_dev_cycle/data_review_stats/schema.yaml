@@ -1,10 +1,10 @@
 fields:
 - name: bug_id
-  type: INTEGER
+  type: INT64
   mode: NULLABLE
   description: Bug ID for the bug in Bugzilla
 - name: attachment_id
-  type: INTEGER
+  type: INT64
   mode: NULLABLE
   description: Attachment ID for the data-review in Bugzilla
 - name: action
@@ -25,6 +25,6 @@ fields:
   mode: NULLABLE
   description: Datetime the bug was updated in Bugzilla.
 - name: update_counter
-  type: INTEGER
+  type: INT64
   mode: NULLABLE
   description: Count of how many updates are already on this bug in Bugzilla.

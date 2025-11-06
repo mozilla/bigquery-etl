@@ -1,82 +1,82 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: device
+- mode: NULLABLE
+  name: device
   type: STRING
-  mode: NULLABLE
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: browser_version_info
-  type: RECORD
-  mode: NULLABLE
-  fields:
-  - name: version
+- fields:
+  - mode: NULLABLE
+    name: version
     type: STRING
-    mode: NULLABLE
-  - name: major_version
+  - mode: NULLABLE
+    name: major_version
     type: NUMERIC
-    mode: NULLABLE
-  - name: minor_version
+  - mode: NULLABLE
+    name: minor_version
     type: NUMERIC
-    mode: NULLABLE
-  - name: patch_revision
+  - mode: NULLABLE
+    name: patch_revision
     type: NUMERIC
-    mode: NULLABLE
-  - name: is_major_release
+  - mode: NULLABLE
+    name: is_major_release
     type: BOOLEAN
-    mode: NULLABLE
-- name: country
-  type: STRING
   mode: NULLABLE
+  name: browser_version_info
+  type: RECORD
+- mode: NULLABLE
+  name: country
+  type: STRING
   description: An ISO 3166-1 alpha-2 country code
-- name: locale
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: The normalized channel the application is being distributed on.
-- name: normalized_os
+- mode: NULLABLE
+  name: normalized_os
   type: STRING
-  mode: NULLABLE
   description: The normalized name of the operating system running at the client.
-- name: is_new_profile
+- mode: NULLABLE
+  name: is_new_profile
   type: BOOLEAN
-  mode: NULLABLE
-- name: sample_id
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
   description: A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: experiments
-  type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
   mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
-- name: sponsored_tiles_click_count
+  name: experiments
+  type: RECORD
+- mode: NULLABLE
+  name: sponsored_tiles_click_count
   type: INTEGER
-  mode: NULLABLE
-- name: sponsored_tiles_impression_count
+- mode: NULLABLE
+  name: sponsored_tiles_impression_count
   type: INTEGER
-  mode: NULLABLE
-- name: sponsored_tiles_dismissal_count
+- mode: NULLABLE
+  name: sponsored_tiles_dismissal_count
   type: INTEGER
-  mode: NULLABLE
-- name: sponsored_tiles_disable_count
+- mode: NULLABLE
+  name: sponsored_tiles_disable_count
   type: INTEGER
-  mode: NULLABLE
-- name: profile_group_id
+- mode: NULLABLE
+  name: profile_group_id
   type: STRING
-  mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.

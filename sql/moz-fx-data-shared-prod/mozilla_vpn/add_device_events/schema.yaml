@@ -1,7 +1,0 @@
-fields:
-- name: fxa_uid
-  type: STRING
-  mode: NULLABLE
-- name: timestamp
-  type: TIMESTAMP
-  mode: NULLABLE

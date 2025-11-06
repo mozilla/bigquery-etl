@@ -1,9 +1,9 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
-  description: Submission Date - Date of the DAG run - always 8 days after first seen
+- description: Submission Date - Date of the DAG run - always 8 days after first seen
     date
+  mode: NULLABLE
+  name: submission_date
+  type: DATE
 - name: first_seen_date
   type: DATE
   mode: NULLABLE

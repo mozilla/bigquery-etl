@@ -1,11 +1,11 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: normalized_country_code
+- mode: NULLABLE
+  name: normalized_country_code
   type: STRING
-  mode: NULLABLE
   description: Normalized Country Code
 - name: bookmarks_added_per_dau
   type: FLOAT

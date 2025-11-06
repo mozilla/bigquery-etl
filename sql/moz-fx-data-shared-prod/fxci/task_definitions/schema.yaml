@@ -1,64 +1,64 @@
 fields:
 - name: taskId
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: submission_date
   type: DATE
-  mode: NULLABLE
+  mode: REQUIRED
 - name: created
   type: TIMESTAMP
-  mode: NULLABLE
+  mode: REQUIRED
 - name: deadline
   type: TIMESTAMP
-  mode: NULLABLE
+  mode: REQUIRED
 - name: dependencies
   type: STRING
   mode: REPEATED
 - name: expires
   type: TIMESTAMP
-  mode: NULLABLE
+  mode: REQUIRED
 - name: extra
   type: JSON
-  mode: NULLABLE
+  mode: REQUIRED
 - name: metadata
   type: JSON
-  mode: NULLABLE
+  mode: REQUIRED
 - name: payload
   type: JSON
-  mode: NULLABLE
+  mode: REQUIRED
 - name: priority
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: projectId
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: provisionerId
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: requires
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: retries
   type: INTEGER
-  mode: NULLABLE
+  mode: REQUIRED
 - name: routes
   type: STRING
   mode: REPEATED
 - name: schedulerId
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: scopes
   type: STRING
   mode: REPEATED
 - name: tags
   type: JSON
-  mode: NULLABLE
+  mode: REQUIRED
 - name: taskGroupId
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: taskQueueId
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: workerType
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED

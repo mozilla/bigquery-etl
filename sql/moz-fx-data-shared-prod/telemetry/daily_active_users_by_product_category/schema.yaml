@@ -1,13 +1,13 @@
 fields:
-- name: submission_date
+- description: Submission Date
+  mode: NULLABLE
+  name: submission_date
   type: DATE
+- description: One of the product categories (desktop, mobile, other)
   mode: NULLABLE
-  description: Submission Date
-- name: product_category
+  name: product_category
   type: STRING
+- description: Daily active users for the product category
   mode: NULLABLE
-  description: One of the product categories (desktop, mobile, other)
-- name: dau
+  name: dau
   type: INTEGER
-  mode: NULLABLE
-  description: Daily active users for the product category

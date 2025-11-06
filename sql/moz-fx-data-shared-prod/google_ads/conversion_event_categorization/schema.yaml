@@ -1,68 +1,68 @@
 fields:
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: Client ID
-- name: first_seen_date
+- mode: NULLABLE
+  name: first_seen_date
   type: DATE
-  mode: NULLABLE
   description: First Seen Date
-- name: attribution_campaign
+- mode: NULLABLE
+  name: attribution_campaign
   type: STRING
-  mode: NULLABLE
   description: Attribution Campaign
-- name: attribution_content
+- mode: NULLABLE
+  name: attribution_content
   type: STRING
-  mode: NULLABLE
   description: Attribution Content
-- name: attribution_dltoken
+- mode: NULLABLE
+  name: attribution_dltoken
   type: STRING
-  mode: NULLABLE
   description: Attribution Download Token
-- name: attribution_medium
+- mode: NULLABLE
+  name: attribution_medium
   type: STRING
-  mode: NULLABLE
   description: Attribution Medium
-- name: attribution_source
+- mode: NULLABLE
+  name: attribution_source
   type: STRING
-  mode: NULLABLE
   description: Attribution Source
-- name: report_date
+- mode: NULLABLE
+  name: report_date
   type: DATE
-  mode: NULLABLE
   description: Report Date
-- name: first_main_ping_date
+- mode: NULLABLE
+  name: first_main_ping_date
   type: DATE
-  mode: NULLABLE
   description: First Main Ping Date
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Country
-- name: dou
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: dou
+  type: INT64
   description: DOU
-- name: active_hours_sum
+- mode: NULLABLE
+  name: active_hours_sum
   type: FLOAT
-  mode: NULLABLE
   description: Active Hours Sum
-- name: search_with_ads_count_all
+- mode: NULLABLE
+  name: search_with_ads_count_all
   type: INTEGER
-  mode: NULLABLE
   description: Search With Ads Count All
-- name: event_1
+- mode: NULLABLE
+  name: event_1
   type: BOOLEAN
-  mode: NULLABLE
   description: Event 1 Indicator - 5 or more days of use and 1 or more search with
     ads (strictest event)
-- name: event_2
+- mode: NULLABLE
+  name: event_2
   type: BOOLEAN
-  mode: NULLABLE
   description: Event 2 Indicator - 3 or more days of use and 1 or more search with
     ads (medium event)
-- name: event_3
+- mode: NULLABLE
+  name: event_3
   type: BOOLEAN
-  mode: NULLABLE
   description: Event 3 Indicator - 3 or more days of use and 0.4 or more active hours
     (most lenient event)

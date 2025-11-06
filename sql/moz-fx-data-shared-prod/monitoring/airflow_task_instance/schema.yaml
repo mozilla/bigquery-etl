@@ -1,109 +1,109 @@
 fields:
-- name: dag_id
-  type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: run_id
+  name: dag_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: task_id
+  name: run_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: state
+  name: task_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: try_number
+  name: state
+  type: STRING
+- description: null
+  mode: NULLABLE
+  name: try_number
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: start_date
+  name: start_date
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: end_date
+  name: end_date
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: duration
+  name: duration
   type: FLOAT
+- description: null
   mode: NULLABLE
-  description: null
-- name: job_id
+  name: job_id
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: executor_config
+  name: executor_config
   type: BYTES
+- description: null
   mode: NULLABLE
-  description: null
-- name: external_executor_id
+  name: external_executor_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: hostname
+  name: hostname
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: max_tries
+  name: max_tries
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: next_kwargs
+  name: next_kwargs
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: next_method
+  name: next_method
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: operator
+  name: operator
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: pid
+  name: pid
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: pool
+  name: pool
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: pool_slots
+  name: pool_slots
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: priority_weight
+  name: priority_weight
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: queue
+  name: queue
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: queued_by_job_id
+  name: queued_by_job_id
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: queued_dttm
+  name: queued_dttm
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: trigger_id
+  name: trigger_id
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
-- name: trigger_timeout
+  name: trigger_timeout
   type: DATETIME
+- description: null
   mode: NULLABLE
-  description: null
-- name: unixname
+  name: unixname
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: map_index
+  name: map_index
   type: INTEGER
-  mode: NULLABLE
-  description: null

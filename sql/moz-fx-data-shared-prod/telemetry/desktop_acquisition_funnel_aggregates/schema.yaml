@@ -1,7 +1,7 @@
 fields:
-- name: first_seen_date
+- mode: NULLABLE
+  name: first_seen_date
   type: DATE
-  mode: NULLABLE
   description: First Seen Date
 - name: country_code
   type: STRING

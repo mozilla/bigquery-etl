@@ -1,95 +1,95 @@
 fields:
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: cohort_date
+- mode: NULLABLE
+  name: cohort_date
   type: DATE
-  mode: NULLABLE
   description: Cohort Date - First Seen Date
-- name: activity_segment
+- mode: NULLABLE
+  name: activity_segment
   type: STRING
-  mode: NULLABLE
   description: Classification of users based on their browsing activity. E.g., infrequent,
     casual, regular.
-- name: app_version
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
   description: User visible version string (e.g. "1.0.3") for the browser.
-- name: attribution_campaign
+- mode: NULLABLE
+  name: attribution_campaign
   type: STRING
-  mode: NULLABLE
   description: Attribution Campaign
-- name: attribution_content
+- mode: NULLABLE
+  name: attribution_content
   type: STRING
-  mode: NULLABLE
   description: Attribution Content
-- name: attribution_experiment
+- mode: NULLABLE
+  name: attribution_experiment
   type: STRING
-  mode: NULLABLE
   description: Attribution Experiment
-- name: attribution_medium
+- mode: NULLABLE
+  name: attribution_medium
   type: STRING
-  mode: NULLABLE
   description: Attribution Medium
-- name: attribution_source
+- mode: NULLABLE
+  name: attribution_source
   type: STRING
-  mode: NULLABLE
   description: Attribution Source
-- name: attribution_variation
+- mode: NULLABLE
+  name: attribution_variation
   type: STRING
-  mode: NULLABLE
   description: Attribution Variation
-- name: city
+- mode: NULLABLE
+  name: city
   type: STRING
-  mode: NULLABLE
   description: City
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Code of the country in which the activity took place, as determined
     by the IP geolocation.
-- name: device_model
+- mode: NULLABLE
+  name: device_model
   type: STRING
-  mode: NULLABLE
   description: Device Model
-- name: distribution_id
+- mode: NULLABLE
+  name: distribution_id
   type: STRING
-  mode: NULLABLE
   description: The distribution id associated with the install of Firefox.
-- name: is_default_browser
+- mode: NULLABLE
+  name: is_default_browser
   type: BOOLEAN
-  mode: NULLABLE
   description: A flag indicating whether the browser is set as the default browser
     on the client side.
-- name: locale
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
-- name: normalized_app_name
+- mode: NULLABLE
+  name: normalized_app_name
   type: STRING
-  mode: NULLABLE
   description: Normalized app Name
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: The normalized channel the application is being distributed on.
-- name: normalized_os
+- mode: NULLABLE
+  name: normalized_os
   type: STRING
-  mode: NULLABLE
   description: The normalized name of the operating system running at the client.
-- name: normalized_os_version
+- mode: NULLABLE
+  name: normalized_os_version
   type: STRING
-  mode: NULLABLE
   description: Normalized Operating System Version
-- name: os_version_major
+- mode: NULLABLE
+  name: os_version_major
   type: INTEGER
-  mode: NULLABLE
   description: Major or first part of the operating system version running at the
     client. E.g. for version "100.9.11", the major is 100.
-- name: os_version_minor
+- mode: NULLABLE
+  name: os_version_minor
   type: INTEGER
-  mode: NULLABLE
   description: Minor part of the operating system version running at the client. E.g.
     for version "100.9.11", the minor is 9.
 - name: adjust_ad_group

@@ -1,71 +1,71 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Submission Date
-- name: partner
+- mode: NULLABLE
+  name: partner
   type: STRING
-  mode: NULLABLE
   description: Partner
-- name: device
+- mode: NULLABLE
+  name: device
   type: STRING
-  mode: NULLABLE
   description: Device
-- name: channel
+- mode: NULLABLE
+  name: channel
   type: STRING
-  mode: NULLABLE
   description: Channel
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Country
-- name: dau
+- mode: NULLABLE
+  name: dau
   type: INTEGER
-  mode: NULLABLE
   description: DAU
-- name: dau_engaged_w_sap
+- mode: NULLABLE
+  name: dau_engaged_w_sap
   type: INTEGER
-  mode: NULLABLE
   description: DAU Engaged with SAP
-- name: sap
+- mode: NULLABLE
+  name: sap
   type: INTEGER
-  mode: NULLABLE
   description: SAP
-- name: tagged_sap
+- mode: NULLABLE
+  name: tagged_sap
   type: INTEGER
-  mode: NULLABLE
   description: Tagged SAP
-- name: tagged_follow_on
+- mode: NULLABLE
+  name: tagged_follow_on
   type: INTEGER
-  mode: NULLABLE
   description: Tagged Follow On
-- name: ad_click
+- mode: NULLABLE
+  name: search_with_ads
   type: INTEGER
-  mode: NULLABLE
-  description: Ad Click
-- name: search_with_ads
-  type: INTEGER
-  mode: NULLABLE
   description: Search with Ads
-- name: organic
+- mode: NULLABLE
+  name: ad_click
   type: INTEGER
-  mode: NULLABLE
+  description: Ad Click
+- mode: NULLABLE
+  name: organic
+  type: INTEGER
   description: Organic
-- name: ad_click_organic
+- mode: NULLABLE
+  name: ad_click_organic
   type: INTEGER
-  mode: NULLABLE
   description: Ad Click Organic
-- name: search_with_ads_organic
+- mode: NULLABLE
+  name: search_with_ads_organic
   type: INTEGER
-  mode: NULLABLE
   description: Number of Organic Searches with Ads
-- name: monetizable_sap
+- mode: NULLABLE
+  name: monetizable_sap
   type: INTEGER
-  mode: NULLABLE
   description: Monetizable SAP
-- name: dau_w_engine_as_default
+- mode: NULLABLE
+  name: dau_w_engine_as_default
   type: INTEGER
-  mode: NULLABLE
   description: DAU with Engine as Default
 - name: serp_events_client_count
   type: INTEGER

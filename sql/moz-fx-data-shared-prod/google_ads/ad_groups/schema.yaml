@@ -1,40 +1,40 @@
 fields:
-- name: account_name
+- mode: NULLABLE
+  name: account_name
   type: STRING
-  mode: NULLABLE
   description: The name of the Google Ads account, e.g. Mozilla Firefox.
-- name: account_id
+- mode: NULLABLE
+  name: account_id
   type: INTEGER
-  mode: NULLABLE
   description: The ID associated with the account name.
-- name: campaign_id
+- mode: NULLABLE
+  name: campaign_id
   type: INTEGER
-  mode: NULLABLE
   description: The ID of the Google Ads campaign.
-- name: campaign_name
+- mode: NULLABLE
+  name: campaign_name
   type: STRING
-  mode: NULLABLE
   description: The name of the Google Ads campaign. We take the most recently reported
     name.
-- name: ad_group_id
+- mode: NULLABLE
+  name: ad_group_id
   type: INTEGER
-  mode: NULLABLE
   description: The ID of the ad group.
-- name: ad_group_name
+- mode: NULLABLE
+  name: ad_group_name
   type: STRING
-  mode: NULLABLE
   description: The name of the ad group. We take the most recently reported name for
     the ad group ID.
-- name: ad_group_segments
+- mode: REPEATED
+  name: ad_group_segments
   type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-    description: Field name, e.g. region or country.
-  - name: value
-    type: STRING
-    mode: NULLABLE
-    description: Field value, e.g. "NA" or "US".
   description: Segments that are parsed from the ad group name, e.g. region or country.
+  fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+    description: Field name, e.g. region or country.
+  - mode: NULLABLE
+    name: value
+    type: STRING
+    description: Field value, e.g. "NA" or "US".

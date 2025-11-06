@@ -1,33 +1,33 @@
 fields:
-- name: dag_id
+- description: null
+  mode: NULLABLE
+  name: dag_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: map_index
-  type: INTEGER
-  mode: NULLABLE
-  description: null
-- name: run_id
+  name: run_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: task_id
+  name: task_id
   type: STRING
+- description: null
   mode: NULLABLE
-  description: null
-- name: content
-  type: STRING
-  mode: NULLABLE
-  description: null
-- name: created_at
+  name: created_at
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: updated_at
+  name: updated_at
   type: TIMESTAMP
+- description: null
   mode: NULLABLE
-  description: null
-- name: user_id
+  name: user_id
   type: INTEGER
+- description: null
   mode: NULLABLE
-  description: null
+  name: content
+  type: STRING
+- description: null
+  mode: NULLABLE
+  name: map_index
+  type: INTEGER

@@ -1,17 +1,17 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Submission Date
-- name: event_object
+- mode: NULLABLE
+  name: event_object
   type: STRING
-  mode: NULLABLE
-  description: Event Object
-- name: nbr_events
+  description: Submission Date
+- mode: NULLABLE
+  name: nbr_events
   type: INTEGER
-  mode: NULLABLE
-  description: Number of Events
+  description: Number of events
 - name: nbr_distinct_users
   type: INTEGER
   mode: NULLABLE
-  description: Number of Distinct Users
+  description: Number of distinct users

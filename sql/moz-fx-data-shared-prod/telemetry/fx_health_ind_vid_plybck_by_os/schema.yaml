@@ -1,13 +1,13 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: normalized_os
+- mode: NULLABLE
+  name: normalized_os
   type: STRING
-  mode: NULLABLE
   description: The normalized name of the operating system running at the client.
-- name: play_time_ratio
+- mode: NULLABLE
+  name: play_time_ratio
   type: FLOAT
-  mode: NULLABLE
   description: Play Time Ratio

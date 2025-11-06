@@ -1,30 +1,30 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Data submission date
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Two-letter code corresponding to country
-- name: newtab_clients
+- mode: NULLABLE
+  name: newtab_clients
   type: INTEGER
-  mode: NULLABLE
   description: Count of clients available in newtab for submission_date
-- name: as_clients
+- mode: NULLABLE
+  name: as_clients
   type: INTEGER
-  mode: NULLABLE
   description: Count of clients available in activity-stream for submission_date
-- name: newtab_visits
+- mode: NULLABLE
+  name: newtab_visits
   type: INTEGER
-  mode: NULLABLE
   description: Count of visits available in newtab for submission_date
-- name: as_sessions
+- mode: NULLABLE
+  name: as_sessions
   type: INTEGER
-  mode: NULLABLE
   description: Count of sessions available in activity-stream for submission_date
-- name: conversion_factor
+- mode: NULLABLE
+  name: conversion_factor
   type: FLOAT
-  mode: NULLABLE
   description: Daily conversion factor allowing the translation of newtab visits to
     activity-stream sessions (as_sessions / newtab_visits)

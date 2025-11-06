@@ -1,7 +1,15 @@
 fields:
-- name: flow_id
+- mode: NULLABLE
+  name: first_seen_date
+  type: TIMESTAMP
+  description: 'Datetime value when the user, service, device_id
+
+    was seen for the first time.
+
+    '
+- mode: NULLABLE
+  name: flow_id
   type: STRING
-  mode: NULLABLE
   description: 'The flow associated with the first seen session.
 
     The flow identifier is a hash value representing
@@ -9,15 +17,15 @@ fields:
     a registration and login sessions.
 
     '
-- name: user_id
+- mode: NULLABLE
+  name: user_id
   type: STRING
-  mode: NULLABLE
   description: 'Unique identifier of a registered user.
 
     '
-- name: service
+- mode: NULLABLE
+  name: service
   type: STRING
-  mode: NULLABLE
   description: 'The service identifier. For Sync it may be empty or sync.
 
     For OAuth reliers it is their hex client id.
@@ -27,9 +35,9 @@ fields:
     for example: "sync".
 
     '
-- name: device_id
+- mode: NULLABLE
+  name: device_id
   type: STRING
-  mode: NULLABLE
   description: 'This DOES NOT correspond to a physical device! Everytime a user logs
     out and back
 
@@ -53,29 +61,39 @@ fields:
     _devide_id generation: https://github.com/mozilla/fxa/blob/main/packages/fxa-content-server/app/scripts/models/flow.js#L61-L69_
 
     '
-- name: os_name
+- mode: NULLABLE
+  name: event_type
   type: STRING
-  mode: NULLABLE
+  description: 'Type of the FxA event recorded.
+
+    `fxa_login - complete'' and ''fxa_reg - complete`
+
+    are the events used to create this table.
+
+    '
+- mode: NULLABLE
+  name: os_name
+  type: STRING
   description: 'Name of the operating system the device was using.
 
     E.g. Android
 
     '
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: '2 char string representing the country where the device was located.
 
     '
-- name: language
+- mode: NULLABLE
+  name: language
   type: STRING
-  mode: NULLABLE
   description: 'Language settings used by the device.
 
     '
-- name: entrypoint
+- mode: NULLABLE
+  name: entrypoint
   type: STRING
-  mode: NULLABLE
   description: 'The entrypoint of the flow session.
 
     How a user begins their registration or login flow.
@@ -83,17 +101,9 @@ fields:
     Typically a UI touchpoint like "preferences".
 
     '
-- name: first_seen_date
-  type: TIMESTAMP
-  mode: NULLABLE
-  description: 'Datetime value when the user, service, device_id
-
-    was seen for the first time.
-
-    '
-- name: utm_term
+- mode: NULLABLE
+  name: utm_term
   type: STRING
-  mode: NULLABLE
   description: 'Marketing campaign search term
 
     for the flow session.
@@ -101,17 +111,17 @@ fields:
     Not stored if the DNT request header was 1.
 
     '
-- name: utm_medium
+- mode: NULLABLE
+  name: utm_medium
   type: STRING
-  mode: NULLABLE
   description: 'Marketing campaign medium for the flow session.
 
     Not stored if the DNT request header was 1.
 
     '
-- name: utm_source
+- mode: NULLABLE
+  name: utm_source
   type: STRING
-  mode: NULLABLE
   description: 'Marketing campaign source for
 
     the flow session.
@@ -119,9 +129,9 @@ fields:
     Not stored if the DNT request header was 1.
 
     '
-- name: utm_campaign
+- mode: NULLABLE
+  name: utm_campaign
   type: STRING
-  mode: NULLABLE
   description: 'Marketing campaign identifier
 
     for the flow session.
@@ -129,9 +139,9 @@ fields:
     Not stored if the DNT request header was 1.
 
     '
-- name: utm_content
+- mode: NULLABLE
+  name: utm_content
   type: STRING
-  mode: NULLABLE
   description: 'Marketing campaign content identifier
 
     for the flow session.
@@ -139,25 +149,15 @@ fields:
     Not stored if the DNT request header was 1.
 
     '
-- name: ua_version
+- mode: NULLABLE
+  name: ua_version
   type: STRING
-  mode: NULLABLE
   description: 'The user''s browser version.
 
     '
-- name: ua_browser
+- mode: NULLABLE
+  name: ua_browser
   type: STRING
-  mode: NULLABLE
   description: 'The user''s web browser, e.g. ''Firefox'' or ''Chrome''.
-
-    '
-- name: event_type
-  type: STRING
-  mode: NULLABLE
-  description: 'Type of the FxA event recorded.
-
-    `fxa_login - complete'' and ''fxa_reg - complete`
-
-    are the events used to create this table.
 
     '

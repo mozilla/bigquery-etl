@@ -1,75 +1,75 @@
 fields:
-- name: date
+- mode: NULLABLE
+  name: date
   type: DATE
-  mode: NULLABLE
   description: Date of the entrance to the visit
-- name: device_category
+- mode: NULLABLE
+  name: device_category
   type: STRING
-  mode: NULLABLE
   description: Device Category - The device category the visitor used to visit the
     site
-- name: operating_system
+- mode: NULLABLE
+  name: operating_system
   type: STRING
-  mode: NULLABLE
   description: Operating System - The operating system the visitor used to visit the
     site
-- name: browser
+- mode: NULLABLE
+  name: browser
   type: STRING
-  mode: NULLABLE
   description: Browser - The browser the visiting device was using when it visited
     the site
-- name: language
+- mode: NULLABLE
+  name: language
   type: STRING
-  mode: NULLABLE
   description: Language - The language the visiting device was using when it visited
     the site
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Country - The country from which events were reported, based on IP
     address
-- name: standardized_country_name
+- mode: NULLABLE
+  name: standardized_country_name
   type: STRING
-  mode: NULLABLE
   description: Standardized Country Name - The standardized name of the country from
     which events were reported, based on IP address
-- name: source
+- mode: NULLABLE
+  name: source
   type: STRING
-  mode: NULLABLE
   description: Source - Referring partner domain
-- name: medium
+- mode: NULLABLE
+  name: medium
   type: STRING
-  mode: NULLABLE
   description: Medium - Category of the source, such as 'organic' for a search engine
-- name: campaign
+- mode: NULLABLE
+  name: campaign
   type: STRING
-  mode: NULLABLE
   description: Campaign - Identifier for the marketing campaign
-- name: content
+- mode: NULLABLE
+  name: content
   type: STRING
-  mode: NULLABLE
   description: Content - Indicates the particular link within a campaign
-- name: blog
+- mode: NULLABLE
+  name: blog
   type: STRING
-  mode: NULLABLE
   description: Blog
-- name: subblog
+- mode: NULLABLE
+  name: subblog
   type: STRING
-  mode: NULLABLE
   description: Sub-Blog
-- name: sessions
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: sessions
+  type: INT64
   description: Sessions - The number of sessions with an entrances value of 1
-- name: downloads
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: downloads
+  type: INT64
   description: Downloads - The number of downloads
-- name: social_share
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: social_share
+  type: INT64
   description: Social Share - The number of social shares
-- name: newsletter_subscription
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: newsletter_subscription
+  type: INT64
   description: Newsletter Subscription - The number of newsletter subscriptions

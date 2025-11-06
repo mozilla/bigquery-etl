@@ -1,21 +1,21 @@
 fields:
 - name: report_period
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Report Period
 - name: exchange_rate
-  type: FLOAT
   mode: NULLABLE
+  type: FLOAT
   description: Exchange Rate
 - name: frequency
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Frequency
 - name: country_code
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Country Code
 - name: last_updated
-  type: DATE
   mode: NULLABLE
+  type: DATE
   description: Last Updated Date

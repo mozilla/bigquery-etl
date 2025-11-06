@@ -1,47 +1,47 @@
 fields:
-- name: product
+- mode: NULLABLE
+  name: product
   type: STRING
-  mode: NULLABLE
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Name of the country in which the activity took place, as determined
     by the IP geolocation.
-- name: device
+- mode: NULLABLE
+  name: device
   type: STRING
-  mode: NULLABLE
   description: Device Type - e.g. desktop or mobile.
-- name: eligible_share_country
+- mode: NULLABLE
+  name: eligible_share_country
   type: FLOAT
-  mode: NULLABLE
-- name: clients
+- mode: NULLABLE
+  name: clients
   type: INTEGER
-  mode: NULLABLE
-- name: p_amazon
+- mode: NULLABLE
+  name: p_amazon
   type: FLOAT
-  mode: NULLABLE
-- name: p_other
+- mode: NULLABLE
+  name: p_other
   type: FLOAT
-  mode: NULLABLE
-- name: amazon_clients
+- mode: NULLABLE
+  name: amazon_clients
   type: FLOAT
-  mode: NULLABLE
-- name: other_clients
+- mode: NULLABLE
+  name: other_clients
   type: FLOAT
-  mode: NULLABLE
-- name: amazon_clicks
+- mode: NULLABLE
+  name: amazon_clicks
   type: INTEGER
-  mode: NULLABLE
-- name: other_clicks
+- mode: NULLABLE
+  name: other_clicks
   type: INTEGER
-  mode: NULLABLE
-- name: amazon_clicks_per_client
+- mode: NULLABLE
+  name: amazon_clicks_per_client
   type: FLOAT
-  mode: NULLABLE
-- name: other_clicks_per_client
+- mode: NULLABLE
+  name: other_clicks_per_client
   type: FLOAT
-  mode: NULLABLE

@@ -1,21 +1,22 @@
 fields:
 - name: ga_client_id
-  type: STRING
   mode: NULLABLE
+  type: STRING
   description: Uniquely identifiers a GA client, using a cookie on moz.org.
 - name: first_seen_date
-  type: DATE
   mode: NULLABLE
+  type: DATE
   description: The first date we saw this GA client.
 - name: last_seen_date
-  type: DATE
   mode: NULLABLE
+  type: DATE
   description: The last date we saw this GA client.
 - name: had_download_event
-  type: BOOLEAN
   mode: NULLABLE
+  type: BOOLEAN
   description: Whether this GA client has ever had a download event.
 - name: first_reported
+  description: First instances of fields for a GA client.
   type: RECORD
   mode: NULLABLE
   fields:
@@ -103,4 +104,3 @@ fields:
     mode: NULLABLE
     description: First reported GA Session ID. Might be useful to understand client's
       first sessions, for e.g. marketing campaigns.
-  description: First instances of fields for a GA client.

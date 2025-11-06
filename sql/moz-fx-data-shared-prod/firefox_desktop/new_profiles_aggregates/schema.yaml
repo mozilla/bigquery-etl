@@ -1,89 +1,89 @@
 fields:
-- name: first_seen_date
+- description: Date when clients were first seen.
+  name: first_seen_date
   type: DATE
   mode: NULLABLE
-  description: Date when clients were first seen.
-- name: is_desktop
+- description: Indicates if the client is included in the desktop KPI.
+  name: is_desktop
   type: BOOLEAN
   mode: NULLABLE
-  description: Indicates if the client is included in the desktop KPI.
-- name: attribution_medium
+- description: Category of the source, such as 'organic' for a search engine.
+  name: attribution_medium
   type: STRING
   mode: NULLABLE
-  description: Category of the source, such as 'organic' for a search engine.
-- name: attribution_source
+- description: Referring partner domain, when install happens via a known partner.
+  name: attribution_source
   type: STRING
   mode: NULLABLE
-  description: Referring partner domain, when install happens via a known partner.
-- name: attribution_campaign
-  type: STRING
-  mode: NULLABLE
-  description: Identifier of the particular campaign that led to the download of the
+- description: Identifier of the particular campaign that led to the download of the
     product.
-- name: attribution_content
+  name: attribution_campaign
   type: STRING
   mode: NULLABLE
-  description: Identifier to indicate the particular link within a campaign.
-- name: attribution_dlsource
+- description: Identifier to indicate the particular link within a campaign.
+  name: attribution_content
   type: STRING
   mode: NULLABLE
-  description: Identifier that indicates where installations of Firefox originated.
-- name: attribution_ua
+- description: Identifier that indicates where installations of Firefox originated.
+  name: attribution_dlsource
   type: STRING
   mode: NULLABLE
-  description: Client's user agent, which corresponds to the web browser used to download
+- description: Client's user agent, which corresponds to the web browser used to download
     the Firefox installer.
-- name: attributed
-  type: BOOLEAN
+  name: attribution_ua
+  type: STRING
   mode: NULLABLE
-  description: True if attribution_medium is not null AND attribution_source is not
+- description: True if attribution_medium is not null AND attribution_source is not
     null.
-- name: paid_vs_organic
-  type: STRING
-  mode: NULLABLE
-  description: Is desktop client attribution organic or paid
-- name: country
-  type: STRING
-  mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
-- name: distribution_id
-  type: STRING
-  mode: NULLABLE
-  description: The distribution id associated with the install of Firefox.
-- name: channel
-  type: STRING
-  mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
-- name: normalized_os
-  type: STRING
-  mode: NULLABLE
-  description: The normalized name of the operating system running at the client.
-- name: normalized_os_version
-  type: STRING
-  mode: NULLABLE
-  description: The OS version.
-- name: app_version
-  type: STRING
-  mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
-- name: locale
-  type: STRING
-  mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
-- name: windows_version
-  type: STRING
-  mode: NULLABLE
-  description: Combo of os, os_version, windows_build_number, NULL if not windows.
-- name: windows_build_number
-  type: INTEGER
-  mode: NULLABLE
-  description: Windows build number.
-- name: is_dau
+  name: attributed
   type: BOOLEAN
   mode: NULLABLE
-  description: Is the client active or not on the date.
-- name: new_profiles
+- description: Is desktop client attribution organic or paid
+  name: paid_vs_organic
+  type: STRING
+  mode: NULLABLE
+- description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+  name: country
+  type: STRING
+  mode: NULLABLE
+- description: The distribution id associated with the install of Firefox.
+  name: distribution_id
+  type: STRING
+  mode: NULLABLE
+- description: The normalized channel the application is being distributed on.
+  name: channel
+  type: STRING
+  mode: NULLABLE
+- description: The normalized name of the operating system running at the client.
+  name: normalized_os
+  type: STRING
+  mode: NULLABLE
+- description: The OS version.
+  name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+- description: User visible version string (e.g. "1.0.3") for the browser.
+  name: app_version
+  type: STRING
+  mode: NULLABLE
+- description: Set of language- and/or country-based preferences for a user interface.
+  name: locale
+  type: STRING
+  mode: NULLABLE
+- description: Combo of os, os_version, windows_build_number, NULL if not windows.
+  name: windows_version
+  type: STRING
+  mode: NULLABLE
+- description: Windows build number.
+  name: windows_build_number
   type: INTEGER
   mode: NULLABLE
-  description: Count of clients that are new on this date.
+- description: Is the client active or not on the date.
+  name: is_dau
+  type: BOOLEAN
+  mode: NULLABLE
+- description: Count of clients that are new on this date.
+  name: new_profiles
+  type: INTEGER
+  mode: NULLABLE

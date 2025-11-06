@@ -1,21 +1,21 @@
 fields:
-- name: report_date
+- description: Report Date
+  mode: NULLABLE
+  name: report_date
   type: DATE
+- description: Root Domain
   mode: NULLABLE
-  description: Report Date
-- name: root_domain
+  name: root_domain
   type: STRING
+- description: Daily count of root domain reports
   mode: NULLABLE
-  description: Root Domain
-- name: daily_domain_reports
-  type: INTEGER
+  name: daily_domain_reports
+  type: INT64
+- description: 7 day count of root domain reports
   mode: NULLABLE
-  description: Daily count of root domain reports
-- name: weekly_trend
-  type: INTEGER
+  name: weekly_trend
+  type: INT64
+- description: Recurrence count of root domain over last 7 days
   mode: NULLABLE
-  description: 7 day count of root domain reports
-- name: weekly_recurrence_count
-  type: INTEGER
-  mode: NULLABLE
-  description: Recurrence count of root domain over last 7 days
+  name: weekly_recurrence_count
+  type: INT64

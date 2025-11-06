@@ -1,13 +1,13 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: dataset
+- mode: NULLABLE
+  name: dataset
   type: STRING
-  mode: NULLABLE
-- name: table_name
+- mode: NULLABLE
+  name: table_name
   type: STRING
-  mode: NULLABLE
-- name: total_columns
+- mode: NULLABLE
+  name: total_columns
   type: INTEGER
-  mode: NULLABLE

@@ -1,15 +1,15 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: 'Represents ETL job date.
 
     Also, used for table partitioning.
 
     '
-- name: user_id
+- mode: NULLABLE
+  name: user_id
   type: STRING
-  mode: NULLABLE
   description: 'A 36 char long hash value representing
 
     User ID (registered user).
@@ -17,9 +17,9 @@ fields:
     Also, used as a clustering field.
 
     '
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: 'User''s country where activity took place.
 
     See: UDF mozdata.stats.mode_last for more
@@ -27,37 +27,37 @@ fields:
     info on how the function operates.
 
     '
-- name: language
+- mode: NULLABLE
+  name: language
   type: STRING
-  mode: NULLABLE
   description: 'User''s language.
 
     '
-- name: app_version
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
   description: 'Mozilla app version,
 
     follows format: major.minor.patch (e.g. 99.3.3).
 
     '
-- name: os_name
+- mode: NULLABLE
+  name: os_name
   type: STRING
-  mode: NULLABLE
   description: 'OS on which the app was running.
 
     For example: Android.
 
     '
-- name: os_version
+- mode: NULLABLE
+  name: os_version
   type: STRING
-  mode: NULLABLE
   description: 'Version of the OS the device was using.
 
     '
-- name: seen_in_tier1_country
+- mode: NULLABLE
+  name: seen_in_tier1_country
   type: BOOLEAN
-  mode: NULLABLE
   description: 'Set to True if a user sent an event from
 
     one of the following countries for
@@ -69,9 +69,9 @@ fields:
     ''Germany'',''United Kingdom'',''Canada'')
 
     '
-- name: registered
+- mode: NULLABLE
+  name: registered
   type: BOOLEAN
-  mode: NULLABLE
   description: 'Set to True if the user submitted
 
     the event_type of `fxa_reg - complete`
@@ -79,9 +79,9 @@ fields:
     event on the specific submission_date.
 
     '
-- name: monitor_only
+- mode: NULLABLE
+  name: monitor_only
   type: BOOLEAN
-  mode: NULLABLE
   description: 'Set to True if the user contains events of
 
     event_type `fxa_rp - engage` only

@@ -11,6 +11,7 @@ SELECT
       ) AS `subscription_voluntary_cancellation`
     ) AS `boolean`,
     STRUCT(
+      JSON_VALUE(event_extra.nimbus_user_id) AS `nimbus_user_id`,
       JSON_VALUE(event_extra.subscription_cancellation_reason) AS `subscription_cancellation_reason`
     ) AS `string`
   ) AS extras

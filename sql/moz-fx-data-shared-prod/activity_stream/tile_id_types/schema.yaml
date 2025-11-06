@@ -1,7 +1,0 @@
-fields:
-- name: tile_id
-  type: INTEGER
-  mode: NULLABLE
-- name: type
-  type: STRING
-  mode: NULLABLE

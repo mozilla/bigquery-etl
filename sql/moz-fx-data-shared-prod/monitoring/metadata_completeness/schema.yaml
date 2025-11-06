@@ -1,33 +1,33 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Submission Date
-- name: table_catalog
+- mode: NULLABLE
+  name: table_catalog
   type: STRING
-  mode: NULLABLE
   description: Table Catalog
-- name: table_schema
+- mode: NULLABLE
+  name: table_schema
   type: STRING
-  mode: NULLABLE
   description: Table Schema
-- name: table_name
+- mode: NULLABLE
+  name: table_name
   type: STRING
-  mode: NULLABLE
   description: Table Name
-- name: table_type
+- mode: NULLABLE
+  name: table_type
   type: STRING
-  mode: NULLABLE
   description: Table Type
-- name: object_description
+- mode: NULLABLE
+  name: object_description
   type: STRING
-  mode: NULLABLE
   description: Object Description
-- name: nbr_columns
+- mode: NULLABLE
+  name: nbr_columns
   type: INTEGER
-  mode: NULLABLE
   description: Number of Columns
-- name: nbr_columns_with_non_null_desc
+- mode: NULLABLE
+  name: nbr_columns_with_non_null_desc
   type: INTEGER
-  mode: NULLABLE
   description: Number of Columns with a Non-Null Description

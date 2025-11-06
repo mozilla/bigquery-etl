@@ -1,22 +1,22 @@
 fields:
-- name: submission_date
-  type: DATE
-  mode: NULLABLE
 - name: scheduler_id
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
+- name: submission_date
+  type: DATE
+  mode: REQUIRED
 - name: task_group_id
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: task_id
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: task_queue_id
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: tags
   type: RECORD
-  mode: NULLABLE
+  mode: REQUIRED
   fields:
   - name: created_for_user
     type: STRING

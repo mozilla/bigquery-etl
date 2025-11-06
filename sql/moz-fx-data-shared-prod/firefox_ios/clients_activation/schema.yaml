@@ -1,31 +1,31 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: 'Date when a client activated.
 
     '
-- name: first_seen_date
+- mode: NULLABLE
+  name: first_seen_date
   type: DATE
-  mode: NULLABLE
   description: 'Date when the app first reported a baseline ping for the client.
 
     '
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: 'Unique ID for the client installation.
 
     '
-- name: sample_id
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
   description: 'Sample ID to limit query results during an analysis.
 
     '
-- name: is_activated
+- mode: NULLABLE
+  name: is_activated
   type: BOOLEAN
-  mode: NULLABLE
   description: 'Determines if a client is activated based on the activation metric
     and a 7 day lag.
 

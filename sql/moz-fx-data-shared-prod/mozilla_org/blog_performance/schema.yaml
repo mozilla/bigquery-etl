@@ -1,7 +1,7 @@
 fields:
-- name: event_date
+- mode: NULLABLE
+  name: event_date
   type: DATE
-  mode: NULLABLE
   description: Event Date
 - name: page_title
   type: STRING

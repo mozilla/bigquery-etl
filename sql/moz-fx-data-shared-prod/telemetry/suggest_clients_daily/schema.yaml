@@ -1,120 +1,120 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: block_nonsponsored_count
+- mode: NULLABLE
+  name: block_nonsponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: block_sponsored_count
+- mode: NULLABLE
+  name: block_sponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: block_nonsponsored_bestmatch_count
+- mode: NULLABLE
+  name: block_nonsponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: block_sponsored_bestmatch_count
+- mode: NULLABLE
+  name: block_sponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: click_nonsponsored_count
+- mode: NULLABLE
+  name: click_nonsponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: click_sponsored_count
+- mode: NULLABLE
+  name: click_sponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: click_nonsponsored_bestmatch_count
+- mode: NULLABLE
+  name: click_nonsponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: click_sponsored_bestmatch_count
+- mode: NULLABLE
+  name: click_sponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: help_nonsponsored_count
+- mode: NULLABLE
+  name: help_nonsponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: help_sponsored_count
+- mode: NULLABLE
+  name: help_sponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: help_nonsponsored_bestmatch_count
+- mode: NULLABLE
+  name: help_nonsponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: help_sponsored_bestmatch_count
+- mode: NULLABLE
+  name: help_sponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: impression_nonsponsored_count
+- mode: NULLABLE
+  name: impression_nonsponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: impression_sponsored_count
+- mode: NULLABLE
+  name: impression_sponsored_count
   type: INTEGER
-  mode: NULLABLE
-- name: impression_nonsponsored_bestmatch_count
+- mode: NULLABLE
+  name: impression_nonsponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: impression_sponsored_bestmatch_count
+- mode: NULLABLE
+  name: impression_sponsored_bestmatch_count
   type: INTEGER
-  mode: NULLABLE
-- name: user_pref_data_collection_enabled
+- mode: NULLABLE
+  name: user_pref_data_collection_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: user_pref_sponsored_suggestions_enabled
+- mode: NULLABLE
+  name: user_pref_sponsored_suggestions_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: user_pref_firefox_suggest_enabled
+- mode: NULLABLE
+  name: user_pref_firefox_suggest_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: browser_version_info
-  type: RECORD
-  mode: NULLABLE
-  fields:
-  - name: version
+- fields:
+  - mode: NULLABLE
+    name: version
     type: STRING
-    mode: NULLABLE
-  - name: major_version
+  - mode: NULLABLE
+    name: major_version
     type: NUMERIC
-    mode: NULLABLE
-  - name: minor_version
+  - mode: NULLABLE
+    name: minor_version
     type: NUMERIC
-    mode: NULLABLE
-  - name: patch_revision
+  - mode: NULLABLE
+    name: patch_revision
     type: NUMERIC
-    mode: NULLABLE
-  - name: is_major_release
+  - mode: NULLABLE
+    name: is_major_release
     type: BOOLEAN
-    mode: NULLABLE
-- name: experiments
+  mode: NULLABLE
+  name: browser_version_info
   type: RECORD
+- fields:
+  - mode: NULLABLE
+    name: key
+    type: STRING
+  - mode: NULLABLE
+    name: value
+    type: STRING
   mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
-- name: locale
+  name: experiments
+  type: RECORD
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: The normalized channel the application is being distributed on.
-- name: normalized_os_version
+- mode: NULLABLE
+  name: normalized_os_version
   type: STRING
-  mode: NULLABLE
-- name: sample_id
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
   description: A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: An ISO 3166-1 alpha-2 country code
-- name: profile_group_id
+- mode: NULLABLE
+  name: profile_group_id
   type: STRING
-  mode: NULLABLE
   description: A UUID uniquely identifying the profile group, not shared with other
     telemetry data.

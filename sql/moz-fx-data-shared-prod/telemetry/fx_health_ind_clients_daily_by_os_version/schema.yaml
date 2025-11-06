@@ -1,57 +1,57 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Submission Date
-- name: os_version
+- mode: NULLABLE
+  name: os_version
   type: STRING
-  mode: NULLABLE
   description: Operating System Version
-- name: searches_per_user_ratio
+- mode: NULLABLE
+  name: searches_per_user_ratio
   type: FLOAT
-  mode: NULLABLE
   description: Ratio of Searches per User
-- name: subsession_hours_per_user_ratio
+- mode: NULLABLE
+  name: subsession_hours_per_user_ratio
   type: NUMERIC
-  mode: NULLABLE
   description: Ratio of Subsession Hours per User
-- name: active_hours_per_user_ratio
+- mode: NULLABLE
+  name: active_hours_per_user_ratio
   type: FLOAT
-  mode: NULLABLE
   description: Ratio of Active Hours per User
-- name: default_percent
+- mode: NULLABLE
+  name: default_percent
   type: FLOAT
-  mode: NULLABLE
   description: Percent of Users with Firefox as Default Browser
-- name: average_profile_age
+- mode: NULLABLE
+  name: average_profile_age
   type: FLOAT
-  mode: NULLABLE
   description: Average Profile Age
-- name: pct_users_profile_age_less_than_7_days
+- mode: NULLABLE
+  name: pct_users_profile_age_less_than_7_days
   type: FLOAT
-  mode: NULLABLE
   description: Percent of Users with Profile Age Less than 7 Days
-- name: pct_users_profile_age_8_to_365_days
+- mode: NULLABLE
+  name: pct_users_profile_age_8_to_365_days
   type: FLOAT
-  mode: NULLABLE
   description: Percent of Users with Profile Age Between 8 and 365 Days
-- name: pct_users_profile_age_over_365_days
+- mode: NULLABLE
+  name: pct_users_profile_age_over_365_days
   type: FLOAT
-  mode: NULLABLE
   description: Percent of Users with Profile Age Over 365 Days
-- name: sessions_per_user
+- mode: NULLABLE
+  name: sessions_per_user
   type: FLOAT
-  mode: NULLABLE
   description: Ratio of Sessions per User
-- name: uris_per_user
+- mode: NULLABLE
+  name: uris_per_user
   type: FLOAT
-  mode: NULLABLE
   description: Ratio of URIs per User
-- name: new_profile_ratio
+- mode: NULLABLE
+  name: new_profile_ratio
   type: FLOAT
-  mode: NULLABLE
   description: Ratio of New Profiles vs All Profiles
-- name: domains_per_user
+- mode: NULLABLE
+  name: domains_per_user
   type: FLOAT
-  mode: NULLABLE
   description: Domains per User

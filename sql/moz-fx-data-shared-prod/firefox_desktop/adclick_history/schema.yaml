@@ -1,18 +1,18 @@
 fields:
-- name: client_id
-  type: STRING
+- description: Unique ID for the client installation.
   mode: NULLABLE
-  description: Unique ID for the client installation.
-- name: ad_click_history
-  type: RECORD
-  mode: REPEATED
+  name: client_id
+  type: STRING
+- description: History of ad_clicks for a user, by submission_date
   fields:
-  - name: key
+  - description: The date associated with the ad_click value
+    mode: NULLABLE
+    name: key
     type: DATE
+  - description: The total number of ad_clicks for the submission_date
     mode: NULLABLE
-    description: The date associated with the ad_click value
-  - name: value
+    name: value
     type: INTEGER
-    mode: NULLABLE
-    description: The total number of ad_clicks for the submission_date
-  description: History of ad_clicks for a user, by submission_date
+  mode: REPEATED
+  name: ad_click_history
+  type: RECORD

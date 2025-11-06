@@ -1,16 +1,16 @@
 fields:
 - name: date
   type: DATE
-  mode: NULLABLE
+  mode: REQUIRED
 - name: base_currency
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: quote_currency
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: price_type
   type: STRING
-  mode: NULLABLE
+  mode: REQUIRED
 - name: price
   type: NUMERIC
-  mode: NULLABLE
+  mode: REQUIRED

@@ -1,55 +1,55 @@
 fields:
-- name: client_id
+- description: A unique identifier (UUID) for the client.
+  mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
-  description: A unique identifier (UUID) for the client.
-- name: sample_id
-  type: INTEGER
-  mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
+- description: A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: as_of_date
-  type: DATE
   mode: NULLABLE
-  description: The date associated with the Markov state; as_of_date will not update
+  name: sample_id
+  type: INTEGER
+- description: The date associated with the Markov state; as_of_date will not update
     after a year of inactivity as the markov states stop updating
-- name: first_seen_date
+  mode: NULLABLE
+  name: as_of_date
   type: DATE
+- description: First submission date that this client was seen on
   mode: NULLABLE
-  description: First submission date that this client was seen on
-- name: days_since_first_seen
+  name: first_seen_date
+  type: DATE
+- description: Days Since First Seen
+  mode: NULLABLE
+  name: days_since_first_seen
   type: INTEGER
+- description: Days Since Seen
   mode: NULLABLE
-  description: Days Since First Seen
-- name: days_since_seen
+  name: days_since_seen
   type: INTEGER
+- description: Days Seen Bytes
   mode: NULLABLE
-  description: Days Since Seen
-- name: days_seen_bytes
+  name: days_seen_bytes
   type: BYTES
+- description: Durations
   mode: NULLABLE
-  description: Days Seen Bytes
-- name: durations
+  name: durations
   type: INTEGER
+- description: Ad Clicks
   mode: NULLABLE
-  description: Durations
-- name: ad_clicks
+  name: ad_clicks
   type: INTEGER
+- description: Total Historical Ad Clicks
   mode: NULLABLE
-  description: Ad Clicks
-- name: total_historic_ad_clicks
+  name: total_historic_ad_clicks
   type: INTEGER
+- description: Adjust Network
   mode: NULLABLE
-  description: Total Historical Ad Clicks
-- name: adjust_network
+  name: adjust_network
   type: STRING
+- description: First Reported Country
   mode: NULLABLE
-  description: Adjust Network
-- name: first_reported_country
+  name: first_reported_country
   type: STRING
+- description: First Reported ISP
   mode: NULLABLE
-  description: First Reported Country
-- name: first_reported_isp
+  name: first_reported_isp
   type: STRING
-  mode: NULLABLE
-  description: First Reported ISP

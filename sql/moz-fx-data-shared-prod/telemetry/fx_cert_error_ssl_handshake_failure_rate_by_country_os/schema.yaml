@@ -1,15 +1,15 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: Submission Date
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
   description: Country
-- name: os
+- mode: NULLABLE
+  name: os
   type: STRING
-  mode: NULLABLE
   description: OS
 - name: failures
   type: INTEGER

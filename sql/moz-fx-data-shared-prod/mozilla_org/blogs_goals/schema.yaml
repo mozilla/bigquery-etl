@@ -1,25 +1,25 @@
 fields:
-- name: date
+- mode: NULLABLE
+  name: date
   type: DATE
-  mode: NULLABLE
   description: Date of the visit
-- name: visit_identifier
+- mode: NULLABLE
+  name: visit_identifier
   type: STRING
-  mode: NULLABLE
   description: Visit Identifier - Uniquely identifies a visit; concatenation of user_pseudo_id
     and ga_session_id
-- name: downloads
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: downloads
+  type: INT64
   description: Downloads - The number of download click events for this visit and
     date
-- name: social_share
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: social_share
+  type: INT64
   description: Social Share - The number of social share events for this visit and
     date
-- name: newsletter_subscription
-  type: INTEGER
-  mode: NULLABLE
+- mode: NULLABLE
+  name: newsletter_subscription
+  type: INT64
   description: Newsletter Subscription - The number of newsletter subscription events
     for this visit and date

@@ -745,7 +745,10 @@ fields:
     - name: browser_backup_enabled
       type: BOOLEAN
       mode: NULLABLE
-      description: 'True if the BackupService is enabled by default.
+      description: 'True if the BackupService has initialized and reached idle. You
+        may want to use archive_enabled/restore_enabled to determine whether those
+        features are available, or use scheduler_enabled for whether automatic backups
+        are enabled.
 
         '
     - name: browser_backup_pswd_encrypted
@@ -1124,6 +1127,20 @@ fields:
       mode: NULLABLE
       description: 'Records if the user has the "Open links from apps next to your
         active tab" feature enabled.
+
+        '
+    - name: browser_backup_archive_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the user can create backups, i.e. it has not been disabled
+        by a pref or otherwise deemed incompatible.
+
+        '
+    - name: browser_backup_restore_enabled
+      type: BOOLEAN
+      mode: NULLABLE
+      description: 'True if the user can restore backups, i.e. it has not been disabled
+        by a pref or otherwise deemed incompatible.
 
         '
   - name: counter
@@ -14305,6 +14322,22 @@ fields:
       mode: NULLABLE
       description: 'Only set if `browser.backup.enabled` is `false`. Possible reasons
         are "nimbus", "pref" (non-Nimbus), "policy", "managedProfiles".
+
+        '
+    - name: browser_backup_archive_disabled_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Only set if `browser.backup.enabled` is `false`. Possible reasons
+        are "nimbus", "pref" (non-Nimbus), "policy", "sanitizeOnShutdown", "selectable
+        profiles".
+
+        '
+    - name: browser_backup_restore_disabled_reason
+      type: STRING
+      mode: NULLABLE
+      description: 'Only set if `browser.backup.enabled` is `false`. Possible reasons
+        are "nimbus", "pref" (non-Nimbus), "policy", "sanitizeOnShutdown", "selectable
+        profiles".
 
         '
   - name: timespan

@@ -1,80 +1,80 @@
 fields:
-- name: survey_data
-  type: RECORD
+- type: RECORD
+  name: url_variables
   mode: REPEATED
   fields:
-  - name: answer_id
-    type: INTEGER
+  - type: STRING
+    name: key
     mode: NULLABLE
-  - name: answer
-    type: STRING
+  - type: STRING
+    name: value
     mode: NULLABLE
-  - name: original_answer
-    type: STRING
+- type: RECORD
+  name: survey_data
+  mode: REPEATED
+  fields:
+  - type: INTEGER
+    name: answer_id
     mode: NULLABLE
-  - name: question
-    type: STRING
+  - type: STRING
+    name: answer
     mode: NULLABLE
-  - name: id
-    type: INTEGER
+  - type: STRING
+    name: original_answer
     mode: NULLABLE
-  - name: section_id
-    type: INTEGER
+  - type: STRING
+    name: question
     mode: NULLABLE
-  - name: shown
-    type: BOOLEAN
+  - type: INTEGER
+    name: id
     mode: NULLABLE
-  - name: type
-    type: STRING
+  - type: INTEGER
+    name: section_id
     mode: NULLABLE
-  - name: parent
-    type: INTEGER
+  - type: BOOLEAN
+    name: shown
     mode: NULLABLE
-  - name: options
-    type: RECORD
+  - type: STRING
+    name: type
+    mode: NULLABLE
+  - type: INTEGER
+    name: parent
+    mode: NULLABLE
+  - type: STRING
+    name: subquestions
+    mode: NULLABLE
+  - type: RECORD
+    name: options
     mode: REPEATED
     fields:
-    - name: id
-      type: INTEGER
+    - type: INTEGER
+      name: id
       mode: NULLABLE
-    - name: option
-      type: STRING
+    - type: STRING
+      name: option
       mode: NULLABLE
-    - name: answer
-      type: STRING
+    - type: STRING
+      name: answer
       mode: NULLABLE
-  - name: subquestions
-    type: STRING
-    mode: NULLABLE
-- name: url_variables
-  type: RECORD
-  mode: REPEATED
-  fields:
-  - name: key
-    type: STRING
-    mode: NULLABLE
-  - name: value
-    type: STRING
-    mode: NULLABLE
-- name: response_time
-  type: INTEGER
+- type: INTEGER
+  name: response_time
   mode: NULLABLE
-- name: session_id
-  type: STRING
+- type: STRING
+  name: session_id
   mode: NULLABLE
-- name: submission_date
+- description: '%E4Y-%m-%d'
   type: DATE
+  name: submission_date
   mode: NULLABLE
-  description: '%E4Y-%m-%d'
-- name: id
-  type: INTEGER
+- type: INTEGER
+  name: id
   mode: NULLABLE
-- name: status
-  type: STRING
+- type: STRING
+  name: status
   mode: NULLABLE
-- name: date_started
-  type: TIMESTAMP
+- type: TIMESTAMP
+  name: date_started
   mode: NULLABLE
-- name: language
-  type: STRING
+- type: STRING
+  name: language
   mode: NULLABLE

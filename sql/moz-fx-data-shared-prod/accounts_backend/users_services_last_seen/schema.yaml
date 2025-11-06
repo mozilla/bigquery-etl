@@ -1,31 +1,31 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: user_id_sha256
+- mode: NULLABLE
+  name: user_id_sha256
   type: STRING
-  mode: NULLABLE
-- name: service
+- mode: NULLABLE
+  name: service
   type: STRING
-  mode: NULLABLE
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
-- name: days_seen_bits
+- mode: NULLABLE
+  name: days_seen_bits
   type: INTEGER
-  mode: NULLABLE
   description: 'No. of days since the user had activity event.
 
     '
-- name: days_seen_in_tier1_country_bits
+- mode: NULLABLE
+  name: days_seen_in_tier1_country_bits
   type: INTEGER
-  mode: NULLABLE
   description: 'No. of days since seen_in_tier1_country was last True.
 
     '
-- name: days_registered_bits
+- mode: NULLABLE
+  name: days_registered_bits
   type: INTEGER
-  mode: NULLABLE
   description: 'No. of days since registration event.
 
     '

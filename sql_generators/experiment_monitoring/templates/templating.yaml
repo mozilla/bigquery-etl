@@ -128,6 +128,14 @@ search_metrics:
     ad_clicks_count: null
     search_with_ads_count: null
     search_count: null
+  experimenter_cirrus:
+    ad_clicks_count: null
+    search_with_ads_count: null
+    search_count: null
+  subplat_cirrus:
+    ad_clicks_count: null
+    search_with_ads_count: null
+    search_count: null
 applications:
   - org_mozilla_firefox_beta
   - org_mozilla_fenix
@@ -145,3 +153,5 @@ applications:
   - org_mozilla_ios_focus
   - monitor_cirrus
   - accounts_cirrus
+  - experimenter_cirrus
+  - subplat_cirrus

@@ -36,5 +36,4 @@ workgroup_access:
   members:
   - workgroup:mozsoc-ml/service
   - workgroup:mozsoc-ml/developers
-references: {}
 require_column_descriptions: false

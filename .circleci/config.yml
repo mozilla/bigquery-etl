@@ -48,6 +48,7 @@ workflows:
             requirements.txt validate-bqetl true
             requirements.txt validate-sql true
             requirements.txt validate-routines true
+            requirements.txt trigger-sql-generation true
             bigquery_etl/.* validate-bqetl true
             tests/.* validate-bqetl true
             bigquery_etl/query_scheduling/.* validate-sql true

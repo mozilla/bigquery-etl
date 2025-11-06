@@ -214,3 +214,6 @@ fields:
   type: INTEGER
   description: Days Interacted Bits
 {%- endif %}
+- name: startup_profile_selection_reason_first
+  type: STRING
+  description: How the profile was selected during startup

@@ -1,5 +1,6 @@
 SELECT
   CURRENT_TIMESTAMP() AS updated_at,
+  submission_date,
   external_id,
   TO_JSON(
     STRUCT(

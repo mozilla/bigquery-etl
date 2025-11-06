@@ -2,15 +2,20 @@ fields:
 - name: date
   type: DATE
   mode: NULLABLE
+  description: Date of the session
 - name: visit_identifier
   type: STRING
   mode: NULLABLE
+  description: The unique identifier for a visit, a concatenation of visitor ID and visit ID.
 - name: downloads
   type: INTEGER
   mode: NULLABLE
+  description: The number of downloads for this session.
 - name: social_share
   type: INTEGER
   mode: NULLABLE
+  description: The number of social shares for this session.
 - name: newsletter_subscription
   type: INTEGER
   mode: NULLABLE
+  description: The number of newsletter subscriptions for this session.

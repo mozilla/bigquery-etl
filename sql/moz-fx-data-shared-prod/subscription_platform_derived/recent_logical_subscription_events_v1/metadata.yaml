@@ -32,5 +32,4 @@ bigquery:
     fields:
     - type
     - reason
-references: {}
 require_column_descriptions: true

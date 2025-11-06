@@ -24,7 +24,6 @@ bigquery:
     fields:
       - channel
       - country
-references: {}
 workgroup_access:
   - role: roles/bigquery.dataViewer
     members:

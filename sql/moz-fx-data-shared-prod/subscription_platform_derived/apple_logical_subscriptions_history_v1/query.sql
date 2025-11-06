@@ -315,7 +315,7 @@ SELECT
         )
         -- admins are not revoking Apple subscriptions so we can assume such cases are from users
         OR history.subscription.status = 5  -- 5 = revoked
-        THEN 'User Initiated'
+        THEN 'Customer Initiated'
       WHEN (
           history.subscription.status = 2  -- 2 = expired
           AND history.subscription.renewal_info.expiration_intent = 2  -- 2 = Billing error

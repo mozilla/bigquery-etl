@@ -14,4 +14,3 @@ bigquery:
   clustering:
     fields:
     - country
-references: {}

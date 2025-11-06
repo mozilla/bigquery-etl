@@ -39,4 +39,3 @@ bigquery:
       - newtab_category
     expiration_days: 775
   range_partitioning: null
-references: {}

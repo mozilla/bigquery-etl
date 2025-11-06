@@ -314,7 +314,7 @@ SELECT
         )
         OR history.subscription.cancellation_details.reason = 'payment_disputed'
         OR history.subscription.metadata.cancellation_reason = 'fxa_user_requested_account_delete'
-        THEN 'User Initiated'
+        THEN 'Customer Initiated'
       WHEN history.subscription.cancellation_details.reason = 'payment_failed'
         OR latest_invoices.status = 'uncollectible'
         OR latest_invoice_charges.status = 'failed'

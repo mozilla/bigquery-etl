@@ -244,7 +244,7 @@ SELECT
         WHEN history.subscription_is_active
           THEN NULL
         WHEN history.subscription.cancel_reason = 0  -- 0 = User canceled the subscription
-          THEN 'User Initiated'
+          THEN 'Customer Initiated'
         WHEN history.subscription.cancel_reason = 1  -- 1 = Subscription was canceled by the system, for example because of a billing problem
           THEN 'Payment Failure'
         WHEN history.subscription.cancel_reason = 3  -- 3 = Subscription was canceled by the developer

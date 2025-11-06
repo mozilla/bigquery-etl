@@ -24,5 +24,4 @@ bigquery:
     - event_category
     - event_action
     - event_label
-references: {}
 deprecated: true

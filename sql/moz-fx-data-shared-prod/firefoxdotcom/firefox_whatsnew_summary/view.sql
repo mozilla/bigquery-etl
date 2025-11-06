@@ -4,4 +4,4 @@ AS
 SELECT
   *
 FROM
-  `moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_whatsnew_summary_v1`
+  `moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_whatsnew_summary_v2`

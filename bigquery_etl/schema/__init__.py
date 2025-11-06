@@ -282,6 +282,10 @@ class Schema:
         with open(yaml_path, "w") as out:
             yaml.dump(self.schema, out, default_flow_style=False, sort_keys=False)
 
+    def to_yaml(self):
+        """Return the schema data as YAML."""
+        return yaml.dump(self.schema, default_flow_style=False, sort_keys=False)
+
     def to_json_file(self, json_path: Path):
         """Write schema to the JSON file path."""
         with open(json_path, "w") as out:

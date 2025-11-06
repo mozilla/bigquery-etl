@@ -14,8 +14,8 @@ DEFAULT_PROJECTS = [
     "moz-fx-data-bq-data-science",
     "moz-fx-glam-prod",
     "moz-fx-glam-nonprod",
-    "moz-fx-data-sumo-prod",
-    "moz-fx-data-sumo-nonprod",
+    "moz-fx-sumo-prod",
+    "moz-fx-sumo-nonprod",
     "moz-fx-mozsocial-dw-prod",
     "moz-fx-data-bq-people",
 ]
@@ -62,6 +62,9 @@ def create_query(job_date: date, project: str):
           DATE(creation_time) as creation_date,
           materialized_view_statistics,
           query_dialect,
+          bi_engine_statistics.bi_engine_mode AS bi_engine_mode,
+          bi_engine_statistics.acceleration_mode AS acceleration_mode,
+          bi_engine_statistics.bi_engine_reasons AS bi_engine_reasons,
         FROM
           `{project}.region-us.INFORMATION_SCHEMA.JOBS_BY_ORGANIZATION`
         WHERE

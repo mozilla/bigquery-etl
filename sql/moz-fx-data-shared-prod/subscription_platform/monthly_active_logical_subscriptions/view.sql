@@ -192,7 +192,7 @@ SELECT
   logical_subscriptions_history_id,
   (
     SELECT AS STRUCT
-      subscription.*,
+      subscription.* EXCEPT (first_touch_attribution),  -- DENG-9858
       country_vat_rate,
       plan_currency_usd_exchange_rate,
       IF(

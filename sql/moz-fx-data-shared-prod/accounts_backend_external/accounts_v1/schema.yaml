@@ -1,47 +1,69 @@
 fields:
-  - name: uid
-    type: STRING
-    mode: NULLABLE
-    description: |-
-      Account ID in hexadecimal format.
-      FxA stores this as bytes, for purposes of logging or integration
-      with other systems we convert it to a hex string.
-  - name: normalizedEmail
-    type: STRING
-    mode: NULLABLE
-  - name: email
-    type: STRING
-    mode: NULLABLE
-  - name: emailVerified
-    type: BOOLEAN
-    mode: NULLABLE
-  - name: verifierVersion
-    type: INTEGER
-    mode: NULLABLE
-  - name: verifierSetAt
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: createdAt
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: locale
-    type: STRING
-    mode: NULLABLE
-  - name: lockedAt
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: profileChangedAt
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: keysChangedAt
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: ecosystemAnonId
-    type: STRING
-    mode: NULLABLE
-  - name: disabledAt
-    type: TIMESTAMP
-    mode: NULLABLE
-  - name: metricsOptOutAt
-    type: TIMESTAMP
-    mode: NULLABLE
+- name: uid
+  type: STRING
+  mode: NULLABLE
+  description: 'Account ID in hexadecimal format.
+
+    FxA stores this as bytes, for purposes of logging or integration
+
+    with other systems we convert it to a hex string.'
+- name: normalizedEmail
+  type: STRING
+  mode: NULLABLE
+  description: String/text field for normalized email.
+- name: email
+  type: STRING
+  mode: NULLABLE
+  description: String/text field for email.
+- name: emailVerified
+  type: BOOLEAN
+  mode: NULLABLE
+  description: 'Boolean flag for email verified. Computed as: SAFE_CAST(emailVerified
+    AS BOOL).'
+- name: verifierVersion
+  type: INTEGER
+  mode: NULLABLE
+  description: Numeric value representing verifier version.
+- name: verifierSetAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for verifier set at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(verifierSetAt
+    AS INT)).'
+- name: createdAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for created at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(createdAt
+    AS INT)).'
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: String/text field for locale.
+- name: lockedAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for locked at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(lockedAt
+    AS INT)).'
+- name: profileChangedAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for profile changed at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(profileChangedAt
+    AS INT)).'
+- name: keysChangedAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for keys changed at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(keysChangedAt
+    AS INT)).'
+- name: ecosystemAnonId
+  type: STRING
+  mode: NULLABLE
+  description: String/text field for ecosystem anon id.
+- name: disabledAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for disabled at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(disabledAt
+    AS INT)).'
+- name: metricsOptOutAt
+  type: TIMESTAMP
+  mode: NULLABLE
+  description: 'Timestamp/date field for metrics opt out at. Computed as: SAFE.TIMESTAMP_MILLIS(SAFE_CAST(metricsOptOutAt
+    AS INT)).'

@@ -586,7 +586,6 @@ topsites_components AS (
     submission_date,
     client_id,
     mozfun.map.get_key(event_details, "newtab_visit_id") AS newtab_visit_id,
-    mozfun.map.get_key(event_details, "tile_id") AS tile_id,
     SAFE_CAST(mozfun.map.get_key(event_details, "position") AS INT64) AS position,
     SAFE_CAST(mozfun.map.get_key(event_details, 'is_sponsored') AS BOOLEAN) AS is_sponsored,
     COUNTIF(event_name = 'impression') AS impression_count,
@@ -603,7 +602,6 @@ topsites_components AS (
     submission_date,
     client_id,
     newtab_visit_id,
-    tile_id,
     position,
     is_sponsored
 ),
@@ -614,7 +612,6 @@ topsites_component_summary AS (
     newtab_visit_id,
     ARRAY_AGG(
       STRUCT(
-        tile_id,
         position,
         is_sponsored,
         impression_count,

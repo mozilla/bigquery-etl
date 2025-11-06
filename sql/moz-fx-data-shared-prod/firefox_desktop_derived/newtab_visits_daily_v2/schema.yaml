@@ -306,10 +306,6 @@ fields:
   mode: REPEATED
   description: Detailed metrics for individual topsite tiles during this visit
   fields:
-  - name: tile_id
-    type: STRING
-    mode: NULLABLE
-    description: Unique identifier for the topsite tile
   - name: position
     type: INTEGER
     mode: NULLABLE

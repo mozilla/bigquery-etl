@@ -2385,9 +2385,9 @@ soupsieve==2.6 \
     --hash=sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb \
     --hash=sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9
     # via beautifulsoup4
-sqlglot==27.12.0 \
-    --hash=sha256:1bb0500503eea375bf86ddc72b2e9ca955113bd0cbf8968bcf4ed5f4cd8d5575 \
-    --hash=sha256:b3a3d9d0cc27d7eece4057ff97714fe2d950ae9c5dc0df702db6fcd333565bb8
+sqlglot==27.29.0 \
+    --hash=sha256:2270899694663acef94fa93497971837e6fadd712f4a98b32aee1e980bc82722 \
+    --hash=sha256:9a5ea8ac61826a7763de10cad45a35f0aa9bfcf7b96ee74afb2314de9089e1cb
     # via -r requirements.in
 sqlparse==0.5.3 \
     --hash=sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272 \

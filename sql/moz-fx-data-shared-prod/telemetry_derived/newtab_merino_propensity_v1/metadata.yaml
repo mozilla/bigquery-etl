@@ -1,0 +1,30 @@
+friendly_name: Newtab Merino Priors
+description: |-
+  Analyzes clickthrough rates of uniform randomly placed items to create a propensity weight score
+  that is independent of content. These weights can be used to inform other ranking jobs.
+owners:
+- mmiermans@mozilla.com
+- rrando@mozilla.com
+labels:
+  owner: cbeck
+  dag: bqetl_merino_newtab_priors_to_gcs
+  owner1: mmiermans
+  owner2: rrando
+scheduling:
+  dag_name: bqetl_merino_newtab_priors_to_gcs
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  checks.sql:
+  - ..
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop_stable.newtab_content_v1
+  - moz-fx-data-shared-prod.snowflake_migration_derived.approved_corpus_items
+require_column_descriptions: false

@@ -1,11 +1,11 @@
 fields:
-- name: submission_date_s3
-  type: DATE
-  mode: NULLABLE
 - name: submission_date
   type: DATE
   mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
+- name: cohort_date
+  type: DATE
+  mode: NULLABLE
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
@@ -15,41 +15,51 @@ fields:
   type: STRING
   mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: normalized_channel
+- name: country
   type: STRING
   mode: NULLABLE
-  description: The normalized channel the application is being distributed on.
-- name: app_version
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: adjust_network
   type: STRING
   mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
-- name: locale
+  description: The name of the Adjust Network that sourced the installation.
+- name: adjust_adgroup
   type: STRING
   mode: NULLABLE
-  description: Set of language- and/or country-based preferences for a user interface.
-- name: n_self_installed_addons
+- name: adjust_campaign
+  type: STRING
+  mode: NULLABLE
+- name: adjust_creative
+  type: STRING
+  mode: NULLABLE
+- name: is_new_profile
+  type: BOOLEAN
+  mode: NULLABLE
+- name: searches_with_ads
   type: INTEGER
   mode: NULLABLE
-- name: n_shield_addons
+- name: ad_clicks
   type: INTEGER
   mode: NULLABLE
-- name: n_foreign_installed_addons
+- name: is_new_install
+  type: BOOLEAN
+  mode: NULLABLE
+- name: activated
+  type: BOOLEAN
+  mode: NULLABLE
+- name: dau
   type: INTEGER
   mode: NULLABLE
-- name: n_system_addons
+- name: new_profiles
   type: INTEGER
   mode: NULLABLE
-- name: n_web_extensions
+- name: search_count
   type: INTEGER
   mode: NULLABLE
-- name: first_addon_install_date
-  type: STRING
+- name: new_installs
+  type: INTEGER
   mode: NULLABLE
-- name: profile_creation_date
-  type: STRING
+- name: activations
+  type: INTEGER
   mode: NULLABLE
-- name: profile_group_id
-  type: STRING
-  mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.

@@ -207,7 +207,10 @@ SELECT
       0
     )
   ) AS ad_clicks_count_all,
-  ANY_VALUE(metrics.string.system_apple_model_id) AS apple_model_id
+  ANY_VALUE(metrics.string.system_apple_model_id) AS apple_model_id,
+  `moz-fx-data-shared-prod.udf.mode_last`(
+    ARRAY_AGG(metrics.string.search_engine_default_engine_id ORDER BY submission_timestamp ASC)
+  ) AS default_search_engine
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

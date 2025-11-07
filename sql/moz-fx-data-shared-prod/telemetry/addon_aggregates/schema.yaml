@@ -1,0 +1,55 @@
+fields:
+- name: submission_date_s3
+  type: DATE
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: n_self_installed_addons
+  type: INTEGER
+  mode: NULLABLE
+- name: n_shield_addons
+  type: INTEGER
+  mode: NULLABLE
+- name: n_foreign_installed_addons
+  type: INTEGER
+  mode: NULLABLE
+- name: n_system_addons
+  type: INTEGER
+  mode: NULLABLE
+- name: n_web_extensions
+  type: INTEGER
+  mode: NULLABLE
+- name: first_addon_install_date
+  type: STRING
+  mode: NULLABLE
+- name: profile_creation_date
+  type: STRING
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.

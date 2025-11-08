@@ -260,7 +260,7 @@ deprecation:
 
 format:
   skip:
-  - bigquery_etl/glam/templates/*.sql
+  - bigquery_etl/glam/templates/**/*.sql
   - sql_generators/**/*.sql
   - tests/**/*.sql
   - sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql

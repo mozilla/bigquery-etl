@@ -712,11 +712,11 @@ DELETE_TARGETS: DeleteIndex = {
         field=CIRRUS_EVENTS_NIMBUS_USER_ID,
     ): FXA_UNHASHED_SRC,
     DeleteTarget(
-        table="subplat_cirrus_stable.enrollment_v1",
+        table="subscription_platform_backend_cirrus_stable.enrollment_v1",
         field=CIRRUS_EVENTS_NIMBUS_USER_ID,
     ): FXA_UNHASHED_SRC,
     DeleteTarget(
-        table="subplat_cirrus_stable.enrollment_status_v1",
+        table="subscription_platform_backend_cirrus_stable.enrollment_status_v1",
         field=CIRRUS_EVENTS_NIMBUS_USER_ID,
     ): FXA_UNHASHED_SRC,
 }

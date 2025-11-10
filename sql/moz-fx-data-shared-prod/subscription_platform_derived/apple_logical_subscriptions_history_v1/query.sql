@@ -195,7 +195,16 @@ SELECT
     FORMAT_TIMESTAMP('%FT%H:%M:%E6S', history.valid_from)
   ) AS id,
   history.valid_from,
-  history.valid_to,
+  COALESCE(
+    LEAD(history.valid_from) OVER (
+      PARTITION BY
+        history_period.subscription_id
+      ORDER BY
+        history.valid_from,
+        history.valid_to
+    ),
+    '9999-12-31 23:59:59.999999'
+  ) AS valid_to,
   history.id AS provider_subscriptions_history_id,
   STRUCT(
     history_period.subscription_id AS id,

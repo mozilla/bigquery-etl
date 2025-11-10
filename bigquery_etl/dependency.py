@@ -56,6 +56,7 @@ def extract_table_references(sql: str) -> List[str]:
         creates |= {
             _raw_table_name(expr.this)
             for expr in statement.find_all(sqlglot.exp.Create)
+            if expr.kind in ("TABLE", "VIEW")
         }
         tables |= (
             {

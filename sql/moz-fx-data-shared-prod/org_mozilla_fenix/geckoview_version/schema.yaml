@@ -1,13 +1,7 @@
 fields:
-- name: build_hour
-  type: DATETIME
-  mode: NULLABLE
-  description: Build Hour
-- name: geckoview_major_version
-  type: INTEGER
-  mode: NULLABLE
-  description: Gecko View Major Version
-- name: n_pings
-  type: INTEGER
-  mode: NULLABLE
-  description: null
+- type: DATETIME
+  name: build_hour
+- type: INTEGER
+  name: geckoview_major_version
+- type: INTEGER
+  name: n_pings

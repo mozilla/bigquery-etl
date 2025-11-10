@@ -1,4 +1,12 @@
 fields:
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the browser.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: channel
   type: STRING
   mode: NULLABLE
@@ -93,14 +101,6 @@ fields:
   description: The number of monthly active users, corresponding to the count of clients
     that reported at least one ping on the previous 28 days from the submission_date
     and qualify as active.
-- name: app_name
-  type: STRING
-  mode: NULLABLE
-  description: The name of the browser.
-- name: app_version
-  type: STRING
-  mode: NULLABLE
-  description: User visible version string (e.g. "1.0.3") for the browser.
 - name: app_version_major
   type: NUMERIC
   mode: NULLABLE

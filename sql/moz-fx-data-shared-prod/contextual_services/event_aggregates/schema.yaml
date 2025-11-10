@@ -1,49 +1,49 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
-- name: source
+- mode: NULLABLE
+  name: source
   type: STRING
-  mode: NULLABLE
-- name: event_type
+- mode: NULLABLE
+  name: event_type
   type: STRING
-  mode: NULLABLE
-- name: form_factor
+- mode: NULLABLE
+  name: form_factor
   type: STRING
-  mode: NULLABLE
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
-- name: subdivision1
+- mode: NULLABLE
+  name: subdivision1
   type: STRING
-  mode: NULLABLE
-- name: advertiser
+- mode: NULLABLE
+  name: advertiser
   type: STRING
-  mode: NULLABLE
-- name: release_channel
+- mode: NULLABLE
+  name: release_channel
   type: STRING
-  mode: NULLABLE
-- name: position
+- mode: NULLABLE
+  name: position
   type: INTEGER
-  mode: NULLABLE
-- name: provider
+- mode: NULLABLE
+  name: provider
   type: STRING
-  mode: NULLABLE
-- name: match_type
+- mode: NULLABLE
+  name: match_type
   type: STRING
-  mode: NULLABLE
-- name: normalized_os
+- mode: NULLABLE
+  name: normalized_os
   type: STRING
-  mode: NULLABLE
-- name: suggest_data_sharing_enabled
+- mode: NULLABLE
+  name: suggest_data_sharing_enabled
   type: BOOLEAN
-  mode: NULLABLE
-- name: event_count
+- mode: NULLABLE
+  name: event_count
   type: INTEGER
-  mode: NULLABLE
-- name: user_count
+- mode: NULLABLE
+  name: user_count
   type: INTEGER
-  mode: NULLABLE
-- name: query_type
+- mode: NULLABLE
+  name: query_type
   type: STRING
-  mode: NULLABLE

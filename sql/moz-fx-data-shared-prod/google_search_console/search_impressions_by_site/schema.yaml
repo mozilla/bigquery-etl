@@ -6,10 +6,9 @@ fields:
 - name: site_url
   type: STRING
   mode: NULLABLE
-  description: 'For domain properties, this will be `sc-domain:` followed by the domain
-    name.
-
-    For URL-prefix properties, it will be the full URL of the property definition.'
+  description: |-
+    For domain properties, this will be `sc-domain:` followed by the domain name.
+    For URL-prefix properties, it will be the full URL of the property definition.
 - name: site_domain_name
   type: STRING
   mode: NULLABLE
@@ -21,23 +20,27 @@ fields:
 - name: query_type
   type: STRING
   mode: NULLABLE
-  description: "Type of search query:\n  * Anonymized: Query was redacted by Google\
-    \ to protect the users' privacy.\n  * Brand: Query contained one or more Mozilla\
-    \ brand keywords.\n  * Non-Brand: Query didn't contain any Mozilla brand keywords.\n\
-    \  * Unknown: Query couldn't be classified."
+  description: |-
+    Type of search query:
+      * Anonymized: Query was redacted by Google to protect the users' privacy.
+      * Brand: Query contained one or more Mozilla brand keywords.
+      * Non-Brand: Query didn't contain any Mozilla brand keywords.
+      * Unknown: Query couldn't be classified.
 - name: is_anonymized
   type: BOOLEAN
   mode: NULLABLE
-  description: 'Whether Google has anonymized the search impression to protect the
-    users'' privacy.
-
-    The `query` field will be null for anonymized search impressions.'
+  description: |-
+    Whether Google has anonymized the search impression to protect the users' privacy.
+    The `query` field will be null for anonymized search impressions.
 - name: search_type
   type: STRING
   mode: NULLABLE
-  description: "Where the link was seen by the user:\n  * Web: In Google Search's\
-    \ default \"All\" tab.\n  * Image: In Google Search's \"Images\" tab.\n  * Video:\
-    \ In Google Search's \"Videos\" tab.\n  * News: In Google Search's \"News\" tab."
+  description: |-
+    Where the link was seen by the user:
+      * Web: In Google Search's default "All" tab.
+      * Image: In Google Search's "Images" tab.
+      * Video: In Google Search's "Videos" tab.
+      * News: In Google Search's "News" tab.
 - name: user_country_code
   type: STRING
   mode: NULLABLE
@@ -57,20 +60,17 @@ fields:
 - name: device_type
   type: STRING
   mode: NULLABLE
-  description: 'The type of device on which the user was searching: Desktop, Mobile,
-    or Tablet.'
+  description: |-
+    The type of device on which the user was searching: Desktop, Mobile, or Tablet.
 - name: impressions
   type: INTEGER
   mode: NULLABLE
-  description: The number of times that search results with at least one link to the
-    site were shown to a user.
+  description: The number of times that search results with at least one link to the site were shown to a user.
 - name: clicks
   type: INTEGER
   mode: NULLABLE
-  description: The number of times a user clicked at least one search result link
-    to the site.
+  description: The number of times a user clicked at least one search result link to the site.
 - name: average_top_position
   type: FLOAT
   mode: NULLABLE
-  description: The average top position of the site in the search results, where `1`
-    is the topmost position.
+  description: The average top position of the site in the search results, where `1` is the topmost position.

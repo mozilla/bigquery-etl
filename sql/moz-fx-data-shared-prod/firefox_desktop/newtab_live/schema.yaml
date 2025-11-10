@@ -1,47 +1,48 @@
 fields:
-- name: submission_timestamp
+- description: Submission Timestamp
+  mode: NULLABLE
+  name: submission_timestamp
   type: TIMESTAMP
+- description: Normalized Country Code, Examples - US, AR, BR, etc.
   mode: NULLABLE
-  description: Submission Timestamp
-- name: normalized_country_code
+  name: normalized_country_code
   type: STRING
+- description: Normalized Channel, Examples - release, nightly, aurora, esr, beta
   mode: NULLABLE
-  description: Normalized Country Code, Examples - US, AR, BR, etc.
-- name: normalized_channel
+  name: normalized_channel
   type: STRING
+- description: Document ID
   mode: NULLABLE
-  description: Normalized Channel, Examples - release, nightly, aurora, esr, beta
-- name: document_id
+  name: document_id
   type: STRING
+- description: Pocket Enabled
   mode: NULLABLE
-  description: Document ID
-- name: pocket_enabled
+  name: pocket_enabled
   type: BOOLEAN
+- description: Pocket Sponsored Stories Enabled
   mode: NULLABLE
-  description: Pocket Enabled
-- name: pocket_sponsored_stories_enabled
+  name: pocket_sponsored_stories_enabled
   type: BOOLEAN
+- description: Newtab Locale
   mode: NULLABLE
-  description: Pocket Sponsored Stories Enabled
-- name: newtab_locale
+  name: newtab_locale
   type: STRING
+- description: App Build
   mode: NULLABLE
-  description: Newtab Locale
-- name: app_build
+  name: app_build
   type: STRING
+- description: App Display Version
   mode: NULLABLE
-  description: App Build
-- name: app_display_version
+  name: app_display_version
   type: STRING
+- description: Client ID
   mode: NULLABLE
-  description: App Display Version
-- name: client_id
+  name: client_id
   type: STRING
-  mode: NULLABLE
-  description: Client ID
 - name: events
   type: RECORD
   mode: REPEATED
+  description: Events
   fields:
   - name: category
     type: STRING
@@ -50,6 +51,7 @@ fields:
   - name: extra
     type: RECORD
     mode: REPEATED
+    description: Extras
     fields:
     - name: key
       type: STRING
@@ -59,7 +61,6 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Value
-    description: Extras
   - name: name
     type: STRING
     mode: NULLABLE
@@ -68,4 +69,3 @@ fields:
     type: INTEGER
     mode: NULLABLE
     description: Event Timestamp
-  description: Events

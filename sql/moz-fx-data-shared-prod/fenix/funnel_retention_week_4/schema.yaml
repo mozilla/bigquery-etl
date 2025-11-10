@@ -48,9 +48,6 @@ fields:
   description: 'The type of source of a client installation.
 
     '
-- name: install_source
-  type: STRING
-  mode: NULLABLE
 - name: new_profiles
   type: INTEGER
   mode: NULLABLE

@@ -37,8 +37,8 @@ fields:
 - name: sample_id
   type: INTEGER
   mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
 - name: first_run_date
   type: DATE
   mode: NULLABLE
@@ -55,8 +55,7 @@ fields:
 - name: android_sdk_version
   type: STRING
   mode: NULLABLE
-  description: The optional Android specific SDK version of the software running on
-    this hardware device.
+  description: The optional Android specific SDK version of the software running on this hardware device.
 - name: locale
   type: STRING
   mode: NULLABLE
@@ -69,8 +68,8 @@ fields:
 - name: country
   type: STRING
   mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
 - name: app_build
   type: STRING
   mode: NULLABLE
@@ -85,8 +84,8 @@ fields:
 - name: device_manufacturer
   type: STRING
   mode: NULLABLE
-  description: The manufacturer of the device the application is running on. Not set
-    if the device manufacturer can't be determined (e.g. on Desktop).
+  description: The manufacturer of the device the application is running on.
+    Not set if the device manufacturer can't be determined (e.g. on Desktop).
 - name: device_model
   type: STRING
   mode: NULLABLE
@@ -94,8 +93,7 @@ fields:
 - name: telemetry_sdk_build
   type: STRING
   mode: NULLABLE
-  description: The version of the Glean SDK at the time the ping was collected (e.g.
-    25.0.0).
+  description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: first_seen_date
   type: DATE
   mode: NULLABLE
@@ -106,21 +104,18 @@ fields:
 - name: isp
   type: STRING
   mode: NULLABLE
-  description: The name of the internet service provider associated with the client's
-    IP address.
+  description: The name of the internet service provider associated with the client's IP address.
 - name: days_active_bits
   type: INTEGER
   mode: NULLABLE
 - name: geo_subdivision
   type: STRING
   mode: NULLABLE
-  description: First major country subdivision, typically a state, province, or county
-    based on IP address.
+  description: First major country subdivision, typically a state, province, or county based on IP address.
 - name: profile_group_id
   type: STRING
   mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
 - name: install_source
   type: STRING
   mode: NULLABLE
@@ -142,8 +137,7 @@ fields:
 - name: is_default_browser
   type: BOOLEAN
   mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
+  description: A flag indicating whether the browser is set as the default browser on the client side.
 - name: attribution_dltoken
   type: STRING
   mode: NULLABLE
@@ -191,9 +185,6 @@ fields:
   mode: NULLABLE
 - name: days_interacted_bits
   type: INTEGER
-  mode: NULLABLE
-- name: startup_profile_selection_reason_first
-  type: STRING
   mode: NULLABLE
 - name: app_name
   type: STRING
@@ -251,8 +242,8 @@ fields:
 - name: activity_segment
   type: STRING
   mode: NULLABLE
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
+  description: Classification of users based on their browsing activity.
+    E.g., infrequent, casual, regular.
 - name: first_seen_year
   type: INTEGER
   mode: NULLABLE
@@ -260,33 +251,27 @@ fields:
 - name: is_daily_user
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if client is considered a daily user on the submission
-    date.
+  description: Flag indicating if client is considered a daily user on the submission date.
 - name: is_weekly_user
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if client is considered a weekly user on the submission
-    date.
+  description: Flag indicating if client is considered a weekly user on the submission date.
 - name: is_monthly_user
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating if client is considered a monthly user on the submission
-    date.
+  description: Flag indicating if client is considered a monthly user on the submission date.
 - name: is_dau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating the client is counted as a daily active user on this
-    submission date.
+  description: Flag indicating the client is counted as a daily active user on this submission date.
 - name: is_wau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating the client is counted as a weekly active user on this
-    submission date.
+  description: Flag indicating the client is counted as a weekly active user on this submission date.
 - name: is_mau
   type: BOOLEAN
   mode: NULLABLE
-  description: Flag indicating the client is counted as a weekly active user on this
-    submission date.
+  description: Flag indicating the client is counted as a weekly active user on this submission date.
 - name: attribution_campaign
   type: STRING
   mode: NULLABLE

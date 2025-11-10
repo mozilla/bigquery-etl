@@ -1,66 +1,64 @@
 fields:
-- name: client_id
+- description: Unique ID for the client installation.
+  mode: NULLABLE
+  name: client_id
   type: STRING
+- description: Sample ID - A number ranging from 0 - 99 based on client ID; used to pull a small sample of data related to a subset of clients over time
   mode: NULLABLE
-  description: Unique ID for the client installation.
-- name: sample_id
-  type: INTEGER
+  name: sample_id
+  type: INT64
+- description: Submission Date
   mode: NULLABLE
-  description: Sample ID - A number ranging from 0 - 99 based on client ID; used to
-    pull a small sample of data related to a subset of clients over time
-- name: submission_date
+  name: submission_date
   type: DATE
+- description: First Seen Date - The date this client was first seen
   mode: NULLABLE
-  description: Submission Date
-- name: first_seen_date
+  name: first_seen_date
   type: DATE
+- description: Days Since First Seen - The number of days since the client was first seen
   mode: NULLABLE
-  description: First Seen Date - The date this client was first seen
-- name: days_since_first_seen
-  type: INTEGER
+  name: days_since_first_seen
+  type: INT64
+- description: Days Since Active
   mode: NULLABLE
-  description: Days Since First Seen - The number of days since the client was first
-    seen
-- name: days_since_active
-  type: INTEGER
+  name: days_since_active
+  type: INT64
+- description: First Reported Country - The country this client ID was first reported from
   mode: NULLABLE
-  description: Days Since Active
-- name: first_reported_country
+  name: first_reported_country
   type: STRING
+- description: Attribution
   mode: NULLABLE
-  description: First Reported Country - The country this client ID was first reported
-    from
-- name: attribution
+  name: attribution
   type: RECORD
-  mode: NULLABLE
   fields:
-  - name: source
+  - mode: NULLABLE
+    name: source
     type: STRING
-    mode: NULLABLE
     description: Attribution Source
-  - name: medium
+  - mode: NULLABLE
+    name: medium
     type: STRING
-    mode: NULLABLE
     description: Attribution Medium
-  - name: campaign
+  - mode: NULLABLE
+    name: campaign
     type: STRING
-    mode: NULLABLE
     description: Attribution Campaign
-  - name: content
+  - mode: NULLABLE
+    name: content
     type: STRING
-    mode: NULLABLE
     description: Attribution Content
-  - name: experiment
+  - mode: NULLABLE
+    name: experiment
     type: STRING
-    mode: NULLABLE
     description: Attribution Experiment
-  - name: variation
+  - mode: NULLABLE
+    name: variation
     type: STRING
-    mode: NULLABLE
     description: Attribution Variation
-  - name: dltoken
+  - mode: NULLABLE
+    name: dltoken
     type: STRING
-    mode: NULLABLE
     description: Attribution Download Token
   - name: dlsource
     type: STRING
@@ -70,43 +68,40 @@ fields:
     type: STRING
     mode: NULLABLE
     description: Attribution UA
-  description: Attribution
-- name: active
-  type: INTEGER
+- description: Active
   mode: NULLABLE
-  description: Active
-- name: ad_clicks
-  type: INTEGER
+  name: active
+  type: INT64
+- description: Ad Clicks - The number of ad clicks from this client on the submission date
   mode: NULLABLE
-  description: Ad Clicks - The number of ad clicks from this client on the submission
-    date
-- name: total_historic_ad_clicks
-  type: INTEGER
+  name: ad_clicks
+  type: INT64
+- description: Total Historic Ad Clicks - The number of ad clicks from this client on or before the submission date
   mode: NULLABLE
-  description: Total Historic Ad Clicks - The number of ad clicks from this client
-    on or before the submission date
-- name: days_seen_bytes
+  name: total_historic_ad_clicks
+  type: INT64
+- description: Days Seen Bytes
+  mode: NULLABLE
+  name: days_seen_bytes
   type: BYTES
+- description: Pattern
   mode: NULLABLE
-  description: Days Seen Bytes
-- name: pattern
+  name: pattern
   type: INTEGER
+- description: Death Time
   mode: NULLABLE
-  description: Pattern
-- name: death_time
+  name: death_time
   type: INTEGER
+- description: Max Days
   mode: NULLABLE
-  description: Death Time
-- name: max_days
+  name: max_days
   type: INTEGER
+- description: Markov States
   mode: NULLABLE
-  description: Max Days
-- name: markov_states
+  name: markov_states
   type: RECORD
-  mode: NULLABLE
   fields:
-  - name: desktop_states_v1
-    type: STRING
+  - description: Desktop States V1
     mode: NULLABLE
-    description: Desktop States V1
-  description: Markov States
+    name: desktop_states_v1
+    type: STRING

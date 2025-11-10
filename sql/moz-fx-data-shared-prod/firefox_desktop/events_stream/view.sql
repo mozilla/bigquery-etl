@@ -265,6 +265,7 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.abandonment_type) AS `abandonment_type`,
+      JSON_VALUE(event_extra.about_config_change) AS `about_config_change`,
       JSON_VALUE(event_extra.acFieldName) AS `acFieldName`,
       JSON_VALUE(event_extra.action) AS `action`,
       JSON_VALUE(event_extra.action_type) AS `action_type`,

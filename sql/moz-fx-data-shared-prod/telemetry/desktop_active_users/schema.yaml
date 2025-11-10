@@ -1,145 +1,137 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: profile_group_id
+- mode: NULLABLE
+  name: profile_group_id
   type: STRING
-  mode: NULLABLE
-  description: A UUID uniquely identifying the profile group, not shared with other
-    telemetry data.
-- name: sample_id
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: activity_segment
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
+- mode: NULLABLE
+  name: activity_segment
   type: STRING
-  mode: NULLABLE
-  description: Classification of users based on their browsing activity. E.g., infrequent,
-    casual, regular.
-- name: days_seen_bits
+  description: Classification of users based on their browsing activity.
+    E.g., infrequent, casual, regular.
+- mode: NULLABLE
+  name: days_seen_bits
   type: INTEGER
-  mode: NULLABLE
-  description: Bit pattern representing whether the client sent a baseline ping for
-    each of the last 28 days, inclusive of the submission date.
-- name: days_active_bits
+  description: Bit pattern representing whether the client sent a baseline ping for each of the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: days_active_bits
   type: INTEGER
-  mode: NULLABLE
-  description: Bit pattern representing whether the client was active for each of
-    the last 28 days, inclusive of the submission date.
-- name: app_name
+  description: Bit pattern representing whether the client was active for each of the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: app_name
   type: STRING
-  mode: NULLABLE
-  description: Application Name - For example, Firefox Desktop, or Firefox Desktop
-    MozillaOnline.
-- name: app_version
+  description: Application Name - For example, Firefox Desktop, or Firefox Desktop MozillaOnline.
+- mode: NULLABLE
+  name: app_version
   type: STRING
-  mode: NULLABLE
   description: User visible version string (e.g. "1.0.3") for the browser.
-- name: normalized_channel
+- mode: NULLABLE
+  name: normalized_channel
   type: STRING
-  mode: NULLABLE
   description: The normalized channel the application is being distributed on.
-- name: country
+- mode: NULLABLE
+  name: country
   type: STRING
-  mode: NULLABLE
-  description: Name of the country in which the activity took place, as determined
-    by the IP geolocation.
-- name: city
+  description: Name of the country in which the activity took place, as determined by
+    the IP geolocation.
+- mode: NULLABLE
+  name: city
   type: STRING
-  mode: NULLABLE
   description: Name of the city in which the activity took place, as determined by
     the IP geolocation.
-- name: locale
+- mode: NULLABLE
+  name: locale
   type: STRING
-  mode: NULLABLE
   description: Set of language- and/or country-based preferences for a user interface.
-- name: first_seen_date
+- mode: NULLABLE
+  name: first_seen_date
   type: DATE
-  mode: NULLABLE
   description: Date client was first seen.
-- name: os
+- mode: NULLABLE
+  name: os
   type: STRING
-  mode: NULLABLE
   description: The name of the operating system running at the client.
-- name: normalized_os_version
+- mode: NULLABLE
+  name: normalized_os_version
   type: STRING
-  mode: NULLABLE
   description: The normalized name of the operating system running at the client.
-- name: windows_build_number
+- mode: NULLABLE
+  name: windows_build_number
   type: INTEGER
-  mode: NULLABLE
   description: Windows Build Number
-- name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_total_uri_count_normal_and_private_mode_sum
   type: INTEGER
-  mode: NULLABLE
-  description: null
-- name: scalar_parent_browser_engagement_total_uri_count_sum
+- mode: NULLABLE
+  name: scalar_parent_browser_engagement_total_uri_count_sum
   type: INTEGER
-  mode: NULLABLE
-  description: Scalar Parent Browser Engagement Total URI Count Sum
-- name: is_default_browser
+- mode: NULLABLE
+  name: is_default_browser
   type: BOOLEAN
-  mode: NULLABLE
-  description: A flag indicating whether the browser is set as the default browser
-    on the client side.
-- name: isp_name
+  description: A flag indicating whether the browser is set as the default browser on the client side.
+- mode: NULLABLE
+  name: isp_name
   type: STRING
-  mode: NULLABLE
-  description: The name of the internet service provider associated with the client's
-    IP address.
-- name: distribution_id
+  description: The name of the internet service provider associated with the client's IP address.
+- mode: NULLABLE
+  name: distribution_id
   type: STRING
-  mode: NULLABLE
   description: The distribution id associated with the install of Firefox.
-- name: active_hours_sum
+- mode: NULLABLE
+  name: active_hours_sum
   type: FLOAT
-  mode: NULLABLE
   description: Active Hours Sum
-- name: attribution_source
+- mode: NULLABLE
+  name: attribution_source
   type: STRING
-  mode: NULLABLE
   description: Attribution Source
-- name: attribution_medium
+- mode: NULLABLE
+  name: attribution_medium
   type: STRING
-  mode: NULLABLE
   description: Attribution Medium
-- name: is_dau
+- mode: NULLABLE
+  name: is_dau
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Daily Active User - Indicates if the client is considered an active
-    user on this date.
-- name: is_wau
+  description: Is Daily Active User - Indicates if the client is considered an active user on this date.
+- mode: NULLABLE
+  name: is_wau
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Weekly Active User - Indicates if the client is considered an active
-    user in the last 7 days, inclusive of the submission date.
-- name: is_mau
+  description: Is Weekly Active User - Indicates if the client is considered an active user in the last 7 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_mau
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Monthly Active User - Indicates if the client is considered an active
-    user in the last 28 days, inclusive of the submission date.
-- name: is_daily_user
+  description: Is Monthly Active User - Indicates if the client is considered an active user in the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_daily_user
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Daily User - Indicates if the client reported a baseline ping on
-    the submission date.
-- name: is_weekly_user
+  description: Is Daily User - Indicates if the client reported a baseline ping on the submission date.
+- mode: NULLABLE
+  name: is_weekly_user
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Weekly User - Indicates if the client reported a baseline ping in
-    the last 7 days, inclusive of the submission date.
-- name: is_monthly_user
+  description: Is Weekly User - Indicates if the client reported a baseline ping in the last 7 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_monthly_user
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Monthly User - Indicates if the client reported a baseline ping
-    in the last 28 days, inclusive of the submission date.
-- name: is_desktop
+  description: Is Monthly User - Indicates if the client reported a baseline ping in the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_desktop
   type: BOOLEAN
-  mode: NULLABLE
   description: Indicates if the client is included in the desktop KPI

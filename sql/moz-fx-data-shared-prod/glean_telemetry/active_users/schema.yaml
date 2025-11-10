@@ -1,67 +1,64 @@
 fields:
-- name: submission_date
+- mode: NULLABLE
+  name: submission_date
   type: DATE
-  mode: NULLABLE
   description: The date when the telemetry ping is received on the server side.
-- name: client_id
+- mode: NULLABLE
+  name: client_id
   type: STRING
-  mode: NULLABLE
   description: A unique identifier (UUID) for the client.
-- name: sample_id
+- mode: NULLABLE
+  name: sample_id
   type: INTEGER
-  mode: NULLABLE
-  description: A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
-- name: app_name
+  description: A number, 0-99, that samples by client_id and allows filtering data for analysis.
+    It is a pipeline-generated artifact that should match between pings.
+- mode: NULLABLE
+  name: app_name
   type: STRING
-  mode: NULLABLE
-  description: Application Name - For example, Firefox iOS, Fenix, Firefox Desktop,
-    Klar iOS, etc.
-- name: days_seen_bits
+  description: Application Name - For example, Firefox iOS, Fenix, Firefox Desktop, Klar iOS, etc.
+- mode: NULLABLE
+  name: days_seen_bits
   type: INTEGER
-  mode: NULLABLE
-  description: Bit pattern representing whether the client sent a baseline ping for
-    each of the last 28 days, inclusive of the submission date.
-- name: days_active_bits
+  description: Bit pattern representing whether the client sent a baseline ping for each of the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: days_active_bits
   type: INTEGER
-  mode: NULLABLE
-  description: Bit pattern representing whether the client was active for each of
-    the last 28 days, inclusive of the submission date.
-- name: is_dau
+  description: Bit pattern representing whether the client was active for each of the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_dau
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Daily Active User - Indicates if the client is considered an active
-    user on this date.
-- name: is_wau
+  description: Is Daily Active User - Indicates if the client is considered an active user on this date.
+- mode: NULLABLE
+  name: is_wau
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Weekly Active User - Indicates if the client is considered an active
-    user in the last 7 days, inclusive of the submission date.
-- name: is_mau
+  description: Is Weekly Active User - Indicates if the client is considered an active user in the last 7 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_mau
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Monthly Active User - Indicates if the client is considered an active
-    user in the last 28 days, inclusive of the submission date.
-- name: is_daily_user
+  description: Is Monthly Active User - Indicates if the client is considered an active user in the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_daily_user
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Daily User - Indicates if the client reported a baseline ping on
-    the submission date.
-- name: is_weekly_user
+  description: Is Daily User - Indicates if the client reported a baseline ping on the submission date.
+- mode: NULLABLE
+  name: is_weekly_user
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Weekly User - Indicates if the client reported a baseline ping in
-    the last 7 days, inclusive of the submission date.
-- name: is_monthly_user
+  description: Is Weekly User - Indicates if the client reported a baseline ping in the last 7 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_monthly_user
   type: BOOLEAN
-  mode: NULLABLE
-  description: Is Monthly User - Indicates if the client reported a baseline ping
-    in the last 28 days, inclusive of the submission date.
-- name: is_desktop
+  description: Is Monthly User - Indicates if the client reported a baseline ping in the last 28 days,
+    inclusive of the submission date.
+- mode: NULLABLE
+  name: is_desktop
   type: BOOLEAN
-  mode: NULLABLE
   description: Indicates if the client is included in the desktop KPI
-- name: is_mobile
+- mode: NULLABLE
+  name: is_mobile
   type: BOOLEAN
-  mode: NULLABLE
   description: Indicates if the client is included in the mobile KPI

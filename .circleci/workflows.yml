@@ -4,6 +4,7 @@ version: 2.1
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.16
   docker: circleci/docker@2.6
+  python: circleci/python@2.1.1
   gcp-cli: circleci/gcp-cli@3.2
 
 parameters:
@@ -37,7 +38,7 @@ executors:
 jobs:
   build:
     docker: &docker
-      - image: cimg/python:<< pipeline.parameters.python-version >>
+      - image: python:<< pipeline.parameters.python-version >>
     steps:
       - checkout:
           method: blobless
@@ -389,7 +390,9 @@ jobs:
           steps:
             - *skip
   validate-dags:
-    docker: *docker
+    executor:
+      name: python/default
+      tag: 3.11.8
     steps:
       - when:
           condition: *validate-sql

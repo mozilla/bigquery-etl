@@ -40,7 +40,8 @@ jobs:
     docker: &docker
       - image: python:<< pipeline.parameters.python-version >>
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - &restore_venv_cache
         restore_cache:
           keys:
@@ -75,7 +76,8 @@ jobs:
               - << pipeline.parameters.validate-routines >>
               - << pipeline.parameters.deploy >>
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - run:
@@ -93,7 +95,8 @@ jobs:
   verify-format-yaml:
     docker: *docker
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - *restore_venv_cache
       - *build
       - run:
@@ -102,7 +105,8 @@ jobs:
   verify-requirements:
     docker: *docker
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - *restore_venv_cache
       - *build
       - run:
@@ -129,7 +133,8 @@ jobs:
                       "so marking this step successful"
                     circleci-agent step halt
                   fi
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - &authenticate
@@ -163,7 +168,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - &attach_generated_sql
@@ -211,7 +217,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -259,7 +266,8 @@ jobs:
               - << pipeline.parameters.validate-sql >>
               - << pipeline.parameters.deploy >>
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -286,7 +294,8 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - run:
@@ -315,7 +324,8 @@ jobs:
           condition: *validate-bqetl
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - run:
@@ -338,7 +348,8 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -386,7 +397,8 @@ jobs:
       - when:
           condition: *validate-sql
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - run:
                 name: Pull telemetry-airflow
                 command: |
@@ -438,7 +450,8 @@ jobs:
               - << pipeline.parameters.deploy >>
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -465,7 +478,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -488,7 +502,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -516,7 +531,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *authenticate
@@ -628,7 +644,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -721,7 +738,8 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - add_ssh_keys:
                 fingerprints:
                   - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
@@ -790,7 +808,8 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -873,7 +892,8 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - *attach_generated_sql
             - run:
                 name: Move generated-sql into place
@@ -898,7 +918,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - run:
                 name: Switch to main branch
                 command: |
@@ -1019,7 +1040,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - attach_workspace:
                 at: /tmp/workspace
             - run:
@@ -1055,7 +1077,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *authenticate
@@ -1080,7 +1103,8 @@ jobs:
               echo "Build on upstream"
               circleci-agent step halt
             fi
-      - checkout
+      - checkout:
+          method: blobless
       - run:
           name: Manually trigger integration tests for fork
           # yamllint disable rule:line-length
@@ -1102,7 +1126,8 @@ jobs:
   deploy-to-pypi:
     docker: *docker
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run:
           name: Check for package version change in last commit before proceeding.
           command: |

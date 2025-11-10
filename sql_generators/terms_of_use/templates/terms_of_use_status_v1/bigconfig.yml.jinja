@@ -11,10 +11,13 @@ table_deployments:
           - saved_metric_id: volume
           - saved_metric_id: freshness
         columns:
-          - column_name: submission_date
+          - column_name: submission_timestamp
             metrics:
               - saved_metric_id: is_not_null
-          - column_name: country
+          - column_name: client_id
+            metrics:
+              - saved_metric_id: is_not_null
+          - column_name: normalized_country_code
             metrics:
               - saved_metric_id: is_2_char_len
           - column_name: normalized_channel

@@ -1,8 +1,32 @@
 -- {{ header }}
-SELECT
+WITH _previous AS (
+  SELECT
     submission_timestamp,
     client_info.client_id,
-    app_version_major, -- noticed a few entries with version 9000, should those be excluded?
+    app_version_major
+    app_version_minor,
+    app_version_patch,
+    normalized_channel,
+    normalized_country_code,
+    normalized_os,
+    normalized_os_version,
+    is_bot_generated,
+    isp_name,
+    terms_of_use_version_accepted,
+    terms_of_use_date_accepted,
+    {% if app_name == "firefox_desktop" %}
+    metrics.metrics.uuid.legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
+    {% endif %}
+FROM
+  `{{ project_id }}.{{ app_name }}_derived.{{ table_name }}`
+WHERE
+  DATE(submission_timestamp) <= @submission_date
+),
+_current AS (
+  SELECT
+    submission_timestamp,
+    client_info.client_id,
+    app_version_major,
     app_version_minor,
     app_version_patch,
     normalized_channel,
@@ -11,7 +35,6 @@ SELECT
     normalized_os_version,
     is_bot_generated,
     metadata.isp.name AS isp_name,
-    -- update entry if either of these change:
     {% if app_name == "firefox_ios" %}
     metrics.metrics.quantity.user_terms_of_use_version_accepted AS terms_of_use_version_accepted,
     metrics.metrics.datetime.user_terms_of_use_date_accepted AS terms_of_use_date_accepted,
@@ -29,3 +52,18 @@ WHERE
   DATE(submission_timestamp) >= {% if app_name == "firefox_desktop" %}"2025-06-24"{% else %}"2025-09-15"{% endif %}
   AND app_version_major >= 142
   AND metrics.metrics.datetime.user_terms_of_use_date_accepted IS NOT NULL
+)
+
+SELECT
+  -- update entry if `terms_of_use_version_accepted` or `terms_of_use_date_accepted` value changes:
+  IF(
+    (_current.terms_of_use_version_accepted <> _previous.terms_of_use_version_accepted)
+    OR (_current.terms_of_use_date_accepted <> _previous.terms_of_use_date_accepted),
+    _current,
+    _previous
+  ).*
+FROM
+  _previous
+FULL OUTER JOIN _current
+  USING (client_id, normalized_channel)
+

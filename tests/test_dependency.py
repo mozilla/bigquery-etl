@@ -27,22 +27,27 @@ class TestDependency:
 
     def test_extract_table_refs_with_ctes(self):
         sql = """
-          WITH foo AS (
-            SELECT * FROM bar
-          )
+          WITH foo AS (SELECT * FROM bar)
           SELECT * FROM foo
         """
         refs = extract_table_references(sql)
 
-        assert set(refs) == {"bar"}
+        assert refs == ["bar"]
 
-    def test_extract_table_refs_with_udfs(self):
+    def test_extract_table_refs_with_temp_udfs(self):
         sql = """
-          CREATE TEMP FUNCTION foo() AS (
-            (SELECT MAX(foo) FROM bar)
-          );
+          CREATE TEMP FUNCTION foo() AS ((SELECT MAX(foo) FROM bar));
           SELECT foo()
         """
         refs = extract_table_references(sql)
 
-        assert set(refs) == {"bar"}
+        assert refs == ["bar"]
+
+    def test_extract_table_refs_with_temp_tables(self):
+        sql = """
+          CREATE TEMP TABLE foo AS SELECT * FROM bar;
+          SELECT * FROM foo
+        """
+        refs = extract_table_references(sql)
+
+        assert refs == ["bar"]

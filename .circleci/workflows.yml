@@ -591,7 +591,10 @@ jobs:
 
                     cp -r sql/ /tmp/workspace/generated-sql/sql
                     # Don't depend on dry run for PRs
+                    # Ignore derived_view_schemas as this will add descriptions to view which take a long time;
+                    # Schemas with descriptions will be generated before deployment instead
                     PATH="venv/bin:$PATH" script/bqetl generate all \
+                      --ignore derived_view_schemas \
                       --output-dir /tmp/workspace/generated-sql/sql/ \
                       --target-project moz-fx-data-shared-prod
                   else
@@ -968,6 +971,7 @@ jobs:
                   if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
                     # re-run SQL generation and re-generate DAGs
                     $bqetl_script generate all \
+                      --ignore derived_view_schemas \
                       --target-project moz-fx-data-shared-prod
                   else
                     echo "Changes made don't affect generated SQL. Use content from generated-sql"

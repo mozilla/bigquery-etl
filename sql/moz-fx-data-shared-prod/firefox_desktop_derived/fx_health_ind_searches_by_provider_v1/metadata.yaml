@@ -27,5 +27,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   query.sql:
-  - moz-fx-data-shared-prod.telemetry.clients_daily
+  - moz-fx-data-shared-prod.firefox_desktop_derived.metrics_clients_daily_v1
 require_column_descriptions: false

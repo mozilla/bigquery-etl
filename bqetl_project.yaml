@@ -271,6 +271,7 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
   skip_qualifying_references:
+  - sql/**/checks.sql
   - sql/mozfun/**/examples/*.sql
 
 routine:

@@ -132,7 +132,7 @@ search_metrics:
     ad_clicks_count: null
     search_with_ads_count: null
     search_count: null
-  subplat_cirrus:
+  subscription_platform_backend_cirrus:
     ad_clicks_count: null
     search_with_ads_count: null
     search_count: null
@@ -154,4 +154,4 @@ applications:
   - monitor_cirrus
   - accounts_cirrus
   - experimenter_cirrus
-  - subplat_cirrus
+  - subscription_platform_backend_cirrus

@@ -2,8 +2,8 @@
 WITH _previous AS (
   SELECT
     submission_timestamp,
-    client_info.client_id,
-    app_version_major
+    client_id,
+    app_version_major,
     app_version_minor,
     app_version_patch,
     normalized_channel,
@@ -15,12 +15,12 @@ WITH _previous AS (
     terms_of_use_version_accepted,
     terms_of_use_date_accepted,
     {% if app_name == "firefox_desktop" %}
-    metrics.metrics.uuid.legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
+    legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
     {% endif %}
 FROM
   `{{ project_id }}.{{ app_name }}_derived.{{ table_name }}`
 WHERE
-  DATE(submission_timestamp) <= @submission_date
+  DATE(submission_timestamp) <> @submission_date
 ),
 _current AS (
   SELECT
@@ -36,22 +36,29 @@ _current AS (
     is_bot_generated,
     metadata.isp.name AS isp_name,
     {% if app_name == "firefox_ios" %}
-    metrics.metrics.quantity.user_terms_of_use_version_accepted AS terms_of_use_version_accepted,
-    metrics.metrics.datetime.user_terms_of_use_date_accepted AS terms_of_use_date_accepted,
+    metrics.quantity.user_terms_of_use_version_accepted AS terms_of_use_version_accepted,
+    metrics.datetime.user_terms_of_use_date_accepted AS terms_of_use_date_accepted,
     {% elif app_name == "fenix" %}
-    metrics.metrics.quantity.terms_of_use_version AS terms_of_use_version_accepted,
-    metrics.metrics.datetime.terms_of_use_date AS terms_of_use_date_accepted,
+    metrics.quantity.terms_of_use_version AS terms_of_use_version_accepted,
+    metrics.datetime.terms_of_use_date AS terms_of_use_date_accepted,
     {% elif app_name == "firefox_desktop" %}
     metrics.quantity.termsofuse_version AS terms_of_use_version_accepted,
     metrics.datetime.termsofuse_date AS terms_of_use_date_accepted,
-    metrics.metrics.uuid.legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
+    metrics.uuid.legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
     {% endif %}
 FROM
   `{{ project_id }}.{{ app_name }}.metrics`
 WHERE
-  DATE(submission_timestamp) >= {% if app_name == "firefox_desktop" %}"2025-06-24"{% else %}"2025-09-15"{% endif %}
+  DATE(submission_timestamp) = @submission_date
+  AND DATE(submission_timestamp) >= {% if app_name == "firefox_desktop" %}"2025-06-24"{% else %}"2025-09-15"{% endif %}
   AND app_version_major >= 142
-  AND metrics.metrics.datetime.user_terms_of_use_date_accepted IS NOT NULL
+  {% if app_name == "firefox_ios" %}
+  AND metrics.datetime.user_terms_of_use_date_accepted IS NOT NULL
+  {% elif app_name == "fenix" %}
+  AND metrics.datetime.terms_of_use_date IS NOT NULL
+  {% elif app_name == "firefox_desktop" %}
+  AND metrics.datetime.termsofuse_date IS NOT NULL
+  {% endif %}
 )
 
 SELECT

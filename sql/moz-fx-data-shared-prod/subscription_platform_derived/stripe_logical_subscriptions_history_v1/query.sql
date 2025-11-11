@@ -53,7 +53,20 @@ active_subscriptions AS (
 active_subscriptions_history AS (
   -- Only include a subscription's history once it becomes active.
   SELECT
-    history.*,
+    history.id,
+    history.valid_from,
+    COALESCE(
+      LEAD(history.valid_from) OVER (
+        PARTITION BY
+          history.subscription.id
+        ORDER BY
+          history.valid_from,
+          history.valid_to
+      ),
+      '9999-12-31 23:59:59.999999'
+    ) AS valid_to,
+    history.subscription,
+    history.subscription_is_active,
     active_subscriptions.first_active_at AS subscription_first_active_at
   FROM
     active_subscriptions
@@ -61,6 +74,10 @@ active_subscriptions_history AS (
     subscriptions_history AS history
     ON active_subscriptions.id = history.subscription.id
     AND history.valid_from >= active_subscriptions.first_active_at
+  WHERE
+    -- Ignore all initial history records for subscriptions where they're considered incomplete,
+    -- because Fivetran sometimes syncs those initial history records in the wrong order (DENG-10152).
+    history.subscription.status != 'incomplete'
 ),
 plan_services AS (
   SELECT

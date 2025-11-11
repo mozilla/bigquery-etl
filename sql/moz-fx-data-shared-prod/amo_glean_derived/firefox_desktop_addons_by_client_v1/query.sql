@@ -3,6 +3,7 @@ WITH base AS (
     submission_timestamp,
     client_info.client_id,
     sample_id,
+    IFNULL(metrics.uuid.legacy_telemetry_client_id, "") AS legacy_telemetry_client_id,
     normalized_channel,
     normalized_country_code,
     client_info.locale,
@@ -21,6 +22,7 @@ per_clients_without_addons AS (
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
+    legacy_telemetry_client_id,
     ARRAY_AGG(
       app_display_version
       ORDER BY
@@ -41,6 +43,7 @@ per_clients_just_addons AS (
     DATE(submission_timestamp) AS submission_date,
     client_id,
     sample_id,
+    legacy_telemetry_client_id,
     ARRAY_CONCAT_AGG(
       ARRAY(
         SELECT AS STRUCT
@@ -60,6 +63,7 @@ per_client AS (
     submission_date,
     client_id,
     sample_id,
+    legacy_telemetry_client_id,
     addons,
     app_version,
     country,
@@ -69,10 +73,10 @@ per_client AS (
     per_clients_without_addons
   INNER JOIN
     per_clients_just_addons
-    USING (submission_date, client_id, sample_id)
+    USING (submission_date, client_id, sample_id, legacy_telemetry_client_id)
 )
 SELECT
-  * EXCEPT (addons),
+  * EXCEPT (addons) REPLACE(NULLIF(legacy_telemetry_client_id, "") AS legacy_telemetry_client_id),
   ARRAY(
     SELECT AS STRUCT
       addon.id,

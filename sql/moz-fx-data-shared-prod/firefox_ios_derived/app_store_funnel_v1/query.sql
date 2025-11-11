@@ -12,7 +12,7 @@ WITH historical_store_data AS (
       -- for compatibility with the new report we only want to count impressions from specific source types?
       SUM(
         CASE
-          WHEN source_type IN ('App Referrer', 'Unavailable', 'Web Referrer')
+          WHEN LOWER(source_type) IN ("app referrer", "unavailable", "web referrer")
             THEN 0
           ELSE impressions_unique_device
         END

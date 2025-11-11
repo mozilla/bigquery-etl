@@ -600,8 +600,21 @@ fields:
     - name: glean_health_exception_state
       type: STRING
       mode: NULLABLE
-      description: "An exceptional state was detected upon trying to laod the database.\n\
-        \nValid options are:\n  - empty-db\n  - regen-db\n  - c0ffee-in-db\n  - client-id-mismatch\n"
+      description: 'An exceptional state was detected upon trying to load the database.
+
+
+        Valid options are:
+
+
+        - `empty-db`
+
+        - `regen-db`
+
+        - `c0ffee-in-db`
+
+        - `client-id-mismatch`
+
+        '
   - name: string_list
     type: RECORD
     mode: NULLABLE

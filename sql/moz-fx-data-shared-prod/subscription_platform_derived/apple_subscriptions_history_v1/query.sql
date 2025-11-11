@@ -70,27 +70,27 @@ synthetic_subscription_period_start_changelog AS (
         )
     ) AS subscription
   FROM
-    subscriptions_revised_changelog
+    subscriptions_revised_changelog AS changelog
   QUALIFY
-    subscription.last_transaction.purchase_date IS DISTINCT FROM (
-      LAG(subscription.last_transaction.purchase_date) OVER subscription_changes_asc
+    changelog.subscription.last_transaction.purchase_date IS DISTINCT FROM (
+      LAG(changelog.subscription.last_transaction.purchase_date) OVER subscription_changes_asc
     )
-    AND subscription.last_transaction.purchase_date < `timestamp`
-    AND subscription.last_transaction.purchase_date > COALESCE(
-      LAG(`timestamp`) OVER subscription_changes_asc,
+    AND changelog.subscription.last_transaction.purchase_date < changelog.timestamp
+    AND changelog.subscription.last_transaction.purchase_date > COALESCE(
+      LAG(changelog.timestamp) OVER subscription_changes_asc,
       '0001-01-01 00:00:00'
     )
-    AND subscription.status IN (
+    AND changelog.subscription.status IN (
       1,  -- 1 = active
       4   -- 4 = in billing grace period
     )
   WINDOW
     subscription_changes_asc AS (
       PARTITION BY
-        subscription.original_transaction_id
+        changelog.subscription.original_transaction_id
       ORDER BY
-        `timestamp`,
-        id
+        changelog.timestamp,
+        changelog.id
     )
 ),
 changelog_union AS (

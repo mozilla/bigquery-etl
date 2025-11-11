@@ -39,28 +39,28 @@ WITH subscriptions_history AS (
   WHERE
     valid_to > valid_from
 ),
+active_subscriptions AS (
+  SELECT
+    subscription.id,
+    MIN(valid_from) AS first_active_at
+  FROM
+    subscriptions_history
+  WHERE
+    subscription_is_active
+  GROUP BY
+    subscription.id
+),
 active_subscriptions_history AS (
   -- Only include a subscription's history once it becomes active.
   SELECT
-    *,
-    FIRST_VALUE(
-      IF(subscription_is_active, valid_from, NULL) IGNORE NULLS
-    ) OVER subscription_history_to_date_asc AS subscription_first_active_at
+    history.*,
+    active_subscriptions.first_active_at AS subscription_first_active_at
   FROM
-    subscriptions_history
-  QUALIFY
-    LOGICAL_OR(subscription_is_active) OVER subscription_history_to_date_asc
-  WINDOW
-    subscription_history_to_date_asc AS (
-      PARTITION BY
-        subscription.id
-      ORDER BY
-        valid_from,
-        valid_to
-      ROWS BETWEEN
-        UNBOUNDED PRECEDING
-        AND CURRENT ROW
-    )
+    active_subscriptions
+  JOIN
+    subscriptions_history AS history
+    ON active_subscriptions.id = history.subscription.id
+    AND history.valid_from >= active_subscriptions.first_active_at
 ),
 plan_services AS (
   SELECT

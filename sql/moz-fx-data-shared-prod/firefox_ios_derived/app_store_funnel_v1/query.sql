@@ -12,7 +12,7 @@ WITH historical_store_data AS (
       -- for compatibility with the new report we only want to count impressions from specific source types?
       SUM(
         CASE
-          WHEN source_type IN ('App Referrer', 'Unavailable', 'Web Referrer')
+          WHEN LOWER(source_type) IN ("app referrer", "unavailable", "web referrer")
             THEN 0
           ELSE impressions_unique_device
         END
@@ -21,7 +21,7 @@ WITH historical_store_data AS (
       `moz-fx-data-shared-prod.app_store.firefox_app_store_territory_source_type_report`
     WHERE
       DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-      AND source_type <> 'Institutional Purchase'
+      AND LOWER(source_type) <> "institutional purchase"
       AND app_id = 989804926  -- Filter to only include the Firefox app
     GROUP BY
       `date`,
@@ -38,7 +38,7 @@ WITH historical_store_data AS (
       `moz-fx-data-shared-prod.app_store.firefox_downloads_territory_source_type_report`
     WHERE
       DATE(`date`) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-      AND source_type <> 'Institutional Purchase'
+      AND LOWER(source_type) <> "institutional purchase"
       AND app_id = 989804926  -- Filter to only include the Firefox app
     GROUP BY
       ALL
@@ -65,10 +65,10 @@ app_store_data AS (
     SUM(first_time_downloads) AS first_time_downloads,
     SUM(redownloads) AS redownloads,
   FROM
-    `moz-fx-data-bq-fivetran.firefox_app_store_v2_apple_store.apple_store__territory_report`
+    `moz-fx-data-shared-prod.app_store_v2_syndicate.apple_store_territory_report`
   WHERE
     DATE(date_day) = DATE_SUB(@submission_date, INTERVAL 7 DAY)
-    AND source_type <> 'Institutional Purchase'
+    AND LOWER(source_type) <> "institutional purchase"
     AND app_id = 989804926  -- Filter to only include the Firefox app
   GROUP BY
     ALL

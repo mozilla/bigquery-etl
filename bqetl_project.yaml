@@ -260,7 +260,7 @@ deprecation:
 
 format:
   skip:
-  - bigquery_etl/glam/templates/*.sql
+  - bigquery_etl/glam/templates/**/*.sql
   - sql_generators/**/*.sql
   - tests/**/*.sql
   - sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql
@@ -271,8 +271,10 @@ format:
   - sql/moz-fx-data-shared-prod/udf_legacy/to_iso8601.sql
   - stored_procedures/safe_crc32_uuid.sql
   skip_qualifying_references:
-  - sql/**/checks.sql
   - sql/mozfun/**/examples/*.sql
+  # Don't try to qualify references when Jinja expressions are being used for table/view IDs.
+  - sql/**/bigeye_custom_rules.sql
+  - sql/**/checks.sql
 
 routine:
   dependency_dir: udf_js_lib/

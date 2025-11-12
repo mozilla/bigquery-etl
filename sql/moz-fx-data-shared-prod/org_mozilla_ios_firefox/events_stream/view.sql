@@ -58,6 +58,7 @@ SELECT
       JSON_VALUE(event_extra.engagement_type) AS `engagement_type`,
       JSON_VALUE(event_extra.enrollment_id) AS `enrollment_id`,
       JSON_VALUE(event_extra.error_code) AS `error_code`,
+      JSON_VALUE(event_extra.error_message) AS `error_message`,
       JSON_VALUE(event_extra.error_string) AS `error_string`,
       JSON_VALUE(event_extra.error_type) AS `error_type`,
       JSON_VALUE(event_extra.etp_setting) AS `etp_setting`,

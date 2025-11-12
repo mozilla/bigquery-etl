@@ -11605,6 +11605,30 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page requests a WebGPU adapter
+    - name: use_counter2_deprecated_math_ml_deprecated_mo_explicit_accent_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MathML_DeprecatedMoExplicitAccent
+    - name: use_counter2_deprecated_math_ml_deprecated_mo_explicit_accent_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MathML_DeprecatedMoExplicitAccent
+    - name: use_counter2_deprecated_math_ml_deprecated_mover_non_explicit_accent_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MathML_DeprecatedMoverNonExplicitAccent
+    - name: use_counter2_deprecated_math_ml_deprecated_mover_non_explicit_accent_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MathML_DeprecatedMoverNonExplicitAccent
+    - name: use_counter2_deprecated_math_ml_deprecated_munder_non_explicit_accentunder_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used MathML_DeprecatedMunderNonExplicitAccentunder
+    - name: use_counter2_deprecated_math_ml_deprecated_munder_non_explicit_accentunder_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used MathML_DeprecatedMunderNonExplicitAccentunder
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23066,6 +23090,30 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page requests a WebGPU adapter
+        - name: use_counter2_deprecated_math_ml_deprecated_mo_explicit_accent_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MathML_DeprecatedMoExplicitAccent
+        - name: use_counter2_deprecated_math_ml_deprecated_mo_explicit_accent_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MathML_DeprecatedMoExplicitAccent
+        - name: use_counter2_deprecated_math_ml_deprecated_mover_non_explicit_accent_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MathML_DeprecatedMoverNonExplicitAccent
+        - name: use_counter2_deprecated_math_ml_deprecated_mover_non_explicit_accent_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MathML_DeprecatedMoverNonExplicitAccent
+        - name: use_counter2_deprecated_math_ml_deprecated_munder_non_explicit_accentunder_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used MathML_DeprecatedMunderNonExplicitAccentunder
+        - name: use_counter2_deprecated_math_ml_deprecated_munder_non_explicit_accentunder_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used MathML_DeprecatedMunderNonExplicitAccentunder
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

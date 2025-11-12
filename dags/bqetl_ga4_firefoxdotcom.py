@@ -485,6 +485,10 @@ with DAG(
         firefoxdotcom_derived__ga_sessions__v2
     )
 
+    firefoxdotcom_derived__firefox_whatsnew_summary__v2.set_upstream(
+        wait_for_firefoxdotcom_events_table
+    )
+
     firefoxdotcom_derived__ga_clients__v1.set_upstream(
         bigeye__firefoxdotcom_derived__ga_sessions__v1
     )

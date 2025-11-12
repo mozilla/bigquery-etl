@@ -4,4 +4,4 @@
   reason: Inital backfill of DOH adoption rate data after table changes
   watchers:
   - ascholtz@mozilla.com
-  status: Initiate
+  status: Complete

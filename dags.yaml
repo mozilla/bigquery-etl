@@ -756,24 +756,6 @@ bqetl_unified:
   tags:
     - impact/tier_1
 
-bqetl_regrets_reporter_summary:
-  default_args:
-    depends_on_past: false
-    email:
-      - telemetry-alerts@mozilla.com
-      - kik@mozilla.com
-    email_on_failure: true
-    email_on_retry: true
-    end_date: null
-    owner: kik@mozilla.com
-    retries: 2
-    retry_delay: 30m
-    start_date: '2021-12-12'
-  description: Measure usage of the regrets reporter addon
-  schedule_interval: 0 4 * * *
-  tags:
-    - impact/tier_1
-
 bqetl_analytics_aggregations:
   default_args:
     depends_on_past: false
@@ -2522,4 +2504,27 @@ bqetl_market_intel_bot:
   schedule_interval: 0 15 2 * *
   tags:
     - impact/tier_3
+    - repo/bigquery-etl
+
+bqetl_firefox_data_cta_uid_map:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - sherrera@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: sherrera@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-11-11'
+  description: Daily DAG used for table mapping from firefoxdotcom data-cta-uid to
+    BQ, which allows normalization of analytics.
+  repo: bigquery-etl
+  schedule_interval: 0 2 * * *
+  tags:
+    - impact/tier_2
     - repo/bigquery-etl

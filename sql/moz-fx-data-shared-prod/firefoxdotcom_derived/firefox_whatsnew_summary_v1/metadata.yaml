@@ -6,8 +6,8 @@ owners:
 labels:
   incremental: true
   owner1: mhirose@mozilla.com
-scheduling:
-  dag_name: bqetl_ga4_firefoxdotcom
+#scheduling:
+#  dag_name: bqetl_ga4_firefoxdotcom
 bigquery:
   time_partitioning:
     type: day
@@ -18,3 +18,4 @@ bigquery:
     fields:
     - country
     - version
+deprecated: true

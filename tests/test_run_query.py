@@ -294,3 +294,49 @@ class TestRunQuery:
         # remove empty lines for comparison
         udf_sql = "\n".join([line for line in udf_sql.split("\n") if line.strip()])
         assert mock_client.query_and_wait.call_args[0][0] == udf_sql
+
+    def test_run_query_public_project_ignore_flag(self, tmp_path):
+        """Test that ignore_public_dataset flag skips public dataset handling."""
+        from bigquery_etl.cli.query import _run_query
+
+        query_file_path = tmp_path / "sql" / "test" / "query_v1"
+        os.makedirs(query_file_path)
+        query_file = query_file_path / "query.sql"
+        query_file.write_text("SELECT 1")
+
+        metadata_conf = {
+            "friendly_name": "test",
+            "description": "test",
+            "owners": ["test@example.org"],
+            "labels": {"public_bigquery": True, "review_bugs": [222222]},
+        }
+
+        metadata_file = query_file_path / "metadata.yaml"
+        metadata_file.write_text(yaml.dump(metadata_conf))
+
+        with patch("subprocess.check_call") as mock_call:
+            mock_call.return_value = True
+
+            # Call _run_query directly with ignore_public_dataset=True
+            _run_query(
+                query_files=[query_file],
+                project_id="moz-fx-data-shared-prod",
+                public_project_id="mozilla-public-data",
+                destination_table="query_v1",
+                dataset_id="test",
+                query_arguments=["query"],
+                ignore_public_dataset=True,
+            )
+
+            # The destination table should NOT be changed to the public project
+            # when ignore_public_dataset=True
+            assert mock_call.call_args.args == (
+                [
+                    "bq",
+                    "query",
+                    "--project_id=moz-fx-data-shared-prod",
+                    "--destination_table=query_v1",
+                    "--dataset_id=test",
+                ],
+            )
+            assert "stdin" in mock_call.call_args.kwargs

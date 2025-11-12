@@ -552,6 +552,7 @@ def _backfill_query(
         ),
         query_arguments=arguments,
         billing_project=billing_project,
+        ignore_public_dataset=True,
     )
 
     # Run checks on the query
@@ -957,6 +958,7 @@ def _run_query(
     query_arguments,
     addl_templates: Optional[dict] = None,
     billing_project: Optional[str] = None,
+    ignore_public_dataset: bool = False,
 ):
     """Run a query.
 
@@ -964,6 +966,9 @@ def _run_query(
     do not have a project id qualifier.
     billing_project is the project to run the query in for the purposes of billing and
     slot reservation selection.  This is project_id if billing_project is not set
+    ignore_public_dataset is a flag to ignore public dataset metadata checks and
+    destination table overrides. This is useful when running backfills where you want to
+    write to the standard (non-public) destination table.
     """
     if billing_project is not None:
         query_arguments.append(f"--project_id={billing_project}")
@@ -979,7 +984,7 @@ def _run_query(
         query_file = Path(query_file)
         try:
             metadata = Metadata.of_query_file(query_file)
-            if metadata.is_public_bigquery():
+            if not ignore_public_dataset and metadata.is_public_bigquery():
                 if not validate_metadata.validate_public_data(metadata, query_file):
                     sys.exit(1)
 

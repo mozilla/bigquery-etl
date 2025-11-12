@@ -14,10 +14,18 @@ WITH subscriptions_history AS (
     -- the Mozilla Account ID from the subscription's other nearby records.
     COALESCE(
       subscription.metadata.user_id,
+      LAST_VALUE(
+        subscription.metadata.user_id IGNORE NULLS
+      ) OVER preceding_subscription_purchase_changes_asc,
       FIRST_VALUE(
         subscription.metadata.user_id IGNORE NULLS
-      ) OVER following_subscription_changes_asc,
-      LAST_VALUE(subscription.metadata.user_id IGNORE NULLS) OVER preceding_subscription_changes_asc
+      ) OVER following_subscription_purchase_changes_asc,
+      LAST_VALUE(
+        subscription.metadata.user_id IGNORE NULLS
+      ) OVER preceding_subscription_changes_asc,
+      FIRST_VALUE(
+        subscription.metadata.user_id IGNORE NULLS
+      ) OVER following_subscription_changes_asc
     ) AS mozilla_account_id,
     -- Apple subscription records prior to 2024-10-30 don't have `storefront` values (FXA-10549),
     -- so we fall back to trying to get it from following records.
@@ -74,6 +82,28 @@ WITH subscriptions_history AS (
     following_subscription_changes_asc AS (
       PARTITION BY
         subscription.original_transaction_id
+      ORDER BY
+        valid_from,
+        valid_to
+      ROWS BETWEEN
+        1 FOLLOWING
+        AND UNBOUNDED FOLLOWING
+    ),
+    preceding_subscription_purchase_changes_asc AS (
+      PARTITION BY
+        subscription.original_transaction_id,
+        subscription.last_transaction.purchase_date
+      ORDER BY
+        valid_from,
+        valid_to
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND 1 PRECEDING
+    ),
+    following_subscription_purchase_changes_asc AS (
+      PARTITION BY
+        subscription.original_transaction_id,
+        subscription.last_transaction.purchase_date
       ORDER BY
         valid_from,
         valid_to

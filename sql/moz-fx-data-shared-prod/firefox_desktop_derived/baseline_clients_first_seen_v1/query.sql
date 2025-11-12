@@ -62,6 +62,9 @@
         LIMIT
           1
       )[OFFSET(0)] AS startup_profile_selection_reason_first,
+      ARRAY_AGG(client_info.architecture RESPECT NULLS ORDER BY submission_timestamp ASC)[
+        SAFE_OFFSET(0)
+      ] AS architecture,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -136,6 +139,9 @@
         LIMIT
           1
       )[OFFSET(0)] AS startup_profile_selection_reason_first,
+      ARRAY_AGG(client_info.architecture RESPECT NULLS ORDER BY submission_timestamp ASC)[
+        SAFE_OFFSET(0)
+      ] AS architecture,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -170,6 +176,7 @@
       normalized_os_version,
       isp,
       startup_profile_selection_reason_first,
+      architecture,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -213,7 +220,8 @@
     normalized_channel,
     normalized_os_version,
     isp,
-    startup_profile_selection_reason_first
+    startup_profile_selection_reason_first,
+    architecture,
   FROM
     _joined
   QUALIFY

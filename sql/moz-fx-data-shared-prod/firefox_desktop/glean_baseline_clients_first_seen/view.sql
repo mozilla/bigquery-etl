@@ -26,6 +26,8 @@ SELECT
   bcfs.normalized_channel,
   bcfs.normalized_os_version,
   bcfs.isp,
+  bcfs.startup_profile_selection_reason_first,
+  bcfs.architecture,
   IF(
     LOWER(IFNULL(bcfs.isp, '')) <> "browserstack"
     AND LOWER(

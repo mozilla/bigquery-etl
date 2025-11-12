@@ -2528,3 +2528,25 @@ bqetl_firefox_data_cta_uid_map:
   tags:
     - impact/tier_2
     - repo/bigquery-etl
+
+bqetl_braze_monitor_plus_users_sync:
+  catchup: false
+  default_args:
+    depends_on_past: false
+    email:
+      - telemetry-alerts@mozilla.com
+      - sherrera@mozilla.com
+    email_on_failure: true
+    email_on_retry: true
+    end_date: null
+    max_active_tis_per_dag: null
+    owner: sherrera@mozilla.com
+    retries: 2
+    retry_delay: 30m
+    start_date: '2025-11-13'
+  description: Create Monitor Plus Users sync table to sync to Braze.
+  repo: bigquery-etl
+  schedule_interval: once
+  tags:
+    - impact/tier_2
+    - repo/bigquery-etl

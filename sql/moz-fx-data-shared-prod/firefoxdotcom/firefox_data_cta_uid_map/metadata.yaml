@@ -1,8 +1,8 @@
 friendly_name: Firefox Data Cta Uid Map
 description: |-
-  Please provide a description for the query
+  View of UIDs persisted in the firefoxdotcom.firefox_data_cta_uid_map table. 
 owners:
-- example@mozilla.com
+- sherrera@mozilla.com
 labels:
-  owner: example
+  owner: sherrera
 require_column_descriptions: false

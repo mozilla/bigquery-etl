@@ -114,4 +114,8 @@ fields:
   name: startup_profile_selection_reason_first
   type: STRING
   description: How the profile was selected during startup
+- mode: NULLABLE
+  name: architecture
+  type: STRING
+  description: The architecture of the device, (e.g. "arm", "x86").
 {% endif %}

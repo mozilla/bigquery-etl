@@ -2520,7 +2520,7 @@ bqetl_firefox_data_cta_uid_map:
     owner: sherrera@mozilla.com
     retries: 2
     retry_delay: 30m
-    start_date: '2025-11-13'
+    start_date: '2025-11-11'
   description: Daily DAG used for table mapping from firefoxdotcom data-cta-uid to
     BQ, which allows normalization of analytics.
   repo: bigquery-etl

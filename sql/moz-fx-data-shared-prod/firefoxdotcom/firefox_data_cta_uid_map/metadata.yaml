@@ -1,0 +1,8 @@
+friendly_name: Firefox Data Cta Uid Map
+description: |-
+  Please provide a description for the query
+owners:
+- example@mozilla.com
+labels:
+  owner: example
+require_column_descriptions: false

@@ -1009,7 +1009,6 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kwindau@mozilla.com",
         email=[
-            "ago@mozilla.com",
             "gkaberere@mozilla.com",
             "kwindau@mozilla.com",
             "lvargas@mozilla.com",

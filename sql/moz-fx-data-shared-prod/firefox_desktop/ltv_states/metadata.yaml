@@ -1,8 +1,10 @@
-friendly_name: Ltv States
+friendly_name: Firefox Desktop LTV States
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Fields required for calculating LTV for Firefox Desktop clients
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

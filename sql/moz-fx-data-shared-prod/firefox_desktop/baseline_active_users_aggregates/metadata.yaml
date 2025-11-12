@@ -1,8 +1,14 @@
 friendly_name: Baseline Active Users Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregated information about daily, weekly, and monthly browser usage,
+  aggregated by date, country, OS,channel, etc.
+  Calculated from the Glean baseline ping.
+owners:
+- kwindau@mozilla.com
+- kignasiak@mozilla.com
+labels:
+  owner1: kwindau
+  owner2: kignasiak
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

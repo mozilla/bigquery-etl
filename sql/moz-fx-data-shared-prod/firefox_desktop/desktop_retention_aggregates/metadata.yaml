@@ -1,8 +1,12 @@
 friendly_name: Desktop Retention Aggregates
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Calculates user retention 4 weeks after first seen date, by app version,
+  attribution information, channel, country, and more.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

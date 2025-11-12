@@ -1,8 +1,12 @@
-friendly_name: Desktop Engagement Clients
+friendly_name: Desktop Engagement - Client Level
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Desktop engagement data at the client level, including attribution information
+  Primary Key: Submission Date + Client ID
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

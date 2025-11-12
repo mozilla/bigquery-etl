@@ -1,8 +1,11 @@
 friendly_name: Desktop Installs
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  This view contains information about Firefox desktop installs, to help track the acquisition funnel.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

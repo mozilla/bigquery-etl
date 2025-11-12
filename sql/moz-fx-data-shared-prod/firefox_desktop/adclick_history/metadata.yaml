@@ -1,8 +1,11 @@
 friendly_name: Adclick History
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Contains the number of ad-clicks per day for each Firefox Desktop client.
+  Primary key: client_id.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

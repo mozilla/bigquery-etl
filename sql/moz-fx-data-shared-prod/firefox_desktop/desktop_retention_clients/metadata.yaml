@@ -1,8 +1,15 @@
-friendly_name: Desktop Retention Clients
-description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+friendly_name: Firefox Desktop Retention Clients
+description: "Measures 28-day (week-4) retention for Firefox Desktop clients anchored\
+  \ on a cohort \u201Cmetric date.\u201D\nMetric date represents the cohort of clients\
+  \ who were either:\nA) New on the metric date (first_seen_date = metric_date), or\n\
+  B) Seen on the metric date (sent a baseline ping that day).\nSubmission date represents\
+  \ the date 27 days after the metric date (end of the 28-day window), when week-4\
+  \ retention is evaluated.\nPrimary Key: Client ID + Metric Date"
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

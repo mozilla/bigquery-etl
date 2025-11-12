@@ -1,8 +1,10 @@
-friendly_name: Fx Health Ind Antivirus
+friendly_name: Firefox Health Indicator - Antivirus Usage Trends
 description: |-
-  Please provide a description for the query
-owners: []
-labels: {}
+  Aggregate table showing antivirus software usage by OS
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

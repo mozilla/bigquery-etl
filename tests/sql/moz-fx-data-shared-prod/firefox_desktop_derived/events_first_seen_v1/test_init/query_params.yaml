@@ -1,7 +1,4 @@
 ---
-- name: submission_date
-  type: DATE
-  value: 2025-11-10
 - name: sample_id
   type: INTEGER
   value: 0

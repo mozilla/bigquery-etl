@@ -3,7 +3,7 @@ friendly_name: Terms of Use - Status
 description: |-
   This dataset contains the most recent status
 
-  Cluster by: ??
+  Cluster by: sample_id
 
 owners:
   - kik@mozilla.com
@@ -12,16 +12,12 @@ labels:
   schedule: daily
   table_type: client_level
 scheduling:
-  dag_name: bqetl_usage_reporting
+  dag_name: {{ dag_name }}
   task_group: {{ app_name }}
-{# bigquery:
-  time_partitioning:
-    type: day
-    field: ??
-    require_partition_filter: false -- TODO: this table will never expire because we keep overwriting it.
-    expiration_days: null
+  depends_on_past: true
+bigquery:
   clustering:
     fields:
-    - ?? #}
+      - sample_id
 monitoring:
   enabled: true

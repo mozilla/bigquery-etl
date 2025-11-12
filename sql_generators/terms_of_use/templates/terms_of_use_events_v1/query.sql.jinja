@@ -2,6 +2,7 @@
 SELECT
   submission_timestamp,
   metrics.uuid.messaging_system_client_id AS legacy_telemetry_client_id,
+  sample_id,
   metrics.text2.messaging_system_message_id,
   metrics.string.messaging_system_event,
   metrics.string.messaging_system_event_source,

@@ -3,6 +3,9 @@ friendly_name: Terms of Use - Events
 description: |-
   This dataset contains events related to Terms of Use.
 
+  Clustered by: sample_id
+  Partitioned by: submission_timestamp by day
+
 owners:
   - kik@mozilla.com
 labels:
@@ -18,5 +21,8 @@ bigquery:
     field: submission_timestamp
     require_partition_filter: false
     expiration_days: null
+  clustering:
+    fields:
+      - sample_id
 monitoring:
   enabled: true

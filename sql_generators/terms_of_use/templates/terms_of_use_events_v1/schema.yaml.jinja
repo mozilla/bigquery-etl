@@ -14,6 +14,13 @@ fields:
     Legacy client identifier.
 
 - mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+
+- mode: NULLABLE
   name: messaging_system_message_id
   type: STRING
   description: |

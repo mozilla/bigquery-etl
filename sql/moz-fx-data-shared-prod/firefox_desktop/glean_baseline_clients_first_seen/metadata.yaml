@@ -1,0 +1,8 @@
+friendly_name: Glean Baseline Clients First Seen
+description: |-
+  For each client, looks at the first date we received a baseline ping, and calculates their attributes as of that first seen date.
+  Primary key: client_id.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner1: kwindau

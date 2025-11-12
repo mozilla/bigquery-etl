@@ -1,0 +1,19 @@
+friendly_name: Firefox Data Cta Uid Map
+description: |-
+  View of UIDs persisted in the firefoxdotcom.firefox_data_cta_uid_map table.
+owners:
+- sherrera@mozilla.com
+labels:
+  owner: sherrera
+  owner1: sherrera
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+references:
+  view.sql:
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_data_cta_uid_map_v1
+require_column_descriptions: false

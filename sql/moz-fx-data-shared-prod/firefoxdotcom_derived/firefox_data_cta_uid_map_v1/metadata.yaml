@@ -1,0 +1,27 @@
+friendly_name: Firefox Data CTA Uid Map
+description: |-
+  This table maps CTA UIDs to their localized text for various locales and
+  Firefox versions. It is used to display the correct call-to-action text
+  in Firefox based on the user's locale and the version of Firefox they
+  are using. The data is sourced from a Google Sheet that is maintained
+  by the Firefox Web team.
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: true
+  owner1: sherrera
+  dag: bqetl_firefox_data_cta_uid_map
+scheduling:
+  dag_name: bqetl_firefox_data_cta_uid_map
+bigquery:
+  time_partitioning: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+- role: roles/bigquery.metadataViewer
+  members:
+  - workgroup:google-managed/external-ads-dataproc
+require_column_descriptions: false

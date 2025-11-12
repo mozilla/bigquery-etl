@@ -10,4 +10,4 @@ labels:
   incremental: false
   owner: sherrera
 scheduling:
-  dag_name: bqetl_braze_monitor_sunset_users_sync
+  dag_name: bqetl_braze_monitor_plus_users_sync

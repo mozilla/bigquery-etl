@@ -1,4 +1,80 @@
 ---
+# Test: Different events for same client_id (should create separate rows)
+- client_id: client1-diff-events
+  profile_group_id: "client1-diff-events-profile"
+  sample_id: 0
+  event_category: "category1"
+  event_name: "event1"
+  event: "event1"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {type: event1}
+- client_id: client1-diff-events
+  profile_group_id: "client1-diff-events-profile"
+  sample_id: 0
+  event_category: "category2"
+  event_name: "event2"
+  event: "event2"
+  submission_timestamp: 2025-10-29T11:00:00
+  event_timestamp: 2025-10-29T11:00:00
+  event_extra: {type: event2}
+
+# Test: Date boundary (2022-12-31 should be excluded)
+- client_id: client1-date-boundary
+  profile_group_id: "client1-date-boundary-profile"
+  sample_id: 0
+  event_category: "date-category"
+  event_name: "date-event"
+  event: "date-event-excluded"
+  submission_timestamp: 2022-12-31T23:59:59
+  event_timestamp: 2022-12-31T23:59:59
+  event_extra: {excluded: true}
+- client_id: client2-date-boundary
+  profile_group_id: "client2-date-boundary-profile"
+  sample_id: 0
+  event_category: "date-category"
+  event_name: "date-event"
+  event: "date-event-included"
+  submission_timestamp: 2023-01-01T00:00:00
+  event_timestamp: 2023-01-01T00:00:00
+  event_extra: {included: true}
+
+# Test: All optional fields (app_version_major, etc.) are NULL
+- client_id: client1-null-fields
+  profile_group_id: "client1-null-fields-profile"
+  sample_id: 0
+  event_category: "null-fields-category"
+  event_name: "null-fields-event"
+  event: "null-fields-event"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: NULL
+  app_version_major: NULL
+  normalized_channel: NULL
+  normalized_country_code: NULL
+  normalized_os: NULL
+  normalized_os_version: NULL
+
+# Test: Tie in submission_timestamp - min_by should be deterministic
+- client_id: client1-tie
+  profile_group_id: "profile-A"
+  sample_id: 0
+  event_category: "tie-category"
+  event_name: "tie-event"
+  event: "tie-event"
+  submission_timestamp: 2025-10-29T10:00:00
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {profile: A}
+- client_id: client1-tie
+  profile_group_id: "profile-B"
+  sample_id: 1
+  event_category: "tie-category"
+  event_name: "tie-event"
+  event: "tie-event"
+  submission_timestamp: 2025-10-29T10:00:00  # Same timestamp
+  event_timestamp: 2025-10-29T10:00:00
+  event_extra: {profile: B}
+
 # test dupes
 - client_id: client1-dupes
   profile_group_id: "client1-dupes-profile1"

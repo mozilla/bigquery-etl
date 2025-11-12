@@ -1,11 +1,11 @@
 # {{ header }}
 fields:
 - mode: NULLABLE
-  name: submission_timestamp
-  type: TIMESTAMP
+  name: submission_date
+  type: DATE
   description: |
-    Timestamp when the ping is received on the server side. Also used as the logical date
-    by the ETL process and partitioning.
+    Date when the ping is received on the server side. Also used as the logical date
+    by the ETL process.
 
 - mode: NULLABLE
   name: client_id

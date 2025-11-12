@@ -7,12 +7,12 @@
 WITH eventsstream AS (
   SELECT
     client_id,
-    profile_group_id,
-    sample_id,
-    event_category,
-    event_name,
     `event`,
     CAST(NULL AS string) AS criteria,
+    min_by(profile_group_id, submission_timestamp) AS profile_group_id,
+    min_by(sample_id, submission_timestamp) AS sample_id,
+    min_by(event_category, submission_timestamp) AS event_category,
+    min_by(event_name, submission_timestamp) AS event_name,
     MIN(submission_timestamp) AS first_submission_timestamp,
     MIN(event_timestamp) AS first_event_timestamp,
     min_by(event_extra, submission_timestamp) AS event_extra,
@@ -20,7 +20,7 @@ WITH eventsstream AS (
     min_by(normalized_channel, submission_timestamp) AS normalized_channel,
     min_by(normalized_country_code, submission_timestamp) AS normalized_country_code,
     min_by(normalized_os, submission_timestamp) AS normalized_os,
-    min_by(normalized_os_version, submission_timestamp) AS normalized_os_version,
+    min_by(normalized_os_version, submission_timestamp) AS normalized_os_version
   FROM
     `{{ project_id }}.{{ app_name }}_derived.events_stream_v1`
   WHERE
@@ -31,13 +31,9 @@ WITH eventsstream AS (
     AND profile_group_id IS NOT NULL
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
   GROUP BY
-    client_id,
-    profile_group_id,
-    sample_id,
-    event_category,
-    event_name,
-    `event`,
-    criteria
+      client_id,
+      `event`,
+      criteria
 )
 SELECT
   *

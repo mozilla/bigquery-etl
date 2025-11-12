@@ -1,4 +1,33 @@
 ---
+# test dupes
+- client_id: client1-dupes
+  profile_group_id: "client1-dupes-profile1"
+  sample_id: 2
+  event_category: "client1-dupes-event-category"
+  event_name: "client1-dupes-event-name"
+  event: "client1-dupes-event"
+  submission_timestamp: 2025-11-10T00:31:18
+  event_timestamp: 2025-11-05T09:38:18
+  event_extra: {date: 2025-11-08}
+- client_id: client1-dupes
+  profile_group_id: "client1-dupes-profile2"
+  sample_id: 2
+  event_category: "client1-dupes-event-category"
+  event_name: "client1-dupes-event-name"
+  event: "client1-dupes-event"
+  submission_timestamp: 2025-11-10T00:41:07
+  event_timestamp: 2025-11-05T09:38:18
+  event_extra: {date: 2025-11-05}
+- client_id: client1-dupes
+  profile_group_id: "client1-dupes-profile3"
+  sample_id: 2
+  event_category: "client1-dupes-event-category"
+  event_name: "client1-dupes-event-name"
+  event: "client1-dupes-event"
+  submission_timestamp: 2025-11-10T09:54:50
+  event_timestamp: 2025-11-07T09:28:31
+  event_extra: {date: 2025-11-07}
+
 # get minimums
 - client_id: client1-mins
   profile_group_id: "client1-mins-profile"

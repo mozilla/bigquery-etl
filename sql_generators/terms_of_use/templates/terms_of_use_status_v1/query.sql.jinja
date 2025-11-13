@@ -21,7 +21,6 @@ WITH _previous AS (
 FROM
   `{{ project_id }}.{{ app_name }}_derived.{{ table_name }}`
 WHERE
-  {# DATE(submission_timestamp) <> @submission_date #}
   submission_date <> @submission_date
 ),
 _current AS (
@@ -48,7 +47,7 @@ _current AS (
     {% elif app_name == "firefox_desktop" %}
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.quantity.termsofuse_version) OVER _window) AS terms_of_use_version_accepted,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.datetime.termsofuse_date) OVER _window) AS terms_of_use_date_accepted,
-    metrics.uuid.legacy_telemetry_client_id,  -- firefox_desktop exclusive field.
+    `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.uuid.legacy_telemetry_client_id IGNORE NULLS) OVER _window) AS legacy_telemetry_client_id,  -- firefox_desktop exclusive field
     {% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.metrics`
@@ -84,7 +83,7 @@ SELECT
     _previous.client_id IS NULL
     OR (
       (_current.terms_of_use_version_accepted <> _previous.terms_of_use_version_accepted)
-      OR (_current.terms_of_use_date_accepted <> _previous.terms_of_use_date_accepted)
+      AND (_current.terms_of_use_date_accepted <> _previous.terms_of_use_date_accepted)
     ),
     _current,
     _previous

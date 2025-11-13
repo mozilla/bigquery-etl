@@ -99,6 +99,7 @@ references:
   - moz-fx-data-shared-prod.pocket_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.region-us.INFORMATION_SCHEMA.TABLE_OPTIONS
   - moz-fx-data-shared-prod.relay_backend_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.subscription_platform_backend_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.subscription_platform_backend_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.syncstorage_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.telemetry_stable.INFORMATION_SCHEMA.PARTITIONS

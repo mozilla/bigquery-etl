@@ -95,23 +95,35 @@ all_events_with_page_location_on_WNP AS (
     ] AS page_level_2,
     REGEXP_EXTRACT(page_location, r'[?&]oldversion=([^&]+)') AS oldversion,
     REGEXP_EXTRACT(page_location, r'[?&]newversion=([^&]+)') AS newversion,
-    engagement_time_msec
+    engagement_time_msec,
+    (
+      SELECT
+        `value`
+      FROM
+        UNNEST(event_params)
+      WHERE
+        key = 'uid'
+      LIMIT
+        1
+    ).string_value AS uid_from_event_params
   FROM
     all_events
   WHERE
-    LOWER(page_location) LIKE '%whatsnew%'
-    AND LOWER(
-      SPLIT(REGEXP_REPLACE(page_location, '^https://www.firefox.com', ''), '/')[SAFE_OFFSET(2)]
-    ) = 'firefox'
+    LOWER(page_location) LIKE '%/whatsnew/%'
 )
 SELECT
-  wnp.*,
+  wnp.* EXCEPT (uid_from_event_params),
   mozfun.norm.browser_version_info(wnp.page_level_2) AS page_level_2_version_info,
   CASE
     WHEN wnp.oldversion LIKE '999999999999999999999999%'
       THEN mozfun.norm.browser_version_info(NULL)
     ELSE mozfun.norm.browser_version_info(wnp.oldversion)
   END AS old_version_version_info,
-  mozfun.norm.browser_version_info(wnp.newversion) AS new_version_version_info
+  mozfun.norm.browser_version_info(wnp.newversion) AS new_version_version_info,
+  CASE
+    WHEN event_name = 'cta_click'
+      THEN uid_from_event_params
+    ELSE NULL
+  END AS cta_click_uid
 FROM
   all_events_with_page_location_on_WNP wnp

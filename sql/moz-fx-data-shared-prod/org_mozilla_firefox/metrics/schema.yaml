@@ -714,7 +714,7 @@ fields:
     - name: tab_strip_enabled
       type: BOOLEAN
       mode: NULLABLE
-      description: 'Whether or not the tab strip feature is enabled
+      description: 'Whether or not Tab Strip is enabled by the user.
 
         '
     - name: bounce_tracking_protection_enabled_at_startup

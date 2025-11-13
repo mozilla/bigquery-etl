@@ -1,0 +1,16 @@
+friendly_name: subscription-platform-backend-cirrus
+description: |-
+  User-facing views related to document namespace subscription-platform-backend-cirrus; see https://github.com/mozilla-services/mozilla-pipeline-schemas/tree/generated-schemas/schemas/subscription-platform-backend-cirrus
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

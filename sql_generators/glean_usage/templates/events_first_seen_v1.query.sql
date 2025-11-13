@@ -49,12 +49,12 @@ WITH _current AS (
     @submission_date AS submission_date,
     @submission_date AS event_first_seen_date,
     client_id,
-    profile_group_id,
-    sample_id,
-    event_category,
-    event_name,
     `event`,
     CAST(NULL AS string) AS criteria,
+    min_by(profile_group_id, submission_timestamp) AS profile_group_id,
+    min_by(sample_id, submission_timestamp) AS sample_id,
+    min_by(event_category, submission_timestamp) AS event_category,
+    min_by(event_name, submission_timestamp) AS event_name,
     MIN(submission_timestamp) AS first_submission_timestamp,
     MIN(event_timestamp) AS first_event_timestamp,
     min_by(event_extra, submission_timestamp) AS event_extra,
@@ -73,10 +73,6 @@ WITH _current AS (
     submission_date,
     event_first_seen_date,
     client_id,
-    profile_group_id,
-    sample_id,
-    event_category,
-    event_name,
     `event`,
     criteria
 ),
@@ -86,12 +82,12 @@ _previous AS (
     submission_date,
     event_first_seen_date,
     client_id,
+    `event`,
+    CAST(NULL AS string) AS criteria,
     profile_group_id,
     sample_id,
     event_category,
     event_name,
-    `event`,
-    CAST(NULL AS string) AS criteria,
     first_submission_timestamp,
     first_event_timestamp,
     event_extra,
@@ -118,9 +114,12 @@ _joined AS (
     ).*
   FROM
     _current
-  FULL JOIN
+  FULL OUTER JOIN
     _previous
-    USING (client_id)
+    ON _current.client_id = _previous.client_id
+        AND _current.event = _previous.event
+        AND (_current.criteria = _previous.criteria
+            OR (_current.criteria IS NULL AND _previous.criteria IS NULL))
 )
 SELECT
   *

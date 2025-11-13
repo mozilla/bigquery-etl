@@ -8,10 +8,10 @@ fields:
     by the ETL process and partitioning.
 
 - mode: NULLABLE
-  name: legacy_telemetry_client_id
+  name: client_id
   type: STRING
   description: |
-    Legacy client identifier.
+    A UUID uniquely identifying the client.
 
 - mode: NULLABLE
   name: sample_id
@@ -19,6 +19,12 @@ fields:
   description: |
     A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
+
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description: |
+    Legacy client identifier.
 
 - mode: NULLABLE
   name: messaging_system_message_id

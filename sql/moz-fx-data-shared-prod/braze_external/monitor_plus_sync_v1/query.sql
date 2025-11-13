@@ -9,7 +9,10 @@ SELECT
       email AS email,
       "subscribed" AS email_subscribe,
       ARRAY_AGG(
-        STRUCT("***" AS subscription_group_id, "subscribed" AS subscription_state)
+        STRUCT(
+          "87c4fd94-90a3-443c-bfb0-97d1227219aa" AS subscription_group_id,
+          "subscribed" AS subscription_state
+        )
       ) AS subscription_groups
     )
   ) AS PAYLOAD

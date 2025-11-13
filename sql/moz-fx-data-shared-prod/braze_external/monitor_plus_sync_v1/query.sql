@@ -17,6 +17,6 @@ SELECT
     )
   ) AS PAYLOAD
 FROM
-  `moz-fx-data-shared-prod.braze_external.monitor_plus_sunset_test`
+  `moz-fx-data-shared-prod.braze_external.monitor_plus_sunset_v1`
 GROUP BY
   email

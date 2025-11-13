@@ -13,6 +13,7 @@ labels:
   owner2: cbeck
 scheduling:
   dag_name: bqetl_braze_monitor_plus_users_sync
+  date_partition_parameter: null
 workgroup_access:
 - role: roles/bigquery.dataViewer
   members:

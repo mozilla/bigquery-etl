@@ -11,3 +11,4 @@ labels:
   owner: sherrera
 scheduling:
   dag_name: bqetl_braze_monitor_plus_users_sync
+  date_partition_parameter: null

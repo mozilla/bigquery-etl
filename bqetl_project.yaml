@@ -420,6 +420,7 @@ generate:
       - mozilla_vpn
       - mozillavpn_backend_cirrus
       - pine
+      - subscription_platform_backend_cirrus
       - thunderbird_android
       - thunderbird_desktop
     clients_last_seen_joined:
@@ -434,6 +435,7 @@ generate:
       - mozilla_vpn
       - mozillavpn_backend_cirrus
       - pine
+      - subscription_platform_backend_cirrus
       - thunderbird_android
       - thunderbird_desktop
     bigconfig:
@@ -465,6 +467,7 @@ generate:
       - reference_browser
       - thunderbird_desktop
       - lockwise_ios
+      - subscription_platform_backend_cirrus
     bqetl_checks:
       skip_apps:
       - mozilla_vpn
@@ -482,6 +485,7 @@ generate:
       - moso_mastodon_backend
       - mozphab
       - mozregression
+      - subscription_platform_backend_cirrus
     app_ping_views:
       skip:  # don't add the following pings to the combined-channel ping view
       - org_mozilla_fennec_aurora.metrics

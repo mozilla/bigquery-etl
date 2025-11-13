@@ -982,6 +982,8 @@ def _run_query(
         use_public_table = False
 
         query_file = Path(query_file)
+        default_project, default_dataset, _ = extract_from_query_path(query_file)
+
         try:
             metadata = Metadata.of_query_file(query_file)
             if not ignore_public_dataset and metadata.is_public_bigquery():
@@ -1057,8 +1059,6 @@ def _run_query(
         # this is needed if the project the query is run in (billing_project) doesn't match the
         # project directory the query is in
         if billing_project is not None and billing_project != project_id:
-            default_project, default_dataset, _ = extract_from_query_path(query_file)
-
             session_id = create_query_session(
                 session_project=billing_project,
                 default_project=project_id or default_project,
@@ -1088,6 +1088,23 @@ def _run_query(
 
             # run the query as shell command so that passed parameters can be used as is
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
+
+        # If the entire table was overwritten then redeploy the table schema to add back field descriptions.
+        if destination_table and "$" not in destination_table:
+            schema_file = query_file.parent / SCHEMA_FILE
+            if schema_file.exists():
+                schema = Schema.from_schema_file(schema_file)
+                if ":" in destination_table:
+                    schema_destination_table = destination_table.replace(":", ".")
+                else:
+                    schema_destination_table = ".".join(
+                        (
+                            (project_id or default_project),
+                            (dataset_id or default_dataset),
+                            destination_table,
+                        )
+                    )
+                schema.deploy(schema_destination_table)
 
 
 def create_query_session(

@@ -16,13 +16,8 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "profile_group_id",
+    "name": "event",
     "type": "STRING"
-  },
-  {
-    "mode": "NULLABLE",
-    "name": "sample_id",
-    "type": "INTEGER"
   },
   {
     "mode": "NULLABLE",
@@ -36,13 +31,18 @@
   },
   {
     "mode": "NULLABLE",
-    "name": "event",
+    "name": "criteria",
     "type": "STRING"
   },
   {
     "mode": "NULLABLE",
-    "name": "criteria",
+    "name": "profile_group_id",
     "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "sample_id",
+    "type": "INTEGER"
   },
   {
     "mode": "NULLABLE",

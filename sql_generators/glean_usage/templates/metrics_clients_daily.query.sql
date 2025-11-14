@@ -267,7 +267,63 @@
       ANY_VALUE(metrics.string.system_apple_model_id) AS apple_model_id,
       `moz-fx-data-shared-prod.udf.mode_last`(
         ARRAY_AGG(metrics.string.search_engine_default_engine_id ORDER BY submission_timestamp ASC)
-      ) AS default_search_engine
+      ) AS default_search_engine,
+      ANY_VALUE(metrics.string.xpcom_abi) AS xpcom_abi,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_admin_user RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_admin_user,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_default_path RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_default_path,
+      ARRAY_AGG(
+        metrics.string.installation_first_seen_failure_reason RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_failure_reason,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_from_msi RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_from_msi,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_install_existed RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_install_existed,
+      ARRAY_AGG(
+        metrics.string.installation_first_seen_installer_type RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_installer_type,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_other_inst RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_other_inst,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_other_msix_inst RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_other_msix_inst,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_profdir_existed RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_profdir_existed,
+      ARRAY_AGG(
+        metrics.boolean.installation_first_seen_silent RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_silent,
+      ARRAY_AGG(
+        metrics.string.installation_first_seen_version RESPECT NULLS
+        ORDER BY
+          submission_timestamp
+      )[SAFE_OFFSET(0)] AS installation_first_seen_version
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

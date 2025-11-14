@@ -1103,30 +1103,37 @@ def _run_query(
             and schema_file.exists()
         ):
             schema = Schema.from_schema_file(schema_file)
-            if ":" in destination_table:
-                schema_destination_table = destination_table.replace(":", ".")
-            elif dataset_id and ":" in dataset_id:
-                schema_destination_table = ".".join(
-                    (dataset_id.replace(":", "."), destination_table)
-                )
-            else:
-                schema_destination_table = ".".join(
-                    (
-                        (project_id or default_project),
-                        (dataset_id or default_dataset),
-                        destination_table,
+            if any("description" in field for field in schema.schema["fields"]):
+                if ":" in destination_table:
+                    schema_destination_table = destination_table.replace(":", ".")
+                elif dataset_id and ":" in dataset_id:
+                    schema_destination_table = ".".join(
+                        (dataset_id.replace(":", "."), destination_table)
                     )
-                )
-            click.echo(
-                f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
-            )
-            try:
-                schema.deploy(schema_destination_table)
-            except Exception as e:
+                else:
+                    schema_destination_table = ".".join(
+                        (
+                            (project_id or default_project),
+                            (dataset_id or default_dataset),
+                            destination_table,
+                        )
+                    )
                 click.echo(
-                    f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
-                    err=True,
+                    f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
                 )
+                try:
+                    client = bigquery.Client()
+                    client.update_table(
+                        bigquery.Table(
+                            schema_destination_table, schema=schema.to_bigquery_schema()
+                        ),
+                        fields=["schema"],
+                    )
+                except Exception as e:
+                    click.echo(
+                        f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
+                        err=True,
+                    )
 
 
 def create_query_session(

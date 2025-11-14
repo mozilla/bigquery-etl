@@ -1120,7 +1120,13 @@ def _run_query(
                 click.echo(
                     f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
                 )
-                schema.deploy(schema_destination_table)
+                try:
+                    schema.deploy(schema_destination_table)
+                except Exception as e:
+                    click.echo(
+                        f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
+                        err=True,
+                    )
 
 
 def create_query_session(

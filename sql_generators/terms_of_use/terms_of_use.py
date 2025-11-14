@@ -77,9 +77,9 @@ def generate_terms_of_use(target_project: str, output_dir: Path):
             "header": HEADER,
             "dag_name": dag_name,
             "project_id": target_project,
-            "bigeye_collection": app_config.get("bigconfig", dict()).get("collection")
+            "bigeye_collection": app_config.get("bigeye", dict()).get("collection")
             or bigeye_defaults["collection"],
-            "slack_notification_channel": app_config.get("bigconfig", dict()).get(
+            "slack_notification_channel": app_config.get("bigeye", dict()).get(
                 "notification_channel"
             )
             or bigeye_defaults["notification_channel"],

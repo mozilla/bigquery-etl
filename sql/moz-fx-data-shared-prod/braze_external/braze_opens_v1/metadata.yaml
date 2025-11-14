@@ -1,0 +1,16 @@
+friendly_name: Braze Opens
+description: |-
+  Please provide a description for the query
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: open_time
+bigquery:
+  time_partitioning:
+    type: day
+    field: open_time
+    require_partition_filter: true

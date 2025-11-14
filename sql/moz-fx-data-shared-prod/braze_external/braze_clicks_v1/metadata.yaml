@@ -1,0 +1,16 @@
+friendly_name: Braze Clicks
+description: |-
+  Please provide a description for the query
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+scheduling:
+  dag_name: bqetl_braze
+  date_partition_parameter: click_time
+bigquery:
+  time_partitioning:
+    type: day
+    field: click_time
+    require_partition_filter: true

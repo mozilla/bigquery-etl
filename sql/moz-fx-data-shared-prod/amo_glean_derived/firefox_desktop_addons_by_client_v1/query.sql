@@ -12,15 +12,24 @@ WITH base AS (
     client_info.app_display_version,
     -- merging active_addons and addons_theme into a single addons object
     ARRAY_CONCAT(
-      JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$'),
-      [JSON_QUERY(metrics.object.addons_theme, '$')]
+      -- COALESCE to make sure array concat returns results if active_addons is empty and addons_theme is not
+      COALESCE(JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$'), []),
+      [
+        JSON_QUERY(metrics.object.addons_theme, '$')
+      ] -- wrapping the json object in array to enable array concat
     ) AS active_addons,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
-    AND (metrics.object.addons_active_addons IS NOT NULL OR metrics.object.addons_theme IS NOT NULL)
+    AND (
+      (
+        metrics.object.addons_active_addons IS NOT NULL
+        AND ARRAY_LENGTH(JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$')) > 0
+      )
+      OR metrics.object.addons_theme IS NOT NULL
+    )
 ),
 per_clients_without_addons AS (
   SELECT

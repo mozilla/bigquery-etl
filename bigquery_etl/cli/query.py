@@ -1096,6 +1096,8 @@ def _run_query(
             destination_table
             and "$" not in destination_table
             and "--dry_run" not in query_arguments
+            and "--append_table" not in query_arguments
+            and "--noreplace" not in query_arguments
             and not is_backfill
         ):
             schema_file = query_file.parent / SCHEMA_FILE

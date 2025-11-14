@@ -553,6 +553,7 @@ def _backfill_query(
         query_arguments=arguments,
         billing_project=billing_project,
         ignore_public_dataset=True,
+        is_backfill=True,
     )
 
     # Run checks on the query
@@ -959,6 +960,7 @@ def _run_query(
     addl_templates: Optional[dict] = None,
     billing_project: Optional[str] = None,
     ignore_public_dataset: bool = False,
+    is_backfill: bool = False,
 ):
     """Run a query.
 
@@ -1094,6 +1096,7 @@ def _run_query(
             destination_table
             and "$" not in destination_table
             and "--dry_run" not in query_arguments
+            and not is_backfill
         ):
             schema_file = query_file.parent / SCHEMA_FILE
             if schema_file.exists():

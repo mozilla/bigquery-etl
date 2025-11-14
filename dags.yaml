@@ -430,7 +430,7 @@ bqetl_org_mozilla_firefox_derived:
 bqetl_org_mozilla_focus_derived:
   schedule_interval: 0 2 * * *
   default_args:
-    r: false
+    depends_on_past: false
     email:
       - akomar@mozilla.com
       - telemetry-alerts@mozilla.com

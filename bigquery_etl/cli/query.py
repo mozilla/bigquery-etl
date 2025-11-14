@@ -1105,6 +1105,10 @@ def _run_query(
                 schema = Schema.from_schema_file(schema_file)
                 if ":" in destination_table:
                     schema_destination_table = destination_table.replace(":", ".")
+                elif dataset_id and ":" in dataset_id:
+                    schema_destination_table = ".".join(
+                        (dataset_id.replace(":", "."), destination_table)
+                    )
                 else:
                     schema_destination_table = ".".join(
                         (

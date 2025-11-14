@@ -26,4 +26,4 @@ bigquery:
       - event_category
       - normalized_channel
       - sample_id
-      - submission_date
+      - normalized_country_code

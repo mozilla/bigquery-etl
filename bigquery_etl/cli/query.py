@@ -1111,6 +1111,9 @@ def _run_query(
                             destination_table,
                         )
                     )
+                click.echo(
+                    f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
+                )
                 schema.deploy(schema_destination_table)
 
 

@@ -6,6 +6,8 @@
 
 WITH eventsstream AS (
   SELECT
+    DATE(MIN(submission_timestamp)) as submission_date,
+    DATE(MIN(event_timestamp)) as event_first_seen_date,
     client_id,
     `event`,
     CAST(NULL AS string) AS criteria,
@@ -76,7 +78,7 @@ WITH _current AS (
     `event`,
     criteria
 ),
--- query over all of history to see whether the client_id has shown up before
+-- query over all of history to see whether the client_id, event and criteria combination has shown up before
 _previous AS (
   SELECT
     submission_date,

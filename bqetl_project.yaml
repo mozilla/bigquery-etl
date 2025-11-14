@@ -558,6 +558,12 @@ generate:
     - firefox_desktop_background_defaultagent
     - firefox_desktop_background_tasks
 
+geo_deprecation:
+  include_app_ids:
+  - org_mozilla_ios_klar
+  skip_tables:
+  - newtab
+
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3
@@ -646,3 +652,4 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_update/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_first_seen_v1

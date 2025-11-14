@@ -323,7 +323,13 @@
         metrics.string.installation_first_seen_version RESPECT NULLS
         ORDER BY
           submission_timestamp
-      )[SAFE_OFFSET(0)] AS installation_first_seen_version
+      )[SAFE_OFFSET(0)] AS installation_first_seen_version,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.boolean.browser_backup_scheduler_enabled ORDER BY submission_timestamp)
+      ) AS browser_backup_scheduler_enabled,
+      mozfun.stats.mode_last(
+        ARRAY_AGG(metrics.boolean.browser_backup_archive_enabled ORDER BY submission_timestamp)
+      ) AS browser_backup_archive_enabled
     {% endif -%}
   FROM
     `moz-fx-data-shared-prod.{{ dataset }}.metrics` AS m

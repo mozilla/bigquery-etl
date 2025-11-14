@@ -1,0 +1,27 @@
+friendly_name: Metrics Clients First Seen
+description: |-
+  Captures the attributes seen on the metrics pings received on the
+  date of the first received metrics ping for each client.
+owners:
+- kwindau@mozilla.com
+labels:
+  schedule: daily
+  dag: bqetl_glean_usage
+  owner1: kwindau
+scheduling:
+  dag_name: bqetl_glean_usage
+  depends_on_past: true
+  date_partition_parameter: null
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+require_column_descriptions: false

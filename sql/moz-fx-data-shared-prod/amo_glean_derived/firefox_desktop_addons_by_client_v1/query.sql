@@ -1,28 +1,35 @@
 WITH base AS (
   SELECT
     submission_timestamp,
+    DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     sample_id,
-    IFNULL(metrics.uuid.legacy_telemetry_client_id, "") AS legacy_telemetry_client_id,
+    metrics.uuid.legacy_telemetry_client_id,
     normalized_channel,
     normalized_country_code,
     client_info.locale,
     normalized_os,
     client_info.app_display_version,
-    JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$') AS active_addons,
+    -- merging active_addons and addons_theme into a single addons object
+    ARRAY_CONCAT(
+      JSON_QUERY_ARRAY(metrics.object.addons_active_addons, '$'),
+      [JSON_QUERY(metrics.object.addons_theme, '$')]
+    ) AS active_addons,
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.metrics`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND client_info.client_id IS NOT NULL
-    AND metrics.object.addons_active_addons IS NOT NULL
+    AND (metrics.object.addons_active_addons IS NOT NULL OR metrics.object.addons_theme IS NOT NULL)
 ),
 per_clients_without_addons AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+    submission_date,
     client_id,
     sample_id,
-    legacy_telemetry_client_id,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(legacy_telemetry_client_id ORDER BY submission_timestamp)
+    ) AS legacy_telemetry_client_id,
     ARRAY_AGG(
       app_display_version
       ORDER BY
@@ -40,10 +47,12 @@ per_clients_without_addons AS (
 ),
 per_clients_just_addons AS (
   SELECT
-    DATE(submission_timestamp) AS submission_date,
+    submission_date,
     client_id,
     sample_id,
-    legacy_telemetry_client_id,
+    mozfun.stats.mode_last(
+      ARRAY_AGG(legacy_telemetry_client_id ORDER BY submission_timestamp)
+    ) AS legacy_telemetry_client_id,
     ARRAY_CONCAT_AGG(
       ARRAY(
         SELECT AS STRUCT
@@ -76,7 +85,7 @@ per_client AS (
     USING (submission_date, client_id, sample_id, legacy_telemetry_client_id)
 )
 SELECT
-  * EXCEPT (addons) REPLACE(NULLIF(legacy_telemetry_client_id, "") AS legacy_telemetry_client_id),
+  * EXCEPT (addons),
   ARRAY(
     SELECT AS STRUCT
       addon.id,

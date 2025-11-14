@@ -104,7 +104,9 @@ def export_newtab_merino_table_to_gcs(
             for suffix in ["latest", timestamp]:
                 final_destination_uri = f"{destination_prefix}/{suffix}.json"
                 final_blob = bucket.blob(final_destination_uri)
-                final_blob.upload_from_string(json_data, content_type="application/json")
+                final_blob.upload_from_string(
+                    json_data, content_type="application/json"
+                )
 
             # Delete files older than specified days
             delete_old_files(bucket, destination_prefix, deletion_days_old)

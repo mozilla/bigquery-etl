@@ -1121,7 +1121,13 @@ def _run_query(
                 f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
             )
             try:
-                schema.deploy(schema_destination_table)
+                client = bigquery.Client()
+                client.update_table(
+                    bigquery.Table(
+                        schema_destination_table, schema=schema.to_bigquery_schema()
+                    ),
+                    fields=["schema"],
+                )
             except Exception as e:
                 click.echo(
                     f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",

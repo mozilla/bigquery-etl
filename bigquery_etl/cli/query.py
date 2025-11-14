@@ -1090,7 +1090,11 @@ def _run_query(
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
         # If the entire table was overwritten then redeploy the table schema to add back field descriptions.
-        if destination_table and "$" not in destination_table:
+        if (
+            destination_table
+            and "$" not in destination_table
+            and "--dry_run" not in query_arguments
+        ):
             schema_file = query_file.parent / SCHEMA_FILE
             if schema_file.exists():
                 schema = Schema.from_schema_file(schema_file)

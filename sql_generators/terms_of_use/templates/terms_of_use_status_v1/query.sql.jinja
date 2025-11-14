@@ -47,7 +47,7 @@ _current AS (
     {% elif app_name == "firefox_desktop" %}
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.quantity.termsofuse_version) OVER _window) AS terms_of_use_version_accepted,
     `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.datetime.termsofuse_date) OVER _window) AS terms_of_use_date_accepted,
-    `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.uuid.legacy_telemetry_client_id IGNORE NULLS) OVER _window) AS legacy_telemetry_client_id,  -- firefox_desktop exclusive field
+    `moz-fx-data-shared-prod`.udf.mode_last(ARRAY_AGG(metrics.uuid.legacy_telemetry_client_id) OVER _window) AS legacy_telemetry_client_id,  -- firefox_desktop exclusive field
     {% endif %}
   FROM
     `{{ project_id }}.{{ app_name }}.metrics`

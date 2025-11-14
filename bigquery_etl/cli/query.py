@@ -1092,6 +1092,7 @@ def _run_query(
             subprocess.check_call(["bq"] + query_arguments, stdin=query_stream)
 
         # If the entire table was overwritten then redeploy the table schema to add back field descriptions.
+        schema_file = query_file.parent / SCHEMA_FILE
         if (
             destination_table
             and "$" not in destination_table
@@ -1099,34 +1100,33 @@ def _run_query(
             and "--append_table" not in query_arguments
             and "--noreplace" not in query_arguments
             and not is_backfill
+            and schema_file.exists()
         ):
-            schema_file = query_file.parent / SCHEMA_FILE
-            if schema_file.exists():
-                schema = Schema.from_schema_file(schema_file)
-                if ":" in destination_table:
-                    schema_destination_table = destination_table.replace(":", ".")
-                elif dataset_id and ":" in dataset_id:
-                    schema_destination_table = ".".join(
-                        (dataset_id.replace(":", "."), destination_table)
-                    )
-                else:
-                    schema_destination_table = ".".join(
-                        (
-                            (project_id or default_project),
-                            (dataset_id or default_dataset),
-                            destination_table,
-                        )
-                    )
-                click.echo(
-                    f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
+            schema = Schema.from_schema_file(schema_file)
+            if ":" in destination_table:
+                schema_destination_table = destination_table.replace(":", ".")
+            elif dataset_id and ":" in dataset_id:
+                schema_destination_table = ".".join(
+                    (dataset_id.replace(":", "."), destination_table)
                 )
-                try:
-                    schema.deploy(schema_destination_table)
-                except Exception as e:
-                    click.echo(
-                        f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
-                        err=True,
+            else:
+                schema_destination_table = ".".join(
+                    (
+                        (project_id or default_project),
+                        (dataset_id or default_dataset),
+                        destination_table,
                     )
+                )
+            click.echo(
+                f"Redeploying schema for `{schema_destination_table}` table because it was overwritten."
+            )
+            try:
+                schema.deploy(schema_destination_table)
+            except Exception as e:
+                click.echo(
+                    f"Failed to redeploy schema for `{schema_destination_table}` table: {e}",
+                    err=True,
+                )
 
 
 def create_query_session(

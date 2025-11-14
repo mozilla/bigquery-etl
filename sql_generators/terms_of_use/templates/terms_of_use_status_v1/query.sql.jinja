@@ -25,7 +25,6 @@ WHERE
 ),
 _current AS (
   SELECT
-    {# LAST_VALUE(submission_timestamp) OVER _window AS submission_timestamp, #}
     DATE(submission_timestamp) AS submission_date,
     client_info.client_id,
     sample_id,

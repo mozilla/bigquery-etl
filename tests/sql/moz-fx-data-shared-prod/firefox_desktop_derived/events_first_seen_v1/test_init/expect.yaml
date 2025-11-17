@@ -64,7 +64,7 @@
 
 # test dupes
 - submission_date: 2025-11-10
-  event_first_seen_date: 2025-11-05
+  event_first_seen_date: 2025-11-10
   client_id: client1-dupes
   profile_group_id: "client1-dupes-profile1"
   sample_id: 2

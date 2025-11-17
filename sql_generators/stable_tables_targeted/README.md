@@ -19,5 +19,4 @@ To test this generator run `./bqetl generate stable_tables_targeted`.
 
 Output:
 
-
-
+<img width="442" height="258" alt="Screenshot 2025-11-17 at 10 46 34 AM" src="https://github.com/user-attachments/assets/13218167-fcd1-4fed-bbf2-d32537aad872" />

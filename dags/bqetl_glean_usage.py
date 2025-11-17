@@ -63,6 +63,8 @@ with DAG(
 
     task_group_debug_ping_view = TaskGroup("debug_ping_view")
 
+    task_group_experimenter_backend = TaskGroup("experimenter_backend")
+
     task_group_experimenter_cirrus = TaskGroup("experimenter_cirrus")
 
     task_group_fenix = TaskGroup("fenix")
@@ -3353,6 +3355,24 @@ with DAG(
         depends_on_past=False,
         arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_debug_ping_view,
+    )
+
+    experimenter_backend_derived__events_stream__v1 = bigquery_etl_query(
+        task_id="experimenter_backend_derived__events_stream__v1",
+        destination_table="events_stream_v1",
+        dataset_id="experimenter_backend_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="jrediger@mozilla.com",
+        email=[
+            "ascholtz@mozilla.com",
+            "jrediger@mozilla.com",
+            "telemetry-alerts@mozilla.com",
+            "wstuckey@mozilla.com",
+        ],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        arguments=["--billing-project", "moz-fx-data-backfill-2"],
+        task_group=task_group_experimenter_backend,
     )
 
     experimenter_cirrus_derived__baseline_clients_daily__v1 = bigquery_etl_query(
@@ -7404,6 +7424,10 @@ with DAG(
     )
 
     debug_ping_view_derived__events_stream__v1.set_upstream(
+        wait_for_copy_deduplicate_all
+    )
+
+    experimenter_backend_derived__events_stream__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 

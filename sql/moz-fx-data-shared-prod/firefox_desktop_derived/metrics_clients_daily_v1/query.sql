@@ -268,11 +268,11 @@ SELECT
       submission_timestamp
   )[SAFE_OFFSET(0)] AS installation_first_seen_version,
   mozfun.stats.mode_last(
-    ARRAY_AGG(metrics.boolean.browser_backup_enabled ORDER BY submission_timestamp)
-  ) AS browser_backup_enabled,
-  mozfun.stats.mode_last(
     ARRAY_AGG(metrics.boolean.browser_backup_scheduler_enabled ORDER BY submission_timestamp)
-  ) AS browser_backup_scheduler_enabled
+  ) AS browser_backup_scheduler_enabled,
+  mozfun.stats.mode_last(
+    ARRAY_AGG(metrics.boolean.browser_backup_archive_enabled ORDER BY submission_timestamp)
+  ) AS browser_backup_archive_enabled
 FROM
   `moz-fx-data-shared-prod.firefox_desktop.metrics` AS m
 WHERE

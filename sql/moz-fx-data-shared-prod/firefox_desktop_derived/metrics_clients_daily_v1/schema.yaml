@@ -98,11 +98,11 @@ fields:
   type: STRING
   mode: NULLABLE
   description: The application version installed by the installer (not necessarily the current version)
-- name: browser_backup_enabled
-  type: BOOLEAN
-  mode: NULLABLE
-  description: True if the BackupService has initialized and reached idle.
 - name: browser_backup_scheduler_enabled
   type: BOOLEAN
   mode: NULLABLE
   description: True if the BackupService is configured to automatically create backups in the background.
+- name: browser_backup_archive_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the user can create backups, i.e. it has not been disabled by a pref or otherwise deemed incompatible.

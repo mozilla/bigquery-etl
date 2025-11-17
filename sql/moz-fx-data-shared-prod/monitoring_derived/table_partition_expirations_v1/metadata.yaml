@@ -37,6 +37,7 @@ references:
   - moz-fx-data-shared-prod.debug_ping_view_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.default_browser_agent_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.eng_workflow_stable.INFORMATION_SCHEMA.PARTITIONS
+  - moz-fx-data-shared-prod.experimenter_backend_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.experimenter_cirrus_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_accounts_stable.INFORMATION_SCHEMA.PARTITIONS
   - moz-fx-data-shared-prod.firefox_crashreporter_stable.INFORMATION_SCHEMA.PARTITIONS

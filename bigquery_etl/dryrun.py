@@ -106,10 +106,12 @@ class DryRun:
         dataset=None,
         table=None,
         billing_project=None,
+        ignore_content=False,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
         self.content = content
+        self.ignore_content = ignore_content
         self.query_parameters = query_parameters
         self.strip_dml = strip_dml
         self.use_cloud_function = use_cloud_function
@@ -228,10 +230,13 @@ class DryRun:
     @cached_property
     def dry_run_result(self):
         """Dry run the provided SQL file."""
-        if self.content:
-            sql = self.content
+        if self.ignore_content:
+            sql = None
         else:
-            sql = self.get_sql()
+            if self.content:
+                sql = self.content
+            elif self.content != "":
+                sql = self.get_sql()
 
         query_parameters = []
         if self.query_parameters:
@@ -595,6 +600,7 @@ class DryRun:
             client=self.client,
             id_token=self.id_token,
             partitioned_by=partitioned_by,
+            filename=basename(self.sqlfile),
         )
 
         # This check relies on the new schema being deployed to prod

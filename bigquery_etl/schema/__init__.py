@@ -13,6 +13,7 @@ from google.cloud import bigquery
 from google.cloud.bigquery import SchemaField
 
 from .. import dryrun
+from ..config import ConfigLoader
 
 SCHEMA_FILE = "schema.yaml"
 
@@ -58,24 +59,30 @@ class Schema:
         return cls(json_schema)
 
     @classmethod
-    def for_table(cls, project, dataset, table, partitioned_by=None, *args, **kwargs):
+    def for_table(
+        cls,
+        project,
+        dataset,
+        table,
+        partitioned_by=None,
+        filename="query.sql",
+        *args,
+        **kwargs,
+    ):
         """Get the schema for a BigQuery table."""
-        query = f"SELECT * FROM `{project}.{dataset}.{table}`"
-
-        if partitioned_by:
-            query += f" WHERE DATE(`{partitioned_by}`) = DATE('2020-01-01')"
-
         try:
+            sql_dir = ConfigLoader.get("default", "sql_dir")
             return cls(
                 dryrun.DryRun(
-                    os.path.join(project, dataset, table, "query.sql"),
-                    query,
+                    os.path.join(sql_dir, project, dataset, table, filename),
                     project=project,
                     dataset=dataset,
                     table=table,
+                    respect_skip=False,
+                    ignore_content=True,
                     *args,
                     **kwargs,
-                ).get_schema()
+                ).get_table_schema()
             )
         except Exception as e:
             print(f"Cannot get schema for {project}.{dataset}.{table}: {e}")

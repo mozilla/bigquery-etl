@@ -1,6 +1,6 @@
-friendly_name: Quarterly Inflation
+friendly_name: IMF Quarterly Inflation
 description: |-
-  Please provide a description for the query
+  Contains quarterly inflation rate data by country from IMF
 owners: []
 labels: {}
 workgroup_access:

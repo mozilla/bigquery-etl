@@ -1,6 +1,6 @@
 friendly_name: Monthly Inflation
 description: |-
-  Please provide a description for the query
+  Contains monthly inflation rate data by country from IMF
 owners: []
 labels: {}
 workgroup_access:

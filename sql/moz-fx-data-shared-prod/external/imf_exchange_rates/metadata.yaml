@@ -1,6 +1,6 @@
-friendly_name: Imf Exchange Rates
+friendly_name: Exchange Rates
 description: |-
-  Please provide a description for the query
+  Contains data from the IMF API about exchange rates by country & report period
 owners: []
 labels: {}
 workgroup_access:

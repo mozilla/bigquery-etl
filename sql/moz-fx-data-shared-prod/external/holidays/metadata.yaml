@@ -1,6 +1,8 @@
 friendly_name: Holidays
 description: |-
-  Please provide a description for the query
+  Contains all dates from January 2020 to December 2029, and a flag to indicate
+  holidays on each date.  Also includes an array column which lists all holidays
+  occuring on that date.
 owners: []
 labels: {}
 workgroup_access:

@@ -1,6 +1,17 @@
-friendly_name: Population
+friendly_name: United Nations Population Data
 description: |-
-  Please provide a description for the query
+  Contains world population data from the United Nations API
+  The primary key is made up of:
+  * location_id
+  * source_id
+  * indicator_id
+  * time_id
+  * revision
+  * sex_id
+  * variant_id
+  * estimate_method_id
+  * category_id
+  * estimate_type_id
 owners: []
 labels: {}
 workgroup_access:

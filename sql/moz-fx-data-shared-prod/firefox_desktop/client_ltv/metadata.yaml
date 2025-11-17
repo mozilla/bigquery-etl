@@ -1,6 +1,9 @@
-friendly_name: Client Ltv
+friendly_name: Firefox Desktop Client LTV
 description: |-
-  Please provide a description for the query
+  Contains 1 row for each client with the relevant info needed for calculating LTV,
+  such as first seen date, attribution information, first reported country,
+  predicted ad clicks and total historic ad clicks.
+  Primary Key: client_id
 owners: []
 labels: {}
 workgroup_access:

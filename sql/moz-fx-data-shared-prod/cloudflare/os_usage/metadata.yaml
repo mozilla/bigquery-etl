@@ -1,6 +1,6 @@
-friendly_name: Os Usage
+friendly_name: Cloudflare Operating System Usage
 description: |-
-  Please provide a description for the query
+  Contains OS market share data from Cloudflare over time
 owners: []
 labels: {}
 workgroup_access:

@@ -1,6 +1,6 @@
-friendly_name: Device Usage
+friendly_name: Cloudflare Device Usage
 description: |-
-  Please provide a description for the query
+  Contains data from Cloudflare on usage by device type by day
 owners: []
 labels: {}
 workgroup_access:

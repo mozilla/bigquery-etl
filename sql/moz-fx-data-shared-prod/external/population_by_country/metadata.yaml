@@ -1,6 +1,6 @@
-friendly_name: Population By Country
+friendly_name: Population by Country
 description: |-
-  Please provide a description for the query
+  Contains population data by year and country.
 owners: []
 labels: {}
 workgroup_access:

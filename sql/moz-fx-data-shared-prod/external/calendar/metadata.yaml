@@ -1,6 +1,8 @@
 friendly_name: Calendar
 description: |-
-  Please provide a description for the query
+  Date dimension table containing dates from 3/31/98 - 12/31/2100, with information about day of week,
+  month, quarter, week, year, etc.
+  Primary Key: Submission Date
 owners: []
 labels: {}
 workgroup_access:

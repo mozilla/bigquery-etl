@@ -1,6 +1,6 @@
-friendly_name: Us Unemployment
+friendly_name: US Unemployment
 description: |-
-  Please provide a description for the query
+  Contains monthly unemployment data for the United States from the BLS Government API
 owners: []
 labels: {}
 workgroup_access:

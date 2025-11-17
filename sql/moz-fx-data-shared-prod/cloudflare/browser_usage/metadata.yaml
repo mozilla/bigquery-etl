@@ -1,6 +1,6 @@
-friendly_name: Browser Usage
+friendly_name: Cloudflare Browser Usage
 description: |-
-  Please provide a description for the query
+  Contains data from Cloudflare on browser market share by day, device type, & location
 owners: []
 labels: {}
 workgroup_access:

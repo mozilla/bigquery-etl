@@ -158,6 +158,7 @@ with DAG(
             "--source-dataset=telemetry_derived",
             "--source-table=newtab_merino_priors_v1",
             "--destination-bucket=merino-airflow-data-prodpy",
+            "--destination-bucket=merino-airflow-data-prod",
             "--destination-prefix=newtab-merino-exports/priors",
             "--deletion-days-old=90",
         ],

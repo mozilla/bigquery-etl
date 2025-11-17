@@ -15,6 +15,11 @@ scheduling:
   dag_name: {{ dag_name }}
   task_group: {{ app_name }}
   depends_on_past: true
+  date_partition_parameter: null
+  {%- raw %}
+  parameters:
+    - submission_date:DATE:{{ds}}
+  {%- endraw %}
 bigquery:
   clustering:
     fields:

@@ -87,7 +87,7 @@ graph TD
 
 ### Adblocker
 
-These are the `_adblocker_addons_cte`s. The grain is **one row per `client_id` per `submission_date`**. Each row represents whether a specific client had at least one active ad-blocking add-on on a specific day. So if a client had multiple active ad-blocking add-ons on the same day, they would still only get one row in this result set with `has_adblocker_addon` = true.
+These are the `_adblocker_addons` CTEs. The grain is **one row per `client_id` per `submission_date`**. Each row represents whether a specific client had at least one active ad-blocking add-on on a specific day. So if a client had multiple active ad-blocking add-ons on the same day, they would still only get one row in this result set with `has_adblocker_addon = true`.
 
 Comes from `moz-fx-data-shared-prod.revenue.monetization_blocking_addons` and `moz-fx-data-shared-prod.firefox_desktop_stable.metrics_v1`
 
@@ -101,23 +101,54 @@ The CTE:
 
 ### Enterprise
 
-These are the `_is_enterprise_cte`s. The grain is **one row per `client_id` per `submission_date`**. Each row represents a specific client's most recent enterprise policy status for a specific day. **Note:** If a client had multiple events on the same day, they would still only get one row in this result set, showing their most recent enterprise status for that day (based on the latest `event_timestamp`).
+These are the `_is_enterprise_cte`s. The grain is **one row per `client_id` and `submission_date`**. Each row represents a specific client's most recent enterprise policy status for a specific day. **Note:** If a client had multiple events on the same day, they would still only get one row in this result set, showing their most recent enterprise status for that day (based on the latest `event_timestamp`).
+
+#### Aggregation
+
+- collects all `policies_is_enterprise` values for that client-date combination (`array_agg()` with `order by event_timestamp desc`)
+- gets the **most recent** enterprise policy status (`array_last()`) as a `boolean`
+
+#### Grouping
+
+- groups by `client_id` and `date(submission_timestamp)` (aliased as `submission_date`)
+
+### SAP and SERP CTEs
 
 SAP's comes from `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
 
-SERP's comes from `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
+SERP's comes from `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2` and `mozdata.firefox_desktop.serp_events`
 
-The CTE:
+#### Events with client info
 
-- uses `array_agg()` with `order by event_timestamp desc` to collect all `policies_is_enterprise` values for that client-date combination
-- takes the last value (`array_last()`) which, combined with the descending order, gets the **most recent** enterprise policy status based on `event_timestamp`
-- casts it to a `boolean`
-- groups by `client_id` and `date(submission_timestamp)` (aliased as `submission_date`)
+These are the `_events_with_client_info` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `source`**.
 
-### SAP
+Each row represents the most recent search event for a specific client, on a specific day, using a specific search engine, with a specific partner code, from a specific source.
 
-`moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
+**Note:** If a client performed multiple searches on the same day with the same engine, partner code, and source combination, they would still only get one row in this result set, showing the details from their most recent search event (based on the latest `event_timestamp`).
 
-### SERP
+##### Qualify
 
-`moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2` and `mozdata.firefox_desktop.serp_events`
+- partitions events by `client_id`, `submission_date`, `normalized_engine`, `partner_code`, and `source` (`row_number()`)
+- lists the most recent event first (`order by event_timestamp desc`)
+- keeps only the most recent event (`qualify row_number() = 1`)
+
+#### Events with client, ad blocker and enterprise info
+
+- `_events_with_client_info`
+- `left join`ed to `adblocker_addons`
+- `left join`ed to `is_enterprise_cte`
+- using `client_id, submission_date`
+
+#### Aggregates
+
+These are the `_aggregates` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `source`**.
+
+Each row represents aggregated search activity and engagement metrics for a specific client, on a specific day, using a specific search engine, with a specific partner code, from a specific source.
+
+**Note:** If a client performed multiple searches on the same day with the same engine, partner code, and source combination, they would get one row in this result set with all their activity aggregated together.
+
+#### Final
+
+- `_events_clients_ad_enterprise_cte`
+- `left join`ed to `_aggregates`
+- using `client_id, submission_date, normalized_engine, partner_code, source`

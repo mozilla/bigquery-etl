@@ -139,6 +139,17 @@ Each row represents the most recent search event for a specific client, on a spe
 - `left join`ed to `is_enterprise_cte`
 - using `client_id, submission_date`
 
+#### SERP Ad Click Targets
+
+This is the SERP `ad_click_target` CTE. The grain is **one row per `client_id`, `submission_date`, `serp_provider_id`, `partner_code` and `serp_search_access_point`**.
+
+Each row represents a concatenated list of distinct ad components that a specific client clicked on, for a specific day, on a specific search engine, with a specific partner code, from a specific search access point.
+
+**Note:** If a client clicked on multiple ads (or the same ad multiple times) on the same day with the same engine, partner code, and search access point combination, they would get one row in this result set with all their distinct ad components listed as a comma-separated string.
+
+- accesses individual ad component records (`unnest(ad_components)`)
+- collect all unique ad component values clicked and concatenates them into a single comma-separated string  (`string_agg(distinct ...)`)
+
 #### Aggregates
 
 These are the `_aggregates` CTEs. The grain is **one row per `client_id`, `submission_date`, `normalized_engine`, `partner_code` and `source`**.
@@ -147,8 +158,16 @@ Each row represents aggregated search activity and engagement metrics for a spec
 
 **Note:** If a client performed multiple searches on the same day with the same engine, partner code, and source combination, they would get one row in this result set with all their activity aggregated together.
 
-#### Final
+#### SAP and SERP Final
 
-- `_events_clients_ad_enterprise_cte`
+Using `client_id, submission_date, normalized_engine, partner_code, source`:
+
+- `_events_clients_ad_enterprise`
+- `left join`ed to `serp_ad_click_target`
 - `left join`ed to `_aggregates`
-- using `client_id, submission_date, normalized_engine, partner_code, source`
+
+### Join SAP and SERP
+
+### Consolidate SAP and SERP
+
+### Final

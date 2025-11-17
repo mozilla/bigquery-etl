@@ -7,7 +7,7 @@
 WITH eventsstream AS (
   SELECT
     DATE(MIN(submission_timestamp)) as submission_date,
-    DATE(MIN(event_timestamp)) as event_first_seen_date,
+    DATE(MIN(submission_timestamp)) as event_first_seen_date,
     client_id,
     `event`,
     event_category,

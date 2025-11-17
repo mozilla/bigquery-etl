@@ -7,7 +7,7 @@ table_deployments:
   deployments:
   - fq_table_name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.fenix_derived.terms_of_use_status_v1
     columns:
-    - column_name: submission_timestamp
+    - column_name: submission_date
       metrics:
       - saved_metric_id: is_not_null
     - column_name: client_id

@@ -617,6 +617,13 @@ with DAG(
             execution_date="{{ (execution_date - macros.timedelta(seconds=7200)).isoformat() }}",
         )
 
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__fenix_derived__retention__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_bigeye__fenix_derived__retention__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
         bigeye__fenix_derived__retention__v1_external.set_upstream(
             bigeye__fenix_derived__retention__v1
         )

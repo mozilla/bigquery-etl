@@ -570,6 +570,13 @@ class DryRun:
             return True
 
         query_file_path = Path(self.sqlfile)
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        self.project = project_name
+        self.dataset = dataset_name
+        self.table = table_name
+
         query_schema = Schema.from_json(self.get_schema())
         if self.errors():
             # ignore file when there are errors that self.get_schema() did not raise
@@ -581,27 +588,7 @@ class DryRun:
             click.echo(f"No schema file defined for {query_file_path}", err=True)
             return True
 
-        table_name = query_file_path.parent.name
-        dataset_name = query_file_path.parent.parent.name
-        project_name = query_file_path.parent.parent.parent.name
-
-        partitioned_by = None
-        if (
-            self.metadata
-            and self.metadata.bigquery
-            and self.metadata.bigquery.time_partitioning
-        ):
-            partitioned_by = self.metadata.bigquery.time_partitioning.field
-
-        table_schema = Schema.for_table(
-            project_name,
-            dataset_name,
-            table_name,
-            client=self.client,
-            id_token=self.id_token,
-            partitioned_by=partitioned_by,
-            filename=basename(self.sqlfile),
-        )
+        table_schema = Schema.from_json(self.get_table_schema())
 
         # This check relies on the new schema being deployed to prod
         if not query_schema.compatible(table_schema):

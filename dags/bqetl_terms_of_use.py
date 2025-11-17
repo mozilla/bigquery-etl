@@ -126,8 +126,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_fenix,
     )
 
@@ -150,8 +151,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_desktop,
     )
 
@@ -162,8 +164,9 @@ with DAG(
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter="submission_date",
+        date_partition_parameter=None,
         depends_on_past=True,
+        parameters=["submission_date:DATE:{{ds}}"],
         task_group=task_group_firefox_ios,
     )
 

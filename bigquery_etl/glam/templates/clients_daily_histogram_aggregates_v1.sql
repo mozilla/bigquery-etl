@@ -11,12 +11,13 @@ WITH extracted AS (
     ) AS app_version,
     client_info.os AS os,
     client_info.app_build AS app_build_id,
-    client_info.app_channel AS channel
+    client_info.app_channel AS channel,
   FROM
     `moz-fx-data-shared-prod.{{ source_table }}`
   WHERE
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
+    AND is_bot_generated = FALSE
 ),
 histograms AS (
   SELECT

@@ -15,7 +15,10 @@ scheduling:
   dag_name: bqetl_terms_of_use
   task_group: firefox_desktop
   depends_on_past: true
-bigquery:
+  date_partition_parameter: null
+  parameters:
+    - submission_date:DATE:{{ds}}
+  bigquery:
   clustering:
     fields:
       - sample_id

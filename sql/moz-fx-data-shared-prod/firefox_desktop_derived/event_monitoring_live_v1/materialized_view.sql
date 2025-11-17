@@ -102,6 +102,62 @@ base_newtab_v1 AS (
           -- Add * extra to every event to get total event count
     UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
 ),
+base_post_profile_restore_v1 AS (
+  SELECT
+    submission_timestamp,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    'Firefox for Desktop' AS normalized_app_name,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_live.post_profile_restore_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+),
+base_profile_restore_v1 AS (
+  SELECT
+    submission_timestamp,
+    event.category AS event_category,
+    event.name AS event_name,
+    event_extra.key AS event_extra_key,
+    normalized_country_code AS country,
+    'Firefox for Desktop' AS normalized_app_name,
+    client_info.app_channel AS channel,
+    client_info.app_display_version AS version,
+          -- experiments[ARRAY_LENGTH(experiments)] will be set to '*'
+    COALESCE(ping_info.experiments[SAFE_OFFSET(experiment_index)].key, '*') AS experiment,
+    COALESCE(
+      ping_info.experiments[SAFE_OFFSET(experiment_index)].value.branch,
+      '*'
+    ) AS experiment_branch,
+  FROM
+    `moz-fx-data-shared-prod.firefox_desktop_live.profile_restore_v1`
+  CROSS JOIN
+    UNNEST(events) AS event
+  CROSS JOIN
+          -- Iterator for accessing experiments.
+          -- Add one more for aggregating events across all experiments
+    UNNEST(GENERATE_ARRAY(0, ARRAY_LENGTH(ping_info.experiments))) AS experiment_index
+  LEFT JOIN
+          -- Add * extra to every event to get total event count
+    UNNEST(event.extra ||[STRUCT<key STRING, value STRING>('*', NULL)]) AS event_extra
+),
 base_profiles_v1 AS (
   SELECT
     submission_timestamp,
@@ -261,6 +317,16 @@ combined AS (
   SELECT
     *
   FROM
+    base_post_profile_restore_v1
+  UNION ALL
+  SELECT
+    *
+  FROM
+    base_profile_restore_v1
+  UNION ALL
+  SELECT
+    *
+  FROM
     base_profiles_v1
   UNION ALL
   SELECT
@@ -293,7 +359,7 @@ SELECT
 FROM
   combined
 WHERE
-  DATE(submission_timestamp) >= "2025-11-14"
+  DATE(submission_timestamp) >= "2025-11-17"
 GROUP BY
   submission_date,
   window_start,

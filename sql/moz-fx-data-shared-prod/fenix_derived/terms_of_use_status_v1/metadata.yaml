@@ -6,7 +6,6 @@ description: |-
 owners:
 - kik@mozilla.com
 labels:
-  incremental: true
   schedule: daily
   table_type: client_level
   dag: bqetl_terms_of_use

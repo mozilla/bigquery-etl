@@ -260,7 +260,7 @@ deprecation:
 
 format:
   skip:
-  - bigquery_etl/glam/templates/*.sql
+  - bigquery_etl/glam/templates/**/*.sql
   - sql_generators/**/*.sql
   - tests/**/*.sql
   - sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql
@@ -272,6 +272,9 @@ format:
   - stored_procedures/safe_crc32_uuid.sql
   skip_qualifying_references:
   - sql/mozfun/**/examples/*.sql
+  # Don't try to qualify references when Jinja expressions are being used for table/view IDs.
+  - sql/**/bigeye_custom_rules.sql
+  - sql/**/checks.sql
 
 routine:
   dependency_dir: udf_js_lib/
@@ -517,6 +520,31 @@ generate:
       focus_ios:
         channels:
         - release
+  terms_of_use:
+    dag_name: bqetl_terms_of_use
+    bigeye_defaults:
+      collection: Operational Checks
+      notification_channel: '#de-bigeye-triage'
+    apps:
+      fenix:
+        templates:
+        - terms_of_use_status_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
+      firefox_ios:
+        templates:
+        - terms_of_use_status_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
+      firefox_desktop:
+        templates:
+        - terms_of_use_status_v1
+        - terms_of_use_events_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
   baseline_clients_city_seen:
     apps:
     - firefox_desktop

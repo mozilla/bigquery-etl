@@ -1,0 +1,9 @@
+friendly_name: Desktop Retention Aggregates
+description: |-
+  Calculates user retention 4 weeks after first seen date, by app version,
+  attribution information, channel, country, and more.
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false

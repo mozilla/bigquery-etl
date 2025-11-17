@@ -5,13 +5,14 @@ set -ex
 function write_scalars {
     local product=$1
     local dataset=$2
-    local table=$3
+    local view=$3
     local dst_project=$4
     local sql_dir=$5
-    local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table}"
+    local table_name="${view}_v1"
+    local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_scalar_aggregates_${table_name}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_scalar_aggregates \
-        --source-table "$dataset.$table" \
+        --source-table "$dataset.$view" \
         --product "$product" \
         > "$directory/query.sql"; then
             echo "skipping $directory/query.sql: no probes found"
@@ -24,13 +25,14 @@ function write_scalars {
 function write_histograms {
     local product=$1
     local dataset=$2
-    local table=$3
+    local view=$3
     local dst_project=$4
     local sql_dir=$5
-    local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table}"
+    local table_name="${view}_v1"
+    local directory="${sql_dir}/${dst_project}/glam_etl/${product}__clients_daily_histogram_aggregates_${table_name}"
     mkdir -p "$directory"
     if ! python3 -m bigquery_etl.glam.clients_daily_histogram_aggregates \
-        --source-table "$dataset.$table" \
+        --source-table "$dataset.$view" \
         --product "$product" \
         > "$directory/query.sql"; then
             echo "skipping $directory/query.sql: no probes found"
@@ -46,8 +48,12 @@ function write_clients_daily_aggregates {
     local dst_project=$3
     local sql_dir=$4
 
-    local dataset="${product}_stable"
-    local qualified="$src_project:$dataset"
+    # We want to use metadata from the tables for validation
+    # But we fetch the actual data from the views
+    local dataset_tbls="${product}_stable"
+    local dataset_views="${product}"
+
+    local qualified="$src_project:$dataset_tbls"
     # validate inputs with set -e, however note that this will fail silently
     if ! bq ls "$qualified" &> /dev/null; then
         echo "could not list $qualified"
@@ -69,13 +75,22 @@ function write_clients_daily_aggregates {
         select(.type == "TABLE") |
         select(.tableReference.tableId | test("^use_counters.*") | not) |
         "\(.tableReference.tableId)"')
+
     # generate schemas in parallel
     for table in $tables; do
-        # 2 tables at a time to limit concurrent python processes
+        # We actually want to query the table's corresponding stable views
+        # because they have the `is_bot_generated` flag,
+        # so skip if no corresponding view exists for this table.
+        local view="${table%%_v[0-9]*}"
+        if ! bq show "$src_project:$dataset_views.$view" &> /dev/null; then
+            echo "skipping $table: no corresponding view found"
+            continue
+        fi
+        # 2 views at a time to limit concurrent python processes
         i=$((i % 2))
         ((i++==0)) && wait
-        write_scalars "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
-        write_histograms "$product" "$dataset" "$table" "$dst_project" "$sql_dir" &
+        write_scalars "$product" "$dataset_views" "$view" "$dst_project" "$sql_dir" &
+        write_histograms "$product" "$dataset_views" "$view" "$dst_project" "$sql_dir" &
     done
 
     wait

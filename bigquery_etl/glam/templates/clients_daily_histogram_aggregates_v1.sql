@@ -17,6 +17,7 @@ WITH extracted AS (
   WHERE
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
+    AND is_bot_generated = FALSE
 ),
 histograms AS (
   SELECT

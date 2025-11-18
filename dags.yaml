@@ -2586,7 +2586,7 @@ bqetl_cdi_sync_monitor_fix:
     start_date: '2025-11-17'
   description: 'This DAG triggers Query to delete monitor users fix from the monitor_plus_sync_v1 table'
   repo: bigquery-etl
-  schedule_interval: 0 4 * * *
+  schedule_interval: once
   tags:
     - impact/tier_3
     - repo/bigquery-etl

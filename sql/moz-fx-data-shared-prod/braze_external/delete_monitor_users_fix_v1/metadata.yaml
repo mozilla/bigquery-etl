@@ -1,0 +1,14 @@
+friendly_name: Delete Monitor Users Fix
+description: |-
+  Query to delete monitor users fix from the monitor_plus_sync_v1 table
+owners:
+- sherrera@mozilla.com
+labels:
+  incremental: false
+  owner1: sherrera
+scheduling:
+  dag_name: bqetl_cdi_sync_monitor_fix
+  date_partition_parameter: null
+bigquery:
+  time_partitioning: null
+  range_partitioning: null

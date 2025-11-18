@@ -203,7 +203,7 @@ fields:
   description: The version of the Glean SDK at the time the ping was collected (e.g. 25.0.0).
 - name: updated_at
   type: TIMESTAMP
-  description: Most recent date and time when the row was updated.
+  description: Most recent date and time when the row was updated or ingested.
   aliases:
   - updated_timestamp
   - updated_date

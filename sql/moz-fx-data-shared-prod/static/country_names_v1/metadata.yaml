@@ -12,4 +12,5 @@ workgroup_access:
   members:
   - workgroup:dataops-managed/external-fides
   - workgroup:mozilla-confidential
+  - workgroup:ads/external-tapclicks
 require_column_descriptions: false

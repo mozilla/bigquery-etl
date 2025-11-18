@@ -1,0 +1,7 @@
+fields:
+- mode: NULLABLE
+  name: email
+  type: STRING
+- mode: NULLABLE
+  name: source_file
+  type: STRING

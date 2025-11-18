@@ -30,10 +30,7 @@ bigquery:
     expiration_days: null
   range_partitioning: null
   clustering: null
-workgroup_access:
-- role: roles/bigquery.dataViewer
-  members:
-  - workgroup:mozilla-confidential
+workgroup_access: []
 references:
   checks.sql:
   - ..
@@ -44,8 +41,9 @@ references:
   - moz-fx-data-shared-prod.google_ads_derived.campaigns_v2
   - moz-fx-data-shared-prod.google_ads_derived.daily_ad_group_stats_v1
   - moz-fx-data-shared-prod.ltv.fenix_client_ltv
+deprecated: true
 monitoring:
-  enabled: true
+  enabled: false
   collection: null
   partition_column: null
   partition_column_set: false

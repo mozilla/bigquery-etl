@@ -1396,19 +1396,11 @@ with DAG(
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_fenix_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_fenix_derived__usage_reporting_clients_first_seen__v1
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_fenix_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_fenix_nightly_derived__usage_reporting_clients_daily__v1
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
@@ -1420,19 +1412,11 @@ with DAG(
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_first_seen__v1
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_fennec_aurora_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_firefox_beta_derived__usage_reporting_clients_daily__v1
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
@@ -1444,19 +1428,11 @@ with DAG(
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_firefox_derived__usage_reporting_clients_daily__v1
-    )
-
-    fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_firefox_derived__usage_reporting_clients_first_seen__v1
     )
 
     fenix_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_firefox_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__firefox_desktop_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_desktop_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
@@ -1480,19 +1456,11 @@ with DAG(
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_first_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_ios_fennec_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_ios_firefox_derived__usage_reporting_clients_daily__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
@@ -1504,19 +1472,11 @@ with DAG(
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_daily__v1
-    )
-
-    firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_first_seen__v1
     )
 
     firefox_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_ios_firefoxbeta_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_focus_beta_derived__usage_reporting_clients_daily__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
@@ -1528,10 +1488,6 @@ with DAG(
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_focus_derived__usage_reporting_clients_daily__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_focus_derived__usage_reporting_clients_first_seen__v1
     )
 
@@ -1540,19 +1496,11 @@ with DAG(
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_daily__v1
-    )
-
-    focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_first_seen__v1
     )
 
     focus_android_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
         bigeye__org_mozilla_focus_nightly_derived__usage_reporting_clients_last_seen__v1
-    )
-
-    focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(
-        bigeye__org_mozilla_ios_focus_derived__usage_reporting_clients_daily__v1
     )
 
     focus_ios_derived__usage_reporting_active_users_aggregates__v1.set_upstream(

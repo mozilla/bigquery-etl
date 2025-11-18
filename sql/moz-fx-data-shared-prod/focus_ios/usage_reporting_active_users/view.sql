@@ -2,47 +2,18 @@
 CREATE OR REPLACE VIEW
   `moz-fx-data-shared-prod.focus_ios.usage_reporting_active_users`
 AS
-WITH cls AS (
+WITH first_seen AS (
   SELECT
-    submission_date,
     usage_profile_id,
-    app_channel,
-    days_seen_bits,
-    days_active_bits,
-    days_created_profile_bits
+    first_seen_date,
   FROM
-    `moz-fx-data-shared-prod.focus_ios.usage_reporting_clients_last_seen`
-  WHERE
-    submission_date >= '2025-03-01'
-),
-cd AS (
-  SELECT
-    normalized_app_id,
-    normalized_channel,
-    submission_date,
-    usage_profile_id,
-    first_run_date,
-    app_channel,
-    normalized_country_code,
-    os,
-    os_version,
-    app_build,
-    app_display_version,
-    distribution_id,
-    is_default_browser,
-    reason,
-    is_active,
-  FROM
-    `moz-fx-data-shared-prod.focus_ios.usage_reporting_clients_daily`
-  WHERE
-    submission_date >= '2025-03-01'
+    `moz-fx-data-shared-prod.focus_ios.usage_reporting_clients_first_seen`
 )
 SELECT
   * EXCEPT (submission_date, app_channel, normalized_country_code, app_display_version),
-  last_seen.submission_date,
-  daily.submission_date AS `date`,
-  daily.normalized_channel AS channel,
-  IFNULL(daily.normalized_country_code, "??") AS country,
+  submission_date,
+  normalized_channel AS channel,
+  IFNULL(normalized_country_code, "??") AS country,
   EXTRACT(YEAR FROM first_seen.first_seen_date) AS first_seen_year,
   "Focus iOS" AS app_name,
   -- Activity fields to support metrics built on top of activity
@@ -82,10 +53,9 @@ SELECT
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 7, FALSE) AS is_weekly_user,
   IFNULL(mozfun.bits28.days_since_seen(days_seen_bits) < 28, FALSE) AS is_monthly_user,
 FROM
-  cls AS last_seen
+  `moz-fx-data-shared-prod.focus_ios.usage_reporting_clients_last_seen`
 LEFT JOIN
-  cd AS daily
-  USING (submission_date, usage_profile_id)
-LEFT JOIN
-  `moz-fx-data-shared-prod.focus_ios.usage_reporting_clients_first_seen` AS first_seen
+  first_seen
   USING (usage_profile_id)
+WHERE
+  submission_date >= '2025-03-01'

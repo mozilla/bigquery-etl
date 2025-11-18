@@ -1,14 +1,14 @@
 -- Generated via `usage_reporting` SQL generator.
 WITH _current AS (
   SELECT
-    usage_profile_id,
     {% if is_init() %}
       MIN(submission_date) AS first_seen_date,
     {% else %}
       @submission_date AS first_seen_date,
     {% endif %}
+    * EXCEPT (submission_date, is_active),
   FROM
-    `moz-fx-data-shared-prod.org_mozilla_ios_focus.usage_reporting_clients_daily`
+    `moz-fx-data-shared-prod.org_mozilla_ios_focus_derived.usage_reporting_clients_daily_v1`
   WHERE
     usage_profile_id IS NOT NULL
     {% if is_init() %}
@@ -32,8 +32,7 @@ _previous AS (
     {% endif %}
 )
 SELECT
-  first_seen_date,
-  usage_profile_id,
+  _current.*,
 FROM
   _current
 LEFT JOIN

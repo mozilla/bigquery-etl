@@ -561,6 +561,23 @@ generate:
 geo_deprecation:
   include_app_ids:
   - org_mozilla_ios_klar
+  - org_mozilla_klar
+  - org_mozilla_ios_focus
+  - org_mozilla_focus
+  - org_mozilla_focus_beta
+  - org_mozilla_focus_nightly
+  - org_mozilla_ios_firefox
+  - org_mozilla_ios_firefoxbeta
+  - org_mozilla_ios_fennec
+  - org_mozilla_firefox
+  - org_mozilla_firefox_beta
+  - org_mozilla_fenix
+  - org_mozilla_fenix_nightly
+  - org_mozilla_fennec_aurora
+  - firefox_desktop
+  - firefox_desktop_background_update
+  - firefox_desktop_background_defaultagent
+  - firefox_desktop_background_tasks
   skip_tables:
   - newtab
 

@@ -3,8 +3,6 @@
 import rich_click as click
 from google.cloud import bigquery
 
-from bigquery_etl.cli.query import schema
-
 
 @click.command()
 @click.option(
@@ -45,7 +43,10 @@ def import_file_from_bucket(
         job_config=bigquery.LoadJobConfig(
             write_disposition=bigquery.job.WriteDisposition.WRITE_TRUNCATE,
             source_format=bigquery.job.SourceFormat.CSV,
-            schema=schema,
+            schema=[
+                bigquery.SchemaField("email", "STRING", mode="NULLABLE"),
+                bigquery.SchemaField("source_file", "STRING", mode="NULLABLE"),
+            ],
             skip_leading_rows=1,
         ),
     ).result()

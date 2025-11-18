@@ -126,7 +126,7 @@ subscriptions_history_invoice_summaries AS (
   JOIN
     active_subscriptions_history AS history
     ON invoices.subscription_id = history.subscription.id
-    AND invoices.created < history.valid_to
+    AND COALESCE(invoices.status_transitions_finalized_at, invoices.created) < history.valid_to
   LEFT JOIN
     `moz-fx-data-shared-prod.stripe_external.charge_v1` AS charges
     ON invoices.id = charges.invoice_id

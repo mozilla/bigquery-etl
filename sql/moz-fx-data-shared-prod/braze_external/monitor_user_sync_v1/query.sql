@@ -1,6 +1,4 @@
 -- Query for braze_external.monitor_plus_sync_v1
-            -- For more information on writing queries see:
-            -- https://docs.telemetry.mozilla.org/cookbooks/bigquery/querying.html
 SELECT
   CURRENT_TIMESTAMP() AS UPDATED_AT,
   CASE

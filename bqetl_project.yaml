@@ -520,6 +520,31 @@ generate:
       focus_ios:
         channels:
         - release
+  terms_of_use:
+    dag_name: bqetl_terms_of_use
+    bigeye_defaults:
+      collection: Operational Checks
+      notification_channel: '#de-bigeye-triage'
+    apps:
+      fenix:
+        templates:
+        - terms_of_use_status_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
+      firefox_ios:
+        templates:
+        - terms_of_use_status_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
+      firefox_desktop:
+        templates:
+        - terms_of_use_status_v1
+        - terms_of_use_events_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
   baseline_clients_city_seen:
     apps:
     - firefox_desktop
@@ -532,6 +557,12 @@ generate:
     - firefox_desktop_background_update
     - firefox_desktop_background_defaultagent
     - firefox_desktop_background_tasks
+
+geo_deprecation:
+  include_app_ids:
+  - org_mozilla_ios_klar
+  skip_tables:
+  - newtab
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

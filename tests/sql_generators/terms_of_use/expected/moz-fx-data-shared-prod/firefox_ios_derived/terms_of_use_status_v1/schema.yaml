@@ -1,0 +1,88 @@
+# Generated via `terms_of_use` SQL generator.
+fields:
+- mode: NULLABLE
+  name: submission_date
+  type: DATE
+  description: |
+    Date when the ping is received on the server side. Also used as the logical date
+    by the ETL process.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    A UUID uniquely identifying the client.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+
+- mode: NULLABLE
+  name: app_version_major
+  type: NUMERIC
+  description: |
+    The user visible major version of the Firefox app.
+
+- mode: NULLABLE
+  name: app_version_minor
+  type: NUMERIC
+  description: |
+    The user visible minor version of the Firefox app.
+
+- mode: NULLABLE
+  name: app_version_patch
+  type: NUMERIC
+  description: |
+    The user visible patch version of the Firefox app.
+
+- mode: NULLABLE
+  name: normalized_channel
+  type: STRING
+  description: |
+    The channel the application is being distributed on.
+
+- mode: NULLABLE
+  name: normalized_country_code
+  type: STRING
+  description: |
+    Country code corresponding to the source of the ping.
+
+- mode: NULLABLE
+  name: normalized_os
+  type: STRING
+  description: |
+    The name of the operating system. Possible values: Android, iOS, Linux, Darwin, Windows, FreeBSD, NetBSD, OpenBSD, Solaris, Unknown
+
+- mode: NULLABLE
+  name: normalized_os_version
+  type: STRING
+  description: |
+    The user-visible version of the operating system (e.g. "1.2.3").
+
+- mode: NULLABLE
+  name: is_bot_generated
+  type: BOOLEAN
+  description: |
+    Indicates if the client is a bot.
+
+- mode: NULLABLE
+  name: isp_name
+  type: STRING
+  description: |
+    Name of the ISP.
+
+- mode: NULLABLE
+  name: terms_of_use_version_accepted
+  type: INTEGER
+  description: |
+    The version of the Terms of Use the user accepted.
+
+- mode: NULLABLE
+  name: terms_of_use_date_accepted
+  type: TIMESTAMP
+  description: |
+    The timestamp when the user accepted the Terms of Use.
+

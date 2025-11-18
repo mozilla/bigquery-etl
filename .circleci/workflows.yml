@@ -352,6 +352,15 @@ jobs:
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
+            - &restore_schema_cache
+              run:
+                name: Restore schema cache from generate-sql job
+                command: |
+                  # Restore stable table schema cache from workspace
+                  if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
+                    cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
+                    echo "Restored schema cache from generate-sql job"
+                  fi
             - *authenticate
             - &add_private_bigquery_etl_ssh_keys
               add_ssh_keys:
@@ -619,6 +628,7 @@ jobs:
                       --ignore derived_view_schemas \
                       --output-dir /tmp/workspace/generated-sql/sql/ \
                       --target-project moz-fx-data-shared-prod
+                    PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   else
                     echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
@@ -627,7 +637,6 @@ jobs:
                     cp -a sql/. /tmp/workspace/generated-sql/sql
                   fi
 
-                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/generated-sql/sql/"
@@ -635,10 +644,19 @@ jobs:
                     --sql-dir /tmp/workspace/generated-sql/sql/ \
                     /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
+            - run:
+                name: Copy schema cache for reuse in other jobs
+                command: |
+                  # Copy stable table schema cache to workspace for reuse in generate-dags
+                  mkdir -p /tmp/workspace/schema-cache
+                  if [ -d /tmp/bigquery_etl_schemas ]; then
+                    cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
+                  fi
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
+                  - schema-cache
       - unless:
           condition: *validate-sql-or-routines
           steps:

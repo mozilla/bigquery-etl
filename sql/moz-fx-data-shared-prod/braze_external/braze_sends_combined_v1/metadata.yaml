@@ -1,6 +1,10 @@
-friendly_name: Braze Clicks
+friendly_name: Braze Sends Combined
 description: |-
-  This table contains click events from Braze Currents and combines with FxA ID when available.
+  This table combines Braze data from the following Braze Currents joined on dispatch_id:
+  - Sends
+  - Opens
+  - Clicks
+  It is at the granularity of clicks since those have a 1 to many relationship to the send and open events.
 owners:
 - lmcfall@mozilla.com
 labels:

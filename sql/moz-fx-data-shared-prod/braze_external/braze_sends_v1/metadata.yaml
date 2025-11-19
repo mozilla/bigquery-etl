@@ -1,13 +1,13 @@
 friendly_name: Braze Sends
 description: |-
-  Please provide a description for the query
+  This table contains send events from Braze Currents and combines with FxA ID when available.
 owners:
 - lmcfall@mozilla.com
 labels:
   incremental: true
   owner1: lmcfall
 scheduling:
-  dag_name: bqetl_braze
+  dag_name: bqetl_braze_currents
   date_partition_parameter: send_time
 bigquery:
   time_partitioning:

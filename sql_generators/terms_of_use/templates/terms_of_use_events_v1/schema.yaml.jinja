@@ -20,6 +20,7 @@ fields:
     A number, 0-99, that samples by client_id and allows filtering data
     for analysis. It is a pipeline-generated artifact that should match between pings.
 
+{% if app_name == "firefox_desktop" %}
 - mode: NULLABLE
   name: legacy_telemetry_client_id
   type: STRING
@@ -55,3 +56,24 @@ fields:
   type: STRING
   description: |
     The surface the terms of use prompt/impression was served.
+{% else %}
+- mode: NULLABLE
+  name: event_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp when the event occurred.
+- mode: NULLABLE
+  name: event_category
+  type: STRING
+  description: |
+    Category of the recorded event.
+- mode: NULLABLE
+  name: event_name
+  type: STRING
+  description: |
+    Name of the recorded event.
+- mode: NULLABLE
+  name: normalized_event_name
+  type: STRING
+  description: |
+    Normalized name of the event.

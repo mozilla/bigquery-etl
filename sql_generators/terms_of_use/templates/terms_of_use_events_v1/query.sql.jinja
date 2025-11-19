@@ -1,4 +1,5 @@
 -- {{ header }}
+{% if app_name == "firefox_desktop" %}
 SELECT
   submission_timestamp,
   client_info.client_id,
@@ -33,3 +34,44 @@ WHERE
     OR (UPPER(metrics.text2.messaging_system_message_id) LIKE "TOS%")
     OR (UPPER(metrics.text2.messaging_system_message_id) LIKE "NEW_USER_TOU%")
   )
+{% else %}
+SELECT
+  submission_timestamp,
+  client_id,
+  sample_id,
+  event_timestamp,
+  event_category,
+  event_name,
+  CASE
+    WHEN (event_category = "onboarding" OR JSON_VALUE(event_extra.surface) = "onboarding") THEN "onboarding"
+    ELSE
+    {% if app_name == "firefox_ios" %}
+      "bottom_sheet"
+    {% else %}
+      JSON_VALUE(event_extra.surface)
+    {% endif %}
+  END AS surface,
+  CASE
+    {% if app_name == "firefox_ios" %}
+    WHEN (event_name = "accepted" AND JSON_VALUE(event_extra.surface) = "bottom_sheet") OR (event_name = "terms_of_service_accepted") THEN "accepted"
+    {% else %}
+    WHEN (event_name = "accepted") OR (event_name = "terms_of_service_accepted") THEN "accepted"
+    {% endif %}
+    WHEN event_name IN ("terms_of_service_card", "shown", "impression") THEN "impressions"
+    WHEN event_name IN ("terms_of_service_privacy_notice_link_clicked", "privacy_notice_tapped", "privacy_notice_clicked") THEN "privacy_notice_clicked"
+    WHEN event_name IN ("terms_of_service_link_clicked", "terms_of_use_link_tapped", "terms_of_use_click") THEN "terms_of_use_link_clicked"
+    {% if app_name == "fenix" %}
+    WHEN event_name IN ("dismiss") THEN "dismissed"
+    {% endif %}
+    ELSE event_name
+  END AS normalized_event_name
+FROM
+    `{{ project_id }}.{{ app_name }}.events_stream`
+WHERE
+  DATE(submission_timestamp) = @submission_date
+  AND DATE(submission_timestamp) >= "2025-03-01" -- when terms of use started getting rolled out.
+  AND (
+    event_category = "terms_of_use"
+    OR (event_category = "onboarding" AND event_name LIKE "%terms_of_%")
+  )
+{% endif %}

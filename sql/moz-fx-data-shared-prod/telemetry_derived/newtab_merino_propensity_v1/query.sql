@@ -65,7 +65,7 @@ events AS (
     )
     AND metrics.string.newtab_content_country = params.country
 ),
-base_events AS (
+base_events_fresh_items AS (
   SELECT
     submission_date,
     branch,
@@ -100,86 +100,105 @@ aggregates AS (
     COUNTIF(event_name = 'impression') AS impressions,
     COUNTIF(event_name = 'click') AS clicks
   FROM
-    base_events
+    base_events_fresh_items
   GROUP BY
     tile_format,
     section_position,
     position
 ),
-top_stories_aggregates AS (
+stories_aggregates AS (
   SELECT
     position,
+    tile_format,
     SUM(impressions) AS impressions,
     SUM(clicks) AS clicks,
     SUM(clicks) / SUM(impressions) AS ctr
   FROM
     aggregates
   WHERE
-    section_position = 0
-    AND position >= 0
-    AND position <= 7
+    position >= 0
+    AND position <= 50
   GROUP BY
+    position,
+    tile_format
+),
+stories_totals AS (
+  SELECT
+    SUM(impressions) AS impressions,
+    SUM(clicks) AS clicks,
+    SUM(clicks) / SUM(impressions) AS ctr
+  FROM
+    stories_aggregates
+),
+stories_weights AS (
+  SELECT
+    SAFE_DIVIDE(stories_totals.ctr, ag.ctr) AS unormalized_weight,
+    ag.impressions,
+    position,
+    tile_format
+  FROM
+    stories_totals,
+    stories_aggregates AS ag
+),
+base_events_all_items AS (
+  SELECT
+    tile_format,
+    position,
+    event_name
+  FROM
+    events ev,
+    params
+  WHERE
+     ev.section_position IS NOT NULL
+),
+aggregates_all_items AS (
+  SELECT
+    tile_format,
+    position,
+    COUNTIF(event_name = 'impression') AS impressions,
+    COUNTIF(event_name = 'click') AS clicks
+  FROM
+    base_events_all_items
+  GROUP BY
+    tile_format,
     position
 ),
-top_stories_totals AS (
+adjusted_all_data_clicks AS (
   SELECT
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
-    SUM(clicks) / SUM(impressions) AS ctr
+    aggregates_all_items.clicks / stories_weights.unormalized_weight as clicks_adjusted,
+    aggregates_all_items.position,
+    aggregates_all_items.tile_format
   FROM
-    top_stories_aggregates
+    aggregates_all_items JOIN stories_weights ON (stories_weights.position = aggregates_all_items.position AND  
+          stories_weights.tile_format = aggregates_all_items.tile_format)
 ),
-per_section_aggregates AS (
-  SELECT
-    section_position,
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
-    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
-  FROM
-    aggregates
-  WHERE
-    section_position <= 10
-  GROUP BY
-    section_position
+all_items_stats AS (
+  SELECT SUM(impressions) as impressions,
+   SUM(clicks) as clicks,
+   SAFE_DIVIDE(SUM(clicks), SUM(impressions)) as target_ctr
+   from aggregates_all_items
 ),
-per_section_totals AS (
-  SELECT
-    SUM(impressions) AS impressions,
-    SUM(clicks) AS clicks,
-    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS ctr
-  FROM
-    per_section_aggregates
+totals_all_items AS (
+  SELECT SUM(impressions) AS impressions_all
+  FROM aggregates_all_items
 ),
-top_stories_weights AS (
-  SELECT
-    position,
-    SAFE_DIVIDE(top_stories_totals.ctr, ag.ctr) AS weight,
-    ag.impressions
-  FROM
-    top_stories_totals,
-    top_stories_aggregates AS ag
+adjusted_clicks_total AS (
+  SELECT SUM(clicks_adjusted) AS clicks_adj_total
+  FROM adjusted_all_data_clicks
 ),
-section_weights AS (
+normalization_factor AS (
   SELECT
-    section_position,
-    SAFE_DIVIDE(per_section_totals.ctr, ag.ctr) AS weight,
-    ag.impressions
-  FROM
-    per_section_aggregates AS ag,
-    per_section_totals
+    SAFE_DIVIDE(all_items_stats.target_ctr * totals_all_items.impressions_all,
+                adjusted_clicks_total.clicks_adj_total) AS factor
+  FROM all_items_stats, totals_all_items, adjusted_clicks_total
 )
 SELECT
-  weight,
+  unormalized_weight * normalization_factor.factor as weight,
   position,
+  tile_format,
   NULL AS section_position,
   impressions
 FROM
-  top_stories_weights
-UNION ALL
-SELECT
-  weight,
-  NULL AS position,
-  section_position,
-  impressions
-FROM
-  section_weights
+  stories_weights
+CROSS JOIN normalization_factor
+WHERE impressions > 2000

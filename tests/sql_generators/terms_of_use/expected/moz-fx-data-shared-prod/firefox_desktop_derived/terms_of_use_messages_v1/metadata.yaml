@@ -1,7 +1,7 @@
 # Generated via `terms_of_use` SQL generator.
-friendly_name: Terms of Use - Events
+friendly_name: Terms of Use - Messages
 description: |-
-  This dataset contains events related to Terms of Use.
+  This dataset contains messages / events related to Terms of Use.
 
   Clustered by: sample_id
   Partitioned by: submission_timestamp by day

@@ -407,6 +407,11 @@ jobs:
                 command: |
                   rm ~/telemetry-airflow/dags/* -f || true
                   cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
+            - restore_cache:
+                keys:
+                  - telemetry-airflow-deps-v1-{{ checksum "~/telemetry-airflow/requirements.txt" }}-{{ checksum "~/telemetry-airflow/requirements-dev.txt" }}-{{ checksum "~/telemetry-airflow/requirements-override.txt" }}
+                  - telemetry-airflow-deps-v1-{{ checksum "~/telemetry-airflow/requirements.txt" }}-{{ checksum "~/telemetry-airflow/requirements-dev.txt" }}-
+                  - telemetry-airflow-deps-v1-
             - run:
                 name: Install telemetry-airflow dependencies
                 command: |
@@ -416,6 +421,10 @@ jobs:
                   pip install -r requirements.txt
                   pip install -r requirements-dev.txt
                   pip install -r requirements-override.txt
+            - save_cache:
+                paths:
+                  - ~/telemetry-airflow/.venv
+                key: telemetry-airflow-deps-v1-{{ checksum "~/telemetry-airflow/requirements.txt" }}-{{ checksum "~/telemetry-airflow/requirements-dev.txt" }}-{{ checksum "~/telemetry-airflow/requirements-override.txt" }}
             - run:
                 name: 🧪 Test valid DAGs
                 command: |

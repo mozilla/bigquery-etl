@@ -331,12 +331,6 @@ with DAG(
             external_task_id="wait_for_checks__fail_braze_derived__users__v1",
         )
 
-        ExternalTaskMarker(
-            task_id="bqetl_braze_currents__wait_for_checks__fail_braze_derived__users__v1",
-            external_dag_id="bqetl_braze_currents",
-            external_task_id="wait_for_checks__fail_braze_derived__users__v1",
-        )
-
         checks__fail_braze_derived__users__v1_external.set_upstream(
             checks__fail_braze_derived__users__v1
         )

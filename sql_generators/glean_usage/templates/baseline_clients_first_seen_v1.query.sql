@@ -89,6 +89,10 @@ WITH
         metrics.string.startup_profile_selection_reason
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS startup_profile_selection_reason_first,
+     ARRAY_AGG(
+      client_info.architecture RESPECT NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS architecture,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -204,6 +208,10 @@ _baseline AS (
         metrics.string.startup_profile_selection_reason
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS startup_profile_selection_reason_first,
+     ARRAY_AGG(
+      client_info.architecture RESPECT NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS architecture,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -237,6 +245,7 @@ _current AS (
     normalized_os_version,
     isp,
     startup_profile_selection_reason_first,
+    architecture,
     {% endif %}
   FROM
     _baseline
@@ -271,6 +280,7 @@ _previous AS (
     normalized_os_version,
     isp,
     startup_profile_selection_reason_first,
+    architecture,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -364,6 +374,10 @@ _current AS (
         metrics.string.startup_profile_selection_reason
         ORDER BY submission_timestamp ASC LIMIT 1
       )[OFFSET(0)] AS startup_profile_selection_reason_first,
+     ARRAY_AGG(
+      client_info.architecture RESPECT NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS architecture,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -400,6 +414,7 @@ _previous AS (
     normalized_os_version,
     isp,
     startup_profile_selection_reason_first,
+    architecture,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -448,7 +463,8 @@ SELECT
   normalized_channel,
   normalized_os_version,
   isp,
-  startup_profile_selection_reason_first
+  startup_profile_selection_reason_first,
+  architecture,
   {% endif %}
 FROM _joined
 QUALIFY

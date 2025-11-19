@@ -1,0 +1,57 @@
+# Generated via `terms_of_use` SQL generator.
+fields:
+- mode: NULLABLE
+  name: submission_timestamp
+  type: TIMESTAMP
+  description: |
+    Timestamp when the ping is received on the server side. Also used as the logical date
+    by the ETL process and partitioning.
+
+- mode: NULLABLE
+  name: client_id
+  type: STRING
+  description: |
+    A UUID uniquely identifying the client.
+
+- mode: NULLABLE
+  name: sample_id
+  type: INTEGER
+  description: |
+    A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+
+- mode: NULLABLE
+  name: legacy_telemetry_client_id
+  type: STRING
+  description: |
+    Legacy client identifier.
+
+- mode: NULLABLE
+  name: messaging_system_message_id
+  type: STRING
+  description: |
+    A string identifier of the message in Activity Stream Router.
+
+- mode: NULLABLE
+  name: messaging_system_event
+  type: STRING
+  description: |
+    The type of event. Any user defined string (e.g. “IMPRESSION”, “CLICK_BUTTON”, "INDEXEDDB_OPEN_FAILED", “SESSION_END”).
+
+- mode: NULLABLE
+  name: messaging_system_event_source
+  type: STRING
+  description: |
+    The event_context's source. Likely something like "primary_button".
+
+- mode: NULLABLE
+  name: normalized_event
+  type: STRING
+  description: |
+    The events for the infobar are different than the events for the modal, this field contains standardized modal events so they look like the infobar events.
+
+- mode: NULLABLE
+  name: messaging_surface
+  type: STRING
+  description: |
+    The surface the terms of use prompt/impression was served.

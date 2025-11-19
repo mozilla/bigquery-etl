@@ -149,7 +149,7 @@ base_events_all_items AS (
     events ev,
     params
   WHERE
-     ev.section_position IS NOT NULL
+    ev.section_position IS NOT NULL
 ),
 aggregates_all_items AS (
   SELECT
@@ -165,40 +165,58 @@ aggregates_all_items AS (
 ),
 adjusted_all_data_clicks AS (
   SELECT
-    aggregates_all_items.clicks / stories_weights.unormalized_weight as clicks_adjusted,
+    aggregates_all_items.clicks / stories_weights.unormalized_weight AS clicks_adjusted,
     aggregates_all_items.position,
     aggregates_all_items.tile_format
   FROM
-    aggregates_all_items JOIN stories_weights ON (stories_weights.position = aggregates_all_items.position AND  
-          stories_weights.tile_format = aggregates_all_items.tile_format)
+    aggregates_all_items
+  JOIN
+    stories_weights
+    ON (
+      stories_weights.position = aggregates_all_items.position
+      AND stories_weights.tile_format = aggregates_all_items.tile_format
+    )
 ),
 all_items_stats AS (
-  SELECT SUM(impressions) as impressions,
-   SUM(clicks) as clicks,
-   SAFE_DIVIDE(SUM(clicks), SUM(impressions)) as target_ctr
-   from aggregates_all_items
+  SELECT
+    SUM(impressions) AS impressions,
+    SUM(clicks) AS clicks,
+    SAFE_DIVIDE(SUM(clicks), SUM(impressions)) AS target_ctr
+  FROM
+    aggregates_all_items
 ),
 totals_all_items AS (
-  SELECT SUM(impressions) AS impressions_all
-  FROM aggregates_all_items
+  SELECT
+    SUM(impressions) AS impressions_all
+  FROM
+    aggregates_all_items
 ),
 adjusted_clicks_total AS (
-  SELECT SUM(clicks_adjusted) AS clicks_adj_total
-  FROM adjusted_all_data_clicks
+  SELECT
+    SUM(clicks_adjusted) AS clicks_adj_total
+  FROM
+    adjusted_all_data_clicks
 ),
 normalization_factor AS (
   SELECT
-    SAFE_DIVIDE(all_items_stats.target_ctr * totals_all_items.impressions_all,
-                adjusted_clicks_total.clicks_adj_total) AS factor
-  FROM all_items_stats, totals_all_items, adjusted_clicks_total
+    SAFE_DIVIDE(
+      all_items_stats.target_ctr * totals_all_items.impressions_all,
+      adjusted_clicks_total.clicks_adj_total
+    ) AS factor
+  FROM
+    all_items_stats,
+    totals_all_items,
+    adjusted_clicks_total
 )
 SELECT
-  unormalized_weight * normalization_factor.factor as weight,
+  unormalized_weight * normalization_factor.factor AS weight,
   position,
   tile_format,
   NULL AS section_position,
   impressions
 FROM
   stories_weights
-CROSS JOIN normalization_factor
-WHERE impressions > 2000
+CROSS JOIN
+  normalization_factor
+WHERE
+  impressions > 2000

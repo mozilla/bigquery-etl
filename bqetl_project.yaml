@@ -529,12 +529,14 @@ generate:
       fenix:
         templates:
         - terms_of_use_status_v1
+        - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'
       firefox_ios:
         templates:
         - terms_of_use_status_v1
+        - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'

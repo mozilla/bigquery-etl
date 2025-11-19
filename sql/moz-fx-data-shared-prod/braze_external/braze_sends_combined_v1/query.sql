@@ -4,7 +4,7 @@ WITH sends AS (
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_sends_v1`
   WHERE
-    DATE(send_time) = DATE(TIMESTAMP_SUB(click_time, INTERVAL 30 DAY))
+    DATE(send_time) = DATE(TIMESTAMP_SUB(@click_time, INTERVAL 30 DAY))
 ),
 opens AS (
   SELECT
@@ -12,7 +12,7 @@ opens AS (
   FROM
     `moz-fx-data-shared-prod.braze_external.braze_opens_v1`
   WHERE
-    DATE(open_time) = DATE(TIMESTAMP_SUB(click_time, INTERVAL 30 DAY))
+    DATE(open_time) = DATE(TIMESTAMP_SUB(@click_time, INTERVAL 30 DAY))
 ),
 clicks AS (
   SELECT

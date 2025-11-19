@@ -10,6 +10,7 @@ owners:
 labels:
   incremental: true
   owner1: lmcfall
+  dag: bqetl_braze_currents
 scheduling:
   dag_name: bqetl_braze_currents
   date_partition_parameter: click_time
@@ -17,4 +18,8 @@ bigquery:
   time_partitioning:
     type: day
     field: click_time
-    require_partition_filter: true
+    require_partition_filter: false
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+require_column_descriptions: false

@@ -50,7 +50,7 @@ active_users_aggregates AS (
     ON cn.code = country_group
   WHERE
     submission_date = @submission_date
-    AND app_name = 'Firefox Desktop'
+    AND app_name IN ('Firefox Desktop', 'Fenix', 'Firefox iOS', 'Focus Android', 'Focus iOS')
 ),
 sample_addons AS (
   SELECT

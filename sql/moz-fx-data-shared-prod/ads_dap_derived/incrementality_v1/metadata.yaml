@@ -10,9 +10,6 @@ labels:
   owner1: gleonard
   owner2: mlifshin
 workgroup_access:
-- role: roles/bigquery.dataEditor
-  members:
-  - workgroup:ads
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:ads

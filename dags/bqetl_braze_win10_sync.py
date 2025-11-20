@@ -117,6 +117,20 @@ with DAG(
         depends_on_past=False,
     )
 
+    with TaskGroup(
+        "braze_derived__fxa_win10_users_historical__v1_external",
+    ) as braze_derived__fxa_win10_users_historical__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_braze_currents__wait_for_braze_derived__fxa_win10_users_historical__v1",
+            external_dag_id="bqetl_braze_currents",
+            external_task_id="wait_for_braze_derived__fxa_win10_users_historical__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=10800)).isoformat() }}",
+        )
+
+        braze_derived__fxa_win10_users_historical__v1_external.set_upstream(
+            braze_derived__fxa_win10_users_historical__v1
+        )
+
     braze_external__win10_users_sync__v1 = bigquery_etl_query(
         task_id="braze_external__win10_users_sync__v1",
         destination_table="win10_users_sync_v1",

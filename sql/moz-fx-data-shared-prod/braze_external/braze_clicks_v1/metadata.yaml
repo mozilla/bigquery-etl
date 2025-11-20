@@ -1,0 +1,36 @@
+friendly_name: Braze Clicks
+description: |-
+  This table contains click events from Braze Currents and combines with FxA ID when available.
+owners:
+- lmcfall@mozilla.com
+labels:
+  incremental: true
+  owner1: lmcfall
+  dag: bqetl_braze_currents
+scheduling:
+  dag_name: bqetl_braze_currents
+  date_partition_parameter: click_time
+bigquery:
+  time_partitioning:
+    type: day
+    field: click_time
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:braze
+  - workgroup:braze/ingestion-firefox
+  - workgroup:braze/ingestion-mozilla-dev
+- role: roles/bigquery.dataEditor
+  members:
+  - workgroup:braze/data-developers
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.braze_derived.fxa_win10_users_historical_v1
+  - moz-fx-data-shared-prod.braze_derived.users_v1
+  - moz-fx-data-shared-prod.braze_external.braze_currents_firefox_click_v1
+  - moz-fx-data-shared-prod.braze_external.braze_currents_mozilla_click_v1
+require_column_descriptions: false

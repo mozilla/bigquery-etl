@@ -11629,6 +11629,14 @@ fields:
       type: STRING
       mode: NULLABLE
       description: Whether a page used MathML_DeprecatedMunderNonExplicitAccentunder
+    - name: use_counter2_deprecated_xslt_deprecated_document
+      type: STRING
+      mode: NULLABLE
+      description: Whether a document used XSLTDeprecated
+    - name: use_counter2_deprecated_xslt_deprecated_page
+      type: STRING
+      mode: NULLABLE
+      description: Whether a page used XSLTDeprecated
   - name: processes
     type: RECORD
     mode: NULLABLE
@@ -23114,6 +23122,14 @@ fields:
           type: STRING
           mode: NULLABLE
           description: Whether a page used MathML_DeprecatedMunderNonExplicitAccentunder
+        - name: use_counter2_deprecated_xslt_deprecated_document
+          type: STRING
+          mode: NULLABLE
+          description: Whether a document used XSLTDeprecated
+        - name: use_counter2_deprecated_xslt_deprecated_page
+          type: STRING
+          mode: NULLABLE
+          description: Whether a page used XSLTDeprecated
 - name: sample_id
   type: INTEGER
   mode: NULLABLE

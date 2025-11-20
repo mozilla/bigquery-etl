@@ -8,6 +8,7 @@ import re
 import string
 import tempfile
 import warnings
+from functools import cache
 from pathlib import Path
 from typing import List, Optional, Set, Tuple
 from uuid import uuid4
@@ -68,6 +69,18 @@ def project_dirs(project_id=None, sql_dir=None) -> List[str]:
 def random_str(length: int = 12) -> str:
     """Return a random string of the specified length."""
     return "".join(random.choice(string.ascii_lowercase) for i in range(length))
+
+
+@cache
+def get_bqetl_project_root() -> Path | None:
+    """Return the root path of the bqetl project the user is currently in."""
+    cwd = Path.cwd()
+    search_paths = [cwd]
+    search_paths.extend(cwd.parents)
+    for possible_project_root in search_paths:
+        if (possible_project_root / BQETL_PROJECT_CONFIG).exists():
+            return possible_project_root
+    return None
 
 
 def render(
@@ -133,11 +146,9 @@ def render(
             # Add the bigquery-etl project root to the search path to support Jinja imports/includes.
             file_loader_search_paths = [template_folder_path, ROOT]
             # Also dynamically detect the project root so imports/includes in the private-bigquery-etl repo work.
-            for possible_project_root in path.absolute().parents:
-                if (possible_project_root / BQETL_PROJECT_CONFIG).exists():
-                    if possible_project_root not in file_loader_search_paths:
-                        file_loader_search_paths.append(possible_project_root)
-                    break
+            if bqetl_project_root := get_bqetl_project_root():
+                if bqetl_project_root not in file_loader_search_paths:
+                    file_loader_search_paths.append(bqetl_project_root)
             file_loader = FileSystemLoader(file_loader_search_paths)
             env = Environment(loader=file_loader)
             main_sql = env.get_template(sql_filename)

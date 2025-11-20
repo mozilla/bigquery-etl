@@ -78,8 +78,6 @@ class Schema:
                     project=project,
                     dataset=dataset,
                     table=table,
-                    respect_skip=False,
-                    ignore_content=True,
                     *args,
                     **kwargs,
                 ).get_table_schema()

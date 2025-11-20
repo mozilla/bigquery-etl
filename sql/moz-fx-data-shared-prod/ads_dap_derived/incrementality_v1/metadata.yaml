@@ -6,7 +6,3 @@ description: |-
 owners:
   - gleonard@mozilla.com
   - mlifshin@mozilla.com
-workgroup_access:
-  - role: roles/bigquery.dataEditor
-    members:
-      - workgroup:ads

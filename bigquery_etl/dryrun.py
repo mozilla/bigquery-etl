@@ -12,10 +12,14 @@ proxy the queries through the dry run service endpoint.
 """
 
 import glob
+import hashlib
 import json
+import os
+import pickle
 import random
 import re
 import sys
+import tempfile
 import time
 from enum import Enum
 from os.path import basename, dirname, exists
@@ -106,10 +110,12 @@ class DryRun:
         dataset=None,
         table=None,
         billing_project=None,
+        use_cache=True,
     ):
         """Instantiate DryRun class."""
         self.sqlfile = sqlfile
         self.content = content
+        self.use_cache = use_cache
         self.query_parameters = query_parameters
         self.strip_dml = strip_dml
         self.use_cloud_function = use_cloud_function
@@ -225,6 +231,110 @@ class DryRun:
 
         return sql
 
+    def _get_cache_key(self, sql):
+        """Generate cache key based on SQL content and other parameters."""
+        cache_input = f"{sql}|{self.project}|{self.dataset}|{self.table}"
+        return hashlib.sha256(cache_input.encode()).hexdigest()
+
+    def _get_cached_result(self, cache_key, ttl_seconds=None):
+        """Load cached dry run result from disk."""
+        if ttl_seconds is None:
+            ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
+
+        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        cache_file = os.path.join(cache_dir, f"dryrun_{cache_key}.pkl")
+
+        if os.path.exists(cache_file):
+            # check if cache is expired
+            file_age = time.time() - os.path.getmtime(cache_file)
+            if file_age > ttl_seconds:
+                try:
+                    os.remove(cache_file)
+                except OSError:
+                    pass
+                return None
+
+            try:
+                with open(cache_file, "rb") as f:
+                    cached_data = pickle.load(f)
+                cache_age = time.time() - os.path.getmtime(cache_file)
+                print(f"[DRYRUN CACHE HIT] {self.sqlfile} (age: {cache_age:.0f}s)")
+                return cached_data
+            except (pickle.PickleError, EOFError, OSError) as e:
+                print(f"[DRYRUN CACHE] Failed to load cache: {e}")
+                return None
+
+        return None
+
+    def _save_cached_result(self, cache_key, result):
+        """Save dry run result to disk cache."""
+        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        cache_file = os.path.join(cache_dir, f"dryrun_{cache_key}.pkl")
+
+        try:
+            with open(cache_file, "wb") as f:
+                pickle.dump(result, f)
+
+            # save table metadata separately if present
+            if (
+                result
+                and "tableMetadata" in result
+                and self.project
+                and self.dataset
+                and self.table
+            ):
+                table_identifier = f"{self.project}.{self.dataset}.{self.table}"
+                self._save_cached_table_metadata(
+                    table_identifier, result["tableMetadata"]
+                )
+        except (pickle.PickleError, OSError) as e:
+            print(f"[DRYRUN CACHE] Failed to save cache: {e}")
+
+    def _get_cached_table_metadata(self, table_identifier, ttl_seconds=None):
+        """Load cached table metadata from disk based on table identifier."""
+        if ttl_seconds is None:
+            ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
+
+        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        # table identifier as cache key
+        table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
+        cache_file = os.path.join(cache_dir, f"table_metadata_{table_cache_key}.pkl")
+
+        if os.path.exists(cache_file):
+            # check if cache is expired
+            file_age = time.time() - os.path.getmtime(cache_file)
+
+            if file_age > ttl_seconds:
+                try:
+                    os.remove(cache_file)
+                except OSError:
+                    pass
+                return None
+
+            try:
+                with open(cache_file, "rb") as f:
+                    cached_data = pickle.load(f)
+                return cached_data
+            except (pickle.PickleError, EOFError, OSError) as e:
+                return None
+        return None
+
+    def _save_cached_table_metadata(self, table_identifier, metadata):
+        """Save table metadata to disk cache."""
+        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
+        cache_file = os.path.join(cache_dir, f"table_metadata_{table_cache_key}.pkl")
+
+        try:
+            with open(cache_file, "wb") as f:
+                pickle.dump(metadata, f)
+        except (pickle.PickleError, OSError) as e:
+            print(f"[TABLE METADATA] Failed to save cache for {table_identifier}: {e}")
+
     @cached_property
     def dry_run_result(self):
         """Dry run the provided SQL file."""
@@ -232,6 +342,14 @@ class DryRun:
             sql = self.content
         else:
             sql = self.get_sql()
+
+        # Check cache first (if caching is enabled)
+        if sql is not None and self.use_cache:
+            cache_key = self._get_cache_key(sql)
+            cached_result = self._get_cached_result(cache_key)
+            if cached_result is not None:
+                self.dry_run_duration = 0  # Cached result, no actual dry run
+                return cached_result
 
         query_parameters = []
         if self.query_parameters:
@@ -351,6 +469,11 @@ class DryRun:
                     }
 
             self.dry_run_duration = time.time() - start_time
+
+            # Save to cache (if caching is enabled)
+            if self.use_cache:
+                self._save_cached_result(cache_key, result)
+
             return result
 
         except Exception as e:
@@ -476,6 +599,13 @@ class DryRun:
         ):
             return self.dry_run_result["tableMetadata"]["schema"]
 
+        # Check if table metadata is cached (if caching is enabled)
+        if self.use_cache and self.project and self.dataset and self.table:
+            table_identifier = f"{self.project}.{self.dataset}.{self.table}"
+            cached_metadata = self._get_cached_table_metadata(table_identifier)
+            if cached_metadata:
+                return cached_metadata["schema"]
+
         return []
 
     def get_dataset_labels(self):
@@ -565,6 +695,13 @@ class DryRun:
             return True
 
         query_file_path = Path(self.sqlfile)
+        table_name = query_file_path.parent.name
+        dataset_name = query_file_path.parent.parent.name
+        project_name = query_file_path.parent.parent.parent.name
+        self.project = project_name
+        self.dataset = dataset_name
+        self.table = table_name
+
         query_schema = Schema.from_json(self.get_schema())
         if self.errors():
             # ignore file when there are errors that self.get_schema() did not raise
@@ -576,26 +713,7 @@ class DryRun:
             click.echo(f"No schema file defined for {query_file_path}", err=True)
             return True
 
-        table_name = query_file_path.parent.name
-        dataset_name = query_file_path.parent.parent.name
-        project_name = query_file_path.parent.parent.parent.name
-
-        partitioned_by = None
-        if (
-            self.metadata
-            and self.metadata.bigquery
-            and self.metadata.bigquery.time_partitioning
-        ):
-            partitioned_by = self.metadata.bigquery.time_partitioning.field
-
-        table_schema = Schema.for_table(
-            project_name,
-            dataset_name,
-            table_name,
-            client=self.client,
-            id_token=self.id_token,
-            partitioned_by=partitioned_by,
-        )
+        table_schema = Schema.from_json(self.get_table_schema())
 
         # This check relies on the new schema being deployed to prod
         if not query_schema.compatible(table_schema):

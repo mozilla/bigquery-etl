@@ -129,7 +129,7 @@ class TestQuery:
     def test_create_sub_daily_query(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")
-            result = runner.invoke(create, ["test.test_query", "--multi-schedule"])
+            result = runner.invoke(create, ["test.test_query", "--sub_daily"])
             assert result.exit_code == 0
             assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
             assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [

@@ -165,7 +165,7 @@ def query(ctx):
     is_flag=True,
 )
 @click.pass_context
-def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, multi_schedule):
+def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, sub_daily):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:

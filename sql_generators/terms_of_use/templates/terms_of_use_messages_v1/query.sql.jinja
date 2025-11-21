@@ -2,7 +2,7 @@
 SELECT
   submission_timestamp,
   client_info.client_id,
-  sample_id,
+udf.safe_sample_id(metrics.uuid.messaging_system_client_id) AS  sample_id,
   metrics.uuid.messaging_system_client_id AS legacy_telemetry_client_id,
   metrics.text2.messaging_system_message_id,
   metrics.string.messaging_system_event,

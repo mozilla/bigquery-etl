@@ -152,8 +152,20 @@ def query(ctx):
     default=False,
     is_flag=True,
 )
+@click.option(
+    "--sub_daily",
+    "--sub-daily",
+    help=(
+        "Using this option creates a query that consists of two tables with"
+        "different schedules based on a single base query, plus a view that"
+        "unions the two tables together, for use with ETL that needs to run"
+        "more frequently than daily."
+    ),
+    default=False,
+    is_flag=True,
+)
 @click.pass_context
-def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule):
+def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, multi_schedule):
     """CLI command for creating a new query."""
     # create directory structure for query
     try:

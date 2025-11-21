@@ -126,6 +126,30 @@ class TestQuery:
                 exists = "dag_name: bqetl_test" in file.read()
                 assert exists
 
+    def test_create_sub_daily_query(self, runner):
+        with runner.isolated_filesystem():
+            os.makedirs("sql/moz-fx-data-shared-prod")
+            result = runner.invoke(create, ["test.test_query", "--multi-schedule"])
+            assert result.exit_code == 0
+            assert os.listdir("sql/moz-fx-data-shared-prod") == ["test"]
+            assert sorted(os.listdir("sql/moz-fx-data-shared-prod/test")) == [
+                "dataset_metadata.yaml",
+                "test_query_v1",
+                "test_query_sub_daily_v1",
+            ]
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_v1"
+            )
+            assert "query.sql" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_sub_daily_v1"
+            )
+            assert "metadata.yaml" in os.listdir(
+                "sql/moz-fx-data-shared-prod/test/test_query_sub_daily_v1"
+            )
+
     def test_create_query_with_version(self, runner):
         with runner.isolated_filesystem():
             os.makedirs("sql/moz-fx-data-shared-prod")

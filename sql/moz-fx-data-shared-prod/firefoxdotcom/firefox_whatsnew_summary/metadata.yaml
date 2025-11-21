@@ -19,4 +19,5 @@ references:
   view.sql:
   - moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_data_cta_uid_map_v1
   - moz-fx-data-shared-prod.firefoxdotcom_derived.firefox_whatsnew_summary_v2
+  - moz-fx-data-shared-prod.firefoxdotcom_derived.ga_sessions_v2
 require_column_descriptions: false

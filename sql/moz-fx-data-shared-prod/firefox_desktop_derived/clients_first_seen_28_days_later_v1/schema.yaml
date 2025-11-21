@@ -1,0 +1,204 @@
+fields:
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+- name: first_seen_date
+  type: DATE
+  mode: NULLABLE
+  description: Date when the server first received a ping from this client.
+- name: architecture
+  type: STRING
+  mode: NULLABLE
+  description: The architecture of the device, (e.g. "arm", "x86").
+- name: app_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the browser.
+- name: locale
+  type: STRING
+  mode: NULLABLE
+  description: Set of language- and/or country-based preferences for a user interface.
+- name: app_version
+  type: STRING
+  mode: NULLABLE
+  description: User visible version string (e.g. "1.0.3") for the browser.
+- name: xpcom_abi
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    A string tag identifying the binary ABI of the current processor and compiler vtable.
+    This is taken from the TARGET_XPCOM_ABI configure variable.
+    It may not be available on all platforms, especially unusual processor or compiler combinations.
+    For example: x86-msvc or ppc-gcc3. This value should almost always be used in combination with the operating system.
+- name: distribution_id
+  type: STRING
+  mode: NULLABLE
+  description: The distribution id associated with the install of Firefox.
+- name: partner_distribution_version
+  type: STRING
+  mode: NULLABLE
+  description: pref distribution.version, null on failure
+- name: partner_distributor
+  type: STRING
+  mode: NULLABLE
+  description: pref app.distributor, null on failure
+- name: partner_distributor_channel
+  type: STRING
+  mode: NULLABLE
+  description: pref app.distributor.channel, null on failure
+- name: partner_id
+  type: STRING
+  mode: NULLABLE
+  description: pref mozilla.partner.id, null on failure
+- name: attribution_campaign
+  type: STRING
+  mode: NULLABLE
+  description: The attribution campaign; similar or the same as UTM campaign.
+- name: attribution_content
+  type: STRING
+  mode: NULLABLE
+  description: The attribution content; similar or the same as UTM content.
+- name: attribution_dltoken
+  type: STRING
+  mode: NULLABLE
+- name: attribution_dlsource
+  type: STRING
+  mode: NULLABLE
+- name: attribution_experiment
+  type: STRING
+  mode: NULLABLE
+  description: The attribution experiment key.
+- name: attribution_medium
+  type: STRING
+  mode: NULLABLE
+  description: The attribution medium; similar or the same as UTM medium.
+- name: attribution_source
+  type: STRING
+  mode: NULLABLE
+  description: The attribution source; similar or the same as UTM source.
+- name: attribution_ua
+  type: STRING
+  mode: NULLABLE
+- name: attribution_variation
+  type: STRING
+  mode: NULLABLE
+  description: The attribution variation key.
+- name: apple_model_id
+  type: STRING
+  mode: NULLABLE
+- name: isp_name
+  type: STRING
+  mode: NULLABLE
+  description: The name of the internet service provider associated with the client's
+    IP address.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: country
+  type: STRING
+  mode: NULLABLE
+  description: Name of the country in which the activity took place, as determined
+    by the IP geolocation.
+- name: normalized_os
+  type: STRING
+  mode: NULLABLE
+  description: The normalized name of the operating system running at the client.
+- name: normalized_os_version
+  type: STRING
+  mode: NULLABLE
+  description: Version of the operating system version running at the client. E.g.
+    "100.9.11".
+- name: startup_profile_selection_reason
+  type: STRING
+  mode: NULLABLE
+- name: installation_first_seen_admin_user
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the installer is running from an elevated admin user
+- name: installation_first_seen_default_path
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the default path was used (optional, present if intaller_type is "full")
+- name: installation_first_seen_failure_reason
+  type: STRING
+  mode: NULLABLE
+  description: Only sent if unable to collect firstSeen data.
+    Can have value "NotFoundError" if file not found or other values depending on the failure reason.
+- name: installation_first_seen_from_msi
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether this was an MSI install (optional, present if intaller_type is "full")
+- name: installation_first_seen_install_existed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether there was already an install in this location
+- name: installation_first_seen_installer_type
+  type: STRING
+  mode: NULLABLE
+  description: The type of installer used to install Firefox. The value is one of "stub", "full", or "msix".
+- name: installation_first_seen_other_inst
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether there was already any non-MSIX install on this system.
+- name: installation_first_seen_other_msix_inst
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether there was already any MSIX install on this system.
+- name: installation_first_seen_profdir_existed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the top-level profile directory existed.
+- name: installation_first_seen_silent
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether this was a silent install (optional, present if installer_type is "full")
+- name: installation_first_seen_version
+  type: STRING
+  mode: NULLABLE
+  description: The application version installed by the installer (not necessarily the current version)
+- name: windows_build_number
+  type: INTEGER
+  mode: NULLABLE
+- name: windows_version
+  type: STRING
+  mode: NULLABLE
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other
+    telemetry data.
+- name: days_seen_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_visited_1_uri_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: days_interacted_bits
+  type: INTEGER
+  mode: NULLABLE
+- name: activated
+  type: BOOLEAN
+  mode: NULLABLE
+- name: returned_second_day
+  type: BOOLEAN
+  mode: NULLABLE
+- name: qualified_second_day
+  type: BOOLEAN
+  mode: NULLABLE
+- name: retained_week4
+  type: BOOLEAN
+  mode: NULLABLE
+- name: qualified_week4
+  type: BOOLEAN
+  mode: NULLABLE
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.

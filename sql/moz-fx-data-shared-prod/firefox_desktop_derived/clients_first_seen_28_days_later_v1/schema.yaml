@@ -177,6 +177,9 @@ fields:
 - name: days_seen_bits
   type: INTEGER
   mode: NULLABLE
+- name: days_active_bits
+  type: INTEGER
+  mode: NULLABLE
 - name: days_visited_1_uri_bits
   type: INTEGER
   mode: NULLABLE

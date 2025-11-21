@@ -51,6 +51,7 @@ WITH clients_first_seen_28_days_ago AS (
 clients_first_seen_28_days_ago_with_days_seen AS (
   SELECT
     clients_first_seen_28_days_ago.*,
+    cls.days_active_bits,
     cls.days_seen_bits,
     cls.days_visited_1_uri_bits,
     cls.days_interacted_bits,
@@ -67,6 +68,10 @@ SELECT
       days_seen_bits,
       mozfun.bits28.from_string('0000000000000000000000000000')
     ) AS days_seen_bits,
+    COALESCE(
+      days_active_bits,
+      mozfun.bits28.from_string('0000000000000000000000000000')
+    ) AS days_active_bits,
     COALESCE(
       days_visited_1_uri_bits,
       mozfun.bits28.from_string('0000000000000000000000000000')

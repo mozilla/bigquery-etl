@@ -698,6 +698,12 @@ with DAG(
         )
 
         ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
+        )
+
+        ExternalTaskMarker(
             task_id="bqetl_desktop_engagement_model__wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
             external_dag_id="bqetl_desktop_engagement_model",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_first_seen__v1",
@@ -785,6 +791,12 @@ with DAG(
             external_dag_id="bqetl_analytics_aggregations",
             external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
             execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=78300)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_bigeye__firefox_desktop_derived__baseline_clients_last_seen__v1",
         )
 
         ExternalTaskMarker(
@@ -3955,6 +3967,19 @@ with DAG(
         depends_on_past=True,
         parameters=["submission_date:DATE:{{ds}}"],
     )
+
+    with TaskGroup(
+        "firefox_desktop_derived__metrics_clients_first_seen__v1_external",
+    ) as firefox_desktop_derived__metrics_clients_first_seen__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_analytics_tables__wait_for_firefox_desktop_derived__metrics_clients_first_seen__v1",
+            external_dag_id="bqetl_analytics_tables",
+            external_task_id="wait_for_firefox_desktop_derived__metrics_clients_first_seen__v1",
+        )
+
+        firefox_desktop_derived__metrics_clients_first_seen__v1_external.set_upstream(
+            firefox_desktop_derived__metrics_clients_first_seen__v1
+        )
 
     firefox_desktop_derived__metrics_clients_last_seen__v1 = bigquery_etl_query(
         task_id="firefox_desktop_derived__metrics_clients_last_seen__v1",

@@ -1,0 +1,39 @@
+friendly_name: Clients First Seen 28 Days Later
+description: |-
+  Measures retention of client cohorts 28 days after their first seen date, broken
+  out by different information, like attribution information, OS, country, ISP, etc.
+owners:
+- kwindau@mozilla.com
+- shong@mozilla.com
+labels:
+  incremental: true
+  owner1: kwindau
+  table_type: client_level
+  dag: bqetl_analytics_tables
+  owner2: shong
+scheduling:
+  dag_name: bqetl_analytics_tables
+  date_partition_offset: -27
+  date_partition_parameter: null
+  depends_on_past: true
+  parameters:
+  - submission_date:DATE:{{ds}}
+bigquery:
+  time_partitioning:
+    type: day
+    field: first_seen_date
+    require_partition_filter: true
+    expiration_days: null
+  range_partitioning: null
+  clustering:
+    fields:
+    - sample_id
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+references:
+  query.sql:
+  - moz-fx-data-shared-prod.firefox_desktop.baseline_clients_last_seen
+  - moz-fx-data-shared-prod.firefox_desktop.clients_first_seen
+require_column_descriptions: false

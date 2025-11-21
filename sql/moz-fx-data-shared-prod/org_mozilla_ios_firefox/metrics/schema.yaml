@@ -1561,6 +1561,13 @@ fields:
         **Developer Note**: This replaces the old `termsofuse.impression_count` metric.
 
         '
+    - name: user_credit_cards_undecryptable_count
+      type: INTEGER
+      mode: NULLABLE
+      description: 'Track how many undecryptable credit cards we scrub during the
+        credit card verification process
+
+        '
   - name: labeled_counter
     type: RECORD
     mode: NULLABLE

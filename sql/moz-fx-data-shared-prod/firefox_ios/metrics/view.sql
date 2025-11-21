@@ -180,7 +180,8 @@ SELECT
       metrics.counter.termsofuse_remind_me_later_count,
       metrics.counter.user_terms_of_use_dismissed_count,
       metrics.counter.user_terms_of_use_remind_me_later_count,
-      metrics.counter.user_terms_of_use_shown_count
+      metrics.counter.user_terms_of_use_shown_count,
+      metrics.counter.user_credit_cards_undecryptable_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -501,7 +502,8 @@ SELECT
       metrics.counter.termsofuse_remind_me_later_count,
       metrics.counter.user_terms_of_use_dismissed_count,
       metrics.counter.user_terms_of_use_remind_me_later_count,
-      metrics.counter.user_terms_of_use_shown_count
+      metrics.counter.user_terms_of_use_shown_count,
+      metrics.counter.user_credit_cards_undecryptable_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,
@@ -822,7 +824,8 @@ SELECT
       metrics.counter.termsofuse_remind_me_later_count,
       metrics.counter.user_terms_of_use_dismissed_count,
       metrics.counter.user_terms_of_use_remind_me_later_count,
-      metrics.counter.user_terms_of_use_shown_count
+      metrics.counter.user_terms_of_use_shown_count,
+      metrics.counter.user_credit_cards_undecryptable_count
     ) AS `counter`,
     STRUCT(
       metrics.labeled_counter.glean_error_invalid_label,

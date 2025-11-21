@@ -185,37 +185,34 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, sub_daily):
         )
         sys.exit(1)
 
-    derived_path = None
-    view_path = None
+    create_view_path = False
+    view_exist_ok = False
     path = Path(sql_dir)
 
     if dataset.endswith("_derived"):
-        # create directory for this table
-        derived_path = path / project_id / dataset / (name + version)
-        derived_path.mkdir(parents=True)
-
         # create a directory for the corresponding view
-        view_path = path / project_id / dataset.replace("_derived", "") / name
+        create_view_path = True
         # new versions of existing tables may already have a view
-        view_path.mkdir(parents=True, exist_ok=True)
+        view_exist_ok = True
     else:
-        # check if there is a corresponding derived dataset
+        # check if there is a corresponding derived dataset. If so, create
+        # the view path
         if (path / project_id / (dataset + "_derived")).exists():
-            derived_path = path / project_id / (dataset + "_derived") / (name + version)
-            derived_path.mkdir(parents=True)
-            view_path = path / project_id / dataset / name
-            view_path.mkdir(parents=True)
-
             dataset = dataset + "_derived"
-        else:
-            # some dataset that is not specified as _derived
-            # don't automatically create views
-            derived_path = path / project_id / dataset / (name + version)
-            derived_path.mkdir(parents=True)
+            create_view_path = True
+
+    derived_path = path / project_id / dataset / (name + version)
+    derived_path.mkdir(parents=True)
+    if sub_daily:
+        sub_daily_path = path / project_id / dataset / (name + "sub_daily" + version)
+        sub_daily_path.mkdir(parents=True)
+    if create_view_path:
+        view_path = path / project_id / dataset.replace("_derived", "") / name
+        view_path.mkdir(parents=True, exist_ok=view_exist_ok)
 
     click.echo(f"Created query in {derived_path}")
 
-    if view_path and not (view_file := view_path / "view.sql").exists():
+    if create_view_path and not (view_file := view_path / "view.sql").exists():
         # Don't overwrite the view_file if it already exists
         click.echo(f"Created corresponding view in {view_path}")
         view_dataset = dataset.replace("_derived", "")
@@ -280,7 +277,7 @@ def create(ctx, name, sql_dir, project_id, owner, dag, no_schedule, sub_daily):
         dataset_metadata.write(dataset_metadata_file)
         click.echo(f"Created dataset metadata in {dataset_metadata_file}")
 
-    if view_path:
+    if create_view_path:
         dataset_metadata_file = view_path.parent / "dataset_metadata.yaml"
         if not dataset_metadata_file.exists():
             dataset_name = str(dataset_metadata_file.parent.name)

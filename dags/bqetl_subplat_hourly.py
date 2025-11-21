@@ -55,6 +55,7 @@ with DAG(
     "bqetl_subplat_hourly",
     default_args=default_args,
     schedule_interval="30 * * * *",
+    max_active_runs=1,
     doc_md=docs,
     tags=tags,
     catchup=True,

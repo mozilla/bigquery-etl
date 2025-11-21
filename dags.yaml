@@ -184,6 +184,8 @@ bqetl_subplat:
 
 bqetl_subplat_hourly:
   schedule_interval: 30 * * * *
+  # Limit concurrency to avoid any ETLs running while the Fivetran Stripe sync may be in progress.
+  max_active_runs: 1
   catchup: true
   description: |
     Hourly imports for Subscription Platform data from Stripe and Firestore,

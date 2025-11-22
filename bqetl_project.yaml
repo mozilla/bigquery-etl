@@ -26,6 +26,9 @@ monitoring:
   - 463
   - 508
   - 509
+  stable_tables_targeted:
+    mozilla_vpn_external:
+    - waitlist_v1
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun

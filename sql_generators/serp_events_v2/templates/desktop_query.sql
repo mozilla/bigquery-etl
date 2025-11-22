@@ -271,7 +271,8 @@ SELECT
   search_mode,
   normalized_os,
   normalized_os_version,
-  first_run_date
+  first_run_date,
+  submission_timestamp
 FROM
   -- 1 row per impression_id
   impressions

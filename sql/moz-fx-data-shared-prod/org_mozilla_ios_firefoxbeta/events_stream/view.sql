@@ -43,6 +43,7 @@ SELECT
     ) AS `quantity`,
     STRUCT(
       JSON_VALUE(event_extra.action) AS `action`,
+      JSON_VALUE(event_extra.action_type) AS `action_type`,
       JSON_VALUE(event_extra.action_uuid) AS `action_uuid`,
       JSON_VALUE(event_extra.activity_identifier) AS `activity_identifier`,
       JSON_VALUE(event_extra.alert_setting) AS `alert_setting`,
@@ -113,6 +114,7 @@ SELECT
       JSON_VALUE(event_extra.timeframe) AS `timeframe`,
       JSON_VALUE(event_extra.toggle_type) AS `toggle_type`,
       JSON_VALUE(event_extra.tou_version) AS `tou_version`,
+      JSON_VALUE(event_extra.translation_flow_id) AS `translation_flow_id`,
       JSON_VALUE(event_extra.trigger) AS `trigger`,
       JSON_VALUE(event_extra.type) AS `type`,
       JSON_VALUE(event_extra.user_selection) AS `user_selection`,

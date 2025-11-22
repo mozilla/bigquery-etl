@@ -172,6 +172,9 @@ def main():
     print("report_date: ")
     print(report_date)
 
+    # Get the date range of news we are interested in, as a sentence.
+    news_range_of_interest = f"Please only find recent articles, created on or later than {str(logical_dag_date)}."
+
     # Check both input files exist, if not, error out
     gcs_fpath2 = GCS_BUCKET + INPUT_FPATH_2 + logical_dag_date_str + ".txt"
     gcs_fpath3 = GCS_BUCKET + INPUT_FPATH_3 + logical_dag_date_str + ".txt"
@@ -232,8 +235,9 @@ Table of Contents:
 
     # Prompt #1 - New Features in Popular Browsers
     prompt1 = (
-        "Look for articles from the past month about what new features have been added to popular web browsers, "
-        "how they are incorporating AI, and how they are navigating challenges like the windows 10 transition. Then summarize these findings."
+        "Look for articles about what new features have been added to popular web browsers, "
+        "and how popular browsers are incorporating AI. " + news_range_of_interest
+        "Then summarize these findings."
         "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
     )
     final_output_1, response_object_1 = summarize_with_open_ai(
@@ -293,7 +297,7 @@ More details can be found here: [Chrome Dev Tools](https://developer.chrome.com/
     prompt5 = """Please find articles related to browser & device partnerships.
 Firefox should be omitted from this search as we are focusing on Firefox's competitors.
 Please find all recent announcements of browser-device partnerships with browsers like Chrome, Edge, Safari, etc. and
-devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize these findings."""
+devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize these findings.""" + news_range_of_interest
     final_output_5, response_object_5 = summarize_with_open_ai(
         client,
         MODEL_TYPE,
@@ -320,7 +324,7 @@ devices like mobile phones, Smart TVs, or VR (virtual reality), then summarize t
 
     # Prompt #7 - AI News
     prompt7 = (
-        "Look for articles from the past month about news related to AI in general."
+        "Look for articles about news related to AI in general." + news_range_of_interest
     )
     final_output_7, response_object_7 = summarize_with_open_ai(
         client,

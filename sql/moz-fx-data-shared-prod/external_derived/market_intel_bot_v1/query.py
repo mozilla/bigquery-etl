@@ -238,7 +238,7 @@ Table of Contents:
         "Look for articles about what new features have been added to popular web browsers, "
         "and how popular browsers are incorporating AI. "
         f"{news_range_of_interest} "
-        "Then summarize these findings."
+        "Then summarize these findings. "
         "Firefox should be omitted from this search as we are focusing on Firefox's competitors."
     )
     final_output_1, response_object_1 = summarize_with_open_ai(

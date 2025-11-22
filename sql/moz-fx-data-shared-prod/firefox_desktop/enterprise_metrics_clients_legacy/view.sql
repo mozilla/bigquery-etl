@@ -1,10 +1,10 @@
 CREATE OR REPLACE VIEW
-  `moz-fx-data-shared-prod.firefox_desktop.enterprise_metrics_clients`
+  `moz-fx-data-shared-prod.firefox_desktop.enterprise_metrics_clients_legacy`
 AS
 SELECT
   *,
   CASE
-    WHEN app_version_major >= 144
+    WHEN `mozfun.norm.browser_version_info`(app_version).major_version >= 144
       AND normalized_channel = "esr"
       AND policies_count > 1
       AND distribution_id IS NULL
@@ -36,4 +36,4 @@ SELECT
     ELSE "unexpected_classification" -- TODO: we should set up an alert for this, but not fail the query.
   END AS enterprise_classification,
 FROM
-  `moz-fx-data-shared-prod.firefox_desktop_derived.enterprise_metrics_clients_v1`
+  `moz-fx-data-shared-prod.firefox_desktop_derived.enterprise_metrics_clients_legacy_v1`

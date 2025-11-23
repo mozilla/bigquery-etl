@@ -14348,7 +14348,7 @@ fields:
       mode: NULLABLE
       description: 'Only set if `browser.backup.enabled` is `false`. Possible reasons
         are "nimbus", "pref" (non-Nimbus), "policy", "sanitizeOnShutdown", "selectable
-        profiles".
+        profiles", "os version".
 
         '
     - name: browser_backup_restore_disabled_reason

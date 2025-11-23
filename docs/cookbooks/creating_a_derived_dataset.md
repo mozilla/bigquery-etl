@@ -269,6 +269,7 @@ For our example:
   ```bash
   bqetl backfill create <project>.<dataset>.<table> --start_date=<YYYY-MM-DD> --end_date=<YYYY-MM-DD>
   ```
+**Note** Do not overwrite existing backfill entries since it will cause issues in the workflow.
 
   - If the table's metadata has the label `shredder_mitigation: true`, use the process to run a [backfill with shredder_mitigation](https://docs.telemetry.mozilla.org/cookbooks/data_modeling/shredder_mitigation#running-a-managed-backfill-with-shredder-mitigation):
     - Bump the version of the query.
@@ -298,6 +299,7 @@ For our example:
 
 3. You will be notified when swapping is complete.
 
+**Note**.  Please announce in the #data-platform-infra-wg Slack channel before deleting any tables in the `backfill_staging_derived` dataset since it may cause issues in the workflow.
 
 **Note**. If your backfill is complex (backfill validation fails for e.g.), it is recommended to talk to someone in Data Engineering or Data SRE (#data-help) to process the backfill via the backfill DAG.
 

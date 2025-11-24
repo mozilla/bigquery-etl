@@ -1,0 +1,21 @@
+friendly_name: Looker User Reported Issues
+description: |-
+  Links to the following spreedsheet with user reported issues in Looker:
+  https://docs.google.com/spreadsheets/d/1joJXR9A8pjdpxEVKAXphXqPh-vy8yRZXs57UZwmUZVs/edit
+owners:
+- ascholtz@mozilla.com
+labels:
+  owner1: ascholtz
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+  - workgroup:platform-infra/chicory-poc
+external_data:
+  format: google_sheets
+  source_uris:
+  - https://docs.google.com/spreadsheets/d/1joJXR9A8pjdpxEVKAXphXqPh-vy8yRZXs57UZwmUZVs/edit
+  options:
+    skip_leading_rows: 1
+    range: Form Responses 1
+require_column_descriptions: false

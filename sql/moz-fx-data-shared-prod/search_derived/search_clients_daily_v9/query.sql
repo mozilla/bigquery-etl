@@ -208,7 +208,6 @@ sap_events_with_client_info_cte AS (
         client_id,
         submission_date,
         normalized_engine,
-        partner_code,
         source
       ORDER BY
         event_timestamp DESC

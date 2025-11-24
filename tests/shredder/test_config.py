@@ -130,7 +130,7 @@ class FakeClient:
         return table
 
 
-@mock.patch("bigquery_etl.shredder.config.requests")
+@mock.patch("bigquery_etl.cli.utils.requests")
 def test_glean_targets(mock_requests):
     mock_response = mock.Mock()
     mock_response.json.return_value = GLEAN_APP_LISTING

@@ -1,9 +1,8 @@
 -- Generated via `terms_of_use` SQL generator.
 SELECT
   submission_timestamp,
-  client_info.client_id,
-  sample_id,
   metrics.uuid.messaging_system_client_id AS legacy_telemetry_client_id,
+  udf.safe_sample_id(metrics.uuid.messaging_system_client_id) AS sample_id,
   metrics.text2.messaging_system_message_id,
   metrics.string.messaging_system_event,
   metrics.string.messaging_system_event_source,
@@ -27,7 +26,7 @@ SELECT
     -- otherwise, its a privacy notice or other button click
     ELSE UPPER(REPLACE(metrics.string.messaging_system_event_source, "-", "_"))
   END AS normalized_event,
-  -- standardize the surface of the message. there are two message_ids for the blue infobar - collapse them.
+  -- standardize the surface of the message.
   CASE
     WHEN metrics.text2.messaging_system_message_id LIKE "%infobar%"
       THEN "infobar"

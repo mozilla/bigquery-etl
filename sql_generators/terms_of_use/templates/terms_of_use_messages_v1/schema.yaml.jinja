@@ -1,4 +1,4 @@
-# Generated via `terms_of_use` SQL generator.
+# {{ header }}
 fields:
 - mode: NULLABLE
   name: submission_timestamp
@@ -8,23 +8,17 @@ fields:
     by the ETL process and partitioning.
 
 - mode: NULLABLE
-  name: client_id
+  name: legacy_telemetry_client_id
   type: STRING
   description: |
-    A UUID uniquely identifying the client.
+    Legacy client identifier.
 
 - mode: NULLABLE
   name: sample_id
   type: INTEGER
   description: |
     A number, 0-99, that samples by client_id and allows filtering data
-    for analysis. It is a pipeline-generated artifact that should match between pings.
-
-- mode: NULLABLE
-  name: legacy_telemetry_client_id
-  type: STRING
-  description: |
-    Legacy client identifier.
+    for analysis. It is a pipeline-generated artifact that should match between pings (based off legacy_telemetry_client_id).
 
 - mode: NULLABLE
   name: messaging_system_message_id

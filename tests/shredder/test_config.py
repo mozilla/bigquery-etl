@@ -295,7 +295,7 @@ def test_glean_targets(mock_requests):
     }
 
 
-@mock.patch("bigquery_etl.shredder.config.requests")
+@mock.patch("bigquery_etl.cli.utils.requests")
 def test_glean_targets_override(mock_requests):
     """Targets in GLEAN_DERIVED_OVERRIDES should override the target in find_glean_targets."""
 
@@ -379,7 +379,7 @@ def test_glean_targets_override(mock_requests):
     }
 
 
-@mock.patch("bigquery_etl.shredder.config.requests")
+@mock.patch("bigquery_etl.cli.utils.requests")
 def test_glean_channel_app_mapping(mock_requests):
     mock_response = mock.Mock()
     mock_response.json.return_value = GLEAN_APP_LISTING

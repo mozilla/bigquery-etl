@@ -11,7 +11,10 @@ generate:
         bigeye:
           collection: Operational Checks Overwrite
           notification_channel: '#de-bigeye-triage_overwrite'
+      fenix:
+        templates:
+        - terms_of_use_events_v1
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
-        - terms_of_use_events_v1
+        - terms_of_use_messages_v1

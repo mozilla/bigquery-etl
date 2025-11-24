@@ -1,4 +1,4 @@
-# {{ header }}
+# Generated via `terms_of_use` SQL generator.
 fields:
 - mode: NULLABLE
   name: submission_timestamp

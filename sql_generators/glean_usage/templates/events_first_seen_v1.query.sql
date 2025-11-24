@@ -48,6 +48,7 @@ SELECT
 FROM
   eventsstream
 )
+
 {% if not loop.last -%}
 UNION ALL
 {% endif %}
@@ -59,6 +60,7 @@ UNION ALL
 
 {% for x in events_first_seen.criteria %}
 
+(
 WITH _current AS (
   SELECT
     @submission_date AS submission_date,

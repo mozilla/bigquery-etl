@@ -1,4 +1,4 @@
-friendly_name: Terms Of Use Events
+friendly_name: Terms Of Use Messages
 description: |-
   Please provide a description for the query
 owners: []
@@ -9,5 +9,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.firefox_desktop_derived.terms_of_use_events_v1
+  - moz-fx-data-shared-prod.firefox_desktop_derived.terms_of_use_messages_v1
 require_column_descriptions: false

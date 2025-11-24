@@ -58,6 +58,71 @@ with DAG(
 
     task_group_firefox_ios = TaskGroup("firefox_ios")
 
+    wait_for_org_mozilla_fenix_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fenix_nightly_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_fennec_aurora_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_beta_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_beta_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_beta_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_firefox_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_firefox_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="fenix.org_mozilla_firefox_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_copy_deduplicate_all = ExternalTaskSensor(
         task_id="wait_for_copy_deduplicate_all",
         external_dag_id="copy_deduplicate",
@@ -69,6 +134,57 @@ with DAG(
         allowed_states=ALLOWED_STATES,
         failed_states=FAILED_STATES,
         pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_fennec_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_fennec_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_fennec_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefox_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefox_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefox_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1 = ExternalTaskSensor(
+        task_id="wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1",
+        external_dag_id="bqetl_glean_usage",
+        external_task_id="firefox_ios.org_mozilla_ios_firefoxbeta_derived__events_stream__v1",
+        execution_delta=datetime.timedelta(seconds=14400),
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
+    bigeye__fenix_derived__terms_of_use_events__v1 = bigquery_bigeye_check(
+        task_id="bigeye__fenix_derived__terms_of_use_events__v1",
+        table_id="moz-fx-data-shared-prod.fenix_derived.terms_of_use_events_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_fenix,
     )
 
     bigeye__fenix_derived__terms_of_use_status__v1 = bigquery_bigeye_check(
@@ -83,9 +199,9 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    bigeye__firefox_desktop_derived__terms_of_use_events__v1 = bigquery_bigeye_check(
-        task_id="bigeye__firefox_desktop_derived__terms_of_use_events__v1",
-        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.terms_of_use_events_v1",
+    bigeye__firefox_desktop_derived__terms_of_use_messages__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_desktop_derived__terms_of_use_messages__v1",
+        table_id="moz-fx-data-shared-prod.firefox_desktop_derived.terms_of_use_messages_v1",
         warehouse_id="1939",
         owner="kik@mozilla.com",
         email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
@@ -107,6 +223,18 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
+    bigeye__firefox_ios_derived__terms_of_use_events__v1 = bigquery_bigeye_check(
+        task_id="bigeye__firefox_ios_derived__terms_of_use_events__v1",
+        table_id="moz-fx-data-shared-prod.firefox_ios_derived.terms_of_use_events_v1",
+        warehouse_id="1939",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        depends_on_past=False,
+        execution_timeout=datetime.timedelta(hours=1),
+        retries=1,
+        task_group=task_group_firefox_ios,
+    )
+
     bigeye__firefox_ios_derived__terms_of_use_status__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__terms_of_use_status__v1",
         table_id="moz-fx-data-shared-prod.firefox_ios_derived.terms_of_use_status_v1",
@@ -117,6 +245,18 @@ with DAG(
         execution_timeout=datetime.timedelta(hours=1),
         retries=1,
         task_group=task_group_firefox_ios,
+    )
+
+    fenix_derived__terms_of_use_events__v1 = bigquery_etl_query(
+        task_id="fenix_derived__terms_of_use_events__v1",
+        destination_table="terms_of_use_events_v1",
+        dataset_id="fenix_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_fenix,
     )
 
     fenix_derived__terms_of_use_status__v1 = bigquery_etl_query(
@@ -132,9 +272,9 @@ with DAG(
         task_group=task_group_fenix,
     )
 
-    firefox_desktop_derived__terms_of_use_events__v1 = bigquery_etl_query(
-        task_id="firefox_desktop_derived__terms_of_use_events__v1",
-        destination_table="terms_of_use_events_v1",
+    firefox_desktop_derived__terms_of_use_messages__v1 = bigquery_etl_query(
+        task_id="firefox_desktop_derived__terms_of_use_messages__v1",
+        destination_table="terms_of_use_messages_v1",
         dataset_id="firefox_desktop_derived",
         project_id="moz-fx-data-shared-prod",
         owner="kik@mozilla.com",
@@ -157,6 +297,18 @@ with DAG(
         task_group=task_group_firefox_desktop,
     )
 
+    firefox_ios_derived__terms_of_use_events__v1 = bigquery_etl_query(
+        task_id="firefox_ios_derived__terms_of_use_events__v1",
+        destination_table="terms_of_use_events_v1",
+        dataset_id="firefox_ios_derived",
+        project_id="moz-fx-data-shared-prod",
+        owner="kik@mozilla.com",
+        email=["kik@mozilla.com", "telemetry-alerts@mozilla.com"],
+        date_partition_parameter="submission_date",
+        depends_on_past=False,
+        task_group=task_group_firefox_ios,
+    )
+
     firefox_ios_derived__terms_of_use_status__v1 = bigquery_etl_query(
         task_id="firefox_ios_derived__terms_of_use_status__v1",
         destination_table="terms_of_use_status_v1",
@@ -170,30 +322,70 @@ with DAG(
         task_group=task_group_firefox_ios,
     )
 
+    bigeye__fenix_derived__terms_of_use_events__v1.set_upstream(
+        fenix_derived__terms_of_use_events__v1
+    )
+
     bigeye__fenix_derived__terms_of_use_status__v1.set_upstream(
         fenix_derived__terms_of_use_status__v1
     )
 
-    bigeye__firefox_desktop_derived__terms_of_use_events__v1.set_upstream(
-        firefox_desktop_derived__terms_of_use_events__v1
+    bigeye__firefox_desktop_derived__terms_of_use_messages__v1.set_upstream(
+        firefox_desktop_derived__terms_of_use_messages__v1
     )
 
     bigeye__firefox_desktop_derived__terms_of_use_status__v1.set_upstream(
         firefox_desktop_derived__terms_of_use_status__v1
     )
 
+    bigeye__firefox_ios_derived__terms_of_use_events__v1.set_upstream(
+        firefox_ios_derived__terms_of_use_events__v1
+    )
+
     bigeye__firefox_ios_derived__terms_of_use_status__v1.set_upstream(
         firefox_ios_derived__terms_of_use_status__v1
     )
 
+    fenix_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_fenix_derived__events_stream__v1
+    )
+
+    fenix_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_fenix_nightly_derived__events_stream__v1
+    )
+
+    fenix_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_fennec_aurora_derived__events_stream__v1
+    )
+
+    fenix_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_firefox_beta_derived__events_stream__v1
+    )
+
+    fenix_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_firefox_derived__events_stream__v1
+    )
+
     fenix_derived__terms_of_use_status__v1.set_upstream(wait_for_copy_deduplicate_all)
 
-    firefox_desktop_derived__terms_of_use_events__v1.set_upstream(
+    firefox_desktop_derived__terms_of_use_messages__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
 
     firefox_desktop_derived__terms_of_use_status__v1.set_upstream(
         wait_for_copy_deduplicate_all
+    )
+
+    firefox_ios_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_ios_fennec_derived__events_stream__v1
+    )
+
+    firefox_ios_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_ios_firefox_derived__events_stream__v1
+    )
+
+    firefox_ios_derived__terms_of_use_events__v1.set_upstream(
+        wait_for_org_mozilla_ios_firefoxbeta_derived__events_stream__v1
     )
 
     firefox_ios_derived__terms_of_use_status__v1.set_upstream(

@@ -386,7 +386,7 @@ sap_final_cte AS (
     sap_events_clients_ad_enterprise_cte
   LEFT JOIN
     sap_aggregates_cte
-    USING (client_id, submission_date, normalized_engine, partner_code, source)
+    USING (client_id, submission_date, normalized_engine, source)
     -- using(client_id, submission_date, normalized_engine, partner_code, search_access_point) -- rename
 ),
 serp_is_enterprise_cte AS (

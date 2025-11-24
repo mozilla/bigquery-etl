@@ -481,7 +481,6 @@ serp_events_with_client_info_cte AS (
         client_id,
         submission_date,
         serp_provider_id,
-        partner_code,
         serp_search_access_point
       ORDER BY
         event_timestamp DESC

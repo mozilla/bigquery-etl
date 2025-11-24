@@ -6,6 +6,7 @@ from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
+from bigquery_etl.cli.utils import get_glean_channel_to_app_name_mapping
 from bigquery_etl.shredder.config import (
     CLIENT_ID,
     DELETE_TARGETS,
@@ -14,7 +15,6 @@ from bigquery_etl.shredder.config import (
     DeleteTarget,
     _list_tables,
     find_glean_targets,
-    get_glean_channel_to_app_name_mapping,
 )
 
 GLEAN_APP_LISTING = [

@@ -6,9 +6,10 @@ import re
 from fnmatch import fnmatchcase
 from glob import glob
 from pathlib import Path
-from typing import Iterator, List, Optional, Tuple
+from typing import Dict, Iterator, List, Optional, Tuple
 
 import click
+import requests
 from google.auth.exceptions import DefaultCredentialsError
 from google.cloud import bigquery
 
@@ -23,6 +24,7 @@ CHECKS_FILE_RE = re.compile(
     r"^.*/([a-zA-Z0-9-]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+(_v[0-9]+)?)/"
     r"(?:checks\.sql)$"
 )
+GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 def is_valid_dir(ctx, param, value):
@@ -250,3 +252,25 @@ def temp_dataset_option(
         help="Dataset where intermediate query results will be temporarily stored, "
         "formatted as PROJECT_ID.DATASET_ID",
     )
+
+
+def get_glean_channel_to_app_name_mapping() -> Dict[str, str]:
+    """Return a dict where key is the channel app id and the value is the shared app name.
+
+    e.g. {
+        "org_mozilla_firefox": "fenix",
+        "org_mozilla_firefox_beta": "fenix",
+        "org_mozilla_ios_firefox": "firefox_ios",
+        "org_mozilla_ios_firefoxbeta": "firefox_ios",
+    }
+    """
+    response = requests.get(GLEAN_APP_LISTINGS_URL)
+    response.raise_for_status()
+
+    app_listings = response.json()
+
+    return {
+        app["bq_dataset_family"]: app["app_name"]
+        for app in app_listings
+        if "bq_dataset_family" in app and "app_name" in app
+    }

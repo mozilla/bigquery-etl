@@ -20,13 +20,16 @@ import click
 from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
-from bigquery_etl.cli.utils import table_matches_patterns
+from bigquery_etl.cli.utils import (
+    get_glean_channel_to_app_name_mapping,
+    parallelism_option,
+    project_id_option,
+    table_matches_patterns,
+)
 from bigquery_etl.config import ConfigLoader
 from bigquery_etl.util.bigquery_id import sql_table_id
 from bigquery_etl.util.client_queue import ClientQueue
 from bigquery_etl.util.common import TempDatasetReference
-
-from .cli.utils import parallelism_option, project_id_option
 
 QUERY_TEMPLATE = """
 WITH
@@ -98,21 +101,22 @@ def _select_geo(live_table: str, client: bigquery.Client) -> str:
     """Build a SELECT REPLACE clause that NULLs metadata.geo.* if applicable."""
     _, dataset_id, table_id = live_table.split(".")
 
+    excluded_apps = set(ConfigLoader.get("geo_deprecation", "skip_apps", fallback=[]))
+    app_id = re.sub("_live$", "", dataset_id)
+    channel_to_app_name = get_glean_channel_to_app_name_mapping()
+    app_name = channel_to_app_name.get(app_id)
+    if app_name in excluded_apps:
+        return ""
+
     excluded_tables = set(
         ConfigLoader.get("geo_deprecation", "skip_tables", fallback=[])
     )
     if re.sub(r"_v\d+$", "", table_id) in excluded_tables:
         return ""
 
-    app_id = dataset_id.removesuffix("_live")
-    included_apps = set(
-        ConfigLoader.get("geo_deprecation", "include_app_ids", fallback=[])
-    )
-    if app_id not in included_apps:
-        return ""
-
     table = client.get_table(live_table)
 
+    # only glean tables have this label
     include_client_id = table.labels.get("include_client_id") == "true"
     if not include_client_id:
         return ""

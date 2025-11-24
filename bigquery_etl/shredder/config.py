@@ -9,11 +9,12 @@ from dataclasses import dataclass
 from functools import partial
 from itertools import chain
 from multiprocessing.pool import ThreadPool
-from typing import Dict, List
+from typing import List
 
-import requests
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
+
+from bigquery_etl.cli.utils import get_glean_channel_to_app_name_mapping
 
 from ..util.bigquery_id import qualified_table_id
 
@@ -21,7 +22,6 @@ MOZDATA = "mozdata"
 SHARED_PROD = "moz-fx-data-shared-prod"
 GLEAN_SCHEMA_ID = "glean_ping_1"
 GLEAN_MIN_SCHEMA_ID = "glean-min_ping_1"
-GLEAN_APP_LISTINGS_URL = "https://probeinfo.telemetry.mozilla.org/v2/glean/app-listings"
 
 
 @dataclass(frozen=True)
@@ -955,28 +955,6 @@ def find_glean_targets(
             if table.table_id == "usage_reporting_v1"
             and table.dataset_id in usage_reporting_sources
         },
-    }
-
-
-def get_glean_channel_to_app_name_mapping() -> Dict[str, str]:
-    """Return a dict where key is the channel app id and the value is the shared app name.
-
-    e.g. {
-        "org_mozilla_firefox": "fenix",
-        "org_mozilla_firefox_beta": "fenix",
-        "org_mozilla_ios_firefox": "firefox_ios",
-        "org_mozilla_ios_firefoxbeta": "firefox_ios",
-    }
-    """
-    response = requests.get(GLEAN_APP_LISTINGS_URL)
-    response.raise_for_status()
-
-    app_listings = response.json()
-
-    return {
-        app["bq_dataset_family"]: app["app_name"]
-        for app in app_listings
-        if "bq_dataset_family" in app and "app_name" in app
     }
 
 

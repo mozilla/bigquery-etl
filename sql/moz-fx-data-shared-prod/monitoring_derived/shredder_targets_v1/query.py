@@ -14,6 +14,7 @@ from google.cloud import datacatalog_lineage_v1 as datacatalog_lineage
 from google.cloud.bigquery import TableReference
 from google.cloud.exceptions import NotFound
 
+from bigquery_etl.cli.utils import get_glean_channel_to_app_name_mapping
 from bigquery_etl.schema import Schema
 from bigquery_etl.shredder.config import (
     CLIENT_ID,
@@ -22,7 +23,6 @@ from bigquery_etl.shredder.config import (
     SHARED_PROD,
     DeleteSource,
     find_glean_targets,
-    get_glean_channel_to_app_name_mapping,
 )
 
 FIND_TABLES_QUERY_TEMPLATE = """

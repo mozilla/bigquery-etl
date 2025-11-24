@@ -65,6 +65,9 @@
       ARRAY_AGG(client_info.architecture RESPECT NULLS ORDER BY submission_timestamp ASC)[
         SAFE_OFFSET(0)
       ] AS architecture,
+      ARRAY_AGG(client_info.app_build IGNORE NULLS ORDER BY submission_timestamp ASC)[
+        SAFE_OFFSET(0)
+      ] AS app_build_id,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     -- initialize by looking over all of history
@@ -142,6 +145,9 @@
       ARRAY_AGG(client_info.architecture RESPECT NULLS ORDER BY submission_timestamp ASC)[
         SAFE_OFFSET(0)
       ] AS architecture,
+      ARRAY_AGG(client_info.app_build IGNORE NULLS ORDER BY submission_timestamp ASC)[
+        SAFE_OFFSET(0)
+      ] AS app_build_id,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_stable.baseline_v1`
     WHERE
@@ -177,6 +183,7 @@
       isp,
       startup_profile_selection_reason_first,
       architecture,
+      app_build_id,
     FROM
       `moz-fx-data-shared-prod.firefox_desktop_derived.baseline_clients_first_seen_v1`
     WHERE
@@ -222,6 +229,7 @@
     isp,
     startup_profile_selection_reason_first,
     architecture,
+    app_build_id,
   FROM
     _joined
   QUALIFY

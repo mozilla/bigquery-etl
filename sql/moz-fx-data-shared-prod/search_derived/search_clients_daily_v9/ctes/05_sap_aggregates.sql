@@ -20,7 +20,6 @@ SELECT
         )
     ELSE `moz-fx-data-shared-prod.udf.normalize_search_engine`(JSON_VALUE(event_extra.provider_id))
   END AS normalized_engine,
-  JSON_VALUE(event_extra.partner_code) AS partner_code,
   CASE
     WHEN JSON_VALUE(event_extra.source) = 'urlbar-handoff'
       THEN 'urlbar_handoff'
@@ -66,6 +65,5 @@ GROUP BY
   client_id,
   submission_date,
   normalized_engine,
-  partner_code,
   source
 -- search_access_point

@@ -1,5 +1,10 @@
 """Generate events first seen queries for Glean apps."""
 
+import os
+from pathlib import Path
+
+import yaml
+
 from bigquery_etl.config import ConfigLoader
 from sql_generators.glean_usage.common import GleanTable
 
@@ -20,7 +25,16 @@ class EventsFirstSeenTable(GleanTable):
         self.across_apps_enabled = False
         self.cross_channel_template = "cross_channel.view.sql"
         self.base_table_name = "events_v1"
-        self.common_render_kwargs = {}
+
+        with open(
+            Path(os.path.dirname(__file__))
+            / "templates"
+            / "events_first_seen_templating.yaml",
+            "r",
+        ) as f:
+            events_first_seen_config = yaml.safe_load(f) or {}
+
+            self.common_render_kwargs = {"events_first_seen": events_first_seen_config}
 
     def generate_per_app_id(
         self,

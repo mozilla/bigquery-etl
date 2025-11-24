@@ -1,0 +1,11 @@
+# The general structure of this config file is as follows:
+#   criteria:
+#     - name: <criteria_name>
+#       sql: <SQL expression>
+
+# To correctly output the name of the criteria inside single quotes, wrap it in single and then double quotes. E.g., "'sidebar'"
+
+criteria:
+  - name: CAST(NULL AS string)
+  - name: "'chatbot_usage'"
+    sql: AND event = 'genai.chatbot.sidebar_toggle' AND JSON_VALUE(event_extra.provider) <> 'none'

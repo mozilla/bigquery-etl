@@ -4,6 +4,9 @@
 {% if is_init() %}
 {% endraw %}
 
+{% for x in events_first_seen.criteria %}
+
+(
 WITH eventsstream AS (
   SELECT
     DATE(MIN(submission_timestamp)) as submission_date,
@@ -12,7 +15,7 @@ WITH eventsstream AS (
     `event`,
     event_category,
     event_name,
-    CAST(NULL AS string) AS criteria,
+    {{ x.name }} AS criteria,
     min_by(profile_group_id, submission_timestamp) AS profile_group_id,
     min_by(sample_id, submission_timestamp) AS sample_id,
     MIN(submission_timestamp) AS first_submission_timestamp,
@@ -32,6 +35,7 @@ WITH eventsstream AS (
     AND sample_id < @sample_id + @sampling_batch_size
     AND profile_group_id IS NOT NULL
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+    {{ x.sql }}
   GROUP BY
       client_id,
       `event`,
@@ -43,10 +47,17 @@ SELECT
   *
 FROM
   eventsstream
+)
+{% if not loop.last -%}
+UNION ALL
+{% endif %}
+{% endfor %}
 
 {% raw %}
 {% else %}
 {% endraw %}
+
+{% for x in events_first_seen.criteria %}
 
 WITH _current AS (
   SELECT
@@ -56,7 +67,7 @@ WITH _current AS (
     `event`,
     event_category,
     event_name,
-    CAST(NULL AS string) AS criteria,
+    {{ x.name }} AS criteria,
     min_by(profile_group_id, submission_timestamp) AS profile_group_id,
     min_by(sample_id, submission_timestamp) AS sample_id,
     MIN(submission_timestamp) AS first_submission_timestamp,
@@ -73,6 +84,7 @@ WITH _current AS (
     DATE(submission_timestamp) = @submission_date
     AND profile_group_id IS NOT NULL
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
+    {{ x.sql }}
   GROUP BY
     submission_date,
     event_first_seen_date,
@@ -91,7 +103,7 @@ _previous AS (
     `event`,
     event_category,
     event_name,
-    CAST(NULL AS string) AS criteria,
+    {{ x.name }} AS criteria,
     profile_group_id,
     sample_id,
     first_submission_timestamp,
@@ -131,6 +143,11 @@ SELECT
   *
 FROM
   _joined
+)
+{% if not loop.last -%}
+UNION ALL
+{% endif %}
+{% endfor %}
 
 {% raw %}
 {% endif %}

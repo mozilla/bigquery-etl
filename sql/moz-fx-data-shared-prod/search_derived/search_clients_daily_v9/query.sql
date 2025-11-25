@@ -692,10 +692,10 @@ serp_final_cte AS (
     serp_events_clients_ad_enterprise_cte
   LEFT JOIN
     serp_ad_click_target_cte
-    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
+    USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
   LEFT JOIN
     serp_aggregates_cte
-    USING (client_id, submission_date, serp_provider_id, partner_code, serp_search_access_point)
+    USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
 ),
 join_sap_serp_cte AS (
   SELECT

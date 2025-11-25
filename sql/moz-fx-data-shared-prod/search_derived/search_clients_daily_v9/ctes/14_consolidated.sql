@@ -94,3 +94,5 @@ SELECT
   serp_profile_group_id AS profile_group_id
 FROM
   join_sap_serp_cte
+WHERE
+  serp_submission_date IS NOT NULL

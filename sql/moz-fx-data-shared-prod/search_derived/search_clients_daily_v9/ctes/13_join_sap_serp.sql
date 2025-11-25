@@ -133,10 +133,6 @@ FULL OUTER JOIN
     OR (sap_final_cte.normalized_engine IS NULL AND serp_final_cte.serp_provider_id IS NULL)
   )
   AND (
-    sap_final_cte.partner_code = serp_final_cte.partner_code
-    OR (sap_final_cte.partner_code IS NULL AND serp_final_cte.partner_code IS NULL)
-  )
-  AND (
     sap_final_cte.source = serp_final_cte.serp_search_access_point
     OR (sap_final_cte.source IS NULL AND serp_final_cte.serp_search_access_point IS NULL)
   )

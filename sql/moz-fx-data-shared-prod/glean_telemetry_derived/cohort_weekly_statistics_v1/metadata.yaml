@@ -22,5 +22,4 @@ bigquery:
     - normalized_app_name
     - normalized_channel
     - app_version
-references: {}
 require_column_descriptions: true

@@ -23,5 +23,4 @@ bigquery:
     - browser
     - source
     - medium
-references: {}
 deprecated: true

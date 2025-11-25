@@ -22,5 +22,4 @@ bigquery:
   clustering:
     fields:
     - normalized_channel
-references: {}
 require_column_descriptions: true

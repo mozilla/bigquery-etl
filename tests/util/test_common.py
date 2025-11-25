@@ -186,10 +186,10 @@ class TestUtilCommon:
                     SELECT
                         STRUCT(key, CAST(TRUE AS INT64) AS value)
                     FROM
-                        data.array_field AS key
+                        _d.array_field AS key
                 )
             ) AS array_field
-        FROM data
+        FROM data AS _d
         """
         query_path = tmp_path / "project" / "dataset" / "test"
         query_path.mkdir(parents=True, exist_ok=True)
@@ -207,10 +207,10 @@ class TestUtilCommon:
                     SELECT
                         STRUCT(key, CAST(TRUE AS INT64) AS value)
                     FROM
-                        data.array_field AS key
+                        _d.array_field AS key
                 )
             ) AS array_field
-        FROM data
+        FROM data AS _d
         """
         assert result == expected
 
@@ -327,14 +327,23 @@ class TestUtilCommon:
         WITH info_schema_region AS (
             SELECT 1 FROM `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
         ),
+        info_schema_region_quoted AS (
+            SELECT 1 FROM `region-us`.`INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+        ),
+        info_schema_region_full_quoted AS (
+            SELECT 1 FROM `region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+        ),
         info_schema_project AS (
-            SELECT 1 FROM proj.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+            SELECT 1 FROM proj.INFORMATION_SCHEMA.SCHEMATA
         ),
         info_schema_full AS (
             SELECT * FROM `project.region-us.INFORMATION_SCHEMA.SCHEMATA`
         ),
         info_schema_none AS (
             SELECT * FROM INFORMATION_SCHEMA.SCHEMATA
+        ),
+        info_schema_none_ds_qualify AS (
+            SELECT * FROM INFORMATION_SCHEMA.TABLES
         )
         SELECT 1
         """
@@ -346,14 +355,23 @@ class TestUtilCommon:
         WITH info_schema_region AS (
             SELECT 1 FROM `{default_project}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
         ),
+        info_schema_region_quoted AS (
+            SELECT 1 FROM `{default_project}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+        ),
+        info_schema_region_full_quoted AS (
+            SELECT 1 FROM `{default_project}.region-us.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+        ),
         info_schema_project AS (
-            SELECT 1 FROM proj.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+            SELECT 1 FROM `proj.INFORMATION_SCHEMA.SCHEMATA`
         ),
         info_schema_full AS (
             SELECT * FROM `project.region-us.INFORMATION_SCHEMA.SCHEMATA`
         ),
         info_schema_none AS (
             SELECT * FROM `{default_project}.INFORMATION_SCHEMA.SCHEMATA`
+        ),
+        info_schema_none_ds_qualify AS (
+            SELECT * FROM `{default_project}.{default_dataset}.INFORMATION_SCHEMA.TABLES`
         )
         SELECT 1
         """

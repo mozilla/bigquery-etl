@@ -21,5 +21,4 @@ bigquery:
   clustering:
     fields:
     - normalized_os_version
-references: {}
 require_column_descriptions: true

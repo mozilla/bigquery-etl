@@ -37,6 +37,10 @@ elif [ "$1" = "query" ]; then
     #     query [options] FILE
     # we dispatch to a script that inspects metadata and emulates the following call:
     #     bq query [options] < FILE
+    if [ "$#" -lt 2 ]; then
+        echo "Error: 'query' command requires at least one argument (FILE)" >&2
+        exit 1
+    fi
     exec script/bqetl query run "${@: -1}" "${@:1:$#-1}"
 elif [ "$XCOM_PUSH" = "true" ]; then
     # KubernetesPodOperator will extract the contents of /airflow/xcom/return.json as an xcom

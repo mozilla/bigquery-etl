@@ -16,4 +16,3 @@ scheduling:
   - --source-prefix=braze_pocket_historical
   - --source-file=pocket_users_historical
 bigquery: null
-references: {}

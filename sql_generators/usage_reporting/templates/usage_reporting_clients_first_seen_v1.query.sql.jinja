@@ -2,7 +2,6 @@
 WITH
   _current AS (
     SELECT
-      usage_profile_id,
       {% raw %}
       {% if is_init() %}
       MIN(submission_date) AS first_seen_date,
@@ -10,8 +9,9 @@ WITH
       @submission_date AS first_seen_date,
       {% endif %}
       {% endraw %}
+      * EXCEPT(submission_date, is_active),
     FROM
-      `{{ project_id }}.{{ channel_dataset }}.usage_reporting_clients_daily`
+      `{{ project_id }}.{{ channel_dataset }}_derived.usage_reporting_clients_daily_v1`
     WHERE
       usage_profile_id IS NOT NULL
       {% raw %}
@@ -40,8 +40,7 @@ _previous AS (
 )
 
 SELECT
-  first_seen_date,
-  usage_profile_id,
+  _current.*,
 FROM
   _current
 LEFT JOIN

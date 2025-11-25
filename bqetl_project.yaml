@@ -260,7 +260,7 @@ deprecation:
 
 format:
   skip:
-  - bigquery_etl/glam/templates/*.sql
+  - bigquery_etl/glam/templates/**/*.sql
   - sql_generators/**/*.sql
   - tests/**/*.sql
   - sql/moz-fx-data-shared-prod/udf_js/jackknife_percentile_ci/udf.sql
@@ -272,6 +272,9 @@ format:
   - stored_procedures/safe_crc32_uuid.sql
   skip_qualifying_references:
   - sql/mozfun/**/examples/*.sql
+  # Don't try to qualify references when Jinja expressions are being used for table/view IDs.
+  - sql/**/bigeye_custom_rules.sql
+  - sql/**/checks.sql
 
 routine:
   dependency_dir: udf_js_lib/
@@ -486,6 +489,11 @@ generate:
   stable_views:
     skip_datasets:
     - mlhackweek_search
+    - regrets_reporter
+    - org_mozilla_ios_tiktokreporter
+    - org_mozilla_tiktokreporter
+    - regrets_reporter_ucs
+    - org_mozilla_ios_tiktok_reporter_tiktok_reportershare
     skip_tables:
       telemetry:
       - modules
@@ -512,6 +520,33 @@ generate:
       focus_ios:
         channels:
         - release
+  terms_of_use:
+    dag_name: bqetl_terms_of_use
+    bigeye_defaults:
+      collection: Operational Checks
+      notification_channel: '#de-bigeye-triage'
+    apps:
+      fenix:
+        templates:
+        - terms_of_use_status_v1
+        - terms_of_use_events_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
+      firefox_ios:
+        templates:
+        - terms_of_use_status_v1
+        - terms_of_use_events_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
+      firefox_desktop:
+        templates:
+        - terms_of_use_status_v1
+        - terms_of_use_messages_v1
+        bigeye:
+          collection: Operational Checks
+          notification_channel: '#de-bigeye-triage'
   baseline_clients_city_seen:
     apps:
     - firefox_desktop
@@ -521,12 +556,39 @@ generate:
     - focus_android
     - klar_ios
     - klar_android
+    - firefox_desktop_background_update
+    - firefox_desktop_background_defaultagent
+    - firefox_desktop_background_tasks
+
+geo_deprecation:
+  include_app_ids:
+  - org_mozilla_ios_klar
+  - org_mozilla_klar
+  - org_mozilla_ios_focus
+  - org_mozilla_focus
+  - org_mozilla_focus_beta
+  - org_mozilla_focus_nightly
+  - org_mozilla_ios_firefox
+  - org_mozilla_ios_firefoxbeta
+  - org_mozilla_ios_fennec
+  - org_mozilla_firefox
+  - org_mozilla_firefox_beta
+  - org_mozilla_fenix
+  - org_mozilla_fenix_nightly
+  - org_mozilla_fennec_aurora
+  - firefox_desktop
+  - firefox_desktop_background_update
+  - firefox_desktop_background_defaultagent
+  - firefox_desktop_background_tasks
+  skip_tables:
+  - newtab
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v3
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/clients_first_seen_28_days_later_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/ltv_states_v1
@@ -568,13 +630,10 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/org_mozilla_ios_focus_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_ios_klar_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_ios_lockbox_derived/baseline_clients_first_seen_v1
-- sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter_derived/baseline_clients_first_seen_v1
-- sql/moz-fx-data-shared-prod/org_mozilla_ios_tiktok_reporter_tiktok_reportershare_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_klar_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_mozregression_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_reference_browser_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_social_nightly_derived/baseline_clients_first_seen_v1
-- sql/moz-fx-data-shared-prod/org_mozilla_tiktokreporter_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_tv_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_vrbrowser_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/pine_derived/baseline_clients_first_seen_v11
@@ -610,3 +669,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/focus_android_derived/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/klar_ios_derived/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/klar_android_derived/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_background_update/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_first_seen_v1

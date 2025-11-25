@@ -11,4 +11,3 @@ bigquery:
   clustering:
     fields:
     - cpu_name
-references: {}

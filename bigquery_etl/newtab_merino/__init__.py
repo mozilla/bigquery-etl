@@ -29,10 +29,8 @@ log = logging.getLogger(__name__)
 @click.option(
     "--destination-bucket",
     required=True,
-    help="Destination Google Cloud Storage Bucket.",
-)
-@click.option(
-    "--destination-prefix", required=True, help="Prefix of the bucket path in GCS."
+    multiple=True,
+    help="Destination Google Cloud Storage Bucket. Can be specified multiple times.",
 )
 @click.option(
     "--destination-prefix", required=True, help="Prefix of the bucket path in GCS."
@@ -47,7 +45,7 @@ def export_newtab_merino_table_to_gcs(
     source_project: str,
     source_dataset: str,
     source_table: str,
-    destination_bucket: str,
+    destination_bucket: tuple,
     destination_prefix: str,
     deletion_days_old: int,
 ):
@@ -67,7 +65,9 @@ def export_newtab_merino_table_to_gcs(
             destination_format=bigquery.job.DestinationFormat.NEWLINE_DELIMITED_JSON
         )
 
-        destination_uri = f"gs://{destination_bucket}/{destination_prefix}/{temp_file}"
+        # Use the first bucket for the initial export
+        primary_bucket = destination_bucket[0]
+        destination_uri = f"gs://{primary_bucket}/{destination_prefix}/{temp_file}"
 
         extract_job = client.extract_table(
             source=f"{source_project}.{source_dataset}.{source_table}",
@@ -84,31 +84,39 @@ def export_newtab_merino_table_to_gcs(
 
         # Initialize the storage client
         storage_client = storage.Client()
-        bucket = storage_client.bucket(destination_bucket)
-        blob = bucket.blob(f"{destination_prefix}/{temp_file}")
 
-        # Read the temporary JSON file from GCS
+        # Read the temporary file from the primary bucket
+        primary_bucket_obj = storage_client.bucket(primary_bucket)
+        blob = primary_bucket_obj.blob(f"{destination_prefix}/{temp_file}")
         temp_file_content = blob.download_as_text()
 
         # Convert the content to a JSON array
         json_array = [json.loads(line) for line in temp_file_content.splitlines()]
         json_data = json.dumps(json_array, indent=1)
 
-        # Write the JSON array to the final destination files in GCS:
-        # 1. latest.json is a single file, that's easy to reference from Merino.
-        # 2. {timestamp}.json keeps a historical record for debugging purposes.
-        for suffix in ["latest", timestamp]:
-            final_destination_uri = f"{destination_prefix}/{suffix}.json"
-            final_blob = bucket.blob(final_destination_uri)
-            final_blob.upload_from_string(json_data, content_type="application/json")
+        # Write to all destination buckets
+        for bucket_name in destination_bucket:
+            bucket = storage_client.bucket(bucket_name)
 
-        # Delete the temporary file from GCS
+            # Write the JSON array to the final destination files in GCS:
+            # 1. latest.json is a single file, that's easy to reference from Merino.
+            # 2. {timestamp}.json keeps a historical record for debugging purposes.
+            for suffix in ["latest", timestamp]:
+                final_destination_uri = f"{destination_prefix}/{suffix}.json"
+                final_blob = bucket.blob(final_destination_uri)
+                final_blob.upload_from_string(
+                    json_data, content_type="application/json"
+                )
+
+            # Delete files older than specified days
+            delete_old_files(bucket, destination_prefix, deletion_days_old)
+
+            log.info(f"Export successful to bucket {bucket_name}")
+
+        # Delete the temporary file from the primary bucket
         blob.delete()
 
-        # Delete files older than 3 days
-        delete_old_files(bucket, destination_prefix, deletion_days_old)
-
-        log.info("Export successful and temporary file deleted")
+        log.info("Temporary file deleted")
 
     except Exception as err:
         error_counter += 1

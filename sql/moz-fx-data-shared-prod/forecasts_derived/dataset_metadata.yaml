@@ -1,0 +1,16 @@
+friendly_name: Forecasts Derived
+description: |-
+  Forecasts based on Firefox data and external models, plus related secondary tables. Writable by the Outerbounds default perimeter.
+dataset_base_acl: derived
+user_facing: false
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+syndication: {}

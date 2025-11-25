@@ -35,7 +35,8 @@ WITH eventsstream AS (
     AND sample_id < @sample_id + @sampling_batch_size
     AND profile_group_id IS NOT NULL
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-    {{ x.sql }}
+    -- below is the templated criteria
+    AND ({{ x.sql }})
   GROUP BY
       client_id,
       `event`,
@@ -86,7 +87,8 @@ WITH _current AS (
     DATE(submission_timestamp) = @submission_date
     AND profile_group_id IS NOT NULL
     AND event_category NOT IN ('media.playback', 'nimbus_events', 'uptake.remotecontent.result')
-    {{ x.sql }}
+    -- below is the templated criteria
+    AND ({{ x.sql }})
   GROUP BY
     submission_date,
     event_first_seen_date,

@@ -42,7 +42,8 @@ WITH clients_first_seen_28_days_ago AS (
     metric_installation_first_seen_version AS installation_first_seen_version,
     baseline_windows_build_number AS windows_build_number,
     baseline_windows_version AS windows_version,
-    baseline_legacy_telemetry_profile_group_id AS profile_group_id
+    baseline_legacy_telemetry_profile_group_id AS profile_group_id,
+    baseline_app_build_id AS app_build_id
   FROM
     `moz-fx-data-shared-prod.firefox_desktop.clients_first_seen`
   WHERE
@@ -63,24 +64,65 @@ clients_first_seen_28_days_ago_with_days_seen AS (
     AND cls.submission_date = @submission_date
 )
 SELECT
-  * REPLACE (
-    COALESCE(
-      days_seen_bits,
-      mozfun.bits28.from_string('0000000000000000000000000000')
-    ) AS days_seen_bits,
-    COALESCE(
-      days_active_bits,
-      mozfun.bits28.from_string('0000000000000000000000000000')
-    ) AS days_active_bits,
-    COALESCE(
-      days_visited_1_uri_bits,
-      mozfun.bits28.from_string('0000000000000000000000000000')
-    ) AS days_visited_1_uri_bits,
-    COALESCE(
-      days_interacted_bits,
-      mozfun.bits28.from_string('0000000000000000000000000000')
-    ) AS days_interacted_bits
-  ),
+  client_id,
+  sample_id,
+  first_seen_date,
+  architecture,
+  app_name,
+  locale,
+  app_version,
+  xpcom_abi,
+  distribution_id,
+  partner_distribution_version,
+  partner_distributor,
+  partner_distributor_channel,
+  partner_id,
+  attribution_campaign,
+  attribution_content,
+  attribution_dltoken,
+  attribution_dlsource,
+  attribution_experiment,
+  attribution_medium,
+  attribution_source,
+  attribution_ua,
+  attribution_variation,
+  apple_model_id,
+  isp_name,
+  normalized_channel,
+  country,
+  normalized_os,
+  normalized_os_version,
+  startup_profile_selection_reason,
+  installation_first_seen_admin_user,
+  installation_first_seen_default_path,
+  installation_first_seen_failure_reason,
+  installation_first_seen_from_msi,
+  installation_first_seen_install_existed,
+  installation_first_seen_installer_type,
+  installation_first_seen_other_inst,
+  installation_first_seen_other_msix_inst,
+  installation_first_seen_profdir_existed,
+  installation_first_seen_silent,
+  installation_first_seen_version,
+  windows_build_number,
+  windows_version,
+  profile_group_id,
+  COALESCE(
+    days_seen_bits,
+    mozfun.bits28.from_string('0000000000000000000000000000')
+  ) AS days_seen_bits,
+  COALESCE(
+    days_active_bits,
+    mozfun.bits28.from_string('0000000000000000000000000000')
+  ) AS days_active_bits,
+  COALESCE(
+    days_visited_1_uri_bits,
+    mozfun.bits28.from_string('0000000000000000000000000000')
+  ) AS days_visited_1_uri_bits,
+  COALESCE(
+    days_interacted_bits,
+    mozfun.bits28.from_string('0000000000000000000000000000')
+  ) AS days_interacted_bits,
   COALESCE(
     BIT_COUNT(mozfun.bits28.from_string('1111111000000000000000000000') & days_seen_bits) >= 5,
     FALSE
@@ -109,6 +151,7 @@ SELECT
     ) > 0,
     FALSE
   ) AS qualified_week4,
-  @submission_date AS submission_date
+  @submission_date AS submission_date,
+  app_build_id
 FROM
   clients_first_seen_28_days_ago_with_days_seen

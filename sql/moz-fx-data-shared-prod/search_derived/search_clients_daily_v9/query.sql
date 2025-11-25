@@ -45,8 +45,8 @@ clients_with_adblocker_addons_cte AS (
     ON adblocker_addons_cte.addon_id = JSON_VALUE(addons, '$.id')
   WHERE
     DATE(submission_timestamp)
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
     AND NOT BOOL(JSON_QUERY(addons, '$.userDisabled'))
@@ -71,8 +71,8 @@ sap_is_enterprise_cte AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
@@ -196,8 +196,8 @@ sap_events_with_client_info_cte AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
@@ -317,8 +317,8 @@ sap_aggregates_cte AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.events_stream_v1`
   WHERE
     DATE(submission_timestamp)
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- date(submission_timestamp) = @submission_date
     AND event = 'sap.counts'
@@ -401,8 +401,8 @@ serp_is_enterprise_cte AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
   WHERE
     submission_date
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- submission_date = @submission_date
     AND document_id IS NOT NULL
@@ -471,8 +471,8 @@ serp_events_with_client_info_cte AS (
     `moz-fx-data-shared-prod.firefox_desktop_derived.serp_events_v2`
   WHERE
     submission_date
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- submission_date = @submission_date
   QUALIFY
@@ -556,8 +556,8 @@ serp_ad_click_target_cte AS (
     UNNEST(ad_components) AS ad_components
   WHERE
     submission_date
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- submission_date = @submission_date
   GROUP BY
@@ -610,8 +610,8 @@ serp_aggregates_cte AS (
     `mozdata.firefox_desktop.serp_events` -- serp_events_v2 doesn't have the aggregated fields like `num_ads_visible`
   WHERE
     submission_date
-    BETWEEN '2025-06-25'
-    AND '2025-09-25'
+    BETWEEN '2025-10-01'
+    AND '2025-11-24'
     AND sample_id = 0
     -- submission_date = @submission_date
   GROUP BY

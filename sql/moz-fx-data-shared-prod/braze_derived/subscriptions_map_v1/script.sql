@@ -204,7 +204,7 @@ VALUES
   ),
   (
     'smart-window-waitlist',
-    'Firefox Smart Window Waitlist',
+    'Firefox AI Window News',
     '13fad2d2-d236-4bd0-8015-e5ed64780d25',
     '0f09d5bc-83cf-47e2-81eb-a3d0a4972d93',
     '40fb8be3-cb2e-4856-b5fd-2906f43a5753',

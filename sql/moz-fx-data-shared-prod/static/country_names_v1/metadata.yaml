@@ -5,3 +5,7 @@ description: |-
 
   Generated automatically by `sql_generators/country_code_lookup`; modify `aliases.yaml` to add a mapping to the
   appropriate country code.
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:ads/external-tapclicks

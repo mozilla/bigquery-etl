@@ -1,0 +1,3 @@
+friendly_name: Cloudflare Device Usage
+description: |-
+  Contains data from Cloudflare on usage by device type by day

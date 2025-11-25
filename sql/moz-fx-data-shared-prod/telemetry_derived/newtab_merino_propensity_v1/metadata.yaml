@@ -21,6 +21,8 @@ workgroup_access:
 - role: roles/bigquery.dataViewer
   members:
   - workgroup:mozilla-confidential
+  - workgroup:mozsoc-ml/developers
+  - workgroup:mozsoc-ml/service
 references:
   checks.sql:
   - ..

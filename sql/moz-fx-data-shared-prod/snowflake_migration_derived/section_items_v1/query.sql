@@ -3,7 +3,9 @@ WITH stg_section_items AS (
     event_id,
     unstruct_event_com_pocket_object_update_1.trigger AS object_update_trigger,
   -- section item info
-    contexts_com_pocket_section_item_1[0].approved_corpus_item_external_id AS approved_corpus_item_external_id,
+    contexts_com_pocket_section_item_1[
+      0
+    ].approved_corpus_item_external_id AS approved_corpus_item_external_id,
     contexts_com_pocket_section_item_1[0].url AS url,
     TIMESTAMP_SECONDS(contexts_com_pocket_section_item_1[0].created_at) AS created_at,
     contexts_com_pocket_section_item_1[0].deactivate_source AS source,
@@ -28,7 +30,7 @@ WITH stg_section_items AS (
 )
 SELECT
   s.approved_corpus_item_external_id,
-  s.object_update_trigger as event_name,
+  s.object_update_trigger AS event_name,
   s.url,
   s.section_id,
   s.section_item_id,
@@ -43,7 +45,10 @@ SELECT
 FROM
   stg_section_items s
 QUALIFY
-  ROW_NUMBER() OVER (PARTITION BY section_item_id, object_update_trigger ORDER BY happened_at DESC) = 1;
-
-
-
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      section_item_id,
+      object_update_trigger
+    ORDER BY
+      happened_at DESC
+  ) = 1;

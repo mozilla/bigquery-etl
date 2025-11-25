@@ -24,7 +24,6 @@ SELECT
   `moz-fx-data-shared-prod.udf.normalize_search_engine`(
     search_engine
   ) AS serp_provider_id, -- this is engine
-  partner_code,
   sap_source AS serp_search_access_point,
   LOGICAL_AND(ad_blocker_inferred) AS serp_ad_blocker_inferred,
   COUNTIF(
@@ -70,5 +69,4 @@ GROUP BY
   client_id,
   submission_date,
   serp_provider_id,
-  partner_code,
   serp_search_access_point

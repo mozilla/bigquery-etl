@@ -1,0 +1,11 @@
+friendly_name: Clients First Seen
+description: |-
+  This view gets the first seen attributes for each client from the metrics ping
+  and joins the first seen attributes for each client from the baseline ping,
+  to create a coherent view of first seen attributes across both pings.
+  Primary Key: Client ID
+owners:
+- kwindau@mozilla.com
+labels:
+  owner: kwindau
+require_column_descriptions: false

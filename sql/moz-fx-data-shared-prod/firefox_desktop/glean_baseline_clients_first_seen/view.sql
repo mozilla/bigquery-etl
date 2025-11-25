@@ -27,6 +27,7 @@ SELECT
   bcfs.locale,
   bcfs.normalized_os,
   bcfs.app_display_version,
+  bcfs.app_build_id,
   bcfs.normalized_channel,
   bcfs.normalized_os_version,
   bcfs.isp,

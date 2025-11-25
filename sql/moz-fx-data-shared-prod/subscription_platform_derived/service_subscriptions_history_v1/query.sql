@@ -194,10 +194,16 @@ synthetic_subscription_ends_history AS (
         )
     ) AS subscription
   FROM
-    subscriptions_history
+    subscriptions_history AS history
   QUALIFY
-    1 = ROW_NUMBER() OVER (PARTITION BY subscription.id ORDER BY valid_from DESC, valid_to DESC)
-    AND valid_to < '9999-12-31 23:59:59.999999'
+    1 = ROW_NUMBER() OVER (
+      PARTITION BY
+        history.subscription.id
+      ORDER BY
+        history.valid_from DESC,
+        history.valid_to DESC
+    )
+    AND history.valid_to < '9999-12-31 23:59:59.999999'
 )
 SELECT
   *

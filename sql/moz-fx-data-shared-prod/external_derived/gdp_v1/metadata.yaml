@@ -1,6 +1,6 @@
 friendly_name: GDP - Gross Domestic Product
 description: |-
-  Pulls GDP data by country and year from the IMF API
+  Pulls GDP data by country and year from the World Bank API
 owners:
 - kwindau@mozilla.com
 labels:

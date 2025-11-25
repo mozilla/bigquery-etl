@@ -17,6 +17,7 @@ WITH extracted AS (
   WHERE
     DATE(submission_timestamp) = {{ submission_date }}
     AND client_info.client_id IS NOT NULL
+    AND LOWER(IFNULL(metadata.isp.name, "")) <> "browserstack" -- Removes bots data.
 ),
 histograms AS (
   SELECT

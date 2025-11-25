@@ -4,7 +4,6 @@ version: 2.1
 orbs:
   gcp-gcr: circleci/gcp-gcr@0.16
   docker: circleci/docker@2.6
-  python: circleci/python@2.1.1
   gcp-cli: circleci/gcp-cli@3.2
 
 parameters:
@@ -38,9 +37,10 @@ executors:
 jobs:
   build:
     docker: &docker
-      - image: python:<< pipeline.parameters.python-version >>
+      - image: cimg/python:<< pipeline.parameters.python-version >>
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - &restore_venv_cache
         restore_cache:
           keys:
@@ -48,12 +48,12 @@ jobs:
             # patterns to restore cache
             - &python_cache_key
               # yamllint disable-line rule:line-length
-              python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
+              python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-{{ checksum "requirements.in" }}-{{ checksum "requirements.txt" }}
             # yamllint disable-line rule:line-length
-            - python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-{{ checksum "requirements.in" }}-
+            - python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-{{ checksum "requirements.in" }}-
             # yamllint disable-line rule:line-length
-            - python-<< pipeline.parameters.python-version >>-packages-v1-{{ .Branch }}-
-            - python-<< pipeline.parameters.python-version >>-packages-v1-main-
+            - python-<< pipeline.parameters.python-version >>-packages-v2-{{ .Branch }}-
+            - python-<< pipeline.parameters.python-version >>-packages-v2-main-
       - &build
         run:
           name: Build
@@ -75,7 +75,8 @@ jobs:
               - << pipeline.parameters.validate-routines >>
               - << pipeline.parameters.deploy >>
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - run:
@@ -93,7 +94,8 @@ jobs:
   verify-format-yaml:
     docker: *docker
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - *restore_venv_cache
       - *build
       - run:
@@ -102,7 +104,8 @@ jobs:
   verify-requirements:
     docker: *docker
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - *restore_venv_cache
       - *build
       - run:
@@ -129,7 +132,8 @@ jobs:
                       "so marking this step successful"
                     circleci-agent step halt
                   fi
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - &authenticate
@@ -163,7 +167,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - &attach_generated_sql
@@ -211,7 +216,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -259,7 +265,8 @@ jobs:
               - << pipeline.parameters.validate-sql >>
               - << pipeline.parameters.deploy >>
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -286,7 +293,8 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - run:
@@ -315,7 +323,8 @@ jobs:
           condition: *validate-bqetl
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - run:
@@ -338,10 +347,20 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
+            - &restore_schema_cache
+              run:
+                name: Restore schema cache from generate-sql job
+                command: |
+                  # Restore stable table schema cache from workspace
+                  if [ -d /tmp/workspace/schema-cache/bigquery_etl_schemas ]; then
+                    cp -r /tmp/workspace/schema-cache/bigquery_etl_schemas /tmp/
+                    echo "Restored schema cache from generate-sql job"
+                  fi
             - *authenticate
             - &add_private_bigquery_etl_ssh_keys
               add_ssh_keys:
@@ -379,14 +398,13 @@ jobs:
           steps:
             - *skip
   validate-dags:
-    executor:
-      name: python/default
-      tag: 3.11.8
+    docker: *docker
     steps:
       - when:
           condition: *validate-sql
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - run:
                 name: Pull telemetry-airflow
                 command: |
@@ -398,6 +416,11 @@ jobs:
                 command: |
                   rm ~/telemetry-airflow/dags/* -f || true
                   cp -a /tmp/workspace/generated-sql/dags/. ~/telemetry-airflow/dags/
+            - restore_cache:
+                keys:
+                  - telemetry-airflow-deps-v1-{{ checksum "~/telemetry-airflow/requirements.txt" }}-{{ checksum "~/telemetry-airflow/requirements-dev.txt" }}-{{ checksum "~/telemetry-airflow/requirements-override.txt" }}
+                  - telemetry-airflow-deps-v1-{{ checksum "~/telemetry-airflow/requirements.txt" }}-{{ checksum "~/telemetry-airflow/requirements-dev.txt" }}-
+                  - telemetry-airflow-deps-v1-
             - run:
                 name: Install telemetry-airflow dependencies
                 command: |
@@ -407,6 +430,10 @@ jobs:
                   pip install -r requirements.txt
                   pip install -r requirements-dev.txt
                   pip install -r requirements-override.txt
+            - save_cache:
+                paths:
+                  - ~/telemetry-airflow/.venv
+                key: telemetry-airflow-deps-v1-{{ checksum "~/telemetry-airflow/requirements.txt" }}-{{ checksum "~/telemetry-airflow/requirements-dev.txt" }}-{{ checksum "~/telemetry-airflow/requirements-override.txt" }}
             - run:
                 name: 🧪 Test valid DAGs
                 command: |
@@ -438,7 +465,8 @@ jobs:
               - << pipeline.parameters.deploy >>
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -465,7 +493,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -488,7 +517,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -516,7 +546,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *authenticate
@@ -591,9 +622,13 @@ jobs:
 
                     cp -r sql/ /tmp/workspace/generated-sql/sql
                     # Don't depend on dry run for PRs
+                    # Ignore derived_view_schemas as this will add descriptions to view which take a long time;
+                    # Schemas with descriptions will be generated before deployment instead
                     PATH="venv/bin:$PATH" script/bqetl generate all \
+                      --ignore derived_view_schemas \
                       --output-dir /tmp/workspace/generated-sql/sql/ \
                       --target-project moz-fx-data-shared-prod
+                    PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   else
                     echo "Changes made don't affect generated SQL. Use content from generated-sql"
 
@@ -602,7 +637,6 @@ jobs:
                     cp -a sql/. /tmp/workspace/generated-sql/sql
                   fi
 
-                  PATH="venv/bin:$PATH" script/bqetl format /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl dependency record \
                     --skip-existing \
                     "/tmp/workspace/generated-sql/sql/"
@@ -610,10 +644,19 @@ jobs:
                     --sql-dir /tmp/workspace/generated-sql/sql/ \
                     /tmp/workspace/generated-sql/sql/
                   PATH="venv/bin:$PATH" script/bqetl monitoring update /tmp/workspace/generated-sql/sql/
+            - run:
+                name: Copy schema cache for reuse in other jobs
+                command: |
+                  # Copy stable table schema cache to workspace for reuse in generate-dags
+                  mkdir -p /tmp/workspace/schema-cache
+                  if [ -d /tmp/bigquery_etl_schemas ]; then
+                    cp -r /tmp/bigquery_etl_schemas /tmp/workspace/schema-cache/
+                  fi
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
                   - generated-sql
+                  - schema-cache
       - unless:
           condition: *validate-sql-or-routines
           steps:
@@ -625,10 +668,12 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
+            - *restore_schema_cache
             - *copy_generated_sql
             - add_ssh_keys:
                 fingerprints:
@@ -718,7 +763,8 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - add_ssh_keys:
                 fingerprints:
                   - "9d:1e:af:52:78:2c:e8:ec:33:4c:db:cd:5a:ff:70:0a"
@@ -787,7 +833,8 @@ jobs:
           condition: *validate-sql
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *attach_generated_sql
@@ -870,7 +917,8 @@ jobs:
       - when:
           condition: *deploy
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - *attach_generated_sql
             - run:
                 name: Move generated-sql into place
@@ -895,7 +943,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - run:
                 name: Switch to main branch
                 command: |
@@ -968,6 +1017,7 @@ jobs:
                   if [ "$GENERATED_SQL_CHANGED" = "true" ]; then
                     # re-run SQL generation and re-generate DAGs
                     $bqetl_script generate all \
+                      --ignore derived_view_schemas \
                       --target-project moz-fx-data-shared-prod
                   else
                     echo "Changes made don't affect generated SQL. Use content from generated-sql"
@@ -1015,7 +1065,8 @@ jobs:
       - when:
           condition: *validate-sql-or-routines
           steps:
-            - checkout
+            - checkout:
+                method: blobless
             - attach_workspace:
                 at: /tmp/workspace
             - run:
@@ -1051,7 +1102,8 @@ jobs:
           condition: *validate-sql-or-routines
           steps:
             - *skip_forked_pr
-            - checkout
+            - checkout:
+                method: blobless
             - *restore_venv_cache
             - *build
             - *authenticate
@@ -1076,7 +1128,8 @@ jobs:
               echo "Build on upstream"
               circleci-agent step halt
             fi
-      - checkout
+      - checkout:
+          method: blobless
       - run:
           name: Manually trigger integration tests for fork
           # yamllint disable rule:line-length
@@ -1098,7 +1151,8 @@ jobs:
   deploy-to-pypi:
     docker: *docker
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run:
           name: Check for package version change in last commit before proceeding.
           command: |

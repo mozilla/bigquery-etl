@@ -1,0 +1,29 @@
+fields:
+- mode: NULLABLE
+  name: create_date
+  type: DATE
+  description: "Date when the CTA mapping was created"
+- mode: NULLABLE
+  name: locale
+  type: STRING
+  description: "Locale code (e.g., en-US, fr-FR) for the localized text"
+- mode: NULLABLE
+  name: data_cta_uid
+  type: STRING
+  description: "Unique identifier for the call-to-action element"
+- mode: NULLABLE
+  name: major_version
+  type: NUMERIC
+  description: "Major version number of Firefox"
+- mode: NULLABLE
+  name: minor_version
+  type: NUMERIC
+  description: "Minor version number of Firefox"
+- mode: NULLABLE
+  name: native_locale_text
+  type: STRING
+  description: "Call-to-action text in the native locale language"
+- mode: NULLABLE
+  name: english_text
+  type: STRING
+  description: "Call-to-action text in English for reference"

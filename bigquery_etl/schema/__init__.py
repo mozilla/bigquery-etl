@@ -3,7 +3,6 @@
 import json
 import os
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import Any, Dict, Iterable, List, Optional
 
 import attr
@@ -85,9 +84,7 @@ class Schema:
     def deploy(self, destination_table: str) -> bigquery.Table:
         """Deploy the schema to BigQuery named after destination_table."""
         client = bigquery.Client()
-        tmp_schema_file = NamedTemporaryFile()
-        self.to_json_file(Path(tmp_schema_file.name))
-        bigquery_schema = client.schema_from_json(tmp_schema_file.name)
+        bigquery_schema = self.to_bigquery_schema()
 
         try:
             # destination table already exists, update schema

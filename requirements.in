@@ -43,7 +43,7 @@ pytest==8.4.2
 PyYAML==6.0.3
 rich-click==1.9.4
 smart_open==6.4.0
-sqlglot==25.28.0
+sqlglot==27.29.0
 sqlparse==0.5.3
 stripe==6.4.0
 symbolic==12.16.3
@@ -58,3 +58,8 @@ ujson==5.11.0
 yamllint==1.37.1
 requests==2.32.5
 responses==0.25.8
+
+# Pin setuptools to v80.8.0 for now to avoid annoying "pkg_resources is deprecated as an API"
+# warnings from Google code (https://github.com/googleapis/google-cloud-python/issues/13974).
+# We can remove this pin when that issue is resolved (or maybe once setuptools v81 is released).
+setuptools<80.9.0

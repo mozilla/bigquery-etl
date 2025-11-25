@@ -39,13 +39,13 @@ fields:
 - name: campaign_id
   type: INTEGER
   description: The identifier of the campaign associated with an ad as set by the
-    partner. A campaign is a collection of an advertiser’s ads, which is made up of
+    partner. A campaign is a collection of an advertiser ads, which is made up of
     one or more flights. Typically the flights in a campaign have a common theme,
     such as product or promotion.
 - name: campaign_name
   type: STRING
   description: The name of the campaign associated with an ad. A campaign is a collection
-    of an advertiser’s ads, which is made up of one or more flights. Typically the
+    of an advertiser ads, which is made up of one or more flights. Typically the
     flights in a campaign have a common theme, such as product or promotion.
 - name: click_rate
   type: FLOAT

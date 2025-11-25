@@ -292,3 +292,7 @@ fields:
     type: BOOLEAN
     mode: NULLABLE
     description: Is Major Release
+- name: cta_click_uid
+  type: STRING
+  mode: NULLABLE
+  description: The string value of the uid key from event_params on a cta_click event.

@@ -8,6 +8,11 @@ WITH corpus_item_id_row_nums AS (
     url AS recommendation_url,
     authors,
     publisher,
+    CASE
+      WHEN curator_created_by = 'ML'
+        THEN "ML"
+      ELSE "Curator"
+    END AS curator,
     reviewed_corpus_item_updated_at AS corpus_item_updated_at,
     ROW_NUMBER() OVER (
       PARTITION BY

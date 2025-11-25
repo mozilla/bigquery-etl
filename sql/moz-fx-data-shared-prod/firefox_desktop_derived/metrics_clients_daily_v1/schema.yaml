@@ -1,0 +1,112 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: The date when the telemetry ping is received on the server side.
+- name: client_id
+  type: STRING
+  mode: NULLABLE
+  description: A unique identifier (UUID) for the client.
+- name: sample_id
+  type: INTEGER
+  mode: NULLABLE
+  description: A number, 0-99, that samples by client_id and allows filtering data
+    for analysis. It is a pipeline-generated artifact that should match between pings.
+- name: normalized_channel
+  type: STRING
+  mode: NULLABLE
+  description: The normalized channel the application is being distributed on.
+- name: n_metrics_ping
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of metrics pings we received from this client on this submission date.
+- name: days_sent_metrics_ping_bits
+  type: INTEGER
+  mode: NULLABLE
+  description: Value of 1 if the client ID sent a metric ping on this date.
+- name: profile_group_id
+  type: STRING
+  mode: NULLABLE
+  description: A UUID uniquely identifying the profile group, not shared with other telemetry data.
+- name: search_with_ads_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of searches with ads on client's last seen date in last 28 days.
+- name: search_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of searches on client's last seen date in last 28 days.
+- name: ad_clicks_count_all
+  type: INTEGER
+  mode: NULLABLE
+  description: Number of ad clicks on client's last seen date in last 28 days.
+- name: apple_model_id
+  type: STRING
+  mode: NULLABLE
+  description: The hw.model of the hardware running this software. Mac only. e.g. "MacBookPro14,1"
+- name: default_search_engine
+  type: STRING
+  mode: NULLABLE
+  description: The telemetry id of the search engine.
+- name: xpcom_abi
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    A string tag identifying the binary ABI of the current processor and compiler vtable. This is taken from the TARGET_XPCOM_ABI configure variable.
+    It may not be available on all platforms, especially unusual processor or compiler combinations.
+    For example: x86-msvc, ppc-gcc3
+    This value should almost always be used in combination with the operating system.
+- name: installation_first_seen_admin_user
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the installer is running from an elevated admin user.
+- name: installation_first_seen_default_path
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the default path was used; optional, present if installer_type is "full"
+- name: installation_first_seen_failure_reason
+  type: STRING
+  mode: NULLABLE
+  description: |-
+    Only sent if unable to collect firstSeen data.
+    Can have value "NotFoundError" if file not found or other values depending on the failure reason.
+- name: installation_first_seen_from_msi
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether this was an MSI install; optional, present if installer_type is "full".
+- name: installation_first_seen_install_existed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether there was already an install in this location.
+- name: installation_first_seen_installer_type
+  type: STRING
+  mode: NULLABLE
+  description: The type of installer used to install Firefox. The value is one of "stub", "full", or "msix".
+- name: installation_first_seen_other_inst
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether there was already any non-MSIX install on this system.
+- name: installation_first_seen_other_msix_inst
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether there was already any MSIX install on this system.
+- name: installation_first_seen_profdir_existed
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether the top-level profile directory existed.
+- name: installation_first_seen_silent
+  type: BOOLEAN
+  mode: NULLABLE
+  description: Whether this was a silent install; optional, present if installer_type is "full".
+- name: installation_first_seen_version
+  type: STRING
+  mode: NULLABLE
+  description: The application version installed by the installer (not necessarily the current version)
+- name: browser_backup_scheduler_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the BackupService is configured to automatically create backups in the background.
+- name: browser_backup_archive_enabled
+  type: BOOLEAN
+  mode: NULLABLE
+  description: True if the user can create backups, i.e. it has not been disabled by a pref or otherwise deemed incompatible.

@@ -1,0 +1,13 @@
+fields:
+- mode: NULLABLE
+  name: section_position
+  type: INTEGER
+- mode: NULLABLE
+  name: position
+  type: INTEGER
+- mode: NULLABLE
+  name: impressions
+  type: INTEGER
+- mode: NULLABLE
+  name: weight
+  type: FLOAT

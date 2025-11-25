@@ -254,6 +254,9 @@ def temp_dataset_option(
     )
 
 
+from functools import cache
+
+@cache
 def get_glean_channel_to_app_name_mapping() -> Dict[str, str]:
     """Return a dict where key is the channel app id and the value is the shared app name.
 

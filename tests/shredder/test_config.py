@@ -6,7 +6,7 @@ from google.api_core.exceptions import NotFound
 from google.cloud import bigquery
 from google.cloud.bigquery import DatasetReference
 
-from bigquery_etl.cli.utils import get_glean_channel_to_app_name_mapping
+from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 from bigquery_etl.shredder.config import (
     CLIENT_ID,
     DELETE_TARGETS,
@@ -385,7 +385,7 @@ def test_glean_channel_app_mapping(mock_requests):
     mock_response.json.return_value = GLEAN_APP_LISTING
     mock_requests.get.return_value = mock_response
 
-    actual = get_glean_channel_to_app_name_mapping()
+    actual = get_glean_app_id_to_app_name_mapping()
 
     expected = {
         "org_mozilla_firefox": "fenix",

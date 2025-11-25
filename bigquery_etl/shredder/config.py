@@ -14,7 +14,7 @@ from typing import List
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 
-from bigquery_etl.cli.utils import get_glean_channel_to_app_name_mapping
+from bigquery_etl.cli.utils import get_glean_app_id_to_app_name_mapping
 
 from ..util.bigquery_id import qualified_table_id
 
@@ -789,7 +789,7 @@ def find_glean_targets(
 
     glean_stable_tables = stable_tables_by_schema(GLEAN_SCHEMA_ID)
 
-    channel_to_app_name = get_glean_channel_to_app_name_mapping()
+    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
 
     # create mapping of dataset -> (tables containing associated deletion requests)
     # construct values as tuples because that is what they must be in the return type

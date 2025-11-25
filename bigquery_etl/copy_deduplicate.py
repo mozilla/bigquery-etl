@@ -21,7 +21,7 @@ from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 from bigquery_etl.cli.utils import (
-    get_glean_channel_to_app_name_mapping,
+    get_glean_app_id_to_app_name_mapping,
     parallelism_option,
     project_id_option,
     table_matches_patterns,
@@ -103,7 +103,7 @@ def _select_geo(live_table: str, client: bigquery.Client) -> str:
 
     excluded_apps = set(ConfigLoader.get("geo_deprecation", "skip_apps", fallback=[]))
     app_id = re.sub("_live$", "", dataset_id)
-    channel_to_app_name = get_glean_channel_to_app_name_mapping()
+    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
     app_name = channel_to_app_name.get(app_id)
     if app_name in excluded_apps:
         return ""

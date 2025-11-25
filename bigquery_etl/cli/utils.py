@@ -4,6 +4,7 @@ import fnmatch
 import os
 import re
 from fnmatch import fnmatchcase
+from functools import cache
 from glob import glob
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Tuple
@@ -253,8 +254,6 @@ def temp_dataset_option(
         "formatted as PROJECT_ID.DATASET_ID",
     )
 
-
-from functools import cache
 
 @cache
 def get_glean_app_id_to_app_name_mapping() -> Dict[str, str]:

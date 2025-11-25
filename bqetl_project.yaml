@@ -26,7 +26,7 @@ monitoring:
   - 463
   - 508
   - 509
-  stable_tables_targeted:
+  stable_tables_monitoring:
     mozilla_vpn_external:
     - waitlist_v1
 
@@ -343,6 +343,9 @@ metadata:
   validation:
     skip:
     - sql/moz-fx-data-shared-prod/addons_derived/search_detection_v1/metadata.yaml # backfill compatibility issue
+  deploy:
+    skip:
+    - sql/moz-fx-data-shared-prod/*_stable
 
 generate:
   glean_usage:

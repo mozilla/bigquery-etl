@@ -23,5 +23,5 @@ from sql_generators.stable_tables_monitoring.stable_tables_monitoring import (
     default=True,
 )
 def generate(target_project, enable_monitoring, **kwargs):
-    """Call generate_mobile_kpi_support_metrics function."""
+    """Call generate_stable_table_bigconfig_files function."""
     generate_stable_table_bigconfig_files(target_project, enable_monitoring)

@@ -1,0 +1,3 @@
+friendly_name: GDP - Gross Domestic Product
+description: |-
+  Contains GDP data by country and year from the World Bank API

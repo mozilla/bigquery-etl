@@ -93,6 +93,10 @@ WITH
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS architecture,
+     ARRAY_AGG(
+      client_info.app_build IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS app_build_id,
       {% endif %}
     FROM
       `{{ baseline_table }}`
@@ -212,6 +216,10 @@ _baseline AS (
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS architecture,
+     ARRAY_AGG(
+      client_info.app_build IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS app_build_id
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -246,6 +254,7 @@ _current AS (
     isp,
     startup_profile_selection_reason_first,
     architecture,
+    app_build_id,
     {% endif %}
   FROM
     _baseline
@@ -281,6 +290,7 @@ _previous AS (
     isp,
     startup_profile_selection_reason_first,
     architecture,
+    app_build_id,
     {% endif %}
   FROM
     `{{ first_seen_table }}` fs
@@ -378,6 +388,10 @@ _current AS (
       client_info.architecture RESPECT NULLS
       ORDER BY submission_timestamp ASC
     )[SAFE_OFFSET(0)] AS architecture,
+     ARRAY_AGG(
+      client_info.app_build IGNORE NULLS
+      ORDER BY submission_timestamp ASC
+    )[SAFE_OFFSET(0)] AS app_build_id,
     {% endif %}
   FROM
     `{{ baseline_table }}`
@@ -415,6 +429,7 @@ _previous AS (
     isp,
     startup_profile_selection_reason_first,
     architecture,
+    app_build_id,
     {% endif %}
   FROM
     `{{ first_seen_table }}`
@@ -465,6 +480,7 @@ SELECT
   isp,
   startup_profile_selection_reason_first,
   architecture,
+  app_build_id,
   {% endif %}
 FROM _joined
 QUALIFY

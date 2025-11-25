@@ -93,6 +93,6 @@ SELECT
   serp_os_version_minor AS os_version_minor,
   serp_profile_group_id AS profile_group_id
 FROM
-  join_sap_serp_cte
+  `search_derived.search_clients_daily_v9.join_sap_serp_cte`
 WHERE
   serp_submission_date IS NOT NULL

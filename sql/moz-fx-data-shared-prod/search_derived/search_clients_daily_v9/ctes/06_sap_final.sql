@@ -52,8 +52,8 @@ SELECT
   sap_aggregates_cte.scalar_parent_browser_engagement_total_uri_count_sum,
   sap_aggregates_cte.concurrent_tab_count_max
 FROM
-  sap_events_clients_ad_enterprise_cte
+  `search_derived.search_clients_daily_v9.sap_events_clients_ad_enterprise_cte`
 LEFT JOIN
-  sap_aggregates_cte
+  `search_derived.search_clients_daily_v9.sap_aggregates_cte`
   USING (client_id, submission_date, normalized_engine, source)
 -- using(client_id, submission_date, normalized_engine, partner_code, search_access_point) -- rename

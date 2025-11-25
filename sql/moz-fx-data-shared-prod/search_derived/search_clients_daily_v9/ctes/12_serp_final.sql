@@ -67,10 +67,10 @@ SELECT
   serp_aggregates_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum,
   serp_aggregates_cte.max_concurrent_tab_count_max
 FROM
-  serp_events_clients_ad_enterprise_cte
+  `search_derived.search_clients_daily_v9.serp_events_clients_ad_enterprise_cte`
 LEFT JOIN
-  serp_ad_click_target_cte
+  `search_derived.search_clients_daily_v9.serp_ad_click_target_cte`
   USING (client_id, submission_date, serp_provider_id, serp_search_access_point)
 LEFT JOIN
-  serp_aggregates_cte
+  `search_derived.search_clients_daily_v9.serp_aggregates_cte`
   USING (client_id, submission_date, serp_provider_id, serp_search_access_point)

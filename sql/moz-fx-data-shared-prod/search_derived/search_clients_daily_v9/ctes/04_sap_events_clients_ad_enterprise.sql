@@ -45,10 +45,10 @@ SELECT
   clients_with_adblocker_addons_cte.has_adblocker_addon,
   sap_is_enterprise_cte.policies_is_enterprise
 FROM
-  sap_events_with_client_info_cte
+  `search_derived.search_clients_daily_v9.sap_events_with_client_info_cte`
 LEFT JOIN
-  clients_with_adblocker_addons_cte
+  `search_derived.search_clients_daily_v9.clients_with_adblocker_addons_cte`
   USING (client_id, submission_date)
 LEFT JOIN
-  sap_is_enterprise_cte
+  `search_derived.search_clients_daily_v9.sap_is_enterprise_cte`
   USING (client_id, submission_date)

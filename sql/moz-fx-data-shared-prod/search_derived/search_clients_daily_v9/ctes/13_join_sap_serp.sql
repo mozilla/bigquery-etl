@@ -117,9 +117,9 @@ SELECT
   serp_final_cte.serp_scalar_parent_browser_engagement_total_uri_count_sum AS serp_scalar_parent_browser_engagement_total_uri_count_sum,
   serp_final_cte.max_concurrent_tab_count_max AS serp_max_concurrent_tab_count_max
 FROM
-  sap_final_cte
+  `search_derived.search_clients_daily_v9.sap_final_cte`
 FULL OUTER JOIN
-  serp_final_cte
+  `search_derived.search_clients_daily_v9.serp_final_cte`
   ON (
     sap_final_cte.client_id = serp_final_cte.client_id
     OR (sap_final_cte.client_id IS NULL AND serp_final_cte.client_id IS NULL)

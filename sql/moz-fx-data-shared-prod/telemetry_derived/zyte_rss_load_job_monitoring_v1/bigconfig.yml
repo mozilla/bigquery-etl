@@ -5,6 +5,8 @@ row_creation_times:
 tag_deployments:
   - collection:
       name: Home Newtab
+      notification_channels:
+        - slack: '#hnt-dev-be-alerts'
     deployments:
       - column_selectors:
           - name: moz-fx-data-shared-prod.moz-fx-data-shared-prod.telemetry_derived.zyte_rss_load_job_monitoring_v1.*

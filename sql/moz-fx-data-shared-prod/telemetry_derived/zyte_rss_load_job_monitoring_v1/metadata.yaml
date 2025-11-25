@@ -5,7 +5,7 @@ description: |-
   Used to alert when failures exceed the BigQuery change table limit (1400 failures/day).
   Data is retained for 180 days for historical trending.
 owners:
-- chelseybeck@mozilla.com
+  - chelseybeck@mozilla.com
 labels:
   incremental: true
   schedule: daily
@@ -21,7 +21,7 @@ bigquery:
 monitoring:
   enabled: true
   partition_column: submission_date
-  collection: Operational Checks
+  collection: Home Newtab
   volume:
     blocking: false
   freshness:

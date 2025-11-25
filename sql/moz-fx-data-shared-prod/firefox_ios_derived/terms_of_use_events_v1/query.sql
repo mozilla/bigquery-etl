@@ -7,11 +7,6 @@ SELECT
   event_category,
   event_name,
   CASE
-    WHEN (event_category = "onboarding" OR JSON_VALUE(event_extra.surface) = "onboarding")
-      THEN "onboarding"
-    ELSE "bottom_sheet"
-  END AS surface,
-  CASE
     WHEN (event_name = "accepted" AND JSON_VALUE(event_extra.surface) = "bottom_sheet")
       OR (event_name = "terms_of_service_accepted")
       THEN "accepted"
@@ -30,7 +25,12 @@ SELECT
       )
       THEN "terms_of_use_link_clicked"
     ELSE event_name
-  END AS normalized_event_name
+  END AS normalized_event_name,
+  CASE
+    WHEN (event_category = "onboarding" OR JSON_VALUE(event_extra.surface) = "onboarding")
+      THEN "onboarding"
+    ELSE "bottom_sheet"
+  END AS surface,
 FROM
   `moz-fx-data-shared-prod.firefox_ios.events_stream`
 WHERE

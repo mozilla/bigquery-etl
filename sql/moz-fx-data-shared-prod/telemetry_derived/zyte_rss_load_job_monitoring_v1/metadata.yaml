@@ -18,3 +18,11 @@ bigquery:
     field: submission_date
     require_partition_filter: false
     expiration_days: 180
+monitoring:
+  enabled: true
+  partition_column: submission_date
+  collection: Operational Checks
+  volume:
+    blocking: false
+  freshness:
+    blocking: false

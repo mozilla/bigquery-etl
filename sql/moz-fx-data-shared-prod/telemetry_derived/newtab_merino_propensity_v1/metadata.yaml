@@ -5,6 +5,11 @@ description: |-
 owners:
 - mmiermans@mozilla.com
 - rrando@mozilla.com
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozsoc-ml/service
+  - workgroup:mozsoc-ml/developers
 labels:
   incremental: false
   owner: cbeck

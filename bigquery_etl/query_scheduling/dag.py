@@ -122,6 +122,7 @@ class Dag:
     repo: str = attr.ib("bigquery-etl")
     tags: List[str] = attr.ib([])
     catchup: bool = attr.ib(False)
+    max_active_runs: Optional[int] = attr.ib(None)
 
     @name.validator
     def validate_dag_name(self, attribute, value):

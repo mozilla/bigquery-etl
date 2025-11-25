@@ -567,6 +567,7 @@ geo_deprecation:
   - accounts_frontend
   skip_tables:
   - newtab
+  - newtab_content
 
 retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/search_derived/acer_cohort_v1

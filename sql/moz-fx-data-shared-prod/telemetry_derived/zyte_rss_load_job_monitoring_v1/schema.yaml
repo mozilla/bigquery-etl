@@ -1,0 +1,32 @@
+fields:
+- name: submission_date
+  type: DATE
+  mode: NULLABLE
+  description: |
+    The date on which the load jobs were created, used for daily partitioning.
+
+- name: zyte_cache_success
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Count of successful LOAD jobs for the prod_articles.zyte_cache table on this date.
+
+- name: zyte_cache_failure
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Count of failed LOAD jobs for the prod_articles.zyte_cache table on this date.
+    Alert threshold: 1400 failures indicates the BigQuery change table limit may be exceeded.
+
+- name: rss_feed_items_success
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Count of successful LOAD jobs for the prod_rss_news.rss_feed_items table on this date.
+
+- name: rss_feed_items_failure
+  type: INTEGER
+  mode: NULLABLE
+  description: |
+    Count of failed LOAD jobs for the prod_rss_news.rss_feed_items table on this date.
+    Alert threshold: 1400 failures indicates the BigQuery change table limit may be exceeded.

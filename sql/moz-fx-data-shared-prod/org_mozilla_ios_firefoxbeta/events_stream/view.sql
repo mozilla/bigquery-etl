@@ -85,6 +85,7 @@ SELECT
       JSON_VALUE(event_extra.model) AS `model`,
       JSON_VALUE(event_extra.new_name) AS `new_name`,
       JSON_VALUE(event_extra.old_name) AS `old_name`,
+      JSON_VALUE(event_extra.onboarding_variant) AS `onboarding_variant`,
       JSON_VALUE(event_extra.option) AS `option`,
       JSON_VALUE(event_extra.origin) AS `origin`,
       JSON_VALUE(event_extra.part_id) AS `part_id`,

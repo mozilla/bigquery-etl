@@ -1,15 +1,10 @@
-"""Generate metadata and bigconfig files for targeted stable tables."""
+"""Generate metadata and bigconfig files for stable tables."""
 
 from pathlib import Path
 
-import yaml
 from jinja2 import Environment, FileSystemLoader
 
-
-def load_yaml_file(file_path):
-    """Load bqetl project yaml file to get stable table datasets and table names."""
-    with open(file_path, "r") as file:
-        return yaml.safe_load(file)
+from bigquery_etl.config import ConfigLoader
 
 
 def write_file(content, file_path):
@@ -35,27 +30,19 @@ def generate_stable_table_bigconfig_files(target_project, enable_monitoring):
     BIGEYE_SLACK_CHANNEL = "#de-bigeye-triage"
 
     env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
-    bigconfig_template = env.get_template("stable_tables_targeted.bigconfig.yml")
-    metadata_template = env.get_template("stable_tables_targeted.metadata.yaml")
+    bigconfig_template = env.get_template("stable_tables_monitoring.bigconfig.yml")
+    metadata_template = env.get_template("stable_tables_monitoring.metadata.yaml")
 
-    project_config = load_yaml_file("bqetl_project.yaml")
-    stable_table_bigconfigs = project_config.get("monitoring", {}).get(
-        "stable_tables_targeted", {}
-    )
-
-    common_metadata_vars = {
-        "bigeye_collection": BIGEYE_COLLECTION,
-        "enable_monitoring": enable_monitoring,
-    }
+    stable_table_bigconfigs = ConfigLoader.get("monitoring", "stable_tables_monitoring")
 
     # Create directory for each dataset
-    for dataset_name, table_name in stable_table_bigconfigs.items():
+    for dataset_name, table_names in stable_table_bigconfigs.items():
 
         target_dir = SQL_BASE_DIR / dataset_name
         target_dir.mkdir(parents=True, exist_ok=True)
 
         # Create directory for each table each with a metadata.yaml and bigconfig.yml file
-        for table in table_name:
+        for table in table_names:
             name_part, version_part = parse_config_name(table)
 
             rendered_content = bigconfig_template.render(
@@ -67,7 +54,11 @@ def generate_stable_table_bigconfig_files(target_project, enable_monitoring):
                 bigeye_notification_slack_channel=BIGEYE_SLACK_CHANNEL,
             )
 
-            metadata_rendered = metadata_template.render(**common_metadata_vars)
+            metadata_rendered = metadata_template.render(
+                bigeye_collection=BIGEYE_COLLECTION,
+                enable_monitoring=enable_monitoring,
+                name=name_part,
+            )
 
             stable_table_bigconfig_dir = target_dir / table
             stable_table_bigconfig_dir.mkdir(exist_ok=True)

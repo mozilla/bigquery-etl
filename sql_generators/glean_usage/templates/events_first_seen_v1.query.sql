@@ -27,7 +27,7 @@ WITH eventsstream AS (
     min_by(normalized_os, submission_timestamp) AS normalized_os,
     min_by(normalized_os_version, submission_timestamp) AS normalized_os_version
   FROM
-    `{{ project_id }}.{{ app_name }}_derived.events_stream_v1`
+    `{{ project_id }}.{{ app_name }}.events_stream`
   WHERE
     -- initialize by looking over all of history
     DATE(submission_timestamp) >= '2023-01-01'
@@ -82,7 +82,7 @@ WITH _current AS (
     min_by(normalized_os, submission_timestamp) AS normalized_os,
     min_by(normalized_os_version, submission_timestamp) AS normalized_os_version,
   FROM
-    `{{ project_id }}.{{ app_name }}_derived.events_stream_v1`
+    `{{ project_id }}.{{ app_name }}.events_stream`
   WHERE
     DATE(submission_timestamp) = @submission_date
     AND profile_group_id IS NOT NULL

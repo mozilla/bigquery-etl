@@ -1,16 +1,15 @@
 friendly_name: Telemetry Health Ping Latency
 description: |
-  Reports latency percentiles (p95, median) for collection-to-submission, submission-to-ingestion, and collection-to-ingestion for telemetry pings per day.
+  Reports latency percentiles (p95, median) for collection-to-submission, submission-to-ingestion,
+  and collection-to-ingestion for telemetry pings per day.
+  Combines data from Firefox Desktop, Firefox Android, and Firefox iOS.
 owners:
   - tlong@mozilla.com
 labels:
   incremental: true
   schedule: daily
-{%- if not deprecated_app %}
 scheduling:
-  dag_name: bqetl_glean_usage
-  task_group: {{ app_name }}
-{%- endif %}
+  dag_name: bqetl_monitoring
 bigquery:
   time_partitioning:
     type: day

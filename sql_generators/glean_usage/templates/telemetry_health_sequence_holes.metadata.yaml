@@ -1,6 +1,0 @@
-{{ header_yaml }}
-friendly_name: Telemetry Health Sequence Holes
-description: |-
-  Counts the number of clients experiencing sequence holes in their Glean pings per day.
-owners:
-  - tlong@mozilla.com

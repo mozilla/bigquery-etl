@@ -1,6 +1,0 @@
-{{ header_yaml }}
-friendly_name: Telemetry Health Ping Latency
-description: |-
-  Calculates the median and 95th percentile of ping latency per client per day.
-owners:
-  - tlong@mozilla.com

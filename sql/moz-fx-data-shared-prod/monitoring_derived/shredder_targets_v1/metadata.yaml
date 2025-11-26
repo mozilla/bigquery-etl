@@ -10,6 +10,8 @@ labels:
 scheduling:
   dag_name: bqetl_shredder_monitoring
   arguments: ["--output-table", "moz-fx-data-shared-prod.monitoring_derived.shredder_targets_v1", "--run-date", "{{ ds }}"]
+  # downstream alert job uses previous date to determine new table
+  depends_on_past: true
 bigquery:
   time_partitioning:
     type: day

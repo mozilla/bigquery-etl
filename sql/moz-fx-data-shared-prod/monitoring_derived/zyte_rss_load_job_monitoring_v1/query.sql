@@ -1,5 +1,5 @@
 -- Monitor daily BigQuery LOAD job success/failure counts for specific tables
--- Purpose: Alert when load job failures exceed BigQuery change table limit (1400/day)
+-- Purpose: Alert when load job failures exceed ten percent of BigQuery's change table limit (200/day)
 -- Tracks: prod_articles.zyte_cache and prod_rss_news.rss_feed_items
 WITH base AS (
   SELECT
@@ -8,15 +8,15 @@ WITH base AS (
     destination_table.table_id AS table_id,
     error_result IS NULL AS is_success
   FROM
-    `moz-fx-data-shared-prod.region-US.INFORMATION_SCHEMA.JOBS_BY_PROJECT`
+    `moz-fx-data-shared-prod.monitoring_derived.jobs_by_organization_v1`
   WHERE
     job_type = 'LOAD'
     AND DATE(creation_time) = @submission_date
     AND destination_table IS NOT NULL
     AND (
-      (destination_table.dataset_id = 'prod_articles' AND destination_table.table_id = 'zyte_cache')
+      (destination_table.dataset_id = 'mozsoc_ml_prod_articles' AND destination_table.table_id = 'zyte_cache')
       OR (
-        destination_table.dataset_id = 'prod_rss_news'
+        destination_table.dataset_id = 'mozsoc_ml_prod_rss_news'
         AND destination_table.table_id = 'rss_feed_items'
       )
     )

@@ -16,4 +16,3 @@ SELECT
   metricsOptOutAt,
 FROM
   `moz-fx-data-shared-prod.accounts_backend_external.accounts_v1`
-

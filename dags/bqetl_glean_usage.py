@@ -4916,24 +4916,6 @@ with DAG(
         task_group=task_group_mozilla_vpn,
     )
 
-    mozillavpn_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="mozillavpn_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="mozillavpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_mozilla_vpn,
-    )
-
     mozphab_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="mozphab_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -5742,24 +5724,6 @@ with DAG(
         )
     )
 
-    org_mozilla_firefox_vpn_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_firefox_vpn_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_firefox_vpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_mozilla_vpn,
-    )
-
     org_mozilla_focus_beta_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_focus_beta_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -6316,24 +6280,6 @@ with DAG(
         task_group=task_group_mozilla_vpn,
     )
 
-    org_mozilla_ios_firefoxvpn_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefoxvpn_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
-        task_group=task_group_mozilla_vpn,
-    )
-
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1 = bigquery_etl_query(
         task_id="org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1",
         destination_table="baseline_clients_daily_v1",
@@ -6368,24 +6314,6 @@ with DAG(
         email=["ascholtz@mozilla.com", "telemetry-alerts@mozilla.com"],
         date_partition_parameter="submission_date",
         depends_on_past=True,
-        task_group=task_group_mozilla_vpn,
-    )
-
-    org_mozilla_ios_firefoxvpn_network_extension_derived__events_stream__v1 = bigquery_etl_query(
-        task_id="org_mozilla_ios_firefoxvpn_network_extension_derived__events_stream__v1",
-        destination_table="events_stream_v1",
-        dataset_id="org_mozilla_ios_firefoxvpn_network_extension_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="jrediger@mozilla.com",
-        email=[
-            "ascholtz@mozilla.com",
-            "jrediger@mozilla.com",
-            "telemetry-alerts@mozilla.com",
-            "wstuckey@mozilla.com",
-        ],
-        date_partition_parameter="submission_date",
-        depends_on_past=False,
-        arguments=["--billing-project", "moz-fx-data-backfill-2"],
         task_group=task_group_mozilla_vpn,
     )
 
@@ -8070,8 +7998,6 @@ with DAG(
         mozillavpn_derived__baseline_clients_daily__v1
     )
 
-    mozillavpn_derived__events_stream__v1.set_upstream(wait_for_copy_deduplicate_all)
-
     mozphab_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8358,10 +8284,6 @@ with DAG(
         org_mozilla_firefox_vpn_derived__baseline_clients_daily__v1
     )
 
-    org_mozilla_firefox_vpn_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     org_mozilla_focus_beta_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8526,10 +8448,6 @@ with DAG(
         org_mozilla_ios_firefoxvpn_derived__baseline_clients_daily__v1
     )
 
-    org_mozilla_ios_firefoxvpn_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
-    )
-
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1.set_upstream(
         wait_for_copy_deduplicate_all
     )
@@ -8548,10 +8466,6 @@ with DAG(
 
     org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_last_seen__v1.set_upstream(
         org_mozilla_ios_firefoxvpn_network_extension_derived__baseline_clients_daily__v1
-    )
-
-    org_mozilla_ios_firefoxvpn_network_extension_derived__events_stream__v1.set_upstream(
-        wait_for_copy_deduplicate_all
     )
 
     org_mozilla_ios_focus_derived__baseline_clients_daily__v1.set_upstream(

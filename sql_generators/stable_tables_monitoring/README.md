@@ -9,8 +9,8 @@ Modify the `bqetl_project.yaml` file. Example:
 ```yaml
 monitoring:
   stable_tables_monitoring:
-    mozilla_vpn_external:
-    - waitlist_v1
+    firefox_desktop_stable:
+    - baseline_v1
 ```
 
 ## Running the generator

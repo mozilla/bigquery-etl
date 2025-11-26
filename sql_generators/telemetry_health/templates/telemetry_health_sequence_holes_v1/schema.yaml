@@ -1,13 +1,13 @@
 fields:
   - name: application
     type: STRING
-    mode: REQUIRED
+    mode: NULLABLE
   - name: channel
     type: STRING
-    mode: REQUIRED
+    mode: NULLABLE
   - name: submission_date
     type: DATE
-    mode: REQUIRED
+    mode: NULLABLE
   - name: clients_with_sequence_gaps_1pct
     type: INTEGER
     mode: NULLABLE

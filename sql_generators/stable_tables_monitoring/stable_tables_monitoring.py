@@ -30,8 +30,8 @@ def generate_stable_table_bigconfig_files(target_project, enable_monitoring):
     BIGEYE_SLACK_CHANNEL = "#de-bigeye-triage"
 
     env = Environment(loader=FileSystemLoader(str(TEMPLATES_DIR)))
-    bigconfig_template = env.get_template("stable_tables_monitoring.bigconfig.yml")
-    metadata_template = env.get_template("stable_tables_monitoring.metadata.yaml")
+    bigconfig_template = env.get_template("bigconfig.yml.jinja")
+    metadata_template = env.get_template("metadata.yaml.jinja")
 
     stable_table_bigconfigs = ConfigLoader.get("monitoring", "stable_tables_monitoring")
 

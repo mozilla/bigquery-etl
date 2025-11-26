@@ -7,7 +7,7 @@ tag_deployments:
         - slack: '{{ bigeye_notification_slack_channel }}'
     deployments:
       - column_selectors:
-        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}_derived.{{ name }}_{{ version }}.*
+        - name: {{ project_id }}.{{ project_id }}.{{ dataset }}.{{ name }}_{{ version }}.*
         metrics:
           - saved_metric_id: volume
           - saved_metric_id: freshness

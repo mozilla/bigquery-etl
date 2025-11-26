@@ -8,5 +8,5 @@ description: |-
   These BigEye checks add freshness and volume checks to these stable tables.
 
 monitoring:
-  enabled: {% if enable_monitoring %}true{% else %}false{% endif %}
+  enabled: {{ enable_monitoring }}
   collection: {{ bigeye_collection }}

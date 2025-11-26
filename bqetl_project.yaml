@@ -27,8 +27,14 @@ monitoring:
   - 508
   - 509
   stable_tables_monitoring:
-    mozilla_vpn_external:
-    - waitlist_v1
+    firefox_desktop_stable:
+    - baseline_v1
+    org_mozilla_firefox_stable:
+    - baseline_v1
+    org_mozilla_ios_firefox_stable:
+    - baseline_v1
+    telemetry_stable:
+    - main_v4
 
 dry_run:
   function: https://us-central1-moz-fx-data-shared-prod.cloudfunctions.net/bigquery-etl-dryrun

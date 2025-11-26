@@ -373,6 +373,7 @@ generate:
       - firefox_reality_pc
       - lockwise_android
       - lockwise_ios
+      - mozilla_vpn  # VPN events are in `main` pings rather than `events` pings (DENG-8596).
       - tiktokreporter_ios
       - tiktokreporter_android
       metrics_as_struct_apps:

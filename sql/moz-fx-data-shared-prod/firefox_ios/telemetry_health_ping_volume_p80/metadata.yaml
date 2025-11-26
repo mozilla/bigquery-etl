@@ -1,0 +1,8 @@
+friendly_name: Telemetry Health Ping Volume 80th Percentile
+description: |-
+    Calculates the 80th percentile of ping volume per client per day.
+owners:
+- tlong@mozilla.com
+labels:
+  owner: tlong
+require_column_descriptions: false

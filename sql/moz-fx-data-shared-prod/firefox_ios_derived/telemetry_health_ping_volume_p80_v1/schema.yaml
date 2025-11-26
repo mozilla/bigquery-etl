@@ -1,0 +1,10 @@
+fields:
+  - name: normalized_channel
+    type: STRING
+    mode: REQUIRED
+  - name: submission_date
+    type: DATE
+    mode: REQUIRED
+  - name: p80
+    type: INTEGER
+    mode: NULLABLE

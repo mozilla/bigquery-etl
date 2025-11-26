@@ -1,6 +1,0 @@
-{{ header_yaml }}
-friendly_name: Telemetry Health Ping Volume p80
-description: |-
-  Calculates the 80th percentile of ping volume per client per day.
-owners:
-  - tlong@mozilla.com

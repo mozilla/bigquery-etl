@@ -1,13 +1,13 @@
 fields:
   - name: application
     type: STRING
-    mode: REQUIRED
+    mode: NULLABLE
   - name: channel
     type: STRING
-    mode: REQUIRED
+    mode: NULLABLE
   - name: submission_date
     type: DATE
-    mode: REQUIRED
+    mode: NULLABLE
   - name: collection_to_submission_latency_p95
     type: INTEGER
     mode: NULLABLE

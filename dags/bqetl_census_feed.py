@@ -78,21 +78,6 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v2 = (
-        ExternalTaskSensor(
-            task_id="wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v2",
-            external_dag_id="bqetl_google_analytics_derived_ga4",
-            external_task_id="checks__fail_mozilla_org_derived__gclid_conversions__v2",
-            execution_delta=datetime.timedelta(seconds=18000),
-            check_existence=True,
-            mode="reschedule",
-            poke_interval=datetime.timedelta(minutes=5),
-            allowed_states=ALLOWED_STATES,
-            failed_states=FAILED_STATES,
-            pool="DATA_ENG_EXTERNALTASKSENSOR",
-        )
-    )
-
     wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v3 = (
         ExternalTaskSensor(
             task_id="wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v3",
@@ -132,19 +117,6 @@ with DAG(
         depends_on_past=True,
     )
 
-    mozilla_org_derived__ga_desktop_conversions__v1 = bigquery_etl_query(
-        task_id="mozilla_org_derived__ga_desktop_conversions__v1",
-        destination_table='ga_desktop_conversions_v1${{ macros.ds_format(macros.ds_add(ds, -2), "%Y-%m-%d", "%Y%m%d") }}',
-        dataset_id="mozilla_org_derived",
-        project_id="moz-fx-data-shared-prod",
-        owner="kwindau@mozilla.com",
-        email=["kwindau@mozilla.com", "telemetry-alerts@mozilla.com"],
-        date_partition_parameter=None,
-        depends_on_past=False,
-        parameters=["activity_date:DATE:{{macros.ds_add(ds, -2)}}"]
-        + ["submission_date:DATE:{{ds}}"],
-    )
-
     mozilla_org_derived__ga_desktop_conversions__v2 = bigquery_etl_query(
         task_id="mozilla_org_derived__ga_desktop_conversions__v2",
         destination_table='ga_desktop_conversions_v2${{ macros.ds_format(macros.ds_add(ds, -2), "%Y-%m-%d", "%Y%m%d") }}',
@@ -164,10 +136,6 @@ with DAG(
 
     firefoxdotcom_derived__glean_ga_desktop_conversions__v1.set_upstream(
         wait_for_firefoxdotcom_derived__glean_gclid_conversions__v1
-    )
-
-    mozilla_org_derived__ga_desktop_conversions__v1.set_upstream(
-        wait_for_checks__fail_mozilla_org_derived__gclid_conversions__v2
     )
 
     mozilla_org_derived__ga_desktop_conversions__v2.set_upstream(

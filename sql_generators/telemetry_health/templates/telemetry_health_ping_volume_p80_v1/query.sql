@@ -9,7 +9,7 @@
       client_info.client_id,
       COUNT(1) AS ping_count
     FROM
-      `{{ project_id }}.{{ app }}.baseline`
+      `{{ project_id }}.{{ app }}_stable.baseline_v1`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

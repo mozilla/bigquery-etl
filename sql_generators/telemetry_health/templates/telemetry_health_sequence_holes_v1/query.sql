@@ -9,7 +9,7 @@
       client_info.client_id,
       ping_info.seq AS sequence_number
     FROM
-      `{{ project_id }}.{{ app }}.baseline`
+      `{{ project_id }}.{{ app }}_stable.baseline_v1`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

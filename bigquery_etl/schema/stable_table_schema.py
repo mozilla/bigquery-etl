@@ -3,7 +3,6 @@
 import json
 import os
 import pickle
-import shutil
 import tarfile
 import tempfile
 import urllib.request
@@ -52,17 +51,6 @@ class SchemaFile:
         )
 
 
-def _clear_dryrun_cache():
-    """Clear dry run cache when new schemas are downloaded."""
-    cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
-    if os.path.exists(cache_dir):
-        try:
-            shutil.rmtree(cache_dir)
-            print(f"Cleared dry run cache at {cache_dir}")
-        except OSError as e:
-            print(f"Warning: Failed to clear dry run cache: {e}")
-
-
 def prod_schemas_uri():
     """Return URI for the schemas tarball deployed to shared-prod.
 
@@ -105,7 +93,7 @@ def get_stable_table_schemas() -> List[SchemaFile]:
 
     # Clear dry run cache when downloading new schemas
     # Schema changes could affect dry run results
-    _clear_dryrun_cache()
+    DryRun.clear_cache()
 
     with urllib.request.urlopen(schemas_uri) as f:
         tarbytes = BytesIO(f.read())

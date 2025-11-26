@@ -212,8 +212,11 @@ class TestDryRun:
         cache_key3 = dryrun._get_cache_key(different_sql)
         assert cache_key1 != cache_key3
 
-    def test_cache_save_and_load(self, tmp_query_path):
+    def test_cache_save_and_load(self, tmp_query_path, monkeypatch, tmp_path):
         """Test that dry run results can be saved and loaded from cache."""
+        # Use isolated cache directory for this test to avoid interference from other tests
+        monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
+
         query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 
@@ -237,8 +240,11 @@ class TestDryRun:
         assert cached_result["valid"] is True
         assert cached_result["schema"]["fields"][0]["name"] == "test"
 
-    def test_cache_expiration(self, tmp_query_path):
+    def test_cache_expiration(self, tmp_query_path, monkeypatch, tmp_path):
         """Test that cache expires after TTL."""
+        # Use isolated cache directory for this test to avoid interference from other tests
+        monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
+
         query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 
@@ -257,8 +263,11 @@ class TestDryRun:
         expired = dryrun._get_cached_result(cache_key, ttl_seconds=0)
         assert expired is None
 
-    def test_cache_respects_sql_changes(self, tmp_query_path):
+    def test_cache_respects_sql_changes(self, tmp_query_path, monkeypatch, tmp_path):
         """Test that changing SQL content creates a different cache entry."""
+        # Use isolated cache directory for this test to avoid interference from other tests
+        monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
+
         query_file = tmp_query_path / "query.sql"
 
         # First SQL
@@ -286,8 +295,11 @@ class TestDryRun:
         cached2 = dryrun2._get_cached_result(cache_key2)
         assert cached2 is None
 
-    def test_table_metadata_cache(self, tmp_query_path):
+    def test_table_metadata_cache(self, tmp_query_path, monkeypatch, tmp_path):
         """Test that table metadata can be cached by table identifier."""
+        # Use isolated cache directory for this test to avoid interference from other tests
+        monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
+
         query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 
@@ -314,8 +326,13 @@ class TestDryRun:
         assert cached_metadata["schema"]["fields"][0]["name"] == "col1"
         assert cached_metadata["tableType"] == "TABLE"
 
-    def test_table_metadata_cache_different_tables(self, tmp_query_path):
+    def test_table_metadata_cache_different_tables(
+        self, tmp_query_path, monkeypatch, tmp_path
+    ):
         """Test that different tables have separate cache entries."""
+        # Use isolated cache directory for this test to avoid interference from other tests
+        monkeypatch.setattr("tempfile.gettempdir", lambda: str(tmp_path))
+
         query_file = tmp_query_path / "query.sql"
         query_file.write_text("SELECT 123")
 

@@ -18,6 +18,7 @@ import os
 import pickle
 import random
 import re
+import shutil
 import sys
 import tempfile
 import time
@@ -198,6 +199,17 @@ class DryRun:
 
         return skip_files
 
+    @staticmethod
+    def clear_cache():
+        """Clear dry run cache directory."""
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        if cache_dir.exists():
+            try:
+                shutil.rmtree(cache_dir)
+                print(f"Cleared dry run cache at {cache_dir}")
+            except OSError as e:
+                print(f"Warning: Failed to clear dry run cache: {e}")
+
     def skip(self):
         """Determine if dry run should be skipped."""
         return self.respect_skip and self.sqlfile in self.skipped_files(
@@ -241,41 +253,52 @@ class DryRun:
         if ttl_seconds is None:
             ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
 
-        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
-        os.makedirs(cache_dir, exist_ok=True)
-        cache_file = os.path.join(cache_dir, f"dryrun_{cache_key}.pkl")
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
 
-        if os.path.exists(cache_file):
+        try:
+            if not cache_file.exists():
+                return None
+
             # check if cache is expired
-            file_age = time.time() - os.path.getmtime(cache_file)
+            file_age = time.time() - cache_file.stat().st_mtime
             if file_age > ttl_seconds:
                 try:
-                    os.remove(cache_file)
+                    cache_file.unlink()
                 except OSError:
                     pass
                 return None
 
+            cached_data = pickle.loads(cache_file.read_bytes())
+            cache_age = time.time() - cache_file.stat().st_mtime
+            print(f"[DRYRUN CACHE HIT] {self.sqlfile} (age: {cache_age:.0f}s)")
+            return cached_data
+        except (pickle.PickleError, EOFError, OSError, FileNotFoundError) as e:
+            print(f"[DRYRUN CACHE] Failed to load cache: {e}")
             try:
-                with open(cache_file, "rb") as f:
-                    cached_data = pickle.load(f)
-                cache_age = time.time() - os.path.getmtime(cache_file)
-                print(f"[DRYRUN CACHE HIT] {self.sqlfile} (age: {cache_age:.0f}s)")
-                return cached_data
-            except (pickle.PickleError, EOFError, OSError) as e:
-                print(f"[DRYRUN CACHE] Failed to load cache: {e}")
-                return None
-
-        return None
+                if cache_file.exists():
+                    cache_file.unlink()
+            except OSError:
+                pass
+            return None
 
     def _save_cached_result(self, cache_key, result):
-        """Save dry run result to disk cache."""
-        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
-        os.makedirs(cache_dir, exist_ok=True)
-        cache_file = os.path.join(cache_dir, f"dryrun_{cache_key}.pkl")
+        """Save dry run result to disk cache using atomic write."""
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
 
         try:
-            with open(cache_file, "wb") as f:
+            # write to temporary file first, then atomically rename
+            # this prevents race conditions where readers get partial files
+            temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
+            with open(temp_file, "wb") as f:
                 pickle.dump(result, f)
+                f.flush()
+                os.fsync(f.fileno())  # Ensure data is written to disk
+
+            temp_file.replace(cache_file)
 
             # save table metadata separately if present
             if (
@@ -291,49 +314,73 @@ class DryRun:
                 )
         except (pickle.PickleError, OSError) as e:
             print(f"[DRYRUN CACHE] Failed to save cache: {e}")
+            try:
+                temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
+                if temp_file.exists():
+                    temp_file.unlink()
+            except OSError:
+                pass
 
     def _get_cached_table_metadata(self, table_identifier, ttl_seconds=None):
         """Load cached table metadata from disk based on table identifier."""
         if ttl_seconds is None:
             ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
 
-        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
-        os.makedirs(cache_dir, exist_ok=True)
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
         # table identifier as cache key
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = os.path.join(cache_dir, f"table_metadata_{table_cache_key}.pkl")
+        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
 
-        if os.path.exists(cache_file):
+        try:
+            if not cache_file.exists():
+                return None
+
             # check if cache is expired
-            file_age = time.time() - os.path.getmtime(cache_file)
+            file_age = time.time() - cache_file.stat().st_mtime
 
             if file_age > ttl_seconds:
                 try:
-                    os.remove(cache_file)
+                    cache_file.unlink()
                 except OSError:
                     pass
                 return None
 
+            cached_data = pickle.loads(cache_file.read_bytes())
+            return cached_data
+        except (pickle.PickleError, EOFError, OSError, FileNotFoundError) as e:
+            print(f"[TABLE METADATA] Failed to load cache for {table_identifier}: {e}")
             try:
-                with open(cache_file, "rb") as f:
-                    cached_data = pickle.load(f)
-                return cached_data
-            except (pickle.PickleError, EOFError, OSError):
-                return None
-        return None
+                if cache_file.exists():
+                    cache_file.unlink()
+            except OSError:
+                pass
+            return None
 
     def _save_cached_table_metadata(self, table_identifier, metadata):
-        """Save table metadata to disk cache."""
-        cache_dir = os.path.join(tempfile.gettempdir(), "bigquery_etl_dryrun_cache")
-        os.makedirs(cache_dir, exist_ok=True)
+        """Save table metadata to disk cache using atomic write."""
+        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
+        cache_dir.mkdir(parents=True, exist_ok=True)
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = os.path.join(cache_dir, f"table_metadata_{table_cache_key}.pkl")
+        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
 
         try:
-            with open(cache_file, "wb") as f:
+            # write to temporary file first, then atomically rename
+            temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
+            with open(temp_file, "wb") as f:
                 pickle.dump(metadata, f)
+                f.flush()
+                os.fsync(f.fileno())
+
+            temp_file.replace(cache_file)
         except (pickle.PickleError, OSError) as e:
             print(f"[TABLE METADATA] Failed to save cache for {table_identifier}: {e}")
+            try:
+                temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
+                if temp_file.exists():
+                    temp_file.unlink()
+            except OSError:
+                pass
 
     @cached_property
     def dry_run_result(self):
@@ -343,7 +390,7 @@ class DryRun:
         else:
             sql = self.get_sql()
 
-        # Check cache first (if caching is enabled)
+        # check cache first (if caching is enabled)
         if sql is not None and self.use_cache:
             cache_key = self._get_cache_key(sql)
             cached_result = self._get_cached_result(cache_key)
@@ -470,8 +517,9 @@ class DryRun:
 
             self.dry_run_duration = time.time() - start_time
 
-            # Save to cache (if caching is enabled)
-            if self.use_cache:
+            # Save to cache (if caching is enabled and result is valid)
+            # Don't cache errors to allow retries
+            if self.use_cache and result.get("valid"):
                 self._save_cached_result(cache_key, result)
 
             return result

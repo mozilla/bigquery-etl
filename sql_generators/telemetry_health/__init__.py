@@ -7,6 +7,7 @@ import click
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+from bigquery_etl.cli.utils import use_cloud_function_option
 from bigquery_etl.format_sql.formatter import reformat
 from bigquery_etl.util.common import write_sql
 
@@ -94,7 +95,8 @@ FROM
     default=Path("sql"),
     type=click.Path(file_okay=False),
 )
-def generate(target_project, path, output_dir):
+@use_cloud_function_option
+def generate(target_project, path, output_dir, use_cloud_function):
     """Generate the telemetry health queries."""
     output_dir = Path(output_dir)
     generate_queries(target_project, path, output_dir)

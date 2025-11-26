@@ -1,6 +1,8 @@
-friendly_name: Forecasts Derived
+friendly_name: Temporary Forecasts Derived
 description: |-
+  Temporary dataset pending a conversation on naming conventions. Use at your own risk.
   Forecasts based on Firefox data and external models, plus related secondary tables. Writable by the Outerbounds default perimeter.
+  This dataset combines forecasts across products; forecasts may also live in other datasets related to the products they support.
 dataset_base_acl: derived
 user_facing: false
 labels: {}
@@ -17,4 +19,3 @@ workgroup_access:
 - role: roles/bigquery.dataEditor
   members:
   - workgroup:dataops-managed/external-outerbounds-task-default
-

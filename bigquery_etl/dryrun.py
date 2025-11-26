@@ -318,7 +318,7 @@ class DryRun:
                 with open(cache_file, "rb") as f:
                     cached_data = pickle.load(f)
                 return cached_data
-            except (pickle.PickleError, EOFError, OSError) as e:
+            except (pickle.PickleError, EOFError, OSError):
                 return None
         return None
 

@@ -71,7 +71,9 @@ def prod_schemas_uri():
     with the most recent production schemas deploy.
     """
     dryrun = DryRun(
-        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql", content="SELECT 1", use_cache=False
+        "moz-fx-data-shared-prod/telemetry_derived/foo/query.sql",
+        content="SELECT 1",
+        use_cache=False,
     )
     build_id = dryrun.get_dataset_labels()["schemas_build_id"]
     commit_hash = build_id.split("_")[-1]

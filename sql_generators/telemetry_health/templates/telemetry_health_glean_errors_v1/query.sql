@@ -12,7 +12,7 @@
       metrics.labeled_counter.glean_error_invalid_state AS es,
       metrics.labeled_counter.glean_error_invalid_overflow AS eo
     FROM
-      `{{ project_id }}.{{ app }}_stable.metrics_v1`
+      `{{ project_id }}.{{ app }}.metrics`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

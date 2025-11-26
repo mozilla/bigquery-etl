@@ -9,7 +9,7 @@
       ping_info.parsed_end_time,
       submission_timestamp,
     FROM
-      `{{ project_id }}.{{ app }}_stable.baseline_v1`
+      `{{ project_id }}.{{ app }}.baseline`
     WHERE
       sample_id = 0
       AND DATE(submission_timestamp) = @submission_date

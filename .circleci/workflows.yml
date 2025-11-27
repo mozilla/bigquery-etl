@@ -1246,6 +1246,7 @@ workflows:
             - validate-views
             - validate-metadata
             - dry-run-sql
+            - test-routines
       - test-routines:
           requires:
             - deploy-changes-to-stage

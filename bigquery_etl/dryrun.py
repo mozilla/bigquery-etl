@@ -248,15 +248,15 @@ class DryRun:
         cache_input = f"{sql}|{self.project}|{self.dataset}|{self.table}"
         return hashlib.sha256(cache_input.encode()).hexdigest()
 
-    def _get_cached_result(self, cache_key, ttl_seconds=None):
-        """Load cached dry run result from disk."""
-        if ttl_seconds is None:
-            ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
-
+    @staticmethod
+    def _get_cache_dir():
+        """Get the cache directory path."""
         cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
         cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
+        return cache_dir
 
+    def _read_cache_file(self, cache_file, ttl_seconds):
+        """Read and return cached data from a pickle file with TTL check."""
         try:
             if not cache_file.exists():
                 return None
@@ -271,11 +271,9 @@ class DryRun:
                 return None
 
             cached_data = pickle.loads(cache_file.read_bytes())
-            cache_age = time.time() - cache_file.stat().st_mtime
-            print(f"[DRYRUN CACHE HIT] {self.sqlfile} (age: {cache_age:.0f}s)")
             return cached_data
         except (pickle.PickleError, EOFError, OSError, FileNotFoundError) as e:
-            print(f"[DRYRUN CACHE] Failed to load cache: {e}")
+            print(f"[CACHE] Failed to load {cache_file}: {e}")
             try:
                 if cache_file.exists():
                     cache_file.unlink()
@@ -283,104 +281,69 @@ class DryRun:
                 pass
             return None
 
-    def _save_cached_result(self, cache_key, result):
-        """Save dry run result to disk cache using atomic write."""
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / f"dryrun_{cache_key}.pkl"
-
+    @staticmethod
+    def _write_cache_file(cache_file, data):
+        """Write data to a cache file using atomic write."""
         try:
             # write to temporary file first, then atomically rename
             # this prevents race conditions where readers get partial files
-            temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
+            # include random bytes to handle thread pool scenarios where threads share same PID
+            temp_file = Path(
+                str(cache_file) + f".tmp.{os.getpid()}.{os.urandom(4).hex()}"
+            )
             with open(temp_file, "wb") as f:
-                pickle.dump(result, f)
+                pickle.dump(data, f)
                 f.flush()
                 os.fsync(f.fileno())  # Ensure data is written to disk
 
             temp_file.replace(cache_file)
-
-            # save table metadata separately if present
-            if (
-                result
-                and "tableMetadata" in result
-                and self.project
-                and self.dataset
-                and self.table
-            ):
-                table_identifier = f"{self.project}.{self.dataset}.{self.table}"
-                self._save_cached_table_metadata(
-                    table_identifier, result["tableMetadata"]
-                )
         except (pickle.PickleError, OSError) as e:
-            print(f"[DRYRUN CACHE] Failed to save cache: {e}")
+            print(f"[CACHE] Failed to save {cache_file}: {e}")
             try:
-                temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
-                if temp_file.exists():
+                if "temp_file" in locals() and temp_file.exists():
                     temp_file.unlink()
-            except OSError:
+            except (OSError, NameError):
                 pass
+
+    def _get_cached_result(self, cache_key, ttl_seconds=None):
+        """Load cached dry run result from disk."""
+        if ttl_seconds is None:
+            ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
+
+        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        return self._read_cache_file(cache_file, ttl_seconds)
+
+    def _save_cached_result(self, cache_key, result):
+        """Save dry run result to disk cache using atomic write."""
+        cache_file = self._get_cache_dir() / f"dryrun_{cache_key}.pkl"
+        self._write_cache_file(cache_file, result)
+
+        # save table metadata separately if present
+        if (
+            result
+            and "tableMetadata" in result
+            and self.project
+            and self.dataset
+            and self.table
+        ):
+            table_identifier = f"{self.project}.{self.dataset}.{self.table}"
+            self._save_cached_table_metadata(table_identifier, result["tableMetadata"])
 
     def _get_cached_table_metadata(self, table_identifier, ttl_seconds=None):
         """Load cached table metadata from disk based on table identifier."""
         if ttl_seconds is None:
             ttl_seconds = ConfigLoader.get("dry_run", "cache_ttl_seconds", fallback=900)
 
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
-        cache_dir.mkdir(parents=True, exist_ok=True)
         # table identifier as cache key
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
-
-        try:
-            if not cache_file.exists():
-                return None
-
-            # check if cache is expired
-            file_age = time.time() - cache_file.stat().st_mtime
-
-            if file_age > ttl_seconds:
-                try:
-                    cache_file.unlink()
-                except OSError:
-                    pass
-                return None
-
-            cached_data = pickle.loads(cache_file.read_bytes())
-            return cached_data
-        except (pickle.PickleError, EOFError, OSError, FileNotFoundError) as e:
-            print(f"[TABLE METADATA] Failed to load cache for {table_identifier}: {e}")
-            try:
-                if cache_file.exists():
-                    cache_file.unlink()
-            except OSError:
-                pass
-            return None
+        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        return self._read_cache_file(cache_file, ttl_seconds)
 
     def _save_cached_table_metadata(self, table_identifier, metadata):
         """Save table metadata to disk cache using atomic write."""
-        cache_dir = Path(tempfile.gettempdir()) / "bigquery_etl_dryrun_cache"
-        cache_dir.mkdir(parents=True, exist_ok=True)
         table_cache_key = hashlib.sha256(table_identifier.encode()).hexdigest()
-        cache_file = cache_dir / f"table_metadata_{table_cache_key}.pkl"
-
-        try:
-            # write to temporary file first, then atomically rename
-            temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
-            with open(temp_file, "wb") as f:
-                pickle.dump(metadata, f)
-                f.flush()
-                os.fsync(f.fileno())
-
-            temp_file.replace(cache_file)
-        except (pickle.PickleError, OSError) as e:
-            print(f"[TABLE METADATA] Failed to save cache for {table_identifier}: {e}")
-            try:
-                temp_file = Path(str(cache_file) + f".tmp.{os.getpid()}")
-                if temp_file.exists():
-                    temp_file.unlink()
-            except OSError:
-                pass
+        cache_file = self._get_cache_dir() / f"table_metadata_{table_cache_key}.pkl"
+        self._write_cache_file(cache_file, metadata)
 
     @cached_property
     def dry_run_result(self):

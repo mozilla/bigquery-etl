@@ -100,10 +100,10 @@ def _has_field_path(schema: List[bigquery.SchemaField], path: List[str]) -> bool
 def _select_geo(live_table: str, client: bigquery.Client) -> str:
     """Build a SELECT REPLACE clause that NULLs metadata.geo.* if applicable."""
     _, dataset_id, table_id = live_table.split(".")
+    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
+    app_id = re.sub("_live$", "", dataset_id)
 
     excluded_apps = set(ConfigLoader.get("geo_deprecation", "skip_apps", fallback=[]))
-    app_id = re.sub("_live$", "", dataset_id)
-    channel_to_app_name = get_glean_app_id_to_app_name_mapping()
     app_name = channel_to_app_name.get(app_id)
     if app_name in excluded_apps:
         return ""
@@ -116,18 +116,27 @@ def _select_geo(live_table: str, client: bigquery.Client) -> str:
 
     table = client.get_table(live_table)
 
+    # Only deprecating the geo fields for glean apps.  Legacy tables would be deprecated after glean migration
+    if app_id not in channel_to_app_name.keys():
+        return ""
+
     # only glean tables have this label
     include_client_id = table.labels.get("include_client_id") == "true"
     if not include_client_id:
         return ""
 
-    # Check schema to ensure geo fields exists
+    # Check schema to ensure required fields exists
     schema = table.schema
-    required_fields = ("city", "subdivision1", "subdivision2")
-    has_required_fields = all(
-        _has_field_path(schema, ["metadata", "geo", field]) for field in required_fields
+    has_client_id_field = _has_field_path(schema, ["client_info", "client_id"])
+    if not has_client_id_field:
+        return ""
+
+    required_geo_fields = ("city", "subdivision1", "subdivision2")
+    has_required_geo_fields = all(
+        _has_field_path(schema, ["metadata", "geo", field])
+        for field in required_geo_fields
     )
-    if not has_required_fields:
+    if not has_required_geo_fields:
         return ""
 
     return """

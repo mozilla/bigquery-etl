@@ -1,0 +1,16 @@
+# The general structure of this config file is as follows:
+#   criteria:
+#     - name: <criteria_name>
+#       sql: <SQL expression>
+
+# To correctly output the name of the criteria inside single quotes, wrap it in single and then double quotes. E.g., "'sidebar'"
+
+criteria:
+  - name: CAST(NULL AS string)
+    sql: true
+  - name: "'chatbot_usage'"
+    sql: event = 'genai.chatbot.sidebar_toggle' AND JSON_VALUE(event_extra.provider) <> 'none'
+  - name: "'tou_accept_ios'"
+    sql: (event_category = 'terms_of_use' AND event_name = "accepted" AND JSON_VALUE(event_extra.surface) = "bottom_sheet") OR (event_category = 'onboarding' and event_name = "terms_of_service_accepted")
+  - name: "'tou_accept_fenix'"
+    sql: (event_category = 'terms_of_use' AND  event_name = "accepted") OR (event_category = 'onboarding' AND event_name = "terms_of_service_accepted")

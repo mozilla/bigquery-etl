@@ -1,0 +1,16 @@
+friendly_name: Temporary Forecasts
+description: |-
+  Temporary dataset pending a conversation on naming conventions. Use at your own risk.
+  Views on forecasts based on Firefox data and external models. Forecast views may also live in other datasets related to the products they support.
+dataset_base_acl: view
+user_facing: true
+labels: {}
+default_table_workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential
+default_table_expiration_ms: null
+workgroup_access:
+- role: roles/bigquery.dataViewer
+  members:
+  - workgroup:mozilla-confidential

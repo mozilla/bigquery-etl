@@ -489,20 +489,6 @@ with DAG(
             external_task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
         )
 
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__fenix_derived__attribution_clients__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__fenix_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
         bigeye__fenix_derived__attribution_clients__v1_external.set_upstream(
             bigeye__fenix_derived__attribution_clients__v1
         )
@@ -582,6 +568,34 @@ with DAG(
         retries=1,
         task_group=task_group_fenix,
     )
+
+    with TaskGroup(
+        "bigeye__fenix_derived__new_profile_clients__v1_external",
+        parent_group=task_group_fenix,
+    ) as bigeye__fenix_derived__new_profile_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        bigeye__fenix_derived__new_profile_clients__v1_external.set_upstream(
+            bigeye__fenix_derived__new_profile_clients__v1
+        )
 
     bigeye__fenix_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__fenix_derived__new_profiles__v1",
@@ -663,20 +677,6 @@ with DAG(
             external_task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
         )
 
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
         bigeye__firefox_ios_derived__attribution_clients__v1_external.set_upstream(
             bigeye__firefox_ios_derived__attribution_clients__v1
         )
@@ -742,6 +742,34 @@ with DAG(
         retries=1,
         task_group=task_group_firefox_ios,
     )
+
+    with TaskGroup(
+        "bigeye__firefox_ios_derived__new_profile_clients__v1_external",
+        parent_group=task_group_firefox_ios,
+    ) as bigeye__firefox_ios_derived__new_profile_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_marketing_analysis__wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_marketing_analysis",
+            external_task_id="wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        bigeye__firefox_ios_derived__new_profile_clients__v1_external.set_upstream(
+            bigeye__firefox_ios_derived__new_profile_clients__v1
+        )
 
     bigeye__firefox_ios_derived__new_profiles__v1 = bigquery_bigeye_check(
         task_id="bigeye__firefox_ios_derived__new_profiles__v1",
@@ -966,28 +994,6 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
-    with TaskGroup(
-        "focus_android_derived__attribution_clients__v1_external",
-        parent_group=task_group_focus_android,
-    ) as focus_android_derived__attribution_clients__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_focus_android_derived__attribution_clients__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_focus_android_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_focus_android_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_focus_android_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        focus_android_derived__attribution_clients__v1_external.set_upstream(
-            focus_android_derived__attribution_clients__v1
-        )
-
     focus_android_derived__engagement__v1 = bigquery_etl_query(
         task_id="focus_android_derived__engagement__v1",
         destination_table="engagement_v1",
@@ -1036,6 +1042,28 @@ with DAG(
         task_group=task_group_focus_android,
     )
 
+    with TaskGroup(
+        "focus_android_derived__new_profile_clients__v1_external",
+        parent_group=task_group_focus_android,
+    ) as focus_android_derived__new_profile_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_focus_android_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_focus_android_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_focus_android_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_focus_android_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        focus_android_derived__new_profile_clients__v1_external.set_upstream(
+            focus_android_derived__new_profile_clients__v1
+        )
+
     focus_android_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="focus_android_derived__new_profiles__v1",
         destination_table="new_profiles_v1",
@@ -1073,28 +1101,6 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_focus_ios,
     )
-
-    with TaskGroup(
-        "focus_ios_derived__attribution_clients__v1_external",
-        parent_group=task_group_focus_ios,
-    ) as focus_ios_derived__attribution_clients__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_focus_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_focus_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_focus_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_focus_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        focus_ios_derived__attribution_clients__v1_external.set_upstream(
-            focus_ios_derived__attribution_clients__v1
-        )
 
     focus_ios_derived__engagement__v1 = bigquery_etl_query(
         task_id="focus_ios_derived__engagement__v1",
@@ -1144,6 +1150,28 @@ with DAG(
         task_group=task_group_focus_ios,
     )
 
+    with TaskGroup(
+        "focus_ios_derived__new_profile_clients__v1_external",
+        parent_group=task_group_focus_ios,
+    ) as focus_ios_derived__new_profile_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_focus_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_focus_ios_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_focus_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_focus_ios_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        focus_ios_derived__new_profile_clients__v1_external.set_upstream(
+            focus_ios_derived__new_profile_clients__v1
+        )
+
     focus_ios_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="focus_ios_derived__new_profiles__v1",
         destination_table="new_profiles_v1",
@@ -1181,28 +1209,6 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_klar_android,
     )
-
-    with TaskGroup(
-        "klar_android_derived__attribution_clients__v1_external",
-        parent_group=task_group_klar_android,
-    ) as klar_android_derived__attribution_clients__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_klar_android_derived__attribution_clients__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_klar_android_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_klar_android_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_klar_android_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        klar_android_derived__attribution_clients__v1_external.set_upstream(
-            klar_android_derived__attribution_clients__v1
-        )
 
     klar_android_derived__engagement__v1 = bigquery_etl_query(
         task_id="klar_android_derived__engagement__v1",
@@ -1252,6 +1258,28 @@ with DAG(
         task_group=task_group_klar_android,
     )
 
+    with TaskGroup(
+        "klar_android_derived__new_profile_clients__v1_external",
+        parent_group=task_group_klar_android,
+    ) as klar_android_derived__new_profile_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_klar_android_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_klar_android_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_klar_android_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_klar_android_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        klar_android_derived__new_profile_clients__v1_external.set_upstream(
+            klar_android_derived__new_profile_clients__v1
+        )
+
     klar_android_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="klar_android_derived__new_profiles__v1",
         destination_table="new_profiles_v1",
@@ -1289,28 +1317,6 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_klar_ios,
     )
-
-    with TaskGroup(
-        "klar_ios_derived__attribution_clients__v1_external",
-        parent_group=task_group_klar_ios,
-    ) as klar_ios_derived__attribution_clients__v1_external:
-        ExternalTaskMarker(
-            task_id="bqetl_cohort_retention__wait_for_klar_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_cohort_retention",
-            external_task_id="wait_for_klar_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
-        )
-
-        ExternalTaskMarker(
-            task_id="bqetl_fivetran_google_ads__wait_for_klar_ios_derived__attribution_clients__v1",
-            external_dag_id="bqetl_fivetran_google_ads",
-            external_task_id="wait_for_klar_ios_derived__attribution_clients__v1",
-            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
-        )
-
-        klar_ios_derived__attribution_clients__v1_external.set_upstream(
-            klar_ios_derived__attribution_clients__v1
-        )
 
     klar_ios_derived__engagement__v1 = bigquery_etl_query(
         task_id="klar_ios_derived__engagement__v1",
@@ -1359,6 +1365,28 @@ with DAG(
         depends_on_past=False,
         task_group=task_group_klar_ios,
     )
+
+    with TaskGroup(
+        "klar_ios_derived__new_profile_clients__v1_external",
+        parent_group=task_group_klar_ios,
+    ) as klar_ios_derived__new_profile_clients__v1_external:
+        ExternalTaskMarker(
+            task_id="bqetl_cohort_retention__wait_for_klar_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_cohort_retention",
+            external_task_id="wait_for_klar_ios_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(days=-1, seconds=58800)).isoformat() }}",
+        )
+
+        ExternalTaskMarker(
+            task_id="bqetl_fivetran_google_ads__wait_for_klar_ios_derived__new_profile_clients__v1",
+            external_dag_id="bqetl_fivetran_google_ads",
+            external_task_id="wait_for_klar_ios_derived__new_profile_clients__v1",
+            execution_date="{{ (execution_date - macros.timedelta(seconds=36000)).isoformat() }}",
+        )
+
+        klar_ios_derived__new_profile_clients__v1_external.set_upstream(
+            klar_ios_derived__new_profile_clients__v1
+        )
 
     klar_ios_derived__new_profiles__v1 = bigquery_etl_query(
         task_id="klar_ios_derived__new_profiles__v1",
@@ -1485,7 +1513,7 @@ with DAG(
     )
 
     fenix_derived__new_profile_activation_clients__v1.set_upstream(
-        bigeye__fenix_derived__attribution_clients__v1
+        bigeye__fenix_derived__new_profile_clients__v1
     )
 
     fenix_derived__new_profile_activation_clients__v1.set_upstream(
@@ -1541,27 +1569,7 @@ with DAG(
     )
 
     fenix_derived__new_profiles__v1.set_upstream(
-        bigeye__fenix_derived__attribution_clients__v1
-    )
-
-    fenix_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_last_seen__v1
-    )
-
-    fenix_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_fenix_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    fenix_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_fennec_aurora_derived__baseline_clients_last_seen__v1
-    )
-
-    fenix_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_firefox_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    fenix_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_firefox_derived__baseline_clients_last_seen__v1
+        bigeye__fenix_derived__new_profile_clients__v1
     )
 
     fenix_derived__retention__v1.set_upstream(
@@ -1641,7 +1649,7 @@ with DAG(
     )
 
     firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
-        bigeye__firefox_ios_derived__attribution_clients__v1
+        bigeye__firefox_ios_derived__new_profile_clients__v1
     )
 
     firefox_ios_derived__new_profile_activation_clients__v1.set_upstream(
@@ -1681,19 +1689,7 @@ with DAG(
     )
 
     firefox_ios_derived__new_profiles__v1.set_upstream(
-        bigeye__firefox_ios_derived__attribution_clients__v1
-    )
-
-    firefox_ios_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_firefox_derived__baseline_clients_last_seen__v1
-    )
-
-    firefox_ios_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_firefoxbeta_derived__baseline_clients_last_seen__v1
+        bigeye__firefox_ios_derived__new_profile_clients__v1
     )
 
     firefox_ios_derived__retention__v1.set_upstream(
@@ -1765,7 +1761,7 @@ with DAG(
     )
 
     focus_android_derived__new_profile_activation_clients__v1.set_upstream(
-        focus_android_derived__attribution_clients__v1
+        focus_android_derived__new_profile_clients__v1
     )
 
     focus_android_derived__new_profile_activation_clients__v1.set_upstream(
@@ -1793,19 +1789,7 @@ with DAG(
     )
 
     focus_android_derived__new_profiles__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_beta_derived__baseline_clients_last_seen__v1
-    )
-
-    focus_android_derived__new_profiles__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    focus_android_derived__new_profiles__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_focus_nightly_derived__baseline_clients_last_seen__v1
-    )
-
-    focus_android_derived__new_profiles__v1.set_upstream(
-        focus_android_derived__attribution_clients__v1
+        focus_android_derived__new_profile_clients__v1
     )
 
     focus_android_derived__retention__v1.set_upstream(
@@ -1853,7 +1837,7 @@ with DAG(
     )
 
     focus_ios_derived__new_profile_activation_clients__v1.set_upstream(
-        focus_ios_derived__attribution_clients__v1
+        focus_ios_derived__new_profile_clients__v1
     )
 
     focus_ios_derived__new_profile_activation_clients__v1.set_upstream(
@@ -1873,11 +1857,7 @@ with DAG(
     )
 
     focus_ios_derived__new_profiles__v1.set_upstream(
-        wait_for_bigeye__org_mozilla_ios_focus_derived__baseline_clients_last_seen__v1
-    )
-
-    focus_ios_derived__new_profiles__v1.set_upstream(
-        focus_ios_derived__attribution_clients__v1
+        focus_ios_derived__new_profile_clients__v1
     )
 
     focus_ios_derived__retention__v1.set_upstream(
@@ -1909,7 +1889,7 @@ with DAG(
     )
 
     klar_android_derived__new_profile_activation_clients__v1.set_upstream(
-        klar_android_derived__attribution_clients__v1
+        klar_android_derived__new_profile_clients__v1
     )
 
     klar_android_derived__new_profile_activation_clients__v1.set_upstream(
@@ -1929,11 +1909,7 @@ with DAG(
     )
 
     klar_android_derived__new_profiles__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    klar_android_derived__new_profiles__v1.set_upstream(
-        klar_android_derived__attribution_clients__v1
+        klar_android_derived__new_profile_clients__v1
     )
 
     klar_android_derived__retention__v1.set_upstream(
@@ -1965,7 +1941,7 @@ with DAG(
     )
 
     klar_ios_derived__new_profile_activation_clients__v1.set_upstream(
-        klar_ios_derived__attribution_clients__v1
+        klar_ios_derived__new_profile_clients__v1
     )
 
     klar_ios_derived__new_profile_activation_clients__v1.set_upstream(
@@ -1985,11 +1961,7 @@ with DAG(
     )
 
     klar_ios_derived__new_profiles__v1.set_upstream(
-        wait_for_checks__fail_org_mozilla_ios_klar_derived__baseline_clients_last_seen__v1
-    )
-
-    klar_ios_derived__new_profiles__v1.set_upstream(
-        klar_ios_derived__attribution_clients__v1
+        klar_ios_derived__new_profile_clients__v1
     )
 
     klar_ios_derived__retention__v1.set_upstream(

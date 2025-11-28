@@ -9,6 +9,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.fenix.active_users
-  - moz-fx-data-shared-prod.fenix.attribution_clients
+  - moz-fx-data-shared-prod.fenix_derived.new_profile_clients_v1
 require_column_descriptions: false

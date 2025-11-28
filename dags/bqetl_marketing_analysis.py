@@ -77,6 +77,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__fenix_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__fenix_derived__new_profile_clients__v1",
+        external_dag_id="bqetl_mobile_kpi_metrics",
+        external_task_id="fenix.bigeye__fenix_derived__new_profile_clients__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
@@ -231,6 +243,18 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
+    wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
+        external_dag_id="bqetl_mobile_kpi_metrics",
+        external_task_id="firefox_ios.bigeye__firefox_ios_derived__new_profile_clients__v1",
+        check_existence=True,
+        mode="reschedule",
+        poke_interval=datetime.timedelta(minutes=5),
+        allowed_states=ALLOWED_STATES,
+        failed_states=FAILED_STATES,
+        pool="DATA_ENG_EXTERNALTASKSENSOR",
+    )
+
     wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1 = ExternalTaskSensor(
         task_id="wait_for_bigeye__org_mozilla_ios_fennec_derived__baseline_clients_daily__v1",
         external_dag_id="bqetl_glean_usage",
@@ -366,6 +390,10 @@ with DAG(
     )
 
     fenix_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__fenix_derived__new_profile_clients__v1
+    )
+
+    fenix_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
         wait_for_bigeye__org_mozilla_fenix_derived__baseline_clients_daily__v1
     )
 
@@ -435,6 +463,10 @@ with DAG(
 
     firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
         wait_for_bigeye__firefox_ios_derived__new_profile_activation_clients__v1
+    )
+
+    firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(
+        wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1
     )
 
     firefox_ios_derived__new_profile_metrics_marketing_geo_testing__v1.set_upstream(

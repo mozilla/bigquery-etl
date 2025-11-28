@@ -9,6 +9,5 @@ workgroup_access:
   - workgroup:mozilla-confidential
 references:
   view.sql:
-  - moz-fx-data-shared-prod.focus_ios.active_users
-  - moz-fx-data-shared-prod.focus_ios.attribution_clients
+  - moz-fx-data-shared-prod.focus_ios_derived.new_profile_clients_v1
 require_column_descriptions: false

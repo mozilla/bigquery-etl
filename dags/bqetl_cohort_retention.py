@@ -273,10 +273,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_bigeye__fenix_derived__attribution_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_bigeye__fenix_derived__attribution_clients__v1",
+    wait_for_bigeye__fenix_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__fenix_derived__new_profile_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
-        external_task_id="fenix.bigeye__fenix_derived__attribution_clients__v1",
+        external_task_id="fenix.bigeye__fenix_derived__new_profile_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
         check_existence=True,
         mode="reschedule",
@@ -286,10 +286,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_bigeye__firefox_ios_derived__attribution_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_bigeye__firefox_ios_derived__attribution_clients__v1",
+    wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
-        external_task_id="firefox_ios.bigeye__firefox_ios_derived__attribution_clients__v1",
+        external_task_id="firefox_ios.bigeye__firefox_ios_derived__new_profile_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
         check_existence=True,
         mode="reschedule",
@@ -312,10 +312,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_focus_android_derived__attribution_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_focus_android_derived__attribution_clients__v1",
+    wait_for_focus_android_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_focus_android_derived__new_profile_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
-        external_task_id="focus_android.focus_android_derived__attribution_clients__v1",
+        external_task_id="focus_android.focus_android_derived__new_profile_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
         check_existence=True,
         mode="reschedule",
@@ -325,10 +325,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_focus_ios_derived__attribution_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_focus_ios_derived__attribution_clients__v1",
+    wait_for_focus_ios_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_focus_ios_derived__new_profile_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
-        external_task_id="focus_ios.focus_ios_derived__attribution_clients__v1",
+        external_task_id="focus_ios.focus_ios_derived__new_profile_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
         check_existence=True,
         mode="reschedule",
@@ -338,10 +338,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_klar_android_derived__attribution_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_klar_android_derived__attribution_clients__v1",
+    wait_for_klar_android_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_klar_android_derived__new_profile_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
-        external_task_id="klar_android.klar_android_derived__attribution_clients__v1",
+        external_task_id="klar_android.klar_android_derived__new_profile_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
         check_existence=True,
         mode="reschedule",
@@ -351,10 +351,10 @@ with DAG(
         pool="DATA_ENG_EXTERNALTASKSENSOR",
     )
 
-    wait_for_klar_ios_derived__attribution_clients__v1 = ExternalTaskSensor(
-        task_id="wait_for_klar_ios_derived__attribution_clients__v1",
+    wait_for_klar_ios_derived__new_profile_clients__v1 = ExternalTaskSensor(
+        task_id="wait_for_klar_ios_derived__new_profile_clients__v1",
         external_dag_id="bqetl_mobile_kpi_metrics",
-        external_task_id="klar_ios.klar_ios_derived__attribution_clients__v1",
+        external_task_id="klar_ios.klar_ios_derived__new_profile_clients__v1",
         execution_delta=datetime.timedelta(seconds=27600),
         check_existence=True,
         mode="reschedule",
@@ -762,7 +762,7 @@ with DAG(
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
-        wait_for_bigeye__fenix_derived__attribution_clients__v1
+        wait_for_bigeye__fenix_derived__new_profile_clients__v1
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
@@ -778,7 +778,7 @@ with DAG(
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
-        wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
+        wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
@@ -842,19 +842,19 @@ with DAG(
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
-        wait_for_focus_android_derived__attribution_clients__v1
+        wait_for_focus_android_derived__new_profile_clients__v1
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
-        wait_for_focus_ios_derived__attribution_clients__v1
+        wait_for_focus_ios_derived__new_profile_clients__v1
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
-        wait_for_klar_android_derived__attribution_clients__v1
+        wait_for_klar_android_derived__new_profile_clients__v1
     )
 
     glean_telemetry_derived__rolling_cohorts__v1.set_upstream(
-        wait_for_klar_ios_derived__attribution_clients__v1
+        wait_for_klar_ios_derived__new_profile_clients__v1
     )
 
     telemetry_derived__cohort_daily_statistics__v2.set_upstream(
@@ -998,11 +998,11 @@ with DAG(
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
-        wait_for_bigeye__fenix_derived__attribution_clients__v1
+        wait_for_bigeye__fenix_derived__new_profile_clients__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
-        wait_for_bigeye__firefox_ios_derived__attribution_clients__v1
+        wait_for_bigeye__firefox_ios_derived__new_profile_clients__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
@@ -1066,19 +1066,19 @@ with DAG(
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
-        wait_for_focus_android_derived__attribution_clients__v1
+        wait_for_focus_android_derived__new_profile_clients__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
-        wait_for_focus_ios_derived__attribution_clients__v1
+        wait_for_focus_ios_derived__new_profile_clients__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
-        wait_for_klar_android_derived__attribution_clients__v1
+        wait_for_klar_android_derived__new_profile_clients__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(
-        wait_for_klar_ios_derived__attribution_clients__v1
+        wait_for_klar_ios_derived__new_profile_clients__v1
     )
 
     telemetry_derived__rolling_cohorts__v2.set_upstream(

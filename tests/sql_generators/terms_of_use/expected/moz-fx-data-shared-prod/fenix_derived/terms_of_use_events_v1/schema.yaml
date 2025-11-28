@@ -25,18 +25,27 @@ fields:
   type: TIMESTAMP
   description: |
     Timestamp when the event occurred.
+
 - mode: NULLABLE
   name: event_category
   type: STRING
   description: |
     Category of the recorded event.
+
 - mode: NULLABLE
   name: event_name
   type: STRING
   description: |
     Name of the recorded event.
+
 - mode: NULLABLE
   name: normalized_event_name
   type: STRING
   description: |
     Normalized name of the event, used to align events from both fenix and iOS as well as collapse across events from different surfaces.
+
+- mode: NULLABLE
+  name: surface
+  type: STRING
+  description: |
+    The surface the terms of use prompt/impression was served.

@@ -373,6 +373,7 @@ generate:
       - firefox_reality_pc
       - lockwise_android
       - lockwise_ios
+      - mozilla_vpn  # VPN events are in `main` pings rather than `events` pings (DENG-8596).
       - tiktokreporter_ios
       - tiktokreporter_android
       metrics_as_struct_apps:
@@ -529,19 +530,21 @@ generate:
       fenix:
         templates:
         - terms_of_use_status_v1
+        - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'
       firefox_ios:
         templates:
         - terms_of_use_status_v1
+        - terms_of_use_events_v1
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'
       firefox_desktop:
         templates:
         - terms_of_use_status_v1
-        - terms_of_use_events_v1
+        - terms_of_use_messages_v1
         bigeye:
           collection: Operational Checks
           notification_channel: '#de-bigeye-triage'
@@ -574,6 +577,7 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_v3
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v1
 - sql/moz-fx-data-shared-prod/telemetry_derived/clients_first_seen_28_days_later_v3
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/clients_first_seen_28_days_later_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_firefox_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/org_mozilla_fenix_derived/baseline_clients_first_seen_v1
 - sql/moz-fx-data-shared-prod/fenix_derived/ltv_states_v1
@@ -657,3 +661,4 @@ retention_exclusion_list:
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_update/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_defaultagent/baseline_clients_city_seen_v1
 - sql/moz-fx-data-shared-prod/firefox_desktop_background_tasks/baseline_clients_city_seen_v1
+- sql/moz-fx-data-shared-prod/firefox_desktop_derived/metrics_clients_first_seen_v1

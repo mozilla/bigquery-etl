@@ -32,7 +32,7 @@ labels:
   incremental: true
   schedule: daily
   owner1: gleonard
-#scheduling:
+# scheduling:
 #  dag_name: bqetl_google_analytics_derived
 bigquery:
   time_partitioning:

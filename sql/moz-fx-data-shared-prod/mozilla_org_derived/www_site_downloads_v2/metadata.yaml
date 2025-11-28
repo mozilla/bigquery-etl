@@ -6,7 +6,7 @@ owners:
 labels:
   incremental: true
   owner1: kwindau@mozilla.com
-#scheduling:
+# scheduling:
 #  dag_name: bqetl_google_analytics_derived_ga4
 #  depends_on:
 #  - task_id: wait_for_wmo_events_table

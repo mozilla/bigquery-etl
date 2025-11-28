@@ -1,0 +1,19 @@
+fields:
+  - name: application
+    type: STRING
+    mode: NULLABLE
+  - name: channel
+    type: STRING
+    mode: NULLABLE
+  - name: submission_date
+    type: DATE
+    mode: NULLABLE
+  - name: clients_with_sequence_gaps_1pct
+    type: INTEGER
+    mode: NULLABLE
+  - name: total_unique_clients_1pct
+    type: INTEGER
+    mode: NULLABLE
+  - name: pct_clients_with_gaps
+    type: FLOAT
+    mode: NULLABLE

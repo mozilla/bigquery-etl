@@ -1,0 +1,17 @@
+friendly_name: Telemetry Health Glean Errors
+description: |
+  Counts the number of Glean metrics with recording errors that exceed 1% of clients per day.
+  Combines data from Firefox Desktop, Firefox Android, and Firefox iOS.
+owners:
+  - tlong@mozilla.com
+labels:
+  incremental: true
+  schedule: daily
+scheduling:
+  dag_name: bqetl_monitoring
+bigquery:
+  time_partitioning:
+    type: day
+    field: submission_date
+    require_partition_filter: true
+    expiration_days: 775

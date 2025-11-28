@@ -3486,7 +3486,8 @@ fields:
       - name: value
         type: INTEGER
         mode: NULLABLE
-      description: 'Failure occurs when initializing the audio stream.
+      description: 'Failure occurs when initializing the audio stream. (Migrated from
+        the geckoview metric of the same name).
 
         '
     - name: glean_validation_pings_submitted
@@ -8732,7 +8733,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Count of permission prompts shown to users for local network access,
-        separated by localhost vs local network access types.
+        separated by localhost vs local network access types. Cross-site labels are
+        used when the requesting origin differs from the top-level origin.
 
         '
     - name: urlclassifier_lookup_hit

@@ -17920,7 +17920,8 @@ fields:
         type: INTEGER
         mode: NULLABLE
       description: 'Count of permission prompts shown to users for local network access,
-        separated by localhost vs local network access types.
+        separated by localhost vs local network access types. Cross-site labels are
+        used when the requesting origin differs from the top-level origin.
 
         '
     - name: urlclassifier_lookup_hit

@@ -3,8 +3,8 @@ description: |-
   A mapping table from country aliases (including misspellings, alternate encodings, etc.) to ISO 3166 alpha-2 country
   codes. A single country name should only map to one country code (but country codes map to multiple names).
 
-  Generated automatically by `sql_generators/country_code_lookup`; modify `aliases.yaml` to add a mapping to the
-  appropriate country code.
+  data.csv is generated automatically by `sql_generators/country_code_lookup`; modify `aliases.yaml` to add a mapping to the
+  appropriate country code. You can view the most recent generator version on the `generated-sql` branch.
 owners: []
 labels: {}
 workgroup_access:

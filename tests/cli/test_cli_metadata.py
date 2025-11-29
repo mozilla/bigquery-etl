@@ -12,12 +12,13 @@ from dateutil.relativedelta import relativedelta
 
 from bigquery_etl.cli.metadata import deprecate, publish, update
 from bigquery_etl.metadata.parse_metadata import Metadata
+from bigquery_etl.schema import Schema
 from bigquery_etl.metadata.validate_metadata import (
     CODEOWNERS_FILE,
     validate,
     validate_change_control,
     validate_col_desc_enforced,
-    validate_shredder_mitigation,
+    validate_shredder_mitigation, validate_asset_level, count_schema_fields, find_bigeye_checks, BIGEYE_PREDEFINED_FILE,
 )
 
 TEST_DIR = Path(__file__).parent.parent
@@ -241,6 +242,649 @@ class TestMetadata:
             metadata_conf=metadata,
             codeowners_conf=codeowners,
             expected_result=False,
+        )
+
+    def test_count_schema_fields_empty_file(self):
+        schema = ""
+        assert count_schema_fields(schema) == (0, 0)
+        schema = []
+        assert count_schema_fields(schema) == (0, 0)
+
+    def test_count_schema_fields_empty_schema(self, runner):
+        schema = {"fields": []}
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            schema_path = Path(self.test_path) / "schema.yaml"
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            assert count_schema_fields(Schema.from_schema_file(schema_path)) == (0, 0)
+
+    def test_count_schema_fields_flat_schema(self, runner):
+        schema = {
+            "fields": [
+                {"name": "column_1", "type": "STRING", "description": "Description 1"},
+                {"name": "column_2", "type": "INTEGER", "description": "Description 2"},
+            ]
+        }
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            schema_path = Path(self.test_path) / "schema.yaml"
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            schema_from_file = Schema.from_schema_file(schema_path).to_bigquery_schema()
+            assert count_schema_fields(schema_from_file) == (2, 2)
+
+    def test_count_schema_fields_missing_description(self, runner):
+        schema = {
+            "fields": [
+                {"name": "column_1", "type": "STRING"},
+                {"name": "column_2", "type": "INTEGER", "description": "Description 2"},
+            ]
+        }
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            schema_path = Path(self.test_path) / "schema.yaml"
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            schema_from_file = Schema.from_schema_file(schema_path).to_bigquery_schema()
+            assert count_schema_fields(schema_from_file) == (2, 1)
+
+    def test_count_schema_fields_nested_schema(self, runner):
+        schema = {
+            "fields": [
+                {
+                    "name": "column_1",
+                    "type": "RECORD",
+                    "description": "Parent field",
+                    "fields": [
+                        {"name": "column_1_1", "type": "STRING", "description": "Description 1.1"},
+                        {"name": "column_1_2", "type": "INTEGER"},
+                    ],
+                }
+            ]
+        }
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            schema_path = Path(self.test_path) / "schema.yaml"
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            schema_from_file = Schema.from_schema_file(schema_path).to_bigquery_schema()
+            assert count_schema_fields(schema_from_file) == (3, 2)
+
+    def test_count_schema_fields_deep_nested_schema(self, runner):
+        schema = {
+            "fields": [
+                {
+                    "name": "column_1",
+                    "type": "RECORD",
+                    "description": "Description 1",
+                    "fields": [
+                        {
+                            "name": "column_1_1",
+                            "type": "RECORD",
+                            "fields": [
+                                {"name": "column_1_1_1", "description": "Description 1_1"},
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            schema_path = Path(self.test_path) / "schema.yaml"
+            with open(schema_path, "w") as f:
+                f.write(yaml.safe_dump(schema))
+            schema_from_file = Schema.from_schema_file(schema_path).to_bigquery_schema()
+            assert count_schema_fields(schema_from_file) == (3, 2)
+
+    def test_find_bigeye_checks_missing(self, runner):
+        assert find_bigeye_checks(self.test_path) is False
+
+    def test_find_bigeye_checks_missing_volume_check(self, runner, capfd):
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            bigeye_file_path = Path(self.test_path) / BIGEYE_PREDEFINED_FILE
+
+            data = {
+                "type": "BIGCONFIG_FILE",
+                "tag_deployments": [
+                    {
+                        "column_selectors":
+                            [{
+                                "name": [{"name": f"{self.test_path}.*"}],
+                                "metrics": [
+                                    {"metric_type": {"type": "PREDEFINED", "predefined_metric": "FRESHNESS"},
+                                    "metric_name": "FRESHNESS"},]
+                              }]
+                    }]}
+            with open(bigeye_file_path, "w") as f:
+                yaml.safe_dump(data, f)
+            assert find_bigeye_checks(self.test_path) is False
+            captured = capfd.readouterr()
+            assert "ERROR: Missing Bigeye metrics: {'VOLUME'}." in captured.out
+
+    def test_find_bigeye_checks_missing_freshness_check(self, runner, capfd):
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            bigeye_file_path = Path(self.test_path) / BIGEYE_PREDEFINED_FILE
+
+            data = {
+                "type": "BIGCONFIG_FILE",
+                "tag_deployments": [
+                    {
+                        "column_selectors":
+                            [{
+                                "name": [{"name": f"{self.test_path}.*"}],
+                                "metrics": [
+                                    {"metric_type": {"type": "PREDEFINED", "predefined_metric": "VOLUME"},
+                                    "metric_name": "VOLUME"},]
+                              }]
+                    }]}
+            with open(bigeye_file_path, "w") as f:
+                yaml.safe_dump(data, f)
+            assert find_bigeye_checks(self.test_path) is False
+            captured = capfd.readouterr()
+            assert "ERROR: Missing Bigeye metrics: {'FRESHNESS'}." in captured.out
+
+    def test_find_bigeye_checks_ok(self, runner):
+        with runner.isolated_filesystem():
+            bigeye_metrics = {
+                "type": "BIGCONFIG_FILE",
+                "tag_deployments": [
+                    {
+                        "column_selectors":
+                            {"name": "{query_path}.*"},
+                        "metrics": [
+                            {"metric_type": {"type": "PREDEFINED", "predefined_metric": "FRESHNESS"},
+                             "metric_name": "FRESHNESS"},
+                            {"metric_type": {"type": "PREDEFINED", "predefined_metric": "VOLUME"},
+                             "metric_name": "VOLUME [fail]"}]
+                    }]}
+            os.makedirs(self.test_path, exist_ok=True)
+            bigeye_file_path = Path(self.test_path) / BIGEYE_PREDEFINED_FILE
+
+            with open(bigeye_file_path, "w") as f:
+                yaml.safe_dump(bigeye_metrics, f)
+            result = find_bigeye_checks(str(self.test_path))
+            assert result == True
+
+    def check_test_level(
+        self, runner, metadata, query=None, schema=None, with_unittests=None, with_bigeye_metrics=None, expected_result=None, expected_exception=None, capfd=None
+    ):
+        with runner.isolated_filesystem():
+            os.makedirs(self.test_path, exist_ok=True)
+            metadata_path = Path(self.test_path) / "metadata.yaml"
+            with open(metadata_path, "w") as f:
+                f.write(yaml.safe_dump(metadata))
+
+            if query:
+                query_path = Path(self.test_path) / "query.yaml"
+                with open(query_path, "w") as f:
+                    f.write(query)
+            if schema:
+                schema_path = Path(self.test_path) / "schema.yaml"
+                with open(schema_path, "w") as f:
+                    f.write(yaml.safe_dump(schema))
+
+            if with_unittests:
+                unittest_path = os.path.join("tests", self.test_path, "test_query_v1")
+                os.makedirs(unittest_path, exist_ok=True)
+
+            if with_bigeye_metrics:
+                bigeye_metrics = {
+                    "type": "BIGCONFIG_FILE",
+                    "tag_deployments": [
+                        {
+                            "column_selectors":
+                                {"name": "{query_path}.*"},
+                            "metrics": [
+                                {"metric_type": {"type": "PREDEFINED", "predefined_metric": "FRESHNESS"},
+                                 "metric_name": "FRESHNESS"},
+                                {"metric_type": {"type": "PREDEFINED", "predefined_metric": "VOLUME"},
+                                 "metric_name": "VOLUME [fail]"}]
+                        }]}
+
+                bigeye_file_path = Path(self.test_path) / BIGEYE_PREDEFINED_FILE
+                with open(bigeye_file_path, "w") as f:
+                    yaml.safe_dump(bigeye_metrics, f)
+
+            metadata_from_file = Metadata.from_file(metadata_path)
+            result = validate_asset_level(self.test_path, metadata_from_file)
+            assert result is expected_result
+
+            if capfd:
+                captured = capfd.readouterr()
+                assert expected_exception in captured.out
+
+    def test_level_is_not_set(self, runner):
+        metadata = {
+            "friendly_name": "test",
+            "owners": ["test@example.org", "test2@example.org"],
+        }
+
+        self.check_test_level(
+            runner=runner, metadata=metadata, expected_result=True
+        )
+
+    def test_level_is_not_unique(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "level": ["gold", "silver"],
+        }
+
+        expected_exc = "ERROR. Invalid level in metadata, A table or view can have max. one of"
+        self.check_test_level(
+            runner=runner, metadata=metadata, expected_result=False, expected_exception=expected_exc,
+            capfd=capfd,
+        )
+
+    def test_level_is_not_in_expected_values(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "level": ["diamond"],
+        }
+
+        expected_exc = "ERROR. Invalid level in metadata, possible values are"
+        self.check_test_level(
+                runner=runner, metadata=metadata, expected_result=False, expected_exception=expected_exc, capfd=capfd,
+        )
+
+    def test_level_gold_comply(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["gold"],
+            "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "Metadata level gold achieved!"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=True,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_gold_not_comply_missing_bigeye_metrics(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description" : "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["gold"],
+            "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: bigeye_predefined_metrics"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_gold_not_comply_missing_column_descriptions(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["gold"],
+            "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                },
+            ]
+        }
+
+        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: column_descriptions_all"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_silver_not_comply_missing_column_descriptions(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["silver"],
+            "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                },
+            ]
+        }
+
+        expected_exception = "ERROR. Metadata Level 'silver' not achieved. Missing: column_descriptions_70_percent"
+
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_gold_not_comply_missing_unittests(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["gold"],
+            "scheduling": {"dag_name": "bqetl_default"},
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: unittests"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=False,
+            with_bigeye_metrics=True,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_gold_not_comply_missing_description(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["gold"],
+            "labels": {"change_controlled": "true", "foo": "abc"},
+            "scheduling": {"dag_name": "bqetl_default"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: description"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_gold_not_comply_missing_scheduler(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["gold"],
+            "labels": {"change_controlled": "true", "foo": "abc"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "mode": "NULLABLE",
+                    "name": "column_1",
+                    "type": "STRING",
+                    "description": "Description 1",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "ERROR. Metadata Level 'gold' not achieved. Missing: scheduler"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_silver_comply_nested_fields(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "owners": ["test@example.org", "test2@example.org"],
+            "level": ["silver"],
+            "scheduling": {"dag_name": "bqetl_default"},
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "name": "column_1",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                        {"name": "column 1a", "type": "STRING", "description": "Description 1", },
+                        {"name": "column 1b", "type": "STRING", "description": "Description 1", },
+                    ],
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = "Metadata level silver achieved!"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            with_unittests=True,
+            with_bigeye_metrics=True,
+            expected_result=True,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_silver_not_comply_missing_all(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "level": ["silver"],
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "name": "column_1",
+                    "type": "RECORD",
+                    "mode": "REPEATED",
+                    "fields": [
+                        {"name": "column 1a", "type": "STRING", "description": "Description 1",},
+                        {"name": "column 1b", "type": "STRING",},
+                    ],
+                    },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                    "description": "Description 2",
+                },
+            ]
+        }
+
+        expected_exception = ("ERROR. Metadata Level 'silver' not achieved. "
+                              "Missing: description, unittests, scheduler, "
+                              "bigeye_predefined_metrics, column_descriptions_70_percent")
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_bronze_fail_missing_schema(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "level": ["bronze"],
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+
+        expected_exception = "missing the required schema.yaml"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            expected_result=False,
+            expected_exception=expected_exception,
+            capfd=capfd,
+        )
+
+    def test_level_bronze_comply(self, runner, capfd):
+        metadata = {
+            "friendly_name": "test",
+            "description": "Table description.",
+            "level": ["bronze"],
+        }
+        query = "SELECT column_1, column_2 FROM test_table group by column_1, column_2"
+        schema = {
+            "fields": [
+                {
+                    "name": "column_1",
+                    "type": "STRING",
+                },
+                {
+                    "name": "column_2",
+                    "type": "STRING",
+                },
+            ]
+        }
+
+        expected_exception = "Metadata level bronze achieved!"
+        self.check_test_level(
+            runner=runner,
+            metadata=metadata,
+            query=query,
+            schema=schema,
+            expected_result=True,
+            expected_exception=expected_exception,
+            capfd=capfd,
         )
 
     def test_metadata_update_with_no_deprecation(self, runner):
